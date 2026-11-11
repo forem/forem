@@ -6744,10 +6744,78 @@ RSpec.describe ForemNative do
     let(:fixture_gradient_svg_path) { Rails.root.join("spec/fixtures/files/unicorn.svg").to_s }
     let(:default_svg_font_path) { BaseUploader::DEFAULT_SVG_FONT_PATH }
 
+    # Pure-Ruby 8-bit RGB/RGBA PNG scanline decoder (`Zlib::Inflate` + RFC 2083 filter reconstruction)
+    # used as an independent pixel-level verification oracle in specs without external gems/CLIs.
+    let(:pure_ruby_png_pixels) do
+      lambda do |png_bytes|
+        pos = 8
+        width = height = channels = nil
+        idat = +"".b
+        while pos + 8 <= png_bytes.bytesize
+          len, type = png_bytes.byteslice(pos, 8).unpack("Na4")
+          chunk = png_bytes.byteslice(pos + 8, len)
+          case type
+          when "IHDR"
+            width, height, bit_depth, color_type = chunk.unpack("NNC2")
+            raise "unsupported bit depth #{bit_depth}" unless bit_depth == 8
+
+            channels = color_type == 6 ? 4 : 3
+          when "IDAT"
+            idat << chunk
+          when "IEND"
+            break
+          end
+          pos += 12 + len
+        end
+        raw = Zlib::Inflate.inflate(idat)
+        stride = width * channels
+        prev = Array.new(stride, 0)
+        rows = Array.new(height)
+        offset = 0
+        height.times do |y|
+          filter = raw.getbyte(offset)
+          offset += 1
+          cur = raw.byteslice(offset, stride).bytes
+          offset += stride
+          case filter
+          when 1 # Sub
+            (channels...stride).each { |i| cur[i] = (cur[i] + cur[i - channels]) & 0xFF }
+          when 2 # Up
+            stride.times { |i| cur[i] = (cur[i] + prev[i]) & 0xFF }
+          when 3 # Average
+            stride.times do |i|
+              left = i >= channels ? cur[i - channels] : 0
+              cur[i] = (cur[i] + ((left + prev[i]) >> 1)) & 0xFF
+            end
+          when 4 # Paeth
+            stride.times do |i|
+              a = i >= channels ? cur[i - channels] : 0
+              b = prev[i]
+              c = i >= channels ? prev[i - channels] : 0
+              p = a + b - c
+              pa = (p - a).abs
+              pb = (p - b).abs
+              pc = (p - c).abs
+              pr = if pa <= pb && pa <= pc
+                     a
+                   else
+                     (pb <= pc ? b : c)
+                   end
+              cur[i] = (cur[i] + pr) & 0xFF
+            end
+          end
+          rows[y] = cur
+          prev = cur
+        end
+        [width, height, channels, rows]
+      end
+    end
+
     describe ".render_profile_image_png (Images::ProfileImageGenerator)" do
-      it "renders deterministic 400x400 8-bit RGB PNGs across 1,000 randomized trait combinations",
+      it "renders deterministic 400x400 8-bit RGB PNGs verified by pure-Ruby pixel oracle across 1,000 combinations",
          :aggregate_failures do
         rng = Random.new(20_261_111)
+        parse_hex_rgb = ->(hex) { [hex[1..2].to_i(16), hex[3..4].to_i(16), hex[5..6].to_i(16)] }
 
         1_000.times do |iteration|
           palette = Images::ProfileImageGenerator::PALETTES.sample(random: rng)
@@ -6767,12 +6835,29 @@ RSpec.describe ForemNative do
 
           png = described_class.render_profile_image_png(traits)
           expect(png.byteslice(0, 8)).to eq("\x89PNG\r\n\x1A\n".b), "iteration #{iteration} invalid PNG magic"
-          # Width=400, Height=400, BitDepth=8, ColorType=2 (RGB)
+          # Width=400, Height=400, BitDepth=8, ColorType=2 (RGB), non-blank compressed payload
           expect(png.byteslice(16, 10).unpack("NNC2")).to eq([400, 400, 8, 2]),
                                                           "iteration #{iteration} invalid IHDR"
-          if (iteration % 50).zero?
-            expect(described_class.render_profile_image_png(traits)).to eq(png)
-          end
+          expect(png.bytesize).to be > 1_500, "iteration #{iteration} suspiciously blank PNG"
+
+          next unless (iteration % 40).zero?
+
+          expect(described_class.render_profile_image_png(traits)).to eq(png)
+
+          w, h, ch, rows = pure_ruby_png_pixels.call(png)
+          expect([w, h, ch]).to eq([400, 400, 3])
+          bg_rgb = parse_hex_rgb.call(palette[:bg])
+          body_rgb = parse_hex_rgb.call(palette[:body])
+          shirt_rgb = parse_hex_rgb.call(palette[:shirt])
+          pixel_at = ->(x, y) { rows[y][x * ch, 3] }
+
+          # Outer corner (2, 2) sits outside backdrop decorations and matches palette[:bg]
+          expect(pixel_at.call(2, 2)).to eq(bg_rgb), "iteration #{iteration} corner bg mismatch"
+          # Lower chin/bezel (200, 248) sits inside every head style's body fill (`palette[:body]`)
+          expect(pixel_at.call(200, 248)).to eq(body_rgb), "iteration #{iteration} head body color mismatch"
+          # Lower torso (165, 355) renders outfit/body foreground distinct from background
+          expect(pixel_at.call(165, 355)).not_to eq(bg_rgb), "iteration #{iteration} blank torso"
+          expect(body_rgb == bg_rgb && shirt_rgb == bg_rgb).to be(false)
         end
       end
 
@@ -6959,6 +7044,57 @@ RSpec.describe ForemNative do
           custom_background: true,
         )
         expect(described_class.image_inspect(social_png)).to include(format: "png", width: 1000, height: 500)
+      end
+
+      it "handles extreme aspect ratios, <defs>/<symbol>/<use>/<style> SVGs, and multi-threaded GVL execution",
+         :aggregate_failures do
+        # 1. Extreme 4096x1 banner -> 1000x500 without multi-GB intermediate allocation
+        banner_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="1">' \
+                     '<rect width="4096" height="1" fill="#16a34a"/></svg>'
+        banner_png = described_class.image_convert_to_png(banner_svg)
+        filled_png, fmt = described_class.image_resize_to_fill(banner_png, 1000, 500, "Center")
+        expect([fmt, described_class.image_inspect(filled_png)]).to eq(
+          ["png", { format: "png", width: 1000, height: 500, frame_count: 1, exif_orientation: 1 }],
+        )
+
+        # 2. SVG with <style>, <defs>, <symbol>, and <use href> + reject_blank verification
+        symbol_svg = <<~SVG
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 48 24">
+            <style>.mark { fill: #e11d48; }</style>
+            <defs><symbol id="badge" viewBox="0 0 12 12"><rect width="12" height="12" class="mark"/></symbol></defs>
+            <use href="#badge" x="12" y="0" width="24" height="24"/>
+          </svg>
+        SVG
+        rendered_png = described_class.image_convert_to_png(symbol_svg, reject_blank: true)
+        w, h, ch, rows = pure_ruby_png_pixels.call(rendered_png)
+        expect([w, h, ch]).to eq([48, 24, 4])
+        expect(rows[12][24 * 4, 4]).to eq([0xE1, 0x1D, 0x48, 0xFF])
+
+        empty_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"></svg>'
+        expect { described_class.image_convert_to_png(empty_svg, reject_blank: true) }.to raise_error(ArgumentError)
+
+        # 3. Concurrent Ruby threads executing GVL-released native image operations in parallel
+        jpg_bytes = File.binread(fixture_jpg_path)
+        results = Array.new(8) do |idx|
+          Thread.new do
+            out, out_fmt = described_class.image_resize_to_fill(jpg_bytes, 64 + idx, 64 + idx, "Center")
+            [out_fmt, described_class.image_inspect(out)[:width]]
+          end
+        end.map(&:value)
+        expect(results).to eq((0...8).map { |idx| ["jpeg", 64 + idx] })
+      end
+
+      it "verifies exported symbols on disk before requiring candidate binaries" do
+        Tempfile.create(["stale_forem_native", ".#{ForemNative::Builder.dlext}"]) do |tmp|
+          tmp.binmode
+          tmp.write("ELF_WITHOUT_REQUIRED_SYMBOL")
+          tmp.flush
+
+          expect(ForemNative::Builder.binary_exports_symbol?(tmp.path, described_class::LATEST_NATIVE_SYMBOL))
+            .to be(false)
+          expect(ForemNative::Builder.binary_exports_symbol?(tmp.path, :ELF_WITHOUT_REQUIRED_SYMBOL))
+            .to be(true)
+        end
       end
     end
   end

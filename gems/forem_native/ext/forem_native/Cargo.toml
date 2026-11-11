@@ -13,3 +13,4 @@ crate-type = ["cdylib"]
 [dependencies]
 forem_core = { path = "../../crates/forem_core" }
 magnus = "0.9"
+rb-sys = { version = "0.9", default-features = false }

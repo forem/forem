@@ -36,6 +36,7 @@ class LogoSvgUploader < BaseUploader
     png_bytes = ForemNative.image_convert_to_png(
       File.binread(file.path),
       font_path: DEFAULT_SVG_FONT_PATH,
+      reject_blank: true,
     )
     temp_png_file = Tempfile.new(["output", ".png"])
 

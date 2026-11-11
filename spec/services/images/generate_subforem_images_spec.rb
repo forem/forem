@@ -195,6 +195,35 @@ RSpec.describe Images::GenerateSubforemImages do
       end
     end
 
+    context "when remote image exceeds MAX_SOURCE_BYTES" do
+      it "rejects oversized Content-Length headers before buffering and logs the error", :aggregate_failures do
+        stub_request(:get, image_url).to_return(
+          status: 200,
+          headers: { "Content-Length" => (described_class::MAX_SOURCE_BYTES + 1).to_s },
+          body: "x",
+        )
+        allow(Rails.logger).to receive(:error)
+
+        service.call
+
+        expect(Rails.logger).to have_received(:error).with(
+          "Failed to generate resized logo: Image exceeds maximum allowed size " \
+          "(#{described_class::MAX_SOURCE_BYTES} bytes)",
+        )
+        expect(Settings::General).not_to have_received(:set_resized_logo)
+      end
+
+      it "rejects oversized chunked streams without Content-Length", :aggregate_failures do
+        oversized_stream = StringIO.new("a" * (described_class::MAX_SOURCE_BYTES + 1))
+        expect do
+          service.__send__(:read_bounded_stream, oversized_stream)
+        end.to raise_error(
+          ArgumentError,
+          "Image exceeds maximum allowed size (#{described_class::MAX_SOURCE_BYTES} bytes)",
+        )
+      end
+    end
+
     context "when subforem does not exist" do
       it "raises an error" do
         expect { described_class.new(999_999, image_url).call }.to raise_error(ActiveRecord::RecordNotFound)

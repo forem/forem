@@ -604,6 +604,7 @@ fn inspect_ico(bytes: &[u8]) -> Result<ImageInfo, ImageOpError> {
     }
     let mut best_w = 0u32;
     let mut best_h = 0u32;
+    let mut best_area = 0u64;
     for i in 0..count {
         let entry = &bytes[6 + i * 16..6 + (i + 1) * 16];
         let mut w = if entry[0] == 0 {
@@ -625,12 +626,13 @@ fn inspect_ico(bytes: &[u8]) -> Result<ImageInfo, ImageOpError> {
         }
         let sub = &bytes[offset..offset + size];
         if sub.starts_with(b"\x89PNG\r\n\x1a\n") {
-            if let Ok(png_info) = inspect_png(sub) {
-                w = png_info.width;
-                h = png_info.height;
-            }
+            let png_info = inspect_png(sub)?;
+            w = png_info.width;
+            h = png_info.height;
         }
-        if w * h >= best_w * best_h {
+        let area = u64::from(w) * u64::from(h);
+        if area >= best_area {
+            best_area = area;
             best_w = w;
             best_h = h;
         }
@@ -718,6 +720,14 @@ pub fn strip_and_auto_orient(
     let info = inspect_image(bytes)?;
     if info.format == ImageFormat::Svg || info.frame_count > frame_strip_max {
         return Ok(None);
+    }
+    if (2..=8).contains(&info.exif_orientation)
+        && (info.width > MAX_PIXEL_DIMENSION || info.height > MAX_PIXEL_DIMENSION)
+    {
+        return Err(ImageOpError::DimensionsExceeded {
+            width: info.width,
+            height: info.height,
+        });
     }
 
     match info.format {
@@ -1671,13 +1681,22 @@ fn decode_ico(bytes: &[u8]) -> Result<Canvas, ImageOpError> {
     }
     let count = info.frame_count;
     let mut best_idx = 0usize;
-    let mut best_area = 0u32;
+    let mut best_area = 0u64;
     for i in 0..count {
         let e = &bytes[6 + i * 16..6 + (i + 1) * 16];
-        let w = if e[0] == 0 { 256 } else { u32::from(e[0]) };
-        let h = if e[1] == 0 { 256 } else { u32::from(e[1]) };
-        if w * h >= best_area {
-            best_area = w * h;
+        let mut w = if e[0] == 0 { 256 } else { u32::from(e[0]) };
+        let mut h = if e[1] == 0 { 256 } else { u32::from(e[1]) };
+        let e_size = u32::from_le_bytes([e[8], e[9], e[10], e[11]]) as usize;
+        let e_off = u32::from_le_bytes([e[12], e[13], e[14], e[15]]) as usize;
+        let e_sub = &bytes[e_off..e_off + e_size];
+        if e_sub.starts_with(b"\x89PNG\r\n\x1a\n") {
+            let png_info = inspect_png(e_sub)?;
+            w = png_info.width;
+            h = png_info.height;
+        }
+        let area = u64::from(w) * u64::from(h);
+        if area >= best_area {
+            best_area = area;
             best_idx = i;
         }
     }
@@ -1686,6 +1705,13 @@ fn decode_ico(bytes: &[u8]) -> Result<Canvas, ImageOpError> {
     let offset = u32::from_le_bytes([e[12], e[13], e[14], e[15]]) as usize;
     let sub = &bytes[offset..offset + size];
     if sub.starts_with(b"\x89PNG\r\n\x1a\n") {
+        let png_info = inspect_png(sub)?;
+        if png_info.width > MAX_PIXEL_DIMENSION || png_info.height > MAX_PIXEL_DIMENSION {
+            return Err(ImageOpError::DimensionsExceeded {
+                width: png_info.width,
+                height: png_info.height,
+            });
+        }
         return decode_image(sub).map_err(|err| ImageOpError::InvalidFormat(err.to_string()));
     }
     // Uncompressed DIB inside ICO (height in DIB header is 2x icon height for XOR + AND masks).
@@ -1693,7 +1719,13 @@ fn decode_ico(bytes: &[u8]) -> Result<Canvas, ImageOpError> {
         return Err(ImageOpError::InvalidFormat("truncated ICO DIB".to_owned()));
     }
     let dib_size = u32::from_le_bytes([sub[0], sub[1], sub[2], sub[3]]) as usize;
-    let w = i32::from_le_bytes([sub[4], sub[5], sub[6], sub[7]]) as usize;
+    let raw_w = i32::from_le_bytes([sub[4], sub[5], sub[6], sub[7]]);
+    if dib_size < 40 || raw_w <= 0 {
+        return Err(ImageOpError::InvalidFormat(
+            "invalid ICO DIB header".to_owned(),
+        ));
+    }
+    let w = raw_w as usize;
     let h_total = i32::from_le_bytes([sub[8], sub[9], sub[10], sub[11]]).unsigned_abs() as usize;
     let h = h_total / 2;
     let bpp = u16::from_le_bytes([sub[14], sub[15]]);
@@ -1705,9 +1737,16 @@ fn decode_ico(bytes: &[u8]) -> Result<Canvas, ImageOpError> {
     let xor_stride = (w * usize::from(bpp)).div_ceil(32) * 4;
     let and_stride = w.div_ceil(32) * 4;
     let pal_bytes = if bpp <= 8 { (1usize << bpp) * 4 } else { 0 };
-    let xor_off = dib_size + pal_bytes;
-    let and_off = xor_off + xor_stride * h;
-    if xor_off + xor_stride * h > sub.len() {
+    let xor_bytes = xor_stride
+        .checked_mul(h)
+        .ok_or_else(|| ImageOpError::InvalidFormat("ICO XOR stride overflow".to_owned()))?;
+    let xor_off = dib_size
+        .checked_add(pal_bytes)
+        .ok_or_else(|| ImageOpError::InvalidFormat("ICO DIB offset overflow".to_owned()))?;
+    let and_off = xor_off
+        .checked_add(xor_bytes)
+        .ok_or_else(|| ImageOpError::InvalidFormat("ICO XOR mask overflow".to_owned()))?;
+    if and_off > sub.len() {
         return Err(ImageOpError::InvalidFormat(
             "truncated ICO XOR mask".to_owned(),
         ));
@@ -1871,19 +1910,26 @@ impl Default for SvgStyle {
 fn parse_svg_length(raw: &str, reference: f64) -> Option<f64> {
     let s = raw.trim();
     if let Some(pct) = s.strip_suffix('%') {
-        return pct.trim().parse::<f64>().ok().map(|v| v * 0.01 * reference);
+        return pct
+            .trim()
+            .parse::<f64>()
+            .ok()
+            .filter(|v| v.is_finite())
+            .map(|v| v * 0.01 * reference)
+            .filter(|v| v.is_finite());
     }
     let num_str = s
         .trim_end_matches("px")
         .trim_end_matches("pt")
         .trim_end_matches("em")
         .trim();
-    let v = num_str.parse::<f64>().ok()?;
-    if s.ends_with("pt") {
-        Some(v * (96.0 / 72.0))
+    let v = num_str.parse::<f64>().ok().filter(|v| v.is_finite())?;
+    let scaled = if s.ends_with("pt") {
+        v * (96.0 / 72.0)
     } else {
-        Some(v)
-    }
+        v
+    };
+    scaled.is_finite().then_some(scaled)
 }
 
 fn parse_svg_color(raw: &str, gradients: &HashMap<String, Rgba>) -> Option<Option<Rgba>> {
@@ -1952,7 +1998,7 @@ fn parse_svg_transform(raw: &str) -> Affine2D {
         let nums: Vec<f64> = args_str
             .split(|c: char| c == ',' || c.is_ascii_whitespace())
             .filter(|t| !t.is_empty())
-            .filter_map(|t| t.parse::<f64>().ok())
+            .filter_map(|t| t.parse::<f64>().ok().filter(|v| v.is_finite()))
             .collect();
         let next = match name {
             "translate" if !nums.is_empty() => Affine2D {
@@ -2093,7 +2139,7 @@ fn parse_svg_root_geometry(svg: &str) -> Result<(f64, f64, Affine2D), ImageOpErr
                 let nums: Vec<f64> = v
                     .split(|c: char| c == ',' || c.is_ascii_whitespace())
                     .filter(|t| !t.is_empty())
-                    .filter_map(|t| t.parse::<f64>().ok())
+                    .filter_map(|t| t.parse::<f64>().ok().filter(|n| n.is_finite()))
                     .collect();
                 if nums.len() == 4 && nums[2] > 0.0 && nums[3] > 0.0 {
                     view_box = Some([nums[0], nums[1], nums[2], nums[3]]);
@@ -2113,7 +2159,7 @@ fn parse_svg_root_geometry(svg: &str) -> Result<(f64, f64, Affine2D), ImageOpErr
         (None, None, None) => (300.0, 150.0),
     };
 
-    if w <= 0.0 || h <= 0.0 {
+    if !w.is_finite() || !h.is_finite() || w <= 0.0 || h <= 0.0 {
         return Err(ImageOpError::InvalidFormat(
             "non-positive SVG dimensions".to_owned(),
         ));
@@ -2303,7 +2349,7 @@ fn parse_points_list(raw: &str) -> Vec<Point> {
     let nums: Vec<f64> = raw
         .split(|c: char| c == ',' || c.is_ascii_whitespace())
         .filter(|t| !t.is_empty())
-        .filter_map(|t| t.parse::<f64>().ok())
+        .filter_map(|t| t.parse::<f64>().ok().filter(|v| v.is_finite()))
         .collect();
     let mut pts = Vec::with_capacity(nums.len() / 2);
     let mut i = 0usize;
@@ -2332,32 +2378,317 @@ fn unescape_basic_xml(text: &str) -> String {
         .replace("&apos;", "'")
 }
 
-/// Rasterizes an SVG document onto a transparent [`Canvas`] (`-background none`).
-pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpError> {
-    let svg = std::str::from_utf8(bytes)
-        .map_err(|_| ImageOpError::InvalidFormat("invalid UTF-8 in SVG".to_owned()))?;
-    let (raw_w, raw_h, root_xform) = parse_svg_root_geometry(svg)?;
-    let w = raw_w.round().max(1.0) as u32;
-    let h = raw_h.round().max(1.0) as u32;
-    if w > MAX_PIXEL_DIMENSION || h > MAX_PIXEL_DIMENSION {
-        return Err(ImageOpError::DimensionsExceeded {
-            width: w,
-            height: h,
-        });
+const MAX_SVG_USE_DEPTH: usize = 8;
+const MAX_SVG_DRAW_OPS: usize = 10_000;
+const MAX_SVG_DATA_URI_BYTES: usize = 8 * 1024 * 1024;
+
+struct SvgDef<'a> {
+    fragment: &'a str,
+    is_symbol: bool,
+    view_box: Option<[f64; 4]>,
+    symbol_attrs: &'a str,
+}
+
+fn parse_view_box_attr(v: &str) -> Option<[f64; 4]> {
+    let nums: Vec<f64> = v
+        .split(|c: char| c == ',' || c.is_ascii_whitespace())
+        .filter(|t| !t.is_empty())
+        .filter_map(|t| t.parse::<f64>().ok().filter(|n| n.is_finite()))
+        .collect();
+    if nums.len() == 4 && nums[2] > 0.0 && nums[3] > 0.0 {
+        Some([nums[0], nums[1], nums[2], nums[3]])
+    } else {
+        None
     }
+}
 
-    let gradients = collect_svg_gradients(svg);
-    let mut canvas = Canvas::new(w as usize, h as usize, Rgba::TRANSPARENT);
-    let mut style_stack: Vec<SvgStyle> = vec![SvgStyle {
-        transform: root_xform,
-        ..SvgStyle::default()
-    }];
-    let mut skip_depth = 0usize;
+fn strip_css_comments(raw: &str) -> String {
+    let mut out = String::with_capacity(raw.len());
+    let mut rest = raw;
+    while let Some(start) = rest.find("/*") {
+        out.push_str(&rest[..start]);
+        if let Some(end) = rest[start + 2..].find("*/") {
+            rest = &rest[start + 2 + end + 2..];
+        } else {
+            return out;
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
+fn collect_svg_css_rules(svg: &str) -> HashMap<String, Vec<(String, String)>> {
+    let mut rules: HashMap<String, Vec<(String, String)>> = HashMap::new();
     let mut pos = 0usize;
+    while let Some(rel) = svg[pos..].find("<style") {
+        let open_start = pos + rel;
+        let Some(gt_rel) = svg[open_start..].find('>') else {
+            break;
+        };
+        let content_start = open_start + gt_rel + 1;
+        if svg[open_start..content_start - 1].trim_end().ends_with('/') {
+            pos = content_start;
+            continue;
+        }
+        let Some(close_rel) = svg[content_start..].find("</style>") else {
+            break;
+        };
+        let css = strip_css_comments(&svg[content_start..content_start + close_rel]);
+        pos = content_start + close_rel + "</style>".len();
 
+        for block in css.split('}') {
+            let Some((selectors_raw, decls_raw)) = block.split_once('{') else {
+                continue;
+            };
+            let mut decls = Vec::new();
+            for decl in decls_raw.split(';') {
+                if let Some((k, v)) = decl.split_once(':') {
+                    let key = k.trim().to_ascii_lowercase();
+                    let val = v.trim().trim_end_matches("!important").trim().to_owned();
+                    if !key.is_empty() && !val.is_empty() {
+                        decls.push((key, val));
+                    }
+                }
+            }
+            if decls.is_empty() {
+                continue;
+            }
+            for sel in selectors_raw.split(',') {
+                let s = sel.trim();
+                if !s.is_empty() && !s.contains(' ') && !s.contains('>') {
+                    rules.entry(s.to_owned()).or_default().extend(decls.clone());
+                }
+            }
+        }
+    }
+    rules
+}
+
+fn find_matching_close_tag(
+    svg: &str,
+    start_pos: usize,
+    target_name: &str,
+) -> Option<(usize, usize)> {
+    let mut depth = 1usize;
+    let mut p = start_pos;
+    while let Some(rel) = svg[p..].find('<') {
+        let t_start = p + rel;
+        let rest = &svg[t_start + 1..];
+        if rest.starts_with("!--") {
+            let end = rest.find("-->")?;
+            p = t_start + 1 + end + 3;
+            continue;
+        }
+        let end = rest.find('>')?;
+        let body = &rest[..end];
+        let t_end = t_start + 1 + end + 1;
+        if let Some(close_raw) = body.strip_prefix('/') {
+            if close_raw.trim() == target_name {
+                depth -= 1;
+                if depth == 0 {
+                    return Some((t_start, t_end));
+                }
+            }
+        } else {
+            let self_closing = body.trim_end().ends_with('/');
+            let n_end = body
+                .find(|c: char| c.is_ascii_whitespace() || c == '/')
+                .unwrap_or(body.len());
+            if &body[..n_end] == target_name && !self_closing {
+                depth += 1;
+            }
+        }
+        p = t_end;
+    }
+    None
+}
+
+fn collect_svg_defs(svg: &str) -> HashMap<String, SvgDef<'_>> {
+    let mut defs = HashMap::new();
+    let mut pos = 0usize;
     while let Some(rel) = svg[pos..].find('<') {
         let tag_start = pos + rel;
         let rest = &svg[tag_start + 1..];
+        if rest.starts_with("!--") {
+            let Some(end) = rest.find("-->") else {
+                break;
+            };
+            pos = tag_start + 1 + end + 3;
+            continue;
+        }
+        if rest.starts_with('?') || rest.starts_with('!') || rest.starts_with('/') {
+            let Some(end) = rest.find('>') else {
+                break;
+            };
+            pos = tag_start + 1 + end + 1;
+            continue;
+        }
+        let Some(end) = rest.find('>') else {
+            break;
+        };
+        let tag_body = &rest[..end];
+        let tag_end = tag_start + 1 + end + 1;
+        pos = tag_end;
+
+        let self_closing = tag_body.trim_end().ends_with('/');
+        let name_end = tag_body
+            .find(|c: char| c.is_ascii_whitespace() || c == '/')
+            .unwrap_or(tag_body.len());
+        let name = &tag_body[..name_end];
+        if matches!(
+            name,
+            "defs"
+                | "linearGradient"
+                | "radialGradient"
+                | "clipPath"
+                | "mask"
+                | "filter"
+                | "pattern"
+                | "style"
+                | "title"
+                | "desc"
+                | "metadata"
+        ) {
+            continue;
+        }
+
+        let attr_slice = &tag_body[name_end..];
+        let attrs = parse_xml_attrs(attr_slice);
+        let Some((_, id_val)) = attrs.iter().find(|(k, _)| *k == "id") else {
+            continue;
+        };
+        let id = id_val.trim();
+        if id.is_empty() {
+            continue;
+        }
+
+        if name == "symbol" {
+            let vb = attrs
+                .iter()
+                .find(|(k, _)| *k == "viewBox")
+                .and_then(|(_, v)| parse_view_box_attr(v));
+            let fragment = if self_closing {
+                ""
+            } else if let Some((close_start, _)) = find_matching_close_tag(svg, tag_end, "symbol") {
+                &svg[tag_end..close_start]
+            } else {
+                continue;
+            };
+            defs.insert(
+                id.to_owned(),
+                SvgDef {
+                    fragment,
+                    is_symbol: true,
+                    view_box: vb,
+                    symbol_attrs: attr_slice,
+                },
+            );
+        } else if self_closing {
+            defs.insert(
+                id.to_owned(),
+                SvgDef {
+                    fragment: &svg[tag_start..tag_end],
+                    is_symbol: false,
+                    view_box: None,
+                    symbol_attrs: "",
+                },
+            );
+        } else if let Some((_, close_end)) = find_matching_close_tag(svg, tag_end, name) {
+            defs.insert(
+                id.to_owned(),
+                SvgDef {
+                    fragment: &svg[tag_start..close_end],
+                    is_symbol: false,
+                    view_box: None,
+                    symbol_attrs: "",
+                },
+            );
+        }
+    }
+    defs
+}
+
+fn decode_base64_bounded(encoded: &str, max_bytes: usize) -> Option<Vec<u8>> {
+    let mut out = Vec::with_capacity((encoded.len() * 3 / 4).min(max_bytes + 4));
+    let mut buf = 0u32;
+    let mut bits = 0u8;
+    for b in encoded.bytes() {
+        if b.is_ascii_whitespace() {
+            continue;
+        }
+        if b == b'=' {
+            break;
+        }
+        let val = match b {
+            b'A'..=b'Z' => b - b'A',
+            b'a'..=b'z' => b - b'a' + 26,
+            b'0'..=b'9' => b - b'0' + 52,
+            b'+' => 62,
+            b'/' => 63,
+            _ => return None,
+        };
+        buf = (buf << 6) | u32::from(val);
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            if out.len() >= max_bytes {
+                return None;
+            }
+            out.push(((buf >> bits) & 0xFF) as u8);
+        }
+    }
+    Some(out)
+}
+
+struct SvgRenderCtx<'a> {
+    raw_w: f64,
+    raw_h: f64,
+    font: Option<&'a Font<'a>>,
+    gradients: &'a HashMap<String, Rgba>,
+    css_rules: &'a HashMap<String, Vec<(String, String)>>,
+    defs: &'a HashMap<String, SvgDef<'a>>,
+    ops_remaining: usize,
+    had_unresolved_or_unsupported: bool,
+}
+
+fn is_skipped_svg_container(name: &str) -> bool {
+    matches!(
+        name,
+        "defs"
+            | "symbol"
+            | "clipPath"
+            | "mask"
+            | "filter"
+            | "pattern"
+            | "style"
+            | "title"
+            | "desc"
+            | "metadata"
+            | "script"
+            | "foreignObject"
+    )
+}
+
+fn render_svg_fragment(
+    fragment: &str,
+    base_style: SvgStyle,
+    depth: usize,
+    canvas: &mut Canvas,
+    ctx: &mut SvgRenderCtx<'_>,
+) {
+    if depth > MAX_SVG_USE_DEPTH || ctx.ops_remaining == 0 {
+        return;
+    }
+    let mut style_stack: Vec<SvgStyle> = vec![base_style];
+    let mut skip_depth = 0usize;
+    let mut pos = 0usize;
+
+    while let Some(rel) = fragment[pos..].find('<') {
+        if ctx.ops_remaining == 0 {
+            break;
+        }
+        let tag_start = pos + rel;
+        let rest = &fragment[tag_start + 1..];
         if rest.starts_with("!--") {
             if let Some(end) = rest.find("-->") {
                 pos = tag_start + 1 + end + 3;
@@ -2381,10 +2712,7 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
         if let Some(close_raw) = tag_body.strip_prefix('/') {
             let close_name = close_raw.trim();
             if skip_depth > 0 {
-                if matches!(
-                    close_name,
-                    "defs" | "clipPath" | "mask" | "style" | "title" | "desc" | "metadata"
-                ) {
+                if is_skipped_svg_container(close_name) {
                     skip_depth -= 1;
                 }
             } else if matches!(close_name, "g" | "svg" | "a") && style_stack.len() > 1 {
@@ -2398,10 +2726,10 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
             .find(|c: char| c.is_ascii_whitespace() || c == '/')
             .unwrap_or(tag_body.len());
         let name = &tag_body[..name_end];
-        if matches!(
-            name,
-            "defs" | "clipPath" | "mask" | "style" | "title" | "desc" | "metadata"
-        ) {
+        if is_skipped_svg_container(name) {
+            if name == "foreignObject" && skip_depth == 0 {
+                ctx.had_unresolved_or_unsupported = true;
+            }
             if !self_closing {
                 skip_depth += 1;
             }
@@ -2413,13 +2741,185 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
 
         let attrs = parse_xml_attrs(&tag_body[name_end..]);
         let mut cur_style = style_stack.last().cloned().unwrap_or_default();
+
+        // Apply <style> CSS rules in ascending specificity: tag -> .class -> #id -> presentation attrs.
+        if let Some(decls) = ctx.css_rules.get(name) {
+            for (k, v) in decls {
+                apply_svg_attr(&mut cur_style, k, v, ctx.gradients);
+            }
+        }
+        if let Some((_, class_attr)) = attrs.iter().find(|(k, _)| *k == "class") {
+            for cls in class_attr.split_ascii_whitespace() {
+                let key = format!(".{cls}");
+                if let Some(decls) = ctx.css_rules.get(&key) {
+                    for (k, v) in decls {
+                        apply_svg_attr(&mut cur_style, k, v, ctx.gradients);
+                    }
+                }
+            }
+        }
+        if let Some((_, id_attr)) = attrs.iter().find(|(k, _)| *k == "id") {
+            let key = format!("#{}", id_attr.trim());
+            if let Some(decls) = ctx.css_rules.get(&key) {
+                for (k, v) in decls {
+                    apply_svg_attr(&mut cur_style, k, v, ctx.gradients);
+                }
+            }
+        }
         for &(k, v) in &attrs {
-            apply_svg_attr(&mut cur_style, k, v, &gradients);
+            if k != "style" {
+                apply_svg_attr(&mut cur_style, k, v, ctx.gradients);
+            }
+        }
+        if let Some((_, inline_style)) = attrs.iter().find(|(k, _)| *k == "style") {
+            apply_svg_attr(&mut cur_style, "style", inline_style, ctx.gradients);
         }
 
         if matches!(name, "svg" | "g" | "a") {
             if !self_closing {
                 style_stack.push(cur_style);
+            }
+            continue;
+        }
+
+        let raw_w = ctx.raw_w;
+        let raw_h = ctx.raw_h;
+        let get_len = |attr_name: &str, ref_dim: f64| -> f64 {
+            attrs
+                .iter()
+                .find(|(k, _)| *k == attr_name)
+                .and_then(|(_, v)| parse_svg_length(v, ref_dim))
+                .unwrap_or(0.0)
+        };
+
+        if name == "use" {
+            let href_opt = attrs
+                .iter()
+                .find(|(k, _)| *k == "href" || *k == "xlink:href")
+                .map(|(_, v)| v.trim());
+            let Some(target_id) = href_opt.and_then(|h| h.strip_prefix('#')) else {
+                ctx.had_unresolved_or_unsupported = true;
+                continue;
+            };
+            let Some(def) = ctx.defs.get(target_id) else {
+                ctx.had_unresolved_or_unsupported = true;
+                continue;
+            };
+            ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
+            let ux = get_len("x", raw_w);
+            let uy = get_len("y", raw_h);
+            let mut use_style = cur_style;
+            if ux != 0.0 || uy != 0.0 {
+                use_style.transform = use_style.transform.then(Affine2D {
+                    e: ux,
+                    f: uy,
+                    ..Affine2D::IDENTITY
+                });
+            }
+            if def.is_symbol {
+                let sym_attrs = parse_xml_attrs(def.symbol_attrs);
+                for &(sk, sv) in &sym_attrs {
+                    if !matches!(sk, "id" | "viewBox" | "width" | "height" | "x" | "y") {
+                        apply_svg_attr(&mut use_style, sk, sv, ctx.gradients);
+                    }
+                }
+                if let Some([min_x, min_y, vb_w, vb_h]) = def.view_box {
+                    let uw = attrs
+                        .iter()
+                        .find(|(k, _)| *k == "width")
+                        .and_then(|(_, v)| parse_svg_length(v, raw_w))
+                        .or_else(|| {
+                            sym_attrs
+                                .iter()
+                                .find(|(k, _)| *k == "width")
+                                .and_then(|(_, v)| parse_svg_length(v, raw_w))
+                        })
+                        .unwrap_or(vb_w);
+                    let uh = attrs
+                        .iter()
+                        .find(|(k, _)| *k == "height")
+                        .and_then(|(_, v)| parse_svg_length(v, raw_h))
+                        .or_else(|| {
+                            sym_attrs
+                                .iter()
+                                .find(|(k, _)| *k == "height")
+                                .and_then(|(_, v)| parse_svg_length(v, raw_h))
+                        })
+                        .unwrap_or(vb_h);
+                    if uw > 0.0 && uh > 0.0 {
+                        let sc = (uw / vb_w).min(uh / vb_h);
+                        let tx = (uw - vb_w * sc) * 0.5 - min_x * sc;
+                        let ty = (uh - vb_h * sc) * 0.5 - min_y * sc;
+                        use_style.transform = use_style.transform.then(Affine2D {
+                            a: sc,
+                            b: 0.0,
+                            c: 0.0,
+                            d: sc,
+                            e: tx,
+                            f: ty,
+                        });
+                    }
+                }
+            }
+            render_svg_fragment(def.fragment, use_style, depth + 1, canvas, ctx);
+            continue;
+        }
+
+        if name == "image" {
+            let href_opt = attrs
+                .iter()
+                .find(|(k, _)| *k == "href" || *k == "xlink:href")
+                .map(|(_, v)| v.trim());
+            let Some(href) = href_opt else {
+                continue;
+            };
+            let Some(rest_uri) = href.strip_prefix("data:image/") else {
+                ctx.had_unresolved_or_unsupported = true;
+                continue;
+            };
+            let Some((mime_sub, b64)) = rest_uri.split_once(";base64,") else {
+                ctx.had_unresolved_or_unsupported = true;
+                continue;
+            };
+            if mime_sub.to_ascii_lowercase().starts_with("svg") && depth >= MAX_SVG_USE_DEPTH {
+                continue;
+            }
+            let Some(decoded_bytes) = decode_base64_bounded(b64, MAX_SVG_DATA_URI_BYTES) else {
+                ctx.had_unresolved_or_unsupported = true;
+                continue;
+            };
+            ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
+            if let Ok((sub_img, _)) = decode_any_oriented(&decoded_bytes, ctx.font) {
+                let ix = get_len("x", raw_w);
+                let iy = get_len("y", raw_h);
+                let iw = attrs
+                    .iter()
+                    .find(|(k, _)| *k == "width")
+                    .and_then(|(_, v)| parse_svg_length(v, raw_w))
+                    .unwrap_or(sub_img.width as f64);
+                let ih = attrs
+                    .iter()
+                    .find(|(k, _)| *k == "height")
+                    .and_then(|(_, v)| parse_svg_length(v, raw_h))
+                    .unwrap_or(sub_img.height as f64);
+                let p0 = cur_style.transform.apply(Point::new(ix, iy));
+                let p1 = cur_style.transform.apply(Point::new(ix + iw, iy + ih));
+                let tw = (p1.x - p0.x).abs().round() as usize;
+                let th = (p1.y - p0.y).abs().round() as usize;
+                if tw > 0
+                    && th > 0
+                    && tw <= MAX_PIXEL_DIMENSION as usize
+                    && th <= MAX_PIXEL_DIMENSION as usize
+                {
+                    let fitted = resize(&sub_img, tw, th, ResizeFilter::Auto);
+                    canvas.composite_over(
+                        &fitted,
+                        p0.x.min(p1.x).round() as i64,
+                        p0.y.min(p1.y).round() as i64,
+                    );
+                }
+            } else {
+                ctx.had_unresolved_or_unsupported = true;
             }
             continue;
         }
@@ -2437,20 +2937,13 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
             cur_style.line_join,
         );
 
-        let get_len = |attr_name: &str, ref_dim: f64| -> f64 {
-            attrs
-                .iter()
-                .find(|(k, _)| *k == attr_name)
-                .and_then(|(_, v)| parse_svg_length(v, ref_dim))
-                .unwrap_or(0.0)
-        };
-
         match name {
             "path" => {
                 if let Some((_, d)) = attrs.iter().find(|(k, _)| *k == "d") {
+                    ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                     let subs = transform_subpaths(&parse_svg_path(d), cur_style.transform);
                     draw_subpaths_styled(
-                        &mut canvas,
+                        canvas,
                         &subs,
                         eff_fill,
                         eff_stroke,
@@ -2465,6 +2958,7 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                 let rw = get_len("width", raw_w);
                 let rh = get_len("height", raw_h);
                 if rw > 0.0 && rh > 0.0 {
+                    ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                     let rx = get_len("rx", rw);
                     let ry = attrs
                         .iter()
@@ -2482,7 +2976,7 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                     };
                     let subs = transform_subpaths(&[sub], cur_style.transform);
                     draw_subpaths_styled(
-                        &mut canvas,
+                        canvas,
                         &subs,
                         eff_fill,
                         eff_stroke,
@@ -2496,10 +2990,11 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                 let cy = get_len("cy", raw_h);
                 let r = get_len("r", raw_w.min(raw_h));
                 if r > 0.0 {
+                    ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                     let sub = circle(Point::new(cx, cy), Point::new(cx + r, cy));
                     let subs = transform_subpaths(&[sub], cur_style.transform);
                     draw_subpaths_styled(
-                        &mut canvas,
+                        canvas,
                         &subs,
                         eff_fill,
                         eff_stroke,
@@ -2514,10 +3009,11 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                 let rx = get_len("rx", raw_w);
                 let ry = get_len("ry", raw_h);
                 if rx > 0.0 && ry > 0.0 {
+                    ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                     let sub = ellipse(Point::new(cx, cy), Point::new(rx, ry));
                     let subs = transform_subpaths(&[sub], cur_style.transform);
                     draw_subpaths_styled(
-                        &mut canvas,
+                        canvas,
                         &subs,
                         eff_fill,
                         eff_stroke,
@@ -2527,6 +3023,7 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                 }
             }
             "line" => {
+                ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                 let x1 = get_len("x1", raw_w);
                 let y1 = get_len("y1", raw_h);
                 let x2 = get_len("x2", raw_w);
@@ -2534,7 +3031,7 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                 let sub = line(Point::new(x1, y1), Point::new(x2, y2));
                 let subs = transform_subpaths(&[sub], cur_style.transform);
                 draw_subpaths_styled(
-                    &mut canvas,
+                    canvas,
                     &subs,
                     None,
                     eff_stroke,
@@ -2544,10 +3041,11 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
             }
             "polygon" => {
                 if let Some((_, pts_raw)) = attrs.iter().find(|(k, _)| *k == "points") {
+                    ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                     let sub = polygon(&parse_points_list(pts_raw));
                     let subs = transform_subpaths(&[sub], cur_style.transform);
                     draw_subpaths_styled(
-                        &mut canvas,
+                        canvas,
                         &subs,
                         eff_fill,
                         eff_stroke,
@@ -2558,10 +3056,11 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
             }
             "polyline" => {
                 if let Some((_, pts_raw)) = attrs.iter().find(|(k, _)| *k == "points") {
+                    ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                     let sub = polyline(&parse_points_list(pts_raw));
                     let subs = transform_subpaths(&[sub], cur_style.transform);
                     draw_subpaths_styled(
-                        &mut canvas,
+                        canvas,
                         &subs,
                         eff_fill,
                         eff_stroke,
@@ -2571,11 +3070,12 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
                 }
             }
             "text" if !self_closing => {
-                if let Some(close_rel) = svg[pos..].find("</text>") {
-                    let inner = unescape_basic_xml(svg[pos..pos + close_rel].trim());
+                if let Some(close_rel) = fragment[pos..].find("</text>") {
+                    let inner = unescape_basic_xml(fragment[pos..pos + close_rel].trim());
                     pos += close_rel + "</text>".len();
-                    if let (Some(f), Some(fill_c)) = (font, eff_fill) {
+                    if let (Some(f), Some(fill_c)) = (ctx.font, eff_fill) {
                         if !inner.is_empty() {
+                            ctx.ops_remaining = ctx.ops_remaining.saturating_sub(1);
                             let font_size = attrs
                                 .iter()
                                 .find(|(k, _)| *k == "font-size")
@@ -2604,6 +3104,48 @@ pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpEr
             }
             _ => {}
         }
+    }
+}
+
+/// Rasterizes an SVG document onto a transparent [`Canvas`] (`-background none`).
+pub fn decode_svg(bytes: &[u8], font: Option<&Font>) -> Result<Canvas, ImageOpError> {
+    let svg = std::str::from_utf8(bytes)
+        .map_err(|_| ImageOpError::InvalidFormat("invalid UTF-8 in SVG".to_owned()))?;
+    let (raw_w, raw_h, root_xform) = parse_svg_root_geometry(svg)?;
+    let w = raw_w.round().max(1.0) as u32;
+    let h = raw_h.round().max(1.0) as u32;
+    if w > MAX_PIXEL_DIMENSION || h > MAX_PIXEL_DIMENSION {
+        return Err(ImageOpError::DimensionsExceeded {
+            width: w,
+            height: h,
+        });
+    }
+
+    let gradients = collect_svg_gradients(svg);
+    let css_rules = collect_svg_css_rules(svg);
+    let defs = collect_svg_defs(svg);
+    let mut canvas = Canvas::new(w as usize, h as usize, Rgba::TRANSPARENT);
+    let mut ctx = SvgRenderCtx {
+        raw_w,
+        raw_h,
+        font,
+        gradients: &gradients,
+        css_rules: &css_rules,
+        defs: &defs,
+        ops_remaining: MAX_SVG_DRAW_OPS,
+        had_unresolved_or_unsupported: false,
+    };
+    let base_style = SvgStyle {
+        transform: root_xform,
+        ..SvgStyle::default()
+    };
+    render_svg_fragment(svg, base_style, 0, &mut canvas, &mut ctx);
+
+    if ctx.had_unresolved_or_unsupported && !canvas.pixels.iter().any(|p| p.a > 0.0) {
+        return Err(ImageOpError::InvalidFormat(
+            "SVG relies on unsupported or unresolved elements and produced no visible pixels"
+                .to_owned(),
+        ));
     }
 
     Ok(canvas)
@@ -2668,22 +3210,75 @@ pub fn resize_to_fill_canvas(
     target_h: usize,
     gravity: &str,
 ) -> Canvas {
-    if canvas.width == 0 || canvas.height == 0 || target_w == 0 || target_h == 0 {
-        return Canvas::new(target_w, target_h, Rgba::TRANSPARENT);
+    let max_dim = MAX_PIXEL_DIMENSION as usize;
+    if canvas.width == 0
+        || canvas.height == 0
+        || target_w == 0
+        || target_h == 0
+        || target_w > max_dim
+        || target_h > max_dim
+    {
+        return Canvas::new(
+            target_w.min(max_dim),
+            target_h.min(max_dim),
+            Rgba::TRANSPARENT,
+        );
     }
     if canvas.width == target_w && canvas.height == target_h {
         return canvas.clone();
     }
+    let g = gravity.trim().to_ascii_lowercase();
     let scale = (target_w as f64 / canvas.width as f64).max(target_h as f64 / canvas.height as f64);
-    let scaled_w = (canvas.width as f64 * scale).round().max(target_w as f64) as usize;
-    let scaled_h = (canvas.height as f64 * scale).round().max(target_h as f64) as usize;
+    let scaled_w_f = (canvas.width as f64 * scale).round().max(target_w as f64);
+    let scaled_h_f = (canvas.height as f64 * scale).round().max(target_h as f64);
+
+    // Guard against extreme aspect-ratio inputs (e.g. `4096x1` resized to `1000x500` where
+    // `scaled_w` would be `2,048,000` and allocate gigabytes): pre-crop in source pixel space
+    // to the visible window before scaling directly to `(target_w, target_h)`.
+    if !scaled_w_f.is_finite()
+        || !scaled_h_f.is_finite()
+        || scaled_w_f > max_dim as f64
+        || scaled_h_f > max_dim as f64
+    {
+        let crop_w = (target_w as f64 / scale)
+            .ceil()
+            .clamp(1.0, canvas.width as f64) as usize;
+        let crop_h = (target_h as f64 / scale)
+            .ceil()
+            .clamp(1.0, canvas.height as f64) as usize;
+        let crop_x = if g.contains("west") {
+            0
+        } else if g.contains("east") {
+            canvas.width - crop_w
+        } else {
+            (canvas.width - crop_w) / 2
+        };
+        let crop_y = if g.contains("north") {
+            0
+        } else if g.contains("south") {
+            canvas.height - crop_h
+        } else {
+            (canvas.height - crop_h) / 2
+        };
+        let mut sub = Canvas::new(crop_w, crop_h, Rgba::TRANSPARENT);
+        sub.has_alpha = canvas.has_alpha;
+        sub.is_pseudo = canvas.is_pseudo;
+        for y in 0..crop_h {
+            let src_row = &canvas.pixels[(crop_y + y) * canvas.width + crop_x
+                ..(crop_y + y) * canvas.width + crop_x + crop_w];
+            sub.pixels[y * crop_w..(y + 1) * crop_w].copy_from_slice(src_row);
+        }
+        return resize(&sub, target_w, target_h, ResizeFilter::Auto);
+    }
+
+    let scaled_w = scaled_w_f as usize;
+    let scaled_h = scaled_h_f as usize;
     let scaled = resize(canvas, scaled_w, scaled_h, ResizeFilter::Auto);
 
     if scaled_w == target_w && scaled_h == target_h {
         return scaled;
     }
 
-    let g = gravity.trim().to_ascii_lowercase();
     let off_x = if g.contains("west") {
         0
     } else if g.contains("east") {
@@ -2778,6 +3373,12 @@ pub fn resize_to_limit_bytes(
     max_height: Option<usize>,
     font: Option<&Font>,
 ) -> Result<(Vec<u8>, ImageFormat), ImageOpError> {
+    if max_width == Some(0) || max_height == Some(0) {
+        return Err(ImageOpError::DimensionsExceeded {
+            width: max_width.unwrap_or(0) as u32,
+            height: max_height.unwrap_or(0) as u32,
+        });
+    }
     let (canvas, fmt) = decode_any_oriented(bytes, font)?;
     let resized = resize_to_limit_canvas(&canvas, max_width, max_height);
     encode_in_format(&resized, fmt)
@@ -2786,7 +3387,22 @@ pub fn resize_to_limit_bytes(
 /// `LogoSvgUploader#convert_to_png` replacement: converts an SVG (with transparent background)
 /// or raster image into an alpha-preserving PNG.
 pub fn convert_to_png_bytes(bytes: &[u8], font: Option<&Font>) -> Result<Vec<u8>, ImageOpError> {
+    convert_to_png_bytes_with_options(bytes, font, false)
+}
+
+/// Converts an SVG or raster image into an alpha-preserving PNG, optionally rejecting images
+/// that decode to a 100% transparent/blank canvas (`reject_blank = true` for `LogoSvgUploader`).
+pub fn convert_to_png_bytes_with_options(
+    bytes: &[u8],
+    font: Option<&Font>,
+    reject_blank: bool,
+) -> Result<Vec<u8>, ImageOpError> {
     let (canvas, _) = decode_any_oriented(bytes, font)?;
+    if reject_blank && !canvas.pixels.iter().any(|p| p.a > 0.0) {
+        return Err(ImageOpError::InvalidFormat(
+            "decoded image has no visible pixels".to_owned(),
+        ));
+    }
     encode_png_preserving_alpha(&canvas).map_err(|e| ImageOpError::Encode(e.to_string()))
 }
 
@@ -2798,10 +3414,15 @@ pub fn subforem_resize_png(
     height: usize,
     font: Option<&Font>,
 ) -> Result<Vec<u8>, ImageOpError> {
-    if width == 0 || height == 0 {
-        return Err(ImageOpError::Encode(
-            "zero subforem resize target".to_owned(),
-        ));
+    if width == 0
+        || height == 0
+        || width > MAX_PIXEL_DIMENSION as usize
+        || height > MAX_PIXEL_DIMENSION as usize
+    {
+        return Err(ImageOpError::DimensionsExceeded {
+            width: width as u32,
+            height: height as u32,
+        });
     }
     let (canvas, _) = decode_any_oriented(bytes, font)?;
     let resized = resize_fit(&canvas, width, height);
@@ -3097,5 +3718,126 @@ mod tests {
         let op_info = inspect_image(&oriented_png).unwrap();
         assert_eq!((op_info.width, op_info.height), (12, 20));
         assert_eq!(op_info.exif_orientation, 1);
+    }
+
+    #[test]
+    fn handles_extreme_aspect_ratio_resize_to_fill_without_oom() {
+        // 4096x1 banner: left=red, center=green, right=blue -> resized to 1000x500
+        // Naive scaling would allocate 2,048,000 x 500 (~16 GB); pre-cropped path uses 2x1!
+        let mut wide = Canvas::new(4096, 1, Rgba::new(0.0, 1.0, 0.0, 1.0));
+        for x in 0..8 {
+            *wide.get_mut(x, 0) = Rgba::new(1.0, 0.0, 0.0, 1.0);
+            *wide.get_mut(4095 - x, 0) = Rgba::new(0.0, 0.0, 1.0, 1.0);
+        }
+        let png = encode_png_preserving_alpha(&wide).unwrap();
+
+        let (west_bytes, _) = resize_to_fill_bytes(&png, 1000, 500, "West", None).unwrap();
+        let west_dec = decode_image(&west_bytes).unwrap();
+        assert_eq!((west_dec.width, west_dec.height), (1000, 500));
+        assert!(west_dec.get(500, 250).r > 0.9 && west_dec.get(500, 250).g < 0.1);
+
+        let (center_bytes, _) = resize_to_fill_bytes(&png, 1000, 500, "Center", None).unwrap();
+        let center_dec = decode_image(&center_bytes).unwrap();
+        assert_eq!((center_dec.width, center_dec.height), (1000, 500));
+        assert!(center_dec.get(500, 250).g > 0.9 && center_dec.get(500, 250).r < 0.1);
+
+        let (east_bytes, _) = resize_to_fill_bytes(&png, 1000, 500, "East", None).unwrap();
+        let east_dec = decode_image(&east_bytes).unwrap();
+        assert_eq!((east_dec.width, east_dec.height), (1000, 500));
+        assert!(east_dec.get(500, 250).b > 0.9 && east_dec.get(500, 250).g < 0.1);
+
+        // Tall 1x4096 column -> 500x1000
+        let mut tall = Canvas::new(1, 4096, Rgba::new(0.0, 1.0, 0.0, 1.0));
+        for y in 0..8 {
+            *tall.get_mut(0, y) = Rgba::new(1.0, 0.0, 0.0, 1.0);
+            *tall.get_mut(0, 4095 - y) = Rgba::new(0.0, 0.0, 1.0, 1.0);
+        }
+        let tall_north = resize_to_fill_canvas(&tall, 500, 1000, "North");
+        assert_eq!((tall_north.width, tall_north.height), (500, 1000));
+        assert!(tall_north.get(250, 500).r > 0.9);
+        let tall_south = resize_to_fill_canvas(&tall, 500, 1000, "South");
+        assert!(tall_south.get(250, 500).b > 0.9);
+    }
+
+    #[test]
+    fn renders_svg_defs_symbol_use_style_and_rejects_blank_or_cyclic_svgs() {
+        // 1. `<style>` CSS selectors + `<defs>`/`<symbol viewBox>` + `<use href>` / `<use xlink:href>`
+        let rich_svg = br##"<svg width="100" height="50" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <style>
+                .brand-badge { fill: #e11d48; }
+                #accent-dot { fill: #10b981; }
+            </style>
+            <defs>
+                <symbol id="logo-mark" viewBox="0 0 20 20">
+                    <rect x="0" y="0" width="20" height="20" class="brand-badge"/>
+                </symbol>
+                <circle id="accent-dot" cx="0" cy="0" r="8"/>
+            </defs>
+            <use xlink:href="#logo-mark" x="10" y="5" width="40" height="40"/>
+            <use href="#accent-dot" x="75" y="25"/>
+        </svg>"##;
+        let png = convert_to_png_bytes_with_options(rich_svg, None, true).unwrap();
+        let dec = decode_image(&png).unwrap();
+        assert_eq!((dec.width, dec.height), (100, 50));
+        // Inside scaled `<symbol>` at (30, 25): #e11d48 -> red dominant
+        let sym_px = dec.get(30, 25);
+        assert!(sym_px.a > 0.9 && sym_px.r > 0.8 && sym_px.g < 0.2);
+        // Inside `<use href="#accent-dot">` at (75, 25): #10b981 -> green dominant
+        let dot_px = dec.get(75, 25);
+        assert!(dot_px.a > 0.9 && dot_px.g > 0.6 && dot_px.r < 0.2);
+
+        // 2. Cyclic `<use>` (`#a -> #b -> #a`) + `NaN` attribute terminates cleanly within depth budget
+        let cyclic_svg = br##"<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <g id="a"><rect x="4" y="4" width="32" height="32" fill="#2563eb"/><use href="#b" x="NaN"/></g>
+                <g id="b"><use href="#a"/></g>
+            </defs>
+            <use href="#a"/>
+        </svg>"##;
+        let cyclic_png = convert_to_png_bytes_with_options(cyclic_svg, None, true).unwrap();
+        let cyclic_dec = decode_image(&cyclic_png).unwrap();
+        assert!(cyclic_dec.get(20, 20).b > 0.8);
+
+        // 3. Unsupported `<foreignObject>` or empty SVG rejected instead of storing blank logo
+        let foreign_svg = br#"<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"><foreignObject width="64" height="64"><div>hi</div></foreignObject></svg>"#;
+        assert!(convert_to_png_bytes(foreign_svg, None).is_err());
+
+        let empty_svg = br#"<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg"></svg>"#;
+        assert!(convert_to_png_bytes_with_options(empty_svg, None, true).is_err());
+        assert!(convert_to_png_bytes_with_options(empty_svg, None, false).is_ok());
+    }
+
+    #[test]
+    fn rejects_ico_with_oversized_embedded_png_ihdr_without_u32_overflow() {
+        // Craft an ICO with a 1-entry directory pointing to a PNG header claiming 65536x65536
+        // (note: 65536 * 65536 wraps to 0 in u32 arithmetic if unchecked!).
+        let mut fake_png = Vec::new();
+        fake_png.extend_from_slice(b"\x89PNG\r\n\x1a\n");
+        fake_png.extend_from_slice(&13u32.to_be_bytes());
+        fake_png.extend_from_slice(b"IHDR");
+        fake_png.extend_from_slice(&65_536u32.to_be_bytes());
+        fake_png.extend_from_slice(&65_536u32.to_be_bytes());
+        fake_png.extend_from_slice(&[8, 6, 0, 0, 0]);
+        fake_png.extend_from_slice(&0u32.to_be_bytes()); // CRC
+
+        let mut ico = Vec::new();
+        ico.extend_from_slice(&[0, 0, 1, 0, 1, 0]); // ICONDIR: type=1, count=1
+        ico.extend_from_slice(&[0, 0, 0, 0]); // width=0(256), height=0(256), colors, reserved
+        ico.extend_from_slice(&1u16.to_le_bytes());
+        ico.extend_from_slice(&32u16.to_le_bytes());
+        ico.extend_from_slice(&(fake_png.len() as u32).to_le_bytes());
+        ico.extend_from_slice(&22u32.to_le_bytes()); // offset = 6 + 16
+        ico.extend_from_slice(&fake_png);
+
+        let info = inspect_image(&ico).unwrap();
+        assert_eq!(info.format, ImageFormat::Ico);
+        assert_eq!((info.width, info.height), (65_536, 65_536));
+        assert_eq!(
+            resize_to_fill_bytes(&ico, 64, 64, "Center", None),
+            Err(ImageOpError::DimensionsExceeded {
+                width: 65_536,
+                height: 65_536
+            })
+        );
     }
 }
