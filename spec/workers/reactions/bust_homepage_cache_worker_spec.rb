@@ -5,26 +5,26 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
     let(:user) { create(:user) }
     let(:article) { create(:article, featured: true) }
     let(:worker) { subject }
-    let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
     before do
-      allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-      allow(cache_bust).to receive(:call)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
     end
 
-    it "busts the homepage cache when reactable is an Article" do
+    it "busts the homepage surrogate key when reactable is a featured Article" do
       reaction = create(:reaction, reactable: article, user: user)
+      RSpec::Mocks.space.proxy_for(EdgeCache::PurgeByKey).reset
+      allow(EdgeCache::PurgeByKey).to receive(:call)
 
       worker.perform(reaction.id)
 
-      expect(cache_bust).to have_received(:call).with("/").exactly(2).times
-      expect(cache_bust).to have_received(:call).with("/?i=i")
-      expect(cache_bust).to have_received(:call).with("?i=i")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/").once
     end
 
     it "doesn't load the article or bust the homepage when the article is not featured" do
       unfeatured = create(:article, featured: false)
       reaction = create(:reaction, reactable: unfeatured, user: user)
+      RSpec::Mocks.space.proxy_for(EdgeCache::PurgeByKey).reset
+      allow(EdgeCache::PurgeByKey).to receive(:call)
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] }
 
@@ -33,7 +33,7 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
       end.not_to(change { unfeatured.reload.updated_at })
 
       expect(queries.grep(/SELECT "articles"\.\*/)).to be_empty
-      expect(cache_bust).not_to have_received(:call)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
 
     it "touches the featured article it busts" do
@@ -45,12 +45,12 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
     it "doesn't bust the homepage cache when reactable is a Comment" do
       comment = create(:comment, commentable: article)
       comment_reaction = create(:reaction, reactable: comment, user: user)
+      RSpec::Mocks.space.proxy_for(EdgeCache::PurgeByKey).reset
+      allow(EdgeCache::PurgeByKey).to receive(:call)
 
       worker.perform(comment_reaction.id)
 
-      expect(cache_bust).not_to have_received(:call).with("/")
-      expect(cache_bust).not_to have_received(:call).with("/?i=i")
-      expect(cache_bust).not_to have_received(:call).with("?i=i")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
 
     it "doesn't fail if a reaction doesn't exist" do

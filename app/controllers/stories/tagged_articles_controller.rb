@@ -11,6 +11,7 @@ module Stories
       @tag = Tag.find_by(name: params[:tag].downcase) || not_found
 
       if @tag.alias_for.present?
+        set_surrogate_key_header @tag.record_key, tag_feed_surrogate_key
         redirect_permanently_to("/t/#{@tag.alias_for}")
         return
       end
@@ -22,13 +23,23 @@ module Stories
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
-      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
+      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key, tag_feed_surrogate_key
       set_cache_control_headers(86_400,
                                 stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
     end
 
     private
+
+    def tag_feed_surrogate_key
+      if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
+        "tag-#{@tag.name}-top-#{params[:timeframe]}"
+      elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+        "tag-#{@tag.name}-latest"
+      else
+        "tag-#{@tag.name}-home"
+      end
+    end
 
     def set_number_of_articles(tag:)
       @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT

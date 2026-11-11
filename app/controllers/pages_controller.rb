@@ -5,6 +5,8 @@ class PagesController < ApplicationController
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = proper_page_by_slug
+    set_surrogate_key_header "show-page-#{params[:slug]}", "show-page-#{@page.slug}", @page.organization&.record_key
+
     redirect_page_if_different_subforem
     return if performed?
 
@@ -16,8 +18,6 @@ class PagesController < ApplicationController
       redirect_to @page.redirect_to_url, **redirect_options
       return
     end
-
-    set_surrogate_key_header "show-page-#{params[:slug]}"
 
 
     case @page.template
@@ -50,7 +50,7 @@ class PagesController < ApplicationController
   def bounty
     @page = Page.find_by(slug: "security")
     render :show if @page
-    set_surrogate_key_header "bounty_page"
+    set_surrogate_key_header "bounty_page", "show-page-security"
   end
 
   def code_of_conduct
@@ -74,7 +74,7 @@ class PagesController < ApplicationController
   def faq
     @page = Page.find_by(slug: "faq")
     render :show if @page
-    set_surrogate_key_header "faq_page"
+    set_surrogate_key_header "faq_page", "show-page-faq"
   end
 
   def post_a_job

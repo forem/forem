@@ -366,6 +366,7 @@ class Tag < ActsAsTaggableOn::Tag
   # nothing) carry only the table key, so a new tag must purge it.
   def purge_tag_lists
     EdgeCache::PurgeByKey.call(table_key)
+    EdgeCache::CutoverUrlBust.call("/tags")
   end
 
   def validate_alias_for

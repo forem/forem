@@ -508,7 +508,7 @@ RSpec.describe "Subforems" do
       before { sign_in admin_user }
 
       it "creates a navigation link and busts navigation caches", :aggregate_failures do
-        allow(EdgeCache::Bust).to receive(:call)
+        allow(EdgeCache::PurgeByKey).to receive(:call)
 
         expect do
           post create_navigation_link_subforem_path(subforem), params: valid_params
@@ -520,8 +520,14 @@ RSpec.describe "Subforems" do
         link = NavigationLink.last
         expect(link.subforem_id).to eq(subforem.id)
         expect(link.name).to eq("Test Link")
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          ["navigation_links", "navigation_links-#{subforem.id}"],
+          fallback_paths: "/async_info/navigation_links",
+        )
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          %w[tags onboarding-slideshow main_app_home_page],
+          fallback_paths: ["/onboarding/tags", "/onboarding", "/"],
+        )
       end
 
       it "handles validation errors" do
@@ -640,7 +646,7 @@ RSpec.describe "Subforems" do
       before { sign_in admin_user }
 
       it "updates a navigation link and busts navigation caches", :aggregate_failures do
-        allow(EdgeCache::Bust).to receive(:call)
+        allow(EdgeCache::PurgeByKey).to receive(:call)
 
         patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { name: "Updated Link", url: "/updated" } }
@@ -651,8 +657,14 @@ RSpec.describe "Subforems" do
         navigation_link.reload
         expect(navigation_link.name).to eq("Updated Link")
         expect(navigation_link.url).to eq("/updated")
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          ["navigation_links", "navigation_links-#{subforem.id}"],
+          fallback_paths: "/async_info/navigation_links",
+        )
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          %w[tags onboarding-slideshow main_app_home_page],
+          fallback_paths: ["/onboarding/tags", "/onboarding", "/"],
+        )
       end
 
       it "prevents updating navigation link from different subforem" do
@@ -745,8 +757,8 @@ RSpec.describe "Subforems" do
       before { sign_in admin_user }
 
       it "deletes a navigation link and busts navigation caches", :aggregate_failures do
-        allow(EdgeCache::Bust).to receive(:call)
         link_id = navigation_link.id
+        allow(EdgeCache::PurgeByKey).to receive(:call)
 
         expect do
           delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: link_id)
@@ -754,8 +766,14 @@ RSpec.describe "Subforems" do
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.deleted"))
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          ["navigation_links", "navigation_links-#{subforem.id}"],
+          fallback_paths: "/async_info/navigation_links",
+        )
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          %w[tags onboarding-slideshow main_app_home_page],
+          fallback_paths: ["/onboarding/tags", "/onboarding", "/"],
+        )
       end
 
       it "prevents deleting navigation link from different subforem" do
