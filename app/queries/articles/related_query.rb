@@ -61,19 +61,28 @@ module Articles
     # A multi-word term becomes a phrase query, so the words have to appear next to
     # each other rather than anywhere in the document: "Tiger Data" should not match
     # an article that says "tiger" in one paragraph and "data" in another.
+    # Punctuation between words (such as the hyphen in "AWS X-Ray") is preserved so
+    # phraseto_tsquery emits the same compound-word positions as to_tsvector.
     #
     # Article.sanitize_search_articles_tsquery stays untouched because
     # Article.search_articles, which backs site-wide search, also uses it.
     def tsquery_for(term)
-      words = Unaccent.unaccent(term.to_s)
+      normalized = Unaccent.unaccent(term.to_s)
         .downcase
         .gsub(Article::DISALLOWED_TSQUERY_CHARACTERS, " ")
-        .scan(/[[:alnum:]]+/)
+        .squish
 
-      return if words.empty?
-      return Article.sanitize_search_articles_tsquery(term) if words.one?
+      token_ends = []
+      normalized.scan(/[[:alnum:]]+/) { token_ends << Regexp.last_match.end(0) }
 
-      phrase = words.first(Article::MAX_SEARCH_TSQUERY_TERMS).join(" ")
+      return if token_ends.empty?
+      return Article.sanitize_search_articles_tsquery(term) if token_ends.one?
+
+      phrase = if token_ends.length > Article::MAX_SEARCH_TSQUERY_TERMS
+                 normalized[0...token_ends[Article::MAX_SEARCH_TSQUERY_TERMS - 1]]
+               else
+                 normalized
+               end
       "phraseto_tsquery('simple'::regconfig, #{Article.connection.quote(phrase)})"
     end
 
