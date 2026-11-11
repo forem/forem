@@ -693,7 +693,8 @@ class Billboard < ApplicationRecord
   def generate_billboard_name
     return unless name.nil?
 
-    update_column(:name, "Billboard #{id}")
+    self.name = "Billboard #{id}"
+    save!
   end
 
   def process_markdown
