@@ -3947,6 +3947,56 @@ RSpec.describe Article do
       expect { article.evaluate_and_update_column_from_markdown }.not_to raise_error
       expect(article.reload.processed_html).to eq(original_html)
     end
+
+    it "skips UPDATE queries when re-rendered processed_html is identical" do
+      article
+      updates = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        updates << sql if sql.start_with?('UPDATE "articles"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        article.evaluate_and_update_column_from_markdown
+      end
+
+      expect(updates).to be_empty
+    end
+  end
+
+  describe "dependent Liquid embed lifecycle callbacks" do
+    it "schedules updates on publish create, org removal, and destroy while ignoring draft churn" do
+      org = create(:organization)
+      allow(Articles::UpdateDependentEmbedsWorker).to receive(:schedule_for_article_change)
+
+      draft = create(:article, published: false, title: "Initial Draft")
+      draft.update!(title: "Edited Draft")
+      expect(Articles::UpdateDependentEmbedsWorker).not_to have_received(:schedule_for_article_change)
+
+      published_post = create(:article, published: true, organization: org, title: "Published Immediately")
+      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:schedule_for_article_change).with(
+        published_post.id,
+        organization_ids: [org.id],
+        tag_names: [published_post.cached_tag_list].compact_blank,
+        membership_changed: true,
+      )
+
+      published_post.update!(organization: nil)
+      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:schedule_for_article_change).with(
+        published_post.id,
+        organization_ids: [org.id],
+        tag_names: [published_post.cached_tag_list].compact_blank,
+        membership_changed: true,
+      ).twice
+
+      published_post.destroy!
+      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:schedule_for_article_change).with(
+        published_post.id,
+        organization_ids: [],
+        tag_names: [published_post.cached_tag_list].compact_blank,
+        membership_changed: true,
+      )
+    end
   end
 
   context "when indexing with Algolia", :algolia do

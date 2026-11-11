@@ -12,12 +12,14 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
       let(:commentable) { double }
 
       before do
-        allow(comment).to receive(:commentable).and_return(commentable)
+        allow(comment).to receive_messages(
+          commentable: commentable,
+          commentable_type: "Article",
+          commentable_id: 2,
+        )
         allow(Comment).to receive(:find_by).with(id: comment_id).and_return(comment)
         allow(comment).to receive(:purge)
         allow(commentable).to receive(:purge)
-        allow(comment).to receive(:commentable_type).and_return("Article")
-        allow(comment).to receive(:commentable_id).and_return(2)
         allow(Articles::UpdateDependentEmbedsWorker).to receive(:perform_async)
       end
 
@@ -38,14 +40,11 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
         expect(commentable).not_to have_received(:purge)
       end
 
-      it "calls UpdateDependentEmbedsWorker if commentable_type is Article" do
+      it "purges comment and commentable without triggering multi-hop UpdateDependentEmbedsWorker cascades" do
         worker.perform(comment_id)
-        expect(Articles::UpdateDependentEmbedsWorker).to have_received(:perform_async).with(2)
-      end
 
-      it "does not call UpdateDependentEmbedsWorker if commentable_type is not Article" do
-        allow(comment).to receive(:commentable_type).and_return("PodcastEpisode")
-        worker.perform(comment_id)
+        expect(comment).to have_received(:purge)
+        expect(commentable).to have_received(:purge)
         expect(Articles::UpdateDependentEmbedsWorker).not_to have_received(:perform_async)
       end
     end

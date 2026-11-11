@@ -90,6 +90,7 @@ class Page < ApplicationRecord
   def re_render_from_template!
     return unless uses_page_template?
 
+    mark_liquid_embed_template_rerender!
     render_from_page_template
     save!
   end
