@@ -49,12 +49,32 @@ module Articles
         terms.size.between?(1, MAX_TERMS)
 
       predicates = terms.map do |term|
-        sql = Article.sanitize_search_articles_tsquery(term)
+        sql = tsquery_for(term)
         raise InvalidRequest, I18n.t("api.related_articles.invalid_term") unless sql
 
         "articles.reading_list_document @@ #{sql}"
       end
       predicates.map { |predicate| "(#{predicate})" }.join(" OR ")
+    end
+
+    # A single-word term keeps the shared builder, including its prefix matching.
+    # A multi-word term becomes a phrase query, so the words have to appear next to
+    # each other rather than anywhere in the document: "Tiger Data" should not match
+    # an article that says "tiger" in one paragraph and "data" in another.
+    #
+    # Article.sanitize_search_articles_tsquery stays untouched because
+    # Article.search_articles, which backs site-wide search, also uses it.
+    def tsquery_for(term)
+      words = Unaccent.unaccent(term.to_s)
+        .downcase
+        .gsub(Article::DISALLOWED_TSQUERY_CHARACTERS, " ")
+        .scan(/[[:alnum:]]+/)
+
+      return if words.empty?
+      return Article.sanitize_search_articles_tsquery(term) if words.one?
+
+      phrase = words.first(Article::MAX_SEARCH_TSQUERY_TERMS).join(" ")
+      "phraseto_tsquery('simple'::regconfig, #{Article.connection.quote(phrase)})"
     end
 
     def start_date

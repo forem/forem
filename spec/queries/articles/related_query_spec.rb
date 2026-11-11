@@ -34,4 +34,31 @@ RSpec.describe Articles::RelatedQuery, type: :query do
     expect { described_class.call({ q: "TimescaleDB", per_page: "xyz" }) }
       .to raise_error(Articles::RelatedQuery::InvalidRequest, /per_page/)
   end
+
+  it "matches a multi-word term only where the words are adjacent", :aggregate_failures do
+    adjacent = create(:article, title: "Tiger Data ships faster hypertables")
+    apart = create(:article, title: "A tiger at the zoo produced a lot of data")
+
+    ids = described_class.call({ q: "Tiger Data" }).ids
+
+    expect(ids).to include(adjacent.id)
+    expect(ids).not_to include(apart.id)
+  end
+
+  it "matches a phrase that contains a short connecting word" do
+    article = create(:article, title: "Notes on state of the art retrieval")
+
+    expect(described_class.call({ q: "state of the art" }).ids).to eq([article.id])
+  end
+
+  it "keeps prefix matching for single-word terms" do
+    article = create(:article, title: "TimescaleDB internals explained")
+
+    expect(described_class.call({ q: "Timescale" }).ids).to eq([article.id])
+  end
+
+  it "still rejects a term with no searchable characters" do
+    expect { described_class.call({ q: "!!!" }) }
+      .to raise_error(described_class::InvalidRequest)
+  end
 end
