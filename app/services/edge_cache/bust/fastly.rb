@@ -1,9 +1,8 @@
 module EdgeCache
   class Bust
     # Retained strictly for manual dead-link URL purges (`/admin/tools`), where a
-    # removed URL now 404s and no longer has an associated surrogate key (plus the
-    # temporary 50-hour `EdgeCache::CutoverUrlBust` deploy bridge). All automated
-    # edge invalidations should use `EdgeCache::PurgeByKey`.
+    # removed URL now 404s and no longer has an associated surrogate key. All
+    # automated edge invalidations should use `EdgeCache::PurgeByKey`.
     class Fastly
       # [@forem/systems] Fastly-enabled Forems don't need "flexible" domains.
       def self.call(path)
