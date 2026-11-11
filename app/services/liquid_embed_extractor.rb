@@ -112,12 +112,13 @@ class LiquidEmbedExtractor
       }]
     elsif tag_names.any?
       tag_names.map do |tag_name|
+        normalized_tag = tag_name.downcase
         {
           tag_name: "feed",
-          url: tag_name,
+          url: normalized_tag,
           options: options,
           kind: :tag,
-          key: tag_name.downcase
+          key: normalized_tag
         }
       end
     else
@@ -208,13 +209,14 @@ class LiquidEmbedExtractor
     end
 
     org_lookup = batch_organization_lookup(buckets[:organization])
+    user_lookup = batch_pluck_downcase(User, :username, buckets[:user])
     {
-      user: batch_pluck_downcase(User, :username, buckets[:user]),
+      user: user_lookup,
       comment: batch_pluck(Comment, :id_code, buckets[:comment]),
       tag: batch_pluck_downcase(Tag, :name, buckets[:tag]),
       podcast: batch_pluck_downcase(Podcast, :slug, buckets[:podcast]),
       organization: org_lookup,
-      article: batch_article_lookup(buckets[:article], org_lookup)
+      article: batch_article_lookup(buckets[:article], user_lookup, org_lookup)
     }
   end
   private_class_method :build_reference_lookups
@@ -244,16 +246,17 @@ class LiquidEmbedExtractor
       .pluck(:id, :slug, :old_slug, :old_old_slug)
 
     map = {}
-    rows.each do |id, slug, old_slug, old_old_slug|
-      [old_old_slug, old_slug, slug].compact_blank.each do |candidate|
-        map[candidate.downcase] = id
+    [1, 2, 3].each do |col_idx|
+      rows.each do |row|
+        candidate = row[col_idx]
+        map[candidate.downcase] ||= row[0] if candidate.present?
       end
     end
     map
   end
   private_class_method :batch_organization_lookup
 
-  def self.batch_article_lookup(pairs, existing_org_lookup)
+  def self.batch_article_lookup(pairs, existing_user_lookup, existing_org_lookup)
     return if pairs.empty?
 
     unique_pairs = pairs.uniq
@@ -261,13 +264,35 @@ class LiquidEmbedExtractor
     by_path = Article.where(path: paths).pluck(:path, :id).to_h
 
     unresolved = unique_pairs.reject { |owner, slug| by_path.key?("/#{owner}/#{slug}") }
-    resolve_legacy_org_articles(unresolved, by_path, existing_org_lookup) if unresolved.any?
+    return by_path if unresolved.empty?
+
+    resolve_author_path_articles(unresolved, by_path, existing_user_lookup)
+    still_unresolved = unresolved.reject { |owner, slug| by_path.key?("/#{owner}/#{slug}") }
+    resolve_legacy_org_articles(still_unresolved, by_path, existing_org_lookup) if still_unresolved.any?
     by_path
   end
   private_class_method :batch_article_lookup
 
+  def self.resolve_author_path_articles(unresolved, by_path, existing_user_lookup)
+    missing_owners = unresolved.map(&:first).uniq - (existing_user_lookup&.keys || [])
+    user_map = (existing_user_lookup || {}).merge(batch_pluck_downcase(User, :username, missing_owners) || {})
+    unresolved_user_ids = unresolved.filter_map { |owner, _slug| user_map[owner] }.uniq
+    return if unresolved_user_ids.empty?
+
+    user_articles = Article
+      .where(user_id: unresolved_user_ids, slug: unresolved.map(&:last).uniq)
+      .pluck(:user_id, :slug, :id)
+      .to_h { |user_id, slug, id| [[user_id, slug.downcase], id] }
+
+    unresolved.each do |owner, slug|
+      found_id = user_articles[[user_map[owner], slug]]
+      by_path["/#{owner}/#{slug}"] = found_id if found_id
+    end
+  end
+  private_class_method :resolve_author_path_articles
+
   def self.resolve_legacy_org_articles(unresolved, by_path, existing_org_lookup)
-    missing_owners = unresolved.map(&:first).uniq
+    missing_owners = unresolved.map(&:first).uniq - (existing_org_lookup&.keys || [])
     org_map = (existing_org_lookup || {}).merge(batch_organization_lookup(missing_owners) || {})
     unresolved_org_ids = unresolved.filter_map { |owner, _slug| org_map[owner] }.uniq
     return if unresolved_org_ids.empty?
@@ -290,7 +315,10 @@ class LiquidEmbedExtractor
 
     kind = entry[:kind]
     if (type_name = SIMPLE_KIND_TYPES[kind])
-      return pair_if_present(type_name, lookups[kind]&.dig(key))
+      resolved_id = lookups[kind]&.dig(key)
+      return ["Tag", resolved_id] if entry[:tag_name] == "feed" && kind == :tag
+
+      return pair_if_present(type_name, resolved_id)
     end
 
     lookup_composite_reference(kind, key, lookups)

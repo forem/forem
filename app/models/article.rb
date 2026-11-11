@@ -1223,7 +1223,8 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
-    score_changed_flag = score_changed? || self.comment_score != comment_score
+    article_score_changed = score_changed?
+    score_changed_flag = article_score_changed || self.comment_score != comment_score
 
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
@@ -1234,6 +1235,13 @@ class Article < ApplicationRecord
     trigger_freeform_context_note_generation
     trigger_summary_generation
     trigger_semantic_embedding_generation if score_changed_flag
+    return unless article_score_changed && published?
+
+    Articles::UpdateDependentEmbedsWorker.schedule_for_score_change(
+      id,
+      organization_id: organization_id,
+      cached_tag_list: cached_tag_list,
+    )
   end
 
   def eligible_for_semantic_embedding?

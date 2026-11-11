@@ -95,6 +95,63 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
       end
       expect(described_class).to have_received(:perform_in).twice
     end
+
+    it "keeps the debounce reservation until perform starts even if poller/queue latency exceeds delay" do
+      article = create(:article)
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+
+      expect(described_class.schedule_for_engagement(article.id)).to be(true)
+
+      # 25s later (> 15s delay), Sidekiq hasn't executed perform yet: must NOT reschedule and starve
+      Timecop.travel(25.seconds.from_now) do
+        expect(described_class.schedule_for_engagement(article.id)).to be(false)
+      end
+      expect(described_class).to have_received(:perform_in).once
+
+      # Once perform actually runs, the reservation clears so subsequent engagement can schedule
+      Timecop.travel(26.seconds.from_now) do
+        described_class.new.perform(article.id)
+        expect(described_class.schedule_for_engagement(article.id)).to be(true)
+      end
+      expect(described_class).to have_received(:perform_in).twice
+    end
+
+    it "isolates structural and engagement lock_args and uses log conflict strategy on engagement pushes" do
+      expect(described_class.lock_args([42, { "org_ids" => [1], "structural" => true }])).to eq([42, "structural"])
+      expect(described_class.lock_args([42])).to eq([42, "engagement"])
+
+      described_class.jobs.clear
+      allow(described_class).to receive(:perform_in).and_call_original
+      allow(described_class).to receive(:perform_async).and_call_original
+
+      article = create(:article)
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      described_class.jobs.clear
+      memory_cache.clear
+
+      described_class.schedule_for_engagement(article.id)
+      memory_cache.clear
+      described_class.schedule_for_article_change(article.id, membership_changed: false)
+
+      engagement_item = described_class.jobs.detect { |i| i["args"] == [article.id] }
+      structural_item = described_class.jobs.detect { |i| i["args"].second.is_a?(Hash) }
+      expect(engagement_item["on_conflict"]).to eq("log")
+      expect(structural_item["on_conflict"].to_s).to eq("replace")
+    end
   end
 
   describe ".schedule_for_article_change" do
@@ -146,7 +203,8 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
         {
           "org_ids" => [org.id],
           "tags" => %w[ruby rails],
-          "membership_changed" => true
+          "membership_changed" => true,
+          "structural" => true
         },
       )
     end
@@ -375,6 +433,108 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
         { "org_ids" => [], "tags" => [], "membership_changed" => false, "structural" => true },
       )
       expect(archive_holder.reload.processed_html).to include("Renamed Target Post", "8765")
+    end
+
+    it "refreshes sort=score feeds when a private readinglist reaction moves an article across a limit=1 boundary",
+       :aggregate_failures do
+      org = create(:organization, slug: "scoresortorg")
+      leader = create(:published_article, organization: org, title: "Score Leader Post")
+      challenger = create(:published_article, organization: org, title: "Score Challenger Post")
+      established_reader1 = create(:user, registered_at: 30.days.ago)
+      established_reader2 = create(:user, registered_at: 30.days.ago)
+      established_reader3 = create(:user, registered_at: 30.days.ago)
+
+      Sidekiq::Testing.inline! do
+        leader.update_score
+        challenger.update_score
+        create(:reaction, category: "readinglist", reactable: leader, user: established_reader1)
+      end
+      expect(leader.reload.score).to be > challenger.reload.score
+
+      billboard = Sidekiq::Testing.inline! do
+        create(
+          :billboard,
+          approved: true,
+          published: true,
+          render_mode: :forem_markdown,
+          body_markdown: "{% feed org=scoresortorg sort=score limit=1 %}",
+        )
+      end
+      expect(billboard.reload.processed_html).to include("Score Leader Post")
+      expect(billboard.processed_html).not_to include("Score Challenger Post")
+
+      # Two private readinglist bookmarks push challenger ahead of leader in score
+      bookmarks = Sidekiq::Testing.inline! do
+        [
+          create(:reaction, category: "readinglist", reactable: challenger, user: established_reader2),
+          create(:reaction, category: "readinglist", reactable: challenger, user: established_reader3),
+        ]
+      end
+      expect(challenger.reload.score).to be > leader.reload.score
+      expect(billboard.reload.processed_html).to include("Score Challenger Post")
+      expect(billboard.processed_html).not_to include("Score Leader Post")
+
+      # Destroying those private bookmarks drops challenger back below leader and refreshes the feed
+      Sidekiq::Testing.inline! do
+        bookmarks.each(&:destroy!)
+      end
+      expect(leader.reload.score).to be > challenger.reload.score
+      expect(billboard.reload.processed_html).to include("Score Leader Post")
+      expect(billboard.processed_html).not_to include("Score Challenger Post")
+    end
+
+    it "resyncs Page references when a shared PageTemplate's body_markdown is edited or cleared of embeds" do
+      post_a = create(:published_article, title: "Shared Template Post A")
+      post_b = create(:published_article, title: "Shared Template Post B")
+
+      page_template, page = Sidekiq::Testing.inline! do
+        tmpl = create(:page_template, body_markdown: "<div>{% link #{post_a.path} %}</div>")
+        pg = create(:page, page_template: tmpl, body_markdown: nil, template_data: { "title" => "Hub" })
+        [tmpl, pg]
+      end
+      expect(page.liquid_embed_references.pluck(:referenced_id)).to eq([post_a.id])
+
+      # Edit shared PageTemplate from Post A -> Post B and run ReRenderPagesWorker
+      Sidekiq::Testing.inline! do
+        page_template.update!(body_markdown: "<div>{% link #{post_b.path} %}</div>")
+      end
+      expect(page.liquid_embed_references.reload.pluck(:referenced_id)).to eq([post_b.id])
+
+      post_b.update_column(:title, "Updated Shared Template Post B")
+      described_class.new.perform(post_b.id)
+      expect(page.reload.processed_html).to include("Updated Shared Template Post B")
+
+      # Remove the last Liquid embed from the shared PageTemplate
+      Sidekiq::Testing.inline! do
+        page_template.update!(body_markdown: "<div>Plain static template</div>")
+      end
+      expect(page.liquid_embed_references.reload).to be_empty
+    end
+
+    it "tracks {% feed tag=... %} created before the Tag exists and refreshes when the first post is published" do
+      tag_name = "brandnewtopic#{SecureRandom.hex(3)}"
+      expect(Tag.find_by(name: tag_name)).to be_nil
+
+      billboard = Sidekiq::Testing.inline! do
+        create(
+          :billboard,
+          approved: true,
+          published: true,
+          render_mode: :forem_markdown,
+          body_markdown: "{% feed tag=#{tag_name} %}",
+        )
+      end
+      ref = billboard.liquid_embed_references.first
+      expect(ref.referenced_type).to eq("Tag")
+      expect(ref.referenced_id).to be_nil
+
+      first_article = Sidekiq::Testing.inline! do
+        create(:published_article, title: "Inaugural Topic Post", tag_list: tag_name)
+      end
+
+      created_tag = Tag.find_by!(name: tag_name)
+      expect(ref.reload.referenced_id).to eq(created_tag.id)
+      expect(billboard.reload.processed_html).to include(first_article.title)
     end
   end
 

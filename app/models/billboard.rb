@@ -524,34 +524,27 @@ class Billboard < ApplicationRecord
     modified_html
   end
 
-  def refresh_embedded_markdown!(bust_caches: true)
+  def refresh_embedded_markdown!(bust_caches: true, retried: false)
     return false unless persisted? && forem_markdown?
 
-    new_html = with_bb_param(render_markdown_field(body_markdown))
-    new_minimized_html = if minimized_body_markdown.present?
-                           render_markdown_field(minimized_body_markdown)
-                         end
+    snapshot = {
+      body_markdown: body_markdown,
+      minimized_body_markdown: minimized_body_markdown,
+      render_mode: render_mode,
+      placement_area: placement_area
+    }
+    new_html, new_minimized_html = render_embedded_markdown_snapshot(snapshot)
+    return false if embedded_html_unchanged?(new_html, new_minimized_html)
 
-    return false if LiquidEmbedReference.semantically_equal_html?(new_html, processed_html) &&
-      LiquidEmbedReference.semantically_equal_html?(new_minimized_html, minimized_processed_html)
-
-    updated_exclude_ids = compute_updated_exclude_article_ids(processed_html, new_html)
-    now = Time.current
-
-    update_columns(
-      processed_html: new_html,
-      minimized_processed_html: new_minimized_html,
-      exclude_article_ids: updated_exclude_ids,
-      content_updated_at: now,
-      updated_at: now,
+    persist_refreshed_embedded_markdown(
+      snapshot,
+      new_html,
+      new_minimized_html,
+      bust_caches: bust_caches,
+      retried: retried,
     )
-
-    if bust_caches && approved? && published? && (expires_at.nil? || expires_at > now)
-      bust_billboard_cache
-      bust_home_page_cache if HOME_PAGE_PLACEMENTS.include?(placement_area)
-    end
-
-    true
+  rescue ActiveRecord::RecordNotFound
+    false
   rescue ContentRenderer::ContentParsingError => e
     clean_error = ErrorMessages::Clean.call(e.message)
     Rails.logger.warn("Billboard #{id} refresh_embedded_markdown! failed: #{e.class}: #{clean_error}")
@@ -700,8 +693,7 @@ class Billboard < ApplicationRecord
   def generate_billboard_name
     return unless name.nil?
 
-    self.name = "Billboard #{id}"
-    save!
+    update_column(:name, "Billboard #{id}")
   end
 
   def process_markdown
@@ -744,14 +736,71 @@ class Billboard < ApplicationRecord
     processed.delete("\n")
   end
 
+  def render_embedded_markdown_snapshot(snapshot)
+    new_html = with_bb_param(render_markdown_field(snapshot[:body_markdown]))
+    new_minimized_html = if snapshot[:minimized_body_markdown].present?
+                           render_markdown_field(snapshot[:minimized_body_markdown])
+                         end
+    [new_html, new_minimized_html]
+  end
+
+  def embedded_html_unchanged?(new_html, new_minimized_html)
+    LiquidEmbedReference.semantically_equal_html?(new_html, processed_html) &&
+      LiquidEmbedReference.semantically_equal_html?(new_minimized_html, minimized_processed_html)
+  end
+
+  def persist_refreshed_embedded_markdown(snapshot, new_html, new_minimized_html, bust_caches:, retried:)
+    now = Time.current
+    attrs = {
+      processed_html: new_html,
+      minimized_processed_html: new_minimized_html,
+      exclude_article_ids: compute_updated_exclude_article_ids(processed_html, new_html),
+      content_updated_at: now,
+      updated_at: now
+    }
+
+    if self.class.where(id: id, **snapshot).update_all(attrs).zero?
+      return false if retried
+
+      reload
+      return refresh_embedded_markdown!(bust_caches: bust_caches, retried: true)
+    end
+
+    assign_attributes(attrs)
+    clear_attribute_changes(attrs.keys)
+    bust_active_billboard_caches(now) if bust_caches
+    true
+  end
+
+  def bust_active_billboard_caches(now)
+    return unless approved? && published? && (expires_at.nil? || expires_at > now)
+
+    bust_billboard_cache
+    bust_home_page_cache if HOME_PAGE_PLACEMENTS.include?(placement_area)
+  end
+
   def should_refresh_embedded_markdown_on_activation?
     return false unless forem_markdown? && current_markdown_has_liquid_tag?
-    return false if saved_change_to_body_markdown? || saved_change_to_minimized_body_markdown? ||
-      saved_change_to_render_mode? || saved_change_to_placement_area?
+    return false if markdown_or_placement_saved_change?
 
-    was_active = approved_before_last_save && published_before_last_save
-    is_active = approved? && published? && (expires_at.nil? || expires_at > Time.current)
+    now = Time.current
+    is_active = billboard_active_at?(approved?, published?, expires_at, now)
+    was_active = billboard_active_at?(
+      approved_before_last_save,
+      published_before_last_save,
+      expires_at_before_last_save,
+      now,
+    )
     is_active && !was_active
+  end
+
+  def markdown_or_placement_saved_change?
+    saved_change_to_body_markdown? || saved_change_to_minimized_body_markdown? ||
+      saved_change_to_render_mode? || saved_change_to_placement_area?
+  end
+
+  def billboard_active_at?(is_approved, is_published, expiration, now)
+    (is_approved == true) && (is_published == true) && (expiration.nil? || expiration > now)
   end
 
   def refresh_embedded_markdown_on_activation

@@ -4,14 +4,46 @@ module LiquidEmbeddable
   included do
     has_many :liquid_embed_references, as: :record, dependent: :destroy
 
-    after_commit :queue_liquid_embed_sync, on: %i[create update], if: :should_queue_liquid_embed_sync?
-    after_commit :sync_liquid_embed_metadata, on: [:update], if: :should_sync_liquid_embed_metadata?
+    after_save :remember_liquid_embed_sync_state
+    after_commit :flush_liquid_embed_changes, on: %i[create update]
+    after_rollback :clear_liquid_embed_sync_state
     after_destroy_commit :bust_liquid_embed_feed_targets_cache, if: :current_markdown_has_liquid_tag?
+  end
+
+  def mark_liquid_embed_template_rerender!
+    @_liquid_embed_template_rerender = true
   end
 
   private
 
+  def remember_liquid_embed_sync_state
+    @_liquid_embed_sync_pending ||= should_queue_liquid_embed_sync?
+    if !previously_new_record? && !@_liquid_embed_sync_pending
+      @_liquid_embed_metadata_sync_pending ||= should_sync_liquid_embed_metadata?
+    end
+    @_liquid_embed_template_rerender = false
+  end
+
+  def flush_liquid_embed_changes
+    sync_refs = @_liquid_embed_sync_pending
+    sync_meta = @_liquid_embed_metadata_sync_pending
+    clear_liquid_embed_sync_state
+
+    queue_liquid_embed_sync if sync_refs
+    sync_liquid_embed_metadata if sync_meta
+  end
+
+  def clear_liquid_embed_sync_state
+    @_liquid_embed_sync_pending = false
+    @_liquid_embed_metadata_sync_pending = false
+    @_liquid_embed_template_rerender = false
+  end
+
   def should_queue_liquid_embed_sync?
+    if @_liquid_embed_template_rerender
+      return current_markdown_has_liquid_tag? || liquid_embed_references.exists?
+    end
+
     return false unless liquid_embed_content_changed?
 
     current_markdown_has_liquid_tag? || previous_markdown_had_liquid_tag?

@@ -32,26 +32,43 @@ module DataUpdateScripts
     def enqueue_unresolved_reference_syncs
       scope = LiquidEmbedReference.where(tag_name: UNRESOLVED_TAGS, referenced_id: nil)
 
-      internal_host = Settings::General.app_domain.presence ||
-        ApplicationConfig["APP_DOMAIN"].presence ||
-        default_url_host
-
-      if internal_host.present?
-        clean_host = internal_host.to_s.sub(%r{\Ahttps?://}, "").delete_prefix("www.")
-        sanitized_host = ActiveRecord::Base.sanitize_sql_like(clean_host)
+      internal_hosts.each do |host|
+        sanitized_host = ActiveRecord::Base.sanitize_sql_like(host)
+        pattern = "%#{sanitized_host}%"
         scope = scope.or(
           LiquidEmbedReference
             .where(tag_name: "embed", referenced_id: nil)
-            .where("url ILIKE ?", "%#{sanitized_host}%"),
+            .where("url ILIKE :pattern OR options ILIKE :pattern", pattern: pattern),
         )
       end
 
       pairs = scope.where.not(record_type: "Billboard").distinct.pluck(:record_type, :record_id)
-      page_pairs = Page.where("body_markdown LIKE ?", "%{%").ids.map { |id| ["Page", id] }
-
-      (pairs + page_pairs).uniq.each_slice(BATCH_SIZE) do |batch|
+      (pairs + template_and_markdown_page_pairs).uniq.each_slice(BATCH_SIZE) do |batch|
         SyncLiquidEmbedReferencesWorker.perform_bulk(batch)
       end
+    end
+
+    def internal_hosts
+      candidates = [
+        Settings::General.app_domain,
+        ApplicationConfig["APP_DOMAIN"],
+        default_url_host,
+      ]
+      candidates.concat(Subforem.cached_domains) if defined?(Subforem) && Subforem.respond_to?(:cached_domains)
+
+      candidates.compact_blank.filter_map do |raw|
+        raw.to_s.strip.downcase.sub(%r{\Ahttps?://}, "").delete_prefix("www.").chomp("/").presence
+      end.uniq
+    end
+
+    def template_and_markdown_page_pairs
+      direct_ids = Page.where("body_markdown LIKE ?", "%{%").ids
+      template_ids = Page
+        .joins(:page_template)
+        .where("page_templates.body_markdown LIKE :pattern OR pages.template_data::text LIKE :pattern", pattern: "%{%")
+        .ids
+
+      (direct_ids + template_ids).uniq.map { |id| ["Page", id] }
     end
 
     def default_url_host

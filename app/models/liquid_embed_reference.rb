@@ -1,8 +1,9 @@
 class LiquidEmbedReference < ApplicationRecord
   FEED_TAG_NAMES = %w[org_posts feed].freeze
-  FEED_TARGETS_CACHE_KEY = "liquid_embed_references:feed_targets:v2".freeze
+  FEED_TARGETS_CACHE_KEY = "liquid_embed_references:feed_targets:v3".freeze
   FEED_TARGETS_CACHE_TTL = 15.minutes
   INLINE_SVG_RANDOM_ID_REGEX = /\b(aria-labelledby|id)="a[0-9a-z]{25,35}"/
+  SCORE_SORT_OPTION_REGEX = /\bsort=score\b/
 
   BILLBOARD_ENGAGEMENT_INTERVAL = 15.seconds
   ENGAGEMENT_BACKOFF_BASE = 60
@@ -90,50 +91,111 @@ class LiquidEmbedReference < ApplicationRecord
   end
 
   def self.build_feed_targets
-    rows = where(tag_name: FEED_TAG_NAMES)
-      .where.not(referenced_id: nil)
-      .pluck(:referenced_type, :referenced_id, :record_type, :published, :published_at, :created_at)
+    rows = where(tag_name: FEED_TAG_NAMES).pluck(
+      :tag_name, :referenced_type, :referenced_id, :options,
+      :record_type, :published, :published_at, :created_at
+    )
 
     orgs = {}
     tag_entries_by_id = {}
+    unresolved_tags = {}
 
-    rows.each do |ref_type, ref_id, rec_type, is_pub, pub_at, created_at|
-      raw_time = pub_at || created_at
-      entry_time = raw_time ? raw_time.to_i : 0
-      case ref_type
-      when "Organization"
-        accumulate_feed_target!(orgs, ref_id, rec_type, is_pub, entry_time)
-      when "Tag"
-        accumulate_feed_target!(tag_entries_by_id, ref_id, rec_type, is_pub, entry_time)
-      end
+    rows.each do |tag_name, ref_type, ref_id, options, rec_type, is_pub, pub_at, created_at|
+      meta = feed_row_meta(rec_type, is_pub, pub_at || created_at, options)
+      accumulate_feed_row!(orgs, tag_entries_by_id, unresolved_tags, [tag_name, ref_type, ref_id, options], meta)
     end
 
-    {
-      orgs: orgs,
-      tags: resolve_tracked_tag_targets(tag_entries_by_id)
-    }
+    resolved_tags = merge_tag_feed_targets(tag_entries_by_id, unresolved_tags)
+    has_score_feeds = orgs.values.any? { |s| s[:score_sorted] } || resolved_tags.values.any? { |s| s[:score_sorted] }
+    { orgs: orgs, tags: resolved_tags, has_score_feeds: has_score_feeds }
   end
   private_class_method :build_feed_targets
 
-  def self.accumulate_feed_target!(map, key, rec_type, is_pub, entry_time)
-    slot = (map[key] ||= { any: true, published: false, billboard: false, page: false, newest_at: 0 })
-    return unless is_pub
+  def self.feed_row_meta(rec_type, is_pub, raw_time, options)
+    {
+      rec_type: rec_type,
+      published: is_pub == true,
+      entry_time: raw_time ? raw_time.to_i : 0,
+      score_sorted: options.to_s.match?(SCORE_SORT_OPTION_REGEX)
+    }
+  end
+  private_class_method :feed_row_meta
+
+  def self.accumulate_feed_row!(orgs, tag_entries_by_id, unresolved_tags, row_ref, meta)
+    tag_name, ref_type, ref_id, options = row_ref
+    if ref_type == "Organization" && ref_id.present?
+      accumulate_feed_target!(orgs, ref_id, meta)
+    elsif ref_type == "Tag" && ref_id.present?
+      accumulate_feed_target!(tag_entries_by_id, ref_id, meta)
+    elsif tag_name == "feed" && ref_id.nil? && [nil, "Tag"].include?(ref_type)
+      org_slug, parsed_tags = LiquidEmbedExtractor.parse_feed_sources(options)
+      return if org_slug.present?
+
+      parsed_tags.each { |name| accumulate_feed_target!(unresolved_tags, name.downcase, meta) }
+    end
+  end
+  private_class_method :accumulate_feed_row!
+
+  def self.accumulate_feed_target!(map, key, meta)
+    slot = (map[key] ||= default_feed_target_slot)
+    return unless meta[:published]
 
     slot[:published] = true
-    slot[:billboard] = true if rec_type == "Billboard"
-    slot[:page] = true if rec_type == "Page"
-    slot[:newest_at] = entry_time if entry_time > slot[:newest_at]
+    slot[:billboard] = true if meta[:rec_type] == "Billboard"
+    slot[:page] = true if meta[:rec_type] == "Page"
+    slot[:score_sorted] = true if meta[:score_sorted]
+    slot[:newest_at] = meta[:entry_time] if meta[:entry_time] > slot[:newest_at]
   end
   private_class_method :accumulate_feed_target!
 
-  def self.resolve_tracked_tag_targets(tag_entries_by_id)
-    return {} if tag_entries_by_id.empty?
-
-    Tag.where(id: tag_entries_by_id.keys).pluck(:id, :name).to_h do |id, name|
-      [name.to_s.downcase, tag_entries_by_id[id]]
-    end
+  def self.default_feed_target_slot
+    { any: true, published: false, billboard: false, page: false, score_sorted: false, newest_at: 0 }
   end
-  private_class_method :resolve_tracked_tag_targets
+  private_class_method :default_feed_target_slot
+
+  def self.merge_tag_feed_targets(tag_entries_by_id, unresolved_tags)
+    merged = unresolved_tags.transform_values(&:dup)
+    return merged if tag_entries_by_id.empty?
+
+    Tag.where(id: tag_entries_by_id.keys).pluck(:id, :name).each do |id, name|
+      key = name.to_s.downcase
+      source = tag_entries_by_id[id]
+      if (existing = merged[key])
+        merge_feed_slots!(existing, source)
+      else
+        merged[key] = source
+      end
+    end
+    merged
+  end
+  private_class_method :merge_tag_feed_targets
+
+  def self.merge_feed_slots!(target, source)
+    target[:published] ||= source[:published]
+    target[:billboard] ||= source[:billboard]
+    target[:page] ||= source[:page]
+    target[:score_sorted] ||= source[:score_sorted]
+    target[:newest_at] = [target[:newest_at], source[:newest_at]].max
+  end
+  private_class_method :merge_feed_slots!
+
+  def self.score_feed_target_for_article?(article_id, organization_id: nil, cached_tag_list: nil)
+    return false if article_id.blank?
+
+    targets = cached_feed_targets
+    return false unless targets[:has_score_feeds]
+
+    if organization_id.nil? && cached_tag_list.nil?
+      organization_id, cached_tag_list, is_pub = Article
+        .where(id: article_id)
+        .pick(:organization_id, :cached_tag_list, :published)
+      return false unless is_pub
+    end
+
+    return true if organization_id && targets[:orgs][organization_id]&.dig(:score_sorted)
+
+    parse_tag_list(cached_tag_list).any? { |tag_name| targets[:tags][tag_name]&.dig(:score_sorted) }
+  end
 
   def self.dependency_status_for_article(article_id, organization_ids: nil, tag_names: nil, published_only: false)
     if article_id.blank?

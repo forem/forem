@@ -9,13 +9,27 @@ module Articles
     BILLBOARD_ENGAGEMENT_DEBOUNCE = LiquidEmbedReference::BILLBOARD_ENGAGEMENT_INTERVAL
     DEFAULT_ENGAGEMENT_DEBOUNCE = LiquidEmbedReference::ENGAGEMENT_BACKOFF_BASE.seconds
     COLD_COALESCE_WINDOW = 2.minutes
+    DEBOUNCE_EXECUTION_GRACE = 15.minutes
     PENDING_CONTEXT_TTL = 10.minutes
     ENGAGEMENT_MARKER_TTL = 2.hours
+    ENGAGEMENT_REPLACE_THREAD_KEY = :update_dependent_embeds_engagement_replace
     RECORD_PRIORITY = %w[Billboard Page Article Comment].freeze
     DYNAMIC_FEED_OPTION_REGEX = /\b(?:sort=(?:reactions|comments|score)|min_reactions=\d+|min_comments=\d+)\b/
 
     def self.lock_args(args)
-      [args.first]
+      [args.first, structural_args?(args) ? "structural" : "engagement"]
+    end
+
+    def self.structural_args?(args)
+      opts = args[1]
+      opts.is_a?(Hash) && (opts["structural"] || opts[:structural] || opts.key?("org_ids") || opts.key?(:org_ids))
+    end
+
+    def self.client_push(item)
+      if !structural_args?(Array(item["args"])) && !Thread.current[ENGAGEMENT_REPLACE_THREAD_KEY]
+        item["on_conflict"] ||= "log"
+      end
+      super
     end
 
     def self.schedule_for_article_change(article_id, organization_ids: [], tag_names: [], membership_changed: false)
@@ -43,10 +57,22 @@ module Articles
       payload = {
         "org_ids" => merged[:org_ids],
         "tags" => merged[:tags],
-        "membership_changed" => merged[:membership_changed]
+        "membership_changed" => merged[:membership_changed],
+        "structural" => true
       }
       perform_async(article_id, payload)
       true
+    end
+
+    def self.schedule_for_score_change(article_id, organization_id: nil, cached_tag_list: nil)
+      return false if article_id.blank?
+      return false unless LiquidEmbedReference.score_feed_target_for_article?(
+        article_id,
+        organization_id: organization_id,
+        cached_tag_list: cached_tag_list,
+      )
+
+      schedule_for_engagement(article_id)
     end
 
     def self.schedule_for_engagement(article_id)
@@ -58,28 +84,49 @@ module Articles
 
       interval = status[:refresh_interval]
       long_backoff = !status[:billboard] && interval >= LiquidEmbedReference::COOLDOWN_GATE_THRESHOLD
-      return false if long_backoff && Rails.cache.exist?(engagement_cooldown_key(article_id))
+      return false if skip_engagement_schedule?(article_id, status[:billboard], long_backoff)
 
-      delay = if status[:billboard]
-                BILLBOARD_ENGAGEMENT_DEBOUNCE
-              elsif long_backoff
-                COLD_COALESCE_WINDOW
-              else
-                interval
-              end
-
-      debounce_key = engagement_debounce_key(article_id, billboard: status[:billboard])
-
-      # Fixed trailing-edge debounce window: the first engagement event schedules a run
-      # `delay` seconds out, while subsequent events in that window coalesce in cache
-      # without pushing the scheduled timestamp forward (avoiding starvation).
-      acquired = Rails.cache.write(debounce_key, true, unless_exist: true, expires_in: delay)
-      return false if acquired == false
+      delay = compute_engagement_delay(status[:billboard], long_backoff, interval)
+      upgrading = status[:billboard] && Rails.cache.exist?(engagement_debounce_key(article_id, billboard: false))
+      return false unless acquire_engagement_debounce?(article_id, billboard: status[:billboard], delay: delay)
 
       Rails.cache.write(engagement_marker_key(article_id), interval.to_i, expires_in: delay + ENGAGEMENT_MARKER_TTL)
-      perform_in(delay, article_id)
+      enqueue_engagement_job(delay, article_id, replace_existing: upgrading)
       true
     end
+
+    def self.skip_engagement_schedule?(article_id, is_billboard, long_backoff)
+      return true if long_backoff && Rails.cache.exist?(engagement_cooldown_key(article_id))
+
+      !is_billboard && Rails.cache.exist?(engagement_debounce_key(article_id, billboard: true))
+    end
+    private_class_method :skip_engagement_schedule?
+
+    def self.compute_engagement_delay(is_billboard, long_backoff, interval)
+      return BILLBOARD_ENGAGEMENT_DEBOUNCE if is_billboard
+      return COLD_COALESCE_WINDOW if long_backoff
+
+      interval
+    end
+    private_class_method :compute_engagement_delay
+
+    # Keep the debounce reservation until `perform` starts (with a grace TTL for lost jobs)
+    # so arrivals during Sidekiq poller/queue latency cannot re-enqueue and push due times forward.
+    def self.acquire_engagement_debounce?(article_id, billboard:, delay:)
+      debounce_key = engagement_debounce_key(article_id, billboard: billboard)
+      Rails.cache.write(debounce_key, true, unless_exist: true, expires_in: delay + DEBOUNCE_EXECUTION_GRACE) != false
+    end
+    private_class_method :acquire_engagement_debounce?
+
+    def self.enqueue_engagement_job(delay, article_id, replace_existing:)
+      return perform_in(delay, article_id) unless replace_existing
+
+      Thread.current[ENGAGEMENT_REPLACE_THREAD_KEY] = true
+      perform_in(delay, article_id)
+    ensure
+      Thread.current[ENGAGEMENT_REPLACE_THREAD_KEY] = nil if replace_existing
+    end
+    private_class_method :enqueue_engagement_job
 
     def self.pending_context_key(article_id)
       "update_dependent_embeds:ctx:v1:#{article_id}"
@@ -261,35 +308,61 @@ module Articles
 
     def fetch_matching_reference_rows(article_id, org_ids:, tag_names:)
       scope = LiquidEmbedReference.where(referenced_type: "Article", referenced_id: article_id)
+      scope = append_org_feed_scope(scope, org_ids) if org_ids.any?
+      scope = append_tag_feed_scope(scope, tag_names) if tag_names.any?
+      scope.pluck(:record_type, :record_id, :tag_name, :options, :referenced_type)
+    end
 
-      if org_ids.any?
+    def append_org_feed_scope(scope, org_ids)
+      scope.or(
+        LiquidEmbedReference.where(
+          referenced_type: "Organization",
+          referenced_id: org_ids,
+          tag_name: LiquidEmbedReference::FEED_TAG_NAMES,
+        ),
+      )
+    end
+
+    def append_tag_feed_scope(scope, tag_names)
+      matching_tag_names = tag_names & LiquidEmbedReference.cached_feed_targets[:tags].keys
+      return scope if matching_tag_names.empty?
+
+      tags_by_name = Tag.where(name: matching_tag_names).pluck(:name, :id).to_h
+      backfill_unresolved_tag_feeds!(tags_by_name) if tags_by_name.any?
+
+      tag_ids = tags_by_name.values
+      if tag_ids.any?
         scope = scope.or(
-          LiquidEmbedReference.where(
-            referenced_type: "Organization",
-            referenced_id: org_ids,
-            tag_name: LiquidEmbedReference::FEED_TAG_NAMES,
-          ),
+          LiquidEmbedReference.where(referenced_type: "Tag", referenced_id: tag_ids, tag_name: "feed"),
         )
       end
 
-      if tag_names.any?
-        tracked_tag_names = LiquidEmbedReference.cached_feed_targets[:tags].keys
-        matching_tag_names = tag_names & tracked_tag_names
-        if matching_tag_names.any?
-          tag_ids = Tag.where(name: matching_tag_names).ids
-          if tag_ids.any?
-            scope = scope.or(
-              LiquidEmbedReference.where(
-                referenced_type: "Tag",
-                referenced_id: tag_ids,
-                tag_name: "feed",
-              ),
-            )
-          end
-        end
-      end
+      scope.or(
+        LiquidEmbedReference.where(
+          tag_name: "feed",
+          referenced_id: nil,
+          referenced_type: ["Tag", nil],
+          url: matching_tag_names,
+        ),
+      )
+    end
 
-      scope.pluck(:record_type, :record_id, :tag_name, :options, :referenced_type)
+    def backfill_unresolved_tag_feeds!(tags_by_name)
+      unresolved_names = LiquidEmbedReference
+        .where(tag_name: "feed", referenced_id: nil, referenced_type: ["Tag", nil], url: tags_by_name.keys)
+        .distinct
+        .pluck(:url)
+      return if unresolved_names.empty?
+
+      unresolved_names.each do |t_name|
+        tag_id = tags_by_name[t_name]
+        next unless tag_id
+
+        LiquidEmbedReference
+          .where(tag_name: "feed", referenced_id: nil, referenced_type: ["Tag", nil], url: t_name)
+          .update_all(referenced_type: "Tag", referenced_id: tag_id)
+      end
+      LiquidEmbedReference.bust_feed_targets_cache!
     end
 
     def group_reference_rows(ref_rows, all_tag_names:)

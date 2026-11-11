@@ -367,5 +367,65 @@ RSpec.describe LiquidEmbedExtractor do
       billboard.render_mode = :raw
       expect(described_class.extract(billboard)).to eq([])
     end
+
+    it "resolves organization-owned articles via both organization path and author username path" do
+      author = create(:user, username: "orgpostauthor")
+      org = create(:organization, slug: "owningorg")
+      org_article = create(:article, user: author, organization: org)
+      domain = Settings::General.app_domain || "localhost:3000"
+
+      author_url = "https://#{domain}/#{author.username}/#{org_article.slug}"
+      org_url = "https://#{domain}/#{org.slug}/#{org_article.slug}"
+
+      holder = create(:article)
+      holder.update_column(
+        :body_markdown,
+        "{% embed #{author_url} %}\n{% link /#{author.username}/#{org_article.slug} %}\n{% embed #{org_url} %}",
+      )
+
+      expect(described_class.extract(holder)).to contain_exactly(
+        {
+          tag_name: "embed",
+          url: author_url,
+          options: author_url,
+          referenced_type: "Article",
+          referenced_id: org_article.id
+        },
+        {
+          tag_name: "link",
+          url: "/#{author.username}/#{org_article.slug}",
+          options: "/#{author.username}/#{org_article.slug}",
+          referenced_type: "Article",
+          referenced_id: org_article.id
+        },
+        {
+          tag_name: "embed",
+          url: org_url,
+          options: org_url,
+          referenced_type: "Article",
+          referenced_id: org_article.id
+        },
+      )
+      expect(described_class.derive_reference("embed", author_url)).to eq(["Article", org_article.id])
+    end
+
+    it "preserves global current-slug precedence over legacy slugs across organizations" do
+      current_org = create(:organization, slug: "sharedslug")
+      legacy_org = create(:organization, slug: "renamedslug")
+      legacy_org.update_columns(old_slug: "sharedslug")
+
+      holder = create(:article)
+      holder.update_column(:body_markdown, "{% feed org=sharedslug %}")
+
+      expect(described_class.extract(holder)).to contain_exactly(
+        {
+          tag_name: "feed",
+          url: "sharedslug",
+          options: "org=sharedslug",
+          referenced_type: "Organization",
+          referenced_id: current_org.id
+        },
+      )
+    end
   end
 end

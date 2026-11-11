@@ -28,6 +28,27 @@ RSpec.describe DataUpdateScripts::BackfillBillboardAndUnresolvedEmbedReferences 
         referenced_id: nil,
       )
 
+      allow(Subforem).to receive(:cached_domains).and_return(["sub.example.test"])
+      minimal_holder = create(:article)
+      minimal_holder.update_column(:body_markdown, "{% embed minimal https://sub.example.test#{article.path} %}")
+      LiquidEmbedReference.create!(
+        record: minimal_holder,
+        tag_name: "embed",
+        url: "minimal",
+        options: "minimal https://sub.example.test#{article.path}",
+        referenced_type: nil,
+        referenced_id: nil,
+      )
+
+      page_template = create(:page_template, body_markdown: "<div>{% link #{article.path} %}</div>")
+      template_page = create(
+        :page,
+        page_template: page_template,
+        body_markdown: nil,
+        template_data: { "title" => "Hub" },
+      )
+      LiquidEmbedReference.where(record: template_page).delete_all
+
       allow(SyncLiquidEmbedReferencesWorker).to receive(:perform_bulk)
 
       described_class.new.run
@@ -35,8 +56,13 @@ RSpec.describe DataUpdateScripts::BackfillBillboardAndUnresolvedEmbedReferences 
       expect(billboard.liquid_embed_references.reload.count).to eq(1)
       expect(billboard.liquid_embed_references.first.referenced).to eq(article)
       expect(billboard.reload.processed_html).to include("Backfill Refreshed")
-      expect(SyncLiquidEmbedReferencesWorker).to have_received(:perform_bulk)
-        .with(include(["Article", unresolved_ref.record_id]))
+      expect(SyncLiquidEmbedReferencesWorker).to have_received(:perform_bulk).with(
+        include(
+          ["Article", unresolved_ref.record_id],
+          ["Article", minimal_holder.id],
+          ["Page", template_page.id],
+        ),
+      )
     end
   end
 end
