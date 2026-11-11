@@ -15,6 +15,7 @@ pub mod feed;
 pub mod fixer;
 pub mod html;
 pub mod image;
+pub mod image_ops;
 pub mod json;
 pub mod markdown;
 pub mod metal;

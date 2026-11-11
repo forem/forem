@@ -132,7 +132,28 @@ To move hot ERB collection trees/lists into Rust with 100% byte-for-byte HTML pa
 
 ---
 
-## 7. Maintaining Embedded Static Datasets & Removed Gems
+## 7. Fourth Iteration Pattern: Zero-Subprocess Image & Avatar Manipulation (`forem_core::image_ops` & `forem_core::social_image`)
+
+Spawning external ImageMagick CLI subprocesses (`identify`, `mogrify`, `convert`, `composite`) via `mini_magick` paid `fork`/`exec` latency on every upload and avatar signup, exposed ImageMagick's broad delegate/coder surface on untrusted uploads, and required the ~120+ MB `imagemagick` system package + `libfftw`/`liblqr`/`ghostscript` libraries in `Containerfile.base` and CI runners.
+
+All image inspection, metadata stripping, CarrierWave resizing, SVG conversion, social card generation, and signup mascot rendering now run 100% in-process in memory-safe pure Rust with **zero new Cargo dependencies**:
+
+- **Header Inspection & Frame Counting (`ForemNative.image_inspect` / `image_frame_count`)**: Parses JPEG, PNG/APNG, GIF, WebP (lossy/lossless/animated `VP8X`/`ANMF`), BMP, ICO, and SVG headers and animation frames directly from byte slices without decompressing pixels.
+- **Lossless Container Stripping & EXIF Auto-Orientation (`ForemNative.image_strip_and_auto_orient`)**: Strips JPEG `APP1..APP13`/`APP15`/`COM` and trailing bytes after `EOI` (preserving progressive multi-`SOS` entropy scans losslessly when EXIF orientation is `1`, or pixel-orienting `2..8`), PNG/APNG `tEXt`/`zTXt`/`iTXt`/`tIME`/`eXIf` chunks, GIF Comment/XMP extensions (preserving `NETSCAPE2.0` loop counts), and WebP/Animated WebP `EXIF`/`XMP ` RIFF chunks.
+- **CarrierWave Processors & SVG Rasterizer (`ForemNative.image_resize_to_fill`, `image_resize_to_limit`, `image_convert_to_png`)**: Premultiplied-alpha Lanczos3 resizing, 9-gravity cropping, pure-Rust baseline JPEG/BMP/ICO codecs, and W3C SVG 1.1 vector/gradient/`<text>` rasterization.
+- **Procedural Signup Mascots & Subforem Social Cards (`ForemNative.render_profile_image_png`, `subforem_resize_png`, `subforem_social_image_png`)**: Anti-aliased scanline rasterization replacing `MiniMagick::Tool::Convert` and `Image#composite`.
+
+| Operation | Legacy `MiniMagick` (CLI subprocess) | Rust (`magnus` + `forem_core`) | Speedup & Ruby Allocations (per call) |
+| :--- | :--- | :--- | :--- |
+| **`ProfileImageGenerator` (`400x400` PNG)** | `9.9 i/s` (`100.6 ms`) | `106.4 i/s` (`9.4 ms`) | **10.71x faster** (`16 objects`) |
+| **Animated GIF `frame_count`** | `62.7 i/s` (`16.0 ms`) | `53,736.7 i/s` (`18.6 µs`) | **857.51x faster** (`3 objects`) |
+| **CarrierWave `resize_to_fill` (`128x128`)** | `33.8 i/s` (`29.6 ms`) | `189.6 i/s` (`5.3 ms`) | **5.60x faster** (`6 objects`) |
+| **SVG `convert_to_png`** | `32.9 i/s` (`30.4 ms`) | `10,007.0 i/s` (`0.10 ms`) | **304.06x faster** (`1 object`) |
+| **Subforem social card composite (`1000x500`)** | `6.7 i/s` (`148.8 ms`) | `83.9 i/s` (`11.9 ms`) | **12.49x faster** (`6 objects`) |
+
+---
+
+## 8. Maintaining Embedded Static Datasets & Removed Gems
 
 Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_core`) after porting their functionality into `gems/forem_native`. Because some of these libraries wrap static upstream standards or registries, contributors should be aware of which modules are pure math versus which embed static data tables that may occasionally be refreshed:
 
@@ -143,6 +164,7 @@ Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_
 | **`emoji_regex`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`RGI_EMOJI_BLOB`, `RGI_EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream `emoji_regex` is a static list of Unicode `RGI_Emoji` sequences derived from Unicode's [`emoji-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-sequences.txt) and [`emoji-zwj-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt). Only changes when adopting a new Unicode Emoji release. |
 | **`public_suffix`** | Transitive dep of `addressable` | `crates/forem_core/src/url.rs` & `psl_data.rs` (`PSL_BLOB`, `PSL_ENTRIES`) | **When `public_suffix` is bumped** — Mirrors the Mozilla Public Suffix List (`data/list.txt` inside the `public_suffix` gem). Regenerate `psl_data.rs` whenever `bundle update public_suffix` updates `Gemfile.lock`. |
 | **`rouge`** | **Removed** | `crates/forem_core/src/syntax.rs` & `syntax_data.rs` (`LEXER_TAGS`, `LEXER_TITLES`, `LEXER_FAMILIES`, `REGISTRY_ENTRIES`, `MIMETYPE_ENTRIES`) | **Only when adding a new syntax language** — Embeds Rouge 4.7.0's 228 canonical lexer tags, human titles, 392 tag/alias/filename/extension entries, 296 MIME type mappings, and 34 pure-Rust Pygments/Rouge-token lexer families. |
+| **`mini_magick`** (and OS **`imagemagick`**) | **Removed** (`Containerfile.base`, `Brewfile`, `ci.yml`, `Gemfile`) | `crates/forem_core/src/image_ops.rs` & `crates/forem_core/src/social_image/` (`avatar.rs`, `draw.rs`, `canvas.rs`, `font.rs`) | **No** — Implements standard container formats (JPEG, PNG/APNG, GIF, WebP, BMP, ICO, W3C SVG 1.1) and vector rasterization in pure Rust with zero external data tables. |
 
 ### How to Refresh `emoji_data.rs`, `psl_data.rs`, or `syntax_data.rs`
 1. **Updating `emoji_data.rs` (Unicode Emoji / Gemoji)**:

@@ -47,12 +47,12 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .ci-debs
-          key: ci-debs-ubuntu-${{ steps.prep.outputs.os_version }}-v1
-          restore-keys: ci-debs-ubuntu-${{ steps.prep.outputs.os_version }}-
+          key: ci-debs-ubuntu-${{ steps.prep.outputs.os_version }}-v2
       - name: Prepare workspace and APT packages
         run: |
           mkdir -p .ci-debs
-          if ! compgen -G ".ci-debs/imagemagick-6.q16_*.deb" >/dev/null || ! compgen -G ".ci-debs/redis-server_*.deb" >/dev/null; then
+          rm -f .ci-debs/imagemagick*
+          if ! compgen -G ".ci-debs/redis-server_*.deb" >/dev/null; then
             if ! timeout 4 curl -fsSI http://azure.archive.ubuntu.com/ubuntu/dists/noble/InRelease >/dev/null 2>&1; then
               printf '%s\n' \
                 'https://mirrors.edge.kernel.org/ubuntu/	priority:1' \
@@ -65,8 +65,8 @@ jobs:
             APT_OPTS=(-o Acquire::Retries=2 -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10)
             (
               cd .ci-debs
-              apt-get "${APT_OPTS[@]}" download imagemagick-6.q16 redis-server redis-tools libjemalloc2 liblzf1 2>/dev/null \
-                || (sudo apt-get "${APT_OPTS[@]}" update && apt-get "${APT_OPTS[@]}" download imagemagick-6.q16 redis-server redis-tools libjemalloc2 liblzf1)
+              apt-get "${APT_OPTS[@]}" download redis-server redis-tools libjemalloc2 liblzf1 2>/dev/null \
+                || (sudo apt-get "${APT_OPTS[@]}" update && apt-get "${APT_OPTS[@]}" download redis-server redis-tools libjemalloc2 liblzf1)
             ) || true
           fi
           tar --exclude='./.git' \
@@ -181,12 +181,6 @@ jobs:
               sudo dpkg-deb -x "$deb" /
             done
             sudo ldconfig
-            for bin in /usr/bin/*-im6.q16; do
-              [ -e "$bin" ] || continue
-              base="${bin%-im6.q16}"
-              sudo ln -sf "$bin" "$base"
-              sudo ln -sf "$bin" "${base}-im6"
-            done
           fi
           rm -rf .ci-debs
           cp .env_sample .env
@@ -223,11 +217,6 @@ jobs:
           if ! redis-server --version >/dev/null 2>&1; then
             ensure_ubuntu_mirrors
             sudo apt-get "${APT_OPTS[@]}" update && sudo apt-get "${APT_OPTS[@]}" install -y --no-install-recommends redis-server
-          fi
-          if ! identify -version >/dev/null 2>&1; then
-            ensure_ubuntu_mirrors
-            sudo apt-get "${APT_OPTS[@]}" install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick \
-              || (sudo apt-get "${APT_OPTS[@]}" update && sudo apt-get "${APT_OPTS[@]}" install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)
           fi
 
           echo "Waiting for Postgres..."

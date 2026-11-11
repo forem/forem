@@ -381,7 +381,7 @@ RSpec.describe "Subforems" do
     let(:image_file) { fixture_file_upload("800x600.png", "image/png") }
 
     before do
-      # Stub FastImage and MiniMagick operations to avoid external process overhead in tests
+      # Stub FastImage and uploader callbacks to focus on request/controller flow
       allow(FastImage).to receive(:size).and_return([100, 100])
       allow_any_instance_of(SubforemImageUploader).to receive(:validate_frame_count)
       allow_any_instance_of(SubforemImageUploader).to receive(:strip_exif)
@@ -562,7 +562,7 @@ RSpec.describe "Subforems" do
     context "with image upload" do
       before do
         sign_in admin_user
-        # Allow MiniMagick operations to be skipped in tests
+        # Stub uploader callbacks to isolate controller behavior
         allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
         allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
       end
@@ -707,7 +707,7 @@ RSpec.describe "Subforems" do
     context "with image upload" do
       before do
         sign_in admin_user
-        # Allow MiniMagick operations to be skipped in tests
+        # Stub uploader callbacks to isolate controller behavior
         allow_any_instance_of(NavigationLinkImageUploader).to receive(:validate_frame_count)
         allow_any_instance_of(NavigationLinkImageUploader).to receive(:strip_exif)
       end

@@ -82,7 +82,9 @@ namespace :forem_native do
   end
 
   desc "Run throughput (benchmark-ips) and allocation (memory_profiler) benchmarks for forem_native"
-  task benchmark: %i[environment benchmark_extractors benchmark_comment_tree benchmark_story_cards] do
+  task benchmark: %i[
+    environment benchmark_extractors benchmark_comment_tree benchmark_story_cards benchmark_image_ops
+  ] do
     require "benchmark/ips"
     require "memory_profiler"
 
@@ -1187,6 +1189,48 @@ namespace :forem_native do
       x.report("Ruby Legacy (60x articles/_single_story ERB)") { legacy_feed_run.call }
       x.report("Rust Magnus (ForemNative.render_story_cards)") { native_feed_run.call }
       x.compare!
+    end
+  end
+
+  desc "Benchmark pure-Rust image manipulation & avatar rendering kernels (forem_core::image_ops & avatar)"
+  task benchmark_image_ops: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    avatar_traits = Images::ProfileImageGenerator.__send__(:select_traits, Random.new(42))
+    gif_bytes = Rails.root.join("spec/fixtures/files/high_frame_count.gif").binread
+    gps_jpg_bytes = Rails.root.join("spec/fixtures/files/image_gps_data.jpg").binread
+    png_bytes = Rails.root.join("spec/fixtures/files/800x600.png").binread
+    svg_bytes = Rails.root.join("app/assets/images/forem-icon.svg").binread
+    social_template_bytes = Rails.root.join("app/assets/images/social_template.png").binread
+    svg_font_path = BaseUploader::DEFAULT_SVG_FONT_PATH
+
+    ops = {
+      "render_profile_image_png (400x400 mascot)" =>
+        -> { ForemNative.render_profile_image_png(avatar_traits) },
+      "image_inspect (animated GIF frame_count)" =>
+        -> { ForemNative.image_inspect(gif_bytes)[:frame_count] },
+      "image_strip_and_auto_orient (JPEG GPS strip)" =>
+        -> { ForemNative.image_strip_and_auto_orient(gps_jpg_bytes) },
+      "image_resize_to_fill (800x600 -> 128x128 PNG)" =>
+        -> { ForemNative.image_resize_to_fill(png_bytes, 128, 128) },
+      "image_convert_to_png (SVG -> PNG)" =>
+        -> { ForemNative.image_convert_to_png(svg_bytes, font_path: svg_font_path) },
+      "subforem_social_image_png (1000x500 composite)" =>
+        -> { ForemNative.subforem_social_image_png(png_bytes, social_template_bytes, custom_background: false) }
+    }
+
+    puts "\n=== Pure-Rust Image Manipulation & Avatar Rendering (`forem_core::image_ops` & `avatar`) ==="
+    ops.each do |label, fn|
+      fn.call # warm up
+      mem = MemoryProfiler.report { 10.times { fn.call } }
+      puts "#{label} Rust Magnus allocations (10 calls): " \
+           "#{mem.total_allocated} objects (#{mem.total_allocated_memsize} bytes)"
+    end
+
+    Benchmark.ips do |x|
+      x.config(time: 1.5, warmup: 0.5)
+      ops.each { |label, fn| x.report(label, &fn) }
     end
   end
 end

@@ -4668,6 +4668,143 @@ fn render_story_cards(
     Some(ruby.str_new(&html))
 }
 
+fn with_optional_font<T>(
+    ruby: &Ruby,
+    font_path: Option<RString>,
+    f: impl FnOnce(Option<&forem_core::social_image::Font<'_>>) -> Result<T, Error>,
+) -> Result<T, Error> {
+    let Some(path_rstr) = font_path else {
+        return f(None);
+    };
+    let path_str = std::str::from_utf8(unsafe { path_rstr.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
+        .to_owned();
+    let bytes = load_cached_font_bytes(ruby, &path_str)?;
+    let font = forem_core::social_image::Font::from_bytes(&bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    f(Some(&font))
+}
+
+fn render_profile_image_png(ruby: &Ruby, flat_traits: RArray) -> Result<RString, Error> {
+    let owned = extract_utf8_string_vec(flat_traits).ok_or_else(|| {
+        Error::new(
+            ruby.exception_arg_error(),
+            "expected array of UTF-8 trait strings",
+        )
+    })?;
+    let refs: Vec<&str> = owned.iter().map(String::as_str).collect();
+    let traits = forem_core::social_image::avatar::ProfileAvatarTraits::from_flat_strings(&refs)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let png = forem_core::social_image::avatar::render_profile_avatar_png(&traits)
+        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+    Ok(ruby.str_from_slice(&png))
+}
+
+fn image_inspect(ruby: &Ruby, bytes: RString) -> Result<(String, u32, u32, usize, u8), Error> {
+    let info = {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::image_ops::inspect_image(slice)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
+    };
+    Ok((
+        info.format.as_str().to_owned(),
+        info.width,
+        info.height,
+        info.frame_count,
+        info.exif_orientation,
+    ))
+}
+
+fn image_strip_and_auto_orient(
+    ruby: &Ruby,
+    bytes: RString,
+    frame_strip_max: usize,
+) -> Result<Option<RString>, Error> {
+    let result = {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::image_ops::strip_and_auto_orient(slice, frame_strip_max)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
+    };
+    Ok(result.map(|buf| ruby.str_from_slice(&buf)))
+}
+
+fn image_resize_to_fill(
+    ruby: &Ruby,
+    bytes: RString,
+    width: usize,
+    height: usize,
+    gravity: RString,
+    font_path: Option<RString>,
+) -> Result<(RString, String), Error> {
+    let (out, fmt) = with_optional_font(ruby, font_path, |font| {
+        let slice = unsafe { bytes.as_slice() };
+        let grav = std::str::from_utf8(unsafe { gravity.as_slice() })
+            .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid gravity encoding"))?;
+        forem_core::image_ops::resize_to_fill_bytes(slice, width, height, grav, font)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
+    })?;
+    Ok((ruby.str_from_slice(&out), fmt.as_str().to_owned()))
+}
+
+fn image_resize_to_limit(
+    ruby: &Ruby,
+    bytes: RString,
+    max_width: Option<usize>,
+    max_height: Option<usize>,
+    font_path: Option<RString>,
+) -> Result<(RString, String), Error> {
+    let (out, fmt) = with_optional_font(ruby, font_path, |font| {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::image_ops::resize_to_limit_bytes(slice, max_width, max_height, font)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
+    })?;
+    Ok((ruby.str_from_slice(&out), fmt.as_str().to_owned()))
+}
+
+fn image_convert_to_png(
+    ruby: &Ruby,
+    bytes: RString,
+    font_path: Option<RString>,
+) -> Result<RString, Error> {
+    let png = with_optional_font(ruby, font_path, |font| {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::image_ops::convert_to_png_bytes(slice, font)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
+    })?;
+    Ok(ruby.str_from_slice(&png))
+}
+
+fn subforem_resize_png(
+    ruby: &Ruby,
+    bytes: RString,
+    width: usize,
+    height: usize,
+    font_path: Option<RString>,
+) -> Result<RString, Error> {
+    let png = with_optional_font(ruby, font_path, |font| {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::image_ops::subforem_resize_png(slice, width, height, font)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
+    })?;
+    Ok(ruby.str_from_slice(&png))
+}
+
+fn subforem_social_image_png(
+    ruby: &Ruby,
+    logo_bytes: RString,
+    bg_bytes: RString,
+    custom_background: bool,
+    font_path: Option<RString>,
+) -> Result<RString, Error> {
+    let png = with_optional_font(ruby, font_path, |font| {
+        let logo = unsafe { logo_bytes.as_slice() };
+        let bg = unsafe { bg_bytes.as_slice() };
+        forem_core::image_ops::subforem_social_image_png(logo, bg, custom_background, font)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
+    })?;
+    Ok(ruby.str_from_slice(&png))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -5116,5 +5253,25 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("render_comment_tree", function!(render_comment_tree, 5))?;
     native_mod.define_singleton_method("render_tag_link", function!(render_tag_link, 7))?;
     native_mod.define_singleton_method("render_story_cards", function!(render_story_cards, 5))?;
+    native_mod.define_singleton_method(
+        "render_profile_image_png",
+        function!(render_profile_image_png, 1),
+    )?;
+    native_mod.define_singleton_method("image_inspect", function!(image_inspect, 1))?;
+    native_mod.define_singleton_method(
+        "image_strip_and_auto_orient",
+        function!(image_strip_and_auto_orient, 2),
+    )?;
+    native_mod
+        .define_singleton_method("image_resize_to_fill", function!(image_resize_to_fill, 5))?;
+    native_mod
+        .define_singleton_method("image_resize_to_limit", function!(image_resize_to_limit, 4))?;
+    native_mod
+        .define_singleton_method("image_convert_to_png", function!(image_convert_to_png, 2))?;
+    native_mod.define_singleton_method("subforem_resize_png", function!(subforem_resize_png, 4))?;
+    native_mod.define_singleton_method(
+        "subforem_social_image_png",
+        function!(subforem_social_image_png, 4),
+    )?;
     Ok(())
 }
