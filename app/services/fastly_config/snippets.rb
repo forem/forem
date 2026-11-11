@@ -12,7 +12,7 @@
 module FastlyConfig
   class Snippets < Base
     FASTLY_FILES = Rails.root.join("config/fastly/snippets/*.vcl").freeze
-    TABLE_LOOKUP_REGEX = /table\.lookup\(\s*([a-zA-Z0-9_]+)\s*,\s*"[^"]*"\s*,\s*("[^"]*")\s*\)/
+    TABLE_LOOKUP_REGEX = /table\.lookup\(\s*([a-zA-Z0-9_]+)\s*,\s*(?:"[^"]*"|[a-zA-Z0-9_.]+)\s*,\s*("[^"]*")\s*\)/
 
     private
 
@@ -21,14 +21,15 @@ module FastlyConfig
       snippet = find_snippet(fastly, active_version, snippet_name)
 
       return true if snippet.nil?
+      return true if missing_managed_dictionary_on_active_version?(filename)
 
-      snippet_content(filename) != snippet.content
+      snippet_content(filename, version: active_version) != snippet.content
     end
 
     def upsert_config(new_version, filename)
       snippet_name = File.basename(filename, ".vcl").humanize
       snippet = find_snippet(fastly, new_version, snippet_name)
-      new_snippet_content = snippet_content(filename)
+      new_snippet_content = snippet_content(filename, version: new_version)
 
       if snippet
         snippet.content = new_snippet_content
@@ -51,19 +52,35 @@ module FastlyConfig
       true
     end
 
-    def snippet_content(filename)
-      File.read(filename).gsub(TABLE_LOOKUP_REGEX) do |match|
+    def snippet_content(filename, version: active_version)
+      raw_content = File.read(filename)
+      raw_content.gsub(TABLE_LOOKUP_REGEX) do |match|
         dictionary_name = Regexp.last_match(1)
         default_value = Regexp.last_match(2)
-        dictionary_exists?(dictionary_name) ? match : default_value
+        next match if inline_table?(raw_content, dictionary_name)
+
+        dictionary_exists?(dictionary_name, version) ? match : default_value
       end
     end
 
-    def dictionary_exists?(dictionary_name)
-      @dictionary_exists ||= {}
-      return @dictionary_exists[dictionary_name] if @dictionary_exists.key?(dictionary_name)
+    def missing_managed_dictionary_on_active_version?(filename)
+      raw_content = File.read(filename)
+      referenced_dictionaries = raw_content.scan(TABLE_LOOKUP_REGEX).map(&:first).uniq
+      (referenced_dictionaries & FastlyConfig::Dictionaries::MANAGED_DICTIONARIES).any? do |dictionary_name|
+        !inline_table?(raw_content, dictionary_name) && !dictionary_exists?(dictionary_name, active_version)
+      end
+    end
 
-      @dictionary_exists[dictionary_name] = !find_dictionary(fastly, active_version, dictionary_name).nil?
+    def inline_table?(raw_content, dictionary_name)
+      raw_content.match?(/\btable\s+#{Regexp.escape(dictionary_name)}\s*\{/)
+    end
+
+    def dictionary_exists?(dictionary_name, version = active_version)
+      @dictionary_exists ||= {}
+      cache_key = [version.object_id, version.number, dictionary_name]
+      return @dictionary_exists[cache_key] if @dictionary_exists.key?(cache_key)
+
+      @dictionary_exists[cache_key] = !find_dictionary(fastly, version, dictionary_name).nil?
     end
 
     def find_dictionary(fastly, version, dictionary_name)

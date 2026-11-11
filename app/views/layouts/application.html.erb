@@ -117,6 +117,19 @@
       
       <%# First script to run no matter what %>
       <script>
+        if (window.location.search.indexOf("cd_anon=") !== -1 && window.history && window.history.replaceState) {
+          try {
+            const cleanCdUrl = new URL(window.location.href);
+            if (cleanCdUrl.searchParams.has("cd_anon")) {
+              cleanCdUrl.searchParams.delete("cd_anon");
+              window.history.replaceState(
+                window.history.state,
+                "",
+                cleanCdUrl.pathname + cleanCdUrl.search + cleanCdUrl.hash
+              );
+            }
+          } catch (e) {}
+        }
         const isEmbeddedFrame = window.frameElement || (function() { try { return window.self !== window.top; } catch (e) { return true; } })() || new URLSearchParams(window.location.search).get('mode') === 'embed';
         if (navigator.userAgent === 'ForemWebView/1' || isEmbeddedFrame) {
           document.body.classList.add("hidden-shell");
@@ -201,7 +214,7 @@
     <% end %>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
-  <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
+  <% if !embedded_view? && (RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present?) %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>

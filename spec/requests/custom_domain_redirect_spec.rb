@@ -125,6 +125,16 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       expect(response).to redirect_to("http://forem.com/wrong-org/feed")
       expect(response).to have_http_status(:moved_permanently)
     end
+
+    it "applies custom-domain RequestRedirect rules for signed-in /<org_slug>/<old_slug> requests on main domain" do
+      sign_in create(:user)
+      host! "forem.com"
+
+      get "/#{organization.slug}/my-old-post"
+
+      expect(response).to redirect_to("https://dev.to/my-new-post")
+      expect(response).to have_http_status(:moved_permanently)
+    end
   end
 
   context "when the custom domain feature flag is disabled" do

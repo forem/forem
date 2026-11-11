@@ -79,6 +79,8 @@ class StoriesController < ApplicationController
     if (@article = Article.includes(:organization, user: %i[profile setting roles])
         .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(path: path)&.decorate)
       handle_article_show
+    elsif handle_organization_custom_page_show
+      nil
     # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
     elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
@@ -88,7 +90,7 @@ class StoriesController < ApplicationController
     elsif (@page = Page.non_embed_html.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
       handle_page_display
     else
-      not_found
+      redirect_organization_custom_domain_rule_or_not_found
     end
   end
 
@@ -159,6 +161,41 @@ class StoriesController < ApplicationController
       set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
+    end
+
+    redirect_organization_custom_domain_rule_or_not_found
+  end
+
+  def handle_organization_custom_page_show
+    org = Organization.find_by(slug: params[:username].to_s.downcase)
+    return false unless org && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org])
+
+    org_page = org.pages.non_embed_html.find_by(slug: "#{org.slug}/#{params[:slug]}")
+    return false unless org_page
+
+    @organization = org
+    @page = (params[:page] || 1).to_i
+    params[:page_suffix] = params[:slug]
+    handle_organization_index
+    render "stories/index" unless performed?
+    true
+  end
+
+  def redirect_organization_custom_domain_rule_or_not_found
+    org = Organization.find_by(slug: params[:username].to_s.downcase)
+    if org&.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+      custom_path = "/#{params[:slug]}"
+      custom_fullpath = request.query_string.present? ? "#{custom_path}?#{request.query_string}" : custom_path
+      redirect_rule = RequestRedirect.find_by(
+        request_domain: org.custom_domain.downcase,
+        original_url: custom_fullpath,
+      ) || RequestRedirect.find_by(
+        request_domain: org.custom_domain.downcase,
+        original_url: custom_path,
+      )
+      if redirect_rule
+        raise RedirectRequired.new(redirect_rule.destination_url, status: :moved_permanently)
+      end
     end
 
     not_found
@@ -847,18 +884,33 @@ class StoriesController < ApplicationController
     return if request.host&.downcase == @organization.custom_domain&.downcase
     return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
 
+    if internal_navigation?
+      unset_cache_control_headers
+      response.headers["Cache-Control"] = "private, no-store"
+      head :no_content
+      return
+    end
+
+    target_path = params[:page_suffix].present? ? "/p/#{params[:page_suffix]}" : "/"
     query_string = request.query_string.present? ? "?#{request.query_string}" : ""
-    redirect_to "#{request.protocol}#{@organization.custom_domain}/#{query_string}",
+    redirect_to "#{request.protocol}#{@organization.custom_domain}#{target_path}#{query_string}",
                 allow_other_host: true,
                 status: :found
   end
 
   def redirect_article_to_custom_domain_if_needed
-    return if user_signed_in?
+    return if user_signed_in? || embedded_view?
     return unless @organization
     return if @organization.custom_domain.blank?
     return if request.host&.downcase == @organization.custom_domain&.downcase
     return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
+
+    if internal_navigation?
+      unset_cache_control_headers
+      response.headers["Cache-Control"] = "private, no-store"
+      head :no_content
+      return
+    end
 
     query_string = request.query_string.present? ? "?#{request.query_string}" : ""
     redirect_to "#{request.protocol}#{@organization.custom_domain}/#{@article.slug}#{query_string}",

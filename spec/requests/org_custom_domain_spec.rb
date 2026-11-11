@@ -222,6 +222,42 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
 
         expect(response).to have_http_status(:success)
         expect(response.body).to include("About Us Content")
+        expect(response.body).to include('<link rel="canonical" href="http://custom.org/p/about" />')
+        expect(response.body).to include('<meta property="og:url" content="http://custom.org/p/about" />')
+      end
+
+      it "redirects signed-out /<org_slug>/p/:page_suffix on main domain to /p/:page_suffix on custom domain" do
+        get "http://forem.com/#{organization.slug}/p/about?sort=top"
+
+        expect(response).to redirect_to("http://custom.org/p/about?sort=top")
+        expect(response).to have_http_status(:found)
+      end
+
+      it "redirects signed-out /<org_slug>/:page_suffix on main domain to /p/:page_suffix on custom domain" do
+        get "http://forem.com/#{organization.slug}/about"
+
+        expect(response).to redirect_to("http://custom.org/p/about")
+        expect(response).to have_http_status(:found)
+      end
+
+      it "does not redirect embedded custom pages (?mode=embed) on main domain" do
+        get "http://forem.com/#{organization.slug}/p/about?mode=embed"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("About Us Content")
+      end
+
+      it "renders /<org_slug>/p/:page_suffix and /<org_slug>/:page_suffix on main domain when signed in" do
+        sign_in create(:user)
+
+        get "http://forem.com/#{organization.slug}/p/about"
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("About Us Content")
+        expect(response.body).to include('<link rel="canonical" href="http://custom.org/p/about" />')
+
+        get "http://forem.com/#{organization.slug}/about"
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("About Us Content")
       end
     end
 
@@ -252,6 +288,23 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
           get "http://forem.com/#{organization.slug}/#{article.slug}?utm_source=twitter"
           expect(response).to redirect_to("http://custom.org/#{article.slug}?utm_source=twitter")
           expect(response).to have_http_status(:found)
+        end
+
+        it "does not redirect embedded article views (?mode=embed)" do
+          get "http://forem.com/#{organization.slug}/#{article.slug}?mode=embed"
+          expect(response).to have_http_status(:success)
+        end
+
+        it "returns an uncached 204 No Content for signed-out InstantClick (?i=i) preloads" do
+          get "http://forem.com/#{organization.slug}?i=i"
+          expect(response).to have_http_status(:no_content)
+          expect(response.headers["Cache-Control"]).to include("no-store")
+          expect(response.headers["Surrogate-Control"]).to be_nil
+
+          get "http://forem.com/#{organization.slug}/#{article.slug}?i=i"
+          expect(response).to have_http_status(:no_content)
+          expect(response.headers["Cache-Control"]).to include("no-store")
+          expect(response.headers["Surrogate-Control"]).to be_nil
         end
       end
 

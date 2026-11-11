@@ -47,7 +47,9 @@ class Organization < ApplicationRecord
   after_update_commit :conditionally_update_articles
   after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
   after_save_commit :manage_fastly_tls_subscription
+  after_save_commit :sync_custom_domain_dictionary
   after_destroy_commit :bust_cache
+  after_destroy_commit :remove_from_custom_domain_dictionary
 
   pg_search_scope :search_organizations, against: :name
 
@@ -406,6 +408,31 @@ class Organization < ApplicationRecord
     if new_domain.present? && fastly_api_key_present && tls_subscription_id.blank? && tls_status == "not_started"
       Organizations::ProvisionCustomDomainWorker.perform_async(id)
     end
+  end
+
+  def sync_custom_domain_dictionary
+    domain_changed = saved_change_to_custom_domain?
+    slug_changed_with_domain = saved_change_to_slug? && custom_domain.present?
+    return unless domain_changed || slug_changed_with_domain
+
+    old_domain = saved_change_to_custom_domain&.first
+    old_slug = saved_change_to_slug&.first
+
+    MemoryFirstCache.delete("org_custom_domain_id:#{old_domain.downcase}") if old_domain.present?
+    MemoryFirstCache.delete("org_custom_domain_id:#{custom_domain.downcase}") if custom_domain.present?
+
+    return unless FastlyConfig::CustomDomainDictionary.configured?
+
+    Organizations::SyncCustomDomainDictionaryWorker.perform_async(id, old_slug, old_domain)
+  end
+
+  def remove_from_custom_domain_dictionary
+    return if custom_domain.blank?
+
+    MemoryFirstCache.delete("org_custom_domain_id:#{custom_domain.downcase}")
+    return unless FastlyConfig::CustomDomainDictionary.configured?
+
+    Organizations::SyncCustomDomainDictionaryWorker.perform_async(id, slug, custom_domain)
   end
 
   def conditionally_update_articles

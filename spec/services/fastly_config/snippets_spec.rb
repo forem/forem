@@ -47,7 +47,34 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
         Fastly::Snippet,
         hash_including(
           name: "Check for remember user token in cookie to set header",
-          content: include('table.lookup(forem_edge, "cloudflare_secret", "")'),
+          content: satisfy do |vcl|
+            vcl.include?('table.lookup(forem_edge, "cloudflare_secret", "")') &&
+              vcl.include?('table.lookup(custom_domain_orgs, "app_domain", "dev.to")') &&
+              vcl.include?('table.lookup(custom_domain_orgs, var.cd_dict_key, "")') &&
+              vcl.include?('req.url.path == "/__forem_cd_auth_check"') &&
+              vcl.include?(
+                'add resp.http.Set-Cookie = "cd_anon=1; Path=/; Max-Age=300; HttpOnly; Secure; SameSite=Lax";',
+              )
+          end,
+        ),
+      )
+      expect(fastly).to have_received(:create).with(
+        Fastly::Snippet,
+        hash_including(
+          name: "Client geolocation",
+          content: include(
+            "table.lookup(\n      active_geofencing_regions,\n      var.cacheable_code,\n      \"\"\n    )",
+          ),
+        ),
+      )
+      expect(fastly).to have_received(:create).with(
+        Fastly::Snippet,
+        hash_including(
+          name: "Safe params list",
+          content: satisfy do |vcl|
+            vcl.include?('req.url !~ "^/__forem_cd_auth_check(\?|$)"') &&
+              vcl.include?("passed_domain|cd_anon)$")
+          end,
         ),
       )
       expect(fastly).to have_received(:create).with(
@@ -77,8 +104,18 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
           name: "Check for remember user token in cookie to set header",
           content: satisfy do |vcl|
             vcl.include?('digest.secure_is_equal(req.http.X-Forem-Edge-Secret, "")') &&
-              vcl.exclude?("table.lookup(forem_edge")
+              vcl.include?('set var.cd_app_domain = std.tolower("dev.to");') &&
+              vcl.include?('set var.cd_slug = "";') &&
+              vcl.exclude?("table.lookup(forem_edge") &&
+              vcl.exclude?("table.lookup(custom_domain_orgs")
           end,
+        ),
+      )
+      expect(fastly).to have_received(:create).with(
+        Fastly::Snippet,
+        hash_including(
+          name: "Client geolocation",
+          content: include("active_geofencing_regions"),
         ),
       )
     end
