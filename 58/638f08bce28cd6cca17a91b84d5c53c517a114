@@ -1,0 +1,24 @@
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 119-120
+app/controllers/organization_embeds_controller.rb
+  h_f968154a99632d 36,72-75,79-81
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 204-207,211-213,218-219
+app/models/page.rb
+  h_f968154a99632d 131,165-168
+config/routes.rb
+  h_f968154a99632d 592-598,602
+spec/requests/organization_embeds_spec.rb
+  h_f968154a99632d 98-113,185-196,206-216,221-243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "58638f08bce28cd6cca17a91b84d5c53c517a114",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
