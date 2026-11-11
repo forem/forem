@@ -97,6 +97,10 @@ class Notification < ApplicationRecord
       Notifications::CoAuthorInvitationWorker.perform_async(invitation.id)
     end
 
+    def send_organization_invitation_notification(membership, inviter_id = nil)
+      Notifications::OrganizationInvitationWorker.perform_async(membership.id, inviter_id)
+    end
+
     def send_to_followers(notifiable, action = nil)
       Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end

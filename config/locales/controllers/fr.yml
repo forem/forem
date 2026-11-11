@@ -101,6 +101,9 @@ fr:
     account_switch_expired: "Cette tentative de connexion a expiré. Veuillez réessayer."
     log_in_error: 'Erreur de connexion: %{e}'
     username_taken: le nom d'utilisateur a déjà été pris
+  organization_invitations_controller:
+    accepted: Vous avez rejoint %{organization_name}.
+    declined: Vous avez refusé l'invitation à rejoindre %{organization_name}.
   organizations_controller:
     secret_updated: Votre secret d'organisation a été mis à jour
     deletion_scheduled: "Votre organisation: %{organization_name}. la suppression est prévue. Vous serez averti lorsqu'il sera supprimé."
