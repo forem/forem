@@ -1,0 +1,144 @@
+app/controllers/admin/navigation_links_controller.rb
+  h_f968154a99632d 60
+app/controllers/admin/settings/base_controller.rb
+  h_f968154a99632d 25
+app/controllers/admin/tools_controller.rb
+  h_f968154a99632d 68
+app/controllers/application_controller.rb
+  h_f968154a99632d 87-93,503
+app/controllers/articles_controller.rb
+  h_f968154a99632d 68
+app/controllers/async_info_controller.rb
+  h_f968154a99632d 67-68
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 47-51
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 61
+app/controllers/organization_profile_pins_controller.rb
+  h_f968154a99632d 38
+app/controllers/pages_controller.rb
+  h_f968154a99632d 20,53,77
+app/controllers/profile_pins_controller.rb
+  h_f968154a99632d 35
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 39,45-65
+app/controllers/stories/tagged_articles_controller.rb
+  h_f968154a99632d 25,33-42
+app/controllers/stories_controller.rb
+  h_f968154a99632d 214,222-231,245-246,374,438
+app/controllers/subforems_controller.rb
+  h_f968154a99632d 408-411
+app/controllers/tags_controller.rb
+  h_f968154a99632d 21
+app/controllers/videos_controller.rb
+  h_f968154a99632d 14
+app/models/concerns/purgeable.rb
+  h_f968154a99632d 11,13,17,19,37,39,43,45
+app/models/github_repo.rb
+  h_f968154a99632d 40
+app/models/organization_membership.rb
+  h_f968154a99632d 56
+app/services/edge_cache/bust/fastly.rb
+  h_f968154a99632d 3-5
+app/services/edge_cache/bust_article.rb
+  h_f968154a99632d 9,13-24,26-28,30,33,39,42,44,46-47,51-52,61-62,66-67,73-74,77,79,83-84,86-87,94,98-102,104,109,112-113,117
+app/services/edge_cache/bust_organization.rb
+  h_f968154a99632d 6-10,12-16
+app/services/edge_cache/bust_page.rb
+  h_f968154a99632d 6-15,17-20,22
+app/services/edge_cache/bust_podcast.rb
+  h_f968154a99632d 6-10
+app/services/edge_cache/bust_podcast_episode.rb
+  h_f968154a99632d 6-12
+app/services/edge_cache/bust_tag.rb
+  h_f968154a99632d 6-9
+app/services/edge_cache/purge_by_key.rb
+  h_f968154a99632d 3-5,11-16,18,22-23,25,32-69,71-76
+app/services/moderator/banish_user.rb
+  h_f968154a99632d 51
+app/services/moderator/merge_user.rb
+  h_f968154a99632d 33
+app/workers/articles/bust_multiple_caches_worker.rb
+  h_f968154a99632d 10-16
+app/workers/bust_cache_path_worker.rb
+  h_f968154a99632d 1-3,5-25
+app/workers/reactions/bust_homepage_cache_worker.rb
+  h_f968154a99632d 18
+config/schedule.yml
+  h_f968154a99632d 124,126-127,131,133-134
+lib/tasks/cache.rake
+  h_f968154a99632d 2,14-18
+spec/models/concerns/purgeable_spec.rb
+  h_f968154a99632d 20,24,26-27,30,32-33,40-41,43-46,61,63-70,73-76,78-79
+spec/models/github_repo_spec.rb
+  h_f968154a99632d 9,38,41
+spec/models/organization_spec.rb
+  h_f968154a99632d 461-462,464-467
+spec/requests/admin/configs_spec.rb
+  h_f968154a99632d 41,49,171,188
+spec/requests/admin/tools_spec.rb
+  h_f968154a99632d 88-115
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 71-81
+spec/requests/articles/articles_spec.rb
+  h_f968154a99632d 51
+spec/requests/async_info_spec.rb
+  h_f968154a99632d 77,81
+spec/requests/organization_profile_pins_spec.rb
+  h_f968154a99632d 25,32-33
+spec/requests/profile_pins_spec.rb
+  h_f968154a99632d 16-19,24
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 18-30
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 45,52-65
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 357-366
+spec/requests/stories_show_spec.rb
+  h_f968154a99632d 99
+spec/requests/subforems_spec.rb
+  h_f968154a99632d 511,523-530,649,660-667,761,769-776
+spec/requests/tags_spec.rb
+  h_f968154a99632d 5-7,13
+spec/services/edge_cache/bust_article_spec.rb
+  h_f968154a99632d 7-8,24,27-30,36,40-43,47,50-51,54-58,61,65-66,69-73,77-84,90-94,99-106,109,113-117,126-128,131-133,136,139-143,154-156,159-161
+spec/services/edge_cache/bust_organization_spec.rb
+  h_f968154a99632d 5,12,15-19,22,24-28
+spec/services/edge_cache/bust_page_spec.rb
+  h_f968154a99632d 17,20-22,29,33-36
+spec/services/edge_cache/bust_podcast_episode_spec.rb
+  h_f968154a99632d 17-18,21,24-27,30,32-35
+spec/services/edge_cache/bust_podcast_spec.rb
+  h_f968154a99632d 7,10,13-16
+spec/services/edge_cache/bust_tag_spec.rb
+  h_f968154a99632d 14-15,18,21-24
+spec/services/edge_cache/purge_by_key_spec.rb
+  h_f968154a99632d 4,7,12-62,65-81,84-88,91-127,129-130,132-133
+spec/services/moderator/banish_user_spec.rb
+  h_f968154a99632d 35,37,43-44
+spec/services/moderator/merge_user_spec.rb
+  h_f968154a99632d 18-19,25
+spec/tasks/cache_spec.rb
+  h_f968154a99632d 5,9,12,19-23,33-39
+spec/workers/articles/bust_deleted_article_cache_worker_spec.rb
+  h_f968154a99632d 42-43,47-50
+spec/workers/articles/bust_multiple_caches_worker_spec.rb
+  h_f968154a99632d 9,12,15-25
+spec/workers/bust_cache_path_worker_spec.rb
+  h_f968154a99632d 10-11,14-29
+spec/workers/reactions/bust_homepage_cache_worker_spec.rb
+  h_f968154a99632d 10,13,15-16,20,26-27,36,48-49,53
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  h_f968154a99632d 30,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fbaeff5b347635ff14134bef35aeedfad2000f3c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
