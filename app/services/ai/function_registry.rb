@@ -5,13 +5,14 @@ module Ai
   #
   # `jev: true` marks functions whose job is a judgment: a yes/no call, picking one
   # option from a known set, or placing content on a scale. Those map directly onto
-  # TypeSafe System One primitives (Noul, Choice, Score) and have a Jev implementation.
+  # Decisions / System One primitives (Noul, Choice, Score) and can run on either
+  # Gemini Decision 1 (`gemini-decision-1`) or TypeSafe Jev.
   #
   # Functions that write text (summaries, copy, chat replies, trend names) stay on
-  # generative models: System One models return typed judgments, not prose.
+  # generative models: decision models return typed judgments, not prose.
   #
-  # `jev_only: true` marks functions that exist only as a Jev pass and have no Gemini
-  # behavior. Their "default" option means the function is off.
+  # `jev_only: true` marks functions that exist only as a structured decision pass and have no
+  # generative Gemini prompt. Their "default" option means the function is off.
   #
   # `configurable: false` marks functions whose model cannot be swapped safely at runtime
   # (e.g. embeddings, where a different model would invalidate every stored vector).
@@ -20,10 +21,12 @@ module Ai
       def jev?
         jev
       end
+      alias_method :decision?, :jev?
 
       def jev_only?
         jev_only
       end
+      alias_method :decision_only?, :jev_only?
 
       def configurable?
         configurable
@@ -101,7 +104,7 @@ module Ai
         description: "Picks a syntax-highlighting language for unlabeled code blocks " \
                      "(Articles::DetectCodeBlockLanguages)." },
       { key: :semantic_search_reranking, group: :classification, jev: true, jev_only: true,
-        name: "Semantic search Jev re-ranking",
+        name: "Semantic search decision re-ranking",
         description: "Re-ranks top semantic search shortlist candidates against the user query " \
                      "(Ai::SearchReranker). Off keeps lexical + vector hybrid pre-ranking." },
       # Text generation
