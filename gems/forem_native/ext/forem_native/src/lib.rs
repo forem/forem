@@ -4417,6 +4417,257 @@ fn render_comment_tree(
     Some(out_ary)
 }
 
+const STORY_CARD_STATIC_CTX_LEN: usize = 38;
+const STORY_CARD_VIEW_CTX_LEN: usize = 16;
+const STORY_AUTHOR_STRIDE: usize = 6;
+const STORY_ORG_STRIDE: usize = 3;
+const STORY_CARD_STRIDE: usize = 31;
+
+#[allow(clippy::too_many_arguments)]
+fn render_tag_link(
+    ruby: &Ruby,
+    tag_name: RString,
+    tag_route: RString,
+    bg_color_hex: RString,
+    filled: bool,
+    monochrome: bool,
+    classes: RString,
+    path_suffix: RString,
+) -> Option<RString> {
+    // SAFETY: All `RString` byte borrows live strictly inside this block while pure-Rust
+    // `forem_core::story_card::render_tag_link` runs; no Ruby VM calls occur until all
+    // borrows are dropped.
+    let html = unsafe {
+        if !tag_name.is_utf8_compatible_encoding()
+            || !tag_route.is_utf8_compatible_encoding()
+            || !bg_color_hex.is_utf8_compatible_encoding()
+            || !classes.is_utf8_compatible_encoding()
+            || !path_suffix.is_utf8_compatible_encoding()
+        {
+            return None;
+        }
+        forem_core::story_card::render_tag_link(
+            tag_name.test_as_str()?,
+            tag_route.test_as_str()?,
+            bg_color_hex.test_as_str()?,
+            filled,
+            monochrome,
+            classes.test_as_str()?,
+            path_suffix.test_as_str()?,
+        )
+    }?;
+    Some(ruby.str_new(&html))
+}
+
+fn render_story_cards(
+    ruby: &Ruby,
+    static_ctx_arr: RArray,
+    view_ctx_arr: RArray,
+    authors_arr: RArray,
+    orgs_arr: RArray,
+    cards_flat_arr: RArray,
+) -> Option<RString> {
+    // SAFETY: All `RArray::as_slice` and `RString` borrows live strictly inside this block
+    // while pure-Rust `forem_core::story_card::render_story_cards` runs. Zero Ruby VM calls
+    // or allocations happen until the block ends and every borrow has been dropped.
+    let html = unsafe {
+        let s = static_ctx_arr.as_slice();
+        if s.len() != STORY_CARD_STATIC_CTX_LEN {
+            return None;
+        }
+        let months_arr = RArray::from_value(s[35])?;
+        let months_slice = months_arr.as_slice();
+        if months_slice.len() != 12 {
+            return None;
+        }
+        let mut abbr_month_names = [""; 12];
+        for (idx, &m_val) in months_slice.iter().enumerate() {
+            abbr_month_names[idx] = borrow_utf8_rstr(m_val)?;
+        }
+
+        let static_ctx = forem_core::story_card::StoryCardStaticContext {
+            subscription_icon_html: borrow_utf8_rstr(s[0])?,
+            community_leader_icon_html: borrow_utf8_rstr(s[1])?,
+            favorites_enabled: s[2].to_bool(),
+            icon_favorite_checked_curation: borrow_utf8_rstr(s[3])?,
+            icon_pin_svg: borrow_utf8_rstr(s[4])?,
+            icon_small_favorite_filled: borrow_utf8_rstr(s[5])?,
+            icon_small_favorite_checked: borrow_utf8_rstr(s[6])?,
+            icon_small_comment: borrow_utf8_rstr(s[7])?,
+            icon_small_save_svg: borrow_utf8_rstr(s[8])?,
+            icon_small_save_filled_svg: borrow_utf8_rstr(s[9])?,
+            primary_brand_color_hex: borrow_utf8_rstr(s[10])?,
+            escape_html_entities_in_json: s[11].to_bool(),
+            t_users_details_template: borrow_utf8_rstr(s[12])?,
+            t_users_follow: borrow_utf8_rstr(s[13])?,
+            t_for_org_html_template: borrow_utf8_rstr(s[14])?,
+            t_picked_by_you: borrow_utf8_rstr(s[15])?,
+            t_picked_by_user_template: borrow_utf8_rstr(s[16])?,
+            t_favorited: borrow_utf8_rstr(s[17])?,
+            t_pinned_article: borrow_utf8_rstr(s[18])?,
+            t_comments_aria_template: borrow_utf8_rstr(s[19])?,
+            t_reactions_count_one_html: borrow_utf8_rstr(s[20])?,
+            t_reactions_count_other_html_template: borrow_utf8_rstr(s[21])?,
+            t_start_discussion: borrow_utf8_rstr(s[22])?,
+            t_further_discussion: borrow_utf8_rstr(s[23])?,
+            t_curation_comments_one: borrow_utf8_rstr(s[24])?,
+            t_curation_comments_other_template: borrow_utf8_rstr(s[25])?,
+            t_comments_count_one_html: borrow_utf8_rstr(s[26])?,
+            t_comments_count_other_html_template: borrow_utf8_rstr(s[27])?,
+            t_comments_add: borrow_utf8_rstr(s[28])?,
+            t_reading_time_one: borrow_utf8_rstr(s[29])?,
+            t_reading_time_other_template: borrow_utf8_rstr(s[30])?,
+            t_save_aria_template: borrow_utf8_rstr(s[31])?,
+            t_save_title_template: borrow_utf8_rstr(s[32])?,
+            time_format_short: borrow_utf8_rstr(s[33])?,
+            time_format_short_with_yy: borrow_utf8_rstr(s[34])?,
+            abbr_month_names,
+            prior_cloudflare_domain: borrow_opt_utf8_rstr(s[36])?,
+            current_cloudflare_domain: borrow_opt_utf8_rstr(s[37])?,
+        };
+
+        let v = view_ctx_arr.as_slice();
+        if v.len() != STORY_CARD_VIEW_CTX_LEN {
+            return None;
+        }
+        let cover_mode = match extract_i64_val(v[6])? {
+            0 => forem_core::story_card::CoverImageMode::Passthrough,
+            1 => forem_core::story_card::CoverImageMode::Cloudflare {
+                domain: borrow_utf8_rstr(v[7])?,
+                directory: borrow_utf8_rstr(v[8])?,
+                default_height: borrow_utf8_rstr(v[9])?,
+                default_fit: borrow_utf8_rstr(v[10])?,
+            },
+            2 => forem_core::story_card::CoverImageMode::ExplicitOnly,
+            _ => return None,
+        };
+
+        let allowed_arr = RArray::from_value(v[12])?;
+        let allowed_slice = allowed_arr.as_slice();
+        let mut allowed_flare_tags = Vec::with_capacity(allowed_slice.len());
+        for &val in allowed_slice {
+            allowed_flare_tags.push(borrow_utf8_rstr(val)?);
+        }
+
+        let valid_arr = RArray::from_value(v[13])?;
+        let valid_slice = valid_arr.as_slice();
+        let mut valid_flare_tags = Vec::with_capacity(valid_slice.len());
+        for &val in valid_slice {
+            valid_flare_tags.push(borrow_utf8_rstr(val)?);
+        }
+
+        let icons_arr = RArray::from_value(v[14])?;
+        let icons_slice = icons_arr.as_slice();
+        let mut reaction_icon_htmls = Vec::with_capacity(icons_slice.len());
+        for &val in icons_slice {
+            reaction_icon_htmls.push(borrow_utf8_rstr(val)?);
+        }
+
+        let tag_colors_arr = RArray::from_value(v[15])?;
+        let tag_color_chunks = exact_stride_chunks(tag_colors_arr.as_slice(), 2)?;
+        let mut tag_bg_colors = Vec::with_capacity(tag_color_chunks.len());
+        for pair in tag_color_chunks {
+            tag_bg_colors.push((borrow_utf8_rstr(pair[0])?, borrow_utf8_rstr(pair[1])?));
+        }
+
+        let view_ctx = forem_core::story_card::StoryCardViewContext {
+            feed_style_rich: v[0].to_bool(),
+            curation_view: v[1].to_bool(),
+            show_bookmark_buttons: v[2].to_bool(),
+            assigned_user_id: extract_opt_i64_val(v[3])?,
+            current_year: i32::try_from(extract_i64_val(v[4])?).ok()?,
+            default_base_url: borrow_utf8_rstr(v[5])?,
+            cover_mode,
+            except_flare_tag: borrow_opt_utf8_rstr(v[11])?,
+            allowed_flare_tags,
+            valid_flare_tags,
+            reaction_icon_htmls,
+            tag_bg_colors,
+        };
+
+        let a_chunks = exact_stride_chunks(authors_arr.as_slice(), STORY_AUTHOR_STRIDE)?;
+        let mut authors = Vec::with_capacity(a_chunks.len());
+        for chunk in a_chunks {
+            authors.push(forem_core::story_card::StoryAuthorInput {
+                user_id: extract_i64_val(chunk[0])?,
+                name: borrow_utf8_rstr(chunk[1])?,
+                username: borrow_utf8_rstr(chunk[2])?,
+                profile_image_90: borrow_utf8_rstr(chunk[3])?,
+                is_subscriber: chunk[4].to_bool(),
+                is_community_leader: chunk[5].to_bool(),
+            });
+        }
+
+        let o_chunks = exact_stride_chunks(orgs_arr.as_slice(), STORY_ORG_STRIDE)?;
+        let mut orgs = Vec::with_capacity(o_chunks.len());
+        for chunk in o_chunks {
+            orgs.push(forem_core::story_card::StoryOrgInput {
+                slug: borrow_utf8_rstr(chunk[0])?,
+                name: borrow_utf8_rstr(chunk[1])?,
+                profile_image_90: borrow_utf8_rstr(chunk[2])?,
+            });
+        }
+
+        let c_chunks = exact_stride_chunks(cards_flat_arr.as_slice(), STORY_CARD_STRIDE)?;
+        let mut cards = Vec::with_capacity(c_chunks.len());
+        for chunk in c_chunks {
+            let org_idx = match extract_opt_i64_val(chunk[2])? {
+                Some(idx) => Some(usize::try_from(idx).ok()?),
+                None => None,
+            };
+            let displayable_published_at = match extract_opt_i64_val(chunk[19])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[20])?)),
+                None => None,
+            };
+            let mut reaction_icon_indices = Vec::new();
+            if !chunk[25].is_nil() {
+                let idx_arr = RArray::from_value(chunk[25])?;
+                let idx_slice = idx_arr.as_slice();
+                reaction_icon_indices.reserve(idx_slice.len());
+                for &idx_val in idx_slice {
+                    reaction_icon_indices.push(usize::try_from(extract_i64_val(idx_val)?).ok()?);
+                }
+            }
+            cards.push(forem_core::story_card::StoryCardInput {
+                id: extract_i64_val(chunk[0])?,
+                author_idx: usize::try_from(extract_i64_val(chunk[1])?).ok()?,
+                org_idx,
+                featured: chunk[3].to_bool(),
+                pinned: chunk[4].to_bool(),
+                type_of: borrow_utf8_rstr(chunk[5])?,
+                title: borrow_utf8_rstr(chunk[6])?,
+                path: borrow_utf8_rstr(chunk[7])?,
+                explicit_article_url: borrow_opt_utf8_rstr(chunk[8])?,
+                main_image: borrow_opt_utf8_rstr(chunk[9])?,
+                explicit_cover_url: borrow_opt_utf8_rstr(chunk[10])?,
+                main_image_height: extract_opt_i64_val(chunk[11])?,
+                main_image_bg_hex: borrow_opt_utf8_rstr(chunk[12])?,
+                video: borrow_opt_utf8_rstr(chunk[13])?,
+                video_thumbnail_url: borrow_opt_utf8_rstr(chunk[14])?,
+                cloudinary_video_url: borrow_opt_utf8_rstr(chunk[15])?,
+                video_duration_str: borrow_opt_utf8_rstr(chunk[16])?,
+                context_note_html: borrow_opt_utf8_rstr(chunk[17])?,
+                published: chunk[18].to_bool(),
+                displayable_published_at,
+                published_at_int: extract_i64_val(chunk[21])?,
+                cached_tag_list: borrow_utf8_rstr(chunk[22])?,
+                status_body_preview_html: borrow_opt_utf8_rstr(chunk[23])?,
+                public_reactions_count: extract_i64_val(chunk[24])?,
+                reaction_icon_indices,
+                favorited_by_user_id: extract_opt_i64_val(chunk[26])?,
+                curation_picker_state: u8::try_from(extract_i64_val(chunk[27])?).ok()?,
+                favorited_by_username: borrow_opt_utf8_rstr(chunk[28])?,
+                comments_count: extract_i64_val(chunk[29])?,
+                reading_time: extract_i64_val(chunk[30])?,
+            });
+        }
+
+        forem_core::story_card::render_story_cards(&static_ctx, &view_ctx, &authors, &orgs, &cards)
+    }?;
+
+    Some(ruby.str_new(&html))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -4863,5 +5114,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(social_image_add_byline, 3),
     )?;
     native_mod.define_singleton_method("render_comment_tree", function!(render_comment_tree, 5))?;
+    native_mod.define_singleton_method("render_tag_link", function!(render_tag_link, 7))?;
+    native_mod.define_singleton_method("render_story_cards", function!(render_story_cards, 5))?;
     Ok(())
 }

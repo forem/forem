@@ -22,6 +22,7 @@ pub(crate) mod psl_data;
 pub mod sanitize;
 pub mod scrubber;
 pub mod social_image;
+pub mod story_card;
 pub mod svg;
 pub mod syntax;
 pub(crate) mod syntax_data;

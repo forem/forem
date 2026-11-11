@@ -8,12 +8,12 @@
       </h3>
     </header>
     <div class="p-4 pb-2 pt-3">
-      <%= render partial: "articles/single_story", collection: @pinned_stories, as: :story, locals: { featured: false } %>
+      <%= render_story_cards(@pinned_stories, featured: false) %>
     </div>
   </div>
 <% end %>
 <div id="organization-article-index"></div>
-<%= render partial: "articles/single_story", collection: @stories, as: :story, locals: { featured: false } %>
+<%= render_story_cards(@stories, featured: false) %>
 <% if @stories.size > 1 %>
   <div class="placeholder-div"></div>
 <% end %>

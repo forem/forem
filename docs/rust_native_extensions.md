@@ -121,7 +121,18 @@ Benchmarking the complete `/stories/feed` custom feed pipeline (`FeedConfig.acti
 
 ---
 
-## 6. Maintaining Embedded Static Datasets & Removed Gems
+## 6. Third Iteration Pattern: Batch View-Partial HTML Rendering Kernels (`forem_core::comment_tree` & `forem_core::story_card`)
+
+On SSR HTML endpoints (`StoriesController#show`, `StoriesController#index`, `Stories::TaggedArticlesController#index`, `CollectionsController#show`), ActionView partial dispatch (`render partial: "articles/single_story"` or `comments/_comment` x50–60 per page) plus per-element Rails tag/route/color helpers (`ApplicationHelper#render_tag_link`) dominate pure-Ruby CPU and allocate ~200,000+ transient `SafeBuffer`, `Hash`, `Addressable::URI`, and `Color::CompareHex` objects per uncached page.
+
+To move hot ERB collection trees/lists into Rust with 100% byte-for-byte HTML parity and zero Ruby VM callbacks inside the loop:
+1. **Memoized Static View Context**: Cache locale-dependent `I18n.t(...)` templates (using placeholder sentinels such as `__FOREM_USER__`, `__FOREM_TITLE__`, `__FOREM_COUNT__`) and static `crayons_icon_tag` / `inline_svg_tag` fragments once per `(I18n.locale, feature_flags, brand_color)` tuple on the view helper.
+2. **Deduplicated Flat Stride Buffers**: Extract authors, organizations, preloaded tag colors, and per-item scalar/string attributes into reusable flat Ruby `Array` buffers (`RArray::as_slice` + `RString::test_as_str`), borrowing UTF-8 slices in-place inside a single `unsafe` Magnus block with zero Ruby VM calls until the full HTML buffer is returned.
+3. **Composable Tier 1 + Tier 2 Reuse**: `forem_core::story_card::push_tag_link` powers both standalone `ApplicationHelper#render_tag_link` (`StoriesController#show`, `/tags`, `/videos`) and inline tag-pill rendering inside `StoryCardHelper#render_story_cards` (`551 KB` for a 60-story feed + ~224 tag pills at **20.4x throughput** and **94.9% fewer Ruby allocations**).
+
+---
+
+## 7. Maintaining Embedded Static Datasets & Removed Gems
 
 Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_core`) after porting their functionality into `gems/forem_native`. Because some of these libraries wrap static upstream standards or registries, contributors should be aware of which modules are pure math versus which embed static data tables that may occasionally be refreshed:
 

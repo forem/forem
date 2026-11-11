@@ -1547,6 +1547,36 @@ module ForemNative
       Native.render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
     end
 
+    # Renders a `<a class="crayons-tag ...">` pill matching `ApplicationHelper#render_tag_link`
+    # byte-for-byte, or `nil` when any argument is a String subclass (`SafeBuffer`), non-UTF-8,
+    # an empty/`/`-containing route segment, or a malformed `#rrggbb` color hex.
+    def render_tag_link(tag_name, tag_route, bg_color_hex, filled: false, monochrome: false,
+                        classes: "", path_suffix: "")
+      return unless Native.respond_to?(:render_tag_link)
+      return unless tag_name.instance_of?(String) && tag_route.instance_of?(String) &&
+        bg_color_hex.instance_of?(String) && classes.instance_of?(String) && path_suffix.instance_of?(String)
+
+      Native.render_tag_link(
+        tag_name,
+        tag_route,
+        bg_color_hex,
+        filled ? true : false,
+        monochrome ? true : false,
+        classes,
+        path_suffix,
+      )
+    end
+
+    # Renders `1..=N` story cards matching `app/views/articles/_single_story.html.erb` into a
+    # single UTF-8 HTML buffer, or `nil` when any input falls outside the native domain.
+    def render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+      return unless Native.respond_to?(:render_story_cards)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && orgs_flat.is_a?(Array) && cards_flat.is_a?(Array)
+
+      Native.render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+    end
+
     private
 
     def coerce_social_canvas(image)
