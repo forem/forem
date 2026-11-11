@@ -1,0 +1,16 @@
+app/services/edge_cache/bust/fastly.rb
+  h_f968154a99632d 4-5
+app/services/edge_cache/bust_article.rb
+  h_f968154a99632d 15,20,30,35,40,42-43,94,105,118,133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e0dc88ce8285f80fce15206a31c0a7a802c4ebbb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
