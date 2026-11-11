@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :subforem_social_image_png
+  LATEST_NATIVE_SYMBOL = :image_convert_to_png_checked
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -21,29 +21,32 @@ module ForemNative
     def load_native!
       return true if @native_loaded && defined?(Native) && Native.respond_to?(LATEST_NATIVE_SYMBOL)
 
-      # 1. If a local `cargo build --release` has already produced an artifact in `target/release`
-      #    (and no precompiled or staged binary is present yet), stage it into `lib/forem_native/`.
-      if !Builder.precompiled_binary_exists? && File.exist?(Builder.cargo_artifact_path)
+      # 1. If a local `cargo build --release` has already produced an up-to-date artifact in
+      #    `target/release` (and no fresh staged/precompiled binary is present yet), stage it.
+      if ENV["FOREM_NATIVE_SKIP_BUILD"] != "1" &&
+          !Builder.fresh_binary_exists?(LATEST_NATIVE_SYMBOL) &&
+          Builder.binary_exports_symbol?(Builder.cargo_artifact_path, LATEST_NATIVE_SYMBOL)
         Builder.install_built_artifact!
       end
 
-      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary.
-      if require_candidate_binary &&
-          (Native.respond_to?(LATEST_NATIVE_SYMBOL) || !Builder.cargo_available?)
+      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary
+      #    that exports `LATEST_NATIVE_SYMBOL` (checked before `require` so a stale binary is
+      #    never cached in `$LOADED_FEATURES` / `dlopen` prior to auto-compilation).
+      if require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
-      # 3. If no binary is present on disk yet (or a precompiled binary predates new symbols and
-      #    `cargo` is available), compile the Rust workspace automatically and load the fresh build.
-      if Builder.compile! && require_fresh_staged_binary
+      # 3. If no up-to-date binary is present on disk yet and `cargo` is available, compile the
+      #    Rust workspace automatically and load the freshly staged build.
+      if Builder.compile! && require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
       raise LoadError,
-            "Failed to load ForemNative Rust extension for #{RUBY_PLATFORM}. " \
-            "Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
+            "Failed to load up-to-date ForemNative Rust extension (requiring #{LATEST_NATIVE_SYMBOL}) " \
+            "for #{RUBY_PLATFORM}. Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
     end
 
     # Returns true when the compiled Rust `magnus` extension is loaded and active.
@@ -1669,8 +1672,13 @@ module ForemNative
     end
 
     # Decodes any supported raster or SVG image and encodes it as an 8-bit PNG (preserving alpha).
-    def image_convert_to_png(bytes, font_path: nil)
-      Native.image_convert_to_png(bytes.to_s, font_path&.to_s)
+    # Pass `reject_blank: true` to raise `ArgumentError` if the decoded canvas has no visible pixels.
+    def image_convert_to_png(bytes, font_path: nil, reject_blank: false)
+      Native.image_convert_to_png_checked(
+        bytes.to_s,
+        font_path&.to_s,
+        reject_blank ? true : false,
+      )
     end
 
     # Resizes an image to fit within `width x height` and encodes as PNG (`Images::GenerateSubforemImages`).
@@ -1714,13 +1722,20 @@ module ForemNative
       end
     end
 
-    def require_candidate_binary
-      candidates = ["forem_native/forem_native"] +
-        Builder.platform_candidates.map { |dir| "forem_native/#{dir}/forem_native" }
+    def candidate_binaries
+      [["forem_native/forem_native", Builder.extension_binary_path]] +
+        Builder.platform_candidates.map do |dir|
+          ["forem_native/#{dir}/forem_native", Builder.extension_binary_path(platform_dir: dir)]
+        end
+    end
 
-      candidates.each do |candidate|
-        require candidate
-        return true if defined?(ForemNative::Native)
+    def require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      candidate_binaries.each do |require_name, binary_path|
+        next unless File.file?(binary_path)
+        next if require_symbol && !Builder.binary_exports_symbol?(binary_path, require_symbol)
+
+        require require_name
+        return true if defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol))
       rescue LoadError
         next
       end
@@ -1728,11 +1743,14 @@ module ForemNative
       false
     end
 
-    def require_fresh_staged_binary
+    def require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      staged_path = Builder.extension_binary_path
+      return false if require_symbol && !Builder.binary_exports_symbol?(staged_path, require_symbol)
+
       require "forem_native/forem_native"
-      defined?(ForemNative::Native) ? true : false
+      defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol)) ? true : false
     rescue LoadError
-      require_candidate_binary
+      require_candidate_binary(require_symbol: require_symbol)
     end
   end
 end

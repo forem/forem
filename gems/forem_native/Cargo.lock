@@ -160,6 +160,7 @@ version = "0.1.0"
 dependencies = [
  "forem_core",
  "magnus",
+ "rb-sys",
 ]
 
 [[package]]

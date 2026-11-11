@@ -82,6 +82,13 @@ class Article < ApplicationRecord
     edited_at collection_id subforem_id
   ].freeze
 
+  EMBED_CARD_CHANGE_ATTRIBUTES = %w[
+    title user_id organization_id published cached_tag_list published_at main_image reading_time
+  ].freeze
+  EMBED_MEMBERSHIP_CHANGE_ATTRIBUTES = %w[
+    published organization_id cached_tag_list published_at
+  ].freeze
+
   # Filter out anything that isn't a word, space, punctuation mark,
   # recognized emoji, and other auxiliary marks.
   # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
@@ -394,7 +401,7 @@ class Article < ApplicationRecord
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
-  after_update_commit :update_dependent_embeds_if_key_info_changed
+  after_commit :update_dependent_embeds_if_needed, on: %i[create update destroy]
 
   after_update_commit :regenerate_summary_if_content_changed
 
@@ -1216,7 +1223,8 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
-    score_changed_flag = score_changed? || self.comment_score != comment_score
+    article_score_changed = score_changed?
+    score_changed_flag = article_score_changed || self.comment_score != comment_score
 
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
@@ -1227,6 +1235,13 @@ class Article < ApplicationRecord
     trigger_freeform_context_note_generation
     trigger_summary_generation
     trigger_semantic_embedding_generation if score_changed_flag
+    return unless article_score_changed && published?
+
+    Articles::UpdateDependentEmbedsWorker.schedule_for_score_change(
+      id,
+      organization_id: organization_id,
+      cached_tag_list: cached_tag_list,
+    )
   end
 
   def eligible_for_semantic_embedding?
@@ -1336,6 +1351,8 @@ class Article < ApplicationRecord
     return unless content_renderer
 
     result = content_renderer.process_article
+    return if LiquidEmbedReference.semantically_equal_html?(result.processed_html, processed_html)
+
     update_column(:processed_html, result.processed_html)
   rescue ContentRenderer::ContentParsingError => e
     Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
@@ -2278,19 +2295,40 @@ class Article < ApplicationRecord
     normalized_body == normalized_expected
   end
 
-  def update_dependent_embeds_if_key_info_changed
-    return if destroyed?
-    
-    # We only care about fields that affect the visual liquid embed card
-    if saved_change_to_title? ||
-       saved_change_to_user_id? ||
-       saved_change_to_organization_id? ||
-       saved_change_to_published? ||
-       saved_change_to_cached_tag_list? ||
-       saved_change_to_published_at? ||
-       saved_change_to_main_image?
-      Articles::UpdateDependentEmbedsWorker.perform_async(id)
+  def update_dependent_embeds_if_needed
+    if destroyed? || previously_new_record?
+      return unless published?
+
+      Articles::UpdateDependentEmbedsWorker.schedule_for_article_change(
+        id,
+        organization_ids: [organization_id].compact,
+        tag_names: [cached_tag_list].compact_blank,
+        membership_changed: true,
+      )
+      return
     end
+
+    return unless article_embed_key_info_changed?
+    return unless published? || published_before_last_save
+
+    org_ids, tag_lists, membership_changed = build_article_embed_change_context
+    Articles::UpdateDependentEmbedsWorker.schedule_for_article_change(
+      id,
+      organization_ids: org_ids,
+      tag_names: tag_lists,
+      membership_changed: membership_changed,
+    )
+  end
+
+  def article_embed_key_info_changed?
+    saved_changes.keys.intersect?(EMBED_CARD_CHANGE_ATTRIBUTES)
+  end
+
+  def build_article_embed_change_context
+    org_ids = [organization_id_before_last_save, organization_id].compact.uniq
+    tag_lists = [cached_tag_list_before_last_save, cached_tag_list].compact_blank.uniq
+    membership_changed = saved_changes.keys.intersect?(EMBED_MEMBERSHIP_CHANGE_ATTRIBUTES)
+    [org_ids, tag_lists, membership_changed]
   end
 
   def notify_co_author_changes
