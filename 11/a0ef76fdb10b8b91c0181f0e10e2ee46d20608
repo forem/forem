@@ -1,0 +1,40 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 174
+app/services/images/generate_subforem_images.rb
+  h_f968154a99632d 7-9,94-103,105-108,113-123
+app/uploaders/logo_svg_uploader.rb
+  h_f968154a99632d 39
+gems/forem_native/Cargo.lock
+  h_f968154a99632d 163
+gems/forem_native/crates/forem_core/src/image_ops.rs
+  h_f968154a99632d 607,629-631,633-635,724-731,1684,1687-1699,1708-1714,1722-1728,1740-1749,1913-1919,1926-1928,1930-1932,2001,2142,2162,2352,2381-2401,2403,2405-2421,2423-2437,2439-2508,2512-2691,2715,2729-2732,2744-2768,2770-2775,2785-2926,2943,2946,2961,2979,2993,2997,3012,3016,3026,3034,3044,3048,3059,3063,3073-3074,3076,3078,3108-3149,3213-3225,3230,3232-3275,3376-3381,3390-3399,3401-3405,3417-3425,3722-3842
+gems/forem_native/crates/forem_core/src/social_image/draw.rs
+  h_f968154a99632d 306,446-448,455,461,463,474-476,480,496,512,531-534,548-551,564,598,629,656,681,716,727,1507-1512
+gems/forem_native/ext/forem_native/Cargo.toml
+  h_f968154a99632d 16
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 3653-3655,3790-3794,4673-4732,4735,4737,4742-4756,4769-4773,4797-4802,4814-4825,4836-4844,4853-4870,4881-4889,4900-4909,5376-5379
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 13,24-28,32-35,40-42,48-49,1675-1681,1725-1735,1737-1738,1746-1749,1751,1753
+gems/forem_native/lib/forem_native/builder.rb
+  h_f968154a99632d 52-66,78-82,84-85
+lib/tasks/forem_native.rake
+  h_f968154a99632d 1198,1200-1201,1205-1212,1215-1336,1343
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 6747-6813,6815,6818,6838,6841-6860,7048-7098
+spec/services/images/generate_subforem_images_spec.rb
+  h_f968154a99632d 198-226
+spec/uploaders/logo_svg_uploader_spec.rb
+  h_f968154a99632d 68-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "11a0ef76fdb10b8b91c0181f0e10e2ee46d20608",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
