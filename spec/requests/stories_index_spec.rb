@@ -358,10 +358,14 @@ RSpec.describe "StoriesIndex" do
       story = create(:article, score: 25, published: true)
 
       get "/top/week"
-      expect(response.headers["Surrogate-Key"].split).to include("stories-top-week", story.record_key)
+      expect(response.headers["Surrogate-Key"].split).to include(
+        "main_app_home_page", "stories-top-week", story.record_key
+      )
 
       get "/latest"
-      expect(response.headers["Surrogate-Key"].split).to include("stories-latest", story.record_key)
+      expect(response.headers["Surrogate-Key"].split).to include(
+        "main_app_home_page", "stories-latest", story.record_key
+      )
     end
 
     context "when auth state is desynced with remember_user_token cookie" do

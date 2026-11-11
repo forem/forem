@@ -183,6 +183,8 @@ class StoriesController < ApplicationController
   end
 
   def handle_page_display
+    set_surrogate_key_header "show-page-#{@page.slug}", @page.organization&.record_key
+
     redirect_page_if_different_subforem
     return if performed?
 
@@ -194,7 +196,6 @@ class StoriesController < ApplicationController
     end
 
     @story_show = true
-    set_surrogate_key_header "show-page-#{@page.slug}"
 
     if @page.template == "json"
       render json: @page.body_json
@@ -221,9 +222,9 @@ class StoriesController < ApplicationController
 
   def set_base_index_surrogate_keys
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-      set_surrogate_key_header "stories-top-#{params[:timeframe]}", *@stories&.map(&:record_key)
+      set_surrogate_key_header "main_app_home_page", "stories-top-#{params[:timeframe]}", *@stories&.map(&:record_key)
     elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
-      set_surrogate_key_header "stories-latest", *@stories&.map(&:record_key)
+      set_surrogate_key_header "main_app_home_page", "stories-latest", *@stories&.map(&:record_key)
     else
       set_surrogate_key_header "main_app_home_page"
     end
@@ -249,6 +250,8 @@ class StoriesController < ApplicationController
 
   def handle_organization_index
     @user = @organization
+    set_surrogate_key_header @organization.record_key
+
     redirect_if_organization_view_param
     return if performed?
 
@@ -267,6 +270,7 @@ class StoriesController < ApplicationController
       @org_page = main_page
     end
     is_readme = @org_page.present?
+    set_surrogate_key_header @organization.record_key, ("show-page-#{@org_page.slug}" if is_readme)
     @pinned_stories = if is_readme
                         Article.none
                       else
@@ -324,7 +328,6 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_organization_json_ld
-    set_surrogate_key_header @organization.record_key
 
     @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
 
@@ -351,6 +354,8 @@ class StoriesController < ApplicationController
     if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
       not_found
     end
+    set_surrogate_key_header(*@user.profile_cache_keys)
+
     assign_user_comments
     assign_user_stories
     @list_of = "articles"
@@ -364,7 +369,6 @@ class StoriesController < ApplicationController
 
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
-    set_surrogate_key_header(*@user.profile_cache_keys)
     set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"

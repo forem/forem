@@ -63,6 +63,16 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
               article.record_key, tag.record_key, "tag-#{tag.name}-latest"
             )
           end
+
+          it "tags alias redirects with the aliased tag surrogate key", :aggregate_failures do
+            aliased_tag = create(:tag, name: "jsalias", alias_for: tag.name)
+
+            get "/t/#{aliased_tag.name}"
+            expect(response).to have_http_status(:moved_permanently)
+            expect(response.headers["Surrogate-Key"].split).to include(
+              aliased_tag.record_key, "tag-#{aliased_tag.name}-home"
+            )
+          end
         end
 
         it "renders the tags stylesheet under both standard and internal navigation" do

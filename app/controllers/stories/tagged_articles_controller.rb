@@ -11,6 +11,7 @@ module Stories
       @tag = Tag.find_by(name: params[:tag].downcase) || not_found
 
       if @tag.alias_for.present?
+        set_surrogate_key_header @tag.record_key, tag_feed_surrogate_key
         redirect_permanently_to("/t/#{@tag.alias_for}")
         return
       end

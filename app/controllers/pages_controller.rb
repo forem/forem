@@ -5,6 +5,8 @@ class PagesController < ApplicationController
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = proper_page_by_slug
+    set_surrogate_key_header "show-page-#{params[:slug]}", "show-page-#{@page.slug}", @page.organization&.record_key
+
     redirect_page_if_different_subforem
     return if performed?
 
@@ -16,8 +18,6 @@ class PagesController < ApplicationController
       redirect_to @page.redirect_to_url, **redirect_options
       return
     end
-
-    set_surrogate_key_header "show-page-#{params[:slug]}", "show-page-#{@page.slug}"
 
 
     case @page.template
