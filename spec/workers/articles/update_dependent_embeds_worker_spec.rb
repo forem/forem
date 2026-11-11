@@ -3,127 +3,303 @@ require "rails_helper"
 RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
-  describe "#perform" do
-    let(:article) { build(:article, processed_html: "original_article", body_markdown: "content") }
-    let(:comment_class) do
-      Class.new do
-        attr_accessor :processed_html
-        def is_a?(klass); false; end
-        def evaluate_markdown; @processed_html = "changed_comment"; end
-        def update_column(col, val); end
-        def bust_cache; end
-      end
-    end
-    let(:comment) { comment_class.new.tap { |c| c.processed_html = "original_comment" } }
-    let(:source_article_id) { 100 }
-
-    let(:source_article_relation) { instance_double(ActiveRecord::Relation) }
+  describe ".schedule_for_engagement" do
+    let(:memory_cache) { ActiveSupport::Cache::MemoryStore.new }
 
     before do
-      allow(Article).to receive(:where).and_call_original
-      allow(Article).to receive(:where).with(id: source_article_id).and_return(source_article_relation)
-      allow(source_article_relation).to receive(:pick).with(:organization_id) { article.organization_id }
-      liquid_embed_relation = double("LiquidEmbedReference::Relation")
-      allow(LiquidEmbedReference).to receive(:where).and_return(liquid_embed_relation)
-      
-      article_reference = double("LiquidEmbedReference", record: article)
-      comment_reference = double("LiquidEmbedReference", record: comment)
-      nil_reference = double("LiquidEmbedReference", record: nil)
-      
-      allow(liquid_embed_relation).to receive(:find_each)
-        .and_yield(article_reference)
-        .and_yield(comment_reference)
-        .and_yield(nil_reference)
-        
-      allow(article).to receive(:evaluate_and_update_column_from_markdown) do
-        article.processed_html = "changed_article"
-      end
-      
-      
-      allow(comment).to receive(:update_column)
-      allow(comment).to receive(:bust_cache)
-      allow(article).to receive(:async_bust)
+      allow(Rails).to receive(:cache).and_return(memory_cache)
+      allow(described_class).to receive(:perform_in)
     end
 
-    it "queries LiquidEmbedReference successfully" do
-      liquid_embed_relation = double("LiquidEmbedReference::Relation")
-      allow(liquid_embed_relation).to receive(:find_each)
-      expect(LiquidEmbedReference).to receive(:where)
-        .with(referenced_type: ["Article", nil], referenced_id: source_article_id)
-        .and_return(liquid_embed_relation)
-      subject.perform(source_article_id)
+    it "returns false and enqueues nothing when the article has no dependent embeds" do
+      article = create(:article)
+
+      expect(described_class.schedule_for_engagement(article.id)).to be(false)
+      expect(described_class).not_to have_received(:perform_in)
     end
 
-    it "incorporates Organization embeds with org_posts tag_name if the article belongs to an organization" do
-      article.organization_id = 999
-      
-      liquid_embed_relation = double("LiquidEmbedReference::Relation")
-      org_relation = double("LiquidEmbedReference::Relation")
-      combined_relation = double("LiquidEmbedReference::Relation")
-      
-      allow(liquid_embed_relation).to receive(:or).with(org_relation).and_return(combined_relation)
-      allow(combined_relation).to receive(:find_each)
-      
-      expect(LiquidEmbedReference).to receive(:where)
-        .with(referenced_type: ["Article", nil], referenced_id: source_article_id)
-        .and_return(liquid_embed_relation)
-        
-      expect(LiquidEmbedReference).to receive(:where)
-        .with(referenced_type: "Organization", referenced_id: 999, tag_name: "org_posts")
-        .and_return(org_relation)
-        
-      subject.perform(source_article_id)
+    it "uses a 15-second priority debounce window for active Billboards and coalesces bursts" do
+      article = create(:article)
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+
+      expect(described_class.schedule_for_engagement(article.id)).to be(true)
+      expect(described_class.schedule_for_engagement(article.id)).to be(false)
+
+      expect(described_class).to have_received(:perform_in)
+        .with(described_class::BILLBOARD_ENGAGEMENT_DEBOUNCE, article.id)
+        .once
     end
 
-    context "when the source article has been deleted" do
-      before do
-        allow(source_article_relation).to receive(:pick).with(:organization_id).and_return(nil)
-      end
+    it "uses a 60-second debounce window for non-billboard embeds and resets the window once perform runs" do
+      target = create(:article)
+      holder = create(:published_article, title: "Holder Post", body_markdown: "Check out:\n{% link #{target.path} %}")
+      SyncLiquidEmbedReferencesWorker.new.perform("Article", holder.id)
 
-      it "still queries and processes generic Article LiquidEmbedReferences successfully" do
-        liquid_embed_relation = double("LiquidEmbedReference::Relation")
-        allow(liquid_embed_relation).to receive(:find_each)
-        
-        expect(LiquidEmbedReference).to receive(:where)
-          .with(referenced_type: ["Article", nil], referenced_id: source_article_id)
-          .and_return(liquid_embed_relation)
-          
-        subject.perform(source_article_id)
-      end
+      expect(described_class.schedule_for_engagement(target.id)).to be(true)
+      expect(described_class.schedule_for_engagement(target.id)).to be(false)
+      expect(described_class).to have_received(:perform_in)
+        .with(described_class::DEFAULT_ENGAGEMENT_DEBOUNCE, target.id)
+        .once
+
+      described_class.new.perform(target.id)
+
+      expect(described_class.schedule_for_engagement(target.id)).to be(true)
+      expect(described_class).to have_received(:perform_in)
+        .with(described_class::DEFAULT_ENGAGEMENT_DEBOUNCE, target.id)
+        .twice
+    end
+  end
+
+  describe ".schedule_for_article_change" do
+    let(:memory_cache) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(memory_cache)
+      allow(described_class).to receive(:perform_async)
     end
 
-    it "rebuilds markdown columns directly without triggers and evaluates loops conditionally" do
-      subject.perform(source_article_id)
-      
-      # Article
-      expect(article).to have_received(:evaluate_and_update_column_from_markdown)
-      expect(article).to have_received(:async_bust)
-      
-      
-      # We cannot easily spy on the send(:evaluate_markdown) when using singleton method redefinition, but it is implicitly tested by the HTML updating
-      expect(comment).to have_received(:update_column).with(:processed_html, "changed_comment")
-      expect(comment).to have_received(:bust_cache)
+    it "merges consecutive organization and tag removals in pending cache context" do
+      org = create(:organization, slug: "mergedorg")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% feed org=mergedorg %}",
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      article = create(:article, organization: org, tag_list: "")
+      memory_cache.clear
+
+      described_class.schedule_for_article_change(
+        article.id,
+        organization_ids: [org.id],
+        tag_names: ["ruby"],
+        membership_changed: true,
+      )
+      # Simulate a follow-up title edit after org removal before worker executes
+      article.update_column(:organization_id, nil)
+      LiquidEmbedReference.create!(
+        record: billboard,
+        tag_name: "link",
+        url: article.path,
+        options: article.path,
+        referenced: article,
+        published: true,
+      )
+      described_class.schedule_for_article_change(
+        article.id,
+        organization_ids: [],
+        tag_names: ["rails"],
+        membership_changed: false,
+      )
+
+      expect(described_class).to have_received(:perform_async).with(
+        article.id,
+        {
+          "org_ids" => [org.id],
+          "tags" => %w[ruby rails],
+          "membership_changed" => true
+        },
+      )
     end
-    
-    it "does not trigger async_bust or cache bust if the html hasn't changed" do
-      allow(article).to receive(:evaluate_and_update_column_from_markdown) do
-        article.processed_html = "original_article"
+  end
+
+  describe "#perform" do
+    it "refreshes Billboards first, preserves ?bb= params, updates metadata, and purges Fastly", :aggregate_failures do
+      org = create(:organization, slug: "prioritybborg")
+      article = create(:article, organization: org, title: "Initial Title", published: true)
+
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        placement_area: "feed_first",
+        special_behavior: :persistent,
+        render_mode: :forem_markdown,
+        body_markdown: "{% feed org=prioritybborg limit=3 %}",
+        minimized_body_markdown: "{% link #{article.path} %}",
+      )
+      holder_article = create(
+        :published_article,
+        title: "Holder Post",
+        body_markdown: "Post embed:\n{% link #{article.path} %}",
+      )
+      holder_comment = create(:comment, body_markdown: "Comment embed:\n{% link #{article.path} %}")
+
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      SyncLiquidEmbedReferencesWorker.new.perform("Article", holder_article.id)
+      SyncLiquidEmbedReferencesWorker.new.perform("Comment", holder_comment.id)
+
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      new_article = create(:article, organization: org, title: "Brand New Org Launch", published: true)
+      original_content_updated_at = billboard.content_updated_at
+
+      update_tables_order = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        if sql.start_with?('UPDATE "display_ads"')
+          update_tables_order << "Billboard"
+        elsif sql.start_with?('UPDATE "articles"')
+          update_tables_order << "Article"
+        elsif sql.start_with?('UPDATE "comments"')
+          update_tables_order << "Comment"
+        end
       end
-      
-      allow(comment).to receive(:evaluate_markdown) do
-        comment.processed_html = "original_comment"
+
+      Timecop.travel(5.minutes.from_now) do
+        described_class.new.perform(
+          new_article.id,
+          { "org_ids" => [org.id], "tags" => [], "membership_changed" => true },
+        )
+        article.update_column(:title, "Updated Linked Title")
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.new.perform(article.id)
+        end
       end
-      
-      subject.perform(source_article_id)
-      
-      expect(article).not_to have_received(:async_bust)
-      expect(comment).not_to have_received(:update_column)
-      expect(comment).not_to have_received(:bust_cache)
+
+      billboard.reload
+      holder_article.reload
+      holder_comment.reload
+
+      expect(update_tables_order).to eq(%w[Billboard Article Comment])
+      expect(billboard.processed_html).to include("Brand New Org Launch", "bb=#{billboard.id}")
+      expect(billboard.minimized_processed_html).to include("Updated Linked Title")
+      expect(billboard.exclude_article_ids).to include(new_article.id)
+      expect(billboard.content_updated_at).to be > original_content_updated_at
+      expect(holder_article.processed_html).to include("Updated Linked Title")
+      expect(holder_comment.processed_html).to include("Updated Linked Title")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key).at_least(:once)
+      expect(EdgeCache::PurgeByKey).to have_received(:call)
+        .with("main_app_home_page", fallback_paths: "/")
+        .at_least(:once)
+    end
+
+    it "updates {% feed tag=... %} embeds and skips non-displayed articles on sort=recent feeds" do
+      create(:tag, name: "featuredtag")
+      older = create(:article, title: "Older Tagged Post", tag_list: "featuredtag", published: true)
+      older.update_columns(published_at: 2.hours.ago)
+      displayed = create(:article, title: "Newest Tagged Post", tag_list: "featuredtag", published: true)
+      displayed.update_columns(published_at: 1.minute.ago)
+
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% feed tag=featuredtag limit=1 %}",
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      expect(billboard.processed_html).to include("Newest Tagged Post")
+      expect(billboard.processed_html).not_to include("Older Tagged Post")
+
+      # Engagement on an older post NOT in the top-1 recent feed skips ContentRenderer completely
+      allow(ContentRenderer).to receive(:new).and_call_original
+      described_class.new.perform(older.id)
+      expect(ContentRenderer).not_to have_received(:new)
+
+      # Engagement on the displayed top-1 post refreshes the billboard
+      displayed.update_columns(public_reactions_count: 12)
+      described_class.new.perform(displayed.id)
+
+      expect(billboard.reload.processed_html).to include("12")
+    end
+
+    it "removes deleted articles from dependent embeds and feeds" do
+      org = create(:organization, slug: "deletefeedorg")
+      doomed = create(:article, organization: org, title: "Soon Deleted Post", published: true)
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% feed org=deletefeedorg limit=3 %}",
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      expect(billboard.processed_html).to include("Soon Deleted Post")
+
+      doomed_id = doomed.id
+      doomed.destroy!
+      described_class.new.perform(
+        doomed_id,
+        { "org_ids" => [org.id], "tags" => [], "membership_changed" => true },
+      )
+
+      expect(billboard.reload.processed_html).not_to include("Soon Deleted Post")
+    end
+
+    it "isolates errors per record so a failing record never prevents other embeds from updating" do
+      target = create(:article, title: "Before Isolation")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{target.path} %}",
+      )
+      broken_page = create(:page, body_markdown: "{% link #{target.path} %}")
+      healthy_comment = create(:comment, body_markdown: "{% link #{target.path} %}")
+
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      SyncLiquidEmbedReferencesWorker.new.perform("Page", broken_page.id)
+      SyncLiquidEmbedReferencesWorker.new.perform("Comment", healthy_comment.id)
+
+      allow(Pages::BustCacheWorker).to receive(:perform_async).and_raise(StandardError, "redis timeout")
+      target.update_column(:title, "After Isolation")
+
+      expect { described_class.new.perform(target.id) }.not_to raise_error
+      expect(billboard.reload.processed_html).to include("After Isolation")
+      expect(healthy_comment.reload.processed_html).to include("After Isolation")
+    end
+
+    it "does not trigger async_bust or DB updates if rendered HTML did not change" do
+      target = create(:article, title: "Unchanged Title")
+      holder = create(:published_article, title: "Holder Title", body_markdown: "{% link #{target.path} %}")
+      SyncLiquidEmbedReferencesWorker.new.perform("Article", holder.id)
+
+      allow(Articles::BustCacheWorker).to receive(:perform_async)
+      update_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        update_queries << sql if sql.start_with?('UPDATE "articles"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.new.perform(target.id)
+      end
+
+      expect(Articles::BustCacheWorker).not_to have_received(:perform_async)
+      expect(update_queries).to be_empty
+    end
+
+    it "refreshes template-backed Pages via render_from_page_template when embedded articles change" do
+      target = create(:article, title: "Template Initial Title")
+      page_template = create(:page_template)
+      page = create(
+        :page,
+        page_template: page_template,
+        body_markdown: nil,
+        template_data: { "title" => "Hub", "content" => "{% link #{target.path} %}" },
+      )
+      SyncLiquidEmbedReferencesWorker.new.perform("Page", page.id)
+      expect(page.processed_html).to include("Template Initial Title")
+
+      target.update_column(:title, "Template Updated Title")
+      described_class.new.perform(target.id)
+
+      expect(page.reload.processed_html).to include("Template Updated Title")
     end
   end
 
   describe "#perform with a persisted source article" do
-    it "reads only the source article's organization id instead of the full row" do
+    it "reads only narrow metadata columns from the source article instead of hydrating the full row" do
       source_article = create(:article, organization: create(:organization))
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] }
@@ -133,8 +309,10 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
       end
 
       article_selects = queries.grep(/FROM "articles"/)
+      expected_prefix = 'SELECT "articles"."id", "articles"."organization_id", ' \
+                        '"articles"."cached_tag_list" FROM "articles"'
       expect(article_selects).not_to be_empty
-      expect(article_selects).to all(start_with('SELECT "articles"."organization_id" FROM "articles"'))
+      expect(article_selects).to all(start_with(expected_prefix))
     end
   end
 end

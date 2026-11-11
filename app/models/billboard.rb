@@ -1,4 +1,5 @@
 class Billboard < ApplicationRecord
+  include LiquidEmbeddable
   include Taggable
   acts_as_taggable_on :tags
   resourcify
@@ -120,6 +121,7 @@ class Billboard < ApplicationRecord
   after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
   after_save :update_links_with_bb_param
+  after_save :refresh_embedded_markdown_on_activation, if: :should_refresh_embedded_markdown_on_activation?
   after_save :update_event_counts_when_taking_down, if: -> { being_taken_down? }
   after_save :bust_billboard_cache, if: -> { being_taken_down? }
   after_save :bust_home_page_cache, if: -> { should_bust_home_page_cache? }
@@ -479,15 +481,31 @@ class Billboard < ApplicationRecord
   end
 
   def update_links_with_bb_param
-    # Parse the processed_html with Nokogiri
-    full_html = "<html><head></head><body>#{processed_html}</body></html>"
+    modified_html = with_bb_param(processed_html)
+
+    # Early return if the new HTML is the same as the old one
+    return if modified_html == processed_html
+
+    # Update the processed_html column with the new HTML
+    update_column(:processed_html, modified_html)
+  end
+
+  def with_bb_param(html)
+    return html if html.blank?
+
+    # Parse the html with Nokogiri
+    full_html = "<html><head></head><body>#{html}</body></html>"
     doc = Nokogiri::HTML(full_html)
     # Iterate over all the <a> tags
     doc.css("a").each do |link|
       href = link["href"]
       next unless href.present? && href.start_with?("http", "/")
 
-      uri = URI.parse(href)
+      begin
+        uri = URI.parse(href)
+      rescue URI::InvalidURIError
+        next
+      end
       existing_params = URI.decode_www_form(uri.query || "")
       # Check if 'bb' parameter exists and update it or append if not exists
       bb_param_index = existing_params.find_index { |param| param[0] == "bb" }
@@ -500,16 +518,44 @@ class Billboard < ApplicationRecord
       link["href"] = uri.to_s
     end
 
-    # Extract and save only the inner HTML of the body
+    # Extract and return only the inner HTML of the body
     modified_html = doc.at("body").inner_html
-
     modified_html.gsub!(/href="([^"]*)&amp;([^"]*)"/, 'href="\1&\2"')
+    modified_html
+  end
 
-    # Early return if the new HTML is the same as the old one
-    return if modified_html == processed_html
+  def refresh_embedded_markdown!(bust_caches: true)
+    return false unless persisted? && forem_markdown?
 
-    # Update the processed_html column with the new HTML
-    update_column(:processed_html, modified_html)
+    new_html = with_bb_param(render_markdown_field(body_markdown))
+    new_minimized_html = if minimized_body_markdown.present?
+                           render_markdown_field(minimized_body_markdown)
+                         end
+
+    return false if LiquidEmbedReference.semantically_equal_html?(new_html, processed_html) &&
+      LiquidEmbedReference.semantically_equal_html?(new_minimized_html, minimized_processed_html)
+
+    updated_exclude_ids = compute_updated_exclude_article_ids(processed_html, new_html)
+    now = Time.current
+
+    update_columns(
+      processed_html: new_html,
+      minimized_processed_html: new_minimized_html,
+      exclude_article_ids: updated_exclude_ids,
+      content_updated_at: now,
+      updated_at: now,
+    )
+
+    if bust_caches && approved? && published? && (expires_at.nil? || expires_at > now)
+      bust_billboard_cache
+      bust_home_page_cache if HOME_PAGE_PLACEMENTS.include?(placement_area)
+    end
+
+    true
+  rescue ContentRenderer::ContentParsingError => e
+    clean_error = ErrorMessages::Clean.call(e.message)
+    Rails.logger.warn("Billboard #{id} refresh_embedded_markdown! failed: #{e.class}: #{clean_error}")
+    false
   end
 
   def score
@@ -520,6 +566,10 @@ class Billboard < ApplicationRecord
     return unless expires_at.present? && expires_at < Time.current && approved?
 
     update_column(:approved, false)
+    if current_markdown_has_liquid_tag?
+      updated = liquid_embed_references.update_all(published: false)
+      LiquidEmbedReference.bust_feed_targets_cache! if updated.positive?
+    end
     bust_billboard_cache if published
     bust_home_page_cache if published && HOME_PAGE_PLACEMENTS.include?(placement_area)
   end
@@ -561,17 +611,21 @@ class Billboard < ApplicationRecord
   def update_exclude_article_ids
     return unless body_markdown_changed?
 
-    old_paths = extract_internal_article_paths(processed_html_was)
-    new_paths = extract_internal_article_paths(processed_html)
+    self.exclude_article_ids = compute_updated_exclude_article_ids(processed_html_was, processed_html)
+  end
+
+  def compute_updated_exclude_article_ids(previous_html, next_html)
+    old_paths = extract_internal_article_paths(previous_html)
+    new_paths = extract_internal_article_paths(next_html)
+    return exclude_article_ids.to_a if old_paths == new_paths
 
     removed_paths = old_paths - new_paths
     added_paths = new_paths - old_paths
 
-    removed_ids = removed_paths.any? ? Article.where(path: removed_paths).pluck(:id) : []
-    added_ids = added_paths.any? ? Article.where(path: added_paths).pluck(:id) : []
+    removed_ids = removed_paths.any? ? Article.where(path: removed_paths).ids : []
+    added_ids = added_paths.any? ? Article.where(path: added_paths).ids : []
 
-    current_ids = self.exclude_article_ids.to_a
-    self.exclude_article_ids = ((current_ids - removed_ids) + added_ids).uniq
+    ((exclude_article_ids.to_a - removed_ids) + added_ids).uniq
   end
 
   def extract_internal_article_paths(html)
@@ -688,6 +742,20 @@ class Billboard < ApplicationRecord
                                                            quality: 100,
                                                            synchronous_detail_detection: true }).processed_html
     processed.delete("\n")
+  end
+
+  def should_refresh_embedded_markdown_on_activation?
+    return false unless forem_markdown? && current_markdown_has_liquid_tag?
+    return false if saved_change_to_body_markdown? || saved_change_to_minimized_body_markdown? ||
+      saved_change_to_render_mode? || saved_change_to_placement_area?
+
+    was_active = approved_before_last_save && published_before_last_save
+    is_active = approved? && published? && (expires_at.nil? || expires_at > Time.current)
+    is_active && !was_active
+  end
+
+  def refresh_embedded_markdown_on_activation
+    bust_billboard_cache if refresh_embedded_markdown!(bust_caches: false)
   end
 
   def prefix_width

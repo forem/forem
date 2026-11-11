@@ -1562,4 +1562,46 @@ RSpec.describe Billboard do
       )
     end
   end
+
+  describe "Liquid embed tracking and refresh" do
+    it "enqueues SyncLiquidEmbedReferencesWorker when markdown contains Liquid tags" do
+      article = create(:article)
+      allow(SyncLiquidEmbedReferencesWorker).to receive(:perform_async)
+
+      billboard = create(:billboard, render_mode: :forem_markdown, body_markdown: "{% link #{article.path} %}")
+
+      expect(SyncLiquidEmbedReferencesWorker).to have_received(:perform_async).with("Billboard", billboard.id)
+    end
+
+    it "re-renders stale embeds automatically when an inactive billboard is activated" do
+      article = create(:article, title: "Draft Stage Title")
+      billboard = create(
+        :billboard,
+        approved: false,
+        published: false,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+      expect(billboard.processed_html).to include("Draft Stage Title")
+
+      article.update_column(:title, "Live Stage Title")
+      billboard.update!(approved: true, published: true)
+
+      expect(billboard.reload.processed_html).to include("Live Stage Title")
+      expect(billboard.processed_html).to include("bb=#{billboard.id}")
+    end
+
+    it "returns false without DB writes when refresh_embedded_markdown! produces identical HTML" do
+      article = create(:article, title: "Stable Title")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+
+      expect(billboard.refresh_embedded_markdown!).to be(false)
+    end
+  end
 end
