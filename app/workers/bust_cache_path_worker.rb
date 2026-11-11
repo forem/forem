@@ -16,10 +16,13 @@ class BustCachePathWorker < BustCacheBaseWorker
     "/tags" => "tags"
   }.freeze
 
+  CUTOVER_PATHS = %w[/async_info/navigation_links /tags /feed /feed.xml /rss].freeze
+
   def perform(path = "/")
     surrogate_key = SURROGATE_KEY_BY_PATH[path.to_s]
     if surrogate_key
       EdgeCache::PurgeByKey.call(surrogate_key, fallback_paths: path)
+      EdgeCache::CutoverUrlBust.call(path) if CUTOVER_PATHS.include?(path.to_s)
     else
       EdgeCache::Bust.call(path)
     end

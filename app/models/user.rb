@@ -1232,6 +1232,7 @@ class User < ApplicationRecord
     return if legacy_keys.empty?
 
     EdgeCache::PurgeByKeyWorker.perform_async(legacy_keys, [path])
+    EdgeCache::CutoverUrlBust.call(path)
   end
 
   def bust_profile_details_cache

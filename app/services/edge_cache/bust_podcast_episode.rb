@@ -8,6 +8,7 @@ module EdgeCache
         [podcast_episode.record_key, podcast_episode.table_key, "podcast_episodes_all", "podcasts/#{slug}"],
         fallback_paths: [path, "/#{slug}", "/pod"],
       )
+      EdgeCache::CutoverUrlBust.call([path, "/#{slug}"])
     rescue StandardError => e
       Rails.logger.warn(e)
     end

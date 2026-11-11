@@ -501,6 +501,7 @@ class ApplicationController < ActionController::Base
 
   def bust_content_change_caches
     EdgeCache::PurgeByKey.call(CONTENT_CHANGE_SURROGATE_KEYS, fallback_paths: CONTENT_CHANGE_PATHS)
+    EdgeCache::CutoverUrlBust.call("/tags")
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 
