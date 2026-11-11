@@ -36,10 +36,32 @@ module Stories
         return
       end
 
+      set_surrogate_key_header(*feed_surrogate_keys)
       set_cache_control_headers(60) # 1 minute expiration
     end
 
     private
+
+    def feed_surrogate_keys
+      feed_key = if params[:tag].present?
+                   tag_name = params[:tag].to_s.downcase
+                   if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                     "tag-#{tag_name}-top-#{params[:timeframe]}"
+                   elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+                     "tag-#{tag_name}-latest"
+                   else
+                     "tag-#{tag_name}-home"
+                   end
+                 elsif params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                   "stories-top-#{params[:timeframe]}"
+                 elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+                   "stories-latest"
+                 else
+                   "main_app_home_page"
+                 end
+
+      [feed_key, *@stories.map(&:record_key)]
+    end
 
     def add_pinned_article
       return if params[:timeframe].present?

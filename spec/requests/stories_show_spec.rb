@@ -96,7 +96,7 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(CGI.escapeHTML(org.name), CGI.escapeHTML(user.name))
       expect(response.body).to include(article.processed_html_final)
-      expect(response.headers["Surrogate-Key"]).to include(article.record_key)
+      expect(response.headers["Surrogate-Key"].split).to include(article.record_key, org.record_key)
     end
 
     it "does not have ?i=i on redirects which did not originally include it" do

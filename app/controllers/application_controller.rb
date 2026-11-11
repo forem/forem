@@ -84,6 +84,13 @@ class ApplicationController < ActionController::Base
   ].freeze
   private_constant :CONTENT_CHANGE_PATHS
 
+  CONTENT_CHANGE_SURROGATE_KEYS = %w[
+    tags
+    onboarding-slideshow
+    main_app_home_page
+  ].freeze
+  private_constant :CONTENT_CHANGE_SURROGATE_KEYS
+
   # @!scope class
   # @!attribute [w] api_action
   #   If set to true, all actions on the class (and subclasses) will be considered "api_actions"
@@ -493,7 +500,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bust_content_change_caches
-    EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
+    EdgeCache::PurgeByKey.call(CONTENT_CHANGE_SURROGATE_KEYS, fallback_paths: CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 

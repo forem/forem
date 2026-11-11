@@ -15,41 +15,35 @@ end
 RSpec.describe Purgeable do
   let(:model_class) { PurgeableModel }
   let(:purgeable_model) { model_class.new }
-  let(:fastly_service) { instance_double(Fastly::Service) }
 
   before do
-    allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
-    allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("fake-service-id")
-    allow(Fastly::Service).to receive(:new).and_return(fastly_service)
+    allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
   describe "class methods" do
-    it "calls .purge_by_key with table_key in purge_all" do
-      allow(fastly_service).to receive(:purge_by_key)
+    it "delegates purge_all to EdgeCache::PurgeByKey with table_key" do
       model_class.purge_all
-      expect(fastly_service).to have_received(:purge_by_key).with(model_class.table_key)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables")
     end
 
-    it "calls .purge_by_key with table_key and true in soft_purge_all" do
-      allow(fastly_service).to receive(:purge_by_key)
+    it "delegates soft_purge_all to EdgeCache::PurgeByKey with soft: true" do
       model_class.soft_purge_all
-      expect(fastly_service).to have_received(:purge_by_key).with(model_class.table_key, true)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables", soft: true)
     end
 
     it "returns table_name with table_key" do
       expect(model_class.table_key).to eq(model_class.table_name)
     end
 
-    it "returns a Fastly object" do
-      fastly = instance_double(Fastly)
-      allow(Fastly).to receive(:new).and_return(fastly)
-      model_class.fastly
-      expect(Fastly).to have_received(:new)
-    end
+    it "short-circuits in development environment", :aggregate_failures do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
 
-    it "returns a Fastly::Service object" do
-      model_class.service
-      expect(Fastly::Service).to have_received(:new)
+      model_class.purge_all
+      model_class.soft_purge_all
+
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
   end
 
@@ -64,16 +58,25 @@ RSpec.describe Purgeable do
       expect(model_class).to have_received(:table_key)
     end
 
-    it "calls .purge_by_key with record_key in purge" do
-      allow(fastly_service).to receive(:purge_by_key)
+    it "delegates purge to EdgeCache::PurgeByKey with record_key" do
       purgeable_model.purge
-      expect(fastly_service).to have_received(:purge_by_key).with(purgeable_model.record_key)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables/1")
     end
 
-    it "calls .purge_by_key with record_key and true in soft_purge" do
-      allow(fastly_service).to receive(:purge_by_key)
+    it "delegates soft_purge to EdgeCache::PurgeByKey with soft: true" do
       purgeable_model.soft_purge
-      expect(fastly_service).to have_received(:purge_by_key).with(purgeable_model.record_key, true)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables/1", soft: true)
+    end
+
+    it "short-circuits instance purges in development environment", :aggregate_failures do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
+
+      purgeable_model.purge
+      purgeable_model.soft_purge
+
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
 
     it "calls purge_all class method" do
@@ -86,18 +89,6 @@ RSpec.describe Purgeable do
       allow(model_class).to receive(:soft_purge_all)
       purgeable_model.soft_purge_all
       expect(model_class).to have_received(:soft_purge_all)
-    end
-
-    it "calls the fastly class method" do
-      allow(model_class).to receive(:fastly)
-      purgeable_model.fastly
-      expect(model_class).to have_received(:fastly)
-    end
-
-    it "calls the service class method" do
-      allow(model_class).to receive(:service)
-      purgeable_model.service
-      expect(model_class).to have_received(:service)
     end
   end
 end

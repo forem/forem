@@ -211,12 +211,22 @@ class StoriesController < ApplicationController
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
 
-    set_surrogate_key_header "main_app_home_page"
+    set_base_index_surrogate_keys
     set_cache_control_headers(60,
                               stale_while_revalidate: 60,
                               stale_if_error: 86_400)
 
     render template: "articles/index"
+  end
+
+  def set_base_index_surrogate_keys
+    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+      set_surrogate_key_header "stories-top-#{params[:timeframe]}", *@stories&.map(&:record_key)
+    elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+      set_surrogate_key_header "stories-latest", *@stories&.map(&:record_key)
+    else
+      set_surrogate_key_header "main_app_home_page"
+    end
   end
 
   def pinned_article
@@ -232,7 +242,8 @@ class StoriesController < ApplicationController
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes
       .reachable.order(published_at: :desc).page(params[:page]).per(30)
-    set_surrogate_key_header "podcast_episodes"
+    set_surrogate_key_header "podcast_episodes", @podcast.record_key, "podcasts/#{@podcast.slug}",
+                             *@podcast_episodes.map(&:record_key)
     render template: "podcast_episodes/index"
   end
 
@@ -360,7 +371,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_podcast_show
-    set_surrogate_key_header @episode.record_key
+    set_surrogate_key_header @episode.record_key, @podcast.record_key, "podcasts/#{@podcast.slug}"
     @episode = @episode.decorate
     @podcast_episode_show = true
     @comments_to_show_count = 25
@@ -424,7 +435,7 @@ class StoriesController < ApplicationController
       response.headers["Expires"] = "0"
     else
       user_keys = @article.user&.profile_identity_cache_keys
-      set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+      set_surrogate_key_header(@article.record_key, *user_keys, @article.organization&.record_key)
     end
 
     redirect_if_appropriate

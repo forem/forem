@@ -68,6 +68,17 @@ RSpec.describe "Api::V0::Articles" do
       expect(response.parsed_body.first["tags"]).to be_a String
     end
 
+    it "includes the tag top surrogate key when filtering by tag and top" do
+      tagged_article = create(:article, tags: "ruby", score: 10, published: true)
+      get api_articles_path, params: { tag: "ruby", top: 7 }
+
+      expect(response.headers["Surrogate-Key"].split).to include(
+        "articles",
+        tagged_article.record_key,
+        "api-articles-tag-ruby-top",
+      )
+    end
+
     context "without params" do
       it "returns json response" do
         get api_articles_path

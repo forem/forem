@@ -42,12 +42,26 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
 
             # articles/139
-            expected_surrogate_key_headers = ["articles/#{Article.last.id} tags/#{tag.id}"]
+            expected_surrogate_key_headers = ["articles/#{Article.last.id} tags/#{tag.id} tag-#{tag.name}-home"]
             expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
           end
 
           def sets_nginx_headers
             expect(response.headers["X-Accel-Expires"]).to eq("86400")
+          end
+
+          it "tags timeframe and latest tag feeds with dedicated surrogate keys", :aggregate_failures do
+            article
+
+            get "/t/#{tag.name}/top/week"
+            expect(response.headers["Surrogate-Key"].split).to include(
+              article.record_key, tag.record_key, "tag-#{tag.name}-top-week"
+            )
+
+            get "/t/#{tag.name}/latest"
+            expect(response.headers["Surrogate-Key"].split).to include(
+              article.record_key, tag.record_key, "tag-#{tag.name}-latest"
+            )
           end
         end
 

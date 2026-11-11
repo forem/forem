@@ -17,7 +17,7 @@ class PagesController < ApplicationController
       return
     end
 
-    set_surrogate_key_header "show-page-#{params[:slug]}"
+    set_surrogate_key_header "show-page-#{params[:slug]}", "show-page-#{@page.slug}"
 
 
     case @page.template
@@ -50,7 +50,7 @@ class PagesController < ApplicationController
   def bounty
     @page = Page.find_by(slug: "security")
     render :show if @page
-    set_surrogate_key_header "bounty_page"
+    set_surrogate_key_header "bounty_page", "show-page-security"
   end
 
   def code_of_conduct
@@ -74,7 +74,7 @@ class PagesController < ApplicationController
   def faq
     @page = Page.find_by(slug: "faq")
     render :show if @page
-    set_surrogate_key_header "faq_page"
+    set_surrogate_key_header "faq_page", "show-page-faq"
   end
 
   def post_a_job
