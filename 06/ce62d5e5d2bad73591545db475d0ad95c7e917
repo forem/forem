@@ -1,0 +1,14 @@
+config/fastly/snippets/safe_params_list.vcl
+  h_f968154a99632d 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "06ce62d5e5d2bad73591545db475d0ad95c7e917",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
