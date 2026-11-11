@@ -87,13 +87,13 @@
       @viewable_for_tracking = @viewable_for_tracking.object if @viewable_for_tracking.respond_to?(:object)
     %>
     <body
-      class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
+      class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header<%= " hidden-shell" if embedded_view? %>"
       data-user-status="<%= j(user_logged_in_status) %>"
       data-is-root-subforem="<%= j(is_root_subforem?) %>"
       <% if RequestStore.store[:subforem_id].present? %>
         data-subforem-id="<%= j(RequestStore.store[:subforem_id]) %>"
       <% end %>
-      data-side-nav-visible="<%= Subforem.cached_discoverable_ids.size > 1 %>"
+      data-side-nav-visible="<%= !embedded_view? && Subforem.cached_discoverable_ids.size > 1 %>"
       data-community-name="<%= j(community_name) %>"
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
       data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
@@ -117,7 +117,8 @@
       
       <%# First script to run no matter what %>
       <script>
-        if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
+        const isEmbeddedFrame = window.frameElement || (function() { try { return window.self !== window.top; } catch (e) { return true; } })() || new URLSearchParams(window.location.search).get('mode') === 'embed';
+        if (navigator.userAgent === 'ForemWebView/1' || isEmbeddedFrame) {
           document.body.classList.add("hidden-shell");
         }
         <%# Server-rendered billboard scripts run before the deferred application pack defines %>
@@ -133,7 +134,7 @@
             document.body.dataset.sideNavVisible = "false";
           } 
         <% end %>
-        <% if ENV["MAKE_SIDEBAR_VISIBLE_DATE"].present? %>
+        <% if ENV["MAKE_SIDEBAR_VISIBLE_DATE"].present? && !embedded_view? %>
           if (new Date() > new Date("<%= ENV["MAKE_SIDEBAR_VISIBLE_DATE"] %>")) {
             document.body.dataset.sideNavVisible = "true";
           } 
@@ -156,13 +157,15 @@
       <div id="audiocontent" data-podcast="">
         <%= yield(:audio) %>
       </div>
-      <% if ENV["DISABLE_MAIN_SIDE_BAR"] != "yes" && !Subforem.disabled_by_env? && Subforem.cached_discoverable_ids.any? %>
-        <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
-          <%= render "layouts/main_side_bar" %>
+      <% unless embedded_view? %>
+        <% if ENV["DISABLE_MAIN_SIDE_BAR"] != "yes" && !Subforem.disabled_by_env? && Subforem.cached_discoverable_ids.any? %>
+          <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
+            <%= render "layouts/main_side_bar" %>
+          <% end %>
         <% end %>
+        <%= render "layouts/top_bar" %>
+        <div id="active-broadcast" class="broadcast-wrapper"></div>
       <% end %>
-      <%= render "layouts/top_bar" %>
-      <div id="active-broadcast" class="broadcast-wrapper"></div>
   <% end %>
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>" data-preact-runtime-src="<%= asset_path("preactRuntime.js") %>">
   <% if flash[:global_notice] %>
@@ -173,7 +176,7 @@
   <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>" data-viewable-id="<%= @viewable_for_tracking&.id %>" data-viewable-type="<%= @viewable_for_tracking&.class&.name %>">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
-    <% if @hero_html && @hero_billboard.blank? %>
+    <% if !embedded_view? && @hero_html && @hero_billboard.blank? %>
       <aside id="hero-html-wrapper" aria-label="Campaign banner" class="overflow-x-hidden" data-name="<%= @hero_area.name %>">
         <script>
           // Make sure html variant element has id hero-html-wrapper and data-name as its name
@@ -190,10 +193,12 @@
   </div>
 </div>
 <% unless internal_navigation? %>
-  <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{formatted_admin_action_taken_at}-#{request.host}-#{RequestStore.store[:subforem_id]}", expires_in: 24.hours) do %>
-    <%= render "layouts/footer" %>
-    <%= render "layouts/signup_modal" unless user_signed_in? %>
-    <div id="cookie-consent"></div>
+  <% unless embedded_view? %>
+    <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{formatted_admin_action_taken_at}-#{request.host}-#{RequestStore.store[:subforem_id]}", expires_in: 24.hours) do %>
+      <%= render "layouts/footer" %>
+      <%= render "layouts/signup_modal" unless user_signed_in? %>
+      <div id="cookie-consent"></div>
+    <% end %>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
   <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
@@ -201,7 +206,7 @@
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
   
-  <% if user_signed_in? && ArticlePolicy.is_root_subforem? %>
+  <% if !embedded_view? && user_signed_in? && ArticlePolicy.is_root_subforem? %>
     <%= render "shared/subforem_selection_modal" %>
   <% end %>
   

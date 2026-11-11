@@ -160,12 +160,22 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
+    enqueue_page_cache_bust(slug, organization_id)
+
+    previous_slug = saved_change_to_slug&.first
+    return if previous_slug.blank? || previous_slug == slug
+
+    previous_org_id = saved_change_to_organization_id ? saved_change_to_organization_id.first : organization_id
+    enqueue_page_cache_bust(previous_slug, previous_org_id)
+  end
+
+  def enqueue_page_cache_bust(target_slug, target_organization_id)
     # Keep the historical single-arg form for non-org pages so the
     # until_executing unique-job lock digest stays stable and jobs coalesce.
-    if organization_id
-      Pages::BustCacheWorker.perform_async(slug, organization_id)
+    if target_organization_id
+      Pages::BustCacheWorker.perform_async(target_slug, target_organization_id)
     else
-      Pages::BustCacheWorker.perform_async(slug)
+      Pages::BustCacheWorker.perform_async(target_slug)
     end
   end
 

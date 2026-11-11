@@ -20,6 +20,7 @@ module ForemTag
   def self.determine_klass(link)
     return TagTag if link.start_with?("#{URL.url}/t/")
     return CommentTag if link.include?("/comment/")
+    return PageTag if PageTag.embeddable_page?(link)
 
     process_other_link_types(link)
   end

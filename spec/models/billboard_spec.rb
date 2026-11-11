@@ -300,6 +300,17 @@ RSpec.describe Billboard do
       raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
       expect(raw_billboard.processed_html).to include "dummyimage.com/100x100\" width=\"\" height=\"\" loading=\"lazy\""
     end
+
+    it "normalizes stray closing tags and unclosed elements so raw HTML cannot break ancestor layout",
+       :aggregate_failures do
+      raw_input = '</div></aside></main><div class="unclosed-banner"><a href="https://example.com">Promo copy'
+      raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw", template: "plain")
+
+      expect(raw_billboard.processed_html).to eq(
+        "<div class=\"unclosed-banner\"><a href=\"https://example.com?bb=#{raw_billboard.id}\">Promo copy</a></div>",
+      )
+      expect(raw_billboard.processed_html).not_to include("</aside>", "</main>")
+    end
   end
 
   context "when render_mode is not set to raw" do
