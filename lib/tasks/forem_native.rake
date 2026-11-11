@@ -82,7 +82,7 @@ namespace :forem_native do
   end
 
   desc "Run throughput (benchmark-ips) and allocation (memory_profiler) benchmarks for forem_native"
-  task benchmark: %i[environment benchmark_extractors benchmark_comment_tree] do
+  task benchmark: %i[environment benchmark_extractors benchmark_comment_tree benchmark_story_cards] do
     require "benchmark/ips"
     require "memory_profiler"
 
@@ -1021,6 +1021,171 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (50-comment ERB partial tree)") { legacy_run.call }
       x.report("Rust Magnus (ForemNative.render_comment_tree)") { native_run.call }
+      x.compare!
+    end
+  end
+
+  desc "Benchmark Story-Card & Tag-Pill HTML rendering engine (60-story feed + tag links)"
+  task benchmark_story_cards: :environment do
+    unless ForemNative::Native.respond_to?(:render_story_cards) && ForemNative::Native.respond_to?(:render_tag_link)
+      raise "Missing native story_card symbols; rebuild with " \
+            "`bundle exec rake forem_native:compile` before benchmarking"
+    end
+
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    InlineSvg::IdGenerator::Randomness.define_singleton_method(:call) { "benchfixed" }
+    Settings::General.define_singleton_method(:app_domain) { "dev.local" } if Settings::General.app_domain.blank?
+
+    controller = StoriesController.new
+    controller.request = ActionDispatch::TestRequest.create
+    controller.response = ActionDispatch::TestResponse.new
+    view = controller.view_context
+    view.define_singleton_method(:user_signed_in?) { true }
+    view.define_singleton_method(:feed_style_preference) { "basic" }
+
+    tag_defs = [
+      ["javascript", "#f7df1e", "#000000"],
+      ["webdev", "#562765", "#ffffff"],
+      ["beginners", "#008335", "#ffffff"],
+      ["programming", "#890606", "#ffffff"],
+      ["tutorial", "#FEFFA5", "#b30047"],
+      ["ai", "#F59E0B", "#000000"],
+      ["rust", "#dea584", "#000000"],
+      ["ruby", "#cc342d", "#ffffff"],
+      ["discuss", "#1ad643", "#ffffff"],
+      ["devops", "#06b900", "#ffffff"],
+    ]
+    preloaded_colors = view.__send__(:preloaded_tag_colors)
+    tag_defs.each do |t_name, bg_hex, text_hex|
+      preloaded_colors[t_name] = { background: bg_hex, color: text_hex }
+    end
+    tag_names_only = tag_defs.map(&:first)
+
+    legacy_tag_batch = lambda do
+      tag_names_only.each do |t_name|
+        view.__send__(:legacy_render_tag_link, t_name, filled: false, monochrome: true)
+      end
+    end
+    native_tag_batch = lambda do
+      tag_names_only.each do |t_name|
+        view.__send__(:native_render_tag_link, t_name, filled: false, monochrome: true)
+      end
+    end
+
+    tag_names_only.each do |t_name|
+      l_pill = view.__send__(:legacy_render_tag_link, t_name, filled: false, monochrome: true)
+      n_pill = view.__send__(:native_render_tag_link, t_name, filled: false, monochrome: true)
+      raise "render_tag_link benchmark parity failure for #{t_name}" unless n_pill == l_pill
+    end
+
+    puts "\n=== Tag-Pill HTML Renderer (`ApplicationHelper#render_tag_link`, 10 pills per call) ==="
+    tag_ruby_mem = MemoryProfiler.report { legacy_tag_batch.call }
+    tag_rust_mem = MemoryProfiler.report { native_tag_batch.call }
+    puts "render_tag_link (10 pills) Ruby Legacy allocations: " \
+         "#{tag_ruby_mem.total_allocated} objects (#{tag_ruby_mem.total_allocated_memsize} bytes)"
+    puts "render_tag_link (10 pills) Rust Magnus allocations: " \
+         "#{tag_rust_mem.total_allocated} objects (#{tag_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (10x link_to + Color::CompareHex)") { legacy_tag_batch.call }
+      x.report("Rust Magnus (10x ForemNative.render_tag_link)") { native_tag_batch.call }
+      x.compare!
+    end
+
+    now = Time.utc(2026, 11, 10, 15, 0, 0)
+    cached_users = (0...15).map do |i|
+      Articles::CachedEntity.new(
+        "Author #{i} \"Systems\" & Co",
+        "author_#{i}",
+        "author_#{i}",
+        "https://dev.to/uploads/user/avatar_#{i}_90.png",
+        "https://dev.to/uploads/user/avatar_#{i}.png",
+        (i % 4).zero?,
+        (i % 7).zero?,
+      )
+    end
+    cached_orgs = (0...4).map do |i|
+      Articles::CachedEntity.new(
+        "Org #{i} & <Team>",
+        "org_slug_#{i}",
+        "org_slug_#{i}",
+        "https://dev.to/uploads/org/logo_#{i}_90.png",
+        "https://dev.to/uploads/org/logo_#{i}.png",
+        false,
+        false,
+      )
+    end
+
+    stories = (0...60).map do |idx|
+      tags_slice = (0...4).map { |k| tag_names_only[(idx + k) % tag_names_only.size] }.uniq
+      has_org = (idx % 3).zero?
+      art = Article.new(
+        id: 10_000 + idx,
+        user_id: 200 + (idx % cached_users.size),
+        organization_id: has_org ? (500 + (idx % cached_orgs.size)) : nil,
+        title: "High-Throughput Rust View Rendering ##{idx}: Zero-Copy Slices & Safety",
+        slug: "high-throughput-rust-view-rendering-#{idx}-#{10_000 + idx}",
+        path: "/author_#{idx % cached_users.size}/high-throughput-rust-view-rendering-#{idx}-#{10_000 + idx}",
+        type_of: (idx % 15 == 14 ? "status" : "full_post"),
+        published: true,
+        published_at: now - (idx * 25).minutes,
+        main_image: idx.zero? ? "https://s3.amazonaws.com/bucket/featured-cover.png" : nil,
+        main_image_height: 420,
+        main_image_background_hex_color: "#2b3a4a",
+        cached_tag_list: tags_slice.join(", "),
+        public_reactions_count: idx % 5,
+        comments_count: idx % 8,
+        reading_time: 1 + (idx % 9),
+        favorited_by_user_id: (idx % 10).zero? ? 999 : nil,
+      )
+      art.cached_user = cached_users[idx % cached_users.size]
+      art.cached_organization = has_org ? cached_orgs[idx % cached_orgs.size] : nil
+      art.processed_html = "<p>Quick status update ##{idx} from production.</p>" if art.type_of == "status"
+      art.association(:context_notes).target = []
+      art.association(:organization).loaded!
+      art.instance_variable_set(
+        :@preloaded_reaction_counts_for_reactable,
+        if art.public_reactions_count.positive?
+          [{ category: "like", count: art.public_reactions_count }, { category: "unicorn", count: 1 }]
+        else
+          []
+        end,
+      )
+      art.decorate
+    end
+
+    viewer = User.new(id: 99_999, username: "viewer_user", name: "Viewer")
+    view.instance_variable_set(:@user, viewer)
+    RequestStore.store[:user_signed_in] = true
+
+    featured_fn = ->(s) { s.id == 10_000 }
+    legacy_feed_run = lambda do
+      view.__send__(:legacy_render_story_cards, stories, featured_for: featured_fn, is_home_feed: true)
+    end
+    native_feed_run = lambda do
+      view.__send__(:native_render_story_cards, stories, featured_for: featured_fn, is_home_feed: true)
+    end
+
+    legacy_feed_html = legacy_feed_run.call
+    native_feed_html = native_feed_run.call
+    raise "Story cards benchmark parity failure (native returned nil)" if native_feed_html.nil?
+    raise "Story cards benchmark parity failure (HTML mismatch)" unless native_feed_html == legacy_feed_html
+
+    puts "\n=== Story-Card Feed HTML Renderer (60-story feed + ~224 tag pills, #{native_feed_html.bytesize} bytes) ==="
+    feed_ruby_mem = MemoryProfiler.report { legacy_feed_run.call }
+    feed_rust_mem = MemoryProfiler.report { native_feed_run.call }
+    puts "render_story_cards (60 stories) Ruby Legacy allocations (1 render): " \
+         "#{feed_ruby_mem.total_allocated} objects (#{feed_ruby_mem.total_allocated_memsize} bytes)"
+    puts "render_story_cards (60 stories) Rust Magnus allocations (1 render): " \
+         "#{feed_rust_mem.total_allocated} objects (#{feed_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (60x articles/_single_story ERB)") { legacy_feed_run.call }
+      x.report("Rust Magnus (ForemNative.render_story_cards)") { native_feed_run.call }
       x.compare!
     end
   end

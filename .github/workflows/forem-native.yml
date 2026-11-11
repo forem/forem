@@ -20,7 +20,11 @@ on:
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/helpers/agent_sessions_helper.rb"
+      - "app/helpers/application_helper.rb"
       - "app/helpers/comments_helper.rb"
+      - "app/helpers/story_card_helper.rb"
+      - "app/views/articles/_single_story.html.erb"
+      - "app/views/articles/_single_story_legacy.html.erb"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
@@ -39,7 +43,10 @@ on:
       - "app/services/images/generate_social_image_magickally.rb"
       - "lib/ISO3166/country.rb"
       - "spec/helpers/agent_sessions_helper_spec.rb"
+      - "spec/helpers/application_helper_spec.rb"
       - "spec/helpers/comments_helper_spec.rb"
+      - "spec/helpers/story_card_helper_spec.rb"
+      - "spec/views/articles/_single_story.html.erb_spec.rb"
       - "spec/lib/forem_native_spec.rb"
       - "spec/lib/redcarpet/render/html_rouge_spec.rb"
       - "spec/models/billboard_spec.rb"
@@ -152,5 +159,7 @@ jobs:
             raise "Unexpected single-brace attr highlight!" unless ForemNative.syntax_highlight_code_block("<div class={cls} />", "html").include?("highlight html")
             raise "Unexpected social_image_draw_background!" unless ForemNative.social_image_draw_background("#3333ff", []).width == 1200
             raise "Unexpected render_comment_tree!" unless ForemNative::Native.respond_to?(:render_comment_tree) && ForemNative.render_comment_tree([], [], [], [], 0).nil?
+            raise "Unexpected render_tag_link!" unless ForemNative.render_tag_link("rust", "rust", "#dea584", monochrome: true).include?("href=\"/t/rust\"")
+            raise "Unexpected render_story_cards!" unless ForemNative::Native.respond_to?(:render_story_cards) && ForemNative.render_story_cards([], [], [], [], []).nil?
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
