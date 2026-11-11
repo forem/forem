@@ -24,7 +24,7 @@ module Ai
       @article = article
       @criteria = criteria
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: article,
                                 affected_user: article.user)
@@ -35,7 +35,7 @@ module Ai
     #
     # @return [Boolean] true if the article qualifies, false otherwise.
     def qualifies?
-      return qualifies_via_jev? if @selection.jev?
+      return qualifies_via_jev? if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -51,8 +51,8 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def qualifies_via_jev?
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @article,
-                                        affected_user: @article.user)
+      client = @selection.decision_client(wrapper: self, affected_content: @article,
+                                          affected_user: @article.user)
       result = client.evaluate(state: jev_state, questions: jev_questions)
 
       result.noul(:meets_criteria) >= QUALIFIES &&

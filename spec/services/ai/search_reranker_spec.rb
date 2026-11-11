@@ -114,6 +114,14 @@ RSpec.describe Ai::SearchReranker do
     end
   end
 
+  it "re-ranks shortlist candidates via Gemini Decision using GEMINI_API_KEY without needing a TypeSafe key" do
+    stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", nil)
+    enable_gemini_decision_for(:semantic_search_reranking)
+    stub_gemini_decision("candidate::#{article_two.id}" => 0.95)
+
+    expect(reranker.rerank).to eq([article_two, article_one, article_three])
+  end
+
   it "does not call Jev when :semantic_search_reranking is off, even with a TypeSafe key" do
     stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", "test-typesafe-key")
     allow(Ai::TypeSafe::Client).to receive(:new)
