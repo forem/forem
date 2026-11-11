@@ -33,6 +33,7 @@ class OrganizationEmbedsController < ActionController::Metal
     discard_session_and_cookies!
     apply_base_headers
 
+    return render_plain_error(404, "Not Found") unless Settings::UserExperience.public
     return render_plain_error(404, "Not Found") unless request.GET["mode"] == "embed"
     return render_plain_error(403, "Forbidden: embed only") if forbidden_fetch_destination?
 
@@ -68,11 +69,16 @@ class OrganizationEmbedsController < ActionController::Metal
   end
 
   def find_org_embed_page(organization, suffix)
-    slugs = [organization.slug, organization.old_slug, organization.old_old_slug]
+    current_page = organization.pages.embed_html.find_by(slug: "#{organization.slug}/embed/#{suffix}")
+    return current_page if current_page
+
+    legacy_slugs = [organization.old_slug, organization.old_old_slug]
       .compact_blank
       .uniq
       .map { |slug| "#{slug}/embed/#{suffix}" }
-    organization.pages.embed_html.find_by(slug: slugs)
+    return if legacy_slugs.empty?
+
+    organization.pages.embed_html.find_by(slug: legacy_slugs)
   end
 
   def apply_base_headers
@@ -94,11 +100,6 @@ class OrganizationEmbedsController < ActionController::Metal
   end
 
   def apply_cache_headers(organization, page)
-    unless Settings::UserExperience.public
-      response.headers["Cache-Control"] = "private, no-store"
-      return
-    end
-
     max_age = (ApplicationConfig["EDGE_CACHE_DURATION_IN_HOURS"] || 24).to_i.hours.to_i
     surrogate_keys = ["show-page-#{page.slug}", organization.record_key]
       .filter_map { |key| key.to_s.delete("\r\n").strip.presence }

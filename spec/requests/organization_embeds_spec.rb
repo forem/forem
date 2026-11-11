@@ -95,6 +95,22 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
 
       expect(liquid_embed_page.processed_html).to eq("<p>{% org_posts #{organization.slug} %}</p>")
     end
+
+    it "rejects blank slugs on embed_html pages" do
+      invalid_page = build(
+        :page,
+        organization: organization,
+        title: "Missing Slug",
+        description: "desc",
+        slug: nil,
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<p>Hello</p>",
+      )
+
+      expect(invalid_page).not_to be_valid
+      expect(invalid_page.errors[:slug]).to be_present
+    end
   end
 
   describe "GET /:org_slug/embed/:slug_suffix" do
@@ -166,7 +182,18 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(response.body).not_to include("ROI Calculator")
     end
 
-    it "continues serving embeds when the organization renames its slug" do
+    it "returns 404 when the Forem instance is private" do
+      allow(Settings::UserExperience).to receive(:public).and_return(false)
+
+      get "/#{organization.slug}/embed/roi-calculator",
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include("ROI Calculator")
+    end
+
+    it "serves embeds after an org slug rename and prefers the current slug", :aggregate_failures do
       old_slug = organization.slug
       organization.update!(slug: "acme-renamed")
 
@@ -176,11 +203,44 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to eq(custom_html)
 
+      replacement = create(
+        :page,
+        organization: organization,
+        title: "Replacement Calculator",
+        description: "New widget",
+        slug: "acme-renamed/embed/roi-calculator",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div>Replacement Widget</div>",
+      )
+
       get "/acme-renamed/embed/roi-calculator",
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to eq(custom_html)
+      expect(response.body).to eq(replacement.body_html)
+    end
+
+    it "preserves article action routes when an article literally has slug 'embed'", :aggregate_failures do
+      expect(Rails.application.routes.recognize_path("/alice/embed/edit", method: :get))
+        .to include(controller: "articles", action: "edit", username: "alice", slug: "embed")
+
+      edit_embed = create(
+        :page,
+        organization: organization,
+        title: "Edit Widget",
+        description: "desc",
+        slug: "#{organization.slug}/embed/edit",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div>Edit Embed Widget</div>",
+      )
+
+      get "/#{organization.slug}/embed/edit",
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq(edit_embed.body_html)
     end
   end
 

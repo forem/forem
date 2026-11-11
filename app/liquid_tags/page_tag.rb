@@ -201,16 +201,22 @@ class PageTag < LiquidTagBase
   private_class_method :resolve_organization_embed_page
 
   def self.find_org_embed_page(org, normalized_suffix)
-    slugs = [org.slug, org.old_slug, org.old_old_slug]
+    current_page = org.pages.embed_html.find_by(slug: "#{org.slug}/embed/#{normalized_suffix}")
+    return current_page if current_page
+
+    legacy_slugs = [org.old_slug, org.old_old_slug]
       .compact_blank
       .uniq
       .map { |slug| "#{slug}/embed/#{normalized_suffix}" }
-    org.pages.embed_html.find_by(slug: slugs)
+    return if legacy_slugs.empty?
+
+    org.pages.embed_html.find_by(slug: legacy_slugs)
   end
   private_class_method :find_org_embed_page
 
   def self.embeddable_org_html_record?(page)
-    page.embed_html? &&
+    Settings::UserExperience.public &&
+      page.embed_html? &&
       page.redirect_to_url.blank? &&
       FeatureFlag.accessible?(page.feature_flag_name)
   end

@@ -127,10 +127,8 @@ class Page < ApplicationRecord
     elsif body_markdown.present?
       renderer = ContentRenderer.new(body_markdown, source: organization)
       self.processed_html = renderer.process(link_attributes: link_attributes_for_org).processed_html
-    elsif organization_id.nil?
-      self.processed_html = body_html
     else
-      self.processed_html = ""
+      self.processed_html = body_html
     end
   rescue ContentRenderer::ContentParsingError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
@@ -164,7 +162,10 @@ class Page < ApplicationRecord
   end
 
   def validate_embed_html_slug
-    return if slug.blank?
+    if slug.blank?
+      errors.add(:slug, I18n.t("models.page.embed_html_invalid_slug"))
+      return
+    end
 
     valid_format = slug.match?(%r{\A[a-z0-9_\-]+/embed/[a-z0-9\-]+\z})
     expected_prefix = "#{organization.slug}/embed/"

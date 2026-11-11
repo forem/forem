@@ -589,10 +589,17 @@ Rails.application.routes.draw do
       post "dev_tools/sign_in_as", to: "dev_tools#sign_in_as"
     end
 
+    article_subpaths = %w[
+      comments moderate admin mod actions_panel manage edit
+      delete_confirm discussion_lock_confirm discussion_unlock_confirm stats
+    ].freeze
+    embed_route_constraint = lambda do |req|
+      req.GET["mode"] == "embed" || article_subpaths.exclude?(req.path_parameters[:slug_suffix])
+    end
     get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"
     get "/:org_slug/embed/:slug_suffix", to: "organization_embeds#show",
                                          as: :organization_embed_page,
-                                         constraints: { format: /html/ }
+                                         constraints: embed_route_constraint
 
     # serviceworkers
     get "/serviceworker", to: "service_worker#index"

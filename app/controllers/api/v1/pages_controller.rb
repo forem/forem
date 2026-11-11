@@ -116,7 +116,8 @@ module Api
       end
 
       def set_page
-        @page = Page.non_embed_html.find(params[:id])
+        @page = Page.find(params[:id])
+        raise ActiveRecord::RecordNotFound if @page.is_a?(Page) && @page.embed_html?
       end
 
       def page_admin?
