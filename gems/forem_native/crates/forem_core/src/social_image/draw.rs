@@ -303,7 +303,7 @@ impl<'a> SvgPathCursor<'a> {
             }
         }
         let s = std::str::from_utf8(&self.bytes[start..self.pos]).ok()?;
-        s.parse::<f64>().ok()
+        s.parse::<f64>().ok().filter(|v| v.is_finite())
     }
 
     fn read_flag(&mut self) -> Option<bool> {
@@ -443,19 +443,24 @@ fn flatten_svg_arc(
     out.push(p1);
 }
 
+/// Maximum flattened vertices retained per SVG `<path>` to bound memory/CPU on adversarial inputs.
+const MAX_SVG_PATH_POINTS: usize = 65_536;
+
 /// Parses an SVG `d` path data string (`M/m`, `L/l`, `H/h`, `V/v`, `C/c`, `S/s`, `Q/q`,
 /// `T/t`, `A/a`, `Z/z`) into flattened [`Subpath`]s ready for rasterization.
 pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
     let mut cursor = SvgPathCursor::new(d);
     let mut subpaths: Vec<Subpath> = Vec::new();
     let mut cur_pts: Vec<Point> = Vec::new();
+    let mut total_pts = 0usize;
     let mut cur = Point::new(0.0, 0.0);
     let mut subpath_start = Point::new(0.0, 0.0);
     let mut last_cubic_ctrl: Option<Point> = None;
     let mut last_quad_ctrl: Option<Point> = None;
 
-    let flush_open = |pts: &mut Vec<Point>, out: &mut Vec<Subpath>| {
+    let flush_open = |pts: &mut Vec<Point>, out: &mut Vec<Subpath>, total: &mut usize| {
         if pts.len() >= 2 {
+            *total += pts.len();
             out.push(Subpath {
                 points: std::mem::take(pts),
                 closed: false,
@@ -466,10 +471,13 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
     };
 
     while let Some(cmd) = cursor.next_command() {
+        if total_pts + cur_pts.len() >= MAX_SVG_PATH_POINTS {
+            break;
+        }
         let rel = cmd.is_ascii_lowercase();
         match cmd.to_ascii_uppercase() {
             b'M' => {
-                flush_open(&mut cur_pts, &mut subpaths);
+                flush_open(&mut cur_pts, &mut subpaths, &mut total_pts);
                 let Some(mut x) = cursor.read_number() else {
                     break;
                 };
@@ -485,7 +493,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
                 cur_pts.push(cur);
                 last_cubic_ctrl = None;
                 last_quad_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(mut lx), Some(mut ly)) = (cursor.read_number(), cursor.read_number())
                     else {
                         break;
@@ -501,7 +509,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             b'L' => {
                 last_cubic_ctrl = None;
                 last_quad_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
                     else {
                         break;
@@ -520,7 +528,10 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             b'H' => {
                 last_cubic_ctrl = None;
                 last_quad_ctrl = None;
-                while let Some(mut x) = cursor.read_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS {
+                    let Some(mut x) = cursor.read_number() else {
+                        break;
+                    };
                     if rel {
                         x += cur.x;
                     }
@@ -534,7 +545,10 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             b'V' => {
                 last_cubic_ctrl = None;
                 last_quad_ctrl = None;
-                while let Some(mut y) = cursor.read_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS {
+                    let Some(mut y) = cursor.read_number() else {
+                        break;
+                    };
                     if rel {
                         y += cur.y;
                     }
@@ -547,7 +561,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             }
             b'C' => {
                 last_quad_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(mut x1), Some(mut y1)) = (cursor.read_number(), cursor.read_number())
                     else {
                         break;
@@ -581,7 +595,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             }
             b'S' => {
                 last_quad_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(mut x2), Some(mut y2)) = (cursor.read_number(), cursor.read_number())
                     else {
                         break;
@@ -612,7 +626,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             }
             b'Q' => {
                 last_cubic_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(mut x1), Some(mut y1)) = (cursor.read_number(), cursor.read_number())
                     else {
                         break;
@@ -639,7 +653,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             }
             b'T' => {
                 last_cubic_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
                     else {
                         break;
@@ -664,7 +678,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             b'A' => {
                 last_cubic_ctrl = None;
                 last_quad_ctrl = None;
-                while cursor.has_number() {
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
                     let (Some(rx), Some(ry), Some(rot)) = (
                         cursor.read_number(),
                         cursor.read_number(),
@@ -699,6 +713,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
                     if !is_closed(&cur_pts) {
                         cur_pts.push(subpath_start);
                     }
+                    total_pts += cur_pts.len();
                     subpaths.push(Subpath {
                         points: std::mem::take(&mut cur_pts),
                         closed: true,
@@ -709,7 +724,7 @@ pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
             _ => break,
         }
     }
-    flush_open(&mut cur_pts, &mut subpaths);
+    flush_open(&mut cur_pts, &mut subpaths, &mut total_pts);
     subpaths
 }
 
@@ -1489,7 +1504,12 @@ pub fn draw_subpaths_styled(
     style: StrokeStyle,
     rule: FillRule,
 ) {
-    let valid_any = subpaths.iter().any(|s| s.points.len() >= 2);
+    if canvas.width == 0 || canvas.height == 0 || !style.width.is_finite() {
+        return;
+    }
+    let valid_any = subpaths.iter().any(|s| {
+        s.points.len() >= 2 && s.points.iter().all(|p| p.x.is_finite() && p.y.is_finite())
+    });
     if !valid_any {
         return;
     }

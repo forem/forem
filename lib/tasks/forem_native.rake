@@ -1195,27 +1195,152 @@ namespace :forem_native do
   desc "Benchmark pure-Rust image manipulation & avatar rendering kernels (forem_core::image_ops & avatar)"
   task benchmark_image_ops: :environment do
     require "benchmark/ips"
+    require "exifr/jpeg"
     require "memory_profiler"
+    require "open3"
+    require "tempfile"
 
     avatar_traits = Images::ProfileImageGenerator.__send__(:select_traits, Random.new(42))
     gif_bytes = Rails.root.join("spec/fixtures/files/high_frame_count.gif").binread
-    gps_jpg_bytes = Rails.root.join("spec/fixtures/files/image_gps_data.jpg").binread
-    png_bytes = Rails.root.join("spec/fixtures/files/800x600.png").binread
-    svg_bytes = Rails.root.join("app/assets/images/forem-icon.svg").binread
-    social_template_bytes = Rails.root.join("app/assets/images/social_template.png").binread
+    gps_jpg_path = Rails.root.join("spec/fixtures/files/image_gps_data.jpg").to_s
+    gps_jpg_bytes = File.binread(gps_jpg_path)
+    png_path = Rails.root.join("spec/fixtures/files/800x600.png").to_s
+    png_bytes = File.binread(png_path)
+    svg_path = Rails.root.join("app/assets/images/forem-icon.svg").to_s
+    svg_bytes = File.binread(svg_path)
+    social_template_path = Rails.root.join("app/assets/images/social_template.png").to_s
+    social_template_bytes = File.binread(social_template_path)
     svg_font_path = BaseUploader::DEFAULT_SVG_FONT_PATH
+
+    # Benchmark-only pure-Ruby legacy reference oracles for container inspection & JPEG EXIF stripping
+    legacy_gif_inspect = lambda do |bytes|
+      pos = 13
+      packed = bytes.getbyte(10)
+      pos += 3 * (1 << ((packed & 0x07) + 1)) if (packed & 0x80) != 0
+      frames = 0
+      len = bytes.bytesize
+      while pos < len
+        introducer = bytes.getbyte(pos)
+        pos += 1
+        case introducer
+        when 0x3B then break
+        when 0x21
+          pos += 1
+          while pos < len && (sub_len = bytes.getbyte(pos)).positive?
+            pos += 1 + sub_len
+          end
+          pos += 1
+        when 0x2C
+          frames += 1
+          local_packed = bytes.getbyte(pos + 8)
+          pos += 9
+          pos += 3 * (1 << ((local_packed & 0x07) + 1)) if local_packed && (local_packed & 0x80) != 0
+          pos += 1
+          while pos < len && (sub_len = bytes.getbyte(pos)).positive?
+            pos += 1 + sub_len
+          end
+          pos += 1
+        else
+          break
+        end
+      end
+      frames
+    end
+
+    legacy_jpeg_strip = lambda do |bytes|
+      io = StringIO.new(bytes)
+      _orient = EXIFR::JPEG.new(io).orientation&.to_i || 1
+      out = +"\xFF\xD8".b
+      pos = 2
+      len = bytes.bytesize
+      while pos + 1 < len && bytes.getbyte(pos) == 0xFF
+        marker = bytes.getbyte(pos + 1)
+        pos += 2
+        next if marker == 0xFF
+
+        if marker == 0xD9
+          out << "\xFF\xD9".b
+          break
+        end
+        if marker == 0xDA
+          out << "\xFF\xDA".b << bytes.byteslice(pos, len - pos)
+          break
+        end
+        seg_len = bytes.byteslice(pos, 2).unpack1("n")
+        drop = (0xE1..0xEF).cover?(marker) || marker == 0xFE
+        out << "\xFF".b << [marker].pack("C") << bytes.byteslice(pos, seg_len) unless drop
+        pos += seg_len
+      end
+      out
+    end
+
+    puts "\n=== Paired Ruby Reference vs. Rust Magnus (`forem_core::image_ops`) ==="
+    [
+      [
+        "GIF Frame Inspection (high_frame_count.gif)",
+        -> { legacy_gif_inspect.call(gif_bytes) },
+        -> { ForemNative.image_inspect(gif_bytes)[:frame_count] },
+      ],
+      [
+        "JPEG EXIF Inspection + Strip (image_gps_data.jpg)",
+        -> { legacy_jpeg_strip.call(gps_jpg_bytes) },
+        -> { ForemNative.image_strip_and_auto_orient(gps_jpg_bytes) },
+      ],
+    ].each do |title, ruby_fn, rust_fn|
+      ruby_fn.call
+      rust_fn.call
+      ruby_mem = MemoryProfiler.report { 10.times { ruby_fn.call } }
+      rust_mem = MemoryProfiler.report { 10.times { rust_fn.call } }
+      puts "\n-- #{title} --"
+      puts "Ruby Legacy allocations (10 calls): #{ruby_mem.total_allocated} objects " \
+           "(#{ruby_mem.total_allocated_memsize} bytes)"
+      puts "Rust Magnus allocations (10 calls): #{rust_mem.total_allocated} objects " \
+           "(#{rust_mem.total_allocated_memsize} bytes)"
+      Benchmark.ips do |x|
+        x.config(time: 1.5, warmup: 0.5)
+        x.report("Ruby Legacy (#{title})") { ruby_fn.call }
+        x.report("Rust Magnus (#{title})") { rust_fn.call }
+        x.compare!
+      end
+    end
+
+    # Optional paired ImageMagick CLI subprocess comparison when `magick` or `convert` is installed locally
+    im_cmd = if system("magick", "-version", out: File::NULL, err: File::NULL)
+               ["magick"]
+             elsif system("convert", "-version", out: File::NULL, err: File::NULL)
+               ["convert"]
+             end
+    if im_cmd
+      puts "\n=== Paired ImageMagick CLI Subprocess vs. Rust Magnus (`resize_to_fill`) ==="
+      im_resize_fn = lambda do
+        Tempfile.create(["im_bench", ".png"]) do |tmp|
+          system(*im_cmd, png_path, "-resize", "128x128^", "-gravity", "Center", "-extent", "128x128", tmp.path,
+                 out: File::NULL, err: File::NULL)
+          File.binread(tmp.path)
+        end
+      end
+      rust_resize_fn = -> { ForemNative.image_resize_to_fill(png_bytes, 128, 128) }
+      im_mem = MemoryProfiler.report { 5.times { im_resize_fn.call } }
+      rust_mem = MemoryProfiler.report { 5.times { rust_resize_fn.call } }
+      puts "ImageMagick CLI allocations (5 calls): #{im_mem.total_allocated} objects " \
+           "(#{im_mem.total_allocated_memsize} bytes)"
+      puts "Rust Magnus allocations     (5 calls): #{rust_mem.total_allocated} objects " \
+           "(#{rust_mem.total_allocated_memsize} bytes)"
+      Benchmark.ips do |x|
+        x.config(time: 1.5, warmup: 0.5)
+        x.report("ImageMagick CLI (800x600 -> 128x128)") { im_resize_fn.call }
+        x.report("Rust Magnus     (800x600 -> 128x128)") { rust_resize_fn.call }
+        x.compare!
+      end
+    end
 
     ops = {
       "render_profile_image_png (400x400 mascot)" =>
         -> { ForemNative.render_profile_image_png(avatar_traits) },
-      "image_inspect (animated GIF frame_count)" =>
-        -> { ForemNative.image_inspect(gif_bytes)[:frame_count] },
-      "image_strip_and_auto_orient (JPEG GPS strip)" =>
-        -> { ForemNative.image_strip_and_auto_orient(gps_jpg_bytes) },
       "image_resize_to_fill (800x600 -> 128x128 PNG)" =>
         -> { ForemNative.image_resize_to_fill(png_bytes, 128, 128) },
       "image_convert_to_png (SVG -> PNG)" =>
-        -> { ForemNative.image_convert_to_png(svg_bytes, font_path: svg_font_path) },
+        -> { ForemNative.image_convert_to_png(svg_bytes, font_path: svg_font_path, reject_blank: true) },
       "subforem_social_image_png (1000x500 composite)" =>
         -> { ForemNative.subforem_social_image_png(png_bytes, social_template_bytes, custom_background: false) }
     }
