@@ -1,0 +1,54 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 23,25-27,46,48-49,162-163
+app/helpers/application_helper.rb
+  h_f968154a99632d 2-3,513-514,598-674
+app/helpers/story_card_helper.rb
+  h_f968154a99632d 1-520
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 1
+app/views/articles/_single_story_legacy.html.erb
+  h_f968154a99632d 1-258
+app/views/collections/show.html.erb
+  h_f968154a99632d 20
+app/views/liquids/_feed.html.erb
+  h_f968154a99632d 2
+app/views/liquids/_org_posts.html.erb
+  h_f968154a99632d 2
+app/views/organizations/_main_feed.html.erb
+  h_f968154a99632d 11,16
+app/views/stories/_main_stories_feed.html.erb
+  h_f968154a99632d 23,28,38,41-42,50-51,58,63
+app/views/stories/tagged_articles/_main_feed.html.erb
+  h_f968154a99632d 2
+app/views/trends/show.html.erb
+  h_f968154a99632d 40
+app/views/users/_main_feed.html.erb
+  h_f968154a99632d 11,16,19
+docs/rust_native_extensions.md
+  h_f968154a99632d 124-135
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 25
+gems/forem_native/crates/forem_core/src/story_card.rs
+  h_f968154a99632d 1-1404
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 4420-4670,5117-5118
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1550-1579
+lib/tasks/forem_native.rake
+  h_f968154a99632d 85,1027-1191
+spec/helpers/story_card_helper_spec.rb
+  h_f968154a99632d 1-79
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 6491-6734
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a48681b1751739c300d112e26756203bc25caffc",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
