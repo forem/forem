@@ -37,7 +37,8 @@
       document.body.classList.add("dev-ios-native-body");
     }
 
-    if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
+    const isEmbeddedFrame = window.frameElement || (function() { try { return window.self !== window.top; } catch (e) { return true; } })() || new URLSearchParams(window.location.search).get('mode') === 'embed';
+    if (navigator.userAgent === 'ForemWebView/1' || isEmbeddedFrame) {
       document.body.classList.add("hidden-shell");
     }
 

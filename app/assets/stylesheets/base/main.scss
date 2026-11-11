@@ -15,7 +15,10 @@ body {
     padding-top: 0 !important;
 
     .crayons-header,
-    .crayons-footer {
+    .crayons-footer,
+    .crayons-side-nav,
+    #active-broadcast,
+    #cookie-consent {
       display: none;
     }
     .hidden-shell-innerhidden {

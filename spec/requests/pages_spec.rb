@@ -578,4 +578,90 @@ RSpec.describe "Pages" do
       end
     end
   end
+
+  describe "Embedded page mode (?mode=embed)" do
+    it "renders a contained page without navigation chrome while preserving content and surrogate keys" do
+      page = create(:page, slug: "embedded-contained", title: "Embedded Contained Page", body_markdown: "Embedded body text")
+
+      get "/page/#{page.slug}", params: { mode: "embed" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+      expect(response.body).to include("hidden-shell")
+      expect(response.body).to include("Embedded Contained Page")
+      expect(response.body).to include("Embedded body text")
+      expect(response.body).not_to include('class="crayons-header')
+      expect(response.body).not_to include('class="crayons-footer')
+      expect(response.body).not_to include("page_fixed_bottom")
+    end
+
+    it "omits the left sidebar on nav_bar_included pages when embedded" do
+      page = create(
+        :page,
+        slug: "embedded-with-nav",
+        title: "Embedded Nav Page",
+        template: "nav_bar_included",
+        body_markdown: "Main embedded content",
+      )
+
+      get "/page/#{page.slug}", params: { mode: "embed" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Main embedded content")
+      expect(response.body).not_to include("crayons-layout--2-cols")
+      expect(response.body).not_to include('class="crayons-header')
+    end
+
+    it "renders top-level and static pages without chrome when ?mode=embed is passed", :aggregate_failures do
+      top_page = create(:page, slug: "top-embedded", title: "Top Embedded", is_top_level_path: true, body_markdown: "Top content")
+
+      get "/#{top_page.slug}", params: { mode: "embed" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Top content")
+      expect(response.body).to include("hidden-shell")
+      expect(response.body).not_to include('class="crayons-header')
+
+      get "/about", params: { mode: "embed" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("hidden-shell")
+      expect(response.body).not_to include('class="crayons-header')
+    end
+
+    it "renders organization custom pages without the org header or custom-domain redirect when embedded" do
+      organization = create(:organization, slug: "embed-org", custom_domain: "custom.embed-org.example")
+      FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
+      create(:article, organization: organization, score: 5)
+      create(
+        :page,
+        organization: organization,
+        slug: "embed-org/showcase",
+        title: "Org Showcase",
+        template: "full_within_layout",
+        body_markdown: "Organization embedded body",
+      )
+
+      get "/#{organization.slug}/p/showcase", params: { mode: "embed" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Organization embedded body")
+      expect(response.body).to include("hidden-shell")
+      expect(response.body).not_to include('class="crayons-header')
+      expect(response.body).not_to include("profile-header")
+    ensure
+      FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization]) if organization
+      FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor[organization]) if organization
+    end
+
+    it "preserves ?mode=embed when redirecting to a page's subforem domain" do
+      target_subforem = create(:subforem, domain: "target.example.com")
+      other_subforem = create(:subforem, domain: "other.example.com")
+      page = create(:page, slug: "subforem-embed", subforem_id: target_subforem.id)
+
+      get "/page/#{page.slug}", params: { mode: "embed" }, headers: { "Host" => other_subforem.domain }
+
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response.headers["Location"]).to end_with("/page/#{page.slug}?mode=embed")
+    end
+  end
 end
