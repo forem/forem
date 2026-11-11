@@ -58,6 +58,22 @@ RSpec.describe "Custom Domain Iframe Auth Redirect", type: :request do
         expect(response.body).to include("var redirectUrl = 'http://forem.com/mlh/p/about'")
         expect(response.body).to include("window.location.replace(redirectUrl)")
       end
+
+      it "includes history.replaceState cleanup for cd_anon and strips cd_anon from fallback redirect URL" do
+        get "http://blog.mlh.com/p/about?sort=top&cd_anon=1"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('cleanCdUrl.searchParams.delete("cd_anon")')
+        expect(response.body).to include("window.history.replaceState")
+        expect(response.body).to include("var redirectUrl = 'http://forem.com/mlh/p/about?sort=top'")
+      end
+
+      it "omits the auth-redirect iframe script on embedded custom pages (?mode=embed)" do
+        get "http://blog.mlh.com/p/about?mode=embed"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("auth_pass/iframe")
+      end
     end
   end
 

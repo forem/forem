@@ -17,6 +17,7 @@ class OrgCustomDomainConstraint
     feedback_messages
     feed_events
     followed_articles
+    lead_submissions
     packs
     poll_votes
     rails

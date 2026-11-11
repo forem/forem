@@ -1,9 +1,10 @@
-<link rel="canonical" href="<%= user_url(@user) %>" />
+<% canonical_profile_url = profile_canonical_url(@user, organization: @organization, org_page: @org_page) %>
+<link rel="canonical" href="<%= canonical_profile_url %>" />
 <meta name="description" content="<%= @user.tag_line %>">
 <%= meta_keywords_default %>
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content="<%= user_url(@user) %>" />
+<meta property="og:url" content="<%= canonical_profile_url %>" />
 <meta property="og:title" content="<%= t("views.users.meta.og.title", user: @user.name, community: community_name) %>" />
 <meta property="og:image" content="<%= user_social_image_url(@user) %>" />
 <meta property="og:description" content="<%= @user.tag_line %>" />

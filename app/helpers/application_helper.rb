@@ -478,6 +478,20 @@ module ApplicationHelper
     URL.user(user)
   end
 
+  def profile_canonical_url(user, organization: nil, org_page: nil)
+    if org_page.present? && organization.present? && params[:page_suffix].present?
+      subpath = "/p/#{params[:page_suffix]}"
+      if organization.custom_domain.present? &&
+          FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        return URL.url(subpath, organization.custom_domain)
+      end
+
+      return URL.url("/#{organization.slug}#{subpath}")
+    end
+
+    user_url(user)
+  end
+
   def organization_url(organization)
     URL.organization(organization)
   end
@@ -568,7 +582,8 @@ module ApplicationHelper
     return unless custom_org.present?
 
     path = request.path.to_s
-    query = request.query_string.present? ? "?#{request.query_string}" : ""
+    clean_query = request.query_string.to_s.gsub(/(^|&)cd_anon=[^&]*/, "").sub(/\A&+/, "")
+    query = clean_query.present? ? "?#{clean_query}" : ""
     main_path = if path == "/" || path.blank?
                   "/#{custom_org.slug}"
                 elsif path.start_with?("/p/")

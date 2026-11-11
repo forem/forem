@@ -1,7 +1,7 @@
 module FastlyConfig
   # Handles updates to our Fastly configurations
   class Update
-    FASTLY_CONFIGS = %w[Snippets].freeze
+    FASTLY_CONFIGS = %w[Dictionaries Snippets].freeze
 
     def self.call
       new.run

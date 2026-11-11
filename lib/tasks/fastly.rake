@@ -16,6 +16,17 @@ namespace :fastly do
       end
 
       FastlyConfig::Update.call
+      FastlyConfig::CustomDomainDictionary.sync_all!
     end
+  end
+
+  desc "Sync custom domain organizations to Fastly Edge Dictionary"
+  task sync_custom_domains: :environment do
+    unless FastlyConfig::CustomDomainDictionary.configured?
+      Rails.logger.info("Fastly not configured. Please set FASTLY_API_KEY, FASTLY_SERVICE_ID in your environment.")
+      next
+    end
+
+    FastlyConfig::CustomDomainDictionary.sync_all!
   end
 end

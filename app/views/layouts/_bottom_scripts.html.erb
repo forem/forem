@@ -24,6 +24,9 @@
 
   function initAuth() {
     <% if custom_domain_redirect_url.present? %>
+      if (typeof isEmbeddedFrame !== 'undefined' && isEmbeddedFrame) {
+        return;
+      }
       var iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = '<%= default_url_component unless user_signed_in? %>/auth_pass/iframe?passed_domain=' + encodeURIComponent(window.location.origin || (window.location.protocol + '//' + window.location.host));

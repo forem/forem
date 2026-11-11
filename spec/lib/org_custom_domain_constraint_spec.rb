@@ -114,6 +114,20 @@ RSpec.describe OrgCustomDomainConstraint do
         expect(constraint.matches?(auth_request)).to be false
       end
 
+      it "returns false for platform paths like /lead_submissions" do
+        lead_request = instance_double(
+          ActionDispatch::Request,
+          host: host,
+          env: env,
+          path: "/lead_submissions/check",
+          accept: "application/json",
+          headers: {},
+          params: {},
+          xhr?: false,
+        )
+        expect(constraint.matches?(lead_request)).to be false
+      end
+
       it "returns false for the platform agent-guidance path" do
         llms_request = instance_double(
           ActionDispatch::Request,

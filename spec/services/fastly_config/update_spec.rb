@@ -32,6 +32,10 @@ RSpec.describe FastlyConfig::Update, type: :service do
       expect { fastly_updater.run(configs: ["Invalid config"]) }.to raise_error(FastlyConfig::Errors::InvalidConfig)
     end
 
+    it "orders Dictionaries before Snippets in FASTLY_CONFIGS" do
+      expect(described_class::FASTLY_CONFIGS).to eq(%w[Dictionaries Snippets])
+    end
+
     it "doesn't update if the params haven't changed" do
       stub_const("#{described_class}::FASTLY_CONFIGS", ["Snippets"])
       snippet_handler = instance_double FastlyConfig::Snippets

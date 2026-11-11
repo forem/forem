@@ -32,4 +32,38 @@ RSpec.describe Flipper do
     expect(dsl_worker_thread.adapter.adapter).to be_a(Flipper::Adapters::ActiveSupportCacheStore)
     expect(dsl_main.adapter.adapter.cache).to equal(dsl_worker_thread.adapter.adapter.cache)
   end
+
+  describe "org_custom_domain Fastly dictionary sync hook" do
+    let!(:organization) { create(:organization, slug: "syncorg", custom_domain: "blog.syncorg.com") }
+
+    before do
+      allow(FastlyConfig::CustomDomainDictionary).to receive(:configured?).and_return(true)
+      allow(Organizations::SyncCustomDomainDictionaryWorker).to receive(:perform_async)
+    end
+
+    it "enqueues single-organization sync when org_custom_domain is toggled for an actor" do
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      expect(Organizations::SyncCustomDomainDictionaryWorker).to have_received(:perform_async).with(organization.id)
+
+      FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      expect(Organizations::SyncCustomDomainDictionaryWorker)
+        .to have_received(:perform_async).with(organization.id).twice
+    end
+
+    it "enqueues full dictionary sync when org_custom_domain is toggled globally or removed" do
+      FeatureFlag.enable(:org_custom_domain)
+      expect(Organizations::SyncCustomDomainDictionaryWorker)
+        .to have_received(:perform_async).with(no_args).at_least(:once)
+
+      allow(Organizations::SyncCustomDomainDictionaryWorker).to receive(:perform_async)
+      FeatureFlag.remove(:org_custom_domain)
+      expect(Organizations::SyncCustomDomainDictionaryWorker)
+        .to have_received(:perform_async).with(no_args).at_least(:once)
+    end
+
+    it "does not enqueue dictionary sync for unrelated feature flags" do
+      FeatureFlag.enable(:org_readme, FeatureFlag::Actor.new(organization))
+      expect(Organizations::SyncCustomDomainDictionaryWorker).not_to have_received(:perform_async)
+    end
+  end
 end

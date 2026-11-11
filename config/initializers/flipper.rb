@@ -1,3 +1,9 @@
+require Rails.root.join("lib/flipper_org_custom_domain_sync")
+
+unless Flipper::Adapters::ActiveRecord <= FlipperOrgCustomDomainSync
+  Flipper::Adapters::ActiveRecord.prepend(FlipperOrgCustomDomainSync)
+end
+
 Flipper.configure do |config|
   # Share a process-wide thread-safe MemoryStore (keyed by TTL) across all threads
   # instead of allocating a cold MemoryStore per thread via `Thread.current[:flipper_instance]`.
