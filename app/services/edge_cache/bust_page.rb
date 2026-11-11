@@ -7,7 +7,7 @@ module EdgeCache
       # (`/page/:slug`, `/:slug`, `/:slug/`, and InstantClick `?i=` fetches), and
       # organization pages also carry the organization's surrogate key across
       # profile and custom-domain routes.
-      keys = ["show-page-#{slug}"]
+      keys = ["show-page-#{slug}", *EdgeCache::LegacySlugRedirectKeys.call(slug)]
       fallback_paths = [
         "/page/#{slug}",
         "/#{slug}",

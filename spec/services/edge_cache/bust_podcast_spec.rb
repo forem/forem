@@ -15,4 +15,16 @@ RSpec.describe EdgeCache::BustPodcast, type: :service do
       fallback_paths: ["/#{podcast_path}", "/pod"],
     ).once
   end
+
+  it "includes legacy redirect keys when a podcast claims a former organization slug" do
+    former_org = create(:organization)
+    former_org.update_columns(old_slug: podcast_path)
+
+    described_class.call(podcast_path)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      ["podcasts/#{podcast_path}", "podcast_episodes_all", former_org.record_key],
+      fallback_paths: ["/#{podcast_path}", "/pod"],
+    ).once
+  end
 end

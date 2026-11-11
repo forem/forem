@@ -4,10 +4,15 @@ module EdgeCache
       return unless organization && slug
 
       keys = organization.respond_to?(:record_key) ? [organization.record_key] : []
+      org_id = organization.respond_to?(:id) ? organization.id : nil
+      keys.concat(EdgeCache::LegacySlugRedirectKeys.call(slug, exclude_organization_id: org_id))
       fallback_paths = lambda do
         paths = ["/#{slug}"]
+        if organization.respond_to?(:old_slug) && organization.old_slug.present?
+          paths << "/#{organization.old_slug}"
+        end
         paths.concat(organization.articles.pluck(:path)) if organization.respond_to?(:articles)
-        paths
+        paths.uniq
       end
 
       # Organization profile, custom domain, README, and published article responses all carry

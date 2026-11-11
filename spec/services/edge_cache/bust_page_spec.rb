@@ -22,6 +22,17 @@ RSpec.describe EdgeCache::BustPage, type: :service do
       .once
   end
 
+  it "includes legacy redirect keys when a top-level page claims a former username" do
+    former_user = create(:user)
+    former_user.update_columns(old_username: slug)
+
+    described_class.call(slug)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call)
+      .with(["show-page-#{slug}", former_user.profile_identity_record_key], fallback_paths: paths)
+      .once
+  end
+
   context "when an organization is given" do
     let(:organization) { create(:organization) }
     let(:slug) { "#{organization.slug}/readme" }

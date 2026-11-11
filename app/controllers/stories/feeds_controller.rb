@@ -43,8 +43,8 @@ module Stories
     private
 
     def feed_surrogate_keys
-      feed_key = if params[:tag].present?
-                   tag_name = params[:tag].to_s.downcase
+      tag_name = params[:tag].downcase.strip if params[:tag].is_a?(String)
+      feed_key = if tag_name&.match?(/\A[a-z0-9_-]+\z/)
                    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                      "tag-#{tag_name}-top-#{params[:timeframe]}"
                    elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
@@ -60,7 +60,7 @@ module Stories
                    "main_app_home_page"
                  end
 
-      [feed_key, *@stories.map(&:record_key)]
+      [feed_key, *@stories.map(&:record_key)].compact
     end
 
     def add_pinned_article

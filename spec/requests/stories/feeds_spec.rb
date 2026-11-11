@@ -26,6 +26,10 @@ RSpec.describe "Stories::Feeds" do
 
       get stories_feed_path, params: { tag: "alpha", timeframe: "latest" }
       expect(response.headers["Surrogate-Key"].split).to include("tag-alpha-latest", article.record_key)
+
+      get stories_feed_path, params: { tag: "bad\r\ntag", timeframe: "latest" }
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).not_to include("bad")
     end
 
     context "with sticky configured home feeds" do

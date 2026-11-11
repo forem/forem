@@ -45,6 +45,18 @@ RSpec.describe Users::BustProfileIdentityCacheWorker, type: :worker do
     expect(EdgeCache::Bust).not_to have_received(:call)
   end
 
+  it "also purges a former owner's identity key when claiming their old_username" do
+    former_user = create(:user)
+    former_user.update_columns(old_username: user.username)
+
+    described_class.new.perform(user.id)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      [user.profile_identity_record_key, former_user.profile_identity_record_key],
+      fallback_paths: user.profile_cache_bust_paths,
+    )
+  end
+
   it "does not fail when user is missing" do
     expect do
       described_class.new.perform(User.maximum(:id).to_i + 1)

@@ -6,7 +6,7 @@ RSpec.describe GithubRepo do
 
   before do
     omniauth_mock_github_payload
-    allow(EdgeCache::BustUser).to receive(:call)
+    allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
   describe "validations" do
@@ -35,10 +35,13 @@ RSpec.describe GithubRepo do
         expect(user.reload.updated_at.to_i > old_updated_at.to_i).to be(true)
       end
 
-      it "busts the user's profile surrogate keys" do
+      it "busts only the user's profile details surrogate key" do
         repo.save
 
-        expect(EdgeCache::BustUser).to have_received(:call).with(user)
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+          user.profile_details_record_key,
+          fallback_paths: user.profile_cache_bust_paths,
+        )
       end
     end
   end

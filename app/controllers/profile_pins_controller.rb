@@ -32,6 +32,9 @@ class ProfilePinsController < ApplicationController
   end
 
   def bust_user_profile
-    EdgeCache::BustUser.call(current_user)
+    EdgeCache::PurgeByKey.call(
+      current_user.profile_details_record_key,
+      fallback_paths: current_user.profile_cache_bust_paths,
+    )
   end
 end

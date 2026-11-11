@@ -58,7 +58,8 @@ module CachingHeaders
   def set_surrogate_key_header(*surrogate_keys)
     # No Set-Cookie, unless this response has been explicitly opted out of edge caching.
     request.session_options[:skip] = true unless RequestStore.store[:edge_caching_in_place] == false
-    response.headers["Surrogate-Key"] = surrogate_keys.flatten.compact_blank.uniq.join(" ")
+    sanitized_keys = surrogate_keys.flatten.filter_map { |key| key.to_s.delete("\r\n").strip.presence }.uniq
+    response.headers["Surrogate-Key"] = sanitized_keys.join(" ")
   end
 
   def add_vary_header(*vary_keys)

@@ -13,15 +13,18 @@ RSpec.describe "ProfilePins" do
   before { sign_in user }
 
   describe "POST /profile_pins" do
-    it "creates a pin and busts the user's profile cache", :aggregate_failures do
+    it "creates a pin and busts only the user's profile details surrogate key", :aggregate_failures do
       article
-      allow(EdgeCache::BustUser).to receive(:call)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
 
       post "/profile_pins", params: {
         profile_pin: { pinnable_id: article.id }
       }
       expect(ProfilePin.last.pinnable_id).to eq(article.id)
-      expect(EdgeCache::BustUser).to have_received(:call).with(user)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+        user.profile_details_record_key,
+        fallback_paths: user.profile_cache_bust_paths,
+      )
     end
 
     it "allows only five pins" do

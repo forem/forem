@@ -322,6 +322,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
   after_create_commit :create_onboarding_checklist
+  after_create_commit :bust_legacy_username_redirect_cache
 
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
@@ -1224,6 +1225,13 @@ class User < ApplicationRecord
 
   def bust_profile_identity_cache
     Users::BustProfileIdentityCacheWorker.perform_async(id)
+  end
+
+  def bust_legacy_username_redirect_cache
+    legacy_keys = EdgeCache::LegacySlugRedirectKeys.call(username, exclude_user_id: id)
+    return if legacy_keys.empty?
+
+    EdgeCache::PurgeByKeyWorker.perform_async(legacy_keys, [path])
   end
 
   def bust_profile_details_cache
