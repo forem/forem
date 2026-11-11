@@ -1,0 +1,64 @@
+app/controllers/bottom_items_controller.rb
+  h_f968154a99632d 6-11,13
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 48-50
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 61-62
+app/controllers/profile_pins_controller.rb
+  h_f968154a99632d 35-38
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 46-47,63
+app/models/article.rb
+  h_f968154a99632d 1976,2022-2045
+app/models/github_repo.rb
+  h_f968154a99632d 40-43
+app/models/user.rb
+  h_f968154a99632d 325,1230-1236
+app/services/edge_cache/bust_organization.rb
+  h_f968154a99632d 7-8,11-13,15
+app/services/edge_cache/bust_page.rb
+  h_f968154a99632d 10
+app/services/edge_cache/bust_podcast.rb
+  h_f968154a99632d 8
+app/services/edge_cache/legacy_slug_redirect_keys.rb
+  h_f968154a99632d 1-23
+app/workers/users/bust_profile_identity_cache_worker.rb
+  h_f968154a99632d 9-11
+config/fastly/snippets/stale_while_revalidate_controls.vcl
+  h_f968154a99632d 7-15
+spec/models/github_repo_spec.rb
+  h_f968154a99632d 9,38,41-44
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 82-93
+spec/requests/bottom_items_spec.rb
+  h_f968154a99632d 1-28
+spec/requests/profile_pins_spec.rb
+  h_f968154a99632d 16,18,24-27
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 29-32
+spec/services/articles/destroyer_spec.rb
+  h_f968154a99632d 40-54
+spec/services/edge_cache/bust_organization_spec.rb
+  h_f968154a99632d 22-34
+spec/services/edge_cache/bust_page_spec.rb
+  h_f968154a99632d 25-35
+spec/services/edge_cache/bust_podcast_spec.rb
+  h_f968154a99632d 18-29
+spec/services/edge_cache/legacy_slug_redirect_keys_spec.rb
+  h_f968154a99632d 1-36
+spec/services/fastly_config/snippets_spec.rb
+  h_f968154a99632d 53-63
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  h_f968154a99632d 48-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2e0ed0f90bdb3888e12eeb932d50063885e12f49",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
