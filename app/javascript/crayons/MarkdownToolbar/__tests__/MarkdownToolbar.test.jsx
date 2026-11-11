@@ -84,7 +84,7 @@ describe('<MarkdownToolbar />', () => {
 
   describe('large screen layout', () => {
     const largeScreenMediaQuery = `(min-width: ${
-      BREAKPOINTS.Large
+      BREAKPOINTS.Medium
     }px) and (max-width: ${BREAKPOINTS.ExtraLarge - 1}px)`;
     beforeEach(() => {
       global.window.matchMedia = jest.fn((query) => {

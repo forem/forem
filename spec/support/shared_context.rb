@@ -1,11 +1,17 @@
 RSpec.shared_context "when proper status" do
+  # Render rescued exceptions through the public exceptions app (as production does) instead of the
+  # DebugExceptions diagnostics page, which spends seconds cleaning the deep RSpec backtrace per request.
   around do |example|
-    original_show_exceptions = Rails.application.env_config["action_dispatch.show_exceptions"]
-    Rails.application.env_config["action_dispatch.show_exceptions"] = :rescuable
+    env_config = Rails.application.env_config
+    original_show_exceptions = env_config["action_dispatch.show_exceptions"]
+    original_show_detailed_exceptions = env_config["action_dispatch.show_detailed_exceptions"]
+    env_config["action_dispatch.show_exceptions"] = :rescuable
+    env_config["action_dispatch.show_detailed_exceptions"] = false
 
     example.run
 
-    Rails.application.env_config["action_dispatch.show_exceptions"] = original_show_exceptions
+    env_config["action_dispatch.show_exceptions"] = original_show_exceptions
+    env_config["action_dispatch.show_detailed_exceptions"] = original_show_detailed_exceptions
   end
 end
 

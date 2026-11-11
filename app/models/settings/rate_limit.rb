@@ -3,6 +3,13 @@ module Settings
     self.table_name = :settings_rate_limits
 
     setting :agent_session_creation, type: :integer, default: 5
+    # Presigned agent session upload URLs are limited to N per configurable
+    # window (fixed window starting at the first request). 0 disables presign.
+    setting :agent_session_presign, type: :integer, default: 20,
+                                    validates: { numericality: { only_integer: true, greater_than_or_equal_to: 0 } }
+    setting :agent_session_presign_window_seconds,
+            type: :integer, default: 3600,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
     setting :ai_image_generation, type: :integer, default: 5
     # API image endpoints are limited to N requests per configurable window
     # (fixed window starting at the first request). Setting a limit to 0
@@ -21,6 +28,9 @@ module Settings
     setting :comment_antispam_creation, type: :integer, default: 1
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
     setting :mention_creation, type: :integer, default: 7
+    setting :mention_antispam_creation, type: :integer, default: 2
+    setting :mention_hourly_limit, type: :integer, default: 20
+    setting :mention_antispam_hourly_limit, type: :integer, default: 4
     setting :comment_creation, type: :integer, default: 9
     setting :email_recipient, type: :integer, default: 5
     setting :feedback_message_creation, type: :integer, default: 5

@@ -51,20 +51,53 @@ describe ProfileHelper do
         expected = { github: "https://example.com", twitter: "https://example.com", facebook: "https://example.com" }
         expect(actual).to eq(expected)
       end
+
+      it "queries only the supported social providers in a single pluck without hydrating Identity records" do
+        target_user = user
+        queries = []
+        callback = lambda { |*, payload|
+          next unless payload[:sql]&.include?('"identities"')
+
+          binds = payload[:type_casted_binds]
+          binds = binds.call if binds.respond_to?(:call)
+          queries << { sql: payload[:sql], binds: Array(binds) }
+        }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(helper.social_authentication_links_for(target_user)).to eq(
+            github: "https://example.com",
+            twitter: "https://example.com",
+            facebook: "https://example.com",
+          )
+        end
+
+        expect(queries.size).to eq(1)
+        expect(queries.first[:sql]).to include('"identities"."auth_data_dump"')
+        expect(queries.first[:sql]).to include('"identities"."provider" IN')
+        expect(queries.first[:sql]).not_to include('"identities".*')
+        expect(queries.first[:binds]).to eq([target_user.id, "github", "twitter", "facebook"])
+      end
     end
 
-    context "when third party authentication providers are not enabled" do
+    context "when no supported social authentication providers are enabled" do
       let(:user) do
         omniauth_mock_github_payload
         create(:user, :with_identity, identities: ["github"])
       end
 
       before do
-        allow(Settings::Authentication).to receive(:providers).and_return([])
+        allow(Settings::Authentication).to receive(:providers).and_return(%w[apple])
       end
 
-      it "returns a link to the social authentication provider's link" do
-        expect(actual).to eq({})
+      it "returns an empty hash without querying identities" do
+        target_user = user
+        queries = []
+        callback = lambda { |*, payload|
+          queries << payload[:sql] if payload[:sql]&.include?('"identities"')
+        }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(helper.social_authentication_links_for(target_user)).to eq({})
+        end
+        expect(queries).to be_empty
       end
     end
   end

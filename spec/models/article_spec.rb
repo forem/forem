@@ -463,6 +463,33 @@ RSpec.describe Article do
             .to include(article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem)
         end
       end
+
+      context "when Subforem.disabled_by_env? is true via SKIP_SUBFOREM_REASSIGNMENT" do
+        before do
+          allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+        end
+
+        it "returns an unfiltered scope with an empty where_clause" do
+          relation = described_class.from_subforem(subforem.id)
+          expect(relation.where_clause).to be_empty
+          expect(relation).to include(
+            article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem
+          )
+        end
+      end
+
+      context "when no subforems exist in the database" do
+        before do
+          RequestStore.store[:subforem_id] = nil
+          RequestStore.store[:default_subforem_id] = nil
+          allow(Subforem).to receive(:cached_default_id).and_return(nil)
+        end
+
+        it "returns an unfiltered scope without appending a redundant subforem_id WHERE clause" do
+          relation = described_class.from_subforem
+          expect(relation.where_clause).to be_empty
+        end
+      end
     end
 
     describe "#body_markdown" do
@@ -2029,6 +2056,18 @@ RSpec.describe Article do
       expect(cached).to eq(article)
       expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}").id).to eq(article.id)
     end
+
+    it "coalesces subforem-scoped lookups onto the 'all' cache key when Subforem.disabled_by_env? is true" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+      allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+      cached = described_class.cached_admin_published_with("welcome", subforem_id: subforem.id)
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:all").id).to eq(article.id)
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
+    end
   end
 
   describe "admin welcome cache busting" do
@@ -2629,6 +2668,23 @@ RSpec.describe Article do
       expect(article).not_to be_valid
       expect(article.errors[:base])
         .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
+    end
+
+    it "restricts untrusted users from mentioning more than mention_antispam_creation other users in a post" do
+      other_users = create_list(:user, 3)
+      article.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+      expect(article).not_to be_valid
+      expect(article.errors[:base])
+        .to include("You cannot mention more than #{Settings::RateLimit.mention_antispam_creation} users in a post!")
+    end
+
+    it "allows established users to mention up to mention_creation other users in a post" do
+      article.user.update_columns(created_at: 10.days.ago, badge_achievements_count: 5)
+      other_users = create_list(:user, 5)
+      article.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+      expect(article).to be_valid
     end
   end
 

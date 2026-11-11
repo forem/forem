@@ -122,13 +122,13 @@ class ReactionHandler
 
   def build_reaction(category)
     create_params = {
-      user_id: current_user.id,
+      user: current_user,
       reactable_id: reactable_id,
       reactable_type: reactable_type,
       category: category
     }
-    if (current_user&.any_admin? || current_user&.super_moderator?) &&
-        ReactionCategory[category].negative?
+    if category && ReactionCategory[category]&.negative? &&
+        (current_user&.any_admin? || current_user&.super_moderator?)
       create_params[:status] = "confirmed"
     end
     Reaction.new(create_params)
@@ -161,6 +161,8 @@ class ReactionHandler
   end
 
   def send_notifications(reaction)
+    return if reaction.skip_notification_for?(nil)
+
     Notification.send_reaction_notification(reaction, reaction.target_user)
     return unless reaction.reaction_on_organization_article?
 
@@ -168,6 +170,8 @@ class ReactionHandler
   end
 
   def send_notifications_without_delay(reaction)
+    return if reaction.skip_notification_for?(nil)
+
     Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
     return unless reaction.reaction_on_organization_article?
 

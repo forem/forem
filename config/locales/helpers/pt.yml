@@ -414,6 +414,15 @@ pt:
         mention:
           title: Mention title
           description: Mention description
+        mention_antispam:
+          title: Mention antispam title
+          description: Mention antispam description
+        mention_hourly:
+          title: Mention hourly title
+          description: Mention hourly description
+        mention_antispam_hourly:
+          title: Mention antispam hourly title
+          description: Mention antispam hourly description
         organization:
           title: Organization title
           description: Organization description
@@ -577,6 +586,15 @@ pt:
         title: Janela de geração de imagens de IA da API (segundos)
         description: Duração da janela, em segundos, para o limite de geração de imagens
           de IA pela API (por exemplo, 86400 para um dia).
+      agent_session_presign:
+        title: Limitar o número de URLs de envio de sessões de agente
+        description: Quantas URLs pré-assinadas de envio de sessões de agente alguém pode
+          solicitar dentro da janela de envio de sessões de agente? Defina como 0 para desativar
+          o envio de transcrições brutas.
+      agent_session_presign_window:
+        title: Janela de envio de sessões de agente (segundos)
+        description: Duração da janela, em segundos, para o limite de URLs de envio de sessões
+          de agente (por exemplo, 3600 para uma hora).
       user:
         title: Limit number of changes someone can make to their account
         description: How many changes can someone make to their user account within
@@ -603,6 +621,15 @@ pt:
         title: Limit number of @-mentions in a post or comment
         description: How many times can someone @-mention other users in a post or
           comment?
+      mention_antispam:
+        title: Limitar o número de @-menções em um post ou comentário por um membro novo ou de baixa confiança
+        description: Quantos outros usuários um membro novo ou de baixa confiança pode @-mencionar em um post ou comentário?
+      mention_hourly:
+        title: Limitar o número de @-menções por hora
+        description: Quantos outros usuários um membro estabelecido pode @-mencionar em qualquer período de 1 hora?
+      mention_antispam_hourly:
+        title: Limitar o número de @-menções por hora por um membro novo ou de baixa confiança
+        description: Quantos outros usuários um membro novo ou de baixa confiança pode @-mencionar em qualquer período de 1 hora?
       listing:
         title: Limit number of listings created
         description: How many listings can someone create within any 1 minute period?

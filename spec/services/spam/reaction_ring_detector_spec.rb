@@ -2,23 +2,47 @@ require "rails_helper"
 
 # rubocop:disable Layout/LineLength, Layout/TrailingWhitespace, Style/CombinableLoops
 RSpec.describe Spam::ReactionRingDetector, type: :service do
-  let(:user) { create(:user, :without_profile, profile_image: nil, reputation_modifier: 1.0) }
+  let(:user) { create(:user, reputation_modifier: 1.0) }
   let(:detector) { described_class.new(user.id) }
 
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article && !options.key?(:tag_list) && !options.key?(:tags) && !options.key?(:with_tags)
+      options[:with_tags] = false
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    return Array.new(amount) { create(name, *traits, **options) } if %i[user article].include?(name)
+
+    super
+  end
+
   describe "#call" do
-    # The reaction-count gate contexts below only need to land on the right side of
-    # MIN_REACTIONS_THRESHOLD. Each reaction builds its own article and author, so a
-    # small stubbed threshold avoids creating hundreds of records per example.
+    # Each reaction builds its own article and author unless reactable is given, so a
+    # small stubbed threshold avoids creating hundreds of records per example while
+    # preserving all concentration (0.8), self-reaction (0.3), and ring-size (3) ratios.
     shared_context "with a small reaction threshold" do
       before { stub_const("#{described_class}::MIN_REACTIONS_THRESHOLD", 5) }
     end
 
-    context "when user has insufficient reactions" do
-      include_context "with a small reaction threshold"
+    include_context "with a small reaction threshold"
 
+    let(:gate_author) { create(:user) }
+
+    def create_user_article_reactions(count, created_at: 2.months.ago)
+      Array.new(count) do
+        article = create(:article, user: gate_author, published: true)
+        create(:reaction, user: user, reactable: article, category: "like", created_at: created_at)
+      end
+    end
+
+    context "when user has insufficient reactions" do
       before do
         # Create fewer reactions than the threshold over 3 months
-        create_list(:reaction, 4, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_user_article_reactions(4)
       end
 
       it "returns false" do
@@ -27,11 +51,9 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when user has sufficient reactions but they're too old" do
-      include_context "with a small reaction threshold"
-
       before do
         # Create more reactions than the threshold but they're older than 3 months
-        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 4.months.ago)
+        create_user_article_reactions(6, created_at: 4.months.ago)
       end
 
       it "returns false" do
@@ -42,10 +64,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when user is admin" do
       let(:user) { create(:user, :admin) }
 
-      include_context "with a small reaction threshold"
-
       before do
-        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_user_article_reactions(6)
       end
 
       it "returns false" do
@@ -56,10 +76,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when user is trusted" do
       let(:user) { create(:user, :trusted) }
 
-      include_context "with a small reaction threshold"
-
       before do
-        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_user_article_reactions(6)
       end
 
       it "returns false" do
@@ -68,11 +86,9 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when no potential ring is found" do
-      include_context "with a small reaction threshold"
-
       before do
         # Create enough reactions but no other users with similar patterns
-        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_user_article_reactions(6)
       end
 
       it "returns false" do
@@ -87,8 +103,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 5, user: author1, published: true)
-        articles_author2 = create_list(:article, 5, user: author2, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -104,18 +120,16 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when users have low concentration of reactions to shared authors" do
-      include_context "with a small reaction threshold"
-
-      let(:author1) { create(:user, :without_profile, profile_image: nil) }
-      let(:author2) { create(:user, :without_profile, profile_image: nil) }
-      let(:author3) { create(:user, :without_profile, profile_image: nil) }
-      let(:low_concentration_member) { create(:user, :without_profile, profile_image: nil, reputation_modifier: 1.0) }
+      let(:author1) { create(:user) }
+      let(:author2) { create(:user) }
+      let(:author3) { create(:user) }
+      let(:low_concentration_member) { create(:user, reputation_modifier: 1.0) }
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 3, user: author1, published: true, with_tags: false)
-        articles_author2 = create_list(:article, 3, user: author2, published: true, with_tags: false)
-        articles_author3 = create_list(:article, 3, user: author3, published: true, with_tags: false)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
+        articles_author3 = create_list(:article, 3, user: author3, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -135,18 +149,16 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when a legitimate reaction ring is detected" do
-      include_context "with a small reaction threshold"
-
-      let(:author1) { create(:user, :without_profile, profile_image: nil) }
-      let(:author2) { create(:user, :without_profile, profile_image: nil) }
-      let(:ring_member1) { create(:user, :without_profile, profile_image: nil, reputation_modifier: 1.0) }
-      let(:ring_member2) { create(:user, :without_profile, profile_image: nil, reputation_modifier: 1.0) }
-      let(:ring_member3) { create(:user, :without_profile, profile_image: nil, reputation_modifier: 1.0) }
+      let(:author1) { create(:user) }
+      let(:author2) { create(:user) }
+      let(:ring_member1) { create(:user, reputation_modifier: 1.0) }
+      let(:ring_member2) { create(:user, reputation_modifier: 1.0) }
+      let(:ring_member3) { create(:user, reputation_modifier: 1.0) }
 
       before do
         # Create articles by the target authors
-        articles_author1 = create_list(:article, 3, user: author1, published: true, with_tags: false)
-        articles_author2 = create_list(:article, 3, user: author2, published: true, with_tags: false)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user to these authors' articles (focused pattern)
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -178,19 +190,44 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         expect(Note.where(noteable: ring_member3, reason: "reaction_ring_detection")).to exist
       end
 
-      it "loads the triggering user's reacted authors only once" do
+      it "loads the triggering user's reacted authors, ring members' reacted authors, and member roles without N+1 queries",
+         :aggregate_failures do
+        member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
         reacted_author_queries = 0
+        member_plucks = Hash.new(0)
+        member_reaction_queries = 0
+        member_role_counts = 0
+
         callback = lambda do |*, payload|
+          sql = payload[:sql]
+          binds = payload[:type_casted_binds]
+          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
+
+          if sql.include?('SELECT COUNT(*) FROM "roles"')
+            member_role_counts += 1 if member_ids.any? do |id|
+              binds.include?(id) || sql.match?(/"users_roles"\."user_id" = #{id}\b/)
+            end
+            next
+          end
+
+          next unless sql.include?('FROM "reactions"')
+          next unless sql.include?("JOIN articles ON reactions.reactable_id = articles.id")
+
           # Only the reactions-rooted pluck; the similar-patterns query is
           # rooted at users and also binds the triggering user's id.
-          next unless payload[:sql].include?('FROM "reactions"')
-          next unless payload[:sql].include?("JOIN articles ON reactions.reactable_id = articles.id")
-          next unless payload[:sql].include?('"reactions"."user_id" =')
+          if sql.include?('"reactions"."user_id" =') &&
+              (binds.include?(user.id) || sql.match?(/"reactions"\."user_id" = #{user.id}\b/))
+            reacted_author_queries += 1
+          end
 
-          binds = payload[:type_casted_binds]
-          binds = binds.call if binds.respond_to?(:call)
-          reacted_author_queries += 1 if Array(binds).include?(user.id) ||
-            payload[:sql].match?(/"reactions"\."user_id" = #{user.id}\b/)
+          matched_member = false
+          member_ids.each do |id|
+            next unless binds.include?(id) || sql.match?(/"reactions"\."user_id" (?:=|IN \([^)]*)\s*#{id}\b/)
+
+            member_plucks[id] += 1
+            matched_member = true
+          end
+          member_reaction_queries += 1 if matched_member
         end
 
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
@@ -198,49 +235,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         end
 
         expect(reacted_author_queries).to eq(1)
-      end
-
-      it "plucks each ring member's reacted-to authors only once" do
-        member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
-        member_plucks = Hash.new(0)
-        callback = lambda do |*, payload|
-          sql = payload[:sql]
-          next unless sql.include?('FROM "reactions"')
-          next unless sql.include?("JOIN articles ON reactions.reactable_id = articles.id")
-
-          binds = payload[:type_casted_binds]
-          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
-
-          member_ids.each do |id|
-            member_plucks[id] += 1 if binds.include?(id) || sql.match?(/"reactions"\."user_id" = #{id}\b/)
-          end
-        end
-
-        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-          expect(detector.call).to be true
-        end
-
         expect(member_plucks.values_at(*member_ids)).to eq([1, 1, 1])
-      end
-
-      it "checks ring members' admin roles without a roles COUNT query per member" do
-        member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
-        member_role_counts = 0
-        callback = lambda do |*, payload|
-          sql = payload[:sql]
-          next unless sql.include?('SELECT COUNT(*) FROM "roles"')
-
-          binds = payload[:type_casted_binds]
-          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
-          member_role_counts += 1 if member_ids.any? do |id|
-            binds.include?(id) || sql.match?(/"users_roles"\."user_id" = #{id}\b/)
-          end
-        end
-
-        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-          expect(detector.call).to be true
-        end
-
+        expect(member_reaction_queries).to eq(1)
         expect(member_role_counts).to eq(0)
       end
 
@@ -262,8 +258,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
-        articles_author2 = create_list(:article, 10, user: author2, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -282,8 +278,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         # Add diverse reactions to show legitimate community behavior
         other_authors = create_list(:user, 3)
         other_authors.each do |other_author|
-          other_articles = create_list(:article, 3, user: other_author, published: true)
-          other_articles.each { |article| create(:reaction, user: legitimate_member1, reactable: article, category: "like", created_at: 2.months.ago) }
+          other_article = create(:article, user: other_author, published: true)
+          create(:reaction, user: legitimate_member1, reactable: other_article, category: "like", created_at: 2.months.ago)
         end
       end
 
@@ -310,7 +306,7 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         create(:organization_membership, user: org_member2, organization: organization, type_of_user: "member")
 
         # Create articles by target author
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
+        articles_author1 = create_list(:article, 6, user: author1, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -337,7 +333,7 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target author
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
+        articles_author1 = create_list(:article, 6, user: author1, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -346,7 +342,7 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         articles_author1.each { |article| create(:reaction, user: self_reactor, reactable: article, category: "like", created_at: 2.months.ago) }
         
         # Create many self-reactions (more than 30% of total)
-        self_articles = create_list(:article, 6, user: self_reactor, published: true, with_tags: false)
+        self_articles = create_list(:article, 3, user: self_reactor, published: true)
         self_articles.each { |article| create(:reaction, user: self_reactor, reactable: article, category: "like", created_at: 2.months.ago) }
       end
 
@@ -366,8 +362,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
-        articles_author2 = create_list(:article, 10, user: author2, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -391,9 +387,9 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 5, user: author1, published: true)
-        articles_author2 = create_list(:article, 5, user: author2, published: true)
-        articles_author3 = create_list(:article, 5, user: author3, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
+        articles_author3 = create_list(:article, 2, user: author3, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -409,8 +405,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         # Add reactions to even more diverse authors
         other_authors = create_list(:user, 2)
         other_authors.each do |other_author|
-          other_articles = create_list(:article, 5, user: other_author, published: true)
-          other_articles.each { |article| create(:reaction, user: mixed_pattern_member, reactable: article, category: "like", created_at: 2.months.ago) }
+          other_article = create(:article, user: other_author, published: true)
+          create(:reaction, user: mixed_pattern_member, reactable: other_article, category: "like", created_at: 2.months.ago)
         end
       end
 
@@ -426,8 +422,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
-        articles_author2 = create_list(:article, 10, user: author2, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -444,12 +440,10 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         # Add diverse reactions to other authors over time
         other_authors = create_list(:user, 3)
         other_authors.each_with_index do |other_author, author_index|
-          other_articles = create_list(:article, 3, user: other_author, published: true)
-          other_articles.each_with_index do |article, article_index|
-            offset_days = (author_index * 10) + article_index
-            create(:reaction, user: temporal_member, reactable: article, category: "like",
-                              created_at: 2.months.ago + offset_days.days)
-          end
+          other_article = create(:article, user: other_author, published: true)
+          offset_days = author_index * 10
+          create(:reaction, user: temporal_member, reactable: other_article, category: "like",
+                            created_at: 2.months.ago + offset_days.days)
         end
       end
 
@@ -466,8 +460,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
       before do
         # Create articles by target authors
-        articles_author1 = create_list(:article, 5, user: author1, published: true)
-        articles_author2 = create_list(:article, 5, user: author2, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -484,10 +478,10 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         community_member2.follow(user)
 
         # Add diverse reactions to show legitimate community behavior
-        other_authors = create_list(:user, 4)
+        other_authors = create_list(:user, 3)
         other_authors.each do |other_author|
-          other_articles = create_list(:article, 3, user: other_author, published: true)
-          other_articles.each { |article| create(:reaction, user: community_member1, reactable: article, category: "like", created_at: 2.months.ago) }
+          other_article = create(:article, user: other_author, published: true)
+          create(:reaction, user: community_member1, reactable: other_article, category: "like", created_at: 2.months.ago)
         end
       end
 
@@ -510,8 +504,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         create(:organization_membership, user: org_member2, organization: organization, type_of_user: "member")
 
         # Create articles by target authors
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
-        articles_author2 = create_list(:article, 10, user: author2, published: true)
+        articles_author1 = create_list(:article, 3, user: author1, published: true)
+        articles_author2 = create_list(:article, 3, user: author2, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }
@@ -526,8 +520,8 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         # Add diverse reactions to show legitimate organization behavior
         other_authors = create_list(:user, 3)
         other_authors.each do |other_author|
-          other_articles = create_list(:article, 5, user: other_author, published: true)
-          other_articles.each { |article| create(:reaction, user: org_member1, reactable: article, category: "like", created_at: 2.months.ago) }
+          other_article = create(:article, user: other_author, published: true)
+          create(:reaction, user: org_member1, reactable: other_article, category: "like", created_at: 2.months.ago)
         end
       end
 
@@ -555,7 +549,7 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         # org_member2 is only in organization1, not organization2
 
         # Create articles by target author
-        articles_author1 = create_list(:article, 10, user: author1, published: true)
+        articles_author1 = create_list(:article, 6, user: author1, published: true)
 
         # Create reactions by the main user
         articles_author1.each { |article| create(:reaction, user: user, reactable: article, category: "like", created_at: 2.months.ago) }

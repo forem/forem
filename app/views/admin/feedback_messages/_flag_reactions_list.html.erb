@@ -22,7 +22,8 @@
         <% elsif reaction.reactable_type == "User" && reaction.reactable.suspended? %>
           <span class="c-indicator c-indicator--danger">Suspended</span>
         <% end %>
-        <% if reaction.reactable_type == "User" && reaction.reactable.vomited_on? %>
+        <% user_vomited_on = @confirmed_vomit_user_ids ? @confirmed_vomit_user_ids.include?(reaction.reactable_id) : reaction.reactable.vomited_on? %>
+        <% if reaction.reactable_type == "User" && user_vomited_on %>
           <span class="c-indicator c-indicator--warning">Flagged</span>
         <% end %>
       </span>

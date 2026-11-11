@@ -87,14 +87,66 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     expect(cache.read("probe")).to be_nil
   end
 
-  it "does not retain a Googlebot rate-limit exemption after the authoritative prefixes change" do
+  it "serves trusted role checks from L1 (including cached false) and evicts them when trusted role changes" do
+    expect(Authorizer.for(user: user).trusted?).to be(false)
+    expect_local_hit { expect(Authorizer.for(user: user).trusted?).to be(false) }
+
+    user.add_role(:trusted)
+    expect(Authorizer.for(user: user.reload).trusted?).to be(true)
+    expect_local_hit { expect(Authorizer.for(user: user).trusted?).to be(true) }
+
+    user.remove_role(:trusted)
+    expect(Authorizer.for(user: user.reload).trusted?).to be(false)
+  end
+
+  it "serves Rack::Attack admin API keys from L1 and evicts them on key create/destroy and admin role grant/revoke" do
+    admin = create(:user, :admin)
+    secret = create(:api_secret, user: admin)
+    request = Rack::Attack::Request.new("HTTP_API_KEY" => secret.secret)
+
+    expect(Rack::Attack.admin_api_key?(request)).to be(true)
+    expect_local_hit { expect(Rack::Attack.admin_api_key?(request)).to be(true) }
+
+    # Revoking the admin role evicts the cached key list
+    admin.remove_role(:admin)
+    expect(Rack::Attack.admin_api_key?(request)).to be(false)
+    expect_local_hit { expect(Rack::Attack.admin_api_key?(request)).to be(false) }
+
+    # Re-granting the admin role evicts the cached key list
+    admin.add_role(:admin)
+    expect(Rack::Attack.admin_api_key?(request)).to be(true)
+
+    # Destroying the ApiSecret evicts the cached key list
+    secret.destroy!
+    expect(Rack::Attack.admin_api_key?(request)).to be(false)
+  end
+
+  it "serves Googlebot IP prefixes from L1 and evicts them when prefixes are updated" do
     key = GooglebotVerifier::CACHE_KEY
-    source = ActiveSupport::Cache::RedisCacheStore.new(url: remote_url)
-    store.with_local_cache do
-      store.write(key, ["192.0.2.0/27"])
-      store.read(key)
-      source.write(key, []) # Simulate another host before its invalidation arrives.
-      expect(GooglebotVerifier.googlebot?("192.0.2.1")).to be(false)
+    store.write(key, ["192.0.2.0/27"], expires_in: 24.hours)
+
+    expect(GooglebotVerifier.googlebot?("192.0.2.1")).to be(true)
+    expect_local_hit do
+      expect(GooglebotVerifier.googlebot?("192.0.2.1")).to be(true)
+      expect(GooglebotVerifier.googlebot?("198.51.100.1")).to be(false)
     end
+
+    store.write(key, [], expires_in: 5.minutes)
+    expect(GooglebotVerifier.googlebot?("192.0.2.1")).to be(false)
+  end
+
+  it "serves active ThrottledCall markers from L1 without caching nil misses" do
+    calls = 0
+    ThrottledCall.perform(:l1_throttle_probe, throttle_for: 1.minute) { calls += 1 }
+    expect(calls).to eq(1)
+
+    expect_local_hit do
+      ThrottledCall.perform(:l1_throttle_probe, throttle_for: 1.minute) { calls += 1 }
+    end
+    expect(calls).to eq(1)
+
+    store.delete("throttled_call.l1_throttle_probe")
+    ThrottledCall.perform(:l1_throttle_probe, throttle_for: 1.minute) { calls += 1 }
+    expect(calls).to eq(2)
   end
 end

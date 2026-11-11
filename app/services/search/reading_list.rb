@@ -92,7 +92,7 @@ module Search
 
       # Only filter by subforem if we're not in the root subforem context
       # In root context, show articles from any subforem
-      if subforem_id.present? && subforem_id != RequestStore.store[:root_subforem_id]
+      if !Subforem.disabled_by_env? && subforem_id.present? && subforem_id != RequestStore.store[:root_subforem_id]
         relation = relation.from_subforem(subforem_id)
       end
 

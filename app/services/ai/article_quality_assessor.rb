@@ -11,9 +11,10 @@ module Ai
   # keeps each request's state small and focused, instead of asking one question over a large
   # state holding every article.
   class ArticleQualityAssessor
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :article_quality_ranking
 
     # Weights for the composite quality score. They sum to 1.
@@ -85,8 +86,11 @@ module Ai
     end
 
     def jev_state(article)
+      community_state = { description: community_description.presence || "No specific community description provided." }
+      community_state[:content_advisement] = content_advisement_spec if content_advisement_spec.present?
+
       state = {
-        community: { description: community_description.presence || "No specific community description provided." },
+        community: community_state,
         article: {
           title: article.title,
           tags: article.cached_tag_list,
@@ -161,14 +165,17 @@ module Ai
       author_trustworthiness_profile(article).present?
     end
 
+    # Resolves the community description for the target subforem, falling back to the
+    # default subforem and global settings when needed.
+    # @return [String, nil]
     def community_description
-      @community_description ||= if @subforem_id
-                                   Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem_id) ||
-                                     Settings::Community.community_description(subforem_id: @subforem_id)
-                                 else
-                                   Settings::RateLimit.internal_content_description_spec ||
-                                     Settings::Community.community_description
-                                 end
+      @community_description ||= resolve_community_description(@subforem_id)
+    end
+
+    # Resolves the expanded content advisement playbook for the target subforem.
+    # @return [String, nil]
+    def content_advisement_spec
+      @content_advisement_spec ||= resolve_content_advisement_spec(@subforem_id)
     end
 
     # --- Gemini ---
@@ -177,15 +184,6 @@ module Ai
     # Builds a detailed prompt for the AI to assess article quality.
     # @return [String] The prompt to be sent to the Gemini API.
     def build_prompt
-      # Get the community description for context, specific to subforem if provided
-      community_description = if @subforem_id
-                                Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem_id) ||
-                                  Settings::Community.community_description(subforem_id: @subforem_id)
-                              else
-                                Settings::RateLimit.internal_content_description_spec ||
-                                  Settings::Community.community_description
-                              end
-
       articles_text = @articles.map.with_index(1) do |article, index|
         bg_context = author_trustworthiness_profile(article)
         <<~ARTICLE
@@ -198,13 +196,23 @@ module Ai
         ARTICLE
       end.join("\n")
 
+      advisement_section = if content_advisement_spec.present?
+                             <<~ADVISEMENT
+
+                               **Community Content Advisement & Quality Playbook:**
+                               #{content_advisement_spec}
+                             ADVISEMENT
+                           else
+                             ""
+                           end
+
       <<~PROMPT
         Analyze the following #{@articles.length} articles and identify which one is the HIGHEST QUALITY and which one is the LOWEST QUALITY.
 
         Your assessment should focus on AUTHENTIC COMMUNITY-ORIENTED CONTENT that demonstrates genuine human connection and value that cannot be easily simulated by AI.
 
         **Community Context:**
-        #{community_description.presence || 'No specific community description provided.'}
+        #{community_description.presence || 'No specific community description provided.'}#{advisement_section}
 
         **Assessment Criteria:**
 

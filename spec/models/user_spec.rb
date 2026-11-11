@@ -1384,7 +1384,22 @@ RSpec.describe User do
 
       Articles::Unpublish.call(article2.user, article2)
 
-      expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+      reaction_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        reaction_queries << payload[:sql] if payload[:sql].include?('FROM "reactions"')
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = user.cached_reading_list_article_ids
+      end
+
+      expect(result).to eq([article3.id, article.id])
+      expect(reaction_queries.size).to eq(1)
+      expect(reaction_queries.first).to include('SELECT "reactions"."reactable_id" FROM "reactions"')
+      expect(reaction_queries.first).to include("reactions.created_at + INTERVAL '0 seconds' DESC")
     end
 
     it "uses user_activity.alltime_reading_list_articles if present before falling back to Reaction query" do
@@ -1403,6 +1418,36 @@ RSpec.describe User do
 
       expect(user.cached_reading_list_article_ids.length).to eq(1000)
       expect(user.cached_reading_list_article_ids).to eq((1..1000).to_a)
+    end
+
+    it "picks only alltime_reading_list_articles without hydrating full user_activities rows" do
+      create(:user_activity, user: user, alltime_reading_list_articles: [42])
+      fresh_user = described_class.find(user.id)
+
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(fresh_user.cached_reading_list_article_ids).to eq([42])
+      end
+
+      ua_queries = queries.grep(/FROM "user_activities"/)
+      expect(ua_queries.size).to eq(1)
+      expect(ua_queries.first).to include('"user_activities"."alltime_reading_list_articles"')
+      expect(ua_queries.first).not_to include('"user_activities".*')
+      expect(fresh_user.association(:user_activity)).not_to be_loaded
+    end
+
+    it "queries reactions once without hydrating Reaction records and skips articles when empty" do
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(user.cached_reading_list_article_ids).to eq([])
+      end
+
+      reaction_queries = queries.grep(/FROM "reactions"/)
+      expect(reaction_queries.size).to eq(1)
+      expect(reaction_queries.first).to include("reactions.created_at + INTERVAL '0 seconds' DESC")
+      expect(queries.grep(/FROM "articles"/)).to be_empty
     end
 
     it "has an accurate agent_sessions_count using counter cache" do
@@ -2046,6 +2091,33 @@ RSpec.describe User do
     it "sends a confirmation email to an unconfirmed signup" do
       expect { create(:user, confirmed_at: nil) }
         .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+    end
+
+    it "short-circuits in memory for an already-confirmed user without checking ForemInstance.smtp_enabled?" do
+      confirmed_user = build(:user, confirmed_at: Time.current)
+
+      expect(confirmed_user.__send__(:confirmation_required?)).to be(false)
+      expect(ForemInstance).not_to have_received(:smtp_enabled?)
+    end
+  end
+
+  describe "#member_of_minimum_indexed_organization?" do
+    let(:indexed_org) { create(:organization, baseline_score: 15) }
+    let(:default_org) { create(:organization, baseline_score: 0) }
+
+    it "returns true when the user is an active member of an organization with baseline_score > 0" do
+      create(:organization_membership, user: user, organization: indexed_org, type_of_user: "member")
+      expect(user.member_of_minimum_indexed_organization?).to be(true)
+    end
+
+    it "returns false when the user's membership in the organization is pending" do
+      create(:organization_membership, user: user, organization: indexed_org, type_of_user: "pending")
+      expect(user.member_of_minimum_indexed_organization?).to be(false)
+    end
+
+    it "returns false when the user belongs only to organizations with baseline_score 0" do
+      create(:organization_membership, user: user, organization: default_org, type_of_user: "member")
+      expect(user.member_of_minimum_indexed_organization?).to be(false)
     end
   end
 end

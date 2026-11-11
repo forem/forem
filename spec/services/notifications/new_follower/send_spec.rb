@@ -56,6 +56,35 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       expect(notification.read).to be_truthy
     end
 
+    it "reuses the preloaded follower and filters follows by blocked to utilize the composite index" do
+      payload = follow_data(follow)
+      queries = []
+      callback = lambda do |_name, _start, _finish, _id, data|
+        next if data[:name] == "SCHEMA" || data[:cached]
+
+        queries << data[:sql]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.call(payload)
+      end
+
+      user_selects = queries.select { |sql| sql.start_with?('SELECT "users".* FROM "users"') }
+      expect(user_selects.size).to eq(1)
+
+      follow_select = queries.detect { |sql| sql.include?('FROM "follows"') }
+      expect(follow_select).to include('"follows"."blocked" IN (')
+      expect(follow_select).to include('SELECT "follows"."id", "follows"."follower_id" FROM "follows"')
+    end
+
+    it "includes blocked and unblocked follows in aggregated siblings" do
+      blocked_follow = user3.follow(user2)
+      blocked_follow.update!(blocked: true)
+
+      notification = described_class.call(follow_data(follow))
+      expect(notification.json_data["aggregated_siblings"].pluck("id").sort).to eq([user.id, user3.id].sort)
+    end
+
     context "when destroyed follow" do
       let(:unfollow) { user.stop_following(user2) }
 

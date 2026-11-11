@@ -6,7 +6,9 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def self.is_root_subforem?
-    RequestStore.store[:subforem_id].present? && RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+    !Subforem.disabled_by_env? &&
+      RequestStore.store[:subforem_id].present? &&
+      RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
   # @param query [Symbol]

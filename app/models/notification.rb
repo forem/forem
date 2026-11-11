@@ -15,7 +15,8 @@ class Notification < ApplicationRecord
 
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: %w[Published CoAuthor]) }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
-  scope :for_mentions, -> { where(notifiable_type: "Mention") }
+  scope :for_mentions, -> { where(notifiable_type: "Mention", action: nil) }
+  scope :for_comments_and_mentions, -> { where(notifiable_type: %w[Comment Mention], action: nil) }
 
   scope :for_organization, ->(org_id) { where(organization_id: org_id, user_id: nil) }
   scope :for_organization_comments, lambda { |org_id|
@@ -23,19 +24,26 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Comment", action: nil, user_id: nil)
   }
   scope :for_organization_mentions, lambda { |org_id|
-    where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
+    where(organization_id: org_id, notifiable_type: "Mention", action: nil, user_id: nil)
+  }
+  scope :for_organization_comments_and_mentions, lambda { |org_id|
+    where(organization_id: org_id, notifiable_type: %w[Comment Mention], action: nil, user_id: nil)
   }
   scope :unread, -> { where(read: false) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
-    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+    return where(nil) if Subforem.disabled_by_env?
 
     subforem_id ||= RequestStore.store[:subforem_id]
-    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+    default_subforem_id = RequestStore.store[:default_subforem_id]
+    if subforem_id.nil? && default_subforem_id.nil? && Subforem.cached_default_id.nil?
+      where(nil)
+    elsif subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # No additional conditions; just return the current scope
       where(nil)
-    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("notifications.subforem_id IN (?) OR notifications.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+    elsif [0, default_subforem_id].include?(subforem_id.to_i)
+      where("notifications.subforem_id IN (?) OR notifications.subforem_id IS NULL",
+            [nil, subforem_id, default_subforem_id.to_i])
     else
       where("notifications.subforem_id = ?", subforem_id)
     end

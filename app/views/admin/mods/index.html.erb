@@ -24,7 +24,12 @@
 <% if @mods.empty? %>
     <div class="crayons-notice crayons-notice--warning">There are no mods matching your search criteria.</div>
 <% else %>
-  <%= paginate @mods, theme: "internal" %>
+  <nav class="admin-pagination flex gap-2 fs-s items-center">
+    <% if @mods.current_page > 1 %>
+      <%= link_to t("views.pagination.aria_previous"), admin_mods_path(state: params[:state], search: params[:search], page: (@mods.current_page - 1 if @mods.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+    <% end %>
+    <%= link_to_next_page @mods, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+  </nav>
 
   <table class="crayons-table" width="100%">
     <thead>
@@ -46,7 +51,7 @@
           <td><%= link_to mod.username, admin_user_path(mod.id) %></td>
           <td><%= mod.comments_count %></td>
           <td><%= mod.badge_achievements_count %></td>
-          <td><%= time_ago_in_words mod.last_comment_at %> ago</td>
+          <td><%= "#{time_ago_in_words(mod.last_comment_at)} ago" if mod.last_comment_at %></td>
           <% if params[:state] == "potential" %>
             <td>
               <%= form_with model: [:admin, mod], url: admin_mod_path(mod.id), method: :patch, local: true do |f| %>
@@ -59,5 +64,10 @@
     </tbody>
   </table>
 
-  <%= paginate @mods, theme: "internal" %>
+  <nav class="admin-pagination flex gap-2 fs-s items-center">
+    <% if @mods.current_page > 1 %>
+      <%= link_to t("views.pagination.aria_previous"), admin_mods_path(state: params[:state], search: params[:search], page: (@mods.current_page - 1 if @mods.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+    <% end %>
+    <%= link_to_next_page @mods, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+  </nav>
 <% end %>

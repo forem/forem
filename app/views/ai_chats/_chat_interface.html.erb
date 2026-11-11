@@ -28,11 +28,11 @@
     
     let chatHistory = [];
 
-    function appendMessage(role, content) {
+    function appendMessage(role, content, isHtml = false) {
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${role}`;
       
-      if (role === 'ai') {
+      if (isHtml) {
         msgDiv.innerHTML = content;
       } else {
         msgDiv.innerText = content;
@@ -68,9 +68,28 @@
         let payload = { message, history: chatHistory, chat_context: chatContext };
         
         if (chatContext === 'editor') {
-          const title = document.getElementById('article-form-title')?.value || '';
-          const body = document.getElementById('article_body_markdown')?.value || '';
-          payload.article_state = { title, body };
+          const liveState = window.__foremEditorState || {};
+          const titleInput = document.getElementById('article-form-title');
+          const bodyInput = document.getElementById('article_body_markdown');
+          const containerEl =
+            document.getElementById('main-content') ||
+            document.getElementById('article-form-container');
+          const domErrors = Array.from(
+            document.querySelectorAll('[data-testid="error-message"] li, [data-testid="error-message"]')
+          )
+            .map((el) => el.textContent.trim())
+            .filter(Boolean);
+
+          const title = titleInput ? titleInput.value : (liveState.title || '');
+          const body = bodyInput ? bodyInput.value : (liveState.body || '');
+
+          payload.article_state = {
+            ...liveState,
+            title,
+            body,
+            version: liveState.version || containerEl?.dataset?.version || undefined,
+            errors: liveState.errors || (domErrors.length > 0 ? domErrors : null)
+          };
         }
 
         const response = await fetch('/ai_chats', {
@@ -82,13 +101,21 @@
           body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        let data = null;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          data = await response.json();
+        } else if (response.status === 429) {
+          data = { error: 'Rate limit reached. Please wait a moment and try again.' };
+        } else {
+          data = { error: 'Something went wrong. Please try again.' };
+        }
         indicator.remove();
 
         if (data.error) {
           appendMessage('ai', 'Error: ' + data.error);
         } else {
-          appendMessage('ai', data.message);
+          appendMessage('ai', data.message, true);
           chatHistory = data.history;
         }
       } catch (err) {

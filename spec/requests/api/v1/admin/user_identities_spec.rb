@@ -113,6 +113,29 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       expect(user.reload.mlh_username).to eq("jane_mlh")
     end
 
+    it "avoids duplicate uniqueness SELECT queries on identities and skips no-op user updates" do
+      user.update_column(:mlh_username, "jane_mlh")
+      headers = admin_api_headers
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      post "/api/admin/users/#{user.id}/identities",
+           params: { provider: "mlh", uid: "core-12345", username: "jane_mlh" },
+           headers: headers
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+
+      expect(response).to have_http_status(:created)
+      identity_selects = queries.select { |sql| sql.include?('FROM "identities"') && sql.start_with?("SELECT") }
+      expect(identity_selects.size).to eq(2)
+      expect(identity_selects.first).not_to include("auth_data_dump")
+      expect(queries.none? { |sql| sql.start_with?('UPDATE "users"') }).to be(true)
+    end
+
     it "audits the link" do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
       expect do
@@ -171,6 +194,24 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       expect(audit.slug).to eq("unlink_identity")
       expect(audit.data).to include("provider" => "mlh", "uid" => "core-1", "identity_id" => identity.id)
     end
+
+    it "skips user update and validations when provider username is already nil" do
+      user.update_column(:mlh_username, nil)
+      headers = admin_api_headers
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      delete "/api/admin/users/#{user.id}/identities/#{identity.id}", headers: headers
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+
+      expect(response).to have_http_status(:no_content)
+      expect(queries.none? { |sql| sql.start_with?('UPDATE "users"') }).to be(true)
+    end
   end
 
   describe "POST /api/admin/users/identities/bulk" do
@@ -191,6 +232,27 @@ RSpec.describe "Api::V1::Admin::UserIdentities" do
       expect(results.pluck("status")).to all(eq("created"))
       expect(results.pluck("user_id")).to match_array(users.map(&:id))
       expect(users.first.identities.find_by(provider: "mlh").uid).to eq("1000")
+    end
+
+    it "executes only the three batch preload SELECT queries without per-row uniqueness SELECTs" do
+      users = create_list(:user, 3)
+      entries = users.each_with_index.map { |u, i| { user_id: u.id, uid: (2000 + i).to_s } }
+      headers = admin_api_headers
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      bulk_post(entries, headers: headers)
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+
+      expect(response).to have_http_status(:ok)
+      identity_selects = queries.select { |sql| sql.include?('FROM "identities"') && sql.start_with?("SELECT") }
+      expect(identity_selects.size).to eq(2)
+      expect(identity_selects.first).not_to include("auth_data_dump")
     end
 
     it "reports already_linked for idempotent repeats" do

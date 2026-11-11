@@ -25,7 +25,7 @@
     <meta property="og:image" content="<%= Settings::General.main_social_image %>">
     <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% end %>
-
+  <%= javascript_include_tag "mediaPlayback", defer: true, onerror: "this.remove()" %>
 <% end %>
 
 <main id="main-content" class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>" data-creator-id="<%= @podcast.creator_id %>">

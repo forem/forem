@@ -9,7 +9,9 @@ class CollectionsController < ApplicationController
   def show
     @collection = Collection.find(params[:id])
     @user = @collection.user
+    # Story cards never read the markdown source, embedding, or search document, so skip those payloads.
     @articles = @collection.articles.from_subforem.published
+      .limited_column_select
       .includes(:context_notes)
       .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC, articles.id ASC"))
       .page(params[:page]).per(ARTICLES_PER_PAGE)

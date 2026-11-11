@@ -326,6 +326,53 @@ RSpec.describe Spam::Handler, type: :service do
         end
       end
 
+      context "when user is not a low-trust user or has proven prior content" do
+        before do
+          article.user.update!(score: 0)
+          linked_domain.update!(net_score: -100_000)
+        end
+
+        it "skips the check when user has 4 or more badges" do
+          article.user.update_column(:badge_achievements_count, 4)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user is trusted" do
+          article.user.add_role(:trusted)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user has a prior high-quality published article" do
+          prior = create(:article, user: article.user)
+          prior.update_column(:automod_label, "very_good_and_on_topic")
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user has a prior published article meeting index_minimum_score" do
+          prior = create(:article, user: article.user)
+          prior.update_column(:score, Settings::UserExperience.index_minimum_score)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user has at least 2 prior okay_and_on_topic articles with positive score" do
+          create_list(:article, 2, user: article.user).each do |prior|
+            prior.update_columns(automod_label: "okay_and_on_topic", score: 5)
+          end
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "uses badge_achievements_count * 10 as minimum effective author score when user.score is 0" do
+          article.user.update_column(:badge_achievements_count, 2)
+          linked_domain.update!(net_score: -5999)
+          expect(described_class.handle_article!(article: article)).to eq(:not_spam)
+
+          linked_domain.update!(net_score: -6000)
+          expect do
+            described_class.handle_article!(article: article)
+          end.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+      end
+
       context "when user score is 20" do
         before { article.user.update!(score: 20) }
 
@@ -727,6 +774,139 @@ RSpec.describe Spam::Handler, type: :service do
         expect(handler).to eq(:not_spam)
       end
     end
+
+    context "when the article comes from an account with minimum indexing set" do
+      let(:organization) { create(:organization, baseline_score: 15) }
+      let!(:article) { create(:article, organization: organization) }
+
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
+        allow(Ai::ArticleCheck).to receive(:new)
+      end
+
+      it "never marks the article as spam and enforces a minimum label of okay_and_on_topic" do
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "clear_and_obvious_spam", compellingness_score: 0.3 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(article).and_return(labeler)
+
+        expect { expect(handler).to eq(:not_spam) }
+          .not_to(change { Reaction.where(reactable: article, category: "vomit").count })
+        expect(article.reload.automod_label).to eq("okay_and_on_topic")
+        expect(article.compellingness_score).to eq(0.3)
+        expect(article.user.reload).not_to be_spam
+        expect(article.user).not_to be_suspended
+        expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+
+      it "preserves positive recognition when the labeler assigns a higher quality label" do
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "very_good_and_on_topic", compellingness_score: 0.85 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(article).and_return(labeler)
+
+        expect(handler).to eq(:not_spam)
+        expect(article.reload.automod_label).to eq("very_good_and_on_topic")
+        expect(article.compellingness_score).to eq(0.85)
+      end
+
+      it "skips linked-domain and repeated-title spam overrides" do
+        LinkedDomain.create!(host: "bad-seo-site.com", net_score: -50_000)
+        allow(article).to receive(:processed_html).and_return('<a href="https://bad-seo-site.com/foo">link</a>')
+        create_list(:article, 2, user: article.user).each do |copy|
+          copy.update_columns(title: article.title, published_at: article.published_at - 1.hour)
+        end
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "likely_spam", compellingness_score: 0.4 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(article).and_return(labeler)
+
+        expect(handler).to eq(:not_spam)
+        expect(article.reload.automod_label).to eq("okay_and_on_topic")
+      end
+
+      it "assigns okay_and_on_topic when content moderation is unavailable" do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+
+        expect(handler).to eq(:not_spam)
+        expect(article.reload.automod_label).to eq("okay_and_on_topic")
+      end
+
+      it "applies the same protection when the author is a member of a minimum-indexed organization" do
+        personal_article = create(:article, organization: nil)
+        create(:organization_membership, user: personal_article.user, organization: organization,
+                                         type_of_user: "member")
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "clear_and_obvious_spam", compellingness_score: 0.5 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(personal_article).and_return(labeler)
+
+        expect(described_class.handle_article!(article: personal_article)).to eq(:not_spam)
+        expect(personal_article.reload.automod_label).to eq("okay_and_on_topic")
+      end
+    end
+
+    context "when a low-trust account posts a platform-impersonation phishing or signup lure" do
+      let(:phishing_author) do
+        create(:user, name: "𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢", username: "devteamsupp", badge_achievements_count: 0)
+      end
+      let!(:article) do
+        create(
+          :published_article,
+          user: phishing_author,
+          title: "Mаndаtоry usеr vеrificаtiоn",
+          body_markdown: "𝙈𝙖𝙣𝙙𝙖𝙩𝙤𝙧𝙮 𝙪𝙨𝙚𝙧 𝙫𝙚𝙧𝙞𝙛𝙞𝙘𝙖𝙩𝙞𝙤𝙣\n" \
+                         "Dеar User, we require vеriflcation of your account. Please log in via:\ntr.ee/dev-to",
+        )
+      end
+      let(:labeler_double) do
+        instance_double(Ai::ContentModerationLabeler,
+                        evaluate: { label: "no_moderation_label", compellingness_score: 0.2 })
+      end
+
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ContentModerationLabeler).to receive(:new).and_return(labeler_double)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+      end
+
+      it "flags the article and immediately marks the low-trust author as spam on their first post" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(article).and_return(phishing_checker)
+
+        expect(handler).to eq(:spam)
+        expect(Reaction.where(reactable: article, category: "vomit", user: mascot_user)).to exist
+        expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        expect(phishing_author.reload).to be_spam
+        expect(AuditLog.on_user(phishing_author).find_by(slug: "automatic_spam").data)
+          .to include("reason" => "low_trust_phishing_or_signup", "reactable_type" => "Article")
+      end
+
+      it "works with Jev enabled for :phishing_signup_check without a Gemini key" do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        enable_jev_for(:phishing_signup_check)
+        stub_jev(platform_impersonation: 0.95, phishing_or_verification_lure: 0.95)
+
+        expect(handler).to eq(:spam)
+        expect(phishing_author.reload).to be_spam
+      end
+
+      it "skips the check for established or trusted users (4+ badges)" do
+        phishing_author.update_column(:badge_achievements_count, 4)
+        allow(Ai::PhishingSignupCheck).to receive(:new)
+        allow(Ai::ArticleCheck).to receive(:new)
+
+        expect(handler).to eq(:not_spam)
+        expect(Ai::PhishingSignupCheck).not_to have_received(:new)
+        expect(phishing_author.reload).not_to be_spam
+      end
+    end
   end
 
   describe ".handle_comment!" do
@@ -1103,6 +1283,63 @@ RSpec.describe Spam::Handler, type: :service do
           .update_columns(commentable_id: comment.commentable_id, commentable_type: comment.commentable_type)
         expect(handler).to eq(:not_spam)
       end
+
+      it "leaves members of minimum-indexed organizations alone" do
+        organization = create(:organization, baseline_score: 10)
+        create(:organization_membership, user: commenter, organization: organization, type_of_user: "member")
+
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+    end
+
+    context "when the commenter belongs to an organization with baseline_score > 0" do
+      let(:organization) { create(:organization, baseline_score: 10) }
+
+      before do
+        create(:organization_membership, user: comment.user, organization: organization, type_of_user: "member")
+      end
+
+      it "creates a spam reaction on the comment but never auto-suspends or marks the user as spam" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
+          .with(user: comment.user, include_user_profile: false).and_return(true)
+
+        expect { handler }.to change { Reaction.where(reactable: comment, category: "vomit").count }.by(1)
+        expect(comment.user.reload).not_to be_suspended
+        expect(comment.user).not_to be_spam
+      end
+    end
+
+    context "when a low-trust puppet account impersonating support comments @-mentions" do
+      let(:puppet_user) do
+        create(:user, name: "𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢", username: "ladiaoksaowo", badge_achievements_count: 0)
+      end
+      let(:mentioned_user) { create(:user) }
+      let!(:comment) do
+        create(:comment, user: puppet_user, body_markdown: "Hello @#{mentioned_user.username}")
+      end
+
+      it "flags the comment, removes mention notifications, and immediately marks the puppet account as spam" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(comment).and_return(phishing_checker)
+        allow(Notifications::RemoveBySpammerWorker).to receive(:perform_async)
+
+        expect(handler).to eq(:spam)
+        expect(Reaction.where(reactable: comment, category: "vomit", user: mascot_user)).to exist
+        expect(puppet_user.reload).to be_spam
+        expect(Notifications::RemoveBySpammerWorker).to have_received(:perform_async).with(puppet_user.id)
+      end
+
+      it "suspends the commenter when they exceed the comment-specific spam reaction threshold" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(comment).and_return(phishing_checker)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
+          .with(user: puppet_user, include_user_profile: false).and_return(true)
+
+        expect(handler).to eq(:spam)
+        expect(puppet_user.reload).to be_suspended
+      end
     end
   end
 
@@ -1288,6 +1525,23 @@ RSpec.describe Spam::Handler, type: :service do
         expect(user.reload).not_to be_spam
       end
     end
+
+    context "when user belongs to an organization with baseline_score > 0" do
+      let(:organization) { create(:organization, baseline_score: 10) }
+
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+      end
+
+      it "does not mark the user as spam or suspend them when profile moderation flags a clear violation" do
+        labeler = instance_double(Ai::ProfileModerationLabeler, label: "clear_and_obvious_spam")
+        allow(Ai::ProfileModerationLabeler).to receive(:new).with(user).and_return(labeler)
+
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).not_to be_spam
+        expect(user).not_to be_suspended
+      end
+    end
   end
 
   describe ".suspend!" do
@@ -1318,6 +1572,16 @@ RSpec.describe Spam::Handler, type: :service do
       expect(published.reload).to be_published
       expect(suspension_log.data).not_to have_key("unpublished_article_ids")
     end
+
+    it "never auto-suspends a user who belongs to an organization with baseline_score > 0" do
+      organization = create(:organization, baseline_score: 15)
+      create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+
+      described_class.__send__(:suspend!, user: user)
+
+      expect(user.reload).not_to be_suspended
+      expect(suspension_log).to be_nil
+    end
   end
 
   describe ".profile_spam_trigger_term_match?" do
@@ -1326,6 +1590,12 @@ RSpec.describe Spam::Handler, type: :service do
       expect(described_class.profile_spam_trigger_term_match?("Looking for backlinks and SEO services")).to be(true)
       expect(described_class.profile_spam_trigger_term_match?("Escorts and casinos")).to be(true)
       expect(described_class.profile_spam_trigger_term_match?("prostitution ring")).to be(true)
+    end
+
+    it "matches platform impersonation and Unicode/homoglyph obfuscated support names" do
+      expect(described_class.profile_spam_trigger_term_match?("𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("Official account of the Dev support team")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("Suрроrt Воt")).to be(true)
     end
 
     it "does not false-trigger on substrings inside words or benign phrases like 'Girls Who Code'" do

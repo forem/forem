@@ -4,16 +4,17 @@ require "sidekiq/testing"
 RSpec.describe Notification do
   include ActiveSupport::Testing::TimeHelpers
 
-  let(:user)            { create(:user) }
-  let(:user2)           { create(:user) }
-  let(:user3)           { create(:user) }
+  let(:user)            { create(:user, :without_profile, profile_image: nil) }
+  let(:user2)           { create(:user, :without_profile, profile_image: nil) }
+  let(:user3)           { create(:user, :without_profile, profile_image: nil) }
   let(:organization)    { create(:organization) }
   let(:article) do
-    create(:article, :with_notification_subscription, user: user, page_views_count: 4000, public_reactions_count: 70)
+    create(:article, :with_notification_subscription, user: user, with_tags: false, with_main_image: false,
+                                                      page_views_count: 4000, public_reactions_count: 70)
   end
   let(:user_follows_user2) { user.follow(user2) }
   let(:comment) { create(:comment, user: user2, commentable: article) }
-  let(:badge_achievement) { create(:badge_achievement) }
+  let(:badge_achievement) { build_stubbed(:badge_achievement) }
 
   it "validates a unique user_id according to the correct scope" do
     notification = create(:notification, user: user2, notifiable: article, organization: nil)
@@ -36,7 +37,7 @@ RSpec.describe Notification do
       end
 
       it "doesn't allow to create duplicated article reaction notifications for an organization" do
-        article = create(:article, organization: organization)
+        article.update_column(:organization_id, organization.id)
         reaction = create(:reaction, reactable: article, user: user2)
 
         described_class.send_reaction_notification_without_delay(reaction, article.organization)
@@ -50,8 +51,7 @@ RSpec.describe Notification do
 
     describe "when notifiable is a Comment" do
       it "doesn't allow to create duplicated comment reaction notifications for a user" do
-        comment = create(:comment, commentable: article)
-        reaction = create(:reaction, reactable: comment, user: user2)
+        reaction = create(:reaction, reactable: comment, user: user)
 
         described_class.send_reaction_notification_without_delay(reaction, comment.user)
         expect(comment.user.notifications.count).to eq(1)
@@ -62,9 +62,8 @@ RSpec.describe Notification do
       end
 
       it "doesn't allow to create duplicated comment reaction notifications for an organization" do
-        article = create(:article, organization: organization)
-        comment = create(:comment, commentable: article)
-        reaction = create(:reaction, reactable: comment, user: user2)
+        article.update_column(:organization_id, organization.id)
+        reaction = create(:reaction, reactable: comment, user: user)
 
         described_class.send_reaction_notification_without_delay(reaction, article.organization)
         expect(article.organization.notifications.count).to eq(1)
@@ -78,7 +77,7 @@ RSpec.describe Notification do
 
   context "when callbacks are triggered after create" do
     it "sets the notified_at column" do
-      notification = create(:notification, notifiable: article, user: user2)
+      notification = create(:notification, notifiable: article, user: user2, organization: nil)
       expect(notification.notified_at).to be_present
     end
   end
@@ -94,12 +93,18 @@ RSpec.describe Notification do
     end
 
     context "when trying to send a notification after following a user" do
-      it "creates a notification belonging to the person being followed" do
+      it "creates a notification belonging to the person being followed from the follow instance",
+         :aggregate_failures do
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewFollowerWorker) do
             described_class.send_new_follower_notification(user_follows_user2)
           end
         end.to change(user2.notifications, :count).by(1)
+
+        notification = user2.notifications.last
+        notifiable_data = { notifiable_id: notification.notifiable_id, notifiable_type: notification.notifiable_type }
+        follow_data = { notifiable_id: user_follows_user2.id, notifiable_type: user_follows_user2.class.name }
+        expect(notifiable_data).to eq(follow_data)
       end
 
       it "sends as perform_in 60 minutes if follower is new" do
@@ -118,43 +123,21 @@ RSpec.describe Notification do
         described_class.send_new_follower_notification(user_follows_user2)
         expect(Notifications::NewFollowerWorker).to have_received(:perform_async)
       end
-
-      it "creates a notification from the follow instance" do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_new_follower_notification(user_follows_user2)
-        end
-
-        notification = user2.notifications.last
-        notifiable_data = { notifiable_id: notification.notifiable_id, notifiable_type: notification.notifiable_type }
-        follow_data = { notifiable_id: user_follows_user2.id, notifiable_type: user_follows_user2.class.name }
-        expect(notifiable_data).to eq(follow_data)
-      end
     end
 
     context "when a user follows an organization" do
       let(:user_follows_organization) { user.follow(organization) }
 
-      it "creates a notification belonging to the organization" do
+      it "creates an organization notification from the follow instance without setting user_id",
+         :aggregate_failures do
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewFollowerWorker) do
             described_class.send_new_follower_notification(user_follows_organization)
           end
         end.to change(organization.notifications, :count).by(1)
-      end
-
-      it "does not create a notification belonging to a user" do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_new_follower_notification(user_follows_organization)
-        end
-        expect(organization.notifications.last&.user_id).to be_nil
-      end
-
-      it "creates a notification from the follow instance" do
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_new_follower_notification(user_follows_organization)
-        end
 
         notification = organization.notifications.last
+        expect(notification.user_id).to be_nil
         notifiable_data = { notifiable_id: notification.notifiable_id, notifiable_type: notification.notifiable_type }
         follow_data = {
           notifiable_id: user_follows_organization.id,
@@ -183,27 +166,21 @@ RSpec.describe Notification do
   end
 
   describe "#send_new_comment_notifications_without_delay" do
-    let(:comment) { create(:comment, user: user2, commentable: article) }
     let(:child_comment) { create(:comment, user: user3, commentable: article, parent: comment) }
 
     context "when all commenters are subscribed" do
-      it "sends a notification to the author of the article" do
+      it "notifies the article author and does not notify the comment author" do
         expect do
           described_class.send_new_comment_notifications_without_delay(comment)
         end.to change(user.notifications, :count).by(1)
+          .and not_change(user2.notifications, :count)
       end
 
       it "does not send a notification to the author of the article if the commenter is the author" do
-        comment = create(:comment, user: user, commentable: article)
+        author_comment = create(:comment, user: user, commentable: article)
         expect do
-          described_class.send_new_comment_notifications_without_delay(comment)
+          described_class.send_new_comment_notifications_without_delay(author_comment)
         end.not_to change(user.notifications, :count)
-      end
-
-      it "does not send a notification to the author of the comment" do
-        expect do
-          described_class.send_new_comment_notifications_without_delay(comment)
-        end.not_to change(user2.notifications, :count)
       end
 
       it "sends a notification to the author of the article about the child comment" do
@@ -215,7 +192,6 @@ RSpec.describe Notification do
       it "sends a notification to the organization" do
         create(:organization_membership, user: user, organization: organization)
         article.update(organization: organization)
-        comment = create(:comment, user: user2, commentable: article)
 
         expect do
           described_class.send_new_comment_notifications_without_delay(comment)
@@ -262,11 +238,6 @@ RSpec.describe Notification do
   end
 
   describe "#send_reaction_notification" do
-    before do
-      article.update(receive_notifications: true)
-      comment.update(receive_notifications: true)
-    end
-
     context "when reactable is receiving notifications" do
       it "sends a notification to the author of a comment" do
         reaction = create(:reaction, reactable: comment, user: user)
@@ -302,8 +273,9 @@ RSpec.describe Notification do
     end
 
     context "when a reaction is destroyed" do
-      let(:comment) { create(:comment, user: user2, commentable: article) }
-      let!(:notification) { create(:notification, user: user, notifiable: comment, action: "Reaction") }
+      let!(:notification) do
+        create(:notification, user: user, organization: nil, notifiable: comment, action: "Reaction")
+      end
       let(:sibling_reaction) { create(:reaction, reactable: comment, user: user3) }
 
       it "destroys the notification if it exists" do
@@ -313,21 +285,13 @@ RSpec.describe Notification do
         expect(described_class.exists?(id: notification.id)).to be(false)
       end
 
-      it "keeps the notification if siblings exist" do
+      it "keeps the notification and omits the destroyed reaction data if siblings exist", :aggregate_failures do
         reaction = create(:reaction, reactable: comment, user: user)
         sibling_reaction # to create it
         reaction.destroy
         described_class.send_reaction_notification_without_delay(reaction, article.user)
         notification.reload
         expect(notification).to be_persisted
-      end
-
-      it "doesn't keep data of the destroyed reaction in the notification" do
-        reaction = create(:reaction, reactable: comment, user: user)
-        sibling_reaction # to create it
-        reaction.destroy
-        described_class.send_reaction_notification_without_delay(reaction, article.user)
-        notification.reload
         expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }).to eq([user3.id])
         # not the user of the destroyed reaction!
         expect(notification.json_data["user"]["id"]).to eq(user3.id)
@@ -411,48 +375,40 @@ RSpec.describe Notification do
     end
   end
 
-  def skip_notifications_for_status_article?(article)
+  def status_article?(article)
     article.type_of == "status"
   end
 
   describe "send_to_mentioned_users_and_followers" do
-    let!(:mention_markdown) { "Hello there, @#{user2.username}!" }
-  
+    let(:mention_markdown) { "Hello there, @#{user2.username}!" }
+
     context "when the notifiable is an article from a user" do
       before do
         article.update!(body_markdown: mention_markdown)
         user2.follow(user)
       end
-  
-      it "sends a single notification to mentioned user", :aggregate_failures do
-        article.update!(type_of: "full_post") # ensure it's not a status
-        expect do
-          sidekiq_perform_enqueued_jobs do
-            described_class.send_to_mentioned_users_and_followers(article) unless skip_notifications_for_status_article?(article)
-          end
-        end.to change(user2.notifications, :count).from(0).to(1)
-        expect(user2.notifications.first.notifiable_type).to eq("Mention")
-      end
-  
-      it "does not send a notification to mentioned user if article is of type status" do
-        status_article = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
-        expect do
-          sidekiq_perform_enqueued_jobs do
-            described_class.send_to_mentioned_users_and_followers(status_article) unless skip_notifications_for_status_article?(status_article)
-          end
-        end.not_to change(user2.notifications, :count)
-      end
-  
-      it "sends a notification to the organization's followers (who were not mentioned)", :aggregate_failures do
+
+      it "notifies mentioned followers via Mention and unmentioned followers via Article", :aggregate_failures do
         article.update!(type_of: "full_post") # ensure it's not a status
         user3.follow(user)
-  
+
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_mentioned_users_and_followers(article) unless skip_notifications_for_status_article?(article)
+            described_class.send_to_mentioned_users_and_followers(article) unless status_article?(article)
           end
-        end.to change(user3.notifications, :count).from(0).to(1)
+        end.to change(user2.notifications, :count).from(0).to(1)
+          .and change(user3.notifications, :count).from(0).to(1)
+        expect(user2.notifications.first.notifiable_type).to eq("Mention")
         expect(user3.notifications.first.notifiable_type).to eq("Article")
+      end
+
+      it "does not send a notification to mentioned user if article is of type status" do
+        article.update_column(:type_of, "status")
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_to_mentioned_users_and_followers(article) unless status_article?(article)
+          end
+        end.not_to change(user2.notifications, :count)
       end
     end
   end
@@ -465,68 +421,50 @@ RSpec.describe Notification do
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(article, "Published") unless skip_notifications_for_status_article?(article)
+            described_class.send_to_followers(article, "Published") unless status_article?(article)
           end
         end.to change(user2.notifications, :count).by(1)
       end
 
       it "does not send a notification to the author's followers if article is of type status" do
-        status_article = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
+        article.update_column(:type_of, "status")
         user2.follow(user)
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(status_article, "Published") unless skip_notifications_for_status_article?(status_article)
+            described_class.send_to_followers(article, "Published") unless status_article?(article)
           end
         end.not_to change(user2.notifications, :count)
       end
     end
 
     context "when the notifiable is an article from an organization" do
-      let(:org_article) { create(:article, organization: organization, user: user) }
+      let(:org_article) { create(:article, organization: organization, user: user, with_tags: false) }
 
-      it "sends a notification to the author's followers if article is not status" do
+      it "sends notifications to the author's and organization's followers if article is not status" do
         org_article.update!(type_of: "full_post") # ensure it's not a status
         user2.follow(user)
+        user3.follow(organization)
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+            described_class.send_to_followers(org_article, "Published") unless status_article?(org_article)
           end
         end.to change(user2.notifications, :count).by(1)
+          .and change(user3.notifications, :count).by(1)
       end
 
-      it "does not send a notification to the author's followers if article is of type status" do
-        status_org_article = create(:article, organization: organization, user: user, type_of: "status", body_markdown: "", main_image: nil)
+      it "does not send notifications to the author's or organization's followers if article is of type status" do
+        org_article.update_column(:type_of, "status")
         user2.follow(user)
-
-        expect do
-          sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(status_org_article, "Published") unless skip_notifications_for_status_article?(status_org_article)
-          end
-        end.not_to change(user2.notifications, :count)
-      end
-
-      it "sends a notification to the organization's followers if article is not status" do
-        org_article.update!(type_of: "full_post") # ensure it's not a status
         user3.follow(organization)
 
         expect do
           sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(org_article, "Published") unless skip_notifications_for_status_article?(org_article)
+            described_class.send_to_followers(org_article, "Published") unless status_article?(org_article)
           end
-        end.to change(user3.notifications, :count).by(1)
-      end
-
-      it "does not send a notification to the organization's followers if article is of type status" do
-        status_org_article = create(:article, organization: organization, user: user, type_of: "status", body_markdown: "", main_image: nil)
-        user3.follow(organization)
-
-        expect do
-          sidekiq_perform_enqueued_jobs do
-            described_class.send_to_followers(status_org_article, "Published") unless skip_notifications_for_status_article?(status_org_article)
-          end
-        end.not_to change(user3.notifications, :count)
+        end.to not_change(user2.notifications, :count)
+          .and not_change(user3.notifications, :count)
       end
     end
   end
@@ -561,8 +499,7 @@ RSpec.describe Notification do
       end
 
       it "updates CoAuthor notifications with the new article title" do
-        co_author = create(:user)
-        article.update(co_author_ids: [co_author.id])
+        article.update(co_author_ids: [user3.id])
         sidekiq_perform_enqueued_jobs { described_class.send_to_co_authors(article) }
 
         new_title = "Brand New Co-Authored Title"
@@ -571,14 +508,14 @@ RSpec.describe Notification do
         described_class.update_notifications(article, %w[Published CoAuthor])
         sidekiq_perform_enqueued_jobs
 
-        co_author_notification = co_author.notifications.find_by(action: "CoAuthor")
+        co_author_notification = user3.notifications.find_by(action: "CoAuthor")
         expect(co_author_notification.json_data["article"]["title"]).to eq(new_title)
       end
     end
   end
 
   describe "#aggregated?" do
-    let(:notification) { build(:notification) }
+    let(:notification) { described_class.new }
 
     it "returns true if a notification's action is 'Reaction'" do
       notification.action = "Reaction"
@@ -607,7 +544,7 @@ RSpec.describe Notification do
   describe "#remove_all" do
     it "removes all mention related notifications" do
       mention = create(:mention, user: user, mentionable: comment)
-      create(:notification, user: mention.user, notifiable: mention)
+      create(:notification, user: mention.user, organization: nil, notifiable: mention)
 
       expect do
         sidekiq_perform_enqueued_jobs do
@@ -645,8 +582,9 @@ RSpec.describe Notification do
 
     it "actually deletes the excessive notifications" do
       now = Time.current
-      comments_data = 105.times.map { |i| { user_id: user.id, notifiable_type: "Comment", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
-      reactions_data = 105.times.map { |i| { user_id: user.id, action: "Reaction", notifiable_type: "Article", notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
+      base = ->(i) { { user_id: user.id, notifiable_id: i, created_at: now - i.minutes, updated_at: now - i.minutes } }
+      comments_data = Array.new(105) { |i| base.call(i).merge(notifiable_type: "Comment") }
+      reactions_data = Array.new(105) { |i| base.call(i).merge(action: "Reaction", notifiable_type: "Article") }
 
       described_class.insert_all!(comments_data)
       described_class.insert_all!(reactions_data)
@@ -659,8 +597,10 @@ RSpec.describe Notification do
   end
 
   describe "#cleanup_old_notifications" do
+    let(:notification) { described_class.new(user_id: 1) }
+
     after do
-      Rails.cache.delete("cleanup_user_notifications_#{user.id}")
+      Rails.cache.delete("cleanup_user_notifications_1")
     end
 
     context "when ENABLE_USER_NOTIFICATION_CLEANUP is not set" do
@@ -670,11 +610,10 @@ RSpec.describe Notification do
       end
 
       it "does not enqueue a cleanup job" do
-        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
-        notification = build(:notification, user: user)
+        allow(notification).to receive(:rand).with(10).and_return(0)
 
         expect do
-          notification.send(:cleanup_old_notifications)
+          notification.__send__(:cleanup_old_notifications)
         end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
       end
     end
@@ -686,26 +625,26 @@ RSpec.describe Notification do
       end
 
       it "enqueues a cleanup job 10% of the time and throttles via cache" do
-        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(0)
-        
-        notification = build(:notification, user: user)
+        allow(notification).to receive(:rand).with(10).and_return(0)
+
         expect do
-          notification.send(:cleanup_old_notifications)
+          notification.__send__(:cleanup_old_notifications)
         end.to change(Notifications::CleanupUserWorker.jobs, :size).by(1)
-        
-        allow(Rails.cache).to receive(:write).with("cleanup_user_notifications_#{user.id}", 1, expires_in: 10.minutes, unless_exist: true).and_return(false)
-        
+
+        allow(Rails.cache).to receive(:write)
+          .with("cleanup_user_notifications_1", 1, expires_in: 10.minutes, unless_exist: true)
+          .and_return(false)
+
         expect do
-          notification.send(:cleanup_old_notifications)
+          notification.__send__(:cleanup_old_notifications)
         end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
       end
 
       it "does not enqueue a cleanup job 90% of the time" do
-        allow_any_instance_of(described_class).to receive(:rand).with(10).and_return(1)
-        
-        notification = build(:notification, user: user)
+        allow(notification).to receive(:rand).with(10).and_return(1)
+
         expect do
-          notification.send(:cleanup_old_notifications)
+          notification.__send__(:cleanup_old_notifications)
         end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
       end
     end
@@ -717,28 +656,28 @@ RSpec.describe Notification do
     end
 
     it "enqueues CoAuthorWorker when co_author_ids are present" do
-      article = create(:article, co_author_ids: [user.id])
-      described_class.send_to_co_authors(article)
+      stubbed_article = build_stubbed(:article, co_author_ids: [1])
+      described_class.send_to_co_authors(stubbed_article)
 
-      expect(Notifications::CoAuthorWorker).to have_received(:perform_async).with(article.id, [])
+      expect(Notifications::CoAuthorWorker).to have_received(:perform_async).with(stubbed_article.id, [])
     end
 
     it "enqueues CoAuthorWorker when removed_user_ids are present even if co_author_ids is empty" do
-      article = create(:article, co_author_ids: [])
-      described_class.send_to_co_authors(article, [user.id])
+      stubbed_article = build_stubbed(:article, co_author_ids: [])
+      described_class.send_to_co_authors(stubbed_article, [1])
 
-      expect(Notifications::CoAuthorWorker).to have_received(:perform_async).with(article.id, [user.id])
+      expect(Notifications::CoAuthorWorker).to have_received(:perform_async).with(stubbed_article.id, [1])
     end
 
     it "skips enqueuing when both co_author_ids and removed_user_ids are blank" do
-      article = create(:article, co_author_ids: [])
-      described_class.send_to_co_authors(article, [])
+      stubbed_article = build_stubbed(:article, co_author_ids: [])
+      described_class.send_to_co_authors(stubbed_article, [])
 
       expect(Notifications::CoAuthorWorker).not_to have_received(:perform_async)
     end
 
     it "skips enqueuing when notifiable is not an Article" do
-      described_class.send_to_co_authors(comment, [user.id])
+      described_class.send_to_co_authors(build_stubbed(:comment), [1])
 
       expect(Notifications::CoAuthorWorker).not_to have_received(:perform_async)
     end
@@ -746,9 +685,10 @@ RSpec.describe Notification do
 
   describe ".for_published_articles" do
     it "includes both Published and CoAuthor notifications" do
-      published_notification = create(:notification, notifiable: article, action: "Published")
-      co_author_notification = create(:notification, notifiable: article, action: "CoAuthor")
-      _other_notification = create(:notification, notifiable: article, action: "Moderation")
+      attrs = { user: user, organization: nil, notifiable: article }
+      published_notification = create(:notification, **attrs, action: "Published")
+      co_author_notification = create(:notification, **attrs, action: "CoAuthor")
+      _other_notification = create(:notification, **attrs, action: "Moderation")
 
       expect(described_class.for_published_articles).to contain_exactly(published_notification, co_author_notification)
     end

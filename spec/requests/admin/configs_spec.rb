@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "/admin/customization/config" do
-  let(:user) { create(:user) }
-  let(:admin) { create(:user, :admin) }
-  let(:super_admin) { create(:user, :super_admin) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
+  let(:super_admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
   describe "POST /admin/customization/config as a user" do
     before do
@@ -38,7 +38,7 @@ RSpec.describe "/admin/customization/config" do
       end
 
       it "updates settings admin action taken and expires cached agent guidance", :aggregate_failures do
-        allow(EdgeCache::Bust).to receive(:call)
+        allow(EdgeCache::PurgeByKey).to receive(:call)
 
         expect do
           post admin_settings_general_settings_path, params: {
@@ -46,7 +46,7 @@ RSpec.describe "/admin/customization/config" do
           }
         end.to change(Settings::General, :admin_action_taken_at)
 
-        expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with("llms_page", fallback_paths: "/llms.txt")
       end
 
       describe "API tokens" do
@@ -167,61 +167,30 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Community Content" do
-        it "expires cached agent guidance after a community setting changes" do
-          allow(EdgeCache::Bust).to receive(:call)
-
-          post admin_settings_communities_path, params: {
-            settings_community: { community_name: "Updated community" }
-          }
-
-          expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
-        end
-
-        it "updates the community_description" do
+        it "updates community settings and expires cached agent guidance", :aggregate_failures do
+          allow(EdgeCache::PurgeByKey).to receive(:call)
           allow(Settings::Community).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"
-          post admin_settings_communities_path, params: {
-            settings_community: { community_description: description }
-          }
-          expect(Settings::Community.community_description).to eq(description)
-        end
-
-        it "updates the community_name" do
           name_magoo = "Hey hey #{rand(100)}"
+          tagline = "Hey hey #{rand(100)}"
+
           post admin_settings_communities_path, params: {
-            settings_community: { community_name: name_magoo }
+            settings_community: {
+              community_description: description,
+              community_name: name_magoo,
+              member_label: "developer",
+              copyright_start_year: "2018",
+              tagline: tagline,
+              staff_user_id: 22
+            }
           }
+
+          expect(EdgeCache::PurgeByKey).to have_received(:call).with("llms_page", fallback_paths: "/llms.txt")
+          expect(Settings::Community.community_description).to eq(description)
           expect(Settings::Community.community_name).to eq(name_magoo)
-        end
-
-        it "updates the community_member_label" do
-          name = "developer"
-          post admin_settings_communities_path, params: {
-            settings_community: { member_label: name }
-          }
-          expect(Settings::Community.member_label).to eq(name)
-        end
-
-        it "updates the copyright_start_year" do
-          year = "2018"
-          post admin_settings_communities_path, params: {
-            settings_community: { copyright_start_year: year }
-          }
+          expect(Settings::Community.member_label).to eq("developer")
           expect(Settings::Community.copyright_start_year).to eq(2018)
-        end
-
-        it "updates the tagline" do
-          description = "Hey hey #{rand(100)}"
-          post admin_settings_communities_path, params: {
-            settings_community: { tagline: description }
-          }
-          expect(Settings::Community.tagline).to eq(description)
-        end
-
-        it "updates the staff_user_id" do
-          post admin_settings_communities_path, params: {
-            settings_community: { staff_user_id: 22 }
-          }
+          expect(Settings::Community.tagline).to eq(tagline)
           expect(Settings::Community.staff_user_id).to eq(22)
         end
       end
@@ -422,145 +391,24 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Rate Limits and spam" do
-        it "updates follow_count_daily" do
-          default_value = Settings::RateLimit.get_default(:follow_count_daily)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { follow_count_daily: 3 }
-            }
-          end.to change(Settings::RateLimit, :follow_count_daily).from(default_value).to(3)
-        end
-
-        it "updates comment_creation" do
-          default_value = Settings::RateLimit.get_default(:comment_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { comment_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :comment_creation).from(default_value).to(3)
-        end
-
-        it "updates mention_creation" do
-          default_value = Settings::RateLimit.get_default(:mention_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { mention_creation: 10 }
-            }
-          end.to change(Settings::RateLimit, :mention_creation).from(default_value).to(10)
-        end
-
-        it "updates published_article_creation" do
-          default_value = Settings::RateLimit.get_default(:published_article_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { published_article_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :published_article_creation).from(default_value).to(3)
-        end
-
-        it "updates published_article_antispam_creation" do
-          default_value = Settings::RateLimit.get_default(:published_article_antispam_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { published_article_antispam_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :published_article_antispam_creation).from(default_value).to(3)
-        end
-
-        it "updates organization_creation" do
-          default_value = Settings::RateLimit.get_default(:organization_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { organization_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :organization_creation).from(default_value).to(3)
-        end
-
-        it "updates image_upload" do
-          default_value = Settings::RateLimit.get_default(:image_upload)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { image_upload: 3 }
-            }
-          end.to change(Settings::RateLimit, :image_upload).from(default_value).to(3)
-        end
-
-        it "updates email_recipient" do
-          default_value = Settings::RateLimit.get_default(:email_recipient)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { email_recipient: 3 }
-            }
-          end.to change(Settings::RateLimit, :email_recipient).from(default_value).to(3)
-        end
-
-        it "updates user_subscription_creation" do
-          default_value = Settings::RateLimit.get_default(:user_subscription_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { user_subscription_creation: 1 }
-            }
-          end.to change(Settings::RateLimit, :user_subscription_creation).from(default_value).to(1)
-        end
-
-        it "updates article_update" do
-          default_value = Settings::RateLimit.get_default(:article_update)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { article_update: 3 }
-            }
-          end.to change(Settings::RateLimit, :article_update).from(default_value).to(3)
-        end
-
-        it "updates user_update" do
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { user_update: 3 }
-            }
-          end.to change(Settings::RateLimit, :user_update).to(3)
-        end
-
-        it "updates feedback_message_creation" do
-          default_value = Settings::RateLimit.get_default(:feedback_message_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { feedback_message_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :feedback_message_creation).from(default_value).to(3)
-        end
-
-        it "updates listing_creation" do
-          default_value = Settings::RateLimit.get_default(:listing_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { listing_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :listing_creation).from(default_value).to(3)
-        end
-
-        it "updates reaction_creation" do
-          default_value = Settings::RateLimit.get_default(:reaction_creation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { reaction_creation: 3 }
-            }
-          end.to change(Settings::RateLimit, :reaction_creation).from(default_value).to(3)
-        end
-
-        it "updates send_email_confirmation" do
-          default_value = Settings::RateLimit.get_default(:send_email_confirmation)
-          expect do
-            post admin_settings_rate_limits_path, params: {
-              settings_rate_limit: { send_email_confirmation: 3 }
-            }
-          end.to change(Settings::RateLimit, :send_email_confirmation).from(default_value).to(3)
-        end
-
-        it "updates spam_trigger_terms" do
-          spam_trigger_terms = "hey, pokemon go hack"
-          post admin_settings_rate_limits_path, params: {
-            settings_rate_limit: { spam_trigger_terms: spam_trigger_terms }
+        it "updates rate limits and spam_trigger_terms", :aggregate_failures do
+          updates = {
+            follow_count_daily: 3, comment_creation: 3, mention_creation: 10,
+            published_article_creation: 3, published_article_antispam_creation: 3,
+            organization_creation: 3, image_upload: 3, email_recipient: 3,
+            user_subscription_creation: 1, article_update: 3, user_update: 3,
+            feedback_message_creation: 3, listing_creation: 3, reaction_creation: 3,
+            send_email_confirmation: 3
           }
+          (updates.keys - [:user_update]).each do |key|
+            expect(Settings::RateLimit.public_send(key)).to eq(Settings::RateLimit.get_default(key))
+          end
+
+          post admin_settings_rate_limits_path, params: {
+            settings_rate_limit: updates.merge(spam_trigger_terms: "hey, pokemon go hack")
+          }
+
+          updates.each { |key, value| expect(Settings::RateLimit.public_send(key)).to eq(value) }
           expect(Settings::RateLimit.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
         end
 

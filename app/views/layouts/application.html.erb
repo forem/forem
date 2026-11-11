@@ -24,15 +24,31 @@
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", "eventSignupButtons", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", defer: true %>
+      <% if controller_name == "events" %>
+        <%= javascript_include_tag "eventSignupButtons", defer: true, onerror: "this.remove()" %>
+      <% end %>
+      <% if @story_show || %w[comments podcast_episodes notifications].include?(controller_name) %>
+        <%= javascript_include_tag "commentsPage", defer: true, onerror: "this.remove()" %>
+      <% end %>
 
       <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
       <% if controller_name == "articles_search" || Rails.env.test? %>
-        <%= javascript_include_tag "Search", defer: true %>
-      <% else %>
-        <meta name="search-script" content="<%= asset_path 'Search.js' %>">
+        <%= javascript_include_tag "Search", defer: true, onerror: "this.remove()" %>
       <% end %>
+      <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
+      <meta name="comment-textarea-script" content="<%= asset_path 'CommentTextArea/CommentTextArea.js' %>">
+      <meta name="emoji-picker-script" content="<%= asset_path 'emojiPicker.js' %>">
+      <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
+      <meta name="postscribe-script" content="<%= asset_path 'postscribeLoader.js' %>">
+      <meta name="media-playback-script" content="<%= asset_path 'mediaPlayback.js' %>">
+      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+        <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <% end %>
+      <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
+      <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
+      <meta name="preact-runtime-script" content="<%= asset_path 'preactRuntime.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -71,18 +87,20 @@
       @viewable_for_tracking = @viewable_for_tracking.object if @viewable_for_tracking.respond_to?(:object)
     %>
     <body
-      class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
+      class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header<%= " hidden-shell" if embedded_view? %>"
       data-user-status="<%= j(user_logged_in_status) %>"
       data-is-root-subforem="<%= j(is_root_subforem?) %>"
       <% if RequestStore.store[:subforem_id].present? %>
         data-subforem-id="<%= j(RequestStore.store[:subforem_id]) %>"
       <% end %>
-      data-side-nav-visible="<%= Subforem.cached_discoverable_ids.size > 1 %>"
+      data-side-nav-visible="<%= !embedded_view? && Subforem.cached_discoverable_ids.size > 1 %>"
       data-community-name="<%= j(community_name) %>"
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
       data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
       data-locale="<%= j(I18n.locale) %>"
-      data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+        data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% end %>
       data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
       data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
       data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
@@ -99,7 +117,8 @@
       
       <%# First script to run no matter what %>
       <script>
-        if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
+        const isEmbeddedFrame = window.frameElement || (function() { try { return window.self !== window.top; } catch (e) { return true; } })() || new URLSearchParams(window.location.search).get('mode') === 'embed';
+        if (navigator.userAgent === 'ForemWebView/1' || isEmbeddedFrame) {
           document.body.classList.add("hidden-shell");
         }
         <%# Server-rendered billboard scripts run before the deferred application pack defines %>
@@ -115,7 +134,7 @@
             document.body.dataset.sideNavVisible = "false";
           } 
         <% end %>
-        <% if ENV["MAKE_SIDEBAR_VISIBLE_DATE"].present? %>
+        <% if ENV["MAKE_SIDEBAR_VISIBLE_DATE"].present? && !embedded_view? %>
           if (new Date() > new Date("<%= ENV["MAKE_SIDEBAR_VISIBLE_DATE"] %>")) {
             document.body.dataset.sideNavVisible = "true";
           } 
@@ -138,17 +157,17 @@
       <div id="audiocontent" data-podcast="">
         <%= yield(:audio) %>
       </div>
-      <% unless ENV["DISABLE_MAIN_SIDE_BAR"] == "yes" %>
-        <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
-          <% if Subforem.cached_discoverable_ids.any? %>
+      <% unless embedded_view? %>
+        <% if ENV["DISABLE_MAIN_SIDE_BAR"] != "yes" && !Subforem.disabled_by_env? && Subforem.cached_discoverable_ids.any? %>
+          <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
             <%= render "layouts/main_side_bar" %>
           <% end %>
         <% end %>
+        <%= render "layouts/top_bar" %>
+        <div id="active-broadcast" class="broadcast-wrapper"></div>
       <% end %>
-      <%= render "layouts/top_bar" %>
-      <div id="active-broadcast" class="broadcast-wrapper"></div>
   <% end %>
-<div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+<div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>" data-preact-runtime-src="<%= asset_path("preactRuntime.js") %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" id="setup-banner" aria-live="polite">
       <%== flash[:global_notice] %>
@@ -157,7 +176,7 @@
   <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>" data-viewable-id="<%= @viewable_for_tracking&.id %>" data-viewable-type="<%= @viewable_for_tracking&.class&.name %>">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
-    <% if @hero_html && @hero_billboard.blank? %>
+    <% if !embedded_view? && @hero_html && @hero_billboard.blank? %>
       <aside id="hero-html-wrapper" aria-label="Campaign banner" class="overflow-x-hidden" data-name="<%= @hero_area.name %>">
         <script>
           // Make sure html variant element has id hero-html-wrapper and data-name as its name
@@ -170,14 +189,16 @@
     <% end %>
     <%= yield %>
     <div id="runtime-banner-container"></div>
-    <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <div id="i18n-translations" data-locale="<%= I18n.locale %>" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
   </div>
 </div>
 <% unless internal_navigation? %>
-  <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{formatted_admin_action_taken_at}-#{request.host}-#{RequestStore.store[:subforem_id]}", expires_in: 24.hours) do %>
-    <%= render "layouts/footer" %>
-    <%= render "layouts/signup_modal" unless user_signed_in? %>
-    <div id="cookie-consent"></div>
+  <% unless embedded_view? %>
+    <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{formatted_admin_action_taken_at}-#{request.host}-#{RequestStore.store[:subforem_id]}", expires_in: 24.hours) do %>
+      <%= render "layouts/footer" %>
+      <%= render "layouts/signup_modal" unless user_signed_in? %>
+      <div id="cookie-consent"></div>
+    <% end %>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
   <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
@@ -185,7 +206,7 @@
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
   
-  <% if user_signed_in? && ArticlePolicy.is_root_subforem? %>
+  <% if !embedded_view? && user_signed_in? && ArticlePolicy.is_root_subforem? %>
     <%= render "shared/subforem_selection_modal" %>
   <% end %>
   

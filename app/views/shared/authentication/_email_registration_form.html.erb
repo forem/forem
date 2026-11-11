@@ -100,9 +100,9 @@
       <% end %>
     <% end %>
 
-    <% if ReCaptcha::CheckRegistrationEnabled.call %>
-      <div class="recaptcha-tag-container mt-2">
-        <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
+    <% if Captcha::CheckRegistrationEnabled.call %>
+      <div class="<%= Captcha.provider.container_class %> mt-2">
+        <%= render "shared/captcha", action: "signup" %>
       </div>
     <% end %>
 

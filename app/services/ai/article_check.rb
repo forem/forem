@@ -10,9 +10,10 @@ module Ai
   # holistic YES/NO prompt is replaced by a battery of narrow TypeSafe Noul questions whose
   # probabilities are combined by the explicit policy in #spam_from_jev?.
   class ArticleCheck
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :article_spam_check
 
     # Jev policy thresholds. We only act on CLEAR spam, so the bar for a single signal is high.
@@ -63,12 +64,21 @@ module Ai
                                affected_content: @article, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
+    # Builds the structured state payload passed to Jev for spam evaluation.
+    # @return [Hash]
     def jev_state
+      article_state = { title: @article.title, body: @article.body_markdown.to_s.truncate(JEV_BODY_CHARS) }
+      if @article.respond_to?(:status?) && @article.status?
+        article_state[:format] = "status post: a short update or commentary where title is the full post text"
+      end
+      community_state = { description: community_description.presence || "No community description provided." }
+      community_state[:content_advisement] = content_advisement_spec if content_advisement_spec.present?
+      community_state[:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
+
       state = {
-        community: { description: community_description.presence || "No community description provided." },
-        article: { title: @article.title, body: @article.body_markdown.to_s.truncate(JEV_BODY_CHARS) }
+        community: community_state,
+        article: article_state
       }
-      state[:community][:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
       state[:author_recent_article_titles] = recent_titles if recent_titles.any?
       state
     end
@@ -93,14 +103,26 @@ module Ai
           "Is `article.body` gibberish, keyword stuffing, or filler text with no coherent meaning?",
         ),
         link_vehicle: noul(
-          "Does `article` exist mainly to carry an outbound promotional link, with little content of its own?",
+          {
+            question: "Does `article` exist mainly to carry an outbound promotional or traffic-funnel link, " \
+                      "with little self-contained value of its own?",
+            includes: "Teaser/summary link-drop funnels that only summarize or tease a topic in order to " \
+                      "push readers to click an external blog, newsletter, affiliate link, or commercial site."
+          },
         ),
         off_topic: noul(
-          "Is the subject of `article` unrelated to the purpose described in `community.description`?",
+          "Is the subject of `article` unrelated to the purpose described in `community.description` " \
+          "(and `community.content_advisement` if present)?",
         ),
         good_faith: noul(
-          "Is `article` a good-faith attempt to contribute something useful to readers of this community, " \
-          "even if it is short or imperfect?",
+          {
+            question: "Is `article` a good-faith attempt to contribute something useful directly on this platform " \
+                      "to readers of this community, even if it is short or imperfect?",
+            no: {
+              includes: "Off-topic SEO filler, commercial marketing copy, or teaser/summary link-drop posts " \
+                        "that require clicking an external link to get the actual substance."
+            }
+          },
         )
       }
       if recent_titles.any?
@@ -121,25 +143,35 @@ module Ai
     # without rewriting questions.
     def spam_from_jev?(result)
       advertisement = result.noul(:advertisement)
+      link_vehicle = result.noul(:link_vehicle)
       good_faith = result.noul(:good_faith)
 
       return true if result.noul(:malicious) >= CLEAR
-      return true if [advertisement, result.noul(:link_vehicle), result.noul(:gibberish)].max >= CLEAR &&
+      return true if [advertisement, link_vehicle, result.noul(:gibberish)].max >= CLEAR &&
         good_faith < SUPPORTING
-      # Off-topic alone is handled by moderation labels; off-topic promotion is spam.
-      return true if result.noul(:off_topic) >= CLEAR && advertisement >= SUPPORTING
+      # Off-topic content that is also promotional or not a good-faith contribution is spam.
+      return true if result.noul(:off_topic) >= CLEAR &&
+        ([advertisement, link_vehicle].max >= SUPPORTING || good_faith < SUPPORTING)
       return true if result.key?(:repetitive_promotion) &&
-        result.noul(:repetitive_promotion) >= CLEAR && advertisement >= SUPPORTING
+        result.noul(:repetitive_promotion) >= CLEAR &&
+        [advertisement, link_vehicle].max >= SUPPORTING
       return true if result.key?(:violates_tag_rules) &&
         result.noul(:violates_tag_rules) >= CLEAR && good_faith < SUPPORTING
 
       false
     end
 
+    # Resolves the community description for the article's subforem, falling back to the
+    # default subforem and global settings when needed.
+    # @return [String, nil]
     def community_description
-      @community_description ||=
-        Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) ||
-        Settings::Community.community_description(subforem_id: @article.subforem_id)
+      @community_description ||= resolve_community_description(@article.subforem_id)
+    end
+
+    # Resolves the expanded content advisement playbook for the article's subforem.
+    # @return [String, nil]
+    def content_advisement_spec
+      @content_advisement_spec ||= resolve_content_advisement_spec(@article.subforem_id)
     end
 
     def recent_titles
@@ -163,11 +195,13 @@ module Ai
         "Article #{i}: \"#{a.title}\""
       end.join("\n")
 
-      # Fetch the description of the community the article is posted in.
-      community_description = Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) || Settings::Community.community_description(subforem_id: @article.subforem_id)
-
       # Gather custom tag moderation instructions
       tag_instructions_text = build_tag_instructions_context
+      advisement_text = if content_advisement_spec.present?
+                          "\n\nContent Advisement Playbook:\n#{content_advisement_spec}"
+                        else
+                          ""
+                        end
 
       <<~PROMPT
         Analyze the following article for spam. Your answer must be a single word: YES or NO.
@@ -177,17 +211,17 @@ module Ai
         - Phishing links or malicious URLs.
         - Gibberish, low-quality, or completely irrelevant text.
         - Off-topic posts that do not align with the community's purpose.
-        - Low-value content created primarily to house a promotional link.
+        - Low-value content created primarily to house a promotional link, or "teaser/summary" link-drop funnels that withhold substance to drive clicks to an external URL.
         - Repetitive, promotional articles posted by the same user.
 
-        Simple, non-spammy promotion via links is acceptable if it is relevant to the community and adds value. We are looking for CLEAR spam, not borderline cases.
+        Simple, non-spammy promotion via links is acceptable if it is relevant to the community and adds self-contained value on-platform. We are looking for CLEAR spam, not borderline cases.
         Good articles can be long posts, short questions, or anything that may add value to the community.
 
         Here is the context:
 
         1.  **Community Context** (The community this article was posted in):
             ---
-            #{community_description.presence || 'No community description provided.'}#{tag_instructions_text}
+            #{community_description.presence || 'No community description provided.'}#{advisement_text}#{tag_instructions_text}
             ---
 
         2.  **The Author's Recent Article History**:

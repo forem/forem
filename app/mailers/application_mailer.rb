@@ -80,12 +80,13 @@ class ApplicationMailer < ActionMailer::Base
   end
 
   def determine_subforem_id(user)
-    return nil unless ActiveRecord::Base.connection.table_exists?('subforems')
-    
+    default_id = Subforem.cached_default_id
+    return default_id if default_id.nil? || Subforem.disabled_by_env?
+
     if user.respond_to?(:onboarding_subforem_id)
-      user.onboarding_subforem_id || Subforem.cached_default_id
+      user.onboarding_subforem_id || default_id
     else
-      Subforem.cached_default_id
+      default_id
     end
   rescue ActiveRecord::StatementInvalid
     # Table might exist but have schema issues

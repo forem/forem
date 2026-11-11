@@ -121,7 +121,18 @@ Benchmarking the complete `/stories/feed` custom feed pipeline (`FeedConfig.acti
 
 ---
 
-## 6. Maintaining Embedded Static Datasets & Removed Gems
+## 6. Third Iteration Pattern: Batch View-Partial HTML Rendering Kernels (`forem_core::comment_tree` & `forem_core::story_card`)
+
+On SSR HTML endpoints (`StoriesController#show`, `StoriesController#index`, `Stories::TaggedArticlesController#index`, `CollectionsController#show`), ActionView partial dispatch (`render partial: "articles/single_story"` or `comments/_comment` x50–60 per page) plus per-element Rails tag/route/color helpers (`ApplicationHelper#render_tag_link`) dominate pure-Ruby CPU and allocate ~200,000+ transient `SafeBuffer`, `Hash`, `Addressable::URI`, and `Color::CompareHex` objects per uncached page.
+
+To move hot ERB collection trees/lists into Rust with 100% byte-for-byte HTML parity and zero Ruby VM callbacks inside the loop:
+1. **Memoized Static View Context**: Cache locale-dependent `I18n.t(...)` templates (using placeholder sentinels such as `__FOREM_USER__`, `__FOREM_TITLE__`, `__FOREM_COUNT__`) and static `crayons_icon_tag` / `inline_svg_tag` fragments once per `(I18n.locale, feature_flags, brand_color)` tuple on the view helper.
+2. **Deduplicated Flat Stride Buffers**: Extract authors, organizations, preloaded tag colors, and per-item scalar/string attributes into reusable flat Ruby `Array` buffers (`RArray::as_slice` + `RString::test_as_str`), borrowing UTF-8 slices in-place inside a single `unsafe` Magnus block with zero Ruby VM calls until the full HTML buffer is returned.
+3. **Composable Tier 1 + Tier 2 Reuse**: `forem_core::story_card::push_tag_link` powers both standalone `ApplicationHelper#render_tag_link` (`StoriesController#show`, `/tags`, `/videos`) and inline tag-pill rendering inside `StoryCardHelper#render_story_cards` (`551 KB` for a 60-story feed + ~224 tag pills at **20.4x throughput** and **94.9% fewer Ruby allocations**).
+
+---
+
+## 7. Maintaining Embedded Static Datasets & Removed Gems
 
 Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_core`) after porting their functionality into `gems/forem_native`. Because some of these libraries wrap static upstream standards or registries, contributors should be aware of which modules are pure math versus which embed static data tables that may occasionally be refreshed:
 
@@ -131,12 +142,15 @@ Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_
 | **`gemoji`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`EMOJI_BLOB`, `EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream [`github/gemoji`](https://github.com/github/gemoji) (`db/emoji.json`) is a static JSON mapping of `:shortcode:` aliases to UTF-8 emoji sequences. Only changes when adopting a new Unicode Emoji release or adding custom shortcodes. |
 | **`emoji_regex`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`RGI_EMOJI_BLOB`, `RGI_EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream `emoji_regex` is a static list of Unicode `RGI_Emoji` sequences derived from Unicode's [`emoji-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-sequences.txt) and [`emoji-zwj-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt). Only changes when adopting a new Unicode Emoji release. |
 | **`public_suffix`** | Transitive dep of `addressable` | `crates/forem_core/src/url.rs` & `psl_data.rs` (`PSL_BLOB`, `PSL_ENTRIES`) | **When `public_suffix` is bumped** — Mirrors the Mozilla Public Suffix List (`data/list.txt` inside the `public_suffix` gem). Regenerate `psl_data.rs` whenever `bundle update public_suffix` updates `Gemfile.lock`. |
+| **`rouge`** | **Removed** | `crates/forem_core/src/syntax.rs` & `syntax_data.rs` (`LEXER_TAGS`, `LEXER_TITLES`, `LEXER_FAMILIES`, `REGISTRY_ENTRIES`, `MIMETYPE_ENTRIES`) | **Only when adding a new syntax language** — Embeds Rouge 4.7.0's 228 canonical lexer tags, human titles, 392 tag/alias/filename/extension entries, 296 MIME type mappings, and 34 pure-Rust Pygments/Rouge-token lexer families. |
 
-### How to Refresh `emoji_data.rs` or `psl_data.rs`
+### How to Refresh `emoji_data.rs`, `psl_data.rs`, or `syntax_data.rs`
 1. **Updating `emoji_data.rs` (Unicode Emoji / Gemoji)**:
    - `EMOJI_BLOB` and `EMOJI_ENTRIES` store all sorted `(alias, raw_utf8)` pairs from GitHub's `db/emoji.json` (`https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json`), where each `u32` entry packs `(offset << 11) | (alias_len << 5) | raw_len`.
    - `RGI_EMOJI_BLOB` and `RGI_EMOJI_ENTRIES` store all unique UTF-8 `RGI_Emoji` sequences sorted by `(first_char_utf8_bytes, Reverse(byte_len), full_utf8_bytes)`, where each `u32` entry packs `(offset << 8) | (byte_len << 2) | (first_char_utf8_len - 1)`.
 2. **Updating `psl_data.rs` (Mozilla Public Suffix List)**:
    - `PSL_BLOB` and `PSL_ENTRIES` store all ASCII rules from `PublicSuffix::List.default` (`Gem.loaded_specs["public_suffix"].full_gem_path + "/data/list.txt"`), sorted by rule label bytes with each `u32` entry packing `(offset << 10) | (len << 2) | kind`.
-3. **Rebuilding Precompiled Binaries**:
+3. **Updating `syntax_data.rs` (Syntax Highlighting Language Registry)**:
+   - `LEXER_TAGS`, `LEXER_TITLES`, and `LEXER_FAMILIES` store sorted canonical language tags, display titles, and `LexerFamily` mappings; `REGISTRY_ENTRIES` and `MIMETYPE_ENTRIES` store sorted `(key, tag_idx)` pairs for `O(log N)` binary search across tags, aliases, filenames, extensions, and MIME types.
+4. **Rebuilding Precompiled Binaries**:
    - After updating any `.rs` data file in `crates/forem_core/src/`, run `bundle exec rake forem_native:rust_test` and recompile the committed platform binaries (`arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`, and `x86_64-linux/forem_native.so`).

@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import ahoy from 'ahoy.js';
+import { ahoy } from '@utilities/ahoy/client';
 import PropTypes from 'prop-types';
 import { Link } from '@crayons';
 

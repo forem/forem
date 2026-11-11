@@ -123,10 +123,13 @@ const observer = new MutationObserver((mutationsList) => {
   });
 });
 
-observer.observe(document.getElementById('comment-trees-container'), {
-  childList: true,
-  subtree: true,
-});
+const commentTreesContainer = document.getElementById('comment-trees-container');
+if (commentTreesContainer) {
+  observer.observe(commentTreesContainer, {
+    childList: true,
+    subtree: true,
+  });
+}
 
 // Preview card dropdowns reposition on scroll
 const dropdownRepositionListener = getDropdownRepositionListener();

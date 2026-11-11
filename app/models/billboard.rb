@@ -251,13 +251,23 @@ class Billboard < ApplicationRecord
     return if base_query.blank?
 
     random_val = rand.to_f
-    weight_expr = if FeatureFlag.enabled?(:article_id_adjusted_weight) && target_article_id.present?
+    adjust_weight = FeatureFlag.enabled?(:article_id_adjusted_weight) && target_article_id.present?
+    low_impressions = low_impression_count(area).to_i if area.present?
+    native_sql = ForemNative.build_billboard_weighted_random_sql(
+      base_query,
+      adjust_weight ? target_article_id.to_i : nil,
+      low_impressions,
+      random_val,
+    )
+    return relation.find_by_sql(native_sql).first if native_sql
+
+    weight_expr = if adjust_weight
                     "CASE WHEN #{target_article_id.to_i} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
                   else
                     "weight"
                   end
-    if area.present?
-      seldom_seen_filter = "WHERE impressions_count < #{low_impression_count(area).to_i} OR priority = TRUE"
+    if low_impressions
+      seldom_seen_filter = "WHERE impressions_count < #{low_impressions} OR priority = TRUE"
       fallback_union = "UNION ALL (SELECT * FROM base WHERE NOT EXISTS (SELECT 1 FROM preferred) " \
                        "ORDER BY RANDOM() LIMIT 1)"
     end
@@ -289,6 +299,11 @@ class Billboard < ApplicationRecord
     base_query = relation.to_sql
     return if base_query.blank?
 
+    low_impressions = low_impression_count(area).to_i
+    fallback_limit = rand(1..15)
+    native_sql = ForemNative.build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+    return relation.find_by_sql(native_sql).first if native_sql
+
     query = <<~SQL
       WITH base AS (#{base_query}),
       preferred AS (SELECT * FROM base WHERE impressions_count < ? ORDER BY RANDOM() LIMIT 1)
@@ -298,13 +313,23 @@ class Billboard < ApplicationRecord
        WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)
       LIMIT 1
     SQL
-    relation.find_by_sql([query, low_impression_count(area).to_i, rand(1..15)]).first
+    relation.find_by_sql([query, low_impressions, fallback_limit]).first
   end
   private_class_method :new_only_random_selection
 
   # Origins (e.g. "https://embed.example.com") allowed to record billboard events cross-origin.
   def self.embed_origins
     ApplicationConfig["BILLBOARD_EMBED_ORIGINS"].to_s.split(",").map(&:strip).reject(&:empty?)
+  end
+
+  def self.embed_origin?(origin)
+    return false if origin.blank?
+
+    raw = ApplicationConfig["BILLBOARD_EMBED_ORIGINS"].to_s
+    return false if raw.blank?
+
+    native = ForemNative.origin_in_comma_list(origin, raw)
+    native.nil? ? embed_origins.include?(origin) : native
   end
 
   # Temporary ENV configs, to eventually be replaced by permanent configurations

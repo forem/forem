@@ -9,6 +9,182 @@ RSpec.describe ForemNative do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
   end
 
+  describe ".json_encoded_size (normalized transcript validation)" do
+    let(:validator) { AgentSessionParsers::NormalizedDataValidator }
+
+    # Builds a minimal valid normalized transcript fixture wrapping the given text value.
+    def transcript_with(value)
+      { "messages" => [{ "role" => "user", "content" => [{ "type" => "text", "text" => value }] }] }
+    end
+
+    it "counts exact encoded bytes for scalars, controls, Unicode, HTML, CRLF and nested containers" do
+      values = [nil, true, false, 0, -(2**63), (2**63) - 1, :symbol, [], {}, "", "é 😀 漢字",
+                "<>& \"quoted\" \\ \r\n\t", (0..31).map(&:chr).join, "\u2028\u2029",
+                { "a" => [nil, false, {}, [], { "key" => "&#64; &amp;" }] }]
+      escape_modes = [true, false]
+      values.each do |value|
+        escape_modes.each do |escape_html|
+          expected = ActiveSupport::JSON.encode(value, escape_html_entities: escape_html).bytesize
+          expect(described_class.json_encoded_size(value, escape_html_entities: escape_html)).to eq(expected)
+        end
+      end
+    end
+
+    it "declines values requiring Ruby conversions, custom methods or unsupported encodings" do
+      custom = { "messages" => [] }
+      def custom.to_json(*)
+        '"custom"'
+      end
+      values = [1.25, Float::NAN, Float::INFINITY, 2**70, Time.zone.at(0), Object.new,
+                "safe".html_safe, "binary".b, "é".encode("ISO-8859-1"), "\xFF".force_encoding("UTF-8"),
+                Class.new(Array).new, Class.new(Hash).new, Class.new(String).new("text"),
+                { a: 1 }, { a: 2 }.merge("a" => 1), { nil => "x" }, custom,
+                100.times.reduce([]) { |acc, _elem| [acc] }]
+      values.each { |value| expect(described_class.json_encoded_size(value)).to be_nil }
+      expect(validator.new(custom).__send__(:native_json_size)).to be_nil
+      expect(validator.new(custom).__send__(:legacy_json_size)).to eq(custom.to_json.bytesize)
+    end
+
+    it "preserves fallback results and errors for out-of-domain transcript values" do
+      [1.25, 1e-7, 2**70, "safe".html_safe, "binary".b, { a: 1 }, Time.zone.at(0)].each do |value|
+        data = transcript_with(value)
+        expect(described_class.json_encoded_size(data)).to be_nil
+        instance = validator.new(data)
+        expect(instance.__send__(:validate_size)).to be_empty
+        expect(instance.__send__(:legacy_json_size)).to eq(data.to_json.bytesize)
+      end
+      invalid = transcript_with("\xFF".force_encoding("UTF-8"))
+      expect { validator.validate(invalid) }.to raise_error(JSON::GeneratorError)
+    end
+
+    it "defers cycles to the legacy serializer" do
+      cyclic = []
+      cyclic << cyclic
+      expect(described_class.json_encoded_size(cyclic)).to be_nil
+    end
+
+    it "matches native sizes and end-to-end validation for 1,000 seeded randomized transcripts" do
+      rng = Random.new(424_242)
+      fragments = ["abc", "<>&", "\u2028", "\u2029", "😀", "漢字", "\0", "\r\n", "\\", '\"', "&#64;"]
+      stub_const("AgentSessionParsers::NormalizedDataValidator::MAX_JSON_SIZE", 400)
+      1_000.times do
+        text = Array.new(rng.rand(0..30)) { fragments.sample(random: rng) }.join
+        data = transcript_with(text)
+        data["metadata"] = { "values" => [rng.rand(-(2**63)..((2**63) - 1)), nil, true, false, text] }
+        instance = validator.new(data)
+        expected_size = data.to_json.bytesize
+        expect(described_class.json_encoded_size(data)).to eq(expected_size)
+        # Exercise both accepted and rejected payloads without allocating 10 MB per iteration.
+        expected = if expected_size > validator::MAX_JSON_SIZE
+                     ["Normalized data is too large (#{expected_size} bytes, max #{validator::MAX_JSON_SIZE})"]
+                   else
+                     []
+                   end
+        expect(instance.validate.map(&:message)).to eq(expected)
+      end
+    end
+  end
+
+  describe ".postprocess_transcript_html and transcript primitives" do
+    let(:legacy_wrap) do
+      lambda do |html|
+        html.gsub(%r{<pre><code>(.*?)</code></pre>}m) do
+          %(<pre class="highlight"><code>#{Regexp.last_match(1)}</code></pre>)
+        end
+      end
+    end
+
+    let(:legacy_redact) do
+      ->(html) { html.gsub("[REDACTED]", '<span class="agent-session-redacted">[REDACTED]</span>') }
+    end
+
+    let(:renderer) { AgentSessionRenderers::MarkdownRenderer }
+
+    it "preserves exact bytes for empty, Unicode, entity, CRLF, nested and adjacent matches" do
+      inputs = [
+        "", "plain 🚀 日本語\r\n\0", "<pre><code></code></pre>",
+        "<pre><code>a\r\n&amp; &#64; 🚀</code></pre><pre><code>b</code></pre>",
+        "<pre><code><pre><code>nested</code></pre></code></pre>",
+        '<pre class="highlight"><code>[REDACTED]</code></pre>',
+        '<pre><code class="ruby">[REDACTED]</code></pre>',
+        '<a href="[REDACTED]">&#91;REDACTED] [redacted] [REDACTED]</a>',
+        "[REDACTED][REDACTED]<pre><code>[REDACTED]</code></pre>"
+      ]
+
+      inputs.each do |html|
+        wrapped = legacy_wrap.call(html)
+        expect(described_class.wrap_untagged_codeblocks(html)).to eq(wrapped)
+        expect(described_class.style_redaction_markers(html)).to eq(legacy_redact.call(html))
+        expect(described_class.postprocess_transcript_html(html)).to eq(legacy_redact.call(wrapped))
+        expect(described_class.postprocess_transcript_html(html, redact: false)).to eq(wrapped)
+      end
+    end
+
+    it "returns nil for unsupported types and encodings" do
+      inputs = [nil, [], 42, "binary".b, "[REDACTED]".encode("UTF-16LE"), "\xFF".force_encoding("UTF-8")]
+      inputs << Class.new(String).new("[REDACTED]")
+      inputs << "[REDACTED]".html_safe
+
+      inputs.each do |html|
+        expect(described_class.wrap_untagged_codeblocks(html)).to be_nil
+        expect(described_class.style_redaction_markers(html)).to be_nil
+        expect(described_class.postprocess_transcript_html(html)).to be_nil
+      end
+    end
+
+    it "returns fresh mutable strings without copying unchanged buffers or mutating the input" do
+      html = "plain 🚀".freeze
+      result = described_class.postprocess_transcript_html(html)
+
+      expect(result).to eq(html)
+      expect(result).not_to equal(html)
+      expect(result).not_to be_frozen
+      result << "!"
+      expect(html).to eq("plain 🚀")
+      expect(result.encoding).to eq(Encoding::UTF_8)
+    end
+
+    it "defers incomplete blocks and preserves the caller's legacy output" do
+      ["<pre><code>[REDACTED]", "<pre><code>ok</code></pre><pre><code>unclosed"].each do |html|
+        expect(described_class.postprocess_transcript_html(html)).to be_nil
+        expect(renderer.highlight_code_blocks(html, redact: true)).to eq(legacy_redact.call(legacy_wrap.call(html)))
+      end
+    end
+
+    it "preserves caller output and encoding when binary or safe strings defer" do
+      ["<pre><code>🚀 [REDACTED]</code></pre>".b, "<pre><code>[REDACTED]</code></pre>".html_safe].each do |html|
+        expected = legacy_redact.call(legacy_wrap.call(html))
+        actual = renderer.highlight_code_blocks(html, redact: true)
+        expect(actual).to eq(expected)
+        expect(actual.encoding).to eq(expected.encoding)
+        expect(actual.class).to eq(expected.class)
+      end
+    end
+
+    it "matches both primitives, the fused kernel and caller across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      parts = [
+        "plain 🚀 日本語", "\r\n", "\0", "&amp; &#64; &#91;REDACTED]", "[REDACTED]",
+        "<pre><code>", "</code></pre>", "<pre><code>x\n[REDACTED]</code></pre>",
+        '<pre class="highlight"><code>[REDACTED]</code></pre>',
+        "[redacted]", "<PRE><code>x</code></PRE>", "<pre> <code>x</code></pre>"
+      ]
+
+      1_000.times do
+        html = Array.new(rng.rand(0..30)) { parts.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        wrapped = legacy_wrap.call(html)
+        expected = legacy_redact.call(wrapped)
+
+        expect(described_class.wrap_untagged_codeblocks(html) || wrapped).to eq(wrapped)
+        expect(described_class.style_redaction_markers(html)).to eq(legacy_redact.call(html))
+        native = described_class.postprocess_transcript_html(html)
+        expect(native || renderer.highlight_code_blocks(html, redact: true)).to eq(expected)
+        expect(renderer.highlight_code_blocks(html, redact: true)).to eq(expected)
+        expect(renderer.highlight_code_blocks(html)).to eq(wrapped)
+      end
+    end
+  end
+
   describe ".available? and Builder.normalized_platform" do
     it "loads the compiled Rust native extension directly" do
       expect(described_class.available?).to be(true)
@@ -4494,6 +4670,2066 @@ RSpec.describe ForemNative do
             .to eq(legacy_sanitize_error.call(sample)), sample.inspect
         end
       end
+    end
+  end
+
+  describe "ApplicationMetalController & BillboardEvent Kernels (forem_core::metal)" do
+    describe ".verify_authenticity_token" do
+      let(:csrf_harness) do
+        Class.new(ApplicationMetalController) do
+          attr_accessor :mock_path, :mock_method, :mock_real_token
+
+          def request
+            @request ||= Struct.new(:env, :path, :request_method).new(
+              { ActionController::RequestForgeryProtection::CSRF_TOKEN => mock_real_token },
+              mock_path || "/bb_tabulations",
+              mock_method || "POST",
+            )
+          end
+
+          def generate_global_masked(real_raw)
+            global = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), real_raw, "!real_csrf_token")
+            mask_token(global)
+          end
+
+          def generate_real_masked(real_raw)
+            mask_token(real_raw)
+          end
+
+          def generate_per_form_masked(real_raw, path, method)
+            per_form = OpenSSL::HMAC.digest(
+              OpenSSL::Digest.new("SHA256"), real_raw, "#{path.chomp('/')}##{method.downcase}"
+            )
+            mask_token(per_form)
+          end
+        end.new
+      end
+
+      it "verifies global, real, unmasked, and per-form CSRF tokens and matches Rails across 1,000 random inputs" do
+        real_raw = SecureRandom.random_bytes(32)
+        encoded_real = Base64.urlsafe_encode64(real_raw, padding: false)
+        csrf_harness.mock_real_token = encoded_real
+
+        global_masked = csrf_harness.generate_global_masked(real_raw)
+        real_masked = csrf_harness.generate_real_masked(real_raw)
+        per_form_masked = csrf_harness.generate_per_form_masked(real_raw, "/bb_tabulations/", "PATCH")
+
+        expect(
+          [
+            described_class.verify_authenticity_token(global_masked, encoded_real),
+            described_class.verify_authenticity_token(real_masked, encoded_real),
+            described_class.verify_authenticity_token(encoded_real, encoded_real),
+            described_class.verify_authenticity_token(per_form_masked, encoded_real, "/bb_tabulations/", "PATCH"),
+            described_class.verify_authenticity_token(per_form_masked, encoded_real, "/bb_tabulations", "POST"),
+            described_class.verify_authenticity_token("", encoded_real),
+            described_class.verify_authenticity_token("invalid!base64", encoded_real),
+            described_class.verify_authenticity_token(global_masked, "short"),
+          ],
+        ).to eq([true, true, true, true, false, false, false, nil])
+
+        rng = Random.new(20_261_103)
+        paths = ["/bb_tabulations", "/bb_tabulations/", "/page_views", "/feed_events/"]
+        methods = %w[POST PUT PATCH DELETE]
+
+        1_000.times do |i|
+          raw_key = rng.bytes(32)
+          enc_key = Base64.urlsafe_encode64(raw_key, padding: rng.rand < 0.3)
+          path = paths.sample(random: rng)
+          method = methods.sample(random: rng)
+          per_form_enabled = rng.rand < 0.5
+
+          csrf_harness.mock_real_token = enc_key
+          csrf_harness.mock_path = path
+          csrf_harness.mock_method = method
+          csrf_harness.request.path = path
+          csrf_harness.request.request_method = method
+          csrf_harness.request.env[ActionController::RequestForgeryProtection::CSRF_TOKEN] = enc_key
+          allow(csrf_harness).to receive(:per_form_csrf_tokens).and_return(per_form_enabled)
+
+          candidate = case i % 7
+                      when 0 then csrf_harness.generate_global_masked(raw_key)
+                      when 1 then csrf_harness.generate_real_masked(raw_key)
+                      when 2 then enc_key
+                      when 3 then csrf_harness.generate_per_form_masked(raw_key, path, method)
+                      when 4 then csrf_harness.generate_per_form_masked(raw_key, "/other", method)
+                      when 5 then Base64.urlsafe_encode64(rng.bytes(rng.rand(1..80)), padding: rng.rand < 0.5)
+                      else "bad-token-#{i}-!@#"
+                      end
+
+          native_res = if per_form_enabled
+                         described_class.verify_authenticity_token(candidate, enc_key, path, method)
+                       else
+                         described_class.verify_authenticity_token(candidate, enc_key)
+                       end
+          rails_res = ActionController::RequestForgeryProtection.instance_method(:valid_authenticity_token?)
+            .bind_call(csrf_harness, {}, candidate)
+
+          expect(native_res).to eq(rails_res), "iteration #{i}: candidate=#{candidate.inspect}"
+          expect(csrf_harness.valid_authenticity_token?({}, candidate)).to eq(rails_res)
+        end
+      end
+    end
+
+    describe ".verify_hs256_jwt" do
+      let(:secret) { Rails.application.secret_key_base }
+      let(:metal_controller) { ApplicationMetalController.new }
+
+      it "verifies HS256 JWT tokens, rejects invalid/expired tokens, and matches JWT.decode across 1,000 inputs" do
+        now_sec = Time.now.to_i
+        valid_token = JWT.encode({ "user_id" => 42, "exp" => now_sec + 300 }, secret, "HS256")
+        expired_token = JWT.encode({ "user_id" => 42, "exp" => now_sec - 10 }, secret, "HS256")
+        wrong_secret_token = JWT.encode({ "user_id" => 42 }, "wrong_secret", "HS256")
+
+        expect(described_class.verify_hs256_jwt(valid_token, secret, now_sec))
+          .to eq({ "user_id" => 42, "exp" => now_sec + 300 })
+        expect(described_class.verify_hs256_jwt(expired_token, secret, now_sec)).to be(false)
+        expect(described_class.verify_hs256_jwt(wrong_secret_token, secret, now_sec)).to be(false)
+        expect(described_class.verify_hs256_jwt("invalid.token", secret, now_sec)).to be(false)
+
+        # Uncommon registered claim (`nbf`) defers to Ruby `JWT.decode`
+        nbf_token = JWT.encode({ "user_id" => 42, "nbf" => now_sec - 10 }, secret, "HS256")
+        expect(described_class.verify_hs256_jwt(nbf_token, secret, now_sec)).to be_nil
+        expect(metal_controller.decode_auth_token(nbf_token)).to eq({ "user_id" => 42, "nbf" => now_sec - 10 })
+
+        rng = Random.new(20_261_104)
+        1_000.times do |i|
+          token = case i % 5
+                  when 0
+                    JWT.encode({ "user_id" => rng.rand(1..1_000_000) }, secret, "HS256")
+                  when 1
+                    JWT.encode(
+                      { "user_id" => rng.rand(1..1_000_000), "exp" => now_sec + rng.rand(10..3600) },
+                      secret,
+                      "HS256",
+                    )
+                  when 2
+                    JWT.encode(
+                      { "user_id" => rng.rand(1..1_000_000), "exp" => now_sec - rng.rand(1..3600) },
+                      secret,
+                      "HS256",
+                    )
+                  when 3
+                    JWT.encode({ "user_id" => rng.rand(1..1_000_000) }, "bad_secret_#{i}", "HS256")
+                  else
+                    "malformed.#{i}.token"
+                  end
+
+          expected = metal_controller.__send__(:legacy_decode_auth_token, token)
+          actual = metal_controller.decode_auth_token(token)
+          expect(actual).to eq(expected), "iteration #{i}: token=#{token}"
+        end
+      end
+    end
+
+    describe ".billboard_event_update_sql and .billboard_event_insert_sql" do
+      it "matches legacy_add_impression_seconds_sql across 1,000 randomized inputs" do
+        rng = Random.new(20_261_105)
+        id_samples = [1, 42, "99", "  123  ", "42px", "px42", "-5", "1_000", "1__000", "", "   ", nil, [1], { a: 1 }]
+        user_samples = [nil, 1, 777, "888", ""]
+
+        1_000.times do |i|
+          id = id_samples.sample(random: rng)
+          uid = user_samples.sample(random: rng)
+          secs = rng.rand(1..60)
+          now = Time.at(1_700_000_000 + rng.rand(0..100_000_000), rng.rand < 0.2 ? 0 : rng.rand(1..999_999)).utc
+          throttle = rng.rand(1..30).seconds
+
+          expected = BillboardEvent.__send__(
+            :legacy_add_impression_seconds_sql,
+            id: id, user_id: uid, now: now, seconds: secs, throttle: throttle,
+          )
+          actual = BillboardEvent.build_add_impression_seconds_sql(
+            id: id, user_id: uid, now: now, seconds: secs, throttle: throttle,
+          )
+          expect(actual).to eq(expected), "iteration #{i}: id=#{id.inspect} uid=#{uid.inspect}"
+        end
+      end
+
+      it "matches legacy_create_with_async_commit_sql across 1,000 randomized inputs and supports inline EXISTS" do
+        billboard = Billboard.new(id: 555)
+        now = Time.utc(2026, 11, 3, 17, 30, 0, 123_456)
+
+        # Inline WHERE EXISTS when billboard_id is passed without a Billboard model instance
+        inline_sql = BillboardEvent.build_create_with_async_commit_sql(
+          {
+            billboard_id: "555",
+            category: "impression",
+            context_type: "home",
+            user_id: 77,
+            article_id: "42",
+            geolocation: "US-NY",
+            user_agent: "Mozilla/5.0's test"
+          },
+          now: now,
+        )
+        expect(inline_sql).to include("SELECT 42, 'impression', 'home', 1")
+        expect(inline_sql).to end_with(
+          'WHERE EXISTS (SELECT 1 FROM "display_ads" WHERE "display_ads"."id" = 555) RETURNING "id"',
+        )
+
+        rng = Random.new(20_261_106)
+        categories = %w[impression click signup conversion invalid_cat] + [nil]
+        contexts = %w[home article email embed invalid_ctx] + [nil]
+        geos = [nil, "US-NY", "CA-ON", "O'Brien"]
+        uas = [nil, "Mozilla/5.0 (Macintosh)", "Custom'Agent\\1.0", ""]
+        article_ids = [nil, 42, "100", "", [1]]
+
+        1_000.times do |i|
+          cat = categories.sample(random: rng)
+          ctx = contexts.sample(random: rng)
+          # Use anonymous user for signup/conversion so legacy validation doesn't need DB queries
+          uid = %w[signup conversion].include?(cat) ? nil : [nil, 12, "34"].sample(random: rng)
+          attrs = {
+            billboard: rng.rand < 0.15 ? nil : billboard,
+            category: cat,
+            context_type: ctx,
+            user_id: uid,
+            article_id: article_ids.sample(random: rng),
+            geolocation: geos.sample(random: rng),
+            user_agent: uas.sample(random: rng)
+          }
+          ts = Time.at(1_700_000_000 + rng.rand(0..100_000_000), rng.rand < 0.2 ? 0 : rng.rand(1..999_999)).utc
+
+          expected = BillboardEvent.__send__(:legacy_create_with_async_commit_sql, attrs, now: ts)
+          actual = BillboardEvent.build_create_with_async_commit_sql(attrs, now: ts)
+          expect(actual).to eq(expected), "iteration #{i}: attrs=#{attrs.inspect}"
+        end
+      end
+    end
+
+    describe ".origin_in_comma_list, .valid_uuid, and .feed_events_advisory_lock_key" do
+      it "matches legacy Ruby implementations across 1,000 randomized inputs" do
+        rng = Random.new(20_261_107)
+        origins_pool = [
+          "https://embed.example.com", "https://other.example.com",
+          "https://dev.to", "http://localhost:3000", ""
+        ]
+
+        1_000.times do |i|
+          raw_list = Array.new(rng.rand(0..5)) { "  #{origins_pool.sample(random: rng)} \t" }.join(",")
+          candidate = origins_pool.sample(random: rng)
+          expected_origin = raw_list.to_s.split(",").map(&:strip).reject(&:empty?).include?(candidate)
+          expect(described_class.origin_in_comma_list(candidate, raw_list)).to eq(expected_origin)
+
+          uuid_candidate = case i % 4
+                           when 0 then SecureRandom.uuid
+                           when 1 then SecureRandom.uuid.upcase
+                           when 2 then "#{SecureRandom.uuid}x"
+                           else "not-a-uuid-#{i}"
+                           end
+          expect(described_class.valid_uuid(uuid_candidate))
+            .to eq(Feeds::RecordConfigVisit::UUID_PATTERN.match?(uuid_candidate))
+          expect(Feeds::RecordConfigVisit.valid_uuid?(uuid_candidate))
+            .to eq(Feeds::RecordConfigVisit::UUID_PATTERN.match?(uuid_candidate))
+
+          uid = rng.rand(-1_000_000..10_000_000)
+          expected_lock = Digest::SHA256.digest("feed_events:#{uid}").unpack1("q>")
+          expect(described_class.feed_events_advisory_lock_key(uid)).to eq(expected_lock)
+        end
+      end
+    end
+
+    describe ".valid_request_origin (ValidRequest#valid_request_origin?)" do
+      let(:harness_class) do
+        Class.new do
+          include ValidRequest
+
+          attr_accessor :mock_request
+
+          def request
+            mock_request
+          end
+        end
+      end
+
+      let(:mock_req_class) do
+        Struct.new(:referer, :origin, :base_url, :host, :port)
+      end
+
+      it "matches legacy_valid_request_origin? across 1,000 randomized inputs and handles null_origin" do
+        harness = harness_class.new
+        rng = Random.new(20_261_108)
+        referers = [
+          nil, "", "   ",
+          "https://dev.to/ben/some-post",
+          "http://dev.to/ben/some-post",
+          "https://dev.to:3000/feed",
+          "http://localhost:3000/page",
+          "https://evil.example.com/phish",
+          "https://Sub.Dev.To:8080/path?q=1#frag",
+          "mailto:user@example.com",
+          "not a valid url [::1"
+        ]
+        origins = [
+          nil, "null", "https://dev.to", "http://dev.to",
+          "https://dev.to:3000", "http://localhost:3000",
+          "https://evil.example.com", "https://sub.dev.to:8080"
+        ]
+        hosts = ["dev.to", "localhost", "sub.dev.to", "evil.example.com"]
+        ports = [80, 443, 3000, 8080]
+        base_urls = [
+          "https://dev.to", "http://dev.to",
+          "https://dev.to:3000", "http://localhost:3000",
+          "https://sub.dev.to:8080"
+        ]
+
+        1_000.times do |i|
+          ref = referers.sample(random: rng)
+          orig = origins.sample(random: rng)
+          host = hosts.sample(random: rng)
+          port = ports.sample(random: rng)
+          base = base_urls.sample(random: rng)
+
+          harness.mock_request = mock_req_class.new(
+            ref,
+            orig,
+            base,
+            host,
+            port,
+          )
+
+          if ref.blank? && orig == "null"
+            expect { harness.__send__(:evaluate_request_origin) }
+              .to raise_error(ActionController::InvalidAuthenticityToken)
+            expect { harness.__send__(:legacy_valid_request_origin?) }
+              .to raise_error(ActionController::InvalidAuthenticityToken)
+          else
+            expected = harness.__send__(:legacy_valid_request_origin?)
+            actual = harness.__send__(:evaluate_request_origin)
+            expect(actual).to eq(expected),
+                              "iteration #{i}: ref=#{ref.inspect} orig=#{orig.inspect} " \
+                              "base=#{base.inspect} host=#{host.inspect} port=#{port.inspect}"
+          end
+        end
+      end
+    end
+
+    describe ".extract_referrer_domain_and_path (PageView#extract_domain_and_path)" do
+      it "matches legacy_extract_domain_and_path across 1,000 randomized referrer URLs" do
+        rng = Random.new(20_261_109)
+        referrers = [
+          "https://www.google.com/search?q=ruby+rust",
+          "https://news.ycombinator.com/item?id=12345",
+          "https://dev.to/ben/hello-world#comments",
+          "https://sub.blog.co.uk/posts/2026/11/03?utm_source=dev",
+          "https://someone.github.io/post",
+          "https://myblog.blogspot.com/entry",
+          "https://myapp.vercel.app/page",
+          "http://localhost:3000/internal",
+          "https://192.168.1.1/admin",
+          "https://github.com",
+          "https://github.com/",
+          "https://t.co/abc123XYZ",
+          "android-app://com.google.android.googlequicksearchbox/",
+          "https://example.invalidtld/some/path",
+        ]
+
+        expect(described_class.extract_referrer_domain_and_path("https://someone.github.io/post"))
+          .to eq(["github.io", "/post"])
+
+        1_000.times do |i|
+          ref = if i % 5 == 0
+                  "https://sub#{i % 20}.example.com/path/#{i}?ref=1"
+                else
+                  referrers.sample(random: rng)
+                end
+
+          pv_legacy = PageView.new(referrer: ref)
+          pv_legacy.__send__(:legacy_extract_domain_and_path)
+
+          pv_native = PageView.new(referrer: ref)
+          pv_native.__send__(:extract_domain_and_path)
+
+          expect([pv_native.domain, pv_native.path])
+            .to eq([pv_legacy.domain, pv_legacy.path]), "iteration #{i}: ref=#{ref.inspect}"
+        end
+      end
+    end
+
+    describe ".match_metal_telemetry_route and .billboard_event_create_from_json_sql" do
+      it "classifies metal telemetry routes and rejects non-matching paths or methods", :aggregate_failures do
+        expect(described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42"))
+          .to eq([:billboard_update, "42"])
+        expect(described_class.match_metal_telemetry_route("POST", "/bb_tabulations"))
+          .to eq([:billboard_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/billboard_events/"))
+          .to eq([:billboard_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/display_ad_events"))
+          .to eq([:billboard_create, nil])
+        expect(described_class.match_metal_telemetry_route("PUT", "/page_views/12345"))
+          .to eq([:page_view_update, "12345"])
+        expect(described_class.match_metal_telemetry_route("PATCH", "/page_views/12345"))
+          .to eq([:page_view_update, "12345"])
+        expect(described_class.match_metal_telemetry_route("POST", "/page_views"))
+          .to eq([:page_view_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/fallback_activity_recorder"))
+          .to eq([:ga_event_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/fallback_activity_recorder/"))
+          .to eq([:ga_event_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_events"))
+          .to eq([:feed_events_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_events/"))
+          .to eq([:feed_events_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_config_visits"))
+          .to eq([:feed_config_visits_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_config_visits/"))
+          .to eq([:feed_config_visits_create, nil])
+        expect(
+          [
+            described_class.match_metal_telemetry_route("GET", "/bb_tabulations"),
+            described_class.match_metal_telemetry_route("GET", "/feed_events"),
+            described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42/extra"),
+          ],
+        ).to eq([nil, nil, nil])
+      end
+
+      it "matches BillboardEvent.build_create_with_async_commit_sql across 1,000 randomized JSON payloads" do
+        sample_now = Time.utc(2026, 11, 3, 18, 0, 0, 123_456)
+        ascii_8bit_json = '{"billboard_event":{"billboard_id":555,"category":"impression","context_type":"home"}}'.b
+        ascii_8bit_outcome = described_class.billboard_event_create_from_json_sql(
+          ascii_8bit_json, 42, "US-NY".b, "Mozilla/5.0".b, false, sample_now
+        )
+        expect(ascii_8bit_outcome).to be_an(Array)
+        expect(ascii_8bit_outcome.first).to include("'Mozilla/5.0'")
+
+        ascii_8bit_insert = described_class.billboard_event_insert_sql(
+          [
+            555, "impression", "home", 42, nil, "US-NY".b, "Mozilla/5.0".b,
+            1, 10, sample_now.tv_sec, sample_now.usec, true
+          ],
+        )
+        expect(ascii_8bit_insert).to be_a(String)
+        expect(ascii_8bit_insert).to include("'Mozilla/5.0'")
+
+        rng = Random.new(20_261_110)
+        categories = %w[impression click signup conversion invalid_cat]
+        contexts = %w[home article email embed invalid_ctx]
+        geos = [nil, "US-NY", "CA-ON", "O'Brien"]
+        uas = [nil, "Mozilla/5.0 (Macintosh)", "Custom'Agent\\1.0"]
+
+        1_000.times do |i|
+          bb_id = [42, "99", "", nil, "not_an_int"].sample(random: rng)
+          cat = categories.sample(random: rng)
+          ctx = contexts.sample(random: rng)
+          art_id = [nil, 100, "205", ""].sample(random: rng)
+          is_embed = rng.rand < 0.25
+          uid = is_embed || %w[signup conversion].include?(cat) ? nil : [nil, 77].sample(random: rng)
+          geo = geos.sample(random: rng)
+          ua = uas.sample(random: rng)
+          now = Time.at(1_700_000_000 + rng.rand(0..100_000_000), rng.rand(1..999_999)).utc
+
+          event_key = rng.rand < 0.8 ? "billboard_event" : "display_ad_event"
+          payload = {
+            event_key => {
+              "billboard_id" => bb_id,
+              "category" => cat,
+              "context_type" => ctx,
+              "article_id" => art_id
+            }
+          }
+          json = JSON.generate(payload)
+
+          outcome = described_class.billboard_event_create_from_json_sql(
+            json, uid, geo, ua, is_embed, now
+          )
+
+          if bb_id.to_s.strip.empty?
+            expect(outcome).to eq(:blank_id), "iteration #{i}: expected :blank_id for #{json}"
+          else
+            expected_sql = BillboardEvent.build_create_with_async_commit_sql(
+              {
+                billboard_id: bb_id.to_s,
+                category: cat,
+                context_type: is_embed ? BillboardEvent::CONTEXT_TYPE_EMBED : ctx,
+                user_id: is_embed ? nil : uid,
+                article_id: art_id.to_s.strip.empty? ? nil : art_id,
+                geolocation: geo,
+                user_agent: ua
+              },
+              now: now,
+            )
+            expect(outcome).to eq([expected_sql || :invalid, bb_id.to_s]), "iteration #{i}: json=#{json}"
+          end
+        end
+      end
+
+      it "extracts GA4 fallback page_view params and matches GaEventsController across 1,000 randomized payloads" do
+        expect(described_class.extract_ga_event_params("", "https://dev.to", nil)).to eq(:invalid)
+        expect(described_class.extract_ga_event_params("{bad", "https://dev.to", nil)).to eq(:invalid)
+        expect(described_class.extract_ga_event_params('{"document_title":"\\u0041"}', "https://dev.to", 1)).to be_nil
+
+        rng = Random.new(20_261_111)
+        titles = [nil, "Hello World", "Forem \"Rust\" & Rails", "Path\\to\\doc\nline2", "日本語 🚀"]
+        paths = [nil, "/", "/ben", "/ben/post-1?foo=bar"]
+        langs = [nil, "en", "en-US", "fr-FR"]
+        referrers = [nil, "https://dev.to/feed", "https://google.com/search?q=rust", "https://example.org/"]
+        uas = [nil, "Mozilla/5.0 (Macintosh; Intel Mac OS X)", "Custom\"Agent\\1.0"]
+        viewports = [nil, "900x1440", "800x600"]
+        resolutions = [nil, "1080x1920", "1440x2560"]
+        encodings = [nil, "UTF-8", "ISO-8859-1"]
+
+        1_000.times do |i|
+          app_url = rng.rand < 0.5 ? "https://dev.to" : "https://forem.test"
+          user_id = rng.rand < 0.5 ? nil : rng.rand(1..500_000)
+          payload = {
+            "document_title" => titles.sample(random: rng),
+            "document_path" => paths.sample(random: rng),
+            "path" => paths.sample(random: rng),
+            "user_language" => langs.sample(random: rng),
+            "referrer" => referrers.sample(random: rng),
+            "user_agent" => uas.sample(random: rng),
+            "viewport_size" => viewports.sample(random: rng),
+            "screen_resolution" => resolutions.sample(random: rng),
+            "document_encoding" => encodings.sample(random: rng)
+          }.compact
+
+          json_body = JSON.generate(payload)
+          actual = described_class.extract_ga_event_params(json_body, app_url, user_id)
+
+          ref = payload["referrer"]
+          expected = {
+            "page_title" => payload["document_title"],
+            "page_location" => payload["document_path"],
+            "page_path" => payload["path"],
+            "user_id" => user_id,
+            "user_language" => payload["user_language"],
+            "referrer" => ref && !ref.start_with?(app_url) ? ref : nil,
+            "user_agent" => payload["user_agent"],
+            "viewport_size" => payload["viewport_size"],
+            "screen_resolution" => payload["screen_resolution"],
+            "document_encoding" => payload["document_encoding"],
+            "data_source" => "web"
+          }
+
+          expect(actual).to eq(expected), "iteration #{i}: json=#{json_body}"
+        end
+      end
+
+      it "validates and normalizes FeedEvent batches and matches BulkUpsert#legacy_valid_events across 1,000 batches" do
+        upsert_instance = FeedEvents::BulkUpsert.new([])
+        rng = Random.new(20_261_112)
+        categories = [
+          :impression, :click, :reaction, :comment, :extended_pageview,
+          "impression", "click", "extended_pageview",
+          0, 1, 2, 3, 4, 5, "0", "1", :not_a_real_category, "", nil
+        ]
+        contexts = [
+          FeedEvent::CONTEXT_TYPE_HOME,
+          FeedEvent::CONTEXT_TYPE_TAG,
+          FeedEvent::CONTEXT_TYPE_EMAIL,
+          FeedEvent::CONTEXT_TYPE_SIDEBAR,
+          "search",
+          "invalid_ctx",
+          "",
+          nil,
+        ]
+        positions = [1, 4, 20, "7", 0, -3, "", nil]
+        article_ids = [100, "205", 0, -1, nil]
+        user_ids = [42, nil, 0, -5]
+        feed_config_ids = [nil, 9, "12"]
+
+        1_000.times do |i|
+          batch = Array.new(rng.rand(1..8)) do
+            ev_id = case rng.rand(4)
+                    when 0 then SecureRandom.uuid
+                    when 1 then SecureRandom.uuid.upcase
+                    when 2 then "invalid-uuid"
+                    end
+            raw = {
+              article_id: article_ids.sample(random: rng),
+              article_position: positions.sample(random: rng),
+              category: categories.sample(random: rng),
+              context_type: contexts.sample(random: rng),
+              user_id: user_ids.sample(random: rng),
+              feed_config_id: feed_config_ids.sample(random: rng),
+              event_id: ev_id
+            }
+            rng.rand < 0.5 ? raw.stringify_keys : raw
+          end
+
+          actual = described_class.validate_and_normalize_feed_events(batch)
+          expected_models = upsert_instance.__send__(:legacy_valid_events, batch)
+          expected = expected_models.map do |m|
+            {
+              article_position: m.article_position,
+              category: m.category,
+              context_type: m.context_type,
+              article_id: m.article_id,
+              user_id: m.user_id,
+              feed_config_id: m.feed_config_id,
+              event_id: m.event_id
+            }
+          end
+
+          expect(actual).to eq(expected), "iteration #{i}: batch=#{batch.inspect}"
+        end
+      end
+
+      it "encodes HS256 JWTs matching JWT.encode across 1,000 randomized payloads" do
+        rng = Random.new(20_261_113)
+        secrets = [
+          Rails.application.secret_key_base,
+          "short_secret",
+          "a" * 128,
+        ]
+        1_000.times do |i|
+          user_id = rng.rand(1..10_000_000)
+          exp = rng.rand(1_700_000_000..1_900_000_000)
+          secret = secrets.sample(random: rng)
+
+          actual = described_class.encode_hs256_jwt(user_id, exp, secret)
+          expected = JWT.encode({ user_id: user_id, exp: exp }, secret)
+          expect(actual).to eq(expected), "iteration #{i}: user_id=#{user_id} exp=#{exp}"
+        end
+      end
+
+      it "masks CSRF tokens matching Rails global CSRF token masking across 1,000 iterations" do
+        rng = Random.new(20_261_114)
+        1_000.times do |i|
+          raw_real = rng.bytes(32)
+          encoded_real = Base64.urlsafe_encode64(raw_real, padding: false)
+          pad = rng.bytes(32)
+
+          actual = described_class.mask_authenticity_token(encoded_real, pad)
+          global_token = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), raw_real, "!real_csrf_token")
+          xored = pad.bytes.zip(global_token.bytes).map { |a, b| (a ^ b).chr }.join
+          expected = Base64.urlsafe_encode64(pad + xored, padding: false)
+
+          expect(actual).to eq(expected), "iteration #{i}"
+          expect(described_class.verify_authenticity_token(actual, encoded_real)).to be(true)
+        end
+      end
+
+      it "parses AuthPass origins and CSP strings matching AuthPassController across 1,000 inputs" do
+        auth_pass_controller = AuthPassController.new
+        rng = Random.new(20_261_115)
+        schemes = ["https://", "http://", "HTTPS://", "HTTP://", ""]
+        hosts = ["forem.com", "Blog.MyOrg.com", "sub-1.dev.to", "the-other-domain.com"]
+        ports = ["", ":80", ":443", ":3000", ":8443"]
+        paths = ["", "/", "/auth_pass/iframe?passed_domain=test", "/some/path#frag"]
+
+        1_000.times do |i|
+          scheme = schemes.sample(random: rng)
+          host = hosts.sample(random: rng)
+          port = scheme.empty? ? "" : ports.sample(random: rng)
+          path = scheme.empty? ? "" : paths.sample(random: rng)
+          raw = "#{scheme}#{host}#{port}#{path}"
+
+          actual = described_class.parse_auth_pass_origin(raw)
+          expected = auth_pass_controller.__send__(:legacy_parse_origin_host_and_csp, raw)
+          expect(actual).to eq(expected), "iteration #{i}: raw=#{raw}"
+        end
+      end
+
+      it "builds base_data JSON and bulk follow JSON matching ActiveSupport::JSON.encode across 1,000 iterations" do
+        follows_controller = FollowsController.new
+        rng = Random.new(20_261_116)
+        geos = [nil, "US-NY", "CA-ON", "DE"]
+
+        1_000.times do |i|
+          bcast = rng.rand < 0.5 ? nil : { title: "Hello <world> & #{i}", html: "<p>Test</p>" }.to_json
+          token = Base64.urlsafe_encode64(rng.bytes(64), padding: false)
+
+          if rng.rand < 0.5
+            actual_base = described_class.build_base_data_json(
+              broadcast: bcast,
+              param: "authenticity_token",
+              token: token,
+            )
+            expected_base = {
+              broadcast: bcast,
+              param: :authenticity_token,
+              token: token
+            }.to_json
+          else
+            u_json = { id: i + 1, name: "User <#{i}> & Co", trusted: rng.rand < 0.5 }.to_json
+            geo = geos.sample(random: rng)
+            optin = rng.rand < 0.5
+            creator = rng.rand < 0.5
+            actual_base = described_class.build_base_data_json(
+              broadcast: bcast,
+              param: "authenticity_token",
+              token: token,
+              user: u_json,
+              client_geolocation: geo,
+              default_email_optin_allowed: optin,
+              creator: creator,
+            )
+            expected_base = {
+              broadcast: bcast,
+              param: :authenticity_token,
+              token: token,
+              user: u_json,
+              client_geolocation: geo,
+              default_email_optin_allowed: optin,
+              creator: creator
+            }.to_json
+          end
+          expect(actual_base).to eq(expected_base), "base_data iteration #{i}"
+
+          viewer_id = rng.rand(1..50)
+          is_user = rng.rand < 0.7
+          len = rng.rand(1..12)
+          ids = Array.new(len) { rng.rand(1..60) }
+          fwd = Array.new(len) { rng.rand < 0.5 }
+          rev = is_user ? Array.new(len) { rng.rand < 0.5 } : []
+
+          actual_follow = described_class.resolve_bulk_follow_json(viewer_id, is_user, ids, fwd, rev)
+          expected_follow = follows_controller.__send__(
+            :legacy_resolve_bulk_follow, viewer_id, is_user, ids, fwd, rev
+          ).to_json
+          expect(actual_follow).to eq(expected_follow), "bulk_follow iteration #{i}"
+        end
+      end
+    end
+  end
+
+  describe ".extract_liquid_embed_tags" do
+    let(:liquid_tag_regex) { /\{%\s*([a-zA-Z0-9_]+)\s+(.*?)\s*%\}/ }
+
+    let(:legacy_extract_liquid_embed_tags) do
+      lambda do |content|
+        stripped = content.to_s.gsub(/```.*?```/m, "").gsub(/`.*?`/, "")
+        stripped.scan(liquid_tag_regex).map do |match|
+          tag_name = match[0].downcase
+          options = match[1].strip
+          url = options.split.first || options
+          [tag_name, url, options]
+        end.uniq
+      end
+    end
+
+    it "extracts deduplicated liquid tags while skipping fenced and inline code" do
+      markdown = <<~MD
+        Hello world!
+        {% YOUTUBE synthetic_video %}
+        {% user synthetic_user %}
+        ```ruby
+        {% youtube ignored_fenced %}
+        ```
+        Inline `{% tag ignored_inline %}` here.
+        {% youtube synthetic_video %}
+        {% embed https://example.com/synthetic_user/post extra_arg %}
+      MD
+
+      expect(described_class.extract_liquid_embed_tags(markdown)).to eq(
+        legacy_extract_liquid_embed_tags.call(markdown),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_liquid_embed_tags(nil)).to be_nil
+      expect(described_class.extract_liquid_embed_tags(123)).to be_nil
+      invalid = (+"{% user test %}\xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.extract_liquid_embed_tags(invalid)).to be_nil
+    end
+
+    it "preserves first occurrence order and options when deduplicating many mixed-case tags" do
+      tags = Array.new(4_096) { |i| "{% TAG synthetic#{i} %}" }
+      markdown = (tags + tags.map(&:downcase) + ["{% tag synthetic0 extra %}"]).join("\n")
+
+      expect(described_class.extract_liquid_embed_tags(markdown)).to eq(
+        legacy_extract_liquid_embed_tags.call(markdown),
+      )
+    end
+
+    it "handles long lines of unclosed tags in linear time while preserving nested and multiline matches" do
+      unclosed_line = "{% tag x " * 16_000
+      raw_wrapped = "{% raw %}\n#{unclosed_line}\n{% endraw %}"
+      multiline_after_unclosed = "#{unclosed_line}\n{% user\nsynthetic_user %}\n{% tag opt1 opt2\n  %}"
+      nested_multiline = "{% bad unclosed {% user\nsynthetic_user %}\n{% tag opt1 opt2\n  %}"
+
+      [unclosed_line, raw_wrapped, multiline_after_unclosed, nested_multiline].each do |doc|
+        expect(described_class.extract_liquid_embed_tags(doc)).to eq(
+          legacy_extract_liquid_embed_tags.call(doc),
+        )
+      end
+    end
+
+    it "matches the Ruby reference across 1,000 randomized Markdown documents" do
+      rng = Random.new(424_242)
+      tag_names = %w[youtube USER twitter comment tag podcast organization org_posts embed]
+      urls = %w[synthetic_video synthetic_user https://example.com/synthetic_user/hello test_org ruby]
+      extras = ["", " foo", " bar baz", "   "]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          case rng.rand(6)
+          when 0
+            "Plain text paragraph #{rng.rand(100)} 🚀"
+          when 1
+            "{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)}#{extras.sample(random: rng)} %}"
+          when 2
+            "```ruby\n{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)} %}\n```"
+          when 3
+            "`{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)} %}`"
+          when 4
+            "{% #{tag_names.sample(random: rng)} \n #{urls.sample(random: rng)} %}"
+          else
+            "Unclosed `backtick or {% broken tag"
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_liquid_embed_tags(doc)
+        expected = legacy_extract_liquid_embed_tags.call(doc)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".extract_markdown_webpage_urls" do
+    let(:url_regex) { %r{https?://[^\s<>"{}|\\^`\[\]]+} }
+
+    let(:legacy_extract_webpage_urls) do
+      lambda do |content|
+        stripped = content.to_s
+          .gsub(/```.*?```/m, "")
+          .gsub(/`.*?`/, "")
+          .gsub(/\{%.*?%\}/, "")
+        urls = stripped.scan(url_regex)
+        urls.map! { |u| u.gsub(/[.,:;!?)]+$/, "") }
+        urls.uniq
+      end
+    end
+
+    it "extracts deduplicated URLs outside code and liquid tags and strips trailing punctuation" do
+      markdown = <<~MD
+        Visit [Example](https://example.com/path?a=1&b=2)!
+        Or http://test.org/doc, and https://example.com/path?a=1&b=2.
+        ```
+        https://ignored-fence.com/a
+        ```
+        Inline `https://ignored-inline.com/b` and {% embed https://ignored-liquid.com/c %}.
+      MD
+
+      expect(described_class.extract_markdown_webpage_urls(markdown)).to eq(
+        legacy_extract_webpage_urls.call(markdown),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_markdown_webpage_urls(nil)).to be_nil
+      invalid = (+"https://example.com\xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.extract_markdown_webpage_urls(invalid)).to be_nil
+    end
+
+    it "preserves first occurrence order for many unique and repeated URLs" do
+      urls = Array.new(4_096) { |i| "https://example.com/page#{i}" }
+      markdown = (urls + urls.reverse).join(" ")
+
+      expect(described_class.extract_markdown_webpage_urls(markdown)).to eq(urls)
+    end
+
+    it "matches the Ruby reference across 1,000 randomized Markdown documents" do
+      rng = Random.new(424_243)
+      hosts = %w[https://example.com http://dev.to https://rust-lang.org/learn http://test.io/a/b]
+      puncts = ["", ".", ",", ":", ";", "!", "?", ")", ").", "?!"]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          url = "#{hosts.sample(random: rng)}/#{rng.rand(20)}#{puncts.sample(random: rng)}"
+          case rng.rand(6)
+          when 0
+            "Check out #{url} in text"
+          when 1
+            "[link](#{url})"
+          when 2
+            "```\n#{url}\n```"
+          when 3
+            "`#{url}`"
+          when 4
+            "{% embed #{url} %}"
+          else
+            "Unclosed `#{url} or http:// or https://."
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_markdown_webpage_urls(doc)
+        expected = legacy_extract_webpage_urls.call(doc)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".extract_markdown_and_html_image_urls" do
+    let(:legacy_extract_image_urls) do
+      lambda do |markdown_text, stored_image_url|
+        markdown_pattern = /!\[.*?\]\((.*?)\)/
+        html_pattern = /<img.*?src=["'](.*?)["']/
+        all_urls = markdown_text.scan(markdown_pattern).flatten + markdown_text.scan(html_pattern).flatten
+        all_urls.reject { |url| !stored_image_url.empty? && url.include?(stored_image_url) }.uniq
+      end
+    end
+
+    it "extracts markdown and HTML image URLs in order while excluding stored S3 URLs" do
+      s3_prefix = "https://synthetic-bucket.s3.amazonaws.com"
+      md = <<~MD
+        ![alt](https://example.com/a.png)
+        ![stored](#{s3_prefix}/uploads/1.png)
+        <img alt="b" src="https://example.com/b.jpg">
+        <img src='https://example.com/a.png'>
+        <img src="#{s3_prefix}/uploads/2.jpg">
+      MD
+
+      expect(described_class.extract_markdown_and_html_image_urls(md, s3_prefix)).to eq(
+        legacy_extract_image_urls.call(md, s3_prefix),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_markdown_and_html_image_urls(nil, "")).to be_nil
+      expect(described_class.extract_markdown_and_html_image_urls("![a](b)", nil)).to be_nil
+    end
+
+    it "matches Ruby for long image lines, duplicates, exclusions, and newline boundaries" do
+      images = Array.new(4_096) { |i| "![alt](https://example.com/image#{i}.png)" }.join(" ")
+      html = Array.new(4_096) { |i| "<img src='https://example.com/image#{i}.png'>" }.join(" ")
+      markdown = "#{html}\n![broken\n](ignored) #{images}\n<img src='broken\nignored'>\n" \
+                 "<img src='https://example.com/last.png'>\n#{images}"
+      excluded = "https://example.com/image0.png"
+
+      expect(described_class.extract_markdown_and_html_image_urls(markdown, excluded)).to eq(
+        legacy_extract_image_urls.call(markdown, excluded),
+      )
+    end
+
+    it "matches the Ruby reference across 1,000 randomized inputs" do
+      rng = Random.new(424_244)
+      s3_prefix = "https://my-bucket.s3.amazonaws.com"
+      urls = [
+        "https://example.com/img1.png",
+        "https://example.com/img2.gif",
+        "#{s3_prefix}/uploads/stored.png",
+        "/relative/path.jpg",
+        "",
+      ]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          u = urls.sample(random: rng)
+          case rng.rand(5)
+          when 0
+            "![alt #{rng.rand(10)}](#{u})"
+          when 1
+            "<img alt=\"x\" src=\"#{u}\">"
+          when 2
+            "<img data-src=foo src='#{u}' width='100'>"
+          when 3
+            "![unclosed](#{u}"
+          else
+            "<img malformed src=#{u}> plain text"
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_markdown_and_html_image_urls(doc, s3_prefix)
+        expected = legacy_extract_image_urls.call(doc, s3_prefix)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".clean_tag_list" do
+    let(:legacy_clean_tag_list) do
+      lambda do |string|
+        string = string.to_s
+        next [] if string.blank?
+
+        string.downcase.split(",").map do |t|
+          t.strip.delete(" ").gsub(/[^[:alnum:]]/i, "")
+        end
+      end
+    end
+
+    it "cleans ASCII and supported Unicode tag lists and returns nil for out-of-domain codepoints" do
+      %w[
+        ruby,rails,webdev
+        Optimización,Καλημέρα,Français
+      ].each do |input|
+        expect(described_class.clean_tag_list(input)).to eq(legacy_clean_tag_list.call(input))
+      end
+
+      expect(described_class.clean_tag_list("")).to eq([])
+      expect(described_class.clean_tag_list("   \t\n ")).to eq([])
+      expect(described_class.clean_tag_list(",,,")).to eq([])
+      expect(described_class.clean_tag_list("tag², other")).to be_nil
+      expect(described_class.clean_tag_list("İstanbul")).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized tag list strings" do
+      rng = Random.new(424_245)
+      tokens = [
+        "Ruby", "w o r d", "a-pp-le", "w0rd", "app|3", "&!tes4@#$%^&*",
+        "Optimización", "Καλημέρα", "Français", "", "   ", "tag²", "🚀rust"
+      ]
+
+      1_000.times do |i|
+        input = Array.new(rng.rand(0..6)) { tokens.sample(random: rng) }.join(",")
+        input += "," * rng.rand(0..2)
+
+        actual = described_class.clean_tag_list(input)
+        expected = legacy_clean_tag_list.call(input)
+        if actual.nil?
+          # Verify out-of-domain fallback produces the exact reference result
+          expect(ActsAsTaggableOn::TagParser.new(input).__send__(:clean, input)).to eq(expected)
+        else
+          expect(actual).to eq(expected), "iteration #{i}: input=#{input.inspect}"
+        end
+      end
+    end
+  end
+
+  describe ".match_first_flare_tag" do
+    let(:canonical_flare_tags) do
+      %w[discuss help explainlikeimfive watercooler]
+    end
+
+    let(:legacy_match_first_flare_tag) do
+      lambda do |cached_tag_list, allowed_tags = nil|
+        flare_tags = (allowed_tags || canonical_flare_tags).to_set
+        tags = cached_tag_list.to_s.split(", ")
+        flare_tags.intersection(tags).first
+      end
+    end
+
+    it "matches the first flare tag in cached_tag_list order and returns false when none match" do
+      expect(described_class.match_first_flare_tag("ruby, discuss, watercooler", nil)).to eq("discuss")
+      expect(described_class.match_first_flare_tag("watercooler, discuss", nil)).to eq("watercooler")
+      expect(described_class.match_first_flare_tag("ruby, rails, webdev", nil)).to be(false)
+      expect(described_class.match_first_flare_tag("", nil)).to be(false)
+      expect(described_class.match_first_flare_tag(nil, nil)).to be(false)
+      expect(described_class.match_first_flare_tag("custom, discuss", %w[custom])).to eq("custom")
+    end
+
+    it "returns nil for out-of-domain inputs so callers fall back cleanly" do
+      subclass_str = Class.new(String).new("ruby, discuss")
+      expect(described_class.match_first_flare_tag(subclass_str, nil)).to be_nil
+      expect(described_class.match_first_flare_tag(123, nil)).to be_nil
+      expect(described_class.match_first_flare_tag("ruby, discuss", [123])).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized cached_tag_list strings" do
+      rng = Random.new(424_242)
+      pool = %w[ruby rails javascript webdev discuss help explainlikeimfive watercooler ai rust go] + ["", " "]
+
+      1_000.times do |i|
+        raw = Array.new(rng.rand(0..6)) { pool.sample(random: rng) }.join(", ")
+        raw += ", " * rng.rand(0..2)
+        allowed = rng.rand(2).zero? ? nil : pool.sample(rng.rand(0..5), random: rng).reject(&:empty?)
+
+        actual = described_class.match_first_flare_tag(raw, allowed)
+        expected = legacy_match_first_flare_tag.call(raw, allowed)
+        expect(actual).to eq(expected || false), "iteration #{i}: raw=#{raw.inspect} allowed=#{allowed.inspect}"
+      end
+    end
+  end
+
+  describe ".match_articles_flare_tags" do
+    let(:canonical_flare_set) do
+      %w[discuss help explainlikeimfive watercooler].to_set
+    end
+
+    let(:legacy_match_articles_flare_tags) do
+      lambda do |pairs|
+        result = Hash.new { |hash, key| hash[key] = [] }
+        pairs.each do |article_id, cached_tag_list|
+          next if cached_tag_list.nil? || cached_tag_list.strip.empty?
+
+          tags = cached_tag_list.split(", ")
+          flare_tag = canonical_flare_set.intersection(tags).first
+          next if flare_tag.blank?
+
+          result[flare_tag] << article_id
+        end
+        result
+      end
+    end
+
+    it "groups article IDs by their first matched flare tag in first-seen tag order" do
+      pairs = [
+        [10, "ruby, watercooler, discuss"],
+        [20, "rails, discuss"],
+        [30, "javascript, webdev"],
+        [40, "help, watercooler"],
+        [50, "discuss, help"],
+        [60, nil],
+        [70, "   "],
+      ]
+
+      expect(described_class.match_articles_flare_tags(pairs)).to eq(
+        "watercooler" => [10],
+        "discuss" => [20, 50],
+        "help" => [40],
+      )
+      expect(described_class.match_articles_flare_tags(pairs)).to eq(
+        legacy_match_articles_flare_tags.call(pairs),
+      )
+    end
+
+    it "returns nil for out-of-domain pair arrays so Homepage::FetchTagFlares falls back cleanly" do
+      expect(described_class.match_articles_flare_tags(nil)).to be_nil
+      expect(described_class.match_articles_flare_tags(["not_a_pair"])).to be_nil
+      expect(described_class.match_articles_flare_tags([[1, 123]])).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized article batches" do
+      rng = Random.new(424_242)
+      pool = %w[ruby rails webdev discuss help explainlikeimfive watercooler beginners career]
+
+      1_000.times do |i|
+        pairs = Array.new(rng.rand(0..25)) do |idx|
+          tag_list = if rng.rand(6).zero?
+                       [nil, "", "   "].sample(random: rng)
+                     else
+                       Array.new(rng.rand(1..5)) { pool.sample(random: rng) }.join(", ")
+                     end
+          [idx + 1, tag_list]
+        end
+
+        actual = described_class.match_articles_flare_tags(pairs)
+        expected = legacy_match_articles_flare_tags.call(pairs)
+        expect(actual).to eq(expected), "iteration #{i}: pairs=#{pairs.inspect}"
+      end
+    end
+  end
+
+  describe ".build_relevancy_lever_sql and .build_variant_relevancy_score_sql" do
+    let(:lever_struct) do
+      Struct.new(
+        :key,
+        :user_required,
+        :select_fragment,
+        :joins_fragments,
+        :group_by_fragment,
+        :cases,
+        :fallback,
+        :query_parameters,
+        keyword_init: true,
+      )
+    end
+
+    let(:legacy_build_lever_sql) do
+      lambda do |select_fragment, cases, fallback|
+        lines = ["(CASE #{select_fragment}"]
+        cases.each do |value, factor|
+          lines << "WHEN #{value.to_i} THEN #{factor.to_f}"
+        end
+        lines << "ELSE #{fallback.to_f} END)"
+        lines.join("\n")
+      end
+    end
+
+    let(:legacy_build_variant_sql) do
+      lambda do |levers, has_user, minimize_ai|
+        parts = []
+        levers.each do |lever|
+          next if lever.user_required && !has_user
+
+          parts << legacy_build_lever_sql.call(lever.select_fragment, lever.cases, lever.fallback)
+        end
+        if minimize_ai
+          parts << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+                   "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        end
+        parts.join(" * \n")
+      end
+    end
+
+    it "formats single-lever and multi-lever relevancy SQL and returns nil for out-of-domain inputs" do
+      sql = described_class.build_relevancy_lever_sql(
+        "COUNT(reactions.id)",
+        [[0, 0.9], [1, 1.0], [5, 1.25]],
+        1.5,
+      )
+      expect(sql).to eq(
+        "(CASE COUNT(reactions.id)\nWHEN 0 THEN 0.9\nWHEN 1 THEN 1.0\nWHEN 5 THEN 1.25\nELSE 1.5 END)",
+      )
+
+      # Placeholder '?' in select_fragment must defer to ActiveRecord::Sanitization
+      expect(described_class.build_relevancy_lever_sql("COUNT(?)", [[0, 1.0]], 1.0)).to be_nil
+      # Scientific-notation float must defer to Ruby
+      expect(described_class.build_relevancy_lever_sql("COUNT(id)", [[0, 1e-6]], 1.0)).to be_nil
+      expect(described_class.build_relevancy_lever_sql("COUNT(id)", [[0, Float::NAN]], 1.0)).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized lever configurations" do
+      rng = Random.new(424_242)
+      fragments = [
+        "COUNT(DISTINCT reactions.id)",
+        "articles.public_reactions_count",
+        "DATE_PART('day', :now - articles.published_at)::integer",
+        "COUNT(user_subscriptions.id)",
+      ]
+      factors = [0.0, 0.01, 0.1, 0.25, 0.5, 0.85, 1.0, 1.08, 1.5, 2.0, -15.0, -30.0, 100.25]
+
+      1_000.times do |i|
+        has_user = rng.rand(2).zero?
+        minimize_ai = rng.rand(2).zero?
+        levers = Array.new(rng.rand(1..6)) do |idx|
+          cases = Array.new(rng.rand(0..5)) { [rng.rand(-5..30), factors.sample(random: rng)] }
+          lever_struct.new(
+            key: :"lever_#{idx}",
+            user_required: rng.rand(3).zero?,
+            select_fragment: fragments.sample(random: rng),
+            joins_fragments: [],
+            group_by_fragment: nil,
+            cases: cases,
+            fallback: factors.sample(random: rng),
+            query_parameters: {},
+          )
+        end
+
+        actual = described_class.build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+        expected = legacy_build_variant_sql.call(levers, has_user, minimize_ai)
+        expect(actual).to eq(expected), "iteration #{i}: actual=#{actual.inspect} expected=#{expected.inspect}"
+      end
+    end
+  end
+
+  describe "Tier 3 Billboard & Geolocation Rust Kernels" do
+    let(:legacy_classify_browser_context) do
+      lambda do |ua|
+        case ua
+        when /DEV-Native-ios|DEV-Native-android|ForemWebView/
+          :mobile_in_app
+        when /Mobile|iPhone|Android/
+          :mobile_web
+        when /Windows|Macintosh|Mac OS X|Linux/
+          :desktop
+        else
+          :unknown
+        end
+      end
+    end
+
+    let(:legacy_extract_viewer_country) do
+      lambda do |geo|
+        country = geo.to_s.split(Geolocation::ISO3166_SEPARATOR).first
+        country if country&.match?(/\A[A-Z]{2}\z/)
+      end
+    end
+
+    it "matches browser_context_ads classification across 1,000 randomized User-Agent strings" do
+      rng = Random.new(20_261_108)
+      tokens = [
+        "DEV-Native-ios", "DEV-Native-android", "ForemWebView",
+        "Mobile", "iPhone", "Android",
+        "Windows", "Macintosh", "Mac OS X", "Linux",
+        "Mozilla/5.0", "AppleWebKit/537.36", "Chrome/125.0", "Safari/537.36", "curl/8.4.0", ""
+      ]
+
+      1_000.times do |i|
+        ua = Array.new(rng.rand(0..5)) { tokens.sample(random: rng) }.join(" ")
+        expected = legacy_classify_browser_context.call(ua)
+        actual = described_class.classify_billboard_browser_context(ua)
+        expect(actual).to eq(expected), "iteration #{i}: ua=#{ua.inspect}"
+      end
+
+      expect(described_class.classify_billboard_browser_context(nil)).to be_nil
+      expect(described_class.classify_billboard_browser_context(123)).to be_nil
+    end
+
+    it "matches Geolocation.legacy_code_covered_by? and viewer_country across 1,000 randomized inputs" do
+      rng = Random.new(20_261_109)
+      code_pool = [
+        "US", "US-CA", "US-NY", "CA", "CA-ON", "CA-QC", "USA", "U",
+        " us-ca ", " ca ", "", "   ", "us-ny", "-US", "US-", "US\n", nil
+      ]
+      entry_pool = ["US", "US-CA", "CA", "CA-ON", " us ", " ca-qc ", "U", "", "  ", nil]
+
+      1_000.times do |i|
+        code = code_pool.sample(random: rng)
+        geo_codes = Array.new(rng.rand(0..5)) { entry_pool.sample(random: rng) }
+
+        expected_cov = Geolocation.__send__(:legacy_code_covered_by?, code, geo_codes)
+        actual_cov = described_class.geolocation_code_covered_by?(code, geo_codes)
+        expect(actual_cov).to eq(expected_cov), "iteration #{i}: code=#{code.inspect} geos=#{geo_codes.inspect}"
+        expect(Geolocation.code_covered_by?(code, geo_codes)).to eq(expected_cov)
+
+        expected_country = legacy_extract_viewer_country.call(code)
+        raw_country = described_class.extract_viewer_country(code)
+        actual_country = raw_country == false ? nil : raw_country
+        expect(actual_country).to eq(expected_country), "iteration #{i}: code=#{code.inspect}"
+      end
+    end
+
+    it "matches tag clause, role filter, weighted random, and new_only SQL builders across 1,000 inputs",
+       :aggregate_failures do
+      rng = Random.new(20_261_110)
+      tag_pool = %w[ruby rails rust javascript webdev discuss ai o'brien]
+      role_pool = %w[admin super_admin trusted tag_moderator base_subscriber]
+      base_sql = 'SELECT "display_ads".* FROM "display_ads" WHERE "display_ads"."approved" = TRUE'
+
+      1_000.times do |i|
+        tags = tag_pool.sample(rng.rand(1..6), random: rng)
+        inc_untagged = rng.rand(2).zero?
+        opt = rng.rand(2).zero?
+        tag_sql = described_class.build_billboard_tag_clause_sql(tags, inc_untagged, opt)
+        expect(tag_sql).to be_a(String)
+        if opt
+          expect(tag_sql).to include("tags_array && ARRAY[")
+        else
+          expect(tag_sql).to include("cached_tag_list ~ '[[:<:]]")
+        end
+        expect(tag_sql.include?('"display_ads"."cached_tag_list" = \'\'')).to eq(inc_untagged), "iteration #{i}"
+
+        roles = role_pool.sample(rng.rand(0..4), random: rng)
+        role_sql = described_class.build_billboard_role_filter_sql(roles)
+        if roles.empty?
+          expect(role_sql).to eq("target_role_names IS NULL OR cardinality(target_role_names) = 0")
+        else
+          expect(role_sql).to include("target_role_names && ARRAY[")
+          expect(role_sql).to include("NOT exclude_role_names && ARRAY[")
+        end
+
+        aid = rng.rand(2).zero? ? nil : rng.rand(1..10_000)
+        low_imp = rng.rand(2).zero? ? nil : rng.rand(100..5_000)
+        rval = rng.rand.round(6)
+        weighted_sql = described_class.build_billboard_weighted_random_sql(base_sql, aid, low_imp, rval)
+        expect(weighted_sql).to include("WITH base AS (#{base_sql})")
+        expect(weighted_sql).to include("WHERE running_weight >= #{rval} * total_weight")
+
+        new_only_sql = described_class.build_billboard_new_only_sql(base_sql, 1000, rng.rand(1..15))
+        expect(new_only_sql).to include("WHERE impressions_count < 1000 ORDER BY RANDOM() LIMIT 1")
+      end
+    end
+
+    it "produces identical results between Billboards::FilteredAdsQuery native call and legacy_call" do
+      bb_untagged = create(:billboard, placement_area: "feed_first", approved: true, published: true)
+      bb_tagged = create(:billboard, placement_area: "feed_first", approved: true, published: true, tag_list: "ruby")
+      bb_desktop = create(
+        :billboard,
+        placement_area: "feed_first",
+        approved: true,
+        published: true,
+        browser_context: :desktop,
+      )
+
+      scenarios = [
+        { area: "feed_first", user_signed_in: false, fully_cached: true },
+        {
+          area: "feed_first",
+          user_signed_in: true,
+          user_id: 42,
+          user_tags: %w[ruby rails],
+          role_names: %w[trusted],
+          user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          cookies_allowed: true
+        },
+        {
+          area: "feed_first",
+          user_signed_in: false,
+          article_id: 99,
+          article_tags: %w[ruby],
+          user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Mobile"
+        },
+      ]
+
+      scenarios.each do |opts|
+        native_ids = Billboards::FilteredAdsQuery.new(**opts).call.ids
+        legacy_ids = Billboards::FilteredAdsQuery.new(**opts).__send__(:legacy_call).ids
+        expect(native_ids).to eq(legacy_ids)
+      end
+
+      expect([bb_untagged.id, bb_tagged.id, bb_desktop.id]).not_to be_empty
+    end
+  end
+
+  describe "syntax highlighting and Rouge registry replacement" do
+    it "exposes all 228 canonical Rouge tags and human-readable titles", :aggregate_failures do
+      tags = described_class.syntax_supported_language_tags
+      criteria = described_class.syntax_language_criteria
+
+      expect(tags.size).to eq(228)
+      expect(tags).to eq(tags.uniq.sort)
+      expect(criteria.size).to eq(228)
+      expect(criteria.keys).to eq(tags)
+
+      tags.each do |tag|
+        expect(described_class.syntax_lexer_tag(tag)).to eq(tag)
+        expect(described_class.syntax_normalize_language(tag)).to eq(tag)
+        expect(criteria[tag]).to be_a(String).and be_present
+      end
+    end
+
+    it "resolves aliases, CGI options, and guess heuristics across the language registry", :aggregate_failures do
+      alias_expectations = {
+        "js" => "javascript",
+        "ts" => "typescript",
+        "py" => "python",
+        "rb" => "ruby",
+        "rs" => "rust",
+        "c++" => "cpp",
+        "sh" => "shell",
+        "bash" => "shell",
+        "zsh" => "shell",
+        "yml" => "yaml",
+        "md" => "markdown",
+        "golang" => "go",
+        "objc" => "objective_c",
+        "text" => "plaintext",
+        "plain" => "plaintext"
+      }
+
+      alias_expectations.each do |alias_name, canonical|
+        expect(described_class.syntax_lexer_tag(alias_name)).to eq(canonical)
+        expect(described_class.syntax_normalize_language("```#{alias_name}\n")).to eq(canonical)
+      end
+
+      expect(described_class.syntax_lexer_tag("nonexistent_lang")).to be_nil
+      expect(described_class.syntax_normalize_language("nonexistent_lang")).to eq("plaintext")
+      expect(described_class.syntax_normalize_language(nil)).to eq("plaintext")
+
+      expect(described_class.syntax_find_fancy_tag("ruby?start_inline=1", "puts 1")).to eq("ruby")
+      expect(described_class.syntax_find_fancy_tag("?mimetype=text/x-ruby", "puts 1")).to be_nil
+      expect(described_class.syntax_find_fancy_tag("guess?mimetype=application/json", "{}")).to eq("json")
+      expect(described_class.syntax_find_fancy_tag("guess", "#!/usr/bin/env ruby\nputs 1")).to eq("ruby")
+      expect(described_class.syntax_find_fancy_tag("guess", "#!/bin/sh\necho 1")).to eq("shell")
+      expect(described_class.syntax_find_fancy_tag("guess", "<!DOCTYPE html><html></html>")).to eq("html")
+      expect(described_class.syntax_find_fancy_tag("guess", "<?xml version=\"1.0\"?><root/>")).to eq("xml")
+      expect(described_class.syntax_find_fancy_tag("guess", "# vim: set ft=python:")).to eq("python")
+      expect(described_class.syntax_find_fancy_tag("guess", "# -*- mode: elixir -*-")).to eq("elixir")
+    end
+
+    it "matches Ruby File.extname semantics for syntax_language_from_path across 1,000 randomized paths",
+       :aggregate_failures do
+      rng = Random.new(20_261_111)
+      ext_pool = %w[rb py js ts tsx jsx rs go c cpp h java kt swift php sh sql html css scss json yml toml md diff ex]
+      dir_pool = ["", "app/models/", "src/components/", "  /usr/local/src/", "./a/b.c/"]
+      suffix_pool = ["", "///", "  extra_arg", "\t--flag"]
+
+      legacy_extname = lambda do |path|
+        token = path.to_s.strip.split.first.to_s
+        return if token.empty? || token.include?("\0")
+
+        ext = File.extname(token).delete_prefix(".")
+        return if ext.empty?
+
+        described_class.syntax_lexer_tag(ext)
+      end
+
+      1_000.times do |i|
+        dir = dir_pool.sample(random: rng)
+        ext = ext_pool.sample(random: rng)
+        sfx = suffix_pool.sample(random: rng)
+        path = case rng.rand(6)
+               when 0
+                 "#{dir}file_#{i}.#{ext}#{sfx}"
+               when 1
+                 "#{dir}.dotfile_#{ext}"
+               when 2
+                 "#{dir}..#{ext}"
+               when 3
+                 "#{dir}...#{ext}"
+               when 4
+                 "#{dir}no_extension_#{i}"
+               else
+                 "bad\0path.rb"
+               end
+
+        expect(described_class.syntax_language_from_path(path)).to eq(legacy_extname.call(path)),
+                                                                   "mismatch at #{i} for path=#{path.inspect}"
+      end
+    end
+
+    it "highlights code blocks across all 228 languages and 1,000 randomized inputs without unescaped HTML",
+       :aggregate_failures do
+      rng = Random.new(20_261_112)
+      tags = described_class.syntax_supported_language_tags
+      snippets = [
+        "def greet(name = \"<script>&</script>\")\n  @count ||= 42\n  puts :hello\nend",
+        "import React from 'react';\nexport const App = () => <div title=\"a&b\" class={cls} {...props}>{42}</div>;",
+        "import UiList from 'app';\n<template foo={bar}><UiList @x={{1}} @y={2} /></template>",
+        "pub fn main<'a>(x: &'a str) -> Result<u64, String> { println!(\"{}\", x); Ok(0x2a) }",
+        "SELECT u.id, COUNT(*) FROM users u WHERE u.name = 'O''Brien & <co>' -- comment\nGROUP BY u.id;",
+        "--- a/app.rb\n+++ b/app.rb\n@@ -1,2 +1,2 @@\n-old <tag>\n+new & improved",
+        "{\"key\": \"<value>&more\", \"count\": -12.34e5, \"active\": true, \"nil_val\": null}",
+        "all:\n    echo \"hello <world> & $USER\" && echo $ $$ $-\n$ npm install\n# comment",
+        "$ curl -s https://example.com | grep 'foo$' && printf $'\\n' $\"done\" $",
+        "<div class={cls} data-empty={} broken={><span title='<img src=x>'>{x}</span></div>",
+        "{----% raw %----}\n{{ liquid_var }}\n{----% endraw %----}",
+        "日本語 🚀 /* multi\nline */ // single <img src=x onerror=alert(1)>",
+      ]
+
+      1_000.times do |i|
+        code = Array.new(rng.rand(1..3)) { snippets.sample(random: rng) }.join("\n")
+        lang = rng.rand(5).zero? ? nil : tags.sample(random: rng)
+
+        html = described_class.syntax_highlight_html(code, lang)
+        block = described_class.syntax_highlight_code_block(code, lang)
+
+        expect(html).to be_a(String), "nil html at #{i}"
+        expect(html).not_to include("<script>"), "unescaped <script> at #{i} (lang=#{lang})"
+        expect(html).not_to include("<img"), "unescaped <img at #{i} (lang=#{lang})"
+
+        expected_tag = lang || "plaintext"
+        expect(block).to start_with(%(<div class="highlight"><pre class="highlight #{expected_tag}"><code>))
+        expect(block).to end_with("</code></pre></div>")
+
+        if code.include?("{----% raw %----}")
+          unescaped = described_class.unescape_raw_tag_in_codeblocks(block)
+          expect(unescaped).not_to include("----"), "raw tag unescape failed at #{i} for lang=#{lang}"
+        end
+      end
+
+      invalid_utf8 = (+"\xFF\xFE").force_encoding(Encoding::UTF_8)
+      expect(described_class.syntax_highlight_html(invalid_utf8, "ruby")).to be_nil
+      expect(described_class.syntax_highlight_code_block(invalid_utf8, "ruby")).to be_nil
+    end
+
+    it "terminates cleanly on bare shell `$` prompts and single-brace `{...}` markup attributes",
+       :aggregate_failures do
+      shell_prompt = "$ npm install\n$ echo $ && echo $$ $- $\"ok\" $'\\n'\ngrep 'end$' file.txt\n"
+      %w[shell bash sh zsh console make].each do |lang|
+        html = described_class.syntax_highlight_code_block(shell_prompt, lang)
+        expect(html).to include("npm install")
+        expect(html).to include('<span class="nv">$$</span>')
+        expect(html).to include('<span class="nv">$-</span>')
+      end
+
+      single_brace_markup = "<div class={cls} {...props} empty={} unclosed={>\n  <a href={url}>{text}</a>\n</div>\n"
+      %w[html xml erb liquid vue svelte handlebars].each do |lang|
+        html = described_class.syntax_highlight_code_block(single_brace_markup, lang)
+        expect(html).to include('<span class="na">class</span>')
+        expect(html).to include('<span class="p">{</span>')
+        expect(html).to include('<span class="p">}</span>')
+      end
+
+      ember_markup = "<template foo={cls} {...attrs}>\n#{single_brace_markup}</template>\n"
+      %w[gjs gts].each do |lang|
+        html = described_class.syntax_highlight_code_block(ember_markup, lang)
+        expect(html).to include('<span class="k">template</span>')
+        expect(html).to include('<span class="na">foo</span>')
+        expect(html).to include('<span class="na">class</span>')
+        expect(html).to include('<span class="p">{</span>')
+      end
+    end
+  end
+
+  describe "social image generation pipeline (Images::GenerateSocialImageMagickally)" do
+    before { Images::GenerateSocialImageMagickally }
+
+    let(:bold_font) { Images::BOLD_FONT_PATH }
+    let(:medium_font) { Images::MEDIUM_FONT_PATH }
+    let(:logo_path) { Rails.root.join("spec/fixtures/files/podcast.png").to_s }
+    let(:avatar_path) { Rails.root.join("spec/fixtures/files/800x600.png").to_s }
+    let(:mask_path) { Images::ROUNDED_MASK_PATH }
+
+    it "decodes PNG, JPEG, GIF, and cached mask assets and rejects corrupt bytes", :aggregate_failures do
+      logo = described_class.social_image_open(logo_path)
+      expect(logo).to be_a(ForemNative::SocialCanvas)
+      expect(logo.width).to be > 0
+      expect(logo.height).to be > 0
+      expect(logo.destroyed?).to be(false)
+
+      mask1 = described_class.social_image_open(mask_path)
+      mask2 = described_class.social_image_open(mask_path)
+      expect([mask1.width, mask1.height]).to eq([mask2.width, mask2.height])
+      mask1.destroy!
+      expect(mask1.destroyed?).to be(true)
+      expect(mask2.destroyed?).to be(false)
+      expect { mask1.to_png }.to raise_error(RuntimeError, /destroyed/)
+
+      expect { described_class.social_image_decode("not-an-image") }
+        .to raise_error(ArgumentError, /invalid image/)
+    ensure
+      logo&.destroy!
+      mask2&.destroy!
+    end
+
+    it "renders label and caption text with word-wrapping and empty-string handling", :aggregate_failures do
+      label = described_class.social_image_render_text("label", "Jane Doe", bold_font, 28, "black")
+      expect(label.width).to be_between(120, 145)
+      expect(label.height).to be_between(35, 45)
+
+      blank = described_class.social_image_render_text("label", "\u00A0", bold_font, 28, "black")
+      expect(blank.width).to be >= 1
+      expect(blank.height).to be >= 1
+
+      caption = described_class.social_image_render_text(
+        "caption",
+        "Rust native social card generation eliminates ImageMagick CLI process spawns in Sidekiq.",
+        bold_font,
+        42,
+        "#000000",
+        width: 806,
+      )
+      expect(caption.width).to eq(806)
+      expect(caption.height).to be > 80
+    ensure
+      label&.destroy!
+      blank&.destroy!
+      caption&.destroy!
+    end
+
+    it "renders complete 1200x627 article and profile social cards end-to-end and encodes 8-bit RGB PNGs",
+       :aggregate_failures do
+      blobs = [
+        [20, 30, 120, 80, "#12004a"],
+        [180, 90, 140, 100, "#ff4545"],
+        [310, 150, 110, 75, "#6aa9ff"],
+      ]
+      bg = described_class.social_image_draw_background("#3333ff", blobs)
+      expect([bg.width, bg.height]).to eq([1200, 627])
+
+      described_class.social_image_draw_window(bg)
+      logo = described_class.social_image_open(logo_path)
+      avatar = described_class.social_image_open(avatar_path)
+      mask = described_class.social_image_open(mask_path)
+      quote = described_class.social_image_render_text(
+        "caption", "Fast, deterministic social card rendering in Rust.", bold_font, 48, "black", width: 806
+      )
+      name = described_class.social_image_render_text("label", "Jane Doe", bold_font, 28, "black")
+      meta = described_class.social_image_render_text("label", "Nov 9  \u00B7  4 min read", medium_font, 22, "#525252")
+
+      described_class.social_image_add_logo(bg, logo)
+      described_class.social_image_add_quote(bg, quote, bold_font, "#0033ff")
+      # Verify the opening quote mark renders inside the window body (y = 149..185),
+      # never overlapping the title bar (y <= 126).
+      title_bar_accent_pixels = (80..126).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      body_quote_mark_pixels = (145..190).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      expect(title_bar_accent_pixels).to eq(0)
+      expect(body_quote_mark_pixels).to be > 1_000
+      described_class.social_image_add_profile_image(bg, avatar, mask)
+      described_class.social_image_add_byline(bg, name, meta)
+
+      png_bytes = bg.to_png
+      expect(png_bytes.byteslice(0, 8)).to eq("\x89PNG\r\n\x1A\n".b)
+      decoded = described_class.social_image_decode(png_bytes)
+      expect([decoded.width, decoded.height]).to eq([1200, 627])
+
+      profile_bg = described_class.social_image_draw_background("#0f766e", blobs)
+      described_class.social_image_draw_profile_window(profile_bg, "#0f766e")
+      handle = described_class.social_image_render_text("label", "@janedoe", medium_font, 22, "#525252")
+      follow = described_class.social_image_render_text("label", "Follow", bold_font, 21, "white")
+      bio = described_class.social_image_render_text(
+        "caption", "Distributed systems & Rust.", medium_font, 30, "black", width: 878
+      )
+      described_class.social_image_add_logo(profile_bg, logo)
+      described_class.social_image_add_profile_header(profile_bg, name, handle, follow)
+      described_class.social_image_add_profile_bio(profile_bg, bio)
+      described_class.social_image_add_profile_card_avatar(profile_bg, avatar, mask)
+      described_class.social_image_add_profile_meta(profile_bg, meta)
+
+      Tempfile.create(["social_card", ".png"]) do |tmp|
+        profile_bg.write(tmp.path)
+        expect(File.size(tmp.path)).to be > 10_000
+      end
+    ensure
+      [bg, decoded, profile_bg, logo, avatar, mask, quote, name, meta, handle, follow, bio].each do |img|
+        img&.destroy!
+      end
+    end
+  end
+
+  describe ".render_comment_tree" do
+    let(:view) do
+      controller = ArticlesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      ctx = controller.view_context
+      ctx.define_singleton_method(:user_signed_in?) { false }
+      ctx
+    end
+
+    let(:organization) { create(:organization, name: "Forem & <Org>") }
+    let(:author_a) { create(:user, name: "Alice \"OP\" & Co") }
+    let(:author_b) { create(:user, name: "Bob <Dev> O'Connor") }
+    let(:article) { create(:article, user: author_a, organization: organization, tags: "ruby, rust") }
+
+    before do
+      allow(InlineSvg::IdGenerator::Randomness).to receive(:call).and_return("fixed")
+
+      author_a.setting.update_columns(brand_color1: "#234567", display_email_on_profile: true)
+      Profile.find_or_create_by!(user: author_a).update_columns(
+        summary: "Building native extensions & tools " * 8,
+        location: "New York, NY",
+      )
+      author_a.reload
+
+      author_b.setting.update_columns(brand_color1: "", display_email_on_profile: false)
+      Profile.find_or_create_by!(user: author_b).update_columns(
+        summary: "Short bio <script>",
+        location: "",
+      )
+      create(:organization_membership, user: author_b, organization: organization, type_of_user: "member")
+      author_b.add_role(:base_subscriber)
+      author_b.reload
+    end
+
+    it "matches CommentsHelper#legacy_nested_comments across 1,000 randomized comment trees" do
+      pool = [
+        create(
+          :comment,
+          user: author_a,
+          commentable: article,
+          body_markdown: "Root A with [link](https://example.com) & code",
+          score: 25,
+          public_reactions_count: 4,
+          ai_disclosure_level: :some_ai,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Comment B edited",
+          score: 3,
+          public_reactions_count: 1,
+          edited_at: 2.hours.ago,
+          favorited_by_user_id: author_a.id,
+          ai_disclosure_level: :fully_autonomous,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Low quality comment",
+          score: -120,
+          public_reactions_count: 0,
+          created_at: 2.years.ago,
+        ),
+        create(
+          :comment,
+          user: author_a,
+          commentable: article,
+          body_markdown: "Hidden comment",
+          hidden_by_commentable_user: true,
+          score: 0,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Deleted comment",
+          deleted: true,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Super low quality <a href='http://spam.test'>spam</a>",
+          score: -100,
+        ),
+      ]
+
+      rng = Random.new(202_611)
+      ancestry_for = lambda do |ancestors|
+        ancestors.empty? ? nil : ancestors.map(&:id).join("/")
+      end
+
+      1_000.times do |iter|
+        chosen = pool.sample(rng.rand(1..5), random: rng)
+        tree = {}
+        # Build a random tree structure and sync each comment's in-memory `ancestry`
+        cursor_hashes = [[tree, []]]
+        chosen.each do |comment|
+          parent_map, ancestors = cursor_hashes.sample(random: rng)
+          comment.ancestry = ancestry_for.call(ancestors)
+          child_map = {}
+          parent_map[comment] = child_map
+          cursor_hashes << [child_map, ancestors + [comment]] if ancestors.length < 4
+        end
+
+        is_admin = rng.rand(2).zero?
+        is_view_root = rng.rand(2).zero?
+        discussion_lock = rng.rand(2).zero?
+        start_idx = [nil, 0, 5, 7].sample(random: rng)
+        start_bb = rng.rand(2).zero?
+
+        view.instance_variable_set(:@article, article)
+        view.instance_variable_set(:@discussion_lock, discussion_lock)
+        view.instance_variable_set(:@root_comment, nil)
+
+        view.instance_variable_set(:@current_comment_index, start_idx)
+        view.instance_variable_set(:@shown_billboard, start_bb)
+        native_html = view.__send__(
+          :native_nested_comments,
+          tree: tree,
+          commentable: article,
+          is_view_root: is_view_root,
+          is_admin: is_admin,
+        )
+        native_idx = view.instance_variable_get(:@current_comment_index)
+        native_bb = view.instance_variable_get(:@shown_billboard)
+
+        view.instance_variable_set(:@current_comment_index, start_idx)
+        view.instance_variable_set(:@shown_billboard, start_bb)
+        legacy_html = view.__send__(
+          :legacy_nested_comments,
+          tree: tree,
+          commentable: article,
+          is_view_root: is_view_root,
+          is_admin: is_admin,
+        )
+        legacy_idx = view.instance_variable_get(:@current_comment_index)
+        legacy_bb = view.instance_variable_get(:@shown_billboard)
+
+        expect(native_html).not_to be_nil, "iteration #{iter} returned nil"
+        expect(native_html).to eq(legacy_html), "iteration #{iter} HTML mismatch"
+        expect(native_idx).to eq(legacy_idx), "iteration #{iter} @current_comment_index mismatch"
+        expect(native_bb).to eq(legacy_bb), "iteration #{iter} @shown_billboard mismatch"
+      end
+    end
+
+    it "returns nil for malformed flat buffers so Ruby falls back safely" do
+      static_ctx = view.__send__(:comment_tree_static_context)
+      expect(described_class.render_comment_tree(static_ctx, [], [], [], 0)).to be_nil
+    end
+  end
+
+  describe ".render_tag_link" do
+    let(:view) do
+      controller = StoriesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      controller.view_context
+    end
+
+    it "matches ApplicationHelper#legacy_render_tag_link byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(202_611_11)
+      alphabet = (
+        ("a".."z").to_a + ("0".."9").to_a +
+        ["-", "_", ".", "~", "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=", ":", "@",
+         " ", "\"", "<", ">", "#", "?", "%", "é", "日", "🚀"]
+      ).freeze
+      hex_digits = "0123456789abcdef"
+
+      1_000.times do |iter|
+        len = rng.rand(1..18)
+        raw_route = Array.new(len) { alphabet.sample(random: rng) }.join
+        raw_label = rng.rand(3).zero? ? "#{raw_route} <Tag & 'Label'>" : raw_route
+        bg_hex = "##{Array.new(6) { hex_digits[rng.rand(16)] }.join}"
+        bg_hex = bg_hex.upcase if rng.rand(4).zero?
+        filled = rng.rand(2).zero?
+        monochrome = rng.rand(2).zero?
+        classes = ["", "mr-1", "custom-tag & \"quoted\""].sample(random: rng)
+        path_suffix = [nil, "", "/edit", "?sort=top&dir='asc'"].sample(random: rng)
+
+        tag_obj = Tag.new(name: raw_route, bg_color_hex: bg_hex, text_color_hex: "#ffffff")
+        allow(tag_obj).to receive(:accessible_name).and_return(raw_label) if raw_label != raw_route
+
+        native_html = view.__send__(
+          :native_render_tag_link,
+          tag_obj,
+          filled: filled,
+          monochrome: monochrome,
+          classes: classes,
+          path_suffix: path_suffix,
+        )
+        legacy_html = view.__send__(
+          :legacy_render_tag_link,
+          tag_obj,
+          filled: filled,
+          monochrome: monochrome,
+          classes: classes,
+          path_suffix: path_suffix,
+        )
+
+        expect(native_html).not_to be_nil, "iteration #{iter} returned nil for route=#{raw_route.inspect}"
+        expect(native_html).to eq(legacy_html), "iteration #{iter} mismatch for route=#{raw_route.inspect}"
+      end
+    end
+
+    it "declines SafeBuffer, empty/slash routes, 3-digit hexes, and sub-URI script_name cleanly" do
+      expect(described_class.render_tag_link("ruby".html_safe, "ruby", "#3b49df")).to be_nil
+      expect(described_class.render_tag_link("ruby", "", "#3b49df")).to be_nil
+      expect(described_class.render_tag_link("ruby", "a/b", "#3b49df")).to be_nil
+      expect(described_class.render_tag_link("ruby", "ruby", "#fff")).to be_nil
+
+      tag = create(:tag, name: "rustlang", bg_color_hex: "#dea584", text_color_hex: "#000000")
+      sub_controller = StoriesController.new
+      sub_controller.request = ActionDispatch::TestRequest.create
+      sub_controller.response = ActionDispatch::TestResponse.new
+      sub_controller.default_url_options = { script_name: "/subpath" }
+      sub_view = sub_controller.view_context
+      expect(sub_view.__send__(:native_render_tag_link, tag)).to be_nil
+      expect(sub_view.render_tag_link(tag)).to eq(sub_view.__send__(:legacy_render_tag_link, tag))
+      expect(sub_view.render_tag_link(tag)).to include('href="/subpath/t/rustlang"')
+    end
+  end
+
+  describe ".render_story_cards" do
+    let(:view) do
+      controller = StoriesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      ctx = controller.view_context
+      ctx.define_singleton_method(:user_signed_in?) { false }
+      ctx.define_singleton_method(:feed_style_preference) { "basic" }
+      ctx
+    end
+
+    let(:organization) { create(:organization, name: "Forem & <Org>") }
+    let(:author_a) { create(:user, name: "Alice \"Rust\" & O'Connor") }
+    let(:author_b) { create(:user, name: "Bob <Systems> Dev") }
+    let(:curator) { create(:user, name: "Curator Jane") }
+
+    before do
+      allow(InlineSvg::IdGenerator::Randomness).to receive(:call).and_return("fixed")
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:community_favorites).and_return(true)
+      allow(FeatureFlag).to receive(:enabled?).with("subscriber_icon").and_return(true)
+      author_a.add_role(:base_subscriber)
+      author_b.add_role(:admin)
+      unless Tag.exists?(name: "discuss")
+        create(:tag, name: "discuss", bg_color_hex: "#1ad643", text_color_hex: "#ffffff")
+      end
+      create(:tag, name: "rust", bg_color_hex: "#dea584", text_color_hex: "#000000") unless Tag.exists?(name: "rust")
+      create(:tag, name: "ruby", bg_color_hex: "#cc342d", text_color_hex: "#ffffff") unless Tag.exists?(name: "ruby")
+      stub_const("FlareTag::FLARE_TAG_IDS_HASH", Tag.where(name: %w[discuss]).pluck(:name, :id).to_h.freeze)
+      RequestStore.store.clear
+    end
+
+    it "matches StoryCardHelper#legacy_render_story_cards byte-for-byte across 1,000 randomized feeds" do
+      rich_article = create(
+        :article,
+        user: author_a,
+        organization: organization,
+        title: "Rewriting <Hot> Story Cards & \"Tag Pills\" in 'Rust'",
+        tags: "discuss, rust, ruby",
+        main_image: "https://s3.amazonaws.com/bucket/cover-image.png",
+        main_image_height: 420,
+        main_image_background_hex_color: "#223344",
+      )
+      create(:context_note, article: rich_article, body_markdown: "Helpful **community** note & context")
+      create(:reaction, reactable: rich_article, user: author_b, category: "like")
+      create(:reaction, reactable: rich_article, user: curator, category: "unicorn")
+      rich_article.update_columns(
+        public_reactions_count: 2,
+        comments_count: 5,
+        reading_time: 6,
+        favorited_by_user_id: curator.id,
+      )
+      rich_article.reload
+
+      long_status_title = (1..10).map do |n|
+        "Line #{n} <tag> & https://www.example.com/very/long/status/path/#{n}"
+      end.join("\n")
+      status_article = create(:article, user: author_b)
+      status_article.update_columns(
+        type_of: "status",
+        title: long_status_title,
+        body_markdown: nil,
+        processed_html: "<p>Status preview with <img src=\"https://media.dev.to/pic.png\" /> &amp; details</p>",
+        comments_count: 0,
+        reading_time: 0,
+        favorited_by_user_id: author_a.id,
+      )
+      status_article.reload
+
+      embed_video_article = create(
+        :article,
+        user: author_a,
+        title: "YouTube Embed & Stream",
+        tags: "ruby",
+      )
+      embed_video_article.update_columns(
+        video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        comments_count: 1,
+        public_reactions_count: 1,
+      )
+      create(:reaction, reactable: embed_video_article, user: author_b, category: "like")
+      embed_video_article.reload
+
+      native_video_article = create(
+        :article,
+        user: author_b,
+        organization: organization,
+        title: "Native Video Upload 'Demo'",
+        tags: "rust",
+      )
+      native_video_article.update_columns(
+        video: "https://dw71fyauz7yz9.cloudfront.net/video-upload/demo.m3u8",
+        video_thumbnail_url: "https://s3.amazonaws.com/bucket/video-thumb.jpg",
+        video_duration_in_seconds: 3725,
+        comments_count: 2,
+        published_at: 2.years.ago,
+        crossposted_at: 1.year.ago,
+      )
+      native_video_article.reload
+      native_video_article.favorited_by_user_id = 999_999_999
+
+      minimal_projection_article = Article
+        .minimal_feed_column_select
+        .find(rich_article.id)
+
+      pool = [
+        rich_article,
+        rich_article.decorate,
+        status_article,
+        embed_video_article,
+        native_video_article.decorate,
+        minimal_projection_article,
+      ]
+
+      discuss_tag_record = Tag.find_by!(name: "discuss")
+      locales = %i[en fr pt]
+      rng = Random.new(202_611_12)
+
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return("media.dev.to")
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("media2.dev.to")
+
+      1_000.times do |iter|
+        chosen_locale = locales.sample(random: rng)
+        I18n.with_locale(chosen_locale) do
+          batch = pool.sample(rng.rand(1..5), random: rng)
+
+          signed_in = rng.rand(2).zero?
+          viewer = [author_a, curator, nil].sample(random: rng)
+          signed_in = false if viewer.nil?
+          feed_pref = %w[basic rich].sample(random: rng)
+          curation_view = rng.rand(3).zero?
+          is_home_feed = rng.rand(2).zero?
+          featured = rng.rand(3).zero?
+          pinned = rng.rand(4).zero?
+          org_index = rng.rand(3).zero?
+          tag_ivar = [nil, "discuss", discuss_tag_record].sample(random: rng)
+
+          RequestStore.store[:user_signed_in] = signed_in
+          view.define_singleton_method(:user_signed_in?) { signed_in }
+          view.define_singleton_method(:current_user) { signed_in ? viewer : nil }
+          view.define_singleton_method(:feed_style_preference) { feed_pref }
+          view.instance_variable_set(:@user, signed_in ? viewer : nil)
+          view.instance_variable_set(:@organization_article_index, org_index)
+          view.instance_variable_set(:@tag, tag_ivar)
+
+          opts = {
+            featured: featured,
+            pinned: pinned,
+            curation_view: curation_view,
+            is_home_feed: is_home_feed
+          }
+          opts[:show_organization] = rng.rand(2).zero? if rng.rand(3).zero?
+          if !featured && rng.rand(4).zero?
+            opts[:featured_for] = ->(s) { s.main_image.present? }
+          end
+
+          native_html = view.__send__(:native_render_story_cards, batch, **opts)
+          legacy_html = view.__send__(:legacy_render_story_cards, batch, **opts)
+
+          expect(native_html).not_to be_nil, "iteration #{iter} (locale=#{chosen_locale}) returned nil"
+          expect(native_html).to eq(legacy_html), "iteration #{iter} (locale=#{chosen_locale}) HTML mismatch"
+        end
+      end
+    end
+
+    it "returns nil for malformed flat buffers and falls back cleanly for non-Article doubles" do
+      static_ctx = view.__send__(:story_card_static_context)
+      expect(described_class.render_story_cards(static_ctx, [], [], [], [])).to be_nil
+      expect(view.__send__(:native_render_story_cards, ["not-an-article"])).to be_nil
     end
   end
 end

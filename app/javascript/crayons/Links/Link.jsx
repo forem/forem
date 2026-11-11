@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import { defaultChildrenPropTypes } from '../../common-prop-types/default-children-prop-types';
-import { Icon } from '@crayons';
+import { Icon } from '@crayons/Icons';
 
 export const Link = (props) => {
   const {

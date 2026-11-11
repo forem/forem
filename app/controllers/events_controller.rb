@@ -39,17 +39,19 @@ class EventsController < ApplicationController
 
   def check_for_page_fallback
     slug = "events/#{params[:event_name_slug]}/#{params[:event_variation_slug]}"
-    @page = Page.from_subforem.find_by(slug: slug) || Page.find_by(slug: slug)
+    subforem_pages = Page.from_subforem
+    @page = subforem_pages.find_by(slug: slug)
+    @page ||= Page.find_by(slug: slug) unless subforem_pages.where_clause.empty?
 
     if @page && FeatureFlag.accessible?(@page.feature_flag_name, current_user)
+      set_surrogate_key_header "show-page-#{@page.slug}"
+
       if @page.redirect_to_url.present?
         redirect_options = { status: :moved_permanently }
         redirect_options[:allow_other_host] = true if @page.redirect_to_url.start_with?("http://", "https://")
         redirect_to @page.redirect_to_url, **redirect_options
         return
       end
-
-      set_surrogate_key_header "show-page-#{@page.slug}"
 
       case @page.template
       when "txt"

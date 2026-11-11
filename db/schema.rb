@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_08_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -838,6 +838,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.datetime "expires_at"
     t.bigint "feed_config_id"
     t.datetime "last_rewarded_at"
+    t.integer "repeat_visits_count", default: 0, null: false
     t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -894,6 +895,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0
     t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"
+    t.index ["targeting_bucket", "feed_success_score"], name: "index_feed_configs_on_active_bucket_and_success_score", order: :desc, where: "(archived = false)"
   end
 
   create_table "feed_event_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1283,6 +1285,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.string "type_of_user", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["organization_id", "type_of_user"], name: "index_org_memberships_on_org_id_and_type_of_user"
     t.index ["invitation_token"], name: "index_organization_memberships_on_invitation_token", unique: true
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
@@ -1860,6 +1863,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["article_id"], name: "index_tag_adjustments_on_article_id"
   end
 
   create_table "tag_subforem_relationships", force: :cascade do |t|
@@ -2186,6 +2190,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.index ["onboarding_subforem_id"], name: "index_users_on_onboarding_subforem_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["score"], name: "index_users_on_score"
+    t.index ["sign_in_token"], name: "index_users_on_sign_in_token", where: "(sign_in_token IS NOT NULL)"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["type_of"], name: "index_users_on_type_of"
     t.index ["username"], name: "index_users_on_username", unique: true

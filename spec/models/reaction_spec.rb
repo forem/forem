@@ -5,12 +5,29 @@ RSpec.describe Reaction do
   let(:article) { create(:article, user: user) }
   let(:reaction) { build(:reaction, reactable: article, user: user) }
 
-  describe "builtin validations" do
-    subject { build(:reaction, reactable: article, user: user) }
+  def create(name, *traits, **options)
+    case name
+    when :user
+      return super(:user, :without_profile, *traits, profile_image: nil, **options)
+    when :article
+      options[:user] ||= user
+      options.reverse_merge!(with_tags: false, with_main_image: false)
+    when :comment
+      options[:commentable] ||= article
+      options[:user] ||= user
+    when :reaction
+      options[:reactable] ||= article
+    end
+    super
+  end
 
+  describe "builtin validations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to validate_inclusion_of(:category).in_array(ReactionCategory.all_slugs.map(&:to_s)) }
-    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
+
+    it "validates uniqueness of user_id scoped to reactable and category" do
+      expect(reaction).to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category])
+    end
   end
 
   describe ".user_has_been_given_too_many_spammy_article_reactions?" do
@@ -46,47 +63,29 @@ RSpec.describe Reaction do
   end
 
   describe "validations" do
-    it "allows like reaction for users without trusted role" do
+    it "validates allowed categories, untrusted negative reactions, and published articles", :aggregate_failures do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id + 1)
+
       reaction.category = "like"
       expect(reaction).to be_valid
-    end
 
-    it "does not allow reactions outside of allowed list" do
-      reaction.category = "woozlewazzle"
-      expect(reaction).not_to be_valid
-    end
+      %w[woozlewazzle vomit thumbsdown].each do |invalid_category|
+        reaction.category = invalid_category
+        expect(reaction).not_to be_valid
+      end
 
-    it "does not allow vomit reaction for users without trusted role" do
-      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id + 1)
-      reaction.category = "vomit"
-      expect(reaction).not_to be_valid
-    end
-
-    it "does not allow thumbsdown reaction for users without trusted role" do
-      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id + 1)
-      reaction.category = "thumbsdown"
-      expect(reaction).not_to be_valid
-    end
-
-    it "does not allow reaction on unpublished article" do
-      reaction = build(:reaction, user: user, reactable: article)
-      expect(reaction).to be_valid
       article.update_column(:published, false)
-      reaction = build(:reaction, user: user, reactable: article)
-      expect(reaction).not_to be_valid
+      expect(build(:reaction, user: user, reactable: article)).not_to be_valid
     end
 
     context "when user is trusted" do
       before { reaction.user.add_role(:trusted) }
 
-      it "allows vomit reactions for users with trusted role" do
-        reaction.category = "vomit"
-        expect(reaction).to be_valid
-      end
-
-      it "allows thumbsdown reactions for users with trusted role" do
-        reaction.category = "thumbsdown"
-        expect(reaction).to be_valid
+      it "allows vomit and thumbsdown reactions for users with trusted role", :aggregate_failures do
+        %w[vomit thumbsdown].each do |category|
+          reaction.category = category
+          expect(reaction).to be_valid
+        end
       end
     end
   end
@@ -108,21 +107,21 @@ RSpec.describe Reaction do
       user_id = User.maximum(:id).to_i + 1
       reaction.user_id = user_id
       reaction.reactable.user_id = user_id
-      expect(reaction.skip_notification_for?(user)).to be(true)
+      expect(reaction.skip_notification_for?(receiver)).to be(true)
     end
 
     it "is true for inavlidated reactions" do
       reaction.status = "invalid"
-      expect(reaction.skip_notification_for?(user)).to be(true)
+      expect(reaction.skip_notification_for?(receiver)).to be(true)
     end
 
     it "is true when the reaction is a bookmark" do
       reaction.category = "readinglist"
-      expect(reaction.skip_notification_for?(user)).to be(true)
+      expect(reaction.skip_notification_for?(receiver)).to be(true)
     end
 
     context "when reactable is a user" do
-      let(:user) { create(:user) }
+      let(:user) { build_stubbed(:user) }
       let(:reaction) { build(:reaction, reactable: user, user: nil) }
 
       it "returns true if the reactable is the user that reacted" do
@@ -131,7 +130,7 @@ RSpec.describe Reaction do
       end
 
       it "returns false if the reactable is not the user that reacted" do
-        reaction.user_id = create(:user).id
+        reaction.user_id = build_stubbed(:user).id
         expect(reaction.skip_notification_for?(receiver)).to be(false)
       end
     end
@@ -255,27 +254,17 @@ RSpec.describe Reaction do
   context "when callbacks are called before destroy" do
     let!(:reaction) { create(:reaction, reactable: article, user: user) }
 
-    it "enqueues a ScoreCalcWorker on article reaction destroy" do
+    it "enqueues ScoreCalcWorker, updates reactable, and busts reactable and article caches", :aggregate_failures do
+      allow(Reactions::UpdateRelevantScoresWorker).to receive(:perform_async)
+      allow(reaction).to receive(:bust_reactable_cache_without_delay).and_call_original
+      allow(EdgeCache::BustArticle).to receive(:call)
+
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
         reaction.destroy
       end
-    end
 
-    it "updates reactable with delay" do
-      allow(Reactions::UpdateRelevantScoresWorker).to receive(:perform_async)
-      reaction.destroy
       expect(Reactions::UpdateRelevantScoresWorker).to have_received(:perform_async)
-    end
-
-    it "busts reactable cache without delay" do
-      allow(reaction).to receive(:bust_reactable_cache_without_delay)
-      reaction.destroy
       expect(reaction).to have_received(:bust_reactable_cache_without_delay)
-    end
-
-    it "busts article if it is the last public reaction" do
-      allow(EdgeCache::BustArticle).to receive(:call)
-      reaction.destroy
       expect(EdgeCache::BustArticle).to have_received(:call)
     end
 
@@ -385,109 +374,38 @@ RSpec.describe Reaction do
   end
 
   describe "cache invalidation" do
-    let(:article) { create(:article) }
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
-
-    before do
-      # Create initial reactions to populate cache
-      create(:reaction, reactable: article, category: "like", user: user1)
-      create(:reaction, reactable: article, category: "unicorn", user: user2)
-    end
-
-    it "invalidates reaction_counts_for_reactable cache on create" do
+    it "calls bust_reaction_counts_cache and invalidates reaction_counts_for_reactable cache on create, update, and destroy", # rubocop:disable Layout/LineLength
+       :aggregate_failures do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
       cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
-      # Ensure cache exists
-      article.public_reaction_categories
-      cache_existed = Rails.cache.exist?(cache_key)
-      
-      # Create a new reaction
-      if cache_existed
-        expect do
-          create(:reaction, reactable: article, category: "fire", user: user1)
-        end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
-      else
-        # If cache doesn't exist, just verify the reaction is created
-        expect do
-          create(:reaction, reactable: article, category: "fire", user: user1)
-        end.to change { article.reactions.count }.by(1)
-      end
-    end
+      like_reaction = create(:reaction, reactable: article, category: "like", user: user)
 
-    it "invalidates reaction_counts_for_reactable cache on destroy" do
-      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
-      # Ensure cache exists
       article.public_reaction_categories
-      cache_existed = Rails.cache.exist?(cache_key)
-      
-      # Destroy a reaction
-      reaction = article.reactions.find_by(category: "like", user: user1)
-      if cache_existed
-        expect do
-          reaction.destroy
-        end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
-      else
-        # If cache doesn't exist, just verify the reaction is destroyed
-        expect do
-          reaction.destroy
-        end.to change { article.reactions.count }.by(-1)
-      end
-    end
+      expect(Rails.cache.exist?(cache_key)).to be(true)
 
-    it "invalidates reaction_counts_for_reactable cache on update" do
-      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
-      # Ensure cache exists
+      fire_reaction = build(:reaction, reactable: article, category: "fire", user: user)
+      allow(fire_reaction).to receive(:bust_reaction_counts_cache).and_call_original
+      expect do
+        fire_reaction.save!
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
+      expect(fire_reaction).to have_received(:bust_reaction_counts_cache)
+
       article.public_reaction_categories
-      cache_existed = Rails.cache.exist?(cache_key)
-      
-      # Update a reaction
-      reaction = article.reactions.find_by(category: "like", user: user1)
-      if cache_existed
-        expect do
-          reaction.update!(category: "fire")
-        end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
-      else
-        # If cache doesn't exist, just verify the reaction is updated
-        expect do
-          reaction.update!(category: "fire")
-        end.to change { reaction.reload.category }.from("like").to("fire")
-      end
-    end
+      expect do
+        like_reaction.update!(category: "unicorn")
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
 
-    it "calls bust_reaction_counts_cache method" do
-      reaction = build(:reaction, reactable: article, category: "fire", user: user1)
-      
-      expect(reaction).to receive(:bust_reaction_counts_cache).and_call_original
-      reaction.save!
-    end
-
-    it "bust_reaction_counts_cache deletes the correct cache key" do
-      cache_key = "reaction_counts_for_reactable-Article-#{article.id}"
-      
-      # Populate cache
       article.public_reaction_categories
-      cache_existed = Rails.cache.exist?(cache_key)
-      
-      # Create reaction which should bust cache
-      create(:reaction, reactable: article, category: "fire", user: user1)
-      
-      # Cache should be deleted if it existed
-      if cache_existed
-        expect(Rails.cache.exist?(cache_key)).to be false
-      else
-        # If cache didn't exist, that's also acceptable
-        expect(Rails.cache.exist?(cache_key)).to be false
-      end
+      expect do
+        like_reaction.destroy
+      end.to change { Rails.cache.exist?(cache_key) }.from(true).to(false)
     end
   end
 
   describe "#enqueue_article_activity_update callback" do
     it "enqueues with action=create and the reaction payload on create" do
       allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
-      reaction = create(:reaction, reactable: article, user: user, category: "like")
+      create(:reaction, reactable: article, user: user, category: "like")
       expect(Articles::UpdateArticleActivityWorker)
         .to have_received(:perform_async)
         .with(article.id, "reaction", "create",
@@ -514,7 +432,7 @@ RSpec.describe Reaction do
   describe "update user interest embedding" do
     it "enqueues the worker when a public reaction is created on an article" do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
-      reaction = create(:reaction, reactable: article, user: user, category: "like")
+      create(:reaction, reactable: article, user: user, category: "like")
       expect(UpdateUserInterestEmbeddingWorker).to have_received(:perform_async).with(user.id, article.id, 0.2)
     end
 
@@ -566,11 +484,44 @@ RSpec.describe Reaction do
       expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
     end
 
+    it "does not enqueue the worker when a non-readinglist reaction is destroyed" do
+      like_reaction = create(:reaction, reactable: article, user: user, category: "like")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      like_reaction.destroy
+      expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
+    end
+
     it "does not enqueue the worker for non-article reactables" do
       comment = create(:comment, commentable: article, user: user)
       allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
       create(:reaction, reactable: comment, user: user, category: "readinglist")
       expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "when destroyed via reactable association" do
+    let(:reactor) { create(:user) }
+
+    before do
+      create(:reaction, reactable: article, user: reactor, category: "like")
+    end
+
+    it "skips reactable cache busting and article activity workers" do
+      allow(Reactions::BustReactableCacheWorker).to receive(:new)
+      allow(Reactions::BustHomepageCacheWorker).to receive(:perform_async)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+
+      article.destroy!
+
+      expect(Reactions::BustReactableCacheWorker).not_to have_received(:new)
+      expect(Reactions::BustHomepageCacheWorker).not_to have_received(:perform_async)
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+
+    it "decrements the reactor user reactions_count without failing on drifted article public_reactions_count" do
+      article.update_columns(public_reactions_count: 0)
+
+      expect { article.destroy! }.to change { reactor.reload.reactions_count }.by(-1)
     end
   end
 end

@@ -66,7 +66,7 @@
       </div>
     </div>
   </main>
-  <%= javascript_include_tag "subscribeButton", defer: true %>
+  <%= javascript_include_tag "subscribeButton", "CommentTextArea/CommentTextArea", defer: true, onerror: "this.remove()" %>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

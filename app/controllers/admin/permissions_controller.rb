@@ -3,15 +3,21 @@ module Admin
     layout "admin"
 
     def index
-      @users = User.with_role(:admin)
-        .union(User.with_role(:super_admin))
-        .union(User.with_role(:single_resource_admin, :any))
-        .page(params[:page])
-        .per(50)
+      role_ids = admin_role_ids
+      @users = if role_ids.empty?
+                 User.none.page(params[:page]).per(50)
+               else
+                 User.where(id: UserRole.where(role_id: role_ids).select(:user_id))
+                   .select(:id, :username, :profile_image)
+                   .preload(:roles)
+                   .order(:id)
+                   .page(params[:page])
+                   .per(50)
+               end
     end
 
     def grant
-      user = User.find_by(username: params[:username].to_s.gsub("@", "").strip)
+      user = User.find_by(username: params[:username].to_s.delete("@").strip)
       role_parts = params[:role_name].to_s.split("|")
       role_name = role_parts[0]
       resource_type = role_parts[1]
@@ -58,6 +64,14 @@ module Admin
       end
 
       redirect_to admin_permissions_path, status: :see_other
+    end
+
+    private
+
+    def admin_role_ids
+      Role.where(name: %w[admin super_admin], resource_type: nil, resource_id: nil)
+        .or(Role.where(name: "single_resource_admin"))
+        .ids
     end
   end
 end

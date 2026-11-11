@@ -9,7 +9,7 @@ module Tags
 
     def perform
       Tag.supported.find_each(&:save)
-      Subforem.find_each(&:update_scores!)
+      Subforem.find_each(&:update_scores!) unless Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
     end
   end
 end

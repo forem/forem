@@ -34,7 +34,7 @@ class Article < ApplicationRecord
   # admin_update was added as a hack to bypass published_at validation when admin is updating
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
-  attr_accessor :publish_under_org, :admin_update
+  attr_accessor :publish_under_org, :admin_update, :skip_autovomits
   attr_writer :series, :labels
   attr_accessor :body_url
 
@@ -346,6 +346,7 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_save :detect_language
+  before_save :reserve_hourly_mention_capacity
   before_create :create_password
   after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
   after_update :withdraw_pending_co_author_invitations, if: lambda {
@@ -356,11 +357,13 @@ class Article < ApplicationRecord
   }
   before_destroy :before_destroy_actions, prepend: true
 
+  after_save :commit_hourly_mention_reservation
   after_save :create_conditional_autovomits
   after_save :bust_cache
   after_save :collection_cleanup
   after_save :generate_social_image
   after_save :generate_context_notes
+  after_rollback :release_hourly_mention_reservation
 
   after_update_commit :notify_co_author_changes, if: proc { |article|
     article.published? && article.saved_change_to_co_author_ids?
@@ -544,14 +547,17 @@ class Article < ApplicationRecord
   end
 
   scope :from_subforem, lambda { |subforem_id = nil|
-    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+    return where(nil) if Subforem.disabled_by_env?
 
     subforem_id ||= RequestStore.store[:subforem_id]
-    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+    default_subforem_id = RequestStore.store[:default_subforem_id]
+    if subforem_id.nil? && default_subforem_id.nil? && Subforem.cached_default_id.nil?
+      where(nil)
+    elsif subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # Includes articles with no subforem or subforem_id in Subforem.cached_discoverable_ids
       where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil] + Subforem.cached_discoverable_ids)
-    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+    elsif [0, default_subforem_id].include?(subforem_id.to_i)
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, default_subforem_id.to_i])
     else
       # where(subforem_id: subforem_id)
       where("articles.subforem_id = ?", subforem_id)
@@ -568,14 +574,15 @@ class Article < ApplicationRecord
   }
 
   def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 1.hour)
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env?
     cache_key = [
       "admin-published-with",
       tag_name,
-      subforem_id || "all",
+      effective_subforem_id || "all",
     ].join(":")
 
     Rails.cache.fetch(cache_key, expires_in: expires_in) do
-      scope = subforem_id ? from_subforem(subforem_id) : all
+      scope = effective_subforem_id ? from_subforem(effective_subforem_id) : all
       scope.admin_published_with(tag_name).first
     end
   end
@@ -687,7 +694,7 @@ class Article < ApplicationRecord
 
   scope :with_video, lambda {
                        published
-                         .where.not(video: [nil, ""])
+                         .where("articles.video > ''")
                          .where("score > ?", -4)
                      }
 
@@ -1821,15 +1828,80 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
   end
 
+  # Validates per-article and hourly @-mention rate limits based on the author's trust tier.
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= Settings::RateLimit.mention_creation
+    if mentions_count > Settings::RateLimit.mention_creation
+      errors.add(:base,
+                 I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+      return
+    end
 
-    errors.add(:base,
-               I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+    return unless mentions_count.positive? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    max_for_user = user.rate_limiter.max_mentions_per_post
+    if other_mentioned_usernames.size > max_for_user
+      errors.add(:base, I18n.t("models.article.mention_too_many", count: max_for_user))
+      return
+    end
+
+    return unless published?
+    return unless user.rate_limiter.mention_rate_limit_reached?(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+
+    errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
+  end
+
+  # Atomically reserves hourly mention capacity under a user lock before saving a published article.
+  def reserve_hourly_mention_capacity
+    @hourly_mention_reservation = nil
+    return unless published?
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+    return unless processed_html.present? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    reservation = user.rate_limiter.reserve_mentions!(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+    if reservation.nil?
+      errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
+      throw(:abort)
+    end
+
+    @hourly_mention_reservation = reservation
+  end
+
+  # Records the article's persisted ID against the hourly mention cache after save.
+  def commit_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.record_notifiable_mentions(self, @hourly_mention_reservation[:count])
+    @hourly_mention_reservation = nil
+  end
+
+  # Releases any reserved hourly mention capacity if the save transaction rolls back.
+  def release_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.release_mentions(@hourly_mention_reservation, notifiable: self)
+    @hourly_mention_reservation = nil
   end
 
   def create_slug
@@ -1901,7 +1973,7 @@ class Article < ApplicationRecord
 
   def bust_cache(destroying: false)
     purge
-    async_bust
+    async_bust(destroying: destroying)
     touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
@@ -1934,18 +2006,43 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
+    return if skip_autovomits
     return unless published
-    return unless saved_change_to_body_markdown? ||
-                  saved_change_to_title? ||
-                  saved_change_to_published? ||
-                  published_at > 1.minute.ago
+    content_or_initial_publish_changed =
+      saved_change_to_body_markdown? ||
+      saved_change_to_title? ||
+      saved_change_to_published? ||
+      (published_at.present? && published_at > 1.minute.ago && !scheduled? && no_moderation_label?)
+    return unless content_or_initial_publish_changed
 
     # Enqueue after commit so the worker sees the saved article (and its published state).
     ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
-  def async_bust
-    Articles::BustCacheWorker.perform_async(id)
+  def async_bust(destroying: false)
+    if destroying
+      enqueue_deleted_article_cache_bust
+    else
+      Articles::BustCacheWorker.perform_async(id)
+    end
+  end
+
+  def enqueue_deleted_article_cache_bust
+    delay = BustCacheBaseWorker::AFTER_COMMIT_DELAY
+    Articles::BustDeletedArticleCacheWorker.perform_in(
+      delay,
+      Articles::BustDeletedArticleCacheWorker.attributes_for(self),
+    )
+    return unless published && (in_home_page_hot_articles? || decorate.discussion?)
+
+    EdgeCache::PurgeByKeyWorker.perform_in(delay, *Users::DeleteArticles::HOME_PAGE_PURGE_ARGS)
+  end
+
+  def in_home_page_hot_articles?
+    self.class.published.order(hotness_score: :desc)
+      .limit(Users::DeleteArticles::HOME_PAGE_ARTICLES_COUNT)
+      .ids
+      .include?(id)
   end
 
   def touch_collection
@@ -2106,7 +2203,9 @@ class Article < ApplicationRecord
     return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
     return unless admin_published_user?
 
-    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    if subforem_id.present?
+      self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    end
     self.class.bust_cached_admin_published_with("welcome")
   end
 

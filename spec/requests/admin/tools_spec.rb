@@ -85,4 +85,32 @@ RSpec.describe "/admin/advanced/tools" do
       end
     end
   end
+
+  describe "POST /admin/advanced/tools/bust_cache" do
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:target_user) { create(:user) }
+
+    before { sign_in super_admin }
+
+    it "uses URL cache busting for manual dead_link purges" do
+      allow(EdgeCache::Bust).to receive(:call)
+
+      post bust_cache_admin_tools_path, params: { dead_link: "/removed-post" }
+
+      expect(EdgeCache::Bust).to have_received(:call).with(
+        ["/removed-post", "/removed-post/", "/removed-post?i=i", "/removed-post/?i=i"],
+      )
+      expect(response).to redirect_to(admin_tools_path)
+    end
+
+    it "uses EdgeCache::BustUser for user cache purges" do
+      target_user
+      allow(EdgeCache::BustUser).to receive(:call)
+
+      post bust_cache_admin_tools_path, params: { bust_user: target_user.id.to_s }
+
+      expect(EdgeCache::BustUser).to have_received(:call).with(target_user)
+      expect(response).to redirect_to(admin_tools_path)
+    end
+  end
 end

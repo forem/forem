@@ -50,11 +50,22 @@ RSpec.describe "Better Stack initializer" do # rubocop:disable RSpec/DescribeCla
     expect(Logtail.config.logger).to be(rails_logger.broadcasts.last)
     expect(Logtail::Integrations::ActionController).not_to be_enabled
     expect(Logtail::Integrations::Rails::ErrorEvent).not_to be_enabled
-    expect(Rails.application.config.middleware).to have_received(:insert_after)
-      .with(ActionDispatch::RequestId, Betterstack::RequestContext)
     user = instance_double(User, id: 7, name: "Ada", email: "ada@example.com")
     env = { "warden" => instance_double(Warden::Proxy, user: user) }
     expect(Logtail::Integrations::Rack::UserContext.custom_user_hash.call(env)).to eq(id: 7)
+  end
+
+  it "disables redundant context middlewares and does not hydrate an unloaded Warden user" do
+    load initializer_path
+
+    expect(Logtail::Integrations::Rails::SessionContext).not_to be_enabled
+    expect(Logtail::Integrations::Rack::HTTPContext).not_to be_enabled
+    expect(Logtail::Integrations::Rack::UserContext).not_to be_enabled
+
+    unloaded_warden = Warden::Proxy.new({}, Warden::Manager.new(->(_) { [200, {}, []] }))
+    allow(unloaded_warden).to receive(:user)
+    expect(Logtail::Integrations::Rack::UserContext.custom_user_hash.call("warden" => unloaded_warden)).to be_nil
+    expect(unloaded_warden).not_to have_received(:user)
   end
 
   it "keeps exceptions Rails rescues into responses out of Better Stack, but on stdout" do

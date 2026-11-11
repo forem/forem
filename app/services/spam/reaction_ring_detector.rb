@@ -75,11 +75,31 @@ module Spam
       # any_admin? check reads them in memory instead of a COUNT query per member.
       potential_ring_members.each_slice(100).flat_map do |members|
         member_users = User.includes(:roles).where(id: members.map(&:id)).index_by(&:id)
-        members.select do |member|
+        eligible_members = members.filter_map do |member|
           member_user = member_users.fetch(member.id) { User.find(member.id) }
-          meets_ring_criteria?(member, member_user, shared_author_ids)
+          next if member_user.any_admin? || member_user.trusted?
+
+          [member, member_user]
+        end
+        reacted_authors_by_user = reacted_author_ids_for_users(eligible_members.map { |member, _| member.id })
+
+        eligible_members.filter_map do |member, member_user|
+          member if meets_ring_criteria?(member, member_user, shared_author_ids, reacted_authors_by_user[member.id])
         end
       end
+    end
+
+    def reacted_author_ids_for_users(user_ids)
+      return {} if user_ids.empty?
+
+      Reaction.public_category
+        .only_articles
+        .where(user_id: user_ids, created_at: 3.months.ago..)
+        .joins("JOIN articles ON reactions.reactable_id = articles.id")
+        .pluck(:user_id, Arel.sql("articles.user_id"))
+        .each_with_object(Hash.new { |h, k| h[k] = [] }) do |(reactor_id, author_id), by_user|
+          by_user[reactor_id] << author_id
+        end
     end
 
     def reacted_author_ids_for(member_user)
@@ -125,12 +145,12 @@ module Spam
           .select("users.id, COUNT(DISTINCT articles.user_id) as shared_author_count")
     end
 
-    def meets_ring_criteria?(member, member_user, shared_author_ids)
+    def meets_ring_criteria?(member, member_user, shared_author_ids, member_reactions = nil)
       # Skip admin and trusted users
       return false if member_user.any_admin? || member_user.trusted?
 
       # Get this member's recent reactions
-      member_reactions = reacted_author_ids_for(member_user)
+      member_reactions ||= reacted_author_ids_for(member_user)
 
       # Calculate concentration of reactions to shared authors
       shared_author_reactions = member_reactions.count { |author_id| shared_author_ids.include?(author_id) }

@@ -15,21 +15,26 @@ module Articles
       ".podcastliquidtag img", # PodcastTag
     ].join(", ").freeze
 
-    def self.call(article) # rubocop:disable Metrics/PerceivedComplexity
+    # Enriches <img> tags in article.processed_html with width, height, and
+    # data-animated attributes and computes article.main_image_height.
+    def self.call(article)
       fast_image_headers = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
       store_image_if_appropriate(article)
-      parsed_html = Nokogiri::HTML.fragment(article.processed_html)
-      main_image_height = default_image_height
-
-      # we ignore images contained in liquid tags as they are not animated
-      images = parsed_html.css("img") - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)
+      processed_html = article.processed_html
+      parsed_html, images = extract_enrichable_images(processed_html)
       return unless images.any? || article.main_image
 
       images.each do |img|
         src = img.attr("src")
-        next unless src
+        next if src.blank?
 
-        image = if URI.parse(src).relative?
+        begin
+          parsed_src = URI.parse(src)
+        rescue URI::InvalidURIError
+          next
+        end
+
+        image = if parsed_src.relative?
                   retrieve_image_from_uploader_store(src)
                 else
                   src
@@ -42,15 +47,45 @@ module Articles
         img["data-animated"] = true if img_properties.type == :gif
       end
 
-      if article.main_image&.include?("ytimg.com")
-        main_image_height = 500 # Hardcoded for 1000/500
-      elsif article.main_image && Settings::UserExperience.cover_image_fit(subforem_id: article.subforem_id) == "limit"
+      updated_html = images.any? ? parsed_html.to_html : processed_html
+      article.update_columns(
+        processed_html: updated_html,
+        main_image_height: resolve_main_image_height(article, fast_image_headers),
+      )
+    end
+
+    def self.resolve_main_image_height(article, fast_image_headers)
+      return 500 if article.main_image&.include?("ytimg.com") # Hardcoded for 1000/500
+
+      if article.main_image && Settings::UserExperience.cover_image_fit(subforem_id: article.subforem_id) == "limit"
         main_image_size = FastImage.size(article.main_image, timeout: 15, http_header: fast_image_headers)
-        main_image_height = (main_image_size[1].to_f / main_image_size[0]) * 1000 if main_image_size
+        return (main_image_size[1].to_f / main_image_size[0]) * 1000 if main_image_size
       end
 
-      article.update_columns(processed_html: parsed_html.to_html, main_image_height: main_image_height)
+      default_image_height
     end
+    private_class_method :resolve_main_image_height
+
+    def self.extract_enrichable_images(processed_html)
+      return [nil, []] unless processed_html&.match?(/<img/i)
+
+      parsed_html = Nokogiri::HTML.fragment(processed_html)
+      all_images = parsed_html.css("img")
+      # we ignore images contained in liquid tags as they are not animated
+      images = if all_images.any? && may_contain_liquid_tag_images?(processed_html)
+                 all_images - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)
+               else
+                 all_images
+               end
+      [parsed_html, images]
+    end
+    private_class_method :extract_enrichable_images
+
+    def self.may_contain_liquid_tag_images?(html)
+      html.include?("ltag") || html.include?("liquid-comment") ||
+        html.include?("podcastliquidtag") || html.include?("&")
+    end
+    private_class_method :may_contain_liquid_tag_images?
 
     def self.retrieve_image_from_uploader_store(src)
       filename = File.basename(src)
@@ -73,21 +108,25 @@ module Articles
     end
     private_class_method :default_image_height
 
+    # Extracts external images from article.body_markdown, stores them in
+    # MediaStore, and re-renders the article's processed_html when new images are stored.
     def self.store_image_if_appropriate(article)
-      return if ApplicationConfig["AWS_BUCKET_NAME"].blank?
+      bucket = ApplicationConfig["AWS_BUCKET_NAME"]
+      return if bucket.blank?
 
-      markdown_text = article.body_markdown
-      markdown_pattern = /!\[.*?\]\((.*?)\)/
-      html_pattern = /<img.*?src=["'](.*?)["']/
-      markdown_urls = markdown_text.scan(markdown_pattern).flatten
-      html_urls = markdown_text.scan(html_pattern).flatten
-      all_urls = markdown_urls + html_urls
-      stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
-      filtered_urls = all_urls.reject { |url| url.include?(stored_image_url) }
+      markdown_text = article.body_markdown.to_s
+      return if markdown_text.blank?
+
+      stored_image_url = "https://#{bucket}.s3.amazonaws.com"
+      raw_urls = ForemNative.extract_markdown_and_html_image_urls(markdown_text, stored_image_url) ||
+        legacy_extract_image_urls(markdown_text, stored_image_url)
+      filtered_urls = ArticleImageUploader.normalize_external_image_urls(raw_urls, bucket)
+      return if filtered_urls.empty?
+
       images_converted = []
-      filtered_urls.uniq.each do |url|
+      filtered_urls.each do |url|
         store = MediaStore.where(original_url: url).first_or_create
-        images_converted << store.output_url if store&.created_at&.> 1.minute.ago
+        images_converted << store.output_url if store&.persisted? && store.created_at&.after?(1.minute.ago)
       rescue StandardError => e
         Rails.logger.error("Error storing images: #{e.message}")
       end
@@ -97,5 +136,15 @@ module Articles
       Rails.logger.error("Error storing images: #{e.message}")
     end
     private_class_method :store_image_if_appropriate
+
+    def self.legacy_extract_image_urls(markdown_text, stored_image_url)
+      markdown_pattern = /!\[.*?\]\((.*?)\)/
+      html_pattern = /<img.*?src=["'](.*?)["']/
+      markdown_urls = markdown_text.scan(markdown_pattern).flatten
+      html_urls = markdown_text.scan(html_pattern).flatten
+      all_urls = markdown_urls + html_urls
+      all_urls.reject { |url| url.include?(stored_image_url) }.uniq
+    end
+    private_class_method :legacy_extract_image_urls
   end
 end

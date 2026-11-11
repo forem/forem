@@ -9,9 +9,10 @@ module Ai
   # holistic YES/NO prompt is replaced by narrow TypeSafe Noul questions combined by the
   # explicit policy in #spam_from_jev?.
   class CommentCheck
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :comment_spam_check
 
     # Jev policy thresholds: act only on clear spam. Validate against labeled outcomes.
@@ -77,6 +78,7 @@ module Ai
         post: { title: post.title, body: post.body_markdown.to_s.truncate(1_500) },
         comment: @comment.body_markdown.to_s.truncate(4_000)
       }
+      state[:community] = { description: community_description } if community_description.present?
       state[:author_recent_comments] = recent_comments if recent_comments.any?
       state
     end
@@ -141,6 +143,10 @@ module Ai
         .map { |c| c.body_markdown.to_s.first(1_000) }
     end
 
+    def community_description
+      @community_description ||= resolve_community_description(@comment.commentable.try(:subforem_id))
+    end
+
     # --- Gemini ---
 
     ##
@@ -150,6 +156,18 @@ module Ai
       user_history = @comment.user.comments.last(10).map.with_index(1) do |c, i|
         "Comment #{i}: \"#{c.body_markdown.first(1_000)}\""
       end.join("\n")
+
+      community_context_section = if community_description.present?
+                                    <<~COMMUNITY
+                                      0.  **Community Context**:
+                                          ---
+                                          #{community_description}
+                                          ---
+
+                                    COMMUNITY
+                                  else
+                                    ""
+                                  end
 
       <<~PROMPT
         Analyze the following comment for spam. Your answer must be a single word: YES or NO.
@@ -164,7 +182,7 @@ module Ai
 
         Here is the context:
 
-        1.  **The Parent Content Post** (The post the comment was left in reply to):
+        #{community_context_section}1.  **The Parent Content Post** (The post the comment was left in reply to):
             ---
             Title: #{@comment.commentable.title}
             Body#{'(truncated)' if @comment.commentable.body_markdown.size > 1500}: #{@comment.commentable.body_markdown.first(1_500)}

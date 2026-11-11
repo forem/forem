@@ -1,8 +1,7 @@
-import { h, Fragment } from 'preact';
+import { h, Fragment, render } from 'preact';
 import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
-import { createPopup } from '@picmo/popup-picker';
-import { addSnackbarItem } from '../../Snackbar';
+import { createRootFragment } from '../../shared/preact/preact-root-fragment';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import {
   handleImageUploading,
@@ -27,6 +26,7 @@ import Templates from '@images/templates.svg';
 import EmojiIcon from '@images/emoji.svg';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
+import { loadEmojiPopupPicker } from '@utilities/emojiPickerLoader';
 import { gatherPriorityUserIds } from '../../shared/helpers/contextUsers';
 
 const getClosestTemplatesContainer = (element) =>
@@ -81,25 +81,35 @@ const replacePlaceholder = (textArea, searchPattern, replaceWith) => {
 const EmojiPickerButton = ({ textAreaId }) => {
   const pickerRef = useRef(null);
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
+    const triggerEl = e.currentTarget;
     if (!pickerRef.current) {
-      pickerRef.current = createPopup({}, {
-        referenceElement: e.currentTarget,
-        triggerElement: e.currentTarget,
-        position: 'bottom-start',
-        className: 'c-emoji-popup'
-      });
-      pickerRef.current.addEventListener('emoji:select', (event) => {
-        pickerRef.current.close();
-        const liveTextArea = document.getElementById(textAreaId);
-        if (liveTextArea) {
-          // 50ms timeout ensures Picmo removes any active focus traps prior to insertion
-          setTimeout(() => {
-            insertTextAtCursor(liveTextArea, event.emoji);
-          }, 50);
-        }
-      });
+      const createPopup = await loadEmojiPopupPicker();
+      if (!createPopup) {
+        return;
+      }
+      if (!pickerRef.current) {
+        pickerRef.current = createPopup(
+          {},
+          {
+            referenceElement: triggerEl,
+            triggerElement: triggerEl,
+            position: 'bottom-start',
+            className: 'c-emoji-popup',
+          },
+        );
+        pickerRef.current.addEventListener('emoji:select', (event) => {
+          pickerRef.current.close();
+          const liveTextArea = document.getElementById(textAreaId);
+          if (liveTextArea) {
+            // 50ms timeout ensures Picmo removes any active focus traps prior to insertion
+            setTimeout(() => {
+              insertTextAtCursor(liveTextArea, event.emoji);
+            }, 50);
+          }
+        });
+      }
     }
     pickerRef.current.toggle();
   };
@@ -213,3 +223,25 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
     </div>
   );
 };
+
+export const renderCommentTextArea = (originalTextArea) => {
+  const parentContainer = originalTextArea?.parentElement;
+  if (
+    !parentContainer ||
+    !originalTextArea.isConnected ||
+    parentContainer.classList.contains('c-autocomplete')
+  ) {
+    return;
+  }
+
+  render(
+    <CommentTextArea vanillaTextArea={originalTextArea} />,
+    createRootFragment(parentContainer, originalTextArea),
+  );
+};
+
+if (typeof window !== 'undefined') {
+  window.Forem = window.Forem || {};
+  window.Forem.CommentTextArea = CommentTextArea;
+  window.Forem.renderCommentTextArea = renderCommentTextArea;
+}

@@ -20,7 +20,11 @@ class CommentsController < ApplicationController
     skip_authorization
     @comment = Comment.new
 
-    @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
+    # The permalink page never reads the root comment's ~3KB TOASTed semantic_embedding vector
+    if params[:id_code].present?
+      @root_comment = Comment.select(Comment.column_names - Comments::Tree::UNRENDERED_COLUMNS)
+        .find(params[:id_code].to_i(26))
+    end
     preload_root_article if @root_comment
     redirect_if_different_subforem if @root_comment
 

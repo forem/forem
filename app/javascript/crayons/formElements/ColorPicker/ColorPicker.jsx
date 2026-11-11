@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { initializeDropdown } from '@utilities/dropdownUtils';
-import { ButtonNew as Button } from '@crayons';
+import { ButtonNew as Button } from '@crayons/Buttons';
 
 const convertThreeCharHexToSix = (hex) => {
   const r = hex.charAt(1);

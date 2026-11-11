@@ -22,6 +22,7 @@ RSpec.describe "PageViews" do
       it "creates a new page view", :aggregate_failures do
         page_views_post(article_id: article.id)
 
+        expect(request.session_options[:skip]).to be(true)
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(1)
         expect(user.reload.page_views.size).to eq(1)
@@ -54,14 +55,19 @@ RSpec.describe "PageViews" do
         expect(PageView.last.region).to eq("US-NY")
       end
 
-      it "sends Algolia insight event" do
+      it "sends Algolia insight event asynchronously via TrackEventWorker", :aggregate_failures do
         article = create(:article)
         # Set up the expectation before making the request
         algolia_service_instance = instance_double(AlgoliaInsightsService)
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
 
-        post "/page_views", params: { article_id: article.id }
+        sidekiq_assert_enqueued_jobs(1, only: AlgoliaInsights::TrackEventWorker) do
+          post "/page_views", params: { article_id: article.id }
+        end
+        expect(algolia_service_instance).not_to have_received(:track_event)
+
+        sidekiq_perform_enqueued_jobs(only: AlgoliaInsights::TrackEventWorker)
 
         expect(algolia_service_instance).to have_received(:track_event).with(
           "view",
@@ -71,11 +77,11 @@ RSpec.describe "PageViews" do
           "Article_#{Rails.env}",
           instance_of(Integer),
           nil,
-          nil
+          nil,
         )
       end
 
-      it "Does not send an Algolia event if Algolia setting not present" do
+      it "Does not send an Algolia event if Algolia setting not present", :aggregate_failures do
         allow(Settings::General).to receive(:algolia_application_id).and_return(nil)
         article = create(:article)
         # Set up the expectation before making the request
@@ -83,7 +89,9 @@ RSpec.describe "PageViews" do
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
 
-        post "/page_views", params: { article_id: article.id }
+        sidekiq_assert_no_enqueued_jobs(only: AlgoliaInsights::TrackEventWorker) do
+          post "/page_views", params: { article_id: article.id }
+        end
 
         expect(algolia_service_instance).not_to have_received(:track_event)
       end
@@ -178,6 +186,7 @@ RSpec.describe "PageViews" do
 
         put "/page_views/#{article.id}"
 
+        expect(request.session_options[:skip]).to be(true)
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
       end
 

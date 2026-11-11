@@ -92,6 +92,23 @@ RSpec.describe "Api::V1::Users" do
       response_user = response.parsed_body
       expect(response_user["badge_ids"]).to eq(badge_ids)
     end
+
+    it "hydrates joined profile and setting attributes without extra queries" do
+      user.setting.update_column(:display_email_on_profile, true)
+      api_secret
+
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get api_user_path("by_username"), params: { url: user.username }, headers: auth_headers
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["email"]).to eq(user.email)
+      expect(queries.grep(/FROM "profiles"/i)).to be_empty
+      expect(queries.grep(/FROM "users_settings"/i)).to be_empty
+    end
   end
 
   describe "GET /api/users/me" do
@@ -356,14 +373,26 @@ RSpec.describe "Api::V1::Users" do
         expect(response).to have_http_status(:ok)
       end
 
-      it "finds a user" do
-        get api_users_search_path(email: user.email), headers: auth_headers
+      it "finds a user without issuing separate profile or setting queries" do
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get api_users_search_path(email: user.email), headers: auth_headers
+        end
 
         response_user = response.parsed_body
         expect(response_user["type_of"]).to eq("user")
         %w[id username name twitter_username github_username].each do |attr|
           expect(response_user[attr]).to eq(user.public_send(attr))
         end
+        %w[summary website_url location].each do |attr|
+          expect(response_user[attr]).to eq(user.profile.public_send(attr))
+        end
+        expect(queries.grep(/FROM "profiles"/i)).to be_empty
+        expect(queries.grep(/FROM "users_settings"/i)).to be_empty
       end
 
       it "returns not found when no email is passed" do

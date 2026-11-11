@@ -130,6 +130,8 @@ en:
       comment_handler:
         marked_spam_repeat_auto_flags: User marked as spam after %{count} of their comments from the last month were auto-flagged as spam, triggered by autovomit.
         marked_spam_comment_flood: New account marked as spam after commenting on %{count} posts in a day, triggered by autovomit.
+      phishing_or_signup:
+        marked_spam: Low-trust account marked as spam for platform impersonation, phishing, or deceptive signup solicitation, triggered by autovomit.
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source not found.
