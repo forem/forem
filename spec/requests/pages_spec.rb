@@ -52,11 +52,12 @@ RSpec.describe "Pages" do
     end
 
     context "when the page has a redirect_to_url set to an external URL" do
-      it "redirects permanently to the external URL" do
+      it "redirects permanently to the external URL and tags the cached redirect with the page surrogate key" do
         page = create(:page, redirect_to_url: "https://example.com/target")
         get "/page/#{page.slug}"
         expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to("https://example.com/target")
+        expect(response.headers["Surrogate-Key"]).to include("show-page-#{page.slug}")
       end
     end
 
@@ -70,11 +71,12 @@ RSpec.describe "Pages" do
     end
 
     context "when the page has a redirect_to_url and is_top_level_path" do
-      it "redirects permanently to the external URL for top-level path" do
+      it "redirects permanently to the external URL for top-level path with surrogate key" do
         page = create(:page, redirect_to_url: "https://example.com/target", is_top_level_path: true)
         get "/#{page.slug}"
         expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to("https://example.com/target")
+        expect(response.headers["Surrogate-Key"]).to include("show-page-#{page.slug}")
       end
     end
 

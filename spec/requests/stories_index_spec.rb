@@ -354,6 +354,20 @@ RSpec.describe "StoriesIndex" do
       sets_nginx_headers
     end
 
+    it "sets dedicated surrogate keys on timeframe and latest feeds", :aggregate_failures do
+      story = create(:article, score: 25, published: true)
+
+      get "/top/week"
+      expect(response.headers["Surrogate-Key"].split).to include(
+        "main_app_home_page", "stories-top-week", story.record_key
+      )
+
+      get "/latest"
+      expect(response.headers["Surrogate-Key"].split).to include(
+        "main_app_home_page", "stories-latest", story.record_key
+      )
+    end
+
     context "when auth state is desynced with remember_user_token cookie" do
       it "unsets surrogate control headers when remember_user_token is present but user is signed out" do
         cookies["remember_user_token"] = "invalid_or_expired_token"

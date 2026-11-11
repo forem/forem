@@ -64,6 +64,8 @@ class AsyncInfoController < ApplicationController
   end
 
   def navigation_links
+    subforem_id = RequestStore.store[:subforem_id]
+    set_surrogate_key_header("navigation_links", ("navigation_links-#{subforem_id}" if subforem_id.present?))
     # We're sending HTML over the wire hence 'render layout: false' enforces rails NOT TO look for a layout file to wrap
     # the view file - it allows us to not include the HTML headers for sending back to client.
     render layout: false

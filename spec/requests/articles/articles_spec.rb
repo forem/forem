@@ -48,7 +48,7 @@ RSpec.describe "Articles" do
         expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
         expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
 
-        expected_surrogate_key_headers = ["articles/#{article.id}"]
+        expected_surrogate_key_headers = ["articles-feed", "articles/#{article.id}"]
         expect(response.headers["Surrogate-Key"].split).to match_array(expected_surrogate_key_headers)
 
         expect(response.headers["X-Accel-Expires"]).to eq("600")

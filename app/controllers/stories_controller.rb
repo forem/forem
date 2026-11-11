@@ -183,6 +183,8 @@ class StoriesController < ApplicationController
   end
 
   def handle_page_display
+    set_surrogate_key_header "show-page-#{@page.slug}", @page.organization&.record_key
+
     redirect_page_if_different_subforem
     return if performed?
 
@@ -194,7 +196,6 @@ class StoriesController < ApplicationController
     end
 
     @story_show = true
-    set_surrogate_key_header "show-page-#{@page.slug}"
 
     if @page.template == "json"
       render json: @page.body_json
@@ -211,12 +212,22 @@ class StoriesController < ApplicationController
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
 
-    set_surrogate_key_header "main_app_home_page"
+    set_base_index_surrogate_keys
     set_cache_control_headers(60,
                               stale_while_revalidate: 60,
                               stale_if_error: 86_400)
 
     render template: "articles/index"
+  end
+
+  def set_base_index_surrogate_keys
+    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+      set_surrogate_key_header "main_app_home_page", "stories-top-#{params[:timeframe]}", *@stories&.map(&:record_key)
+    elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+      set_surrogate_key_header "main_app_home_page", "stories-latest", *@stories&.map(&:record_key)
+    else
+      set_surrogate_key_header "main_app_home_page"
+    end
   end
 
   def pinned_article
@@ -232,12 +243,15 @@ class StoriesController < ApplicationController
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes
       .reachable.order(published_at: :desc).page(params[:page]).per(30)
-    set_surrogate_key_header "podcast_episodes"
+    set_surrogate_key_header "podcast_episodes", @podcast.record_key, "podcasts/#{@podcast.slug}",
+                             *@podcast_episodes.map(&:record_key)
     render template: "podcast_episodes/index"
   end
 
   def handle_organization_index
     @user = @organization
+    set_surrogate_key_header @organization.record_key
+
     redirect_if_organization_view_param
     return if performed?
 
@@ -256,6 +270,7 @@ class StoriesController < ApplicationController
       @org_page = main_page
     end
     is_readme = @org_page.present?
+    set_surrogate_key_header @organization.record_key, ("show-page-#{@org_page.slug}" if is_readme)
     @pinned_stories = if is_readme
                         Article.none
                       else
@@ -313,7 +328,6 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_organization_json_ld
-    set_surrogate_key_header @organization.record_key
 
     @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
 
@@ -340,6 +354,8 @@ class StoriesController < ApplicationController
     if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
       not_found
     end
+    set_surrogate_key_header(*@user.profile_cache_keys)
+
     assign_user_comments
     assign_user_stories
     @list_of = "articles"
@@ -353,14 +369,13 @@ class StoriesController < ApplicationController
 
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
-    set_surrogate_key_header(*@user.profile_cache_keys)
     set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"
   end
 
   def handle_podcast_show
-    set_surrogate_key_header @episode.record_key
+    set_surrogate_key_header @episode.record_key, @podcast.record_key, "podcasts/#{@podcast.slug}"
     @episode = @episode.decorate
     @podcast_episode_show = true
     @comments_to_show_count = 25
@@ -424,7 +439,7 @@ class StoriesController < ApplicationController
       response.headers["Expires"] = "0"
     else
       user_keys = @article.user&.profile_identity_cache_keys
-      set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+      set_surrogate_key_header(@article.record_key, *user_keys, @article.organization&.record_key)
     end
 
     redirect_if_appropriate
