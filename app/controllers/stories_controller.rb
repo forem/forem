@@ -841,7 +841,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_organization_to_custom_domain_if_needed
-    return if user_signed_in?
+    return if user_signed_in? || embedded_view?
     return if @organization.custom_domain.blank?
     return if request.host&.downcase == @organization.custom_domain&.downcase
     return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))

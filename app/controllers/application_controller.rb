@@ -281,7 +281,8 @@ class ApplicationController < ActionController::Base
       RequestStore.store[:subforem_id].present? &&
       @page.subforem_id != RequestStore.store[:subforem_id]
 
-    redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
+    target_url = embedded_view? ? "#{URL.page(@page)}?mode=embed" : URL.page(@page)
+    redirect_to target_url, allow_other_host: true, status: :moved_permanently
   end
 
   def respond_with_request_for_authentication
@@ -358,6 +359,11 @@ class ApplicationController < ActionController::Base
     params[:i] == "i" || params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/)
   end
   helper_method :internal_navigation?
+
+  def embedded_view?
+    params[:mode] == "embed"
+  end
+  helper_method :embedded_view?
 
   def feed_style_preference
     Settings::UserExperience.feed_style
