@@ -40,11 +40,13 @@
     display: var(--layout-sidebar-left-display);
     grid-row-end: var(--layout-sidebar-left-row-end);
     width: var(--layout-sidebar-left-width);
+    min-width: 0;
   }
 
   &__sidebar-right {
     display: var(--layout-sidebar-right-display);
     width: var(--layout-sidebar-right-width);
+    min-width: 0;
   }
 
   &__content {
@@ -97,6 +99,17 @@
       max-width: $breakpoint-s;
     }
   }
+}
+
+// Prevent direct children of grid-enabled layout columns and sticky sidebars
+// from forcing implicit `auto` grid tracks to expand to unscaled child widths.
+:where(
+  .crayons-layout__content,
+  .crayons-layout__sidebar-left,
+  .crayons-layout__sidebar-right,
+  .sidebar-sticky-container
+) > :where(*) {
+  min-width: 0;
 }
 
 .crayons-layout--2-cols {

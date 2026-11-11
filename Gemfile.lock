@@ -1228,7 +1228,6 @@ DEPENDENCIES
   logtail-rails (~> 0.2.12)
   memory_profiler (~> 1.0)
   metainspector (~> 5.12)
-  mini_magick (~> 4.13)
   nakayoshi_fork (~> 0.0.4)
   neighbor (~> 0.5.2)
   nokogiri (~> 1.18)

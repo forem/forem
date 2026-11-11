@@ -32,13 +32,16 @@ RSpec.describe Moderator::BanishUser, type: :service do
     end
   end
 
-  it "updates username, clears profile, and add BanishedUser record", :aggregate_failures do
+  it "updates username, clears profile, busts user cache keys, and adds BanishedUser record", :aggregate_failures do
     original_username = user.username
+    allow(EdgeCache::BustUser).to receive(:call).and_call_original
     sidekiq_perform_enqueued_jobs do
       described_class.call(user: user, admin: admin)
     end
 
     expect(user.username).to include "spam_"
+    expect(user.old_username).to eq(original_username)
+    expect(EdgeCache::BustUser).to have_received(:call).with(user).at_least(:once)
     expect(user.profile.summary).to be_blank
     expect(user.profile.location).to be_blank
     expect(user.profile.website_url).to be_blank

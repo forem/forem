@@ -167,59 +167,7 @@ describe CarrierWaveInitializer do # rubocop:disable RSpec/FilePath, RSpec/SpecF
     end
   end
 
-  describe MiniMagickShellTimeoutGuard do
-    describe ".effective_timeout" do
-      it "returns MiniMagick.timeout when not inside a Rack::Timeout request" do
-        allow(RackTimeoutThreadTracker).to receive(:remaining_timeout).and_return(nil)
-        expect(described_class.effective_timeout).to eq(MiniMagick.timeout)
-      end
-
-      it "caps the timeout to remaining request budget minus headroom when budget is tight" do
-        allow(RackTimeoutThreadTracker).to receive(:remaining_timeout).and_return(2.5)
-        expect(described_class.effective_timeout).to eq(1.5)
-      end
-
-      it "keeps MiniMagick.timeout when the remaining request budget is larger" do
-        allow(RackTimeoutThreadTracker).to receive(:remaining_timeout).and_return(25.0)
-        expect(described_class.effective_timeout).to eq(MiniMagick.timeout.to_f)
-      end
-    end
-
-    describe "#execute_open3" do
-      let(:shell) { MiniMagick::Shell.new }
-
-      it "raises Timeout::Error before spawning a subprocess when remaining budget is exhausted" do
-        allow(described_class).to receive(:effective_timeout).and_return(0.0)
-        allow(Open3).to receive(:popen3)
-
-        expect do
-          shell.__send__(:execute_open3, ["identify", "-version"])
-        end.to raise_error(Timeout::Error, /insufficient request budget/)
-        expect(Open3).not_to have_received(:popen3)
-      end
-
-      it "terminates the child process in ensure and escalates to KILL if TERM does not stop it" do
-        in_r, in_w = IO.pipe
-        out_r, out_w = IO.pipe
-        err_r, err_w = IO.pipe
-        out_w.close
-        err_w.close
-
-        wait_thr = instance_double(Process::Waiter, pid: 99_999, alive?: true)
-        allow(wait_thr).to receive(:join).with(anything).and_raise(Rack::Timeout::RequestTimeoutException.new({}))
-        allow(wait_thr).to receive(:join).with(MiniMagickShellTimeoutGuard::CHILD_TERM_GRACE_SECONDS).and_return(nil)
-        allow(Open3).to receive(:popen3).and_yield(in_w, out_r, err_r, wait_thr)
-        allow(Process).to receive(:kill)
-
-        expect do
-          shell.__send__(:execute_open3, ["mogrify", "test.jpg"])
-        end.to raise_error(Rack::Timeout::RequestTimeoutException)
-
-        expect(Process).to have_received(:kill).with("TERM", 99_999).ordered
-        expect(Process).to have_received(:kill).with("KILL", 99_999).ordered
-      ensure
-        [in_r, in_w, out_r, err_r].each { |io| io.close unless io.closed? }
-      end
-    end
+  it "does not load MiniMagick at runtime" do
+    expect(defined?(MiniMagick)).to be_nil
   end
 end

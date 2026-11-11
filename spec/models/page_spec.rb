@@ -252,6 +252,16 @@ RSpec.describe Page do
       end
     end
 
+    it "enqueues cache busts for both the new and previous slug when slug changes" do
+      page = create(:page, slug: "old-page-slug")
+      allow(Pages::BustCacheWorker).to receive(:perform_async)
+
+      page.update!(slug: "new-page-slug")
+
+      expect(Pages::BustCacheWorker).to have_received(:perform_async).with("new-page-slug")
+      expect(Pages::BustCacheWorker).to have_received(:perform_async).with("old-page-slug")
+    end
+
     it "ensures only one page can be a landing page on create" do
       p1 = create(:page, landing_page: true)
       create(:page, landing_page: true)
