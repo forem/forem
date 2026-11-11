@@ -1,0 +1,40 @@
+app/models/article.rb
+  h_f968154a99632d 1226-1227,1238-1244
+app/models/billboard.rb
+  h_f968154a99632d 527,530-544,546-547,696,739-781,784,786-793,797-805
+app/models/concerns/liquid_embeddable.rb
+  h_f968154a99632d 7-9,13-16,19-41,43-46
+app/models/liquid_embed_reference.rb
+  h_f968154a99632d 3,6,94-97,101,103-105,108-114,116-119,122-137,139-141,144-147,151-180,182-192,194-197
+app/models/page.rb
+  h_f968154a99632d 93
+app/models/reaction.rb
+  h_f968154a99632d 76,292-295
+app/models/tag.rb
+  h_f968154a99632d 67,373-382
+app/services/liquid_embed_extractor.rb
+  h_f968154a99632d 115,118,121,212,214,219,249-252,259,267-271,276-293,295,318-321
+app/workers/articles/update_dependent_embeds_worker.rb
+  h_f968154a99632d 12,15,20-32,60-61,67-77,87,89-91,93-96,98-99,101-124,126-127,129,311-324,326-334,336,340-348,350-365
+lib/data_update_scripts/20261111120000_backfill_billboard_and_unresolved_embed_references.rb
+  h_f968154a99632d 35-37,41,46,51-73
+spec/lib/data_update_scripts/backfill_billboard_and_unresolved_embed_references_spec.rb
+  h_f968154a99632d 31-51,59-65
+spec/models/billboard_spec.rb
+  h_f968154a99632d 1606-1663
+spec/services/liquid_embed_extractor_spec.rb
+  h_f968154a99632d 370-429
+spec/workers/articles/update_dependent_embeds_worker_spec.rb
+  h_f968154a99632d 98-154,206-207,437-538
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "074b8f6950721bd865f4096031128f329145788b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
