@@ -1,0 +1,40 @@
+app/controllers/events_controller.rb
+  h_f968154a99632d 47-48
+app/controllers/pages_controller.rb
+  h_f968154a99632d 8-9
+app/controllers/podcast_episodes_controller.rb
+  h_f968154a99632d 14-15
+app/controllers/stories/tagged_articles_controller.rb
+  h_f968154a99632d 14
+app/controllers/stories_controller.rb
+  h_f968154a99632d 186-187,225,227,253-254,273,357-358
+app/models/page.rb
+  h_f968154a99632d 163-172,175-176,178
+app/models/podcast.rb
+  h_f968154a99632d 26,60,62-65
+app/workers/organizations/bust_cache_worker.rb
+  h_f968154a99632d 8-12
+spec/models/page_spec.rb
+  h_f968154a99632d 255-264
+spec/models/podcast_spec.rb
+  h_f968154a99632d 18-35
+spec/requests/pages_spec.rb
+  h_f968154a99632d 55,60,74,79
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 66-75
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 361-363,366-368
+spec/workers/organizations/bust_cache_worker_spec.rb
+  h_f968154a99632d 10,14,18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "41eb41d05fb1d2b43dc58eed80ff95e68c081306",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
