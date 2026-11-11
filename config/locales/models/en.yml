@@ -114,6 +114,9 @@ en:
       already_submitted: You have already submitted this form.
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
+      embed_html_invalid_slug: must use the organization embed path format (<org>/embed/<slug>).
+      embed_html_requires_organization: must belong to an organization for embed_html pages.
+      embed_html_template_immutable: cannot be converted to or from embed_html.
       redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).
       redirect_to_url_invalid_path: is not a recognized path in this application.
     podcast_episode_appearance:

@@ -194,4 +194,106 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect(JSON.parse(response.body)["processed_html"]).to include("<strong>bold text</strong>")
     end
   end
+
+  describe "Sandboxed Embedded HTML Pages management" do
+    before { FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization]) }
+
+    it "renders a separate section for embed HTML pages on GET /:slug/settings/pages", :aggregate_failures do
+      create(
+        :page,
+        organization: organization,
+        title: "Main Showcase",
+        slug: "#{organization.slug}/readme",
+        template: "full_within_layout",
+        body_markdown: "# Showcase",
+      )
+      embed_page = create(
+        :page,
+        organization: organization,
+        title: "Interactive Chart",
+        slug: "#{organization.slug}/embed/chart",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div>Chart</div>",
+      )
+
+      get organization_pages_path(organization.slug)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="section-markdown-pages"')
+      expect(response.body).to include('id="section-embed-pages"')
+      expect(response.body).to include("Interactive Chart")
+      expect(response.body).to include("{% embed #{URL.url("/#{organization.slug}/embed/chart")} %}")
+      expect(organization.ordered_pages).not_to include(embed_page)
+      expect(organization.ordered_embed_pages).to eq([embed_page])
+    end
+
+    it "renders the sandboxed HTML editor on GET /:slug/settings/pages/new?kind=embed", :aggregate_failures do
+      get new_organization_page_path(organization.slug, kind: "embed")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('id="org-embed-html-editor"')
+      expect(response.body).to include("sandbox=\"#{OrganizationEmbedsController::SANDBOX_DIRECTIVE}\"")
+      expect(response.body).not_to include("allow-same-origin")
+    end
+
+    it "creates an embed_html page without hijacking the Showcase /readme slot", :aggregate_failures do
+      expect do
+        post organization_pages_path(organization.slug), params: {
+          page: {
+            template: "embed_html",
+            title: "Pricing Widget",
+            slug_suffix: "pricing-widget",
+            body_html: "<div id='pricing'><script>window.x = 1;</script></div>"
+          }
+        }
+      end.to change(Page, :count).by(1)
+
+      embed_page = organization.ordered_embed_pages.last
+      expect(embed_page.slug).to eq("#{organization.slug}/embed/pricing-widget")
+      expect(embed_page.template).to eq("embed_html")
+      expect(embed_page.body_markdown).to be_nil
+      expect(organization.main_page).to be_nil
+
+      # Creating the first Markdown page afterwards still creates the Showcase /readme page
+      post organization_pages_path(organization.slug), params: {
+        page: { title: "Welcome Showcase", body_markdown: "# Hello" }
+      }
+      expect(organization.reload.main_page.slug).to eq("#{organization.slug}/readme")
+    end
+
+    it "updates and deletes an embed_html page and ignores reorder requests", :aggregate_failures do
+      embed_page = create(
+        :page,
+        organization: organization,
+        title: "Old Widget",
+        slug: "#{organization.slug}/embed/old-widget",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<p>Old</p>",
+      )
+
+      expected_args = ["#{organization.slug}/embed/new-widget", organization.id]
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: expected_args) do
+        patch update_organization_page_path(organization.slug, embed_page), params: {
+          page: {
+            title: "New Widget",
+            slug_suffix: "new-widget",
+            body_html: "<p>Updated</p>"
+          }
+        }
+      end
+
+      expect(embed_page.reload.title).to eq("New Widget")
+      expect(embed_page.slug).to eq("#{organization.slug}/embed/new-widget")
+      expect(embed_page.body_html).to eq("<p>Updated</p>")
+
+      patch reorder_organization_page_path(organization.slug, embed_page), params: { direction: "up" }
+      expect(response).to redirect_to(organization_pages_path(organization.slug))
+
+      expect do
+        delete organization_page_path(organization.slug, embed_page)
+      end.to change(Page, :count).by(-1)
+    end
+  end
 end
