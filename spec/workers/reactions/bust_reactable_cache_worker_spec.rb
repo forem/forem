@@ -12,10 +12,10 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     before do
       allow(EdgeCache::BustArticle).to receive(:call)
       allow(EdgeCache::PurgeByKey).to receive(:call)
-      allow(Articles::UpdateDependentEmbedsWorker).to receive(:perform_async)
+      allow(Articles::UpdateDependentEmbedsWorker).to receive(:schedule_for_engagement)
     end
 
-    it "busts the reactable article cache" do
+    it "busts the reactable article cache and schedules dependent embeds for public reactions" do
       worker.perform(reaction.id)
       expect(EdgeCache::PurgeByKey).to have_received(:call).with(
         user.profile_identity_record_key,
@@ -25,7 +25,27 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
         Reaction.surrogate_key_for_article(article.id),
         fallback_paths: "/reactions?article_id=#{article.id}",
       )
-      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:perform_async).with(article.id)
+      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:schedule_for_engagement).with(article.id)
+    end
+
+    it "does not schedule dependent embeds for private readinglist reactions" do
+      bookmark = create(:reaction, category: "readinglist", reactable: article, user: user)
+      allow(Articles::UpdateDependentEmbedsWorker).to receive(:schedule_for_engagement)
+
+      worker.perform(bookmark.id)
+
+      expect(Articles::UpdateDependentEmbedsWorker).not_to have_received(:schedule_for_engagement)
+    end
+
+    it "defers dependent embed scheduling on reaction destroy until after_destroy_commit" do
+      target_reaction = reaction
+      allow(Articles::UpdateDependentEmbedsWorker).to receive(:schedule_for_engagement)
+
+      worker.perform(target_reaction.id, destroying: true)
+      expect(Articles::UpdateDependentEmbedsWorker).not_to have_received(:schedule_for_engagement)
+
+      target_reaction.destroy!
+      expect(Articles::UpdateDependentEmbedsWorker).to have_received(:schedule_for_engagement).with(article.id)
     end
 
     it "busts the article if there were previously no reactions" do

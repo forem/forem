@@ -1562,4 +1562,104 @@ RSpec.describe Billboard do
       )
     end
   end
+
+  describe "Liquid embed tracking and refresh" do
+    it "enqueues SyncLiquidEmbedReferencesWorker when markdown contains Liquid tags" do
+      article = create(:article)
+      allow(SyncLiquidEmbedReferencesWorker).to receive(:perform_async)
+
+      billboard = create(:billboard, render_mode: :forem_markdown, body_markdown: "{% link #{article.path} %}")
+
+      expect(SyncLiquidEmbedReferencesWorker).to have_received(:perform_async).with("Billboard", billboard.id)
+    end
+
+    it "re-renders stale embeds automatically when an inactive billboard is activated" do
+      article = create(:article, title: "Draft Stage Title")
+      billboard = create(
+        :billboard,
+        approved: false,
+        published: false,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+      expect(billboard.processed_html).to include("Draft Stage Title")
+
+      article.update_column(:title, "Live Stage Title")
+      billboard.update!(approved: true, published: true)
+
+      expect(billboard.reload.processed_html).to include("Live Stage Title")
+      expect(billboard.processed_html).to include("bb=#{billboard.id}")
+    end
+
+    it "returns false without DB writes when refresh_embedded_markdown! produces identical HTML" do
+      article = create(:article, title: "Stable Title")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+
+      expect(billboard.refresh_embedded_markdown!).to be(false)
+    end
+
+    it "enqueues SyncLiquidEmbedReferencesWorker even when name is nil and generated in after_save" do
+      article = create(:article)
+      allow(SyncLiquidEmbedReferencesWorker).to receive(:perform_async)
+
+      billboard = create(
+        :billboard,
+        name: nil,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+
+      expect(billboard.name).to eq("Billboard #{billboard.id}")
+      expect(SyncLiquidEmbedReferencesWorker).to have_received(:perform_async).with("Billboard", billboard.id)
+    end
+
+    it "does not overwrite a concurrent admin markdown edit during refresh_embedded_markdown!" do
+      article_a = create(:article, title: "Original Post A")
+      article_b = create(:article, title: "Concurrent Admin Post B")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article_a.path} %}",
+      )
+
+      stale_worker_copy = described_class.find(billboard.id)
+      article_a.update_column(:title, "Updated Post A")
+
+      # Admin concurrently switches the billboard to Post B while worker holds stale_worker_copy
+      billboard.update!(body_markdown: "{% link #{article_b.path} %}")
+      article_b.update_column(:title, "Refreshed Concurrent Admin Post B")
+
+      expect(stale_worker_copy.refresh_embedded_markdown!).to be(true)
+      expect(billboard.reload.body_markdown).to eq("{% link #{article_b.path} %}")
+      expect(billboard.processed_html).to include("Refreshed Concurrent Admin Post B")
+      expect(billboard.processed_html).not_to include("Updated Post A")
+    end
+
+    it "re-renders embeds when extending an expired billboard's expires_at back into the future" do
+      article = create(:article, title: "Before Expiration Title")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        expires_at: 1.day.from_now,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{article.path} %}",
+      )
+
+      # Simulate natural expiration before cron flips approved=false
+      billboard.update_column(:expires_at, 1.hour.ago)
+      article.update_column(:title, "Extended Campaign Title")
+
+      billboard.update!(expires_at: 2.days.from_now)
+      expect(billboard.reload.processed_html).to include("Extended Campaign Title")
+    end
+  end
 end
