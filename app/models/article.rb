@@ -1973,7 +1973,7 @@ class Article < ApplicationRecord
 
   def bust_cache(destroying: false)
     purge
-    async_bust
+    async_bust(destroying: destroying)
     touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
@@ -2019,8 +2019,30 @@ class Article < ApplicationRecord
     ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
-  def async_bust
-    Articles::BustCacheWorker.perform_async(id)
+  def async_bust(destroying: false)
+    if destroying
+      enqueue_deleted_article_cache_bust
+    else
+      Articles::BustCacheWorker.perform_async(id)
+    end
+  end
+
+  def enqueue_deleted_article_cache_bust
+    delay = BustCacheBaseWorker::AFTER_COMMIT_DELAY
+    Articles::BustDeletedArticleCacheWorker.perform_in(
+      delay,
+      Articles::BustDeletedArticleCacheWorker.attributes_for(self),
+    )
+    return unless published && (in_home_page_hot_articles? || decorate.discussion?)
+
+    EdgeCache::PurgeByKeyWorker.perform_in(delay, *Users::DeleteArticles::HOME_PAGE_PURGE_ARGS)
+  end
+
+  def in_home_page_hot_articles?
+    self.class.published.order(hotness_score: :desc)
+      .limit(Users::DeleteArticles::HOME_PAGE_ARTICLES_COUNT)
+      .ids
+      .include?(id)
   end
 
   def touch_collection

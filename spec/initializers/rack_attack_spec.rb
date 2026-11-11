@@ -231,6 +231,35 @@ describe Rack, ".attack", throttle: true, type: :request do
         valid_responses.each { |r| expect(r).not_to eq(429) }
       end
     end
+
+    it "throttles /api/related_articles including locale-prefixed paths", :aggregate_failures do
+      api_secret = create(:api_secret)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..30).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get "/locale/en/api/related_articles",
+              params: { organization_id: 0, q: "ruby" },
+              headers: {
+                "Accept" => "application/vnd.forem.api-v1+json",
+                "HTTP_FASTLY_CLIENT_IP" => "10.0.1.#{i}",
+                "api-key" => api_secret.secret
+              }
+        end
+        Timecop.travel(start_time + 46.seconds)
+        throttled_response = get "/locale/en/api/related_articles",
+                                 params: { organization_id: 0, q: "ruby" },
+                                 headers: {
+                                   "Accept" => "application/vnd.forem.api-v1+json",
+                                   "HTTP_FASTLY_CLIENT_IP" => "10.0.1.99",
+                                   "api-key" => api_secret.secret
+                                 }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
   end
 
   describe "api_throttle" do

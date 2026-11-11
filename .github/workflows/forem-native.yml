@@ -20,7 +20,11 @@ on:
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/helpers/agent_sessions_helper.rb"
+      - "app/helpers/application_helper.rb"
       - "app/helpers/comments_helper.rb"
+      - "app/helpers/story_card_helper.rb"
+      - "app/views/articles/_single_story.html.erb"
+      - "app/views/articles/_single_story_legacy.html.erb"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
@@ -36,10 +40,14 @@ on:
       - "app/services/feed_events/bulk_upsert.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
-      - "app/services/images/generate_social_image_magickally.rb"
+      - "app/services/images/**"
+      - "app/uploaders/**"
       - "lib/ISO3166/country.rb"
       - "spec/helpers/agent_sessions_helper_spec.rb"
+      - "spec/helpers/application_helper_spec.rb"
       - "spec/helpers/comments_helper_spec.rb"
+      - "spec/helpers/story_card_helper_spec.rb"
+      - "spec/views/articles/_single_story.html.erb_spec.rb"
       - "spec/lib/forem_native_spec.rb"
       - "spec/lib/redcarpet/render/html_rouge_spec.rb"
       - "spec/models/billboard_spec.rb"
@@ -52,7 +60,9 @@ on:
       - "spec/services/articles/feeds/custom_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
-      - "spec/services/images/generate_social_image_magickally_spec.rb"
+      - "spec/services/images/**"
+      - "spec/support/carrierwave_matchers.rb"
+      - "spec/uploaders/**"
       - ".github/workflows/forem-native.yml"
   push:
     branches:
@@ -148,7 +158,20 @@ jobs:
             raise "Unexpected build_billboard_new_only_sql!" unless ForemNative.build_billboard_new_only_sql("SELECT * FROM billboards", 5000, 15).include?("preferred")
             raise "Unexpected build_filtered_ads_where_sql!" unless ForemNative.build_filtered_ads_where_sql(["feed_first", 1_700_000_000, 0, [], 1, false, "Mozilla/5.0 (iPhone)", nil, true, nil, [], ["ruby"], true, true, true, 42, ["admin"], true, "ARRAY['US']::varchar[]", true, true, [10], false]).include?("placement_area")
             raise "Unexpected syntax_highlight_code_block!" unless ForemNative.syntax_highlight_code_block("puts 1", "ruby").include?("highlight ruby")
+            raise "Unexpected shell prompt highlight!" unless ForemNative.syntax_highlight_code_block("$ npm install\necho $", "shell").include?("npm install")
+            raise "Unexpected single-brace attr highlight!" unless ForemNative.syntax_highlight_code_block("<div class={cls} />", "html").include?("highlight html")
             raise "Unexpected social_image_draw_background!" unless ForemNative.social_image_draw_background("#3333ff", []).width == 1200
             raise "Unexpected render_comment_tree!" unless ForemNative::Native.respond_to?(:render_comment_tree) && ForemNative.render_comment_tree([], [], [], [], 0).nil?
+            raise "Unexpected render_tag_link!" unless ForemNative.render_tag_link("rust", "rust", "#dea584", monochrome: true).include?("href=\"/t/rust\"")
+            raise "Unexpected render_story_cards!" unless ForemNative::Native.respond_to?(:render_story_cards) && ForemNative.render_story_cards([], [], [], [], []).nil?
+            avatar_png = ForemNative.render_profile_image_png(
+              palette: { bg: "#EEF2FF", halo: "#C7D2FE", sparkle: "#818CF8", shadow: "#D9E0F7", body: "#4F46E5", shirt: "#312E81", trim: "#FBBF24", accent: "#38BDF8", cheek: "#FB7185" },
+              backdrop: "bubbles", outfit: "hoodie", arm: "left_wave", head: "squircle", topper: "antenna", eyes: "happy_arcs", accessory: "none", cheeks: "oval_blush", mouth: "smile_curve"
+            )
+            raise "Unexpected render_profile_image_png!" unless ForemNative.image_inspect(avatar_png) == { format: "png", width: 400, height: 400, frame_count: 1, exif_orientation: 1 }
+            resized_png, resized_fmt = ForemNative.image_resize_to_fill(avatar_png, 64, 64)
+            raise "Unexpected image_resize_to_fill!" unless resized_fmt == "png" && ForemNative.image_inspect(resized_png)[:width] == 64
+            svg_png = ForemNative.image_convert_to_png("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><rect width=\"24\" height=\"24\" fill=\"#3b49df\"/></svg>")
+            raise "Unexpected image_convert_to_png!" unless ForemNative.image_inspect(svg_png)[:width] == 24
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '

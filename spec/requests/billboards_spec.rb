@@ -325,10 +325,60 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).to include("crayons-bb__header relative")
         expect(response.body).to include("My great custom label")
+        authorship_unit = Nokogiri::HTML.fragment(response.body).at_css("[data-display-unit]")
+        expect(authorship_unit["class"]).not_to include("crayons-bb--plain")
 
         billboard.update_column(:template, "plain")
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).not_to include "crayons-bb__header relative"
+        plain_unit = Nokogiri::HTML.fragment(response.body).at_css("[data-display-unit]")
+        expect(plain_unit.at_css(".text-styles--billboard")).to be_nil
+        expect(plain_unit["class"]).to eq("crayons-bb--plain")
+        expect(response.body).to include(
+          ":where(.crayons-layout__sidebar-left, .crayons-layout__sidebar-right)",
+          ":where(.crayons-bb--plain, .text-styles--billboard:not(.popover-billboard__content))",
+          ":where([data-display-unit]:not([data-context-type='embed'])) :where(img, video, canvas, iframe)",
+          "img[width]:not([width=''])",
+        )
+      end
+
+      it "preserves height-only badge.svg, ignored-prefix images, and height-only videos in plain raw billboards",
+         :aggregate_failures do
+        raw_creative = <<~HTML
+          <img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" height="20" alt="CI">
+          <img src="https://example.com/icon.png" data-ignore-prefix="true" height="24" alt="Icon">
+          <video src="https://example.com/demo.mp4" height="180"></video>
+        HTML
+        plain_raw_bb = create_billboard(
+          placement_area: "post_sidebar",
+          template: "plain",
+          render_mode: "raw",
+          body_markdown: raw_creative,
+        )
+        billboard.destroy!
+
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
+
+        expect(response).to have_http_status(:ok)
+        fragment = Nokogiri::HTML.fragment(response.body)
+        unit = fragment.at_css("[data-display-unit][data-id='#{plain_raw_bb.id}']")
+        expect(unit["class"]).to eq("crayons-bb--plain")
+
+        badge_img = unit.at_css("img[alt='CI']")
+        expect(badge_img["height"]).to eq("20")
+        expect(badge_img["width"]).to be_nil
+
+        ignored_img = unit.at_css("img[alt='Icon']")
+        expect(ignored_img["height"]).to eq("24")
+        expect(ignored_img["width"]).to be_nil
+
+        video_el = unit.at_css("video")
+        expect(video_el["height"]).to eq("180")
+        expect(video_el["width"]).to be_nil
+
+        inline_style = fragment.at_css("style").text
+        expect(inline_style).not_to match(/:where\(img,\s*video\)\s*\{\s*height:\s*auto/)
+        expect(inline_style).to include("img[width]:not([width='']), video[width]:not([width=''])")
       end
     end
 
@@ -756,9 +806,58 @@ RSpec.describe "Billboards" do
       get billboard_path(placement_area: "external_feed"), headers: { "Origin" => "https://embed.example.com" }
 
       expect(response.body).to include(billboard.processed_html)
-      expect(response.body).not_to include("crayons-bb__header")
+      expect(response.body).not_to include(
+        "crayons-bb__header",
+        "crayons-bb--plain",
+        ":where([data-display-unit]",
+        ":where(.crayons-layout__sidebar-left",
+      )
+      expect(billboard_element["class"]).to be_nil
       expect(billboard_element["data-context-type"]).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
+    end
+  end
+
+  describe "billboard and CSS Grid layout containment guardrails" do
+    it "compiles zero-specificity billboard containment and sidebar min-width guardrails into CSS bundles",
+       :aggregate_failures do
+      minimal_css = Rails.application.assets.find_asset("minimal.css").source
+      crayons_css = Rails.application.assets.find_asset("crayons.css").source
+
+      expect(minimal_css).to match(/:where\(\s*\.bb-shuffle-group,\s*\.crayons-article-sticky/)
+      clip_pattern = Regexp.new(
+        ':where\(\s*\.crayons-bb--plain,\s*' \
+        '\.text-styles--billboard:not\(\.popover-billboard__content\)\s*\)\s*' \
+        '\{[^}]*overflow-x:\s*clip\b',
+        Regexp::MULTILINE,
+      )
+      expect(minimal_css).to match(clip_pattern)
+
+      media_max_width_pattern = Regexp.new(
+        ':where\(\[data-display-unit\]:not\(\[data-context-type=.embed.\]\)\)\s*' \
+        ':where\(img,\s*video,\s*canvas,\s*iframe\)\s*\{[^}]*max-width:\s*100%',
+        Regexp::MULTILINE,
+      )
+      expect(minimal_css).to match(media_max_width_pattern)
+
+      media_height_pattern = Regexp.new(
+        ':where\(\[data-display-unit\]:not\(\[data-context-type=.embed.\]\)\)\s*' \
+        ':where\(\s*img\[width\]:not\(\[width=..\]\),\s*video\[width\]:not\(\[width=..\]\),.*?' \
+        '\{[^}]*height:\s*auto\b',
+        Regexp::MULTILINE,
+      )
+      expect(minimal_css).to match(media_height_pattern)
+
+      expect(crayons_css).to match(/\.crayons-layout__sidebar-left\s*\{[^}]*min-width:\s*0\b/m)
+      expect(crayons_css).to match(/\.crayons-layout__sidebar-right\s*\{[^}]*min-width:\s*0\b/m)
+      expect(crayons_css).to match(/\.crayons-layout__content\s*\{[^}]*min-width:\s*0\b/m)
+      layout_children_pattern = Regexp.new(
+        ':where\(\s*\.crayons-layout__content,\s*\.crayons-layout__sidebar-left,\s*' \
+        '\.crayons-layout__sidebar-right,\s*\.sidebar-sticky-container\s*\)\s*>\s*' \
+        ':where\(\*\)\s*\{[^}]*min-width:\s*0\b',
+        Regexp::MULTILINE,
+      )
+      expect(crayons_css).to match(layout_children_pattern)
     end
   end
 

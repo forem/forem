@@ -12,12 +12,9 @@ describe ArticleImageUploader, type: :uploader do
   let(:image_with_gps) { fixture_file_upload("image_gps_data.jpg", "image/jpeg") }
   let(:high_frame_count) { fixture_file_upload("high_frame_count.gif", "image/gif") }
 
-  # we need a new uploader before each test, and since the uploader is not a model
-  # we can recreate it quickly in memory with `let!`
   let!(:uploader) { described_class.new }
 
   before do
-    described_class.include CarrierWave::MiniMagick # needed for processing
     described_class.enable_processing = true
   end
 
@@ -73,24 +70,27 @@ describe ArticleImageUploader, type: :uploader do
       expect { uploader.store!(high_frame_count) }.to raise_error(CarrierWave::IntegrityError, /too many frames/)
     end
 
-    it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
-      allow(MiniMagick::Image).to receive(:new).and_raise(Timeout::Error)
+    it "raises a CarrierWave error if a timeout occurs during frame counting" do
+      allow(ForemNative).to receive(:image_frame_count).and_raise(Timeout::Error)
 
       expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
     end
 
-    it "does not spawn ImageMagick identify for non-animated images" do
+    it "does not spawn any external subprocesses during image upload" do
       allow(Open3).to receive(:popen3).and_call_original
       uploader.store!(image_jpg)
       expect(Open3).not_to have_received(:popen3)
     end
 
-    it "delegates frame counting to identify -ping for container types not checked by FastImage.animated?" do
-      image = instance_double(MiniMagick::Image, path: image_jpg.path, identify: "frame1\nframe2\n")
-      allow(FastImage).to receive(:type).with(image_jpg.path).and_return(:ico)
+    it "counts frames via ForemNative.image_frame_count and memoizes by path" do
+      allow(ForemNative).to receive(:image_frame_count).with(high_frame_count.path).and_call_original
 
-      expect(uploader.__send__(:frame_count, image)).to eq(2)
-      expect(image).to have_received(:identify)
+      first_count = uploader.__send__(:frame_count, high_frame_count.path)
+      second_count = uploader.__send__(:frame_count, high_frame_count.path)
+
+      expect(first_count).to be > 20
+      expect(second_count).to eq(first_count)
+      expect(ForemNative).to have_received(:image_frame_count).with(high_frame_count.path).once
     end
   end
 
@@ -103,7 +103,7 @@ describe ArticleImageUploader, type: :uploader do
       expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(false)
     end
 
-    it "strips JPEG metadata in place without spawning MiniMagick subprocesses when orientation is normal" do
+    it "strips JPEG metadata in place without spawning subprocesses when orientation is normal" do
       allow(Open3).to receive(:popen3).and_call_original
       uploader.store!(image_with_gps)
       expect(Open3).not_to have_received(:popen3)
@@ -111,7 +111,7 @@ describe ArticleImageUploader, type: :uploader do
       expect(FastImage.size(uploader.file.path)).to eq(FastImage.size(image_with_gps.path))
     end
 
-    it "falls back to MiniMagick and removes trailing bytes when a JPEG has data appended after EOI" do
+    it "removes trailing bytes after EOI in-process without spawning subprocesses" do
       Tempfile.create(["trailing", ".jpg"]) do |tmp|
         raw = File.binread(image_with_gps.path)
         File.binwrite(tmp.path, raw + "TrailingMotionPhotoMetadataPayload".b)
@@ -120,13 +120,13 @@ describe ArticleImageUploader, type: :uploader do
         uploaded = Rack::Test::UploadedFile.new(tmp.path, "image/jpeg")
         uploader.store!(uploaded)
 
-        expect(Open3).to have_received(:popen3)
+        expect(Open3).not_to have_received(:popen3)
         expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
         expect(File.binread(uploader.file.path)).not_to include("TrailingMotionPhotoMetadataPayload".b)
       end
     end
 
-    it "auto-orients and strips EXIF via MiniMagick when a JPEG has non-default EXIF orientation" do
+    it "auto-orients and strips EXIF in-process when a JPEG has non-default EXIF orientation" do
       Tempfile.create(["rotated", ".jpg"]) do |tmp|
         raw = File.binread(image_jpg.path)
         exif_orientation_6 =
@@ -134,16 +134,18 @@ describe ArticleImageUploader, type: :uploader do
           "\x00\x01\x01\x12\x00\x03\x00\x00\x00\x01\x00\x06\x00\x00\x00\x00\x00\x00".b
         File.binwrite(tmp.path, "\xFF\xD8".b + exif_orientation_6 + raw.byteslice(2..))
         expect(FastImage.new(tmp.path).orientation).to eq(6)
+        allow(Open3).to receive(:popen3).and_call_original
 
         uploaded = Rack::Test::UploadedFile.new(tmp.path, "image/jpeg")
         uploader.store!(uploaded)
 
+        expect(Open3).not_to have_received(:popen3)
         expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
         expect(FastImage.size(uploader.file.path)).to eq([600, 800])
       end
     end
 
-    it "strips PNG textual metadata chunks in place without spawning MiniMagick subprocesses" do
+    it "strips PNG textual metadata chunks in place without spawning subprocesses" do
       Tempfile.create(["metadata", ".png"]) do |tmp|
         raw = File.binread(image_png.path)
         iend_offset = raw.rindex("IEND".b) - 4
@@ -165,7 +167,34 @@ describe ArticleImageUploader, type: :uploader do
       end
     end
 
-    it "does NOT remove EXIF and GPS data or invoke MiniMagick if frame count is > FRAME_STRIP_MAX" do
+    it "strips EXIF and XMP RIFF chunks from animated WebP uploads without failing or dropping frames" do
+      Tempfile.create(["animated", ".webp"]) do |tmp|
+        base_webp = File.binread(image_webp.path)
+        vp8_chunk = base_webp.byteslice(12..)
+        anmf_payload = [0, 0, 0, 0, 0, 0, 31, 3, 0, 87, 2, 0, 10, 0, 0, 0].pack("C*") + vp8_chunk
+        anmf_payload << "\x00".b if anmf_payload.bytesize.odd?
+        anmf_chunk = "ANMF".b + [anmf_payload.bytesize].pack("V") + anmf_payload
+
+        vp8x = "VP8X".b + [10].pack("V") + [0x0E, 0, 0, 0, 31, 3, 0, 87, 2, 0].pack("C*")
+        anim = "ANIM".b + [6].pack("V") + [0, 0, 0, 0, 0, 0].pack("C*")
+        exif = "EXIF".b + [8].pack("V") + "GPSSECRT".b
+        xmp  = "XMP ".b + [8].pack("V") + "<xmpmeta".b
+        body = "WEBP".b + vp8x + anim + anmf_chunk + anmf_chunk + exif + xmp
+        animated_webp = "RIFF".b + [body.bytesize].pack("V") + body
+        File.binwrite(tmp.path, animated_webp)
+
+        uploaded = Rack::Test::UploadedFile.new(tmp.path, "image/webp")
+        uploader.store!(uploaded)
+
+        stored_bytes = File.binread(uploader.file.path)
+        expect(stored_bytes).not_to include("GPSSECRT".b)
+        expect(stored_bytes).not_to include("<xmpmeta".b)
+        info = ForemNative.image_inspect(stored_bytes)
+        expect([info[:format], info[:frame_count], info[:width], info[:height]]).to eq(["webp", 2, 800, 600])
+      end
+    end
+
+    it "does NOT remove EXIF and GPS data if frame count is > FRAME_STRIP_MAX" do
       stub_const("BaseUploader::FRAME_STRIP_MAX", 0)
       expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
       expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
