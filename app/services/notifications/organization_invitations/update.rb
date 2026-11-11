@@ -4,6 +4,7 @@
 module Notifications
   module OrganizationInvitations
     class Update
+      # @see #call
       def self.call(...)
         new(...).call
       end
@@ -13,6 +14,7 @@ module Notifications
         @membership = membership
       end
 
+      # Refreshes the invitee's notification card and marks it read.
       def call
         membership.notifications.where(user_id: membership.user_id, action: INVITED).find_each do |notification|
           inviter_data = notification.json_data["user"]

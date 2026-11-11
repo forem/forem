@@ -43,16 +43,19 @@ class OrganizationMembership < ApplicationRecord
 
   private
 
+  # Queues the invitee's notification for a new pending membership.
   def send_invitation_notification
     Notification.send_organization_invitation_notification(self, invited_by&.id)
   end
 
+  # @return [Boolean] whether a pending invitation was just accepted
   def invitation_answered?
     saved_change_to_type_of_user? && saved_change_to_type_of_user.first == "pending" && !pending?
   end
 
   # Covers every way an invitation can be accepted (notification, email link), so the invitee's
   # notification never keeps offering a decision that was already made.
+  # Refreshes the invitee's notification so it shows the outcome instead of the buttons.
   def update_invitation_notification
     Notifications::OrganizationInvitations::Update.call(self)
   end

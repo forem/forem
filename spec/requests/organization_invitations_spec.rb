@@ -74,4 +74,20 @@ RSpec.describe "OrganizationInvitations" do
       expect(response.body).to include(decline_organization_invitation_path(membership))
     end
   end
+
+  describe "POST /users/remove_from_org" do
+    let(:admin) { create(:user) }
+
+    before do
+      create(:organization_membership, user: admin, organization: organization, type_of_user: "admin")
+      sign_in admin
+    end
+
+    it "removes the invitee's notification when an admin withdraws the invitation", :aggregate_failures do
+      expect do
+        post "/users/remove_from_org", params: { user_id: invitee.id, organization_id: organization.id }
+      end.to change(OrganizationMembership, :count).by(-1)
+        .and change(Notification, :count).by(-1)
+    end
+  end
 end

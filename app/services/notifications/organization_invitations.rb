@@ -4,6 +4,8 @@ module Notifications
   module OrganizationInvitations
     INVITED = "Invited".freeze
 
+    # Data the notification card renders from.
+    #
     # @param membership [OrganizationMembership]
     # @param inviter [User, nil] the person who sent the invitation, when known
     def self.json_data(membership, inviter: nil)

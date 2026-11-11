@@ -4,6 +4,7 @@ class OrganizationInvitationsController < ApplicationController
   before_action :set_membership
   after_action :verify_authorized
 
+  # Joins the organization.
   def accept
     authorize @membership
     @membership.confirm!
@@ -11,6 +12,7 @@ class OrganizationInvitationsController < ApplicationController
                                                       organization_name: @organization.name))
   end
 
+  # Removes the pending invitation.
   def decline
     authorize @membership
     @membership.destroy!
@@ -20,6 +22,7 @@ class OrganizationInvitationsController < ApplicationController
 
   private
 
+  # Loads the current user's own pending invitation.
   def set_membership
     # Scoped to the current user's pending invitations so other people's, and answered ones, are
     # indistinguishable from missing ones.
@@ -27,6 +30,7 @@ class OrganizationInvitationsController < ApplicationController
     @organization = @membership.organization
   end
 
+  # Redirects back (HTML) or renders a status (JSON) after an answer.
   def respond_with_result(success:, notice:)
     respond_to do |format|
       format.html do
