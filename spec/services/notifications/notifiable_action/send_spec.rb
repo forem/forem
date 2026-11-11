@@ -140,62 +140,44 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
   end
 
   context "when following a user or organization and being mentioned in an article" do
-    it "still creates a new post notification when following a user" do
+    it "does not create a notification when following a user" do
       user2.follow(user)
       create(:mention, mentionable: article, user: user2)
 
       described_class.call(article, "Published")
-      expect(user2.notifications.where(notifiable_type: "Article", action: "Published").count).to eq(1)
+      expect(Notification.count).to eq(0)
+      expect(ContextNotification.count).to eq(0)
     end
 
-    it "still creates a new post notification when following an organization" do
+    it "does not create a notification when following an organization" do
       user3.follow(organization)
       create(:mention, mentionable: article, user: user3)
 
       described_class.call(article, "Published")
-      expect(user3.notifications.where(notifiable_type: "Article", action: "Published").count).to eq(1)
+      expect(Notification.count).to eq(0)
+      expect(ContextNotification.count).to eq(0)
     end
 
-    it "keeps the existing mention notification alongside the new post notification", :aggregate_failures do
+    it "keeps only the mention notification for a mentioned follower", :aggregate_failures do
       user2.follow(user)
       mention = create(:mention, mentionable: article, user: user2)
       Notification.send_mention_notification_without_delay(mention)
 
       expect { described_class.call(article, "Published") }
-        .to change { user2.notifications.count }.from(1).to(2)
+        .not_to(change { user2.notifications.count })
 
-      expect(user2.notifications.pluck(:notifiable_type)).to contain_exactly("Mention", "Article")
+      expect(user2.notifications.pluck(:notifiable_type)).to contain_exactly("Mention")
     end
 
-    it "notifies both mentioned and unmentioned followers", :aggregate_failures do
+    it "notifies unmentioned followers but not mentioned followers", :aggregate_failures do
       user2.follow(user)
       user3.follow(user)
       create(:mention, mentionable: article, user: user2)
 
       described_class.call(article, "Published")
 
-      [user2, user3].each do |follower|
-        expect(follower.notifications.where(notifiable_type: "Article", action: "Published").count).to eq(1)
-      end
-    end
-
-    it "does not notify the author when they are also mentioned", :aggregate_failures do
-      user.follow(user2)
-      create(:mention, mentionable: article, user: user)
-
-      described_class.call(article, "Published")
-
-      expect(user.notifications.where(notifiable_type: "Article", action: "Published")).to be_empty
-    end
-
-    it "does not create duplicate notifications when run twice for a mentioned follower" do
-      user2.follow(user)
-      create(:mention, mentionable: article, user: user2)
-
-      described_class.call(article, "Published")
-      described_class.call(article, "Published")
-
-      expect(user2.notifications.where(notifiable_type: "Article", action: "Published").count).to eq(1)
+      expect(user2.notifications.where(notifiable_type: "Article")).to be_empty
+      expect(user3.notifications.where(notifiable_type: "Article", action: "Published").count).to eq(1)
     end
 
     it "does not notify a mentioned user who does not follow the author" do

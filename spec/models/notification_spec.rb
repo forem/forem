@@ -388,8 +388,7 @@ RSpec.describe Notification do
         user2.follow(user)
       end
 
-      it "notifies mentioned followers via Mention and Article, and unmentioned followers via Article",
-         :aggregate_failures do
+      it "notifies mentioned followers via Mention and unmentioned followers via Article", :aggregate_failures do
         article.update!(type_of: "full_post") # ensure it's not a status
         user3.follow(user)
 
@@ -397,9 +396,9 @@ RSpec.describe Notification do
           sidekiq_perform_enqueued_jobs do
             described_class.send_to_mentioned_users_and_followers(article) unless status_article?(article)
           end
-        end.to change(user2.notifications, :count).from(0).to(2)
+        end.to change(user2.notifications, :count).from(0).to(1)
           .and change(user3.notifications, :count).from(0).to(1)
-        expect(user2.notifications.pluck(:notifiable_type)).to contain_exactly("Mention", "Article")
+        expect(user2.notifications.first.notifiable_type).to eq("Mention")
         expect(user3.notifications.first.notifiable_type).to eq("Article")
       end
 
