@@ -1,0 +1,27 @@
+spec/requests/subforems_spec.rb
+  s_51e0b71608a264::t_7ac3ec9c4e0fb5 384,565,710
+spec/services/images/generate_social_image_magickally_spec.rb
+  s_51e0b71608a264::t_3f759e97751304 124-126,128,133,536-537,543,568-569,722-724,726
+spec/services/images/profile_image_generator_spec.rb
+  s_51e0b71608a264::t_04d426503fd569 5-7,12,14-16,35-36
+spec/uploaders/article_image_uploader_spec.rb
+  s_51e0b71608a264::t_dcb8fb545a3cae 73-74,79,85-86,88-93,106,114,123,129,137,142,148,170-197
+spec/uploaders/logo_uploader_spec.rb
+  s_51e0b71608a264::t_af7ad186224254 61-62,96,99-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e946dba41eb056ff90d8ca85c193168fd71933c4",
+  "prompts": {},
+  "sessions": {
+    "s_51e0b71608a264": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b834ce3-e642-426f-99f6-766eddfc1425",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
