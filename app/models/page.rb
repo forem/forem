@@ -1,7 +1,8 @@
 class Page < ApplicationRecord
   include LiquidEmbeddable
   extend UniqueAcrossModels
-  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt].freeze
+  EMBED_HTML_TEMPLATE = "embed_html".freeze
+  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt embed_html].freeze
 
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
@@ -16,6 +17,7 @@ class Page < ApplicationRecord
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
+  validate :validate_embed_html_constraints
   validate :body_present
   validate :validate_template_data
   validate :validate_redirect_to_url
@@ -23,6 +25,7 @@ class Page < ApplicationRecord
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
+  before_validation :normalize_embed_html_attributes
   before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
 
@@ -31,6 +34,9 @@ class Page < ApplicationRecord
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify
+
+  scope :embed_html, -> { where(template: EMBED_HTML_TEMPLATE) }
+  scope :non_embed_html, -> { where.not(template: EMBED_HTML_TEMPLATE) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if Subforem.disabled_by_env?
@@ -54,7 +60,7 @@ class Page < ApplicationRecord
   #
   # rubocop:disable Rails/OutputSafety
   def self.render_safe_html_for(slug:)
-    page = find_by(slug: slug)
+    page = non_embed_html.find_by(slug: slug)
     if page
       page.processed_html.html_safe
     else
@@ -64,7 +70,11 @@ class Page < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def self.landing_page
-    find_by(landing_page: true)
+    non_embed_html.find_by(landing_page: true)
+  end
+
+  def embed_html?
+    template == EMBED_HTML_TEMPLATE
   end
 
   def path
@@ -101,12 +111,26 @@ class Page < ApplicationRecord
 
   private
 
+  def normalize_embed_html_attributes
+    return unless embed_html?
+
+    self.is_top_level_path = false
+    self.landing_page = false
+    self.redirect_to_url = nil
+    self.page_template_id = nil
+  end
+
   def evaluate_markdown
-    if body_markdown.present?
+    if embed_html?
+      self.body_markdown = nil
+      self.processed_html = body_html
+    elsif body_markdown.present?
       renderer = ContentRenderer.new(body_markdown, source: organization)
       self.processed_html = renderer.process(link_attributes: link_attributes_for_org).processed_html
-    else
+    elsif organization_id.nil?
       self.processed_html = body_html
+    else
+      self.processed_html = ""
     end
   rescue ContentRenderer::ContentParsingError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
@@ -123,7 +147,39 @@ class Page < ApplicationRecord
     self.template = "contained" if template.blank?
   end
 
+  def validate_embed_html_constraints
+    if persisted? && template_changed? && (embed_html? || template_was == EMBED_HTML_TEMPLATE)
+      errors.add(:template, I18n.t("models.page.embed_html_template_immutable"))
+      return
+    end
+
+    return unless embed_html?
+
+    if organization.blank?
+      errors.add(:organization, I18n.t("models.page.embed_html_requires_organization"))
+      return
+    end
+
+    validate_embed_html_slug
+  end
+
+  def validate_embed_html_slug
+    return if slug.blank?
+
+    valid_format = slug.match?(%r{\A[a-z0-9_\-]+/embed/[a-z0-9\-]+\z})
+    expected_prefix = "#{organization.slug}/embed/"
+    prefix_matches = !new_record? && !slug_changed? ? true : slug.start_with?(expected_prefix)
+    return if valid_format && prefix_matches
+
+    errors.add(:slug, I18n.t("models.page.embed_html_invalid_slug"))
+  end
+
   def body_present
+    if embed_html?
+      errors.add(:body_html, I18n.t("models.page.body_must_exist")) if body_html.blank?
+      return
+    end
+
     # Skip body validation if using a page template
     return if uses_page_template?
     # Skip body validation if a redirect URL is set

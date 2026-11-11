@@ -590,6 +590,9 @@ Rails.application.routes.draw do
     end
 
     get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"
+    get "/:org_slug/embed/:slug_suffix", to: "organization_embeds#show",
+                                         as: :organization_embed_page,
+                                         constraints: { format: /html/ }
 
     # serviceworkers
     get "/serviceworker", to: "service_worker#index"

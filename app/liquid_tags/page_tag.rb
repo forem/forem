@@ -7,6 +7,17 @@ class PageTag < LiquidTagBase
   MAX_HEIGHT = 2000
   HTML_TEMPLATES = %w[contained full_within_layout nav_bar_included].freeze
   RESERVED_FIRST_SEGMENTS = %w[p t events api admin rails sidekiq settings dashboard mod].freeze
+  IFRAME_SANDBOX = OrganizationEmbedsController::SANDBOX_DIRECTIVE
+  IFRAME_ALLOW_POLICY = [
+    "camera 'none'",
+    "microphone 'none'",
+    "geolocation 'none'",
+    "payment 'none'",
+    "usb 'none'",
+    "clipboard-read 'none'",
+    "storage-access 'none'",
+    "identity-credentials-get 'none'",
+  ].join("; ").freeze
 
   STATIC_PAGE_SLUGS = {
     "/about" => { slug: "about", title: "About" },
@@ -122,7 +133,8 @@ class PageTag < LiquidTagBase
     {
       url: append_embed_params(base, query: query, fragment: fragment),
       title: target[:title],
-      page: target[:page]
+      page: target[:page],
+      sandboxed: target[:sandboxed] == true
     }
   end
   private_class_method :resolve_path
@@ -154,9 +166,11 @@ class PageTag < LiquidTagBase
       page = find_scoped_page(segments[1], subforem_id)
       return unless embeddable_standalone_page?(page)
 
-      { path: page.path, title: page.title, page: page }
+      { path: page.path, title: page.title, page: page, sandboxed: false }
     elsif segments.size == 3 && segments[1] == "p"
       resolve_organization_page(segments[0], segments[2], normalized_path)
+    elsif segments.size == 3 && segments[1] == "embed"
+      resolve_organization_embed_page(segments[0], segments[2])
     end
   end
   private_class_method :resolve_prefixed_page
@@ -165,15 +179,45 @@ class PageTag < LiquidTagBase
     org = Organization.find_by(slug: org_slug)
     return unless org && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org])
 
-    org_page = org.pages.find_by(slug: "#{org.slug}/#{page_suffix}")
+    org_page = org.pages.non_embed_html.find_by(slug: "#{org.slug}/#{page_suffix}")
     return unless org_page && embeddable_record?(org_page)
 
-    { path: normalized_path, title: org_page.title, page: org_page }
+    { path: normalized_path, title: org_page.title, page: org_page, sandboxed: false }
   end
   private_class_method :resolve_organization_page
 
+  def self.resolve_organization_embed_page(org_slug, page_suffix)
+    normalized_suffix = page_suffix.to_s.downcase
+    return unless normalized_suffix.match?(OrganizationEmbedsController::SLUG_SUFFIX_REGEXP)
+
+    org = Organization.find_by_slug_or_legacy(org_slug.to_s.downcase) # rubocop:disable Rails/DynamicFindBy
+    return unless org && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org])
+
+    org_page = find_org_embed_page(org, normalized_suffix)
+    return unless org_page && embeddable_org_html_record?(org_page)
+
+    { path: "/#{org.slug}/embed/#{normalized_suffix}", title: org_page.title, page: org_page, sandboxed: true }
+  end
+  private_class_method :resolve_organization_embed_page
+
+  def self.find_org_embed_page(org, normalized_suffix)
+    slugs = [org.slug, org.old_slug, org.old_old_slug]
+      .compact_blank
+      .uniq
+      .map { |slug| "#{slug}/embed/#{normalized_suffix}" }
+    org.pages.embed_html.find_by(slug: slugs)
+  end
+  private_class_method :find_org_embed_page
+
+  def self.embeddable_org_html_record?(page)
+    page.embed_html? &&
+      page.redirect_to_url.blank? &&
+      FeatureFlag.accessible?(page.feature_flag_name)
+  end
+  private_class_method :embeddable_org_html_record?
+
   def self.resolve_top_level_or_nested_page(segments, subforem_id)
-    return if RESERVED_FIRST_SEGMENTS.include?(segments[0]) || segments[1] == "comment"
+    return if RESERVED_FIRST_SEGMENTS.include?(segments[0]) || %w[comment embed].include?(segments[1])
 
     case segments.size
     when 1 then resolve_single_segment_page(segments[0], subforem_id)
@@ -284,6 +328,7 @@ class PageTag < LiquidTagBase
 
     @url = target[:url]
     @title = target[:title]
+    @sandboxed = target[:sandboxed] == true
     @height = parse_height(args[1])
   end
 
@@ -293,7 +338,8 @@ class PageTag < LiquidTagBase
       locals: {
         url: @url,
         title: @title,
-        height: @height
+        height: @height,
+        sandboxed: @sandboxed
       },
     )
   end
