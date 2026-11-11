@@ -34,4 +34,50 @@ RSpec.describe Articles::RelatedQuery, type: :query do
     expect { described_class.call({ q: "TimescaleDB", per_page: "xyz" }) }
       .to raise_error(Articles::RelatedQuery::InvalidRequest, /per_page/)
   end
+
+  it "matches a multi-word term only where the words are adjacent", :aggregate_failures do
+    adjacent = create(:article, title: "Tiger Data ships faster hypertables")
+    apart = create(:article, title: "A tiger at the zoo produced a lot of data")
+
+    ids = described_class.call({ q: "Tiger Data" }).ids
+
+    expect(ids).to include(adjacent.id)
+    expect(ids).not_to include(apart.id)
+  end
+
+  it "matches a phrase that contains a short connecting word" do
+    article = create(:article, title: "Notes on state of the art retrieval")
+
+    expect(described_class.call({ q: "state of the art" }).ids).to eq([article.id])
+  end
+
+  it "matches a multi-word phrase containing a hyphenated compound word", :aggregate_failures do
+    exact = create(:article, title: "Tracing microservices with Orion X-Ray in production")
+    separated = create(:article, title: "Orion guide with an unrelated X-Ray note at the end")
+    unhyphenated_parts = create(:article, title: "Orion system with x axis and ray casting")
+
+    ids = described_class.call({ q: "Orion X-Ray" }).ids
+
+    expect(ids).to eq([exact.id])
+    expect(ids).not_to include(separated.id, unhyphenated_parts.id)
+  end
+
+  it "caps multi-word phrases at MAX_SEARCH_TSQUERY_TERMS tokens while preserving punctuation" do
+    article = create(:article, title: "One two three four five six seven eight X-Ray guide")
+
+    ids = described_class.call({ q: "one two three four five six seven eight X-Ray extra" }).ids
+
+    expect(ids).to eq([article.id])
+  end
+
+  it "keeps prefix matching for single-word terms" do
+    article = create(:article, title: "TimescaleDB internals explained")
+
+    expect(described_class.call({ q: "Timescale" }).ids).to eq([article.id])
+  end
+
+  it "still rejects a term with no searchable characters" do
+    expect { described_class.call({ q: "!!!" }) }
+      .to raise_error(described_class::InvalidRequest)
+  end
 end
