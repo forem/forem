@@ -223,6 +223,39 @@ RSpec.describe Comment do
         expect(subject.errors[:base])
           .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a comment!")
       end
+
+      it "restricts untrusted users from mentioning more than mention_antispam_creation other users in a comment" do
+        other_users = create_list(:user, 3)
+        subject.commentable_type = "Article"
+        subject.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+        expect(subject).not_to be_valid
+        expect(subject.errors[:base])
+          .to include("You cannot mention more than #{Settings::RateLimit.mention_antispam_creation} users in a comment!")
+      end
+
+      it "allows trusted users to mention up to mention_creation other users in a comment" do
+        user.add_role(:trusted)
+        other_users = create_list(:user, 5)
+        subject.commentable_type = "Article"
+        subject.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+        expect(subject).to be_valid
+      end
+
+      it "blocks comments that exceed the user's hourly mention rate limit across multiple comments" do
+        other_users = create_list(:user, 5)
+        create(:comment, user: user, commentable: article,
+                         body_markdown: "@#{other_users[0].username} @#{other_users[1].username}")
+        create(:comment, user: user, commentable: article,
+                         body_markdown: "@#{other_users[2].username} @#{other_users[3].username}")
+
+        subject.commentable_type = "Article"
+        subject.body_markdown = "Hello @#{other_users[4].username}"
+
+        expect(subject).not_to be_valid
+        expect(subject.errors[:base]).to include(I18n.t("models.comment.mention_rate_limit_reached"))
+      end
     end
     # rubocop:enable RSpec/NamedSubject
 
@@ -846,6 +879,27 @@ RSpec.describe Comment do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
       create(:comment, commentable: podcast, user: user)
       expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "dependent article embed scheduling" do
+    before { allow(Articles::UpdateDependentEmbedsWorker).to receive(:schedule_for_engagement) }
+
+    it "schedules engagement updates on create and soft-delete, ignoring body edits" do
+      created_comment = create(:comment, commentable: article, user: user, body_markdown: "Initial comment")
+      created_comment.update!(body_markdown: "Edited comment body")
+      created_comment.update!(deleted: true)
+
+      expect(Articles::UpdateDependentEmbedsWorker)
+        .to have_received(:schedule_for_engagement).with(article.id).twice
+    end
+
+    it "schedules engagement updates on comment destroy" do
+      created_comment = create(:comment, commentable: article, user: user, body_markdown: "Doomed comment")
+      created_comment.destroy!
+
+      expect(Articles::UpdateDependentEmbedsWorker)
+        .to have_received(:schedule_for_engagement).with(article.id).twice
     end
   end
 end

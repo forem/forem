@@ -23,9 +23,13 @@ module Admin
     ].freeze
 
     def index
-      @podcasts = Podcast.left_outer_joins(:podcast_episodes)
-        .select("podcasts.*, count(podcast_episodes) as episodes_count")
-        .group("podcasts.id").order("podcasts.created_at" => :desc)
+      @podcasts = Podcast
+        .select(
+          "podcasts.*, (SELECT COUNT(*) FROM podcast_episodes " \
+          "WHERE podcast_episodes.podcast_id = podcasts.id) AS episodes_count",
+        )
+        .preload(:owners)
+        .order("podcasts.created_at" => :desc)
         .page(params[:page]).per(50)
 
       return if params[:search].blank?
@@ -33,9 +37,7 @@ module Admin
       @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%")
     end
 
-    def edit
-      @podcast_ownership = Podcast.find(params[:id])
-    end
+    def edit; end
 
     def update
       if @podcast.update(podcast_params)

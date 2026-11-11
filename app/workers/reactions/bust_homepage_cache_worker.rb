@@ -15,11 +15,7 @@ module Reactions
       return unless reaction.reactable
 
       reaction.reactable.touch
-      cache_bust = EdgeCache::Bust.new
-      cache_bust.call("/")
-      cache_bust.call("/")
-      cache_bust.call("/?i=i")
-      cache_bust.call("?i=i")
+      EdgeCache::PurgeByKey.call("main_app_home_page", fallback_paths: "/")
     end
   end
 end

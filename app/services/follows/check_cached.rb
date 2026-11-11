@@ -57,13 +57,25 @@ module Follows
     def cache_key
       return unless follower
 
-      formatted_updated_at = follower.updated_at.respond_to?(:rfc3339) ? follower.updated_at.rfc3339 : follower.updated_at.to_s
-      "user-#{follower.id}-#{formatted_updated_at}/is_following_#{followable_type}_#{followable_id}"
+      @cache_key ||=
+        "user-#{follower.id}-#{formatted_follower_updated_at}/is_following_#{followable_type}_#{followable_id}"
     end
 
     private
 
     attr_accessor :follower, :followable_type, :followable_id
+
+    def formatted_follower_updated_at
+      ts = follower.updated_at
+      if follower.instance_variable_defined?(:@rfc3339_cache_pair)
+        cached_ts, cached_str = follower.instance_variable_get(:@rfc3339_cache_pair)
+        return cached_str if cached_ts == ts
+      end
+
+      formatted = ts.respond_to?(:rfc3339) ? ts.rfc3339 : ts.to_s
+      follower.instance_variable_set(:@rfc3339_cache_pair, [ts, formatted]) unless follower.frozen?
+      formatted
+    end
 
     def following?
       # following? only reads the followable's id and class, so skip hydrating the full row

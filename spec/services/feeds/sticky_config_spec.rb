@@ -150,6 +150,29 @@ RSpec.describe Feeds::StickyConfig do
       expect(FeedConfigAssignment.where(user: user).pluck(:subforem_id)).to contain_exactly(nil, subforem.id)
       expect(FeedConfigAssignment.where(user: other_user).count).to eq(1)
     end
+
+    it "reuses an active unexpired assignment without acquiring advisory or row locks" do
+      create(:feed_config_assignment, user: user, feed_config: config, expires_at: 1.hour.from_now)
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(sticky_selector.select).to eq(config)
+      end
+
+      expect(queries.grep(/pg_advisory_xact_lock|FOR UPDATE|SAVEPOINT/)).to be_empty
+    end
+
+    it "does not query feed_configs with IS NULL when no assignment exists yet" do
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(sticky_selector.select).to eq(config)
+      end
+
+      expect(queries.grep(/FROM "feed_configs".*"id" IS NULL/)).to be_empty
+    end
   end
 
   context "with concurrent requests" do

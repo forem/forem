@@ -408,6 +408,15 @@ en:
         mention:
           title: Mention title
           description: Mention description
+        mention_antispam:
+          title: Mention antispam title
+          description: Mention antispam description
+        mention_hourly:
+          title: Mention hourly title
+          description: Mention hourly description
+        mention_antispam_hourly:
+          title: Mention antispam hourly title
+          description: Mention antispam hourly description
         organization:
           title: Organization title
           description: Organization description
@@ -570,6 +579,14 @@ en:
         title: API AI image generation window (seconds)
         description: Length of the window, in seconds, for the API AI image generation
           limit (e.g. 86400 for one day).
+      agent_session_presign:
+        title: Limit number of agent session upload URLs
+        description: How many presigned agent session upload URLs can someone request
+          within the agent session upload window? Set to 0 to disable raw transcript uploads.
+      agent_session_presign_window:
+        title: Agent session upload window (seconds)
+        description: Length of the window, in seconds, for the agent session upload URL
+          limit (e.g. 3600 for one hour).
       user:
         title: Limit number of changes someone can make to their account
         description: How many changes can someone make to their user account within
@@ -596,6 +613,15 @@ en:
         title: Limit number of @-mentions in a post or comment
         description: How many times can someone @-mention other users in a post or
           comment?
+      mention_antispam:
+        title: Limit number of @-mentions in a post or comment by a new or low-trust member
+        description: How many other users can a new or low-trust member @-mention in a single post or comment?
+      mention_hourly:
+        title: Limit number of @-mentions per hour
+        description: How many other users can an established member @-mention within any 1 hour period?
+      mention_antispam_hourly:
+        title: Limit number of @-mentions per hour by a new or low-trust member
+        description: How many other users can a new or low-trust member @-mention within any 1 hour period?
       listing:
         title: Limit number of listings created
         description: How many listings can someone create within any 1 minute period?

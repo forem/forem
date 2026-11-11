@@ -2,14 +2,15 @@ require "rails_helper"
 
 RSpec.describe "Tags", :proper_status do
   describe "GET /tags" do
-    it "returns proper page and excludes tags with alias", :aggregate_failures do
-      create(:tag, name: "ruby")
-      create(:tag, name: "javascript", alias_for: "")
+    it "returns proper page, excludes tags with alias, and sets Surrogate-Key", :aggregate_failures do
+      ruby_tag = create(:tag, name: "ruby")
+      js_tag = create(:tag, name: "javascript", alias_for: "")
       create(:tag, name: "aliastag", alias_for: "ruby")
 
       get tags_path
       expect(response.body).to include("Tags", "ruby", "javascript")
       expect(response.body).not_to include("aliastag")
+      expect(response.headers["Surrogate-Key"].split).to include("tags", ruby_tag.record_key, js_tag.record_key)
     end
 
     it "searches tags", :aggregate_failures do

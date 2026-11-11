@@ -1,5 +1,13 @@
 class ReactionsController < ApplicationController
-  before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+  before_action :set_cache_control_headers,
+                only: [:index],
+                unless: -> { session_or_remembered_user_id || cookies[:remember_user_token].present? }
+  skip_before_action :remember_cookie_sync,
+                     :forward_to_app_config_domain,
+                     :redirect_custom_domain_non_profile_pages,
+                     :determine_locale,
+                     :set_request_signed_in_context,
+                     only: [:index]
   before_action :authorize_for_reaction, :check_limit, only: [:create]
   after_action :verify_authorized
 
@@ -8,43 +16,25 @@ class ReactionsController < ApplicationController
 
   def index
     skip_authorization
+    user_id = session_or_remembered_user_id
+    request.session_options[:skip] = true unless remembered_user_restored?
 
-    if params[:article_id]
-      id = params[:article_id]
-
-      reactions = reactions_by_user_id(session_current_user_id) if session_current_user_id
-      reactions ||= Reaction.none
-
-      result = { article_reaction_counts: Reaction.count_for_article(id) }
-    else
-      comments = Comment
-        .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
-        .select(%i[id public_reactions_count])
-
-      reaction_counts = comments.map do |comment|
-        { id: comment.id, count: comment.public_reactions_count }
-      end
-
-      reactions = if session_current_user_id
-                    comment_ids = reaction_counts.pluck(:id) # rubocop:disable Rails/PluckId
-                    cached_user_public_comment_reactions(current_user, comment_ids)
-                  else
-                    Reaction.none
-                  end
-
-      result = { public_reaction_counts: reaction_counts }
-    end
+    reactions, result, has_reactions = if params[:article_id]
+                                         article_reactions_payload(params[:article_id], user_id)
+                                       else
+                                         comment_reactions_payload(user_id)
+                                       end
 
     render json: {
-      current_user: { id: session_current_user_id },
+      current_user: { id: user_id },
       reactions: reactions
     }.merge(result).to_json
 
-    if !session_current_user_id
-      surrogate_key = reactions_surrogate_key
-      set_surrogate_key_header(surrogate_key) if surrogate_key
-      set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i)
-    end
+    return if user_id || cookies[:remember_user_token].present?
+
+    surrogate_key = reactions_surrogate_key(has_reactions: has_reactions)
+    set_surrogate_key_header(surrogate_key) if surrogate_key
+    set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i)
   end
 
   # @todo Extract this method into a service class (or classes)
@@ -74,22 +64,54 @@ class ReactionsController < ApplicationController
 
   private
 
-  def reactions_surrogate_key
+  def article_reactions_payload(article_id, user_id)
+    reactions = user_id ? reactions_by_user_id(user_id) : Reaction.none
+    counts = Reaction.count_for_article(article_id)
+    has_reactions = counts.any? { |entry| entry[:count].to_i.positive? }
+    [reactions, { article_reaction_counts: counts }, has_reactions]
+  end
+
+  def comment_reactions_payload(user_id)
+    comment_rows = Comment
+      .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
+      .pluck(:id, :public_reactions_count)
+    reaction_counts = comment_rows.map { |cid, count| { id: cid, count: count } }
+    reactions = if user_id && comment_rows.any?
+                  viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: user_id)
+                  viewer ? cached_user_public_comment_reactions(viewer, comment_rows.map(&:first)) : Reaction.none
+                else
+                  Reaction.none
+                end
+    [reactions, { public_reaction_counts: reaction_counts }, comment_rows.any?]
+  end
+
+  def reactions_surrogate_key(has_reactions: false)
     if params[:article_id]
-      article_id = Article.where(id: params[:article_id]).pick(:id)
-      return Reaction.surrogate_key_for_article(article_id) if article_id
+      article_id = positive_id_param(params[:article_id]) if has_reactions
+      article_id ||= Article.where(id: params[:article_id]).pick(:id)
+      Reaction.surrogate_key_for_article(article_id) if article_id
     else
-      commentable = commentable_for_reactions
-      return Reaction.surrogate_key_for_commentable(commentable) if commentable
+      commentable = commentable_for_reactions(has_reactions: has_reactions)
+      Reaction.surrogate_key_for_commentable(commentable) if commentable
     end
   end
 
-  def commentable_for_reactions
+  def commentable_for_reactions(has_reactions: false)
     return unless params[:commentable_id] && params[:commentable_type]
     return unless params[:commentable_type].in?(Comment::COMMENTABLE_TYPES)
 
+    commentable_klass = params[:commentable_type].constantize
+    if has_reactions && (commentable_id = positive_id_param(params[:commentable_id]))
+      return commentable_klass.new(id: commentable_id)
+    end
+
     # Only the id is needed for the surrogate key; avoid hydrating large text columns.
-    params[:commentable_type].constantize.select(:id).find_by(id: params[:commentable_id])
+    commentable_klass.select(:id).find_by(id: params[:commentable_id])
+  end
+
+  def positive_id_param(raw_id)
+    id = Integer(raw_id.to_s, 10, exception: false)
+    id if id&.positive?
   end
 
   def check_limit
@@ -138,7 +160,7 @@ class ReactionsController < ApplicationController
       Settings::General.algolia_application_id.present? &&
       Settings::General.algolia_api_key.present?
 
-    AlgoliaInsightsService.new.track_event(
+    AlgoliaInsights::TrackEventWorker.perform_async(
       "conversion",
       "Reaction Created",
       session_current_user_id,
@@ -146,7 +168,8 @@ class ReactionsController < ApplicationController
       "Article_#{Rails.env}",
       Time.current.to_i * 1000,
       nil,
-      nil
+      nil,
+      RequestStore.store[:subforem_id],
     )
   end
 end

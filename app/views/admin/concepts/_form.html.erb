@@ -12,7 +12,7 @@
   <div class="crayons-field mt-3">
     <%= f.label :parent_id, "Parent Concept", class: "crayons-field__label" %>
     <% 
-      parent_options = Concept.order(:name)
+      parent_options = Concept.select(:id, :name).order(:name)
       parent_options = parent_options.where.not(id: concept.id) if concept.persisted?
     %>
     <%= f.select :parent_id, options_from_collection_for_select(parent_options, :id, :name, concept.parent_id), { include_blank: "None" }, class: "crayons-select" %>

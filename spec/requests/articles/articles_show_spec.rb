@@ -404,4 +404,44 @@ RSpec.describe "ArticlesShow" do
       end
     end
   end
+
+  context "when rendering series and co-authors" do
+    it "reuses the loaded author for collection.path and queries co-authors only once with narrow columns",
+       :aggregate_failures do
+      collection = create(:collection, :with_articles, user: user, amount: 2)
+      co_author = create(:user)
+      article.update_columns(collection_id: collection.id, co_author_ids: [co_author.id])
+
+      user_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        next if payload[:cached] || payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        user_queries << sql if sql.include?('FROM "users"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(collection.path, co_author.path, co_author.name)
+      expect(user_queries.size).to eq(2)
+      expect(user_queries.count { |sql| sql.include?('SELECT "users".*') }).to eq(1)
+      expect(user_queries.count { |sql| sql.include?('SELECT "users"."name", "users"."username"') }).to eq(1)
+    end
+
+    it "still loads the collection owner when an organization collection belongs to another user" do
+      org = create(:organization)
+      other_owner = create(:user)
+      collection = create(:collection, user: other_owner, organization: org)
+      second_article = create(:article, user: other_owner, published: true)
+      Article.where(id: [article.id, second_article.id]).update_all(collection_id: collection.id)
+
+      get article.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(collection.path)
+    end
+  end
 end

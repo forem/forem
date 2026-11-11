@@ -12,6 +12,8 @@ module Authentication
   # 2. update an existing user and align it to its authentication identity
   # 3. return the current user if a user is given (already logged in scenario)
   class Authenticator
+    MAX_RETRIES = 1
+
     # @api public
     #
     # @see #initialize method for parameters
@@ -35,6 +37,17 @@ module Authentication
 
     # @api private
     def call
+      with_uniqueness_retry { authenticate! }
+    rescue StandardError => e
+      # Notify DataDog if something goes wrong in the transaction,
+      # and then ensure that we re-raise and bubble up the error.
+      ForemStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
+      raise e
+    end
+
+    private
+
+    def authenticate!
       identity = Identity.build_from_omniauth(provider)
       guard_against_spam_from!(identity: identity)
 
@@ -50,7 +63,7 @@ module Authentication
       new_mlh_identity = false
       id_provider, authed_user = nil
 
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction(requires_new: true) do
         user = proper_user(identity)
         verify_expected_user!(user)
 
@@ -68,8 +81,6 @@ module Authentication
         log_to_datadog = new_identity && successful_save
         id_provider = identity.provider
 
-        flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
-
         # A newly linked mlh identity puts the MLH Core user id (its uid) into
         # User#trackable_payload, so surface a user_updated to the DEV → Core
         # sync — which keys off profile_updated_at.
@@ -77,6 +88,7 @@ module Authentication
         user.profile_updated_at = Time.current if new_mlh_identity
 
         user.save!
+        flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
         authed_user = user
       end
 
@@ -89,14 +101,7 @@ module Authentication
 
       # Return the successfully-authed used from the transaction.
       authed_user
-    rescue StandardError => e
-      # Notify DataDog if something goes wrong in the transaction,
-      # and then ensure that we re-raise and bubble up the error.
-      ForemStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
-      raise e
     end
-
-    private
 
     def guard_against_spam_from!(identity:)
       domain = identity.email.split("@")[-1]
@@ -178,12 +183,12 @@ module Authentication
 
       raise ::Authentication::Errors::Ineligible if candidate.spam_or_suspended?
 
-      raise ::Authentication::Errors::AccountSwitchConfirmation.new(candidate)
+      raise ::Authentication::Errors::AccountSwitchConfirmation, candidate
     end
 
     def verified_email_user
-      email = provider.user_email
-      return nil if email.blank?
+      email = normalized_user_email
+      return if email.blank?
 
       user = User.find_by(email: email)
       user&.confirmed? ? user : nil
@@ -203,10 +208,38 @@ module Authentication
       elsif identity.user
         Rails.logger.debug { "Identity user found: #{identity.user.id}" }
         identity.user
-      elsif provider.user_email.present?
-        user = User.find_by(email: provider.user_email)
+      elsif normalized_user_email.present?
+        user = User.find_by(email: normalized_user_email)
         Rails.logger.debug { "User found by email: #{user&.id}" }
         user
+      end
+    end
+
+    def normalized_user_email
+      provider.user_email.to_s.strip.downcase.presence
+    end
+
+    def with_uniqueness_retry
+      retries = 0
+      begin
+        yield
+      rescue ActiveRecord::RecordNotUnique
+        raise unless retries < MAX_RETRIES
+
+        retries += 1
+        retry
+      rescue ActiveRecord::RecordInvalid => e
+        raise unless retries < MAX_RETRIES && uniqueness_error?(e)
+
+        retries += 1
+        retry
+      end
+    end
+
+    def uniqueness_error?(error)
+      taken_message = I18n.t("validators.cross_model_slug_validator.is_taken")
+      error.record&.errors&.details&.values&.flatten&.any? do |detail|
+        detail[:error] == :taken || detail[:error] == taken_message
       end
     end
 

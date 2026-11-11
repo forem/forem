@@ -9,12 +9,14 @@ RSpec.describe "/admin/content_manager/organizations org features" do
     FeatureFlag.add(:org_readme)
     FeatureFlag.add(:org_lead_forms)
     FeatureFlag.add(:org_verification)
+    FeatureFlag.add(:org_related_articles)
   end
 
   after do
     FeatureFlag.disable(:org_readme)
     FeatureFlag.disable(:org_lead_forms)
     FeatureFlag.disable(:org_verification)
+    FeatureFlag.disable(:org_related_articles)
   end
 
   describe "PATCH /admin/organizations/:id/update_org_feature" do
@@ -86,6 +88,35 @@ RSpec.describe "/admin/content_manager/organizations org features" do
       expect(flash[:notice]).to include("disabled")
     end
 
+    it "enables org_related_articles for an organization" do
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_related_articles", enabled: "true" }
+
+      expect(FeatureFlag.enabled?(:org_related_articles, FeatureFlag::Actor[organization])).to be(true)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("enabled")
+    end
+
+    it "disables org_related_articles for an organization" do
+      FeatureFlag.enable(:org_related_articles, FeatureFlag::Actor[organization])
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_related_articles", enabled: "false" }
+
+      expect(FeatureFlag.enabled?(:org_related_articles, FeatureFlag::Actor[organization])).to be(false)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("disabled")
+    end
+
+    it "leaves other organizations untouched when enabling org_related_articles" do
+      other = create(:organization)
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_related_articles", enabled: "true" }
+
+      expect(FeatureFlag.enabled?(:org_related_articles, FeatureFlag::Actor[other])).to be(false)
+    end
+
     it "rejects unknown feature names" do
       patch update_org_feature_admin_organization_path(organization),
             params: { feature: "org_evil_feature", enabled: "true" }
@@ -143,6 +174,19 @@ RSpec.describe "/admin/content_manager/organizations org features" do
       expect(response.body).to include(I18n.t("views.admin.organizations.org_features.readme.disable"))
       expect(response.body).not_to include(I18n.t("views.admin.organizations.org_features.readme.enable"))
       expect(response.body).to include(I18n.t("views.admin.organizations.org_features.readme.enabled_notice"))
+    end
+
+    it "shows the saved related articles state after a toggle" do
+      as_stale_worker { get admin_organization_path(organization) }
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_related_articles", enabled: "true" }
+
+      as_stale_worker { follow_redirect! }
+
+      expect(response.body).to include(I18n.t("views.admin.organizations.org_features.related_articles.disable"))
+      expect(response.body)
+        .to include(I18n.t("views.admin.organizations.org_features.related_articles.enabled_notice"))
     end
 
     it "submits the opposite of the saved state on the next click" do

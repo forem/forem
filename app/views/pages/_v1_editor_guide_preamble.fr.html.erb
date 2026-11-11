@@ -1,34 +1,42 @@
-<style>
-  .permalink-heading svg {
-    fill: currentColor;
-    visibility: hidden;
-  }
+<p>
+  <em>
+    <strong>Notre éditeur propose deux versions</strong>.
+    Si vous préférez modifier le titre et les tags dans des champs séparés, passez à l'option « rich + markdown » dans
+    <a href="<%= user_settings_path(:customization) %>">Paramètres → Personnalisation</a>.
+  </em>
+</p>
 
-  .permalink-heading a:focus svg,
-  .permalink-heading:hover svg {
-    visibility: visible;
-  }
+<details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+  <summary class="fs-xl fw-bold cursor-pointer" id="things-to-know">
+    Bon à savoir
+  </summary>
+  <div class="mt-3">
+    <ul>
+      <li>Cet éditeur utilise le <a href="https://jekyllrb.com/docs/frontmatter">front matter Jekyll</a> et inclut la même barre d'outils de mise en forme Markdown que l'éditeur enrichi.</li>
+      <li>La plupart du temps, vous pouvez écrire du HTML directement dans vos articles.</li>
+      <li>Nous prenons en charge les balises Liquid natives et personnalisées ! Essayez d'intégrer un Tweet, une vidéo YouTube ou une issue GitHub avec l'URL complète : <code>{% embed https://... %}</code>.</li>
+      <li>Ajoutez jusqu'à quatre tags séparés par des virgules par article et utilisez un titre clair et descriptif avec des mots-clés pertinents.</li>
+      <li>Les liens vers les articles non publiés (brouillons ou articles programmés) peuvent être partagés pour relecture.</li>
+      <li>Lorsque vous êtes prêt à publier, définissez la variable <code>published</code> sur <strong>true</strong> ou cliquez sur Publier.</li>
+    </ul>
+  </div>
+</details>
 
-</style>
-<h1 id="things-to-know" class="permalink-heading"><strong>Things to Know</strong><a href="#things-to-know" aria-label="permalink for Things to know"><%= crayons_icon_tag("small-link", aria_hidden: true) %></a></h1>
-<ul>
-  <li>We use a markdown editor that uses <a href="https://jekyllrb.com/docs/frontmatter">Jekyll front matter</a>.</li>
-  <li>Most of the time, you can write inline HTML directly into your posts.</li>
-  <li>We support native Liquid tags and created some fun custom ones, too! Trying embedding a Tweet or GitHub issue in your post, using the complete URL: <code>{% embed https://... %}</code>.</li>
-  <li>Links to unpublished posts are shareable for feedback/review.</li>
-  <li>When you're ready to publish, set the published variable to <strong>true.</strong></li>
-</ul>
-
-<p><em><b>We have two editor versions</b>. If you'd prefer to edit title and tags etc. as separate fields, switch to the "rich + markdown" option in <a href="<%= user_settings_path(:customization) %>">Settings → Customization</a>. Otherwise, continue:</em></p>
-
-<h2 id="front-matter" class="permalink-heading"><u><strong>Front Matter</strong></u><a href="#front-matter" aria-label="permalink for Front matter"><%= crayons_icon_tag("small-link", aria_hidden: true) %></a></h2>
-<p>Custom variables set for each post, located between the triple-dashed lines in your editor Here is a list of possibilities:</p>
-<ul>
-  <li><strong>title:</strong> the title of your article</li>
-  <li><strong>published:</strong> boolean that determines whether or not your article is published</li>
-  <li><strong>description:</strong> description area in Twitter cards and open graph cards</li>
-  <li><strong>tags:</strong> max of four tags, needs to be comma-separated</li>
-  <li><strong>canonical_url:</strong> link for the canonical version of the content</li>
-  <li><strong>cover_image:</strong> cover image for post, accepts a URL. <br>The best size is 1000 x 420.</li>
-  <li><strong>series:</strong> post series name.</li>
-</ul>
+<details class="crayons-details p-3 mb-2 bg-base-inverted border border-base-20 radius-auto">
+  <summary class="fs-xl fw-bold cursor-pointer" id="front-matter">
+    Front Matter
+  </summary>
+  <div class="mt-3">
+    <p>Variables personnalisées définies pour chaque article, situées entre les triples tirets (<code>---</code>) en haut de votre éditeur :</p>
+    <ul>
+      <li><strong>title:</strong> le titre de votre article</li>
+      <li><strong>published:</strong> booléen qui détermine si votre article est publié ou non</li>
+      <li><strong>description:</strong> description affichée dans les cartes Twitter et Open Graph</li>
+      <li><strong>tags:</strong> quatre tags maximum, séparés par des virgules</li>
+      <li><strong>canonical_url:</strong> lien vers la version canonique du contenu</li>
+      <li><strong>cover_image:</strong> image de couverture de l'article, accepte une URL (taille idéale : 1000 x 420)</li>
+      <li><strong>series:</strong> nom de la série d'articles</li>
+      <li><strong>ai_disclosure_level:</strong> déclaration d'utilisation de l'IA (<code>not_disclosed</code>, <code>no_ai</code>, <code>some_ai</code>, <code>fully_autonomous</code>)</li>
+    </ul>
+  </div>
+</details>

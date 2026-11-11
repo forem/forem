@@ -65,7 +65,7 @@ class ArticlesController < ApplicationController
                 else
                   Array.wrap(@user&.record_key)
                 end
-    set_surrogate_key_header(*[user_keys, @articles.map(&:record_key)].flatten.compact)
+    set_surrogate_key_header("articles-feed", *user_keys, @tag&.record_key, *@articles.map(&:record_key))
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
     render layout: false, content_type: "application/xml", locals: {
@@ -246,6 +246,10 @@ class ArticlesController < ApplicationController
     authorize @article
     @organization_id = @article.organization_id
     @reactions = @article.reactions.public_category.order(created_at: :desc).limit(500).includes(:user)
+    # Gems are stored on the article itself rather than as Reactions, so they
+    # are surfaced separately in the Reaction History.
+    @gem_given_by = @article.favorited_by_user
+    @gem_given_at = @article.favorited_at
   end
 
   def admin_unpublish
@@ -304,14 +308,17 @@ class ArticlesController < ApplicationController
     @user = current_user
     @version = @user.setting.editor_version if @user
     @organizations = @user&.member_organizations
-    # Tag names are required, so a blank template can never match; skip the lookup.
-    @tag = Tag.find_by(name: params[:template]) if params[:template].present?
+    # Signed-out GET /new(:template) renders only the sign-in prompt, and Articles::Builder
+    # only reads name and submission_template when building a tag-prefilled draft for a user.
+    if @user && params[:template].present?
+      @tag = Tag.select(:id, :name, :submission_template).find_by(name: params[:template])
+    end
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
 
   def handle_user_or_organization_feed
-    if (@user = User.find_by(username: params[:username]))
+    if (@user = User.select(:id, :name, :username, :profile_image).find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)
     elsif (@user = Organization.find_by(slug: params[:username]))
       @articles = @articles.where(organization_id: @user.id)

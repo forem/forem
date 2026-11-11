@@ -45,7 +45,7 @@ gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
-gem "honeybadger", "~> 5.1" # Used for tracking application errors
+gem "honeybadger", "~> 5.1", require: false # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.11.0", require: false # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.24" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -63,7 +63,6 @@ gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "logtail-rails", "~> 0.2.12", require: false # Ships Rails logs to Better Stack when BETTERSTACK_SOURCE_TOKEN is set (see lib/betterstack/log_device.rb and config/initializers/betterstack.rb before upgrading)
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
-gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.18" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 10.0" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
@@ -101,7 +100,6 @@ gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
-gem "rouge", "~> 4.7" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3

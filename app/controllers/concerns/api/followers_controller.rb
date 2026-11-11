@@ -10,7 +10,11 @@ module Api
     private_constant :USERS_ATTRIBUTES_FOR_SERIALIZATION
 
     def users
+      # Filtering `blocked: false` aligns the `created_at` sort with
+      # `index_follows_on_followable_blocked_and_created_at` instead of scanning
+      # `index_follows_on_created_at` or sorting `fk_followables` in memory.
       @follows = Follow.non_suspended("User", @user.id)
+        .where(blocked: false)
         .includes(:follower)
         .select(USERS_ATTRIBUTES_FOR_SERIALIZATION)
         .order(order_criteria)

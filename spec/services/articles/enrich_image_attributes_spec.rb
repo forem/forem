@@ -306,5 +306,65 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
       expect(article.processed_html).to include('width="350"')
       expect(article.processed_html).to include('height="150"')
     end
+
+    it "strips markdown image title suffixes and skips regional S3 bucket URLs when storing images" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return("dev-to-uploads")
+      allow(ArticleImageUploader).to receive(:resolve_public_ip).and_call_original
+      allow(ArticleImageUploader).to receive(:resolve_public_ip).with("example.com").and_return("192.0.2.10")
+      allow(ArticleImageUploader).to receive(:resolve_public_ip)
+        .with("dev-to-uploads.s3.us-east-2.amazonaws.com").and_return("192.0.2.11")
+
+      stored_file = instance_double(CarrierWave::SanitizedFile, exists?: false)
+      uploader = instance_double(
+        ArticleImageUploader,
+        upload_from_url: "https://dev-to-uploads.s3.amazonaws.com/out.png",
+        retrieve_from_store!: nil,
+        file: stored_file,
+      )
+      allow(ArticleImageUploader).to receive(:new).and_return(uploader)
+      allow(FastImage).to receive(:new).and_return(instance_double(FastImage, size: [100, 100], type: :png))
+
+      article.update(
+        body_markdown: <<~MD,
+          ![arch](https://example.com/diagram.png "Architecture Overview")
+          ![already](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/existing.png)
+          ![private](http://127.0.0.1/secret.png)
+          ![metadata](http://169.254.169.254/latest/meta-data/iam)
+          ![relative](./local-diagram.png)
+        MD
+      )
+
+      described_class.call(article)
+
+      expect(MediaStore.pluck(:original_url)).to eq(["https://example.com/diagram.png"])
+    end
+
+    it "binds Net::HTTP#ipaddr to the validated public IP and blocks redirects to private hosts" do
+      uploader = ArticleImageUploader.new
+      allow(ArticleImageUploader).to receive(:resolve_public_ip).and_call_original
+      allow(ArticleImageUploader).to receive(:resolve_public_ip).with("cdn.example.com").and_return("192.0.2.10")
+
+      redirect_response = Net::HTTPFound.new("1.1", "302", "Found")
+      redirect_response["location"] = "http://169.254.169.254/latest/meta-data/"
+      http_double = instance_double(
+        Net::HTTP,
+        :use_ssl= => nil,
+        :open_timeout= => nil,
+        :read_timeout= => nil,
+        :ipaddr= => nil,
+      )
+      allow(Net::HTTP).to receive(:new).with("cdn.example.com", 443).and_return(http_double)
+      allow(http_double).to receive(:start).and_return(redirect_response)
+
+      expect(uploader.upload_from_url("https://cdn.example.com/image.png")).to be_nil
+      expect(http_double).to have_received(:ipaddr=).with("192.0.2.10")
+    end
+
+    it "skips malformed img src attributes without raising URI::InvalidURIError" do
+      article.update_column(:processed_html, '<p><img src="http://example.com/bad uri with spaces.png"></p>')
+
+      expect { described_class.call(article) }.not_to raise_error
+    end
   end
 end

@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "/admin/member_manager/users" do
-  let(:user) do
+  let(:user) { create(:user) }
+  let(:github_user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
   end
@@ -18,14 +19,9 @@ RSpec.describe "/admin/member_manager/users" do
   end
 
   describe "GET /admin/member_manager/users" do
-    it "renders to appropriate page" do
+    it "renders the users index without querying roles separately for each user displayed", :aggregate_failures do
       username = user.username
-      get admin_users_path
-      expect(response.body).to include(username)
-    end
-
-    it "does not query roles separately for each user displayed" do
-      create_list(:user, 2)
+      create(:user)
       scoped_role_queries = []
       subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
         sql = payload[:sql]
@@ -35,13 +31,14 @@ RSpec.describe "/admin/member_manager/users" do
       ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { get admin_users_path }
 
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include(username)
       expect(scoped_role_queries).to be_empty
     end
 
     context "when searching" do
       it "finds the proper user by GitHub username" do
-        get "#{admin_users_path}?search=#{user.github_username}"
-        expect(response.body).to include(CGI.escapeHTML(user.github_username))
+        get "#{admin_users_path}?search=#{github_user.github_username}"
+        expect(response.body).to include(CGI.escapeHTML(github_user.github_username))
       end
     end
 
@@ -83,6 +80,7 @@ RSpec.describe "/admin/member_manager/users" do
 
   describe "GET /admin/member_manager/users/:id" do
     it "renders the overview tab with contact links, roles, banish button, flags, and reports", :aggregate_failures do
+      user = github_user
       vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
       report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
 
@@ -116,6 +114,7 @@ RSpec.describe "/admin/member_manager/users" do
     end
 
     it "displays OAuth identity emails that differ from the primary email" do
+      user = github_user
       oauth_email = "github-oauth@example.com"
       omniauth_mock_github_payload
       auth = OmniAuth.config.mock_auth[:github].dup
@@ -139,35 +138,18 @@ RSpec.describe "/admin/member_manager/users" do
       expect { get admin_user_path(user.id) }.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "shows the subforem domain for a subforem moderator role" do
-      subforem = create(:subforem)
-      user.add_role(:subforem_moderator, subforem)
-
-      get admin_user_path(user.id)
-
-      expect(response).to be_successful
-      expect(response.body).to include(subforem.domain)
-    end
-
-    it "does not show an unrelated tag's name for a subforem moderator role" do
+    it "renders subforem moderator domain (without colliding tag name) and podcast admin roles", :aggregate_failures do
       tag = create(:tag)
       subforem = create(:subforem, id: tag.id)
-      user.add_role(:subforem_moderator, subforem)
-
-      get admin_user_path(user.id)
-
-      expect(response.body).to include(subforem.domain)
-      expect(response.body).not_to include(tag.name)
-    end
-
-    it "renders the page for a user with a podcast admin role" do
       podcast = create(:podcast)
+      user.add_role(:subforem_moderator, subforem)
       user.add_role(:podcast_admin, podcast)
 
       get admin_user_path(user.id)
 
       expect(response).to be_successful
-      expect(response.body).to include("Podcast Admin")
+      expect(response.body).to include(subforem.domain, "Podcast Admin")
+      expect(response.body).not_to include(tag.name)
     end
 
     it "displays a user's current roles in the 'Emails' tab" do
@@ -188,11 +170,14 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("No flags received against this user&#39;s posts or comments yet.")
     end
 
-    it "lists a flag on the user's comment once, with its mark-as-invalid action, in the 'Flags' tab",
+    it "lists flags on the user's comment and article once, with mark-as-invalid action, in the 'Flags' tab",
        :aggregate_failures do
-      article = create(:article)
+      article = create(:article, user: user, with_tags: false, with_main_image: false)
       comment = create(:comment, user: user, commentable: article)
       reaction = create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+      non_vomit_reaction = create(:reaction, category: "like", reactable: comment, user: user)
+      article_vomit = create(:reaction, category: "vomit", reactable: article, user: admin, status: "valid")
+      article_like = create(:reaction, category: "like", reactable: article, user: user)
 
       get "#{admin_user_path(user.id)}?tab=flags"
 
@@ -200,21 +185,16 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(CGI.escapeHTML("Comment on \"#{article.title}\""))
       expect(response.body).to include(comment.path)
       expect(response.body).to include(admin_reaction_path(reaction.id))
+      expect(response.body).not_to include(admin_reaction_path(non_vomit_reaction.id))
+      expect(response.body).to include(CGI.escapeHTML("Post \"#{article.title}\""))
+      expect(response.body).to include(article.path)
+      expect(response.body).to include(admin_reaction_path(article_vomit.id))
+      expect(response.body).not_to include(admin_reaction_path(article_like.id))
       expect(response.body).to include("Mark as Invalid")
       # The flag dropdown script is included only once when both flag lists render
       expect(response.body.scan("flagReactionItemDropdownButton").size).to eq(1)
       # Content flags are not listed in the account flags section
       expect(response.body).to include("No flags received against this user yet.")
-    end
-
-    it "lists a flag left on the user's article in the 'Flags' tab" do
-      article = create(:article, user: user)
-      create(:reaction, category: "vomit", reactable: article, user: admin, status: "valid")
-
-      get "#{admin_user_path(user.id)}?tab=flags"
-
-      expect(response.body).to include(CGI.escapeHTML("Post \"#{article.title}\""))
-      expect(response.body).to include(article.path)
     end
 
     it "displays a user's current reports and the empty-state message in the 'Reports' tab", :aggregate_failures do
@@ -223,28 +203,95 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("No comment or post has been reported yet.")
     end
 
-    it "displays unpublish all data from logs when it exists on unpublish_alls tab" do
-      article = create(:article, user: user, published: false)
-      create(:audit_log, user: admin, slug: "unpublish_all_articles",
-                         data: { target_article_ids: [article.id], target_user_id: user.id })
-      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
-      expect(response.body).to include("Unpublished by")
-      expect(response.body).to include(CGI.escapeHTML(article.title))
-    end
-
-    it "displays a label if an unpublished post was republished" do
-      article = create(:article, user: user, published: true)
-      create(:audit_log, user: admin, slug: "unpublish_all_articles",
-                         data: { target_article_ids: [article.id], target_user_id: user.id })
-      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
-      expect(response.body).to include(CGI.escapeHTML(article.title))
-      expect(response.body).to include("(was republished)")
-    end
-
-    it "displays nothing on unpublish_alls tab if it the log doesn't exist" do
+    it "renders empty state and displays unpublished and republished posts on unpublish_alls tab",
+       :aggregate_failures do
       get "#{admin_user_path(user.id)}?tab=unpublish_logs"
       expect(response).to be_successful
       expect(response.body).not_to include("Unpublished by")
+
+      unpublished_article = create(:article, user: user, published: false, with_tags: false, with_main_image: false)
+      republished_article = create(:article, user: user, published: true, with_tags: false, with_main_image: false)
+      create(:audit_log, user: admin, slug: "unpublish_all_articles",
+                         data: { target_article_ids: [unpublished_article.id, republished_article.id],
+                                 target_user_id: user.id })
+
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response.body).to include("Unpublished by")
+      expect(response.body).to include(CGI.escapeHTML(unpublished_article.title))
+      expect(response.body).to include(CGI.escapeHTML(republished_article.title))
+      expect(response.body).to include("(was republished)")
+    end
+
+    it "does not execute queries for inactive tabs when rendering the overview tab", :aggregate_failures do
+      user.id
+      inactive_tab_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        next if payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        if sql.match?(/FROM "(?:feedback_messages|reactions|notes|email_authorizations)"/) ||
+            sql.match?(/SELECT "articles"|SELECT "comments"/)
+          inactive_tab_queries << sql
+        end
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        get admin_user_path(user.id)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(inactive_tab_queries).to be_empty
+    end
+
+    it "bounds and trims columns when rendering the 'Articles' and 'Comments' tabs", :aggregate_failures do
+      article = create(:article, user: user, published: true, title: "Scoped Admin Post")
+      comment = create(:comment, user: user, commentable: article, body_markdown: "Scoped Admin Comment")
+
+      article_queries = []
+      ActiveSupport::Notifications.subscribed(
+        lambda { |*, payload|
+          sql = payload[:sql]
+          article_queries << sql if sql.include?('FROM "articles"') && sql.exclude?("COUNT(*)")
+        },
+        "sql.active_record",
+      ) do
+        get "#{admin_user_path(user.id)}?tab=articles"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Scoped Admin Post")
+      expect(article_queries).not_to be_empty
+      expect(article_queries).to all(include("LIMIT"))
+      expected_article_select =
+        'SELECT "articles"."id", "articles"."title", "articles"."path", ' \
+        '"articles"."published_at", "articles"."created_at"'
+      expect(article_queries).to include(a_string_including(expected_article_select))
+      expect(article_queries.join(" ")).not_to include('"articles".*')
+      expect(article_queries.join(" ")).not_to include("body_markdown")
+
+      comment_queries = []
+      ActiveSupport::Notifications.subscribed(
+        lambda { |*, payload|
+          sql = payload[:sql]
+          comment_queries << sql if sql.include?('FROM "comments"') && sql.exclude?("COUNT(*)")
+        },
+        "sql.active_record",
+      ) do
+        get "#{admin_user_path(user.id)}?tab=comments"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Scoped Admin Comment")
+      expect(response.body).to include(comment.path)
+      expect(comment_queries).not_to be_empty
+      expect(comment_queries).to all(include("LIMIT"))
+      expect(comment_queries).to include(
+        a_string_including(
+          'SELECT "comments"."id", "comments"."user_id", "comments"."body_markdown", "comments"."created_at"',
+        ),
+      )
+      expect(comment_queries.join(" ")).not_to include('"comments".*')
+      expect(comment_queries.join(" ")).not_to include("processed_html")
     end
   end
 
@@ -415,7 +462,7 @@ RSpec.describe "/admin/member_manager/users" do
     context "when interacting via a browser" do
       it "returns not found for non existing users" do
         expect do
-          post verify_email_ownership_admin_user_path(9999), params: { user_id: user.id }
+          post verify_email_ownership_admin_user_path(9999)
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
@@ -461,7 +508,7 @@ RSpec.describe "/admin/member_manager/users" do
     context "when interacting via ajax" do
       it "returns not found for non existing users" do
         expect do
-          post verify_email_ownership_admin_user_path(9999), params: { user_id: user.id }, xhr: true
+          post verify_email_ownership_admin_user_path(9999), xhr: true
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
@@ -811,95 +858,45 @@ RSpec.describe "/admin/member_manager/users" do
 
     after { Audit::Subscribe.forget :moderator }
 
-    describe "PATCH /admin/member_manager/users/:id/update_email" do
-      it "creates an audit log record" do
-        expect do
-          patch update_email_admin_user_path(user), params: { user: { email: "audit@example.com" } }
-        end.to change(AuditLog, :count).by(1)
-
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
-        expect(log.user_id).to eq(admin.id)
-        expect(log.data["action"]).to eq("update_email")
-        expect(log.data["target_user_id"]).to eq(user.id)
-        expect(log.data["new_email"]).to eq("audit@example.com")
-      end
+    def expect_moderator_log(action, **expected_data)
+      log = AuditLog.last
+      expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+      expect(log.user_id).to eq(admin.id)
+      expect(log.data).to include("action" => action, "target_user_id" => user.id, **expected_data.stringify_keys)
     end
 
-    describe "PATCH /admin/member_manager/users/:id/update_profile" do
-      it "creates an audit log record" do
-        expect do
-          patch update_profile_admin_user_path(user), params: { user: { name: "New Name" } }
-        end.to change(AuditLog, :count).by(1)
+    it "creates audit log records for email, profile, reputation, and max_score actions", :aggregate_failures do
+      expect do
+        patch update_email_admin_user_path(user), params: { user: { email: "audit@example.com" } }
+      end.to change(AuditLog, :count).by(1)
+      expect_moderator_log("update_email", new_email: "audit@example.com")
 
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
-        expect(log.user_id).to eq(admin.id)
-        expect(log.data["action"]).to eq("update_profile")
-        expect(log.data["target_user_id"]).to eq(user.id)
-        expect(log.data["changes"]).to be_present
-      end
-    end
+      expect do
+        patch update_profile_admin_user_path(user), params: { user: { name: "New Name" } }
+      end.to change(AuditLog, :count).by(1)
+      expect_moderator_log("update_profile", changes: be_present)
 
-    describe "POST /admin/member_manager/users/:id/confirm_pending_email" do
-      it "creates an audit log record" do
-        user.update_columns(unconfirmed_email: "pending@example.com")
+      user.update_columns(unconfirmed_email: "pending@example.com")
+      expect do
+        post confirm_pending_email_admin_user_path(user)
+      end.to change(AuditLog, :count).by(1)
+      expect_moderator_log("confirm_pending_email", new_email: "pending@example.com")
 
-        expect do
-          post confirm_pending_email_admin_user_path(user)
-        end.to change(AuditLog, :count).by(1)
+      expect do
+        patch reputation_modifier_admin_user_path(user), params: { user: { reputation_modifier: 2.0 } }
+      end.to change(AuditLog, :count).by(1)
+      expect_moderator_log("reputation_modifier")
 
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
-        expect(log.user_id).to eq(admin.id)
-        expect(log.data["action"]).to eq("confirm_pending_email")
-        expect(log.data["target_user_id"]).to eq(user.id)
-        expect(log.data["new_email"]).to eq("pending@example.com")
-      end
-    end
+      expect do
+        patch max_score_admin_user_path(user), params: { user: { max_score: 50 } }
+      end.to change(AuditLog, :count).by(1)
+      expect_moderator_log("max_score")
 
-    describe "PATCH /admin/member_manager/users/:id/reputation_modifier" do
-      it "creates an audit log record" do
-        expect do
-          patch reputation_modifier_admin_user_path(user), params: { user: { reputation_modifier: 2.0 } }
-        end.to change(AuditLog, :count).by(1)
-
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
-        expect(log.user_id).to eq(admin.id)
-        expect(log.data["action"]).to eq("reputation_modifier")
-        expect(log.data["target_user_id"]).to eq(user.id)
-      end
-    end
-
-    describe "PATCH /admin/member_manager/users/:id/max_score" do
-      it "creates an audit log record" do
-        expect do
-          patch max_score_admin_user_path(user), params: { user: { max_score: 50 } }
-        end.to change(AuditLog, :count).by(1)
-
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
-        expect(log.user_id).to eq(admin.id)
-        expect(log.data["action"]).to eq("max_score")
-        expect(log.data["target_user_id"]).to eq(user.id)
-      end
-    end
-
-    describe "POST /admin/member_manager/users/:id/confirm_email" do
-      it "creates an audit log record" do
-        unconfirmed_user = create(:user, confirmed_at: nil)
-
-        expect do
-          post confirm_email_admin_user_path(unconfirmed_user)
-        end.to change(AuditLog, :count).by(1)
-
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
-        expect(log.user_id).to eq(admin.id)
-        expect(log.data["action"]).to eq("confirm_email")
-        expect(log.data["target_user_id"]).to eq(unconfirmed_user.id)
-      end
+      user.update_columns(confirmed_at: nil)
+      expect do
+        post confirm_email_admin_user_path(user)
+      end.to change(AuditLog, :count).by(1)
+      expect_moderator_log("confirm_email")
     end
 
     describe "DELETE /admin/member_manager/users/:id/remove_identity" do
@@ -956,14 +953,13 @@ RSpec.describe "/admin/member_manager/users" do
   end
 
   describe "GET /admin/member_manager/users/:id?tab=audit_log" do
-    it "displays the audit log tab and shows an empty message when no audit logs exist", :aggregate_failures do
+    it "displays the empty state and filters audit logs by default (by_user), filter=by_user, and filter=on_user",
+       :aggregate_failures do
       get "#{admin_user_path(user.id)}?tab=audit_log"
       expect(response).to be_successful
       expect(response.body).to include("Audit Log")
       expect(response.body).to include("No audit log entries found")
-    end
 
-    it "filters audit logs by default (by_user), filter=by_user, and filter=on_user", :aggregate_failures do
       create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
                          slug: "test_actor_action", data: { "action" => "test_actor_action" })
       create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
@@ -984,10 +980,13 @@ RSpec.describe "/admin/member_manager/users" do
     end
 
     it "paginates audit logs" do
-      # rubocop:disable FactoryBot/ExcessiveCreateList
-      create_list(:audit_log, 26, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
-                                  slug: "test", data: { "action" => "test" })
-      # rubocop:enable FactoryBot/ExcessiveCreateList
+      now = Time.current
+      AuditLog.insert_all(
+        Array.new(26) do
+          { user_id: user.id, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
+            slug: "test", data: { "action" => "test" }, created_at: now, updated_at: now }
+        end,
+      )
       get "#{admin_user_path(user.id)}?tab=audit_log"
       expect(response.body).to include("Next")
     end
@@ -996,6 +995,7 @@ RSpec.describe "/admin/member_manager/users" do
   describe "GET /admin/member_manager/users/:id?tab=identities" do
     it "displays the identities tab with user's identities and an empty message when none exist",
        :aggregate_failures do
+      user = github_user
       identity = user.identities.first
       get "#{admin_user_path(user.id)}?tab=identities"
       expect(response).to be_successful

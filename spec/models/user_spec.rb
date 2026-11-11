@@ -2092,6 +2092,13 @@ RSpec.describe User do
       expect { create(:user, confirmed_at: nil) }
         .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
     end
+
+    it "short-circuits in memory for an already-confirmed user without checking ForemInstance.smtp_enabled?" do
+      confirmed_user = build(:user, confirmed_at: Time.current)
+
+      expect(confirmed_user.__send__(:confirmation_required?)).to be(false)
+      expect(ForemInstance).not_to have_received(:smtp_enabled?)
+    end
   end
 
   describe "#member_of_minimum_indexed_organization?" do

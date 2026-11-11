@@ -89,8 +89,10 @@
       <% end %>
     </article>
   <% else %>
-    <div id="response-templates-data" class="hidden"></div>
-    <% if FeatureFlag.enabled?(:community_favorites) %>
+    <% if user_signed_in? %>
+      <div id="response-templates-data" class="hidden"></div>
+    <% end %>
+    <% if user_signed_in? && FeatureFlag.enabled?(:community_favorites) %>
       <%= javascript_include_tag "commentsDisplay", "favoriteControls", defer: true %>
     <% else %>
       <%= javascript_include_tag "commentsDisplay", defer: true %>
@@ -203,4 +205,6 @@
 </script>
 <%== TwitterTimelineTag.script %>
 
-<%= render "comments/hide_comments_modal" %>
+<% if user_signed_in? %>
+  <%= render "comments/hide_comments_modal" %>
+<% end %>

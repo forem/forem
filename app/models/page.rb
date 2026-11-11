@@ -33,10 +33,10 @@ class Page < ApplicationRecord
   resourcify
 
   scope :from_subforem, lambda { |subforem_id = nil|
-    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+    return where(nil) if Subforem.disabled_by_env?
 
     subforem_id ||= RequestStore.store[:subforem_id]
-    where(subforem_id: [subforem_id, nil])
+    where(subforem_id: subforem_id ? [subforem_id, nil] : nil)
   }
 
   # @param slug [String]
@@ -90,6 +90,7 @@ class Page < ApplicationRecord
   def re_render_from_template!
     return unless uses_page_template?
 
+    mark_liquid_embed_template_rerender!
     render_from_page_template
     save!
   end
@@ -160,12 +161,22 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
+    enqueue_page_cache_bust(slug, organization_id)
+
+    previous_slug = saved_change_to_slug&.first
+    return if previous_slug.blank? || previous_slug == slug
+
+    previous_org_id = saved_change_to_organization_id ? saved_change_to_organization_id.first : organization_id
+    enqueue_page_cache_bust(previous_slug, previous_org_id)
+  end
+
+  def enqueue_page_cache_bust(target_slug, target_organization_id)
     # Keep the historical single-arg form for non-org pages so the
     # until_executing unique-job lock digest stays stable and jobs coalesce.
-    if organization_id
-      Pages::BustCacheWorker.perform_async(slug, organization_id)
+    if target_organization_id
+      Pages::BustCacheWorker.perform_async(target_slug, target_organization_id)
     else
-      Pages::BustCacheWorker.perform_async(slug)
+      Pages::BustCacheWorker.perform_async(target_slug)
     end
   end
 

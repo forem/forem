@@ -6,6 +6,15 @@ RSpec.describe "/admin/moderation/reports" do
   let(:trusted_user)      { create(:user, :trusted) }
   let(:admin)             { create(:user, :super_admin) }
 
+  def collect_sql_queries(&block)
+    queries = []
+    callback = lambda do |*, payload|
+      queries << payload[:sql] unless payload[:name] == "SCHEMA"
+    end
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record", &block)
+    queries
+  end
+
   describe "GET /admin/moderation/reports" do
     let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
 
@@ -81,6 +90,50 @@ RSpec.describe "/admin/moderation/reports" do
         expect(response.body.scan(/id="accordion-\d+/).length).to eq(25)
       end
     end
+
+    it "preloads user roles and reported comment authors without per-report N+1 queries" do
+      offender = create(:user)
+      reported_user = create(:user, :warned)
+      article = create(:article, user: offender, main_image: nil)
+      comment = create(:comment, user: offender, commentable: article)
+
+      create(:feedback_message, :abuse_report,
+             reporter: user, offender: offender, reported: reported_user,
+             reported_url: "/#{reported_user.username}", status: "Open")
+      create(:feedback_message, :abuse_report,
+             reporter: trusted_user, offender: offender, reported: comment,
+             reported_url: comment.path, status: "Open")
+
+      sign_in admin
+      queries = collect_sql_queries { get admin_reports_path }
+
+      expect(response).to have_http_status :ok
+      expect(response.body).to include("Warned")
+      expect(response.body).to include(comment.path)
+      expect(queries.grep(/SELECT COUNT\(\*\) FROM "roles"/)).to be_empty
+    end
+
+    it "skips the open flag reactions count query on non-Open tabs" do
+      sign_in admin
+      queries = collect_sql_queries { get admin_reports_path, params: { status: "Resolved" } }
+
+      expect(response).to have_http_status :ok
+      expect(queries.grep(/reactable_articles/)).to be_empty
+    end
+  end
+
+  describe "GET /admin/moderation/reports/:id" do
+    it "preloads user roles on the individual report view without per-role count queries" do
+      offender = create(:user, :suspended)
+      report = create(:feedback_message, :abuse_report, reporter: user, offender: offender, status: "Open")
+
+      sign_in admin
+      queries = collect_sql_queries { get admin_report_path(report.id) }
+
+      expect(response).to have_http_status :ok
+      expect(response.body).to include("Suspended")
+      expect(queries.grep(/SELECT COUNT\(\*\) FROM "roles"/)).to be_empty
+    end
   end
 
   describe "GET /admin/moderation/reports/flag_reactions" do
@@ -102,6 +155,29 @@ RSpec.describe "/admin/moderation/reports" do
         create(:reaction, category: "vomit", reactable: user, user: trusted_user, created_at: 1.week.ago)
         get flag_reactions_admin_reports_path, params: { status: "Open" }
         expect(response.body).to include(user.username)
+      end
+
+      it "renders flagged user and comment reactions without per-row role or vomit N+1 queries" do
+        flagged_user = create(:user, score: 0)
+        comment_author = create(:user, score: 0)
+        article = create(:article, user: comment_author, main_image: nil)
+        comment = create(:comment, user: comment_author, commentable: article, score: 0)
+
+        create(:reaction, category: "vomit", status: "valid", reactable: flagged_user,
+                          user: trusted_user, created_at: 1.week.ago)
+        create(:reaction, category: "vomit", status: "confirmed", reactable: flagged_user,
+                          user: admin, created_at: 2.days.ago)
+        create(:reaction, category: "vomit", status: "valid", reactable: comment,
+                          user: trusted_user, created_at: 1.week.ago)
+
+        queries = collect_sql_queries { get flag_reactions_admin_reports_path, params: { status: "Open" } }
+
+        expect(response).to have_http_status :ok
+        expect(response.body).to include(flagged_user.username)
+        expect(response.body).to include("Flagged")
+        expect(response.body).to include(comment.path)
+        expect(queries.grep(/SELECT COUNT\(\*\) FROM "roles"/)).to be_empty
+        expect(queries.grep(/SELECT 1 AS one FROM "reactions"/)).to be_empty
       end
     end
   end

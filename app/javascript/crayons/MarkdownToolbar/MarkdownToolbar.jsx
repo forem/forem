@@ -86,7 +86,7 @@ export const MarkdownToolbar = ({
   const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
   const largeScreen = useMediaQuery(
-    `(min-width: ${BREAKPOINTS.Large}px) and (max-width: ${
+    `(min-width: ${BREAKPOINTS.Medium}px) and (max-width: ${
       BREAKPOINTS.ExtraLarge - 1
     }px)`,
   );
@@ -409,6 +409,10 @@ export const MarkdownToolbar = ({
       })}
 
       <ImageUploader
+        // Always use the v2 icon-button uploader. The toolbar is shared across
+        // v1 and v2, and its buttonProps/cursor-aware insertion flow only works
+        // with the v2 uploader (V1EditorImageUpload ignores buttonProps, which
+        // breaks cursor tracking, roving tabindex, and toolbar layout).
         editorVersion="v2"
         onImageUploadStart={handleImageUploadStarted}
         onImageUploadSuccess={handleImageUploadEnd}

@@ -68,7 +68,16 @@ function fetchBaseData() {
           }
 
           const isForemWebview = navigator.userAgent === 'ForemWebView/1';
-          if (isForemWebview || window.frameElement) { // Hide top bar and footer when loaded within iframe
+          let isEmbeddedFrame = Boolean(window.frameElement);
+          if (!isEmbeddedFrame) {
+            try {
+              isEmbeddedFrame = window.self !== window.top;
+            } catch (e) {
+              isEmbeddedFrame = true;
+            }
+          }
+          const isEmbedMode = new URLSearchParams(window.location.search).get('mode') === 'embed';
+          if (isForemWebview || isEmbeddedFrame || isEmbedMode) { // Hide top bar and footer when loaded within iframe
             document.body.classList.add("hidden-shell");
           }
 

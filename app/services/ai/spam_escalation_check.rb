@@ -8,7 +8,9 @@ module Ai
   # Runs only when the :spam_escalation function is set to Jev (see Ai::FunctionConfig);
   # otherwise content without links is never escalated, as before.
   class SpamEscalationCheck
-    VERSION = "1.3".freeze
+    include Ai::CommunityContext
+
+    VERSION = "1.4".freeze
     FUNCTION_KEY = :spam_escalation
 
     MAX_TEXT_LENGTH = 3_000
@@ -67,21 +69,10 @@ module Ai
     # The same description of what belongs on the (sub)forem that Ai::ContentModerationLabeler uses,
     # so "off-topic" means off-topic for this community rather than a hardcoded subject.
     def community_description
-      default_subforem_id = RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
-      subforem_id = @content.try(:subforem_id) || default_subforem_id
-      description = if subforem_id
-                      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-                        Settings::Community.community_description(subforem_id: subforem_id).presence
-                    end
-      if description.blank? && default_subforem_id && default_subforem_id != subforem_id
-        description =
-          Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id).presence ||
-          Settings::Community.community_description(subforem_id: default_subforem_id).presence
-      end
-      description ||=
-        Settings::RateLimit.internal_content_description_spec.presence ||
-        Settings::Community.community_description
-      description.to_s.first(MAX_TEXT_LENGTH)
+      subforem_id = @content.try(:subforem_id)
+      description = resolve_community_description(subforem_id)
+      advisement = resolve_content_advisement_spec(subforem_id)
+      [description.presence, advisement.presence].compact.join("\n\n").first(MAX_TEXT_LENGTH)
     end
 
     # Admin-tunable (Settings::AiFunctions). The default favors recall, since a false escalation

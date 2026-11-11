@@ -317,7 +317,7 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <% if FeatureFlag.enabled?(:community_favorites) %>
+  <% if user_signed_in? && FeatureFlag.enabled?(:community_favorites) %>
     <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", "favoriteControls", defer: true %>
   <% else %>
     <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>

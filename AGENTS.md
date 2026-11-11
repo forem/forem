@@ -50,9 +50,23 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
   - `pt` (Portuguese)
   - And any others present in `config/locales`.
 
-## Frontend
+## Frontend & Client-Side Asset Delivery
 - We are transitioning to a Preact-first frontend.
 - Use `app/javascript` and `app/assets` patterns as established.
+- **Signed-In vs. Signed-Out Contextual Delivery (`Vary: X-Loggedin`)**:
+  - Gate signed-in-only JavaScript packs and DOM payloads (moderation tools, response templates, comment composer enhancements, favorite controls, user status checks) in ERB views with `user_signed_in?` (Fastly varies edge caches on `X-Loggedin: logged-in` vs. `logged-out`). Never call `current_user` or `session_current_user_id` on edge-cached paths.
+  - Guard client-side pack entrypoints and initializers with `checkUserLoggedIn()` (`document.body?.dataset?.userStatus === 'logged-in'`) or `getUserDataAndCsrfTokenSafely()` so scripts on signed-out pages short-circuit immediately without polling `waitOnBaseData()` or firing unauthenticated API requests.
+- **InstantClick (`?i=i`) & Mixed-Cache Safety**:
+  - `<head>` scripts (`unless internal_navigation?` in `app/views/layouts/application.html.erb`) load only on full page loads, whereas `<script>` tags inside `#page-content` re-execute on every InstantClick page transition.
+  - Any pack inside `#page-content` or registered with `InstantClick.on('change')` MUST be idempotent: mark initialized DOM nodes (`node.dataset.initialized = 'true'`), guard `InstantClick.on('change')` registration against duplicate attachment when a body pack re-executes, and disconnect `MutationObserver` or window `scroll` listeners on `InstantClick.on('change')` and `beforeunload`.
+  - Account for mixed cache states across InstantClick transitions (e.g., landing on a Fastly-cached initial page and navigating via `?i=i` to an uncached or newer page during a rolling deploy). Prefer simple server-side `user_signed_in?` view gates or `<meta>`-backed lazy loaders over splitting `<head>` initializers into separate body packs without a fallback loader.
+- **Lazy Asset Bundle Loading (`createAssetBundleLoader`)**:
+  - When deferring on-demand packs (such as `CommentTextArea`, `emojiPicker`, `windowModal`, `mediaPlayback`, or `postscribeLoader`) behind `<meta name="*-script" content="<%= asset_path ... %>">` tags in `application.html.erb`, use `createAssetBundleLoader` from `app/javascript/utilities/loadAssetBundle.js`.
+  - Always include `onerror: "this.remove()"` on any eager `javascript_include_tag` that pairs with a lazy loader, and ensure dynamic `<script>` loaders remove failed `<script>` elements on `error` so subsequent InstantClick navigations or interactions can retry cleanly instead of waiting on a failed `<script>` element.
+- **Shared Preact Runtime (`window.__foremPreact` & `ensurePreactRuntime`)**:
+  - Root layout entrypoints (`app/javascript/packs/application.jsx` and `app/javascript/packs/admin.js`, plus the standalone fallback `app/javascript/packs/preactRuntime.js`) initialize `window.__foremPreact = { preact, hooks, compat }` via `app/javascript/shared/preact/preactRuntime.js`.
+  - `esbuild.config.mjs` (`sharedPreactRuntimePlugin`) externalizes `preact`, `preact/hooks`, `preact/compat`, `react`, and `react-dom` across all secondary packs so they share the single `window.__foremPreact` instance and wraps secondary Preact packs with `ensurePreactRuntime` (`app/javascript/shared/preact/ensurePreactRuntime.js`).
+  - `ensurePreactRuntime` executes packs synchronously when `window.__foremPreact` is present, and automatically loads `preactRuntime.js` (via `#page-content[data-preact-runtime-src]` or `meta[name="preact-runtime-script"]`) if a user with a stale pre-deploy `<head>` navigates via InstantClick (`?i=i`) to a post-deploy `#page-content`.
 
 ## Documentation
 - If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.

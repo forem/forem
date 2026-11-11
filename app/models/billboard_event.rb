@@ -53,7 +53,7 @@ class BillboardEvent < ApplicationRecord
     )
     return 0 if sql.nil?
 
-    connection.exec_update(sql, "#{name} Add Impression Seconds")
+    with_connection_retry { connection.exec_update(sql, "#{name} Add Impression Seconds") }
   end
 
   def self.build_add_impression_seconds_sql(id:, user_id:, now: Time.current, seconds: 10, throttle: 9.seconds)
@@ -89,8 +89,23 @@ class BillboardEvent < ApplicationRecord
     sql = build_create_with_async_commit_sql(attributes, now: now)
     return unless sql
 
-    row = connection.exec_query(sql, "#{name} Create").rows.first
+    row = with_connection_retry { connection.exec_query(sql, "#{name} Create") }.rows.first
     type_for_attribute(primary_key).cast(row.first) if row
+  end
+
+  # Yields to execute a database query, reconnecting and retrying once if a
+  # pooled connection fails with ActiveRecord::ConnectionFailed.
+  def self.with_connection_retry
+    retried = false
+    begin
+      yield
+    rescue ActiveRecord::ConnectionFailed
+      raise if retried
+
+      retried = true
+      connection.reconnect!
+      retry
+    end
   end
 
   def self.build_create_with_async_commit_sql(attributes, now: Time.current)

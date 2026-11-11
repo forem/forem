@@ -27,6 +27,7 @@ en:
       mention_too_many:
         one: You cannot mention more than %{count} users in a post!
         other: You cannot mention more than %{count} users in a post!
+      mention_rate_limit_reached: You have reached the rate limit for mentioning users. Please try again later.
       ai_disclosure:
         not_disclosed: Not Disclosed
         no_ai: No AI
@@ -72,6 +73,7 @@ en:
       mention_too_many:
         one: You cannot mention more than %{count} users in a comment!
         other: You cannot mention more than %{count} users in a comment!
+      mention_rate_limit_reached: You have reached the rate limit for mentioning users. Please try again later.
     co_author_invitation:
       declined: "@%{username} declined your invitation to co-author this post."
       must_follow_author: "@%{username} needs to follow you before you can invite them as a co-author."

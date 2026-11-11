@@ -64,6 +64,20 @@ module RateLimitCheckerHelper
         title: I18n.t("helpers.rate_limit_checker_helper.api_generation_window.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.api_generation_window.description")
       },
+      agent_session_presign: {
+        enabled: true,
+        min: 0,
+        placeholder: 20,
+        title: I18n.t("helpers.rate_limit_checker_helper.agent_session_presign.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.agent_session_presign.description")
+      },
+      agent_session_presign_window_seconds: {
+        enabled: true,
+        min: 1,
+        placeholder: 3600,
+        title: I18n.t("helpers.rate_limit_checker_helper.agent_session_presign_window.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.agent_session_presign_window.description")
+      },
       user_update: {
         enabled: true,
         min: 1,
@@ -119,6 +133,27 @@ module RateLimitCheckerHelper
         placeholder: 7,
         title: I18n.t("helpers.rate_limit_checker_helper.mention.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.mention.description")
+      },
+      mention_antispam_creation: {
+        enabled: true,
+        min: 0,
+        placeholder: 2,
+        title: I18n.t("helpers.rate_limit_checker_helper.mention_antispam.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.mention_antispam.description")
+      },
+      mention_hourly_limit: {
+        enabled: true,
+        min: 0,
+        placeholder: 20,
+        title: I18n.t("helpers.rate_limit_checker_helper.mention_hourly.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.mention_hourly.description")
+      },
+      mention_antispam_hourly_limit: {
+        enabled: true,
+        min: 0,
+        placeholder: 4,
+        title: I18n.t("helpers.rate_limit_checker_helper.mention_antispam_hourly.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.mention_antispam_hourly.description")
       },
       organization_creation: {
         enabled: true,

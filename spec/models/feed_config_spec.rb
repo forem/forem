@@ -38,6 +38,10 @@ RSpec.describe FeedConfig, type: :model do
   end
 
   describe "#score_sql" do
+    around do |example|
+      Timecop.freeze(Time.current) { example.run }
+    end
+
     context "when tag_follow_weight is positive and tag count configs present" do
       before do
         feed_config.tag_follow_weight      = 6.0

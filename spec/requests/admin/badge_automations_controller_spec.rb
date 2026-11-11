@@ -53,6 +53,43 @@ RSpec.describe Admin::BadgeAutomationsController do
       expect(assigns(:automations)).to include(automation)
       expect(assigns(:automations)).not_to include(other_automation)
     end
+
+    it "batch-loads organization names in a single query without loading all organizations" do
+      second_org = create(:organization, name: "Second Org")
+      automation
+      create(:scheduled_automation,
+             user: admin,
+             action: "award_first_org_post_badge",
+             service_name: "first_org_post_badge",
+             action_config: {
+               "badge_slug" => badge.slug,
+               "organization_id" => second_org.id
+             })
+      create(:scheduled_automation,
+             user: admin,
+             action: "award_first_org_post_badge",
+             service_name: "first_org_post_badge",
+             action_config: {
+               "badge_slug" => badge.slug,
+               "organization_id" => 999_999
+             })
+
+      org_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        next if payload[:cached] || payload[:name] == "SCHEMA"
+        next if payload[:sql].include?('"organization_memberships"') || payload[:sql].include?('"custom_domain"')
+
+        org_queries << payload[:sql] if payload[:sql].start_with?('SELECT "organizations"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get admin_badge_badge_automations_path(badge)
+      end
+
+      expect(assigns(:organizations)).to be_nil
+      expect(org_queries.size).to eq(1)
+      expect(response.body).to include(organization.name, second_org.name, "Unknown (ID: 999999)")
+    end
   end
 
   describe "GET #new" do
@@ -215,6 +252,21 @@ RSpec.describe Admin::BadgeAutomationsController do
         get edit_admin_badge_badge_automation_path(badge, other_automation)
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it "skips loading organizations when editing an article_content automation" do
+      article_automation = create(:scheduled_automation,
+                                  user: admin,
+                                  action: "award_article_content_badge",
+                                  service_name: "article_content_badge",
+                                  action_config: {
+                                    "badge_slug" => badge.slug,
+                                    "criteria" => "Detailed technical posts"
+                                  })
+
+      get edit_admin_badge_badge_automation_path(badge, article_automation)
+      expect(response).to have_http_status(:success)
+      expect(assigns(:organizations)).to be_nil
+    end
   end
 
   describe "PATCH #update" do
@@ -275,6 +327,23 @@ RSpec.describe Admin::BadgeAutomationsController do
       it "shows a success message" do
         patch admin_badge_badge_automation_path(badge, automation), params: update_params
         expect(flash[:success]).to be_present
+      end
+
+      it "coalesces attribute and schedule updates into a single UPDATE statement" do
+        automation
+        update_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          next if payload[:cached] || payload[:name] == "SCHEMA"
+
+          update_queries << payload[:sql] if payload[:sql].start_with?('UPDATE "scheduled_automations"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          patch admin_badge_badge_automation_path(badge, automation), params: update_params
+        end
+
+        expect(update_queries.size).to eq(1)
+        expect(assigns(:organizations)).to be_nil
       end
     end
 

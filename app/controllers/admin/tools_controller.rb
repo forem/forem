@@ -48,6 +48,9 @@ module Admin
           tag: nil,
         )
         @articles = @feed.more_comments_minimal_weight_randomized.to_a
+        ActiveRecord::Associations::Preloader.new(
+          records: @articles, associations: :context_notes, scope: ContextNote.order(:id),
+        ).call
       rescue KeyError, JSON::ParserError, ActiveRecord::StatementInvalid => e
         flash[:danger] = e.message
       end
@@ -62,7 +65,7 @@ module Admin
     def handle_user_cache
       user = User.find(params[:bust_user].to_i)
       user.touch(:profile_updated_at, :last_followed_at, :last_comment_at)
-      bust_link(user.path)
+      EdgeCache::BustUser.call(user)
     end
 
     def handle_article_cache

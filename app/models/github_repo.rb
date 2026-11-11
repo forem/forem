@@ -37,9 +37,9 @@ class GithubRepo < ApplicationRecord
     return if user.blank?
 
     user.touch
-    cache_bust = EdgeCache::Bust.new
-    cache_bust.call(user.path)
-    cache_bust.call("#{user.path}?i=i")
-    cache_bust.call("#{user.path}/?i=i")
+    EdgeCache::PurgeByKey.call(
+      user.profile_details_record_key,
+      fallback_paths: user.profile_cache_bust_paths,
+    )
   end
 end

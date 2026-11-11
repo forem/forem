@@ -21,6 +21,14 @@ module Api
             .merge(errors: exc.record.errors.to_hash(true)), status: :unprocessable_entity
         end
 
+        protected
+
+        def authenticate_with_api_key_or_current_user
+          user = super
+          user&.roles&.load
+          user
+        end
+
         private
 
         # Used by action methods to declare an audit log entry.

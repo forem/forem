@@ -1,0 +1,6 @@
+<nav class="admin-pagination flex gap-2 fs-s items-center">
+  <% if @comments.current_page > 1 %>
+    <%= link_to t("views.pagination.aria_previous"), admin_comments_path(state: params[:state], page: (@comments.current_page - 1 if @comments.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+  <% end %>
+  <%= link_to_next_page @comments, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>

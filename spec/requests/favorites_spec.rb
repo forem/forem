@@ -121,7 +121,7 @@ RSpec.describe "Favorites" do
 
     # Data is user-agnostic and cache-safe. The Preact component decides
     # client-side visibility.
-    it "renders the mount node with the article's favoritable data" do
+    it "renders the mount node with the article's favoritable data and loads favoriteControls when signed in" do
       sign_in create(:user)
       get article.path
 
@@ -129,6 +129,23 @@ RSpec.describe "Favorites" do
       expect(response.body).to include("data-favorite-control")
       expect(response.body).to include("data-favoritable-type=\"Article\"")
       expect(response.body).to include("data-favoritable-id=\"#{article.id}\"")
+      expect(response.body).to include("favoriteControls")
+    end
+
+    it "omits the favoriteControls script bundle when signed out" do
+      get article.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("favoriteControls")
+      expect(response.body).to include('name="preact-runtime-script"')
+      expect(response.body).to include("data-preact-runtime-src=")
+    end
+
+    it "includes data-preact-runtime-src on #page-content during internal InstantClick navigation (?i=i)" do
+      get "#{article.path}?i=i"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("data-preact-runtime-src=")
     end
 
     it "renders no mount node when the feature flag is disabled" do

@@ -5,7 +5,6 @@
     <ul class="crayons-card grid gap-2 grid-cols-2 p-4 list-disc">
       <li class="ml-4"><%= community_name %> Comment</li>
       <li class="ml-4"><%= community_name %> Link</li>
-      <li class="ml-4"><%= community_name %> Link</li>
       <li class="ml-4"><%= community_name %> Listing</li>
       <li class="ml-4"><%= community_name %> Organization</li>
       <li class="ml-4"><%= community_name %> Podcast Episode</li>
@@ -61,6 +60,10 @@
     <pre>{% agent_session ID 0..10 %}</pre>
     <p class="fs-s"><a href="/agent_sessions/new">Upload and curate a session</a> to get the ID.</p>
 
+    <h4>Card</h4>
+    <p>You can create a standalone highlight card to emphasize important content. The content inside the card can use Markdown.</p>
+    <pre>{% card %}<br>This is some **important** content inside a card!<br>{% endcard %}</pre>
+
     <h4>Call To Action (CTA)</h4>
     <p><pre>{% cta link %} description {% endcta %}</pre></p>
     <p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>
@@ -95,9 +98,12 @@
     <h4>Features</h4>
     <p>Display a grid of feature cards:</p>
     <pre>{% features %}
-  {% feature title="Fast" icon="rocket" %}Optimized for speed.{% endfeature %}
-  {% feature title="Secure" %}Built with security in mind.{% endfeature %}
+  {% feature title="Fast" icon="lightning" %}Optimized for speed.{% endfeature %}
+  {% feature title="Secure" icon="🔒" %}Built with security in mind.{% endfeature %}
+  {% feature title="Simple" %}No icon needed.{% endfeature %}
 {% endfeatures %}</pre>
+    <p class="fs-s"><code>title</code> is required. <code>icon</code> is optional and accepts either an emoji or one of the supported icon names below.</p>
+    <p class="fs-s">Supported icons: <%= safe_join(FeatureTag::ICONS.map { |icon_name| content_tag(:code, icon_name) }, ", ") %>.</p>
 
     <h4>Quote</h4>
     <p>Display a testimonial or quote:</p>

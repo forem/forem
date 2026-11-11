@@ -20,9 +20,12 @@ class UserActivity < ApplicationRecord
   end
 
   def set_activity
-    recently_viewed_store = user.page_views.order(created_at: :desc).limit(100).pluck(
-      :article_id, :created_at, :time_tracked_in_seconds
-    )
+    # Order by expression so PostgreSQL uses index_page_views_on_user_id instead of
+    # scanning index_page_views_on_created_at backwards across the page_views table.
+    recently_viewed_store = user.page_views
+      .order(Arel.sql("(page_views.created_at + INTERVAL '0 seconds') DESC"))
+      .limit(100)
+      .pluck(:article_id, :created_at, :time_tracked_in_seconds)
     # Get all the articles where time_tracked_in_seconds for the page view from recent store is > 29
     # Only select the columns used below to avoid loading body_markdown, processed_html, embeddings, etc.
     recent_articles = Article.where(id: tracked_article_ids_from(recently_viewed_store))

@@ -15,12 +15,14 @@ RSpec.describe Moderator::MergeUser, type: :service do
 
     before { sidekiq_perform_enqueued_jobs }
 
-    it "deletes delete_user_id and keeps keep_user" do
+    it "deletes delete_user_id, keeps keep_user, and busts keep_user profile keys", :aggregate_failures do
+      allow(EdgeCache::BustUser).to receive(:call).and_call_original
       sidekiq_perform_enqueued_jobs do
         described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
       end
       expect(User.find_by(id: delete_user_id)).to be_nil
       expect(User.find_by(id: keep_user.id)).not_to be_nil
+      expect(EdgeCache::BustUser).to have_received(:call).with(keep_user)
     end
 
     it "deletes the merged-away user in the background as a merge (not GDPR) deletion" do

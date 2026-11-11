@@ -50,6 +50,12 @@ body {
         The code works even if you registered using third party authentication in the past <span style="display:inline-block"> — as long as you use the same email</span>.
       </p>
 
+      <% if flash[:notice] %>
+        <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+
       <!-- Magic link form -->
       <%= form_with url: magic_links_path, method: :post, local: true do |f| %>
         <div class="crayons-field pb-2">
@@ -60,6 +66,11 @@ body {
                 required: true,
                 autofocus: true %>
         </div>
+        <% if Captcha::CheckRegistrationEnabled.call %>
+          <div class="<%= Captcha.provider.container_class %> py-2">
+            <%= render "shared/captcha", action: "magic_link" %>
+          </div>
+        <% end %>
         <div class="crayons-field py-2">
           <%= f.submit "Send me the code",
                 class: "crayons-btn py-6 fs-xl fw-bold" %>

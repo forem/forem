@@ -267,6 +267,17 @@ RSpec.describe Settings::Base do
         RequestStore.store[:subforem_id] = "fresh_subforem"
         expect(TestSetting.host).to eq("http://global.example.com")
       end
+
+      it "falls back to default_subforem_id before global setting when specified subforem has no record" do
+        RequestStore.store[:subforem_id] = nil
+        TestSetting.host = "http://global.example.com"
+
+        TestSetting.set_host("http://default-subforem.example.com", subforem_id: "default_subforem")
+        RequestStore.store[:default_subforem_id] = "default_subforem"
+        RequestStore.store[:subforem_id] = "other_subforem"
+
+        expect(TestSetting.host).to eq("http://default-subforem.example.com")
+      end
     end
 
     context "when testing cache invalidation for subforem-specific settings" do
@@ -325,6 +336,32 @@ RSpec.describe Settings::Base do
         TestSetting.clear_cache
 
         expect(memory_cache.read(cache_key)).to be_nil
+      end
+
+      it "coalesces reads onto the default subforem cache key and still clears all subforem keys when disabled by env",
+         :aggregate_failures do
+        default_subforem = create(:subforem, domain: "dev.to")
+        other_subforem = create(:subforem, domain: "other.dev.to")
+        MemoryFirstCache.delete("subforem_default_id")
+        expect(Subforem.cached_default_id).to eq(default_subforem.id)
+
+        TestSetting.set_host("http://default.example.com", subforem_id: default_subforem.id)
+        TestSetting.set_host("http://other.example.com", subforem_id: other_subforem.id)
+
+        memory_cache = ActiveSupport::Cache::MemoryStore.new
+        allow(Rails).to receive(:cache).and_return(memory_cache)
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+        expect(TestSetting.host).to eq("http://default.example.com")
+        expect(TestSetting.host(subforem_id: other_subforem.id)).to eq("http://default.example.com")
+        expect(memory_cache.read("test_setting-#{default_subforem.id}")).to include("host" => "http://default.example.com")
+        expect(memory_cache.read("test_setting-#{other_subforem.id}")).to be_nil
+
+        memory_cache.write("test_setting-#{other_subforem.id}", { "host" => "http://stale.example.com" })
+        TestSetting.clear_cache
+
+        expect(memory_cache.read("test_setting-#{default_subforem.id}")).to be_nil
+        expect(memory_cache.read("test_setting-#{other_subforem.id}")).to be_nil
       end
     end
   end

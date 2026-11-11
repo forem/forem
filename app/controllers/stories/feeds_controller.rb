@@ -36,10 +36,32 @@ module Stories
         return
       end
 
+      set_surrogate_key_header(*feed_surrogate_keys)
       set_cache_control_headers(60) # 1 minute expiration
     end
 
     private
+
+    def feed_surrogate_keys
+      tag_name = params[:tag].downcase.strip if params[:tag].is_a?(String)
+      feed_key = if tag_name&.match?(/\A[a-z0-9_-]+\z/)
+                   if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                     "tag-#{tag_name}-top-#{params[:timeframe]}"
+                   elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+                     "tag-#{tag_name}-latest"
+                   else
+                     "tag-#{tag_name}-home"
+                   end
+                 elsif params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                   "stories-top-#{params[:timeframe]}"
+                 elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+                   "stories-latest"
+                 else
+                   "main_app_home_page"
+                 end
+
+      [feed_key, *@stories.map(&:record_key)].compact
+    end
 
     def add_pinned_article
       return if params[:timeframe].present?
@@ -102,7 +124,7 @@ module Stories
                  span_type: "db",
                  resource: "#{self.class}.#{__method__}",
                  tags: { feed_class: feed.class.to_s.dasherize }) do
-        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant).to_a
       end
     end
 
@@ -203,6 +225,8 @@ module Stories
         .per(25)
     end
 
+    # Preloads fragment caches, context notes, top comments, and reaction counts
+    # for uncached feed story records to avoid per-story N+1 queries.
     def preload_feed_associations
       records = @stories.map(&:object)
       if @page <= 2 && perform_caching && records.any?
@@ -237,7 +261,17 @@ module Stories
         ).call
       end
 
-      Article.preload_reaction_counts_for_reactable(records.select { |r| r.public_reactions_count.positive? })
+      preload_reaction_counts(records)
+    end
+
+    # Prefills empty reaction counts for zero-reaction stories and batch-preloads
+    # reaction counts for stories with positive public reaction counts.
+    #
+    # @param records [Array<Article>]
+    def preload_reaction_counts(records)
+      with_reactions, without_reactions = records.partition { |r| r.public_reactions_count.positive? }
+      without_reactions.each { |r| r.instance_variable_set(:@preloaded_reaction_counts_for_reactable, []) }
+      Article.preload_reaction_counts_for_reactable(with_reactions)
     end
 
     def story_cache_key(rec, vc, digest_path)
@@ -254,7 +288,7 @@ module Stories
       current_subforem_id = RequestStore.store[:subforem_id]
       root_subforem_id = RequestStore.store[:root_subforem_id]
 
-      if current_subforem_id == root_subforem_id
+      if !Subforem.disabled_by_env? && current_subforem_id.present? && current_subforem_id == root_subforem_id
         # We're in root subforem - need to handle multiple subforems dynamically
         # We'll cache settings for the most common subforems to avoid repeated queries
         @cached_subforem_logos = {}

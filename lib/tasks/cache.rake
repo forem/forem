@@ -1,5 +1,5 @@
 namespace :cache do
-  desc "Enqueue BustCachePathWorker"
+  desc "Enqueue EdgeCache::PurgeByKeyWorker for globally-cached endpoints"
   task enqueue_path_bust_workers: :environment do
     # Trigger cache purges for globally-cached endpoints after Heroku Preboot (~180s)
     # has completed and new web dynos are warm.
@@ -11,8 +11,11 @@ namespace :cache do
     delays = [240, 420, 600] if delays.empty?
 
     delays.each do |n|
-      BustCachePathWorker.set(queue: :high_priority).perform_in(n.seconds, "/")
-      BustCachePathWorker.set(queue: :high_priority).perform_in(n.seconds, "/onboarding")
+      EdgeCache::PurgeByKeyWorker.set(queue: :high_priority).perform_in(
+        n.seconds,
+        %w[main_app_home_page onboarding-slideshow],
+        %w[/ /onboarding],
+      )
     end
   end
 

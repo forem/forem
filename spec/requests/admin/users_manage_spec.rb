@@ -16,6 +16,22 @@ RSpec.describe "Admin::Users" do
     sign_in super_admin
   end
 
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    return Array.new(amount) { create(name, *traits, **options) } if %i[user article].include?(name)
+
+    super
+  end
+
   def dependents_for_offending_user_article
     # create user2 comment on offending user article
     comment = create(:comment, commentable_type: "Article", commentable: article, user: user2)
@@ -43,6 +59,8 @@ RSpec.describe "Admin::Users" do
   end
 
   def full_profile
+    user.create_profile!
+    user2.create_profile!
     BadgeAchievement.create(
       user_id: user2.id,
       badge_id: badge.id,
@@ -61,8 +79,12 @@ RSpec.describe "Admin::Users" do
   end
 
   context "when merging users" do
-    it "merges content, relationships, profile info, and social usernames, and deletes duplicate user",
+    it "merges content, relationships, identities, profile info, and social usernames, and deletes duplicate user",
        :aggregate_failures do
+      omniauth_mock_twitter_payload
+      omniauth_mock_github_payload
+      create(:identity, user: user, provider: "twitter")
+      deleted_user_identity = create(:identity, user: user2)
       dependents_for_offending_user_article
       offender_activity_on_other_content
       full_profile
@@ -85,69 +107,46 @@ RSpec.describe "Admin::Users" do
       expect(user.mentions.count).to eq(expected_mentions_count)
       expect(user.github_repos.any?).to be true
       expect(user.badge_achievements.any?).to be true
+      expect(user.identities.count).to eq 2
+      expect(user.identity_ids).to include deleted_user_identity.id
       expect(user.reload.twitter_username).to eq("Twitter")
 
       sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
 
       expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
-
-    it "merges an identity on a single account into the other", :aggregate_failures do
-      omniauth_mock_twitter_payload
-      omniauth_mock_github_payload
-      create(:identity, user: user, provider: "twitter")
-      deleted_user_identity = create(:identity, user: user2)
-
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
-
-      expect(user.identities.count).to eq 2
-      expect(user.identity_ids).to include deleted_user_identity.id
-    end
   end
 
   context "when managing activity and roles" do
-    it "adds comment suspend role" do
-      params = { user: { user_status: "Comment Suspended", note_for_current_role: "comment suspend this user" } }
-      patch user_status_admin_user_path(user.id), params: params
+    it "adds comment suspend and limited roles and records notes", :aggregate_failures do
+      patch user_status_admin_user_path(user.id), params: {
+        user: { user_status: "Comment Suspended", note_for_current_role: "comment suspend this user" }
+      }
+      expect(user.reload.roles.first.name).to eq("comment_suspended")
+      expect(Note.last.content).to eq("comment suspend this user")
 
-      expect(user.roles.first.name).to eq("comment_suspended")
-      expect(Note.first.content).to eq("comment suspend this user")
+      patch user_status_admin_user_path(user.id), params: {
+        user: { user_status: "Limited", note_for_current_role: "limited role added" }
+      }
+      expect(user.reload.roles.pluck(:name)).to include("limited")
+      expect(Note.last.content).to eq("limited role added")
     end
 
-    it "adds limited role" do
-      params = { user: { user_status: "Limited", note_for_current_role: "limited role added" } }
-      patch user_status_admin_user_path(user.id), params: params
-
-      expect(user.roles.first.name).to eq("limited")
-      expect(Note.first.content).to eq("limited role added")
-    end
-
-    it "allows admins to assign community leader level 1" do
+    it "allows admins to assign and remove community leader level 1 but not level 2", :aggregate_failures do
       sign_in create(:user, :admin)
 
-      params = {
+      patch user_status_admin_user_path(user.id), params: {
         user: { user_status: "Community Leader Level 1", note_for_current_role: "assigning community leader" }
       }
-      patch user_status_admin_user_path(user.id), params: params
-
       expect(user.reload.community_leader_level_1?).to be(true)
-    end
 
-    it "does not allow non-super-admins to assign community leader level 2" do
-      sign_in create(:user, :admin)
-
-      params = { user: { user_status: "Community Leader Level 2", note_for_current_role: "assigning level 2" } }
-      patch user_status_admin_user_path(user.id), params: params
-
+      patch user_status_admin_user_path(user.id), params: {
+        user: { user_status: "Community Leader Level 2", note_for_current_role: "assigning level 2" }
+      }
       expect(user.reload.community_leader_level_2?).to be(false)
       expect(request.flash["danger"]).to be_present
-    end
 
-    it "allows admins to remove community leader level 1", :aggregate_failures do
-      sign_in create(:user, :admin)
-      user.add_role(:community_leader_level_1)
       role = user.roles.find_by!(name: "community_leader_level_1")
-
       delete admin_user_path(user.id), params: { user_id: user.id, role_id: role.id }
 
       expect(user.reload.community_leader_level_1?).to be(false)
@@ -192,7 +191,7 @@ RSpec.describe "Admin::Users" do
     end
 
     it "updates profile fields and records a note", :aggregate_failures do
-      user.profile.update!(
+      user.create_profile!(
         summary: "Old summary",
         location: "Old location",
         website_url: "https://old.example.com",
@@ -225,7 +224,15 @@ RSpec.describe "Admin::Users" do
       expect(user.credits.size).to eq(2)
     end
 
-    it "updates a user's password" do
+    it "updates a user's password when confirmation matches and fails on mismatch", :aggregate_failures do
+      patch update_password_admin_user_path(user.id), params: {
+        user: { password: "new-password-123", password_confirmation: "mismatch-456" }
+      }
+
+      expect(response).to redirect_to(admin_user_path(user.id, tab: :security))
+      expect(flash[:error]).to be_present
+      expect(user.reload.valid_password?("new-password-123")).to be(false)
+
       patch update_password_admin_user_path(user.id), params: {
         user: { password: "new-password-123", password_confirmation: "new-password-123" }
       }
@@ -235,17 +242,8 @@ RSpec.describe "Admin::Users" do
       expect(Note.last.reason).to eq("admin_password_update")
     end
 
-    it "fails to update password when confirmation does not match" do
-      patch update_password_admin_user_path(user.id), params: {
-        user: { password: "new-password-123", password_confirmation: "mismatch-456" }
-      }
-
-      expect(response).to redirect_to(admin_user_path(user.id, tab: :security))
-      expect(flash[:error]).to be_present
-      expect(user.reload.valid_password?("new-password-123")).to be(false)
-    end
-
-    it "sends an admin-triggered password reset email", :aggregate_failures do
+    it "sends an admin-triggered password reset email and falls back to username if admin name is blank",
+       :aggregate_failures do
       expect do
         perform_enqueued_jobs do
           post send_password_reset_admin_user_path(user.id)
@@ -258,9 +256,7 @@ RSpec.describe "Admin::Users" do
       email = ActionMailer::Base.deliveries.last
       expect(email.body.encoded).to include(CGI.escapeHTML(super_admin.name))
       expect(email.body.encoded).to include("help you regain access")
-    end
 
-    it "falls back to username if admin name is blank in password reset email", :aggregate_failures do
       super_admin.update_column(:name, nil)
 
       expect do
@@ -269,8 +265,7 @@ RSpec.describe "Admin::Users" do
         end
       end.to change(ActionMailer::Base.deliveries, :count).by(1)
 
-      email = ActionMailer::Base.deliveries.last
-      expect(email.body.encoded).to include(super_admin.username)
+      expect(ActionMailer::Base.deliveries.last.body.encoded).to include(super_admin.username)
     end
 
     it "removes non-admin roles from non-super_admin users", :aggregate_failures do
@@ -298,21 +293,11 @@ RSpec.describe "Admin::Users" do
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
-    it "removes tag mod role (resource_type and resource_id passed)" do
-      tag = create(:tag)
-      role = user.add_role(:tag_moderator, tag)
-
-      expect do
-        delete admin_user_path(user.id),
-               params: { user_id: user.id, role_id: role.id, resource_type: "Tag", resource_id: tag.id }
-      end.to change(user.roles, :count).by(-1)
-    end
-
-    it "doesn't remove other tag mod role" do
+    it "removes only the targeted tag mod role", :aggregate_failures do
       tag = create(:tag)
       tag2 = create(:tag)
       role = user.add_role(:tag_moderator, tag)
-      role = user.add_role(:tag_moderator, tag2)
+      user.add_role(:tag_moderator, tag2)
 
       expect do
         delete admin_user_path(user.id),
@@ -320,6 +305,7 @@ RSpec.describe "Admin::Users" do
       end.to change(user.roles, :count).by(-1)
 
       user.reload
+      expect(user.tag_moderator?(tag: tag)).to be false
       expect(user.tag_moderator?(tag: tag2)).to be true
     end
   end
@@ -327,18 +313,13 @@ RSpec.describe "Admin::Users" do
   context "when adding tag moderator role" do
     let(:tag) { create(:tag, name: "ruby") }
 
-    it "adds role", :aggregate_failures do
-      params = { user: { tag_name: tag.name } }
-      post add_tag_mod_role_admin_user_path(user.id), params: params
-      user.reload
-      expect(user.tag_moderator?(tag: tag)).to be true
+    it "adds role for an existing tag and displays an error when not found", :aggregate_failures do
+      post add_tag_mod_role_admin_user_path(user.id), params: { user: { tag_name: tag.name } }
+      expect(user.reload.tag_moderator?(tag: tag)).to be true
       expect(response).to redirect_to(admin_user_path(user.id))
-    end
 
-    it "displays tag not found message", :aggregate_failures do
       tag_name = "su#{tag.name}per"
-      params = { user: { tag_name: tag_name } }
-      post add_tag_mod_role_admin_user_path(user.id), params: params
+      post add_tag_mod_role_admin_user_path(user.id), params: { user: { tag_name: tag_name } }
       expect(flash[:error]).to include("Error: Tag \"#{tag_name}\" was not found")
       expect(response).to redirect_to(admin_user_path(user.id))
     end
@@ -364,6 +345,7 @@ RSpec.describe "Admin::Users" do
     end
 
     it "deletes the user's content and purges caches once the background jobs run", :aggregate_failures do
+      user.create_profile!
       dependents_for_offending_user_article
       offender_activity_on_other_content
       create_mutual_follows
@@ -405,8 +387,18 @@ RSpec.describe "Admin::Users" do
       expect(request.flash["success"]).not_to include("fully deleted")
     end
 
-    it "allows admins to delete users below the published activity threshold", :aggregate_failures do
-      sign_in create(:user, :admin)
+    it "allows admins to delete users below the published activity threshold and forbids deleting admins",
+       :aggregate_failures do
+      admin = create(:user, :admin)
+      sign_in admin
+
+      expect do
+        post full_delete_admin_user_path(super_admin.id)
+      end.to raise_error(Pundit::NotAuthorizedError)
+
+      expect do
+        post full_delete_admin_user_path(admin.id)
+      end.to raise_error(Pundit::NotAuthorizedError)
 
       get admin_user_path(user.id)
       expect(response.body).to include(full_delete_admin_user_path(user))
@@ -419,8 +411,8 @@ RSpec.describe "Admin::Users" do
     end
 
     it "restricts deleting users at or above the published activity threshold to super admins", :aggregate_failures do
-      create_list(:article, 3, user: user, published: true)
-      create_list(:comment, 2, user: user, commentable: article2, deleted: false)
+      stub_const("UserPolicy::ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT", 1)
+      article
       admin = create(:user, :admin)
       sign_in admin
 
@@ -450,68 +442,33 @@ RSpec.describe "Admin::Users" do
 
       expect(response).to redirect_to(admin_users_path)
     end
-
-    it "forbids admins from deleting other admins or super admins", :aggregate_failures do
-      admin = create(:user, :admin)
-      sign_in admin
-
-      expect do
-        post full_delete_admin_user_path(super_admin.id)
-      end.to raise_error(Pundit::NotAuthorizedError)
-
-      expect do
-        post full_delete_admin_user_path(admin.id)
-      end.to raise_error(Pundit::NotAuthorizedError)
-    end
   end
 
   context "when handling credits" do
-    it "adds the proper amount of credits for organizations", :aggregate_failures do
+    it "adds and removes the proper amount of credits for organizations", :aggregate_failures do
       create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
 
       put admin_user_path(super_admin.id), params: {
-        user: {
-          add_org_credits: 5,
-          organization_id: organization.id
-        }
+        user: { add_org_credits: 10, organization_id: organization.id }
+      }
+      expect(organization.reload.credits_count).to eq 10
+      expect(organization.unspent_credits_count).to eq 10
+
+      put admin_user_path(super_admin.id), params: {
+        user: { remove_org_credits: 5, organization_id: organization.id }
       }
       expect(organization.reload.credits_count).to eq 5
-      expect(organization.reload.unspent_credits_count).to eq 5
+      expect(organization.unspent_credits_count).to eq 5
     end
 
-    it "removes the proper amount of credits for organizations", :aggregate_failures do
-      create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
-      Credit.add_to(organization, 10)
+    it "adds and removes the proper amount of credits for a user", :aggregate_failures do
+      put admin_user_path(super_admin.id), params: { user: { add_credits: 10 } }
+      expect(super_admin.reload.credits_count).to eq 10
+      expect(super_admin.unspent_credits_count).to eq 10
 
-      put admin_user_path(super_admin.id), params: {
-        user: {
-          remove_org_credits: 5,
-          organization_id: organization.id
-        }
-      }
-      expect(organization.reload.credits_count).to eq 5
-      expect(organization.reload.unspent_credits_count).to eq 5
-    end
-
-    it "add the proper amount of credits to a user", :aggregate_failures do
-      put admin_user_path(super_admin.id), params: {
-        user: {
-          add_credits: 5
-        }
-      }
+      put admin_user_path(super_admin.id), params: { user: { remove_credits: 5 } }
       expect(super_admin.reload.credits_count).to eq 5
-      expect(super_admin.reload.unspent_credits_count).to eq 5
-    end
-
-    it "removes the proper amount of credits from a user", :aggregate_failures do
-      Credit.add_to(super_admin, 10)
-      put admin_user_path(super_admin.id), params: {
-        user: {
-          remove_credits: 5
-        }
-      }
-      expect(super_admin.reload.credits_count).to eq 5
-      expect(super_admin.reload.unspent_credits_count).to eq 5
+      expect(super_admin.unspent_credits_count).to eq 5
     end
   end
   # rubocop:enable RSpec/IndexedLet
