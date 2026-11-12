@@ -82,6 +82,29 @@ RSpec.describe "Events" do
           expect(response.body).to include(article.path)
           expect(response.body).to include("##{tag.name}")
         end
+
+        it "preloads article authors instead of querying users once per article" do
+          create_list(:article, 3, tag_list: tag.name, published: true)
+          users_queries = []
+          articles_queries = []
+          callback = lambda do |*, payload|
+            users_queries << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"\."id" (=|IN)/)
+            articles_queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+          end
+
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get event_path(published_event.event_name_slug, published_event.event_variation_slug)
+          end
+
+          expect(response).to have_http_status(:success)
+          Article.cached_tagged_with(tag.name).each do |tagged|
+            expect(response.body).to include(CGI.escapeHTML(tagged.user.name))
+          end
+          # One batched preload for the 4 authors (not one query per article)
+          expect(users_queries.size).to eq(1)
+          # No separate `SELECT 1 AS one` existence query for `@articles.any?`
+          expect(articles_queries.size).to eq(1)
+        end
       end
     end
 

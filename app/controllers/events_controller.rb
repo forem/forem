@@ -25,11 +25,11 @@ class EventsController < ApplicationController
       end
 
       tag_name = @event.tags.first&.name
-      if tag_name.present?
-        @articles = Article.published.cached_tagged_with(tag_name).order(hotness_score: :desc).limit(15)
-      else
-        @articles = Article.published.order(hotness_score: :desc).limit(15)
-      end
+      articles = Article.published.includes(:user).order(hotness_score: :desc).limit(15)
+      articles = articles.cached_tagged_with(tag_name) if tag_name.present?
+      # Load eagerly so the view's `@articles.any?` reuses the loaded records
+      # instead of issuing a separate `SELECT 1 ... LIMIT 1` existence query.
+      @articles = articles.load
     else
       check_for_page_fallback
     end
