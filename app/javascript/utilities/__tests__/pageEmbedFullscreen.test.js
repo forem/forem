@@ -20,13 +20,18 @@ describe('pageEmbedFullscreen utility', () => {
 
     document.body.style.overflow = '';
     document.body.innerHTML = `
+      <a id="outside-link" href="https://example.test/outside">Outside</a>
       <div id="article-root">
         <div class="ltag__page ltag__page--article js-page-embed">
           <div class="ltag__page-card">
             <div class="ltag__page-viewport">
-              <iframe src="https://example.test/alice/embed/demo?mode=embed" title="Demo"></iframe>
+              <iframe src="https://example.test/alice/embed/demo?mode=embed" title="Demo" tabindex="0"></iframe>
             </div>
             <div class="ltag__page-footer">
+              <div class="ltag__page-meta">
+                <a href="/alice" class="ltag__page-owner-avatar-link" aria-hidden="true" tabindex="-1"></a>
+                <a href="/alice" class="ltag__page-owner-link">Alice</a>
+              </div>
               <button
                 type="button"
                 class="ltag__page-fullscreen-btn js-fullscreen-page-action"
@@ -102,5 +107,52 @@ describe('pageEmbedFullscreen utility', () => {
 
     expect(isPageEmbedFullscreenOpen()).toBe(false);
     expect(document.body.style.overflow).toBe('');
+  });
+
+  it('traps Tab and Shift+Tab keyboard focus inside the fullscreen card', () => {
+    const outsideLink = document.getElementById('outside-link');
+
+    button.click();
+    expect(isPageEmbedFullscreenOpen()).toBe(true);
+
+    button.focus();
+    const forwardTab = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      bubbles: true,
+      cancelable: true,
+    });
+    document.dispatchEvent(forwardTab);
+    expect(forwardTab.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(iframe);
+
+    const backwardTab = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      shiftKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    document.dispatchEvent(backwardTab);
+    expect(backwardTab.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(button);
+
+    outsideLink.focus();
+    const recoverTab = new KeyboardEvent('keydown', {
+      key: 'Tab',
+      bubbles: true,
+      cancelable: true,
+    });
+    document.dispatchEvent(recoverTab);
+    expect(recoverTab.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(iframe);
+  });
+
+  it('does not double-toggle when initialized on both document and a nested container', () => {
+    initializePageEmbedFullscreen(document);
+
+    button.click();
+    expect(isPageEmbedFullscreenOpen()).toBe(true);
+
+    button.click();
+    expect(isPageEmbedFullscreenOpen()).toBe(false);
   });
 });

@@ -344,7 +344,7 @@ RSpec.describe PageTag, type: :liquid_tag do
 
       expect(org_article_html).to include("ltag__page-footer")
       expect(org_article_html).to include("Bar Org")
-      expect(org_article_html).to include("href=\"/#{org.slug}/p/docs\"")
+      expect(org_article_html).to include("href=\"#{URL.url}/#{org.slug}/p/docs\"")
       expect(org_article_html).to include("js-fullscreen-page-action")
 
       site_article_html = ContentRenderer.new(
@@ -354,8 +354,34 @@ RSpec.describe PageTag, type: :liquid_tag do
       ).process_article.processed_html
 
       expect(site_article_html).to include("ltag__page-footer")
-      expect(site_article_html).to include('href="/about"')
+      expect(site_article_html).to include("href=\"#{URL.url}/about\"")
       expect(site_article_html).to include("js-fullscreen-page-action")
+
+      subforem = create(:subforem, domain: "other.forem.test")
+      allow(Subforem).to receive_messages(
+        disabled_by_env?: false,
+        cached_domains: ["other.forem.test"],
+        cached_id_by_domain: subforem.id,
+        cached_id_to_domain_hash: { subforem.id => "other.forem.test" },
+      )
+      create(
+        :page,
+        subforem: subforem,
+        slug: "remote-guide",
+        title: "Remote Guide",
+        description: "desc",
+        is_top_level_path: true,
+        template: "full_within_layout",
+        body_markdown: "Remote body",
+      )
+
+      cross_subforem_html = ContentRenderer.new(
+        "{% embed https://other.forem.test/remote-guide %}",
+        source: article,
+        user: article_author,
+      ).process_article.processed_html
+
+      expect(cross_subforem_html).to include("href=\"#{URL.url('/remote-guide', 'other.forem.test')}\"")
 
       feed_html = ActionController::Base.helpers.sanitize(user_article_html, scrubber: FeedMarkdownScrubber.new)
       expect(feed_html).to include("Interactive Card")

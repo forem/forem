@@ -119,6 +119,7 @@ en:
       embed_html_template_immutable: cannot be converted to or from embed_html.
       embed_html_too_large: cannot exceed %{max_kb} KB.
       multiple_owners_not_allowed: Page cannot belong to both an organization and a user.
+      slug_blank: can't be blank
       user_embed_pages_limit_reached: You have reached the maximum of %{max} embedded pages.
       user_page_must_be_embed_html: must be embed_html for user-owned pages.
       redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).

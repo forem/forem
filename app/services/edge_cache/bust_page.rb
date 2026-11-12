@@ -11,6 +11,7 @@ module EdgeCache
         "/page/#{slug}",
         "/#{slug}",
         "/#{slug}/",
+        "/#{slug}?mode=embed",
       ]
 
       if organization

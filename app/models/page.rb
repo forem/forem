@@ -32,6 +32,7 @@ class Page < ApplicationRecord
   before_validation :normalize_embed_html_attributes
   before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
+  before_create :enforce_user_embed_page_limit_with_lock, if: -> { user_id.present? && embed_html? }
 
   after_commit :ensure_uniqueness_of_landinge_page
   after_commit :bust_cache
@@ -93,7 +94,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id user_id position])
+                         organization_id position])
   end
 
   def uses_page_template?
@@ -166,6 +167,14 @@ class Page < ApplicationRecord
     return unless new_record? && user.pages.embed_html.count >= MAX_USER_EMBED_PAGES
 
     errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+  end
+
+  def enforce_user_embed_page_limit_with_lock
+    User.where(id: user_id).lock.pick(:id)
+    return unless Page.embed_html.where(user_id: user_id).count >= MAX_USER_EMBED_PAGES
+
+    errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+    throw(:abort)
   end
 
   def validate_embed_html_constraints

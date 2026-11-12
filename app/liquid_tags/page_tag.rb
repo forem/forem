@@ -76,7 +76,7 @@ class PageTag < LiquidTagBase
         owner_name: owner.name,
         owner_path: owner.path,
         owner_avatar_url: owner.profile_image_90,
-        canonical_url: target[:sandboxed] ? nil : target[:path]
+        canonical_url: target[:sandboxed] ? nil : target[:base_url]
       }
     else
       {
@@ -84,7 +84,7 @@ class PageTag < LiquidTagBase
         owner_name: Settings::Community.community_name.presence || "Forem",
         owner_path: "/",
         owner_avatar_url: site_logo_url,
-        canonical_url: target[:sandboxed] ? nil : target[:path]
+        canonical_url: target[:sandboxed] ? nil : target[:base_url]
       }
     end
   end
@@ -174,6 +174,7 @@ class PageTag < LiquidTagBase
     base = build_page_url(target[:path], page: target[:page], origin_base: origin_base)
     {
       url: append_embed_params(base, query: query, fragment: fragment),
+      base_url: base,
       path: target[:path],
       title: target[:title],
       page: target[:page],
@@ -280,9 +281,13 @@ class PageTag < LiquidTagBase
       .compact_blank
       .uniq
       .map { |slug| "#{slug}/embed/#{normalized_suffix}" }
-    return if legacy_slugs.empty?
+    legacy_page = owner.pages.embed_html.find_by(slug: legacy_slugs) if legacy_slugs.any?
+    return legacy_page if legacy_page
 
-    owner.pages.embed_html.find_by(slug: legacy_slugs)
+    escaped_suffix = ActiveRecord::Base.sanitize_sql_like(normalized_suffix)
+    owner.pages.embed_html.where("slug LIKE ?", "%/embed/#{escaped_suffix}").order(id: :desc).detect do |page|
+      page.slug.end_with?("/embed/#{normalized_suffix}") && page.slug.count("/") == 2
+    end
   end
   private_class_method :find_owner_embed_page
 

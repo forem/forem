@@ -316,6 +316,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
+  after_update :sync_embed_page_slugs, if: :saved_change_to_username?
   after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
   after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
@@ -1367,8 +1368,12 @@ class User < ApplicationRecord
     # Check for spam patterns when user gets spam or suspended role
     return unless role.name.in?(%w[spam suspended])
 
-    Users::BustCacheWorker.perform_async(id)
-    pages.embed_html.pluck(:slug).each { |page_slug| Pages::BustCacheWorker.perform_async(page_slug, nil, id) }
+    target_user_id = id
+    ActiveRecord.after_all_transactions_commit do
+      Page.embed_html.where(user_id: target_user_id).pluck(:slug).each do |page_slug|
+        Pages::BustCacheWorker.perform_async(page_slug, nil, target_user_id)
+      end
+    end
 
     # The domain scan can hit the statement timeout, so keep it out of this
     # callback: an error here rolls back the role grant (and aborts a banish).
@@ -1378,5 +1383,19 @@ class User < ApplicationRecord
     # so rescore on every grant/removal regardless of which code path changed the role.
     # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
     articles.published.find_each(&:async_score_calc)
+  end
+
+  def sync_embed_page_slugs
+    pages.embed_html.find_each do |embed_page|
+      suffix = embed_page.slug.to_s.split("/").last
+      next if suffix.blank?
+
+      new_slug = "#{username}/embed/#{suffix}"
+      next if embed_page.slug == new_slug
+      next if Page.where(slug: new_slug).where.not(id: embed_page.id).exists?
+
+      embed_page.user = self
+      embed_page.update!(slug: new_slug)
+    end
   end
 end

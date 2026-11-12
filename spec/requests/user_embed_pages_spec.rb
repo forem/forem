@@ -106,6 +106,22 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
       expect(response.body).to include("Sorting Visualizer")
       expect(response.body).to include("{% embed #{URL.url("/#{user.username}/embed/sorting-visualizer")} %}")
 
+      get "/dashboard/embed_pages/new"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('for="user_embed_body_html"')
+
+      allow(Settings::UserExperience).to receive(:default_locale).and_return("fr")
+      post "/dashboard/embed_pages", params: {
+        page: {
+          title: "Invalid Slug",
+          slug_suffix: "---",
+          body_html: custom_html
+        }
+      }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include(I18n.t("models.page.slug_blank", locale: :fr))
+      allow(Settings::UserExperience).to receive(:default_locale).and_call_original
+
       patch "/dashboard/embed_pages/#{page.id}", params: {
         page: {
           title: "Updated Visualizer",
@@ -246,6 +262,8 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
       )
       expect(over_cap).not_to be_valid
       expect(over_cap.errors[:base]).to be_present
+      expect(over_cap.save(validate: false)).to be(false)
+      expect(over_cap.errors[:base]).to include(I18n.t("models.page.user_embed_pages_limit_reached", max: 2))
     end
   end
 
@@ -319,13 +337,17 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "stops serving embeds and purges cache when user is suspended or marked spam", :aggregate_failures do
-      allow(Users::BustCacheWorker).to receive(:perform_async)
+    it "stops serving embeds and purges cache after commit on spam or suspension", :aggregate_failures do
       allow(Pages::BustCacheWorker).to receive(:perform_async)
+
+      User.transaction(requires_new: true) do
+        user.add_role(:spam)
+        raise ActiveRecord::Rollback
+      end
+      expect(Pages::BustCacheWorker).not_to have_received(:perform_async)
 
       user.add_role(:suspended)
 
-      expect(Users::BustCacheWorker).to have_received(:perform_async).with(user.id)
       expect(Pages::BustCacheWorker).to have_received(:perform_async).with(embed_page.slug, nil, user.id)
 
       get "/#{embed_page.slug}", params: { mode: "embed" }, headers: { "Sec-Fetch-Dest" => "iframe" }
@@ -343,23 +365,35 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
       expect(Page.exists?(page_id)).to be(false)
     end
 
-    it "serves after username rename without legacy usernames shadowing new accounts", :aggregate_failures do
-      user.update!(old_username: user.username, username: "alicerenamed")
+    it "serves across 3+ username renames without legacy usernames shadowing new accounts", :aggregate_failures do
+      user.update!(old_username: user.username, username: "alicerenamed1")
+      user.update!(old_old_username: user.old_username, old_username: user.username, username: "alicerenamed2")
+      user.update!(old_old_username: user.old_username, old_username: user.username, username: "alicerenamed3")
 
-      get "/alicerenamed/embed/shader-playground",
+      expect(embed_page.reload.slug).to eq("alicerenamed3/embed/shader-playground")
+
+      get "/alicerenamed3/embed/shader-playground",
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
 
-      get "/alicebuilder/embed/shader-playground",
+      get "/alicerenamed2/embed/shader-playground",
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
 
-      new_owner = create(:user, username: "alicebuilder")
+      get "/alicerenamed1/embed/shader-playground",
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+      expect(response).to have_http_status(:ok)
+
+      rendered = MarkdownProcessor::Parser.new("{% embed /alicerenamed3/embed/shader-playground %}").finalize
+      expect(rendered).to include("src=\"#{URL.url}/alicerenamed3/embed/shader-playground?mode=embed\"")
+
+      new_owner = create(:user, username: "alicerenamed1")
       FeatureFlag.enable(:user_embed_pages, FeatureFlag::Actor[new_owner])
 
-      get "/alicebuilder/embed/shader-playground",
+      get "/alicerenamed1/embed/shader-playground",
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:not_found)

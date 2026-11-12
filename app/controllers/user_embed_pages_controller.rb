@@ -1,6 +1,4 @@
 class UserEmbedPagesController < ApplicationController
-  SLUG_REQUIRED_MESSAGE = "can't be blank".freeze
-
   before_action :set_no_cache_header
   before_action :authenticate_user!
   before_action :require_embed_pages_access!
@@ -71,7 +69,7 @@ class UserEmbedPagesController < ApplicationController
 
     suffix = normalized_slug_suffix
     if suffix.blank?
-      @page.errors.add(:slug, SLUG_REQUIRED_MESSAGE)
+      @page.errors.add(:slug, I18n.t("models.page.slug_blank"))
       return
     end
 
@@ -84,7 +82,7 @@ class UserEmbedPagesController < ApplicationController
 
     suffix = normalized_slug_suffix
     if suffix.blank?
-      @page.errors.add(:slug, SLUG_REQUIRED_MESSAGE)
+      @page.errors.add(:slug, I18n.t("models.page.slug_blank"))
       return
     end
 

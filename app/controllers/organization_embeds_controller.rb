@@ -95,9 +95,13 @@ class OrganizationEmbedsController < ActionController::Metal
       .compact_blank
       .uniq
       .map { |slug| "#{slug}/embed/#{suffix}" }
-    return if legacy_slugs.empty?
+    legacy_page = owner.pages.embed_html.find_by(slug: legacy_slugs) if legacy_slugs.any?
+    return legacy_page if legacy_page
 
-    owner.pages.embed_html.find_by(slug: legacy_slugs)
+    escaped_suffix = ActiveRecord::Base.sanitize_sql_like(suffix)
+    owner.pages.embed_html.where("slug LIKE ?", "%/embed/#{escaped_suffix}").order(id: :desc).detect do |page|
+      page.slug.end_with?("/embed/#{suffix}") && page.slug.count("/") == 2
+    end
   end
 
   def apply_base_headers
