@@ -789,44 +789,33 @@ RSpec.describe "StoriesIndex" do
         create(:profile_pin, :for_organization, pinnable: pinned_article, profile: organization)
       end
 
-      it "renders a dedicated pinned section above the regular feed" do
-        get "/#{organization.slug}"
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(CGI.escapeHTML(pinned_article.title))
-        expect(response.body).to include(I18n.t("views.users.pinned"))
-      end
-
-      it "colors the pinned label text with the organization's Brand color 2" do
+      it "renders a dedicated pinned section without repeating the post and hides it if moved", :aggregate_failures do
         organization.update!(bg_color_hex: "#112233", text_color_hex: "#abcdef")
 
-        get "/#{organization.slug}"
-        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
-        expect(label.text.strip).to eq(I18n.t("views.users.pinned"))
-        expect(label["style"]).to include("color: #abcdef")
-        expect(label["class"]).not_to include("color-base-inverted")
-      end
-
-      it "falls back to the default text color when Brand color 2 is blank" do
-        organization.update!(bg_color_hex: "#112233", text_color_hex: nil)
-
-        get "/#{organization.slug}"
-        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
-        expect(label["style"]).to include("color: #ffffff")
-      end
-
-      it "does not repeat the pinned post in the regular feed" do
         # A rendered story card references its own "article-link-<id>" DOM id twice
         # (once as the id= attribute itself, once as an aria-labelledby reference to
         # it), so scanning for that bare string gives 2 per card. Match the id=
         # attribute specifically to count actual card instances.
         get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(pinned_article.title))
+        expect(response.body).to include(I18n.t("views.users.pinned"))
         expect(response.body.scan(/id="article-link-#{pinned_article.id}"/).size).to eq(1)
-      end
 
-      it "stops showing the pin once the article moves to a different organization" do
+        # The pinned label text uses the organization's Brand color 2
+        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
+        expect(label.text).to include(I18n.t("views.users.pinned"))
+        expect(label["style"]).to include("color: #abcdef")
+        expect(label["class"]).not_to include("color-base-inverted")
+
+        # Falls back to the default text color when Brand color 2 is blank
+        organization.update!(text_color_hex: nil)
+        get "/#{organization.slug}"
+        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
+        expect(label["style"]).to include("color: #ffffff")
+
         other_org = create(:organization)
         pinned_article.update_column(:organization_id, other_org.id)
-
         get "/#{organization.slug}"
         expect(response.body).not_to include(%(id="article-link-#{pinned_article.id}"))
       end
