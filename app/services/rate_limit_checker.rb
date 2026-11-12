@@ -13,6 +13,8 @@ class RateLimitChecker
     article_update: { retry_after: 30 },
     comment_antispam_creation: { retry_after: 300 },
     comment_creation: { retry_after: 30 },
+    embed_page_creation: { retry_after: 60 },
+    embed_page_update: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
     flag_appeal_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
