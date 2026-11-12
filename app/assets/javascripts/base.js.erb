@@ -49,8 +49,22 @@ var I18n = window.I18n = {
   var hbListenersAttached = false;
   var HB_MAX_QUEUE = 20;
 
+  function isErrorClientConfigured() {
+    return Boolean(hbConfig.dsn || hbConfig.apiKey);
+  }
+
+  function getActiveErrorScriptMetaName() {
+    if (hbConfig.dsn) {
+      return 'betterstack-errors-script';
+    }
+    if (hbConfig.apiKey) {
+      return 'honeybadger-script';
+    }
+    return null;
+  }
+
   function attachHoneybadgerWindowListeners() {
-    if (hbListenersAttached || !hbConfig.apiKey) return;
+    if (hbListenersAttached || !isErrorClientConfigured()) return;
     hbListenersAttached = true;
 
     window.addEventListener('error', function(event) {
@@ -93,7 +107,11 @@ var I18n = window.I18n = {
     if (hbLoadingPromise) {
       return hbLoadingPromise;
     }
-    var meta = document.querySelector('meta[name="honeybadger-script"]');
+    var metaName = getActiveErrorScriptMetaName();
+    if (!metaName) {
+      return Promise.resolve(null);
+    }
+    var meta = document.querySelector('meta[name="' + metaName + '"]');
     var scriptSrc = meta && meta.getAttribute('content');
     if (!scriptSrc) {
       return Promise.resolve(null);
@@ -147,7 +165,7 @@ var I18n = window.I18n = {
     configure: function(opts) {
       if (opts && typeof opts === 'object') {
         Object.assign(hbConfig, opts);
-        if (hbConfig.apiKey) {
+        if (isErrorClientConfigured()) {
           attachHoneybadgerWindowListeners();
         }
       }
@@ -177,7 +195,7 @@ var I18n = window.I18n = {
       return this;
     },
     notify: function(err, name, extra) {
-      if (hbLoadFailed || !hbConfig.apiKey || !passesBeforeNotify(err)) {
+      if (hbLoadFailed || !isErrorClientConfigured() || !passesBeforeNotify(err)) {
         return false;
       }
       if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
@@ -1052,7 +1070,20 @@ var instantClick
 
 // INITIALIZE/ERROR HANDLING
 
-  if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
+  if (document.body && document.body.dataset && document.body.dataset.betterstackErrorsDsn) {
+    Honeybadger.configure({
+      dsn: document.body.dataset.betterstackErrorsDsn,
+      environment: "<%= Rails.env %>",
+      revision: document.body.dataset.latestCommitId || document.body.dataset.releaseFootprint || document.body.dataset.deployedAt,
+      maxErrors: 20,
+    });
+
+    Honeybadger.beforeNotify(function(notice) {
+      if (!notice || typeof notice.message !== 'string') return true
+      const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i, /ChunkLoadError/i]
+      return !(ignorePatterns.some((pattern) => pattern.test(notice.message)));
+    });
+  } else if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
     Honeybadger.configure({
       apiKey: document.body.dataset.honeybadgerKey,
       environment: "<%= Rails.env %>",
