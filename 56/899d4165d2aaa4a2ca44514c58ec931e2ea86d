@@ -1,0 +1,20 @@
+app/services/authentication/providers/mlh.rb
+  h_a5e25bc086eb00 8
+app/views/users/_account_providers_emails.html.erb
+  h_a5e25bc086eb00 15,21
+spec/requests/user/user_settings_spec.rb
+  h_a5e25bc086eb00 242-255
+spec/services/authentication/providers/mlh_spec.rb
+  h_a5e25bc086eb00 25-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "56899d4165d2aaa4a2ca44514c58ec931e2ea86d",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
