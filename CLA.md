@@ -65,7 +65,7 @@ a. Copyright License. You grant DEV, and those who receive the Submission
 directly or indirectly from DEV, a perpetual, worldwide, non-exclusive,
 no-charge, royalty-free, irrevocable copyright license in the Submission to
 reproduce, prepare derivative works of, publicly display, publicly perform, and
-distribute the Submission and such derivative works, and to sub-license any or
+distribute the Submission and such derivative works, and to sublicense any or
 all of the foregoing rights to third parties.
 
 b. Patent License. You grant DEV, and those who receive the Submission directly
@@ -102,11 +102,15 @@ PURPOSE.
 
 You agree to notify DEV in writing of any facts or circumstances of which You
 later become aware that would make Your representations in this Agreement
-inaccurate in any respect. 8. Information about Submissions.
+inaccurate in any respect.
+
+8. Information about Submissions.
 
 You agree that contributions to Projects and information about contributions may
 be maintained indefinitely and disclosed publicly, including Your name and other
-information that You submit with Your Submission. 9. Governing Law/Jurisdiction.
+information that You submit with Your Submission.
+
+9. Governing Law/Jurisdiction.
 
 This Agreement is governed by the laws of the State of New York, and the parties
 consent to exclusive jurisdiction and venue in the federal courts sitting in New
