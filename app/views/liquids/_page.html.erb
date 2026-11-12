@@ -1,0 +1,28 @@
+<div class="ltag__page">
+  <% if local_assigns[:sandboxed] %>
+    <iframe
+      src="<%= url %>"
+      title="<%= title %>"
+      width="100%"
+      height="<%= height %>"
+      frameborder="0"
+      loading="lazy"
+      sandbox="<%= PageTag::IFRAME_SANDBOX %>"
+      credentialless
+      referrerpolicy="no-referrer"
+      allow="<%= PageTag::IFRAME_ALLOW_POLICY %>"
+      style="<%= style %>">
+    </iframe>
+  <% else %>
+    <iframe
+      src="<%= url %>"
+      title="<%= title %>"
+      width="100%"
+      height="<%= height %>"
+      frameborder="0"
+      loading="lazy"
+      allowfullscreen
+      style="<%= style %>">
+    </iframe>
+  <% end %>
+</div>

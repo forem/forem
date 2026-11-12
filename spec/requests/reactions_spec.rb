@@ -53,6 +53,52 @@ RSpec.describe "Reactions" do
         expect(categories).to contain_exactly("like", "unicorn", "readinglist")
         expect(categories.last).to eq("readinglist")
       end
+
+      it "does not hydrate the full users row on GET /reactions?article_id=" do
+        get reactions_path(article_id: article.id)
+
+        full_user_queries = []
+        callback = lambda do |*, payload|
+          full_user_queries << payload[:sql] if payload[:sql].include?('SELECT "users".*')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get reactions_path(article_id: article.id)
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(full_user_queries).to be_empty
+      end
+
+      it "ignores a retained session after the user's password changes" do
+        get reactions_path(article_id: article.id)
+        expect(response.parsed_body["current_user"]).to eq("id" => user.id)
+
+        User.where(id: user.id).update_all(
+          encrypted_password: "$2a$10$newpasswordsaltandhashvalue1234567890123456789012",
+        )
+
+        get reactions_path(article_id: article.id)
+        expect(response.parsed_body["current_user"]).to eq("id" => nil)
+        expect(response.parsed_body["reactions"]).to be_empty
+      end
+    end
+
+    context "when authenticated only via remember_user_token cookie" do
+      it "restores the user, omits edge cache headers, and preserves session persistence" do
+        user.remember_me!
+        cookie_val = User.serialize_into_cookie(user)
+        signed_cookie = Rails.application.message_verifier("signed cookie").generate(cookie_val)
+
+        get reactions_path(article_id: article.id),
+            headers: { "Cookie" => "remember_user_token=#{CGI.escape(signed_cookie)}" }
+
+        result = response.parsed_body
+        expect(result["current_user"]).to eq("id" => user.id)
+        expect(result["reactions"]).not_to be_empty
+        expect(response.headers["Surrogate-Key"]).to be_nil
+        expect(request.env["rack.session.options"][:skip]).not_to be(true)
+      end
     end
 
     context "when signed out" do
@@ -82,7 +128,23 @@ RSpec.describe "Reactions" do
       end
     end
 
-    it "looks up only the article id, once, for the signed-out surrogate key" do
+    it "skips querying the articles table for the signed-out surrogate key when reaction counts are already present" do
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get reactions_path(article_id: article.id)
+      end
+
+      expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_article(article.id))
+      expect(queries).to be_empty
+    end
+
+    it "looks up only the article id, once, for the signed-out surrogate key when the article has no reactions yet" do
+      Reaction.where(reactable: article).delete_all
+      Rails.cache.delete("reaction_counts_for_reactable-Article-#{article.id}")
+
       queries = []
       callback = lambda do |*, payload|
         queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
@@ -94,6 +156,14 @@ RSpec.describe "Reactions" do
       expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_article(article.id))
       expect(queries.size).to eq(1)
       expect(queries.first).to start_with('SELECT "articles"."id" FROM "articles"')
+    end
+
+    it "omits the signed-out surrogate key when the article id does not exist" do
+      missing_id = Article.maximum(:id).to_i + 1
+      get reactions_path(article_id: missing_id)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).to be_nil
     end
   end
 
@@ -137,6 +207,19 @@ RSpec.describe "Reactions" do
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
+      end
+
+      it "skips querying the commentable table when comments are already present" do
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get reactions_path(commentable_id: article.id, commentable_type: "Article")
+        end
+
+        expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_commentable(article))
+        expect(queries).to be_empty
       end
     end
   end
@@ -200,13 +283,20 @@ RSpec.describe "Reactions" do
         expect(response).to be_successful
       end
 
-      it "sends Algolia insight event" do
+      it "sends Algolia insight event asynchronously via TrackEventWorker", :aggregate_failures do
         # Set up the expectation before making the request
         allow(Settings::General).to receive_messages(algolia_application_id: "test", algolia_api_key: "test")
         algolia_service_instance = instance_double(AlgoliaInsightsService)
         allow(AlgoliaInsightsService).to receive(:new).and_return(algolia_service_instance)
         allow(algolia_service_instance).to receive(:track_event)
-        post "/reactions", params: article_params
+
+        sidekiq_assert_enqueued_jobs(1, only: AlgoliaInsights::TrackEventWorker) do
+          post "/reactions", params: article_params
+        end
+        expect(algolia_service_instance).not_to have_received(:track_event)
+
+        sidekiq_perform_enqueued_jobs(only: AlgoliaInsights::TrackEventWorker)
+
         expect(algolia_service_instance).to have_received(:track_event).with(
           "conversion",
           "Reaction Created",

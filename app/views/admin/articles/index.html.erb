@@ -18,7 +18,7 @@
   </ul>
 </nav>
 
-<%= paginate @articles %>
+<%= render "pagination" %>
 
 <div id="member-index-content"
   class="flex flex-col gap-4"
@@ -46,7 +46,7 @@
   <% end %>
 
   <%= render partial: "article_item", collection: @articles, as: :article %>
-  <%= paginate @articles %>
+  <%= render "pagination" %>
 
   <%= render partial: "pinned_article_modal" %>
 </div>

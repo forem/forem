@@ -50,6 +50,18 @@ RSpec.describe Page do
           .to contain_exactly(page_subforem_1, page_subforem_2, page_no_subforem)
       end
     end
+
+    context "when Subforem.disabled_by_env? is true" do
+      before do
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+      end
+
+      it "returns all records without adding a subforem_id condition" do
+        relation = described_class.from_subforem(1)
+        expect(relation.where_clause).to be_empty
+        expect(relation).to contain_exactly(page_subforem_1, page_subforem_2, page_no_subforem)
+      end
+    end
   end
 
   describe ".render_safe_html_for" do
@@ -238,6 +250,16 @@ RSpec.describe Page do
       sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [org_page.slug, organization.id]) do
         org_page.save
       end
+    end
+
+    it "enqueues cache busts for both the new and previous slug when slug changes" do
+      page = create(:page, slug: "old-page-slug")
+      allow(Pages::BustCacheWorker).to receive(:perform_async)
+
+      page.update!(slug: "new-page-slug")
+
+      expect(Pages::BustCacheWorker).to have_received(:perform_async).with("new-page-slug")
+      expect(Pages::BustCacheWorker).to have_received(:perform_async).with("old-page-slug")
     end
 
     it "ensures only one page can be a landing page on create" do

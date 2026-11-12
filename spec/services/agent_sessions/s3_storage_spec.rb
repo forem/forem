@@ -105,12 +105,13 @@ RSpec.describe AgentSessions::S3Storage do
 
       reset_storage
 
-      url = described_class.presigned_put_url("agent_sessions/1/test.jsonl")
+      url = described_class.presigned_put_url("agent_sessions/1/test.jsonl", content_length: 1024)
       expect(url).to eq("https://s3.example.com/presigned-put")
       expect(fog_storage).to have_received(:put_object_url)
         .with("test-bucket", "agent_sessions/1/test.jsonl",
               a_value_between(Time.now.to_i + 895, Time.now.to_i + 905),
               "Content-Type" => "application/x-jsonlines",
+              "Content-Length" => "1024",
               "x-amz-acl" => "private")
 
       reset_storage
@@ -125,15 +126,58 @@ RSpec.describe AgentSessions::S3Storage do
 
       reset_storage
 
-      url = described_class.presigned_put_url("agent_sessions/1/test.jsonl")
+      url = described_class.presigned_put_url("agent_sessions/1/test.jsonl", content_length: 1024)
       expect(url).to eq("https://s3.example.com/presigned-put")
       expect(fog_storage).to have_received(:put_object_url)
         .with("dedicated-bucket", "agent_sessions/1/test.jsonl",
               a_value_between(Time.now.to_i + 895, Time.now.to_i + 905),
               "Content-Type" => "application/x-jsonlines",
+              "Content-Length" => "1024",
               "x-amz-acl" => "private")
 
       reset_storage
+    end
+  end
+
+  describe ".presigned_put_url signing" do
+    it "includes Content-Length in the signed headers so S3 rejects other sizes" do
+      stub_aws_config
+      reset_storage
+
+      url = described_class.presigned_put_url("agent_sessions/1/test.jsonl", content_length: 1024)
+      signed_headers = Rack::Utils.parse_query(URI.parse(url).query)["X-Amz-SignedHeaders"].split(";")
+
+      expect(signed_headers).to include("content-length", "content-type", "x-amz-acl")
+
+      reset_storage
+    end
+
+    it "raises without a permitted content length" do
+      expect { described_class.presigned_put_url("agent_sessions/1/test.jsonl", content_length: nil) }
+        .to raise_error(ArgumentError, /content_length/)
+      expect do
+        described_class.presigned_put_url("agent_sessions/1/test.jsonl",
+                                          content_length: described_class::MAX_UPLOAD_SIZE + 1)
+      end.to raise_error(ArgumentError, /content_length/)
+    end
+  end
+
+  describe ".permitted_content_length" do
+    it "matches the curated session size limit" do
+      expect(described_class::MAX_UPLOAD_SIZE).to eq(AgentSession::MAX_CURATED_DATA_SIZE)
+    end
+
+    it "accepts integers and decimal strings within the limit" do
+      expect(described_class.permitted_content_length(1)).to eq(1)
+      expect(described_class.permitted_content_length("2048")).to eq(2048)
+      expect(described_class.permitted_content_length(described_class::MAX_UPLOAD_SIZE))
+        .to eq(described_class::MAX_UPLOAD_SIZE)
+    end
+
+    it "rejects missing, non-positive, oversized and malformed values" do
+      [nil, "", 0, -1, described_class::MAX_UPLOAD_SIZE + 1, "abc", "1.5", 1.5, "0x10", [1]].each do |value|
+        expect(described_class.permitted_content_length(value)).to be_nil, "expected #{value.inspect} to be rejected"
+      end
     end
   end
 

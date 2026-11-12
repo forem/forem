@@ -37,7 +37,9 @@ module Articles
 
     def other_suggestions(max: MAX_DEFAULT, ids_to_ignore: [])
       ids_to_ignore << article.id
-      Article.published.where(subforem_id: article.subforem_id)
+      scope = Article.published
+      scope = scope.where(subforem_id: article.subforem_id) unless Subforem.disabled_by_env?
+      scope
         .where(archived: false)
         .where("published_at > ?", 3.months.ago)
         .where.not(id: ids_to_ignore)
@@ -50,8 +52,9 @@ module Articles
     end
 
     def suggestions_by_tag(max: MAX_DEFAULT)
-      Article
-        .published.where(subforem_id: article.subforem_id)
+      scope = Article.published
+      scope = scope.where(subforem_id: article.subforem_id) unless Subforem.disabled_by_env?
+      scope
         .where(archived: false)
         .where("published_at > ?", 3.months.ago)
         .cached_tagged_with_any(cached_tag_list_array)

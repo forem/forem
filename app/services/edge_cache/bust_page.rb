@@ -3,27 +3,23 @@ module EdgeCache
     def self.call(slug, organization: nil)
       return unless slug
 
-      cache_bust = EdgeCache::Bust.new
-      cache_bust.call("/page/#{slug}")
-      cache_bust.call("/#{slug}")
-      # The trailing-slash URL renders the same page but is a separate edge cache
-      # entry, so without this purge it keeps serving the old page after an update.
-      cache_bust.call("/#{slug}/")
-      # Page responses carry this surrogate key on every URL that serves them,
-      # including query variants such as the ?i= InstantClick fetch, which
-      # the path purges above do not reach.
-      EdgeCache::PurgeByKey.call("show-page-#{slug}")
+      # Page responses carry `show-page-<slug>` on every URL that serves them
+      # (`/page/:slug`, `/:slug`, `/:slug/`, and InstantClick `?i=` fetches), and
+      # organization pages also carry the organization's surrogate key across
+      # profile and custom-domain routes.
+      keys = ["show-page-#{slug}", *EdgeCache::LegacySlugRedirectKeys.call(slug)]
+      fallback_paths = [
+        "/page/#{slug}",
+        "/#{slug}",
+        "/#{slug}/",
+      ]
 
-      return unless organization
+      if organization
+        keys << organization.record_key
+        fallback_paths << "/#{organization.slug}"
+      end
 
-      # Organization pages are served from the org profile URLs (the readme
-      # renders at /:slug, custom pages at /:slug/:suffix, and both again on
-      # the org's custom domain). All of those responses carry the org's
-      # surrogate key, so purge by key rather than enumerating every URL.
-      EdgeCache::PurgeByKey.call(
-        organization.record_key,
-        fallback_paths: "/#{organization.slug}",
-      )
+      EdgeCache::PurgeByKey.call(keys, fallback_paths: fallback_paths)
     end
   end
 end

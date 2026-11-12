@@ -26,7 +26,7 @@ module Articles
       (?=\n|\z)
     /mx.freeze
     MAX_BLOCK_CHARS = 2_000
-    SUPPORTED_LANGUAGE_TAGS = (Rouge::Lexer.all.filter_map(&:tag) + ["plaintext"]).uniq.sort.freeze
+    SUPPORTED_LANGUAGE_TAGS = ForemNative.syntax_supported_language_tags.freeze
 
     def self.call(article)
       new(article).call
@@ -48,12 +48,7 @@ module Articles
 
     # Rouge tag => human-readable name for the Jev Choice options, e.g. "ruby" => "Ruby".
     def self.language_criteria
-      @language_criteria ||= begin
-        titles = Rouge::Lexer.all.each_with_object({}) { |lexer, memo| memo[lexer.tag] ||= lexer.title if lexer.tag }
-        SUPPORTED_LANGUAGE_TAGS.index_with do |tag|
-          tag == "plaintext" ? "Plain text, console output, or no specific language" : titles[tag] || tag
-        end
-      end
+      @language_criteria ||= ForemNative.syntax_language_criteria.freeze
     end
 
     def initialize(article, ai_client: nil)
@@ -100,7 +95,7 @@ module Articles
 
     # An injected client always wins so callers and specs can force the Gemini path.
     def use_jev?
-      @ai_client.blank? && selection.jev?
+      @ai_client.blank? && selection.decision?
     end
 
     def ai_client_unconfigured?
@@ -110,14 +105,14 @@ module Articles
     # --- Jev (TypeSafe System One) ---
 
     def detect_languages_via_jev(unlabeled_blocks)
-      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: article,
-                                        affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = selection.decision_client(wrapper: self, affected_content: article,
+                                         affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       unlabeled_blocks.map do |code|
         answer = client.evaluate(state: { code: code.to_s.strip.first(MAX_BLOCK_CHARS) },
                                  questions: { language: language_question }).choice(:language)
         answer.confidence >= MIN_JEV_CONFIDENCE ? normalize_language(answer.choice) : "plaintext"
-      rescue Ai::TypeSafe::Client::CircuitOpenError
-        # TypeSafe is down: abort rather than write "plaintext" for every remaining block.
+      rescue Ai::TypeSafe::Client::CircuitOpenError, Ai::GeminiDecision::Client::CircuitOpenError
+        # Decision provider is down: abort rather than write "plaintext" for every remaining block.
         raise
       rescue StandardError => e
         Rails.logger.error("Jev code block language detection failed for article #{article.id}: #{e}")
@@ -189,14 +184,7 @@ module Articles
     end
 
     def normalize_language(language)
-      lexer = Rouge::Lexer.find(language.to_s.strip.downcase)
-      normalized_language = lexer&.tag
-
-      if normalized_language.present? && SUPPORTED_LANGUAGE_TAGS.include?(normalized_language)
-        normalized_language
-      else
-        "plaintext"
-      end
+      ForemNative.syntax_normalize_language(language)
     end
 
     def apply_languages(detected_languages)

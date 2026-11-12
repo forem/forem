@@ -81,10 +81,22 @@ class AgentSessionsController < ApplicationController
       return
     end
 
-    s3_key = AgentSessions::S3Storage.generate_key(current_user.id)
-    presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key)
+    content_length = AgentSessions::S3Storage.permitted_content_length(params[:content_length])
+    unless content_length
+      render json: { error: AgentSessions::S3Storage::CONTENT_LENGTH_ERROR }, status: :unprocessable_entity
+      return
+    end
 
-    render json: { s3_key: s3_key, presigned_url: presigned_url }
+    rate_limiter.consume!(:agent_session_presign)
+
+    s3_key = AgentSessions::S3Storage.generate_key(current_user.id)
+    presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key, content_length: content_length)
+
+    render json: {
+      s3_key: s3_key,
+      presigned_url: presigned_url,
+      headers: AgentSessions::S3Storage.upload_headers(content_length)
+    }
   end
 
   def raw_url

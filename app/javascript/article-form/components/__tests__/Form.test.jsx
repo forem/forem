@@ -119,7 +119,7 @@ describe('<Form />', () => {
     });
 
     it('renders the markdown toolbar and overflow menu in the v1 form', async () => {
-      const { getByRole } = render(
+      const { getByRole, queryByRole } = render(
         <Form
           titleDefaultValue="Test Title v1"
           titleOnChange={null}
@@ -145,6 +145,82 @@ describe('<Form />', () => {
       await waitFor(() =>
         expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
       );
+      expect(getByRole('menuitem', { name: 'Underline' })).toBeInTheDocument();
+      expect(queryByRole('menuitem', { name: 'Help' })).not.toBeInTheDocument();
+      expect(queryByRole('button', { name: 'Help' })).not.toBeInTheDocument();
+    });
+
+    it('renders the Help button in the primary toolbar on small screens and dispatches toggle-editor-guide', () => {
+      global.window.matchMedia = jest.fn((query) => ({
+        matches: query === '(max-width: 767px)',
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      }));
+
+      const dispatchSpy = jest.spyOn(document, 'dispatchEvent');
+      const { getByRole } = render(
+        <Form
+          titleDefaultValue="Test Title v1"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue=""
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v1"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+
+      const helpButton = getByRole('button', { name: 'Help' });
+      expect(helpButton).toBeInTheDocument();
+      helpButton.click();
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'toggle-editor-guide' }),
+      );
+      dispatchSpy.mockRestore();
+    });
+
+    it('moves Upload Agent Session and Help into the overflow menu on extra-small screens (< 480px)', async () => {
+      global.window.matchMedia = jest.fn((query) => ({
+        matches:
+          query === '(max-width: 479px)' || query === '(max-width: 767px)',
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      }));
+
+      const { getByRole, queryByRole } = render(
+        <Form
+          titleDefaultValue="Test Title v1"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue=""
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v1"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+
+      expect(queryByRole('link', { name: 'Upload Agent Session' })).not.toBeInTheDocument();
+      expect(queryByRole('button', { name: 'Help' })).not.toBeInTheDocument();
+
+      const overflowMenuButton = getByRole('button', { name: 'More options' });
+      overflowMenuButton.click();
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
+      );
+
+      expect(getByRole('menuitem', { name: 'Upload Agent Session' })).toBeInTheDocument();
       expect(getByRole('menuitem', { name: 'Help' })).toBeInTheDocument();
     });
   });
@@ -341,12 +417,6 @@ describe('<Form />', () => {
       await waitFor(() =>
         expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'false'),
       );
-
-      getByRole('button', { name: 'More options' }).click();
-      await waitFor(() =>
-        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
-      );
-      expect(getByRole('menuitem', { name: 'Help' })).toBeInTheDocument();
     });
   });
 

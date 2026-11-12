@@ -8,6 +8,7 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
   before do
     allow(Ai::Base).to receive(:new).and_return(ai_client)
     allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return(nil)
+    allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec).and_return(nil)
     allow(Settings::Community).to receive(:community_description).and_return("A community for developers.")
   end
 
@@ -44,13 +45,13 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         expect(prompt).not_to include("a" * 2000)
       end
 
-      it "omits very_good and great labels from the prompt even when the article is a status" do
+      it "still allows very_good and great labels in the prompt when the article has a negative score" do
         allow(article).to receive(:status?).and_return(true)
         labeler = described_class.new(article)
         prompt = labeler.__send__(:build_prompt)
         expect(prompt).to include("This article is a \"status\" post")
-        expect(prompt).not_to include("very_good_and_on_topic")
-        expect(prompt).not_to include("great_and_on_topic")
+        expect(prompt).to include("very_good_and_on_topic")
+        expect(prompt).to include("great_and_on_topic")
       end
     end
 
@@ -126,6 +127,44 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
 
         labeler = described_class.new(article)
         expect(labeler.__send__(:community_description)).to eq("DEV default community spec.")
+      end
+
+      it "includes expanded_content_advisement_spec from the default subforem in the prompt" do
+        allow(article).to receive(:subforem_id).and_return(nil)
+        allow(Subforem).to receive(:cached_default_id).and_return(1)
+        allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec)
+          .with(subforem_id: 1).and_return("The DEV Content Playbook: reward bite-sized brilliance.")
+
+        labeler = described_class.new(article)
+        prompt = labeler.__send__(:build_prompt)
+        expect(prompt).to include("**Community Content Advisement & Quality Playbook:**")
+        expect(prompt).to include("The DEV Content Playbook: reward bite-sized brilliance.")
+      end
+
+      it "omits offtopic_for_subforem labels from prompt and normalizes them to likely_low_quality when multiple subforems are disabled" do
+        allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(false)
+        allow(ai_client).to receive(:call).and_return(
+          '{"moderation_label": "ok_but_offtopic_for_subforem", "compellingness_score": 0.4}',
+        )
+
+        labeler = described_class.new(article)
+        prompt = labeler.__send__(:build_prompt)
+        expect(prompt).not_to include("ok_but_offtopic_for_subforem")
+        expect(prompt).not_to include("very_good_but_offtopic_for_subforem")
+        expect(prompt).not_to include("great_but_off_topic_for_subforem")
+        expect(labeler.evaluate).to eq({ label: "likely_low_quality", compellingness_score: 0.4 })
+      end
+
+      it "includes offtopic_for_subforem labels when multiple subforems are enabled" do
+        allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(true)
+        allow(ai_client).to receive(:call).and_return(
+          '{"moderation_label": "ok_but_offtopic_for_subforem", "compellingness_score": 0.4}',
+        )
+
+        labeler = described_class.new(article)
+        prompt = labeler.__send__(:build_prompt)
+        expect(prompt).to include("ok_but_offtopic_for_subforem")
+        expect(labeler.evaluate).to eq({ label: "ok_but_offtopic_for_subforem", compellingness_score: 0.4 })
       end
     end
 
@@ -281,19 +320,51 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         :harmful, :inciting, :promotional_spam, :malicious, :auto_generated, :quality, :on_topic,
         :originality, :personal_voice, :discussion_potential
       )
+      on_topic_q = requests.first[:questions][:on_topic].to_s
+      expect(on_topic_q).to include("developer career/job search")
+      expect(on_topic_q).to include("developer productivity")
+      expect(on_topic_q).to include("completely unrelated to software, technology, or developer life")
     end
 
     it "labels acceptable on-topic content" do
       expect(evaluate_with({})).to eq(label: "okay_and_on_topic", compellingness_score: 0.0)
     end
 
-    it "maps quality and relevance to the label" do
-      expect(evaluate_with(quality: 3.2)[:label]).to eq("very_good_and_on_topic")
+    it "maps calibrated quality tiers to on-topic labels when multiple subforems are disabled (default)" do
+      allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(false)
+
+      # Calibrated quality tiers: >= 2.35 is very_good, >= 3.3 is great
+      expect(evaluate_with(quality: 2.34)[:label]).to eq("okay_and_on_topic")
+      expect(evaluate_with(quality: 2.35)[:label]).to eq("very_good_and_on_topic")
+      expect(evaluate_with(quality: 3.29)[:label]).to eq("very_good_and_on_topic")
+      expect(evaluate_with(quality: 3.3)[:label]).to eq("great_and_on_topic")
       expect(evaluate_with(quality: 3.8)[:label]).to eq("great_and_on_topic")
-      expect(evaluate_with(quality: 3.8, on_topic: 0.2)[:label]).to eq("great_but_off_topic_for_subforem")
-      expect(evaluate_with(quality: 2.0, on_topic: 0.2)[:label]).to eq("ok_but_offtopic_for_subforem")
       expect(evaluate_with(quality: 1.0)[:label]).to eq("likely_low_quality")
       expect(evaluate_with(quality: 0.2)[:label]).to eq("clear_and_obvious_low_quality")
+    end
+
+    it "maps single-subforem relevance and off-topic thresholds to labels" do
+      allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(false)
+
+      # Single-subforem on-topic threshold (0.30): developer career/lifestyle posts (0.30-0.50) are on-topic
+      expect(evaluate_with(quality: 2.0, on_topic: 0.30)[:label]).to eq("okay_and_on_topic")
+      expect(evaluate_with(quality: 2.0, on_topic: 0.35)[:label]).to eq("okay_and_on_topic")
+      expect(evaluate_with(quality: 3.8, on_topic: 0.35)[:label]).to eq("great_and_on_topic")
+
+      # Off-topic content in single-subforem mode is mapped to low-quality tiers
+      expect(evaluate_with(quality: 2.0, on_topic: 0.29)[:label]).to eq("likely_low_quality")
+      expect(evaluate_with(quality: 3.8, on_topic: 0.2)[:label]).to eq("likely_low_quality")
+      expect(evaluate_with(quality: 2.0, on_topic: 0.15)[:label]).to eq("clear_and_obvious_low_quality")
+      expect(evaluate_with(quality: 2.0, on_topic: 0.1)[:label]).to eq("clear_and_obvious_low_quality")
+    end
+
+    it "maps off-topic quality to *_offtopic_for_subforem labels when multiple subforems are enabled" do
+      allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(true)
+
+      expect(evaluate_with(quality: 3.8, on_topic: 0.35)[:label]).to eq("great_but_off_topic_for_subforem")
+      expect(evaluate_with(quality: 3.2, on_topic: 0.2)[:label]).to eq("very_good_but_offtopic_for_subforem")
+      expect(evaluate_with(quality: 2.0, on_topic: 0.2)[:label]).to eq("ok_but_offtopic_for_subforem")
+      expect(evaluate_with(quality: 3.8, on_topic: 0.6)[:label]).to eq("great_and_on_topic")
     end
 
     it "puts safety ahead of spam, and spam ahead of quality" do
@@ -309,10 +380,11 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       expect(evaluate_with(auto_generated: 0.95, promotional_spam: 0.55)[:label]).to eq("clear_and_obvious_spam")
     end
 
-    it "caps negatively scored articles below the very good tiers" do
+    it "allows negatively scored articles to earn very_good or great tiers when quality merits it" do
       article.update_column(:score, -5)
 
-      expect(evaluate_with(quality: 4.0)[:label]).to eq("okay_and_on_topic")
+      expect(evaluate_with(quality: 4.0)[:label]).to eq("great_and_on_topic")
+      expect(evaluate_with(quality: 3.0)[:label]).to eq("very_good_and_on_topic")
     end
 
     it "caps quality when tag moderation rules are clearly broken" do
@@ -371,12 +443,90 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       end
     end
 
-    it "falls back to the safe default when TypeSafe fails" do
-      client = instance_double(Ai::TypeSafe::Client)
-      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
-      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+    context "when TypeSafe fails" do
+      let(:jev_client) { instance_double(Ai::TypeSafe::Client) }
 
-      expect(described_class.new(article).evaluate).to eq(label: "no_moderation_label", compellingness_score: 0.0)
+      before do
+        allow(Ai::TypeSafe::Client).to receive(:new).and_return(jev_client)
+        allow(jev_client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+      end
+
+      it "falls back to the safe default when Gemini API key is not present" do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        expect(described_class.new(article).evaluate).to eq(label: "no_moderation_label", compellingness_score: 0.0)
+      end
+
+      it "falls back to Gemini when Gemini API key is configured" do
+        stub_const("Ai::Base::DEFAULT_KEY", "dummy_gemini_key")
+        allow(ai_client).to receive(:call)
+          .and_return('{"moderation_label": "very_good_and_on_topic", "compellingness_score": 0.8}')
+
+        result = described_class.new(article).evaluate
+        expect(result).to eq(label: "very_good_and_on_topic", compellingness_score: 0.8)
+        expect(Ai::Base).to have_received(:new).with(hash_including(model: Ai::Base::DEFAULT_MODEL))
+        expect(ai_client).to have_received(:call)
+      end
+
+      it "uses the lite Gemini model when falling back for a negatively scored article" do
+        stub_const("Ai::Base::DEFAULT_KEY", "dummy_gemini_key")
+        allow(article).to receive(:score).and_return(-5)
+        allow(ai_client).to receive(:call)
+          .and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.5}')
+
+        result = described_class.new(article).evaluate
+        expect(result).to eq(label: "okay_and_on_topic", compellingness_score: 0.5)
+        expect(Ai::Base).to have_received(:new).with(hash_including(model: Ai::Base::DEFAULT_LITE_MODEL))
+        expect(ai_client).to have_received(:call)
+      end
+
+      it "falls back to safe default if Gemini fallback also fails" do
+        stub_const("Ai::Base::DEFAULT_KEY", "dummy_gemini_key")
+        allow(ai_client).to receive(:call).and_raise(StandardError, "Gemini timeout")
+
+        result = described_class.new(article).evaluate
+        expect(result).to eq(label: "no_moderation_label", compellingness_score: 0.0)
+      end
+    end
+  end
+
+  describe "#evaluate with Gemini Decision selected" do
+    before { enable_gemini_decision_for(:content_moderation) }
+
+    it "composes moderation label and compellingness score from Gemini Decision answers" do
+      stub_gemini_decision(
+        on_topic: 0.9,
+        quality: 3.5,
+        originality: 3.0,
+        personal_voice: 3.0,
+        discussion_potential: 3.0,
+      )
+
+      result = described_class.new(article).evaluate
+      expect(result[:label]).to eq("great_and_on_topic")
+      expect(result[:compellingness_score]).to be > 0.8
+    end
+
+    it "falls back to the built-in generative Gemini model rather than gemini-decision-1 when Decision API fails" do
+      decision_client = instance_double(Ai::GeminiDecision::Client)
+      allow(Ai::GeminiDecision::Client).to receive(:new).and_return(decision_client)
+      allow(decision_client).to receive(:evaluate).and_raise(Ai::GeminiDecision::Client::Error, "overloaded")
+      allow(ai_client).to receive(:call)
+        .and_return('{"moderation_label": "very_good_and_on_topic", "compellingness_score": 0.8}')
+
+      expect(described_class.new(article).evaluate)
+        .to eq(label: "very_good_and_on_topic", compellingness_score: 0.8)
+      expect(Ai::Base).to have_received(:new).with(hash_including(model: Ai::Base::DEFAULT_MODEL))
+    end
+
+    it "re-raises Ai::Base::ProhibitedContentError without falling back to generative Gemini" do
+      decision_client = instance_double(Ai::GeminiDecision::Client)
+      allow(Ai::GeminiDecision::Client).to receive(:new).and_return(decision_client)
+      allow(decision_client).to receive(:evaluate).and_raise(Ai::Base::ProhibitedContentError, "prohibited_content")
+      allow(ai_client).to receive(:call)
+
+      expect { described_class.new(article).evaluate }.to raise_error(Ai::Base::ProhibitedContentError)
+      expect(Ai::Base).not_to have_received(:new)
+      expect(ai_client).not_to have_received(:call)
     end
   end
 end

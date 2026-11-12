@@ -16,24 +16,16 @@ RSpec.describe "Api::V1::Analytics" do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    context "when the start parameter is not included" do
-      before { get "/api/analytics/historical", headers: headers }
+    it "fails with 422 when start is missing or has an incorrect format", :aggregate_failures do
+      get "/api/analytics/historical", headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq("Required 'start' parameter is missing")
 
-      it "fails with an unprocessable entity HTTP error and renders the error message", :aggregate_failures do
-        expect(response).to have_http_status(:unprocessable_entity)
-        error_message = "Required 'start' parameter is missing"
-        expect(response.parsed_body["error"]).to eq(error_message)
-      end
-    end
-
-    context "when the start parameter has the incorrect format" do
-      before { get "/api/analytics/historical?start=2019/2/2", headers: headers }
-
-      it "fails with an unprocessable entity HTTP error and renders the error message", :aggregate_failures do
-        expect(response).to have_http_status(:unprocessable_entity)
-        error_message = "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'"
-        expect(response.parsed_body["error"]).to eq(error_message)
-      end
+      get "/api/analytics/historical?start=2019/2/2", headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq(
+        "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'",
+      )
     end
   end
 
@@ -87,20 +79,33 @@ RSpec.describe "Api::V1::Analytics" do
 
       before { sign_in user }
 
-      it "returns all five panels in a single response" do
-        get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
+      it "returns all five panels with no-store headers, defaults start to registration date, and validates dates",
+         :aggregate_failures do
+        allow(Rails.cache).to receive(:fetch).and_call_original
 
+        get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
         expect(response).to have_http_status(:ok)
+        expect(response.headers["Cache-Control"]).to include("no-store")
         expect(response.parsed_body.keys).to match_array(
           %w[historical totals referrers top_contributors follower_engagement start_date_floor],
         )
-      end
 
-      it "defaults start to the owner registration date when omitted" do
+        get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
+        expect(Rails.cache).not_to have_received(:fetch).with(
+          a_string_starting_with("analytics-dashboard-v3-"),
+          anything,
+        )
+        expect(Rails.cache).not_to have_received(:fetch).with(
+          a_string_starting_with("analytics-for-dates-v3-"),
+          anything,
+        )
+
         get "/api/analytics/dashboard", headers: v1_headers
-
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body["start_date_floor"]).to eq(user.registered_at.to_date.iso8601)
+
+        get "/api/analytics/dashboard?start=2019/3/29", headers: v1_headers
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "uses the article's published_at as start_date_floor when article_id is set" do
@@ -113,6 +118,8 @@ RSpec.describe "Api::V1::Analytics" do
           :past,
           user: user,
           published: true,
+          with_tags: false,
+          with_main_image: false,
           past_published_at: user.registered_at - 2.years,
         )
 
@@ -122,40 +129,14 @@ RSpec.describe "Api::V1::Analytics" do
         expect(response.parsed_body["start_date_floor"]).to eq(article.published_at.to_date.iso8601)
       end
 
-      it "rejects requests with malformed date parameters" do
-        get "/api/analytics/dashboard?start=2019/3/29", headers: v1_headers
-
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it "sets a no-store Cache-Control header so the dashboard always reflects fresh activity" do
-        get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
-
-        expect(response.headers["Cache-Control"]).to include("no-store")
-      end
-
-      it "does not server-side memoize the dashboard payload (always reads live from ArticleActivity)" do
-        allow(Rails.cache).to receive(:fetch).and_call_original
-
-        get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
-        get "/api/analytics/dashboard?start=2019-03-29", headers: v1_headers
-
-        expect(Rails.cache).not_to have_received(:fetch).with(
-          a_string_starting_with("analytics-dashboard-v3-"),
-          anything,
-        )
-        expect(Rails.cache).not_to have_received(:fetch).with(
-          a_string_starting_with("analytics-for-dates-v3-"),
-          anything,
-        )
-      end
-
       it "loads ArticleActivity rows only once per dashboard request and returns all-time totals" do
         article = create(
           :article,
           :past,
           user: user,
           published: true,
+          with_tags: false,
+          with_main_image: false,
           past_published_at: Time.zone.parse("2019-01-01"),
         )
         ArticleActivity.create!(
@@ -195,48 +176,34 @@ RSpec.describe "Api::V1::Analytics" do
     let(:user) { create(:user, :without_profile, profile_image: nil) }
     let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
-    it "returns 401 when unauthenticated" do
+    it "rejects unauthenticated requests and authenticates with a valid API key", :aggregate_failures do
       get "/api/analytics/heatmap", headers: v1_headers
       expect(response).to have_http_status(:unauthorized)
-    end
 
-    it "returns 200 with a session cookie" do
-      sign_in user
-      get "/api/analytics/heatmap", headers: v1_headers
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "returns 200 with a valid api key" do
       api_secret = create(:api_secret, user: user)
       get "/api/analytics/heatmap", headers: v1_headers.merge("api-key" => api_secret.secret)
       expect(response).to have_http_status(:ok)
     end
 
-    it "returns the expected JSON shape and Cache-Control: no-store" do
+    it "returns the expected JSON shape, honors the end param, and rejects malformed dates for a session user",
+       :aggregate_failures do
       sign_in user
       get "/api/analytics/heatmap", headers: v1_headers
 
+      expect(response).to have_http_status(:ok)
       expect(response.headers["Cache-Control"]).to eq("no-store")
       body = response.parsed_body
       expect(body.keys).to match_array(%w[start_date end_date days totals max])
       expect(body["days"].length).to eq(365)
       expect(body["totals"].keys).to match_array(%w[articles comments reactions total])
-    end
 
-    it "honors the end query param so users can browse past years" do
-      sign_in user
       get "/api/analytics/heatmap", params: { end: "2024-12-31" }, headers: v1_headers
-
       expect(response).to have_http_status(:ok)
       body = response.parsed_body
       expect(body["end_date"]).to eq("2024-12-31")
       expect(body["start_date"]).to eq("2024-01-02")
-    end
 
-    it "returns 422 for a malformed end param" do
-      sign_in user
       get "/api/analytics/heatmap", params: { end: "not-a-date" }, headers: v1_headers
-
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end

@@ -1,4 +1,5 @@
 require "rails_helper"
+require "exifr/jpeg"
 
 RSpec.describe ForemNative do
   let(:legacy_split_word_count) do
@@ -7,6 +8,82 @@ RSpec.describe ForemNative do
 
   let(:legacy_calculate_reading_time) do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
+  end
+
+  describe ".json_encoded_size (normalized transcript validation)" do
+    let(:validator) { AgentSessionParsers::NormalizedDataValidator }
+
+    # Builds a minimal valid normalized transcript fixture wrapping the given text value.
+    def transcript_with(value)
+      { "messages" => [{ "role" => "user", "content" => [{ "type" => "text", "text" => value }] }] }
+    end
+
+    it "counts exact encoded bytes for scalars, controls, Unicode, HTML, CRLF and nested containers" do
+      values = [nil, true, false, 0, -(2**63), (2**63) - 1, :symbol, [], {}, "", "é 😀 漢字",
+                "<>& \"quoted\" \\ \r\n\t", (0..31).map(&:chr).join, "\u2028\u2029",
+                { "a" => [nil, false, {}, [], { "key" => "&#64; &amp;" }] }]
+      escape_modes = [true, false]
+      values.each do |value|
+        escape_modes.each do |escape_html|
+          expected = ActiveSupport::JSON.encode(value, escape_html_entities: escape_html).bytesize
+          expect(described_class.json_encoded_size(value, escape_html_entities: escape_html)).to eq(expected)
+        end
+      end
+    end
+
+    it "declines values requiring Ruby conversions, custom methods or unsupported encodings" do
+      custom = { "messages" => [] }
+      def custom.to_json(*)
+        '"custom"'
+      end
+      values = [1.25, Float::NAN, Float::INFINITY, 2**70, Time.zone.at(0), Object.new,
+                "safe".html_safe, "binary".b, "é".encode("ISO-8859-1"), "\xFF".force_encoding("UTF-8"),
+                Class.new(Array).new, Class.new(Hash).new, Class.new(String).new("text"),
+                { a: 1 }, { a: 2 }.merge("a" => 1), { nil => "x" }, custom,
+                100.times.reduce([]) { |acc, _elem| [acc] }]
+      values.each { |value| expect(described_class.json_encoded_size(value)).to be_nil }
+      expect(validator.new(custom).__send__(:native_json_size)).to be_nil
+      expect(validator.new(custom).__send__(:legacy_json_size)).to eq(custom.to_json.bytesize)
+    end
+
+    it "preserves fallback results and errors for out-of-domain transcript values" do
+      [1.25, 1e-7, 2**70, "safe".html_safe, "binary".b, { a: 1 }, Time.zone.at(0)].each do |value|
+        data = transcript_with(value)
+        expect(described_class.json_encoded_size(data)).to be_nil
+        instance = validator.new(data)
+        expect(instance.__send__(:validate_size)).to be_empty
+        expect(instance.__send__(:legacy_json_size)).to eq(data.to_json.bytesize)
+      end
+      invalid = transcript_with("\xFF".force_encoding("UTF-8"))
+      expect { validator.validate(invalid) }.to raise_error(JSON::GeneratorError)
+    end
+
+    it "defers cycles to the legacy serializer" do
+      cyclic = []
+      cyclic << cyclic
+      expect(described_class.json_encoded_size(cyclic)).to be_nil
+    end
+
+    it "matches native sizes and end-to-end validation for 1,000 seeded randomized transcripts" do
+      rng = Random.new(424_242)
+      fragments = ["abc", "<>&", "\u2028", "\u2029", "😀", "漢字", "\0", "\r\n", "\\", '\"', "&#64;"]
+      stub_const("AgentSessionParsers::NormalizedDataValidator::MAX_JSON_SIZE", 400)
+      1_000.times do
+        text = Array.new(rng.rand(0..30)) { fragments.sample(random: rng) }.join
+        data = transcript_with(text)
+        data["metadata"] = { "values" => [rng.rand(-(2**63)..((2**63) - 1)), nil, true, false, text] }
+        instance = validator.new(data)
+        expected_size = data.to_json.bytesize
+        expect(described_class.json_encoded_size(data)).to eq(expected_size)
+        # Exercise both accepted and rejected payloads without allocating 10 MB per iteration.
+        expected = if expected_size > validator::MAX_JSON_SIZE
+                     ["Normalized data is too large (#{expected_size} bytes, max #{validator::MAX_JSON_SIZE})"]
+                   else
+                     []
+                   end
+        expect(instance.validate.map(&:message)).to eq(expected)
+      end
+    end
   end
 
   describe ".postprocess_transcript_html and transcript primitives" do
@@ -4971,7 +5048,7 @@ RSpec.describe ForemNative do
     end
 
     describe ".match_metal_telemetry_route and .billboard_event_create_from_json_sql" do
-      it "classifies metal telemetry routes and rejects non-matching paths or methods" do
+      it "classifies metal telemetry routes and rejects non-matching paths or methods", :aggregate_failures do
         expect(described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42"))
           .to eq([:billboard_update, "42"])
         expect(described_class.match_metal_telemetry_route("POST", "/bb_tabulations"))
@@ -4986,12 +5063,25 @@ RSpec.describe ForemNative do
           .to eq([:page_view_update, "12345"])
         expect(described_class.match_metal_telemetry_route("POST", "/page_views"))
           .to eq([:page_view_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/fallback_activity_recorder"))
+          .to eq([:ga_event_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/fallback_activity_recorder/"))
+          .to eq([:ga_event_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_events"))
+          .to eq([:feed_events_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_events/"))
+          .to eq([:feed_events_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_config_visits"))
+          .to eq([:feed_config_visits_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_config_visits/"))
+          .to eq([:feed_config_visits_create, nil])
         expect(
           [
             described_class.match_metal_telemetry_route("GET", "/bb_tabulations"),
+            described_class.match_metal_telemetry_route("GET", "/feed_events"),
             described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42/extra"),
           ],
-        ).to eq([nil, nil])
+        ).to eq([nil, nil, nil])
       end
 
       it "matches BillboardEvent.build_create_with_async_commit_sql across 1,000 randomized JSON payloads" do
@@ -5061,6 +5151,235 @@ RSpec.describe ForemNative do
             )
             expect(outcome).to eq([expected_sql || :invalid, bb_id.to_s]), "iteration #{i}: json=#{json}"
           end
+        end
+      end
+
+      it "extracts GA4 fallback page_view params and matches GaEventsController across 1,000 randomized payloads" do
+        expect(described_class.extract_ga_event_params("", "https://dev.to", nil)).to eq(:invalid)
+        expect(described_class.extract_ga_event_params("{bad", "https://dev.to", nil)).to eq(:invalid)
+        expect(described_class.extract_ga_event_params('{"document_title":"\\u0041"}', "https://dev.to", 1)).to be_nil
+
+        rng = Random.new(20_261_111)
+        titles = [nil, "Hello World", "Forem \"Rust\" & Rails", "Path\\to\\doc\nline2", "日本語 🚀"]
+        paths = [nil, "/", "/ben", "/ben/post-1?foo=bar"]
+        langs = [nil, "en", "en-US", "fr-FR"]
+        referrers = [nil, "https://dev.to/feed", "https://google.com/search?q=rust", "https://example.org/"]
+        uas = [nil, "Mozilla/5.0 (Macintosh; Intel Mac OS X)", "Custom\"Agent\\1.0"]
+        viewports = [nil, "900x1440", "800x600"]
+        resolutions = [nil, "1080x1920", "1440x2560"]
+        encodings = [nil, "UTF-8", "ISO-8859-1"]
+
+        1_000.times do |i|
+          app_url = rng.rand < 0.5 ? "https://dev.to" : "https://forem.test"
+          user_id = rng.rand < 0.5 ? nil : rng.rand(1..500_000)
+          payload = {
+            "document_title" => titles.sample(random: rng),
+            "document_path" => paths.sample(random: rng),
+            "path" => paths.sample(random: rng),
+            "user_language" => langs.sample(random: rng),
+            "referrer" => referrers.sample(random: rng),
+            "user_agent" => uas.sample(random: rng),
+            "viewport_size" => viewports.sample(random: rng),
+            "screen_resolution" => resolutions.sample(random: rng),
+            "document_encoding" => encodings.sample(random: rng)
+          }.compact
+
+          json_body = JSON.generate(payload)
+          actual = described_class.extract_ga_event_params(json_body, app_url, user_id)
+
+          ref = payload["referrer"]
+          expected = {
+            "page_title" => payload["document_title"],
+            "page_location" => payload["document_path"],
+            "page_path" => payload["path"],
+            "user_id" => user_id,
+            "user_language" => payload["user_language"],
+            "referrer" => ref && !ref.start_with?(app_url) ? ref : nil,
+            "user_agent" => payload["user_agent"],
+            "viewport_size" => payload["viewport_size"],
+            "screen_resolution" => payload["screen_resolution"],
+            "document_encoding" => payload["document_encoding"],
+            "data_source" => "web"
+          }
+
+          expect(actual).to eq(expected), "iteration #{i}: json=#{json_body}"
+        end
+      end
+
+      it "validates and normalizes FeedEvent batches and matches BulkUpsert#legacy_valid_events across 1,000 batches" do
+        upsert_instance = FeedEvents::BulkUpsert.new([])
+        rng = Random.new(20_261_112)
+        categories = [
+          :impression, :click, :reaction, :comment, :extended_pageview,
+          "impression", "click", "extended_pageview",
+          0, 1, 2, 3, 4, 5, "0", "1", :not_a_real_category, "", nil
+        ]
+        contexts = [
+          FeedEvent::CONTEXT_TYPE_HOME,
+          FeedEvent::CONTEXT_TYPE_TAG,
+          FeedEvent::CONTEXT_TYPE_EMAIL,
+          FeedEvent::CONTEXT_TYPE_SIDEBAR,
+          "search",
+          "invalid_ctx",
+          "",
+          nil,
+        ]
+        positions = [1, 4, 20, "7", 0, -3, "", nil]
+        article_ids = [100, "205", 0, -1, nil]
+        user_ids = [42, nil, 0, -5]
+        feed_config_ids = [nil, 9, "12"]
+
+        1_000.times do |i|
+          batch = Array.new(rng.rand(1..8)) do
+            ev_id = case rng.rand(4)
+                    when 0 then SecureRandom.uuid
+                    when 1 then SecureRandom.uuid.upcase
+                    when 2 then "invalid-uuid"
+                    end
+            raw = {
+              article_id: article_ids.sample(random: rng),
+              article_position: positions.sample(random: rng),
+              category: categories.sample(random: rng),
+              context_type: contexts.sample(random: rng),
+              user_id: user_ids.sample(random: rng),
+              feed_config_id: feed_config_ids.sample(random: rng),
+              event_id: ev_id
+            }
+            rng.rand < 0.5 ? raw.stringify_keys : raw
+          end
+
+          actual = described_class.validate_and_normalize_feed_events(batch)
+          expected_models = upsert_instance.__send__(:legacy_valid_events, batch)
+          expected = expected_models.map do |m|
+            {
+              article_position: m.article_position,
+              category: m.category,
+              context_type: m.context_type,
+              article_id: m.article_id,
+              user_id: m.user_id,
+              feed_config_id: m.feed_config_id,
+              event_id: m.event_id
+            }
+          end
+
+          expect(actual).to eq(expected), "iteration #{i}: batch=#{batch.inspect}"
+        end
+      end
+
+      it "encodes HS256 JWTs matching JWT.encode across 1,000 randomized payloads" do
+        rng = Random.new(20_261_113)
+        secrets = [
+          Rails.application.secret_key_base,
+          "short_secret",
+          "a" * 128,
+        ]
+        1_000.times do |i|
+          user_id = rng.rand(1..10_000_000)
+          exp = rng.rand(1_700_000_000..1_900_000_000)
+          secret = secrets.sample(random: rng)
+
+          actual = described_class.encode_hs256_jwt(user_id, exp, secret)
+          expected = JWT.encode({ user_id: user_id, exp: exp }, secret)
+          expect(actual).to eq(expected), "iteration #{i}: user_id=#{user_id} exp=#{exp}"
+        end
+      end
+
+      it "masks CSRF tokens matching Rails global CSRF token masking across 1,000 iterations" do
+        rng = Random.new(20_261_114)
+        1_000.times do |i|
+          raw_real = rng.bytes(32)
+          encoded_real = Base64.urlsafe_encode64(raw_real, padding: false)
+          pad = rng.bytes(32)
+
+          actual = described_class.mask_authenticity_token(encoded_real, pad)
+          global_token = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), raw_real, "!real_csrf_token")
+          xored = pad.bytes.zip(global_token.bytes).map { |a, b| (a ^ b).chr }.join
+          expected = Base64.urlsafe_encode64(pad + xored, padding: false)
+
+          expect(actual).to eq(expected), "iteration #{i}"
+          expect(described_class.verify_authenticity_token(actual, encoded_real)).to be(true)
+        end
+      end
+
+      it "parses AuthPass origins and CSP strings matching AuthPassController across 1,000 inputs" do
+        auth_pass_controller = AuthPassController.new
+        rng = Random.new(20_261_115)
+        schemes = ["https://", "http://", "HTTPS://", "HTTP://", ""]
+        hosts = ["forem.com", "Blog.MyOrg.com", "sub-1.dev.to", "the-other-domain.com"]
+        ports = ["", ":80", ":443", ":3000", ":8443"]
+        paths = ["", "/", "/auth_pass/iframe?passed_domain=test", "/some/path#frag"]
+
+        1_000.times do |i|
+          scheme = schemes.sample(random: rng)
+          host = hosts.sample(random: rng)
+          port = scheme.empty? ? "" : ports.sample(random: rng)
+          path = scheme.empty? ? "" : paths.sample(random: rng)
+          raw = "#{scheme}#{host}#{port}#{path}"
+
+          actual = described_class.parse_auth_pass_origin(raw)
+          expected = auth_pass_controller.__send__(:legacy_parse_origin_host_and_csp, raw)
+          expect(actual).to eq(expected), "iteration #{i}: raw=#{raw}"
+        end
+      end
+
+      it "builds base_data JSON and bulk follow JSON matching ActiveSupport::JSON.encode across 1,000 iterations" do
+        follows_controller = FollowsController.new
+        rng = Random.new(20_261_116)
+        geos = [nil, "US-NY", "CA-ON", "DE"]
+
+        1_000.times do |i|
+          bcast = rng.rand < 0.5 ? nil : { title: "Hello <world> & #{i}", html: "<p>Test</p>" }.to_json
+          token = Base64.urlsafe_encode64(rng.bytes(64), padding: false)
+
+          if rng.rand < 0.5
+            actual_base = described_class.build_base_data_json(
+              broadcast: bcast,
+              param: "authenticity_token",
+              token: token,
+            )
+            expected_base = {
+              broadcast: bcast,
+              param: :authenticity_token,
+              token: token
+            }.to_json
+          else
+            u_json = { id: i + 1, name: "User <#{i}> & Co", trusted: rng.rand < 0.5 }.to_json
+            geo = geos.sample(random: rng)
+            optin = rng.rand < 0.5
+            creator = rng.rand < 0.5
+            actual_base = described_class.build_base_data_json(
+              broadcast: bcast,
+              param: "authenticity_token",
+              token: token,
+              user: u_json,
+              client_geolocation: geo,
+              default_email_optin_allowed: optin,
+              creator: creator,
+            )
+            expected_base = {
+              broadcast: bcast,
+              param: :authenticity_token,
+              token: token,
+              user: u_json,
+              client_geolocation: geo,
+              default_email_optin_allowed: optin,
+              creator: creator
+            }.to_json
+          end
+          expect(actual_base).to eq(expected_base), "base_data iteration #{i}"
+
+          viewer_id = rng.rand(1..50)
+          is_user = rng.rand < 0.7
+          len = rng.rand(1..12)
+          ids = Array.new(len) { rng.rand(1..60) }
+          fwd = Array.new(len) { rng.rand < 0.5 }
+          rev = is_user ? Array.new(len) { rng.rand < 0.5 } : []
+
+          actual_follow = described_class.resolve_bulk_follow_json(viewer_id, is_user, ids, fwd, rev)
+          expected_follow = follows_controller.__send__(
+            :legacy_resolve_bulk_follow, viewer_id, is_user, ids, fwd, rev
+          ).to_json
+          expect(actual_follow).to eq(expected_follow), "bulk_follow iteration #{i}"
         end
       end
     end
@@ -5566,6 +5885,1216 @@ RSpec.describe ForemNative do
         actual = described_class.build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
         expected = legacy_build_variant_sql.call(levers, has_user, minimize_ai)
         expect(actual).to eq(expected), "iteration #{i}: actual=#{actual.inspect} expected=#{expected.inspect}"
+      end
+    end
+  end
+
+  describe "Tier 3 Billboard & Geolocation Rust Kernels" do
+    let(:legacy_classify_browser_context) do
+      lambda do |ua|
+        case ua
+        when /DEV-Native-ios|DEV-Native-android|ForemWebView/
+          :mobile_in_app
+        when /Mobile|iPhone|Android/
+          :mobile_web
+        when /Windows|Macintosh|Mac OS X|Linux/
+          :desktop
+        else
+          :unknown
+        end
+      end
+    end
+
+    let(:legacy_extract_viewer_country) do
+      lambda do |geo|
+        country = geo.to_s.split(Geolocation::ISO3166_SEPARATOR).first
+        country if country&.match?(/\A[A-Z]{2}\z/)
+      end
+    end
+
+    it "matches browser_context_ads classification across 1,000 randomized User-Agent strings" do
+      rng = Random.new(20_261_108)
+      tokens = [
+        "DEV-Native-ios", "DEV-Native-android", "ForemWebView",
+        "Mobile", "iPhone", "Android",
+        "Windows", "Macintosh", "Mac OS X", "Linux",
+        "Mozilla/5.0", "AppleWebKit/537.36", "Chrome/125.0", "Safari/537.36", "curl/8.4.0", ""
+      ]
+
+      1_000.times do |i|
+        ua = Array.new(rng.rand(0..5)) { tokens.sample(random: rng) }.join(" ")
+        expected = legacy_classify_browser_context.call(ua)
+        actual = described_class.classify_billboard_browser_context(ua)
+        expect(actual).to eq(expected), "iteration #{i}: ua=#{ua.inspect}"
+      end
+
+      expect(described_class.classify_billboard_browser_context(nil)).to be_nil
+      expect(described_class.classify_billboard_browser_context(123)).to be_nil
+    end
+
+    it "matches Geolocation.legacy_code_covered_by? and viewer_country across 1,000 randomized inputs" do
+      rng = Random.new(20_261_109)
+      code_pool = [
+        "US", "US-CA", "US-NY", "CA", "CA-ON", "CA-QC", "USA", "U",
+        " us-ca ", " ca ", "", "   ", "us-ny", "-US", "US-", "US\n", nil
+      ]
+      entry_pool = ["US", "US-CA", "CA", "CA-ON", " us ", " ca-qc ", "U", "", "  ", nil]
+
+      1_000.times do |i|
+        code = code_pool.sample(random: rng)
+        geo_codes = Array.new(rng.rand(0..5)) { entry_pool.sample(random: rng) }
+
+        expected_cov = Geolocation.__send__(:legacy_code_covered_by?, code, geo_codes)
+        actual_cov = described_class.geolocation_code_covered_by?(code, geo_codes)
+        expect(actual_cov).to eq(expected_cov), "iteration #{i}: code=#{code.inspect} geos=#{geo_codes.inspect}"
+        expect(Geolocation.code_covered_by?(code, geo_codes)).to eq(expected_cov)
+
+        expected_country = legacy_extract_viewer_country.call(code)
+        raw_country = described_class.extract_viewer_country(code)
+        actual_country = raw_country == false ? nil : raw_country
+        expect(actual_country).to eq(expected_country), "iteration #{i}: code=#{code.inspect}"
+      end
+    end
+
+    it "matches tag clause, role filter, weighted random, and new_only SQL builders across 1,000 inputs",
+       :aggregate_failures do
+      rng = Random.new(20_261_110)
+      tag_pool = %w[ruby rails rust javascript webdev discuss ai o'brien]
+      role_pool = %w[admin super_admin trusted tag_moderator base_subscriber]
+      base_sql = 'SELECT "display_ads".* FROM "display_ads" WHERE "display_ads"."approved" = TRUE'
+
+      1_000.times do |i|
+        tags = tag_pool.sample(rng.rand(1..6), random: rng)
+        inc_untagged = rng.rand(2).zero?
+        opt = rng.rand(2).zero?
+        tag_sql = described_class.build_billboard_tag_clause_sql(tags, inc_untagged, opt)
+        expect(tag_sql).to be_a(String)
+        if opt
+          expect(tag_sql).to include("tags_array && ARRAY[")
+        else
+          expect(tag_sql).to include("cached_tag_list ~ '[[:<:]]")
+        end
+        expect(tag_sql.include?('"display_ads"."cached_tag_list" = \'\'')).to eq(inc_untagged), "iteration #{i}"
+
+        roles = role_pool.sample(rng.rand(0..4), random: rng)
+        role_sql = described_class.build_billboard_role_filter_sql(roles)
+        if roles.empty?
+          expect(role_sql).to eq("target_role_names IS NULL OR cardinality(target_role_names) = 0")
+        else
+          expect(role_sql).to include("target_role_names && ARRAY[")
+          expect(role_sql).to include("NOT exclude_role_names && ARRAY[")
+        end
+
+        aid = rng.rand(2).zero? ? nil : rng.rand(1..10_000)
+        low_imp = rng.rand(2).zero? ? nil : rng.rand(100..5_000)
+        rval = rng.rand.round(6)
+        weighted_sql = described_class.build_billboard_weighted_random_sql(base_sql, aid, low_imp, rval)
+        expect(weighted_sql).to include("WITH base AS (#{base_sql})")
+        expect(weighted_sql).to include("WHERE running_weight >= #{rval} * total_weight")
+
+        new_only_sql = described_class.build_billboard_new_only_sql(base_sql, 1000, rng.rand(1..15))
+        expect(new_only_sql).to include("WHERE impressions_count < 1000 ORDER BY RANDOM() LIMIT 1")
+      end
+    end
+
+    it "produces identical results between Billboards::FilteredAdsQuery native call and legacy_call" do
+      bb_untagged = create(:billboard, placement_area: "feed_first", approved: true, published: true)
+      bb_tagged = create(:billboard, placement_area: "feed_first", approved: true, published: true, tag_list: "ruby")
+      bb_desktop = create(
+        :billboard,
+        placement_area: "feed_first",
+        approved: true,
+        published: true,
+        browser_context: :desktop,
+      )
+
+      scenarios = [
+        { area: "feed_first", user_signed_in: false, fully_cached: true },
+        {
+          area: "feed_first",
+          user_signed_in: true,
+          user_id: 42,
+          user_tags: %w[ruby rails],
+          role_names: %w[trusted],
+          user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          cookies_allowed: true
+        },
+        {
+          area: "feed_first",
+          user_signed_in: false,
+          article_id: 99,
+          article_tags: %w[ruby],
+          user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Mobile"
+        },
+      ]
+
+      scenarios.each do |opts|
+        native_ids = Billboards::FilteredAdsQuery.new(**opts).call.ids
+        legacy_ids = Billboards::FilteredAdsQuery.new(**opts).__send__(:legacy_call).ids
+        expect(native_ids).to eq(legacy_ids)
+      end
+
+      expect([bb_untagged.id, bb_tagged.id, bb_desktop.id]).not_to be_empty
+    end
+  end
+
+  describe "syntax highlighting and Rouge registry replacement" do
+    it "exposes all 228 canonical Rouge tags and human-readable titles", :aggregate_failures do
+      tags = described_class.syntax_supported_language_tags
+      criteria = described_class.syntax_language_criteria
+
+      expect(tags.size).to eq(228)
+      expect(tags).to eq(tags.uniq.sort)
+      expect(criteria.size).to eq(228)
+      expect(criteria.keys).to eq(tags)
+
+      tags.each do |tag|
+        expect(described_class.syntax_lexer_tag(tag)).to eq(tag)
+        expect(described_class.syntax_normalize_language(tag)).to eq(tag)
+        expect(criteria[tag]).to be_a(String).and be_present
+      end
+    end
+
+    it "resolves aliases, CGI options, and guess heuristics across the language registry", :aggregate_failures do
+      alias_expectations = {
+        "js" => "javascript",
+        "ts" => "typescript",
+        "py" => "python",
+        "rb" => "ruby",
+        "rs" => "rust",
+        "c++" => "cpp",
+        "sh" => "shell",
+        "bash" => "shell",
+        "zsh" => "shell",
+        "yml" => "yaml",
+        "md" => "markdown",
+        "golang" => "go",
+        "objc" => "objective_c",
+        "text" => "plaintext",
+        "plain" => "plaintext"
+      }
+
+      alias_expectations.each do |alias_name, canonical|
+        expect(described_class.syntax_lexer_tag(alias_name)).to eq(canonical)
+        expect(described_class.syntax_normalize_language("```#{alias_name}\n")).to eq(canonical)
+      end
+
+      expect(described_class.syntax_lexer_tag("nonexistent_lang")).to be_nil
+      expect(described_class.syntax_normalize_language("nonexistent_lang")).to eq("plaintext")
+      expect(described_class.syntax_normalize_language(nil)).to eq("plaintext")
+
+      expect(described_class.syntax_find_fancy_tag("ruby?start_inline=1", "puts 1")).to eq("ruby")
+      expect(described_class.syntax_find_fancy_tag("?mimetype=text/x-ruby", "puts 1")).to be_nil
+      expect(described_class.syntax_find_fancy_tag("guess?mimetype=application/json", "{}")).to eq("json")
+      expect(described_class.syntax_find_fancy_tag("guess", "#!/usr/bin/env ruby\nputs 1")).to eq("ruby")
+      expect(described_class.syntax_find_fancy_tag("guess", "#!/bin/sh\necho 1")).to eq("shell")
+      expect(described_class.syntax_find_fancy_tag("guess", "<!DOCTYPE html><html></html>")).to eq("html")
+      expect(described_class.syntax_find_fancy_tag("guess", "<?xml version=\"1.0\"?><root/>")).to eq("xml")
+      expect(described_class.syntax_find_fancy_tag("guess", "# vim: set ft=python:")).to eq("python")
+      expect(described_class.syntax_find_fancy_tag("guess", "# -*- mode: elixir -*-")).to eq("elixir")
+    end
+
+    it "matches Ruby File.extname semantics for syntax_language_from_path across 1,000 randomized paths",
+       :aggregate_failures do
+      rng = Random.new(20_261_111)
+      ext_pool = %w[rb py js ts tsx jsx rs go c cpp h java kt swift php sh sql html css scss json yml toml md diff ex]
+      dir_pool = ["", "app/models/", "src/components/", "  /usr/local/src/", "./a/b.c/"]
+      suffix_pool = ["", "///", "  extra_arg", "\t--flag"]
+
+      legacy_extname = lambda do |path|
+        token = path.to_s.strip.split.first.to_s
+        return if token.empty? || token.include?("\0")
+
+        ext = File.extname(token).delete_prefix(".")
+        return if ext.empty?
+
+        described_class.syntax_lexer_tag(ext)
+      end
+
+      1_000.times do |i|
+        dir = dir_pool.sample(random: rng)
+        ext = ext_pool.sample(random: rng)
+        sfx = suffix_pool.sample(random: rng)
+        path = case rng.rand(6)
+               when 0
+                 "#{dir}file_#{i}.#{ext}#{sfx}"
+               when 1
+                 "#{dir}.dotfile_#{ext}"
+               when 2
+                 "#{dir}..#{ext}"
+               when 3
+                 "#{dir}...#{ext}"
+               when 4
+                 "#{dir}no_extension_#{i}"
+               else
+                 "bad\0path.rb"
+               end
+
+        expect(described_class.syntax_language_from_path(path)).to eq(legacy_extname.call(path)),
+                                                                   "mismatch at #{i} for path=#{path.inspect}"
+      end
+    end
+
+    it "highlights code blocks across all 228 languages and 1,000 randomized inputs without unescaped HTML",
+       :aggregate_failures do
+      rng = Random.new(20_261_112)
+      tags = described_class.syntax_supported_language_tags
+      snippets = [
+        "def greet(name = \"<script>&</script>\")\n  @count ||= 42\n  puts :hello\nend",
+        "import React from 'react';\nexport const App = () => <div title=\"a&b\" class={cls} {...props}>{42}</div>;",
+        "import UiList from 'app';\n<template foo={bar}><UiList @x={{1}} @y={2} /></template>",
+        "pub fn main<'a>(x: &'a str) -> Result<u64, String> { println!(\"{}\", x); Ok(0x2a) }",
+        "SELECT u.id, COUNT(*) FROM users u WHERE u.name = 'O''Brien & <co>' -- comment\nGROUP BY u.id;",
+        "--- a/app.rb\n+++ b/app.rb\n@@ -1,2 +1,2 @@\n-old <tag>\n+new & improved",
+        "{\"key\": \"<value>&more\", \"count\": -12.34e5, \"active\": true, \"nil_val\": null}",
+        "all:\n    echo \"hello <world> & $USER\" && echo $ $$ $-\n$ npm install\n# comment",
+        "$ curl -s https://example.com | grep 'foo$' && printf $'\\n' $\"done\" $",
+        "<div class={cls} data-empty={} broken={><span title='<img src=x>'>{x}</span></div>",
+        "{----% raw %----}\n{{ liquid_var }}\n{----% endraw %----}",
+        "日本語 🚀 /* multi\nline */ // single <img src=x onerror=alert(1)>",
+      ]
+
+      1_000.times do |i|
+        code = Array.new(rng.rand(1..3)) { snippets.sample(random: rng) }.join("\n")
+        lang = rng.rand(5).zero? ? nil : tags.sample(random: rng)
+
+        html = described_class.syntax_highlight_html(code, lang)
+        block = described_class.syntax_highlight_code_block(code, lang)
+
+        expect(html).to be_a(String), "nil html at #{i}"
+        expect(html).not_to include("<script>"), "unescaped <script> at #{i} (lang=#{lang})"
+        expect(html).not_to include("<img"), "unescaped <img at #{i} (lang=#{lang})"
+
+        expected_tag = lang || "plaintext"
+        expect(block).to start_with(%(<div class="highlight"><pre class="highlight #{expected_tag}"><code>))
+        expect(block).to end_with("</code></pre></div>")
+
+        if code.include?("{----% raw %----}")
+          unescaped = described_class.unescape_raw_tag_in_codeblocks(block)
+          expect(unescaped).not_to include("----"), "raw tag unescape failed at #{i} for lang=#{lang}"
+        end
+      end
+
+      invalid_utf8 = (+"\xFF\xFE").force_encoding(Encoding::UTF_8)
+      expect(described_class.syntax_highlight_html(invalid_utf8, "ruby")).to be_nil
+      expect(described_class.syntax_highlight_code_block(invalid_utf8, "ruby")).to be_nil
+    end
+
+    it "terminates cleanly on bare shell `$` prompts and single-brace `{...}` markup attributes",
+       :aggregate_failures do
+      shell_prompt = "$ npm install\n$ echo $ && echo $$ $- $\"ok\" $'\\n'\ngrep 'end$' file.txt\n"
+      %w[shell bash sh zsh console make].each do |lang|
+        html = described_class.syntax_highlight_code_block(shell_prompt, lang)
+        expect(html).to include("npm install")
+        expect(html).to include('<span class="nv">$$</span>')
+        expect(html).to include('<span class="nv">$-</span>')
+      end
+
+      single_brace_markup = "<div class={cls} {...props} empty={} unclosed={>\n  <a href={url}>{text}</a>\n</div>\n"
+      %w[html xml erb liquid vue svelte handlebars].each do |lang|
+        html = described_class.syntax_highlight_code_block(single_brace_markup, lang)
+        expect(html).to include('<span class="na">class</span>')
+        expect(html).to include('<span class="p">{</span>')
+        expect(html).to include('<span class="p">}</span>')
+      end
+
+      ember_markup = "<template foo={cls} {...attrs}>\n#{single_brace_markup}</template>\n"
+      %w[gjs gts].each do |lang|
+        html = described_class.syntax_highlight_code_block(ember_markup, lang)
+        expect(html).to include('<span class="k">template</span>')
+        expect(html).to include('<span class="na">foo</span>')
+        expect(html).to include('<span class="na">class</span>')
+        expect(html).to include('<span class="p">{</span>')
+      end
+    end
+  end
+
+  describe "social image generation pipeline (Images::GenerateSocialImageMagickally)" do
+    before { Images::GenerateSocialImageMagickally }
+
+    let(:bold_font) { Images::BOLD_FONT_PATH }
+    let(:medium_font) { Images::MEDIUM_FONT_PATH }
+    let(:logo_path) { Rails.root.join("spec/fixtures/files/podcast.png").to_s }
+    let(:avatar_path) { Rails.root.join("spec/fixtures/files/800x600.png").to_s }
+    let(:mask_path) { Images::ROUNDED_MASK_PATH }
+
+    it "decodes PNG, JPEG, GIF, and cached mask assets and rejects corrupt bytes", :aggregate_failures do
+      logo = described_class.social_image_open(logo_path)
+      expect(logo).to be_a(ForemNative::SocialCanvas)
+      expect(logo.width).to be > 0
+      expect(logo.height).to be > 0
+      expect(logo.destroyed?).to be(false)
+
+      mask1 = described_class.social_image_open(mask_path)
+      mask2 = described_class.social_image_open(mask_path)
+      expect([mask1.width, mask1.height]).to eq([mask2.width, mask2.height])
+      mask1.destroy!
+      expect(mask1.destroyed?).to be(true)
+      expect(mask2.destroyed?).to be(false)
+      expect { mask1.to_png }.to raise_error(RuntimeError, /destroyed/)
+
+      expect { described_class.social_image_decode("not-an-image") }
+        .to raise_error(ArgumentError, /invalid image/)
+    ensure
+      logo&.destroy!
+      mask2&.destroy!
+    end
+
+    it "renders label and caption text with word-wrapping and empty-string handling", :aggregate_failures do
+      label = described_class.social_image_render_text("label", "Jane Doe", bold_font, 28, "black")
+      expect(label.width).to be_between(120, 145)
+      expect(label.height).to be_between(35, 45)
+
+      blank = described_class.social_image_render_text("label", "\u00A0", bold_font, 28, "black")
+      expect(blank.width).to be >= 1
+      expect(blank.height).to be >= 1
+
+      caption = described_class.social_image_render_text(
+        "caption",
+        "Rust native social card generation eliminates ImageMagick CLI process spawns in Sidekiq.",
+        bold_font,
+        42,
+        "#000000",
+        width: 806,
+      )
+      expect(caption.width).to eq(806)
+      expect(caption.height).to be > 80
+    ensure
+      label&.destroy!
+      blank&.destroy!
+      caption&.destroy!
+    end
+
+    it "renders complete 1200x627 article and profile social cards end-to-end and encodes 8-bit RGB PNGs",
+       :aggregate_failures do
+      blobs = [
+        [20, 30, 120, 80, "#12004a"],
+        [180, 90, 140, 100, "#ff4545"],
+        [310, 150, 110, 75, "#6aa9ff"],
+      ]
+      bg = described_class.social_image_draw_background("#3333ff", blobs)
+      expect([bg.width, bg.height]).to eq([1200, 627])
+
+      described_class.social_image_draw_window(bg)
+      logo = described_class.social_image_open(logo_path)
+      avatar = described_class.social_image_open(avatar_path)
+      mask = described_class.social_image_open(mask_path)
+      quote = described_class.social_image_render_text(
+        "caption", "Fast, deterministic social card rendering in Rust.", bold_font, 48, "black", width: 806
+      )
+      name = described_class.social_image_render_text("label", "Jane Doe", bold_font, 28, "black")
+      meta = described_class.social_image_render_text("label", "Nov 9  \u00B7  4 min read", medium_font, 22, "#525252")
+
+      described_class.social_image_add_logo(bg, logo)
+      described_class.social_image_add_quote(bg, quote, bold_font, "#0033ff")
+      # Verify the opening quote mark renders inside the window body (y = 149..185),
+      # never overlapping the title bar (y <= 126).
+      title_bar_accent_pixels = (80..126).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      body_quote_mark_pixels = (145..190).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      expect(title_bar_accent_pixels).to eq(0)
+      expect(body_quote_mark_pixels).to be > 1_000
+      described_class.social_image_add_profile_image(bg, avatar, mask)
+      described_class.social_image_add_byline(bg, name, meta)
+
+      png_bytes = bg.to_png
+      expect(png_bytes.byteslice(0, 8)).to eq("\x89PNG\r\n\x1A\n".b)
+      decoded = described_class.social_image_decode(png_bytes)
+      expect([decoded.width, decoded.height]).to eq([1200, 627])
+
+      profile_bg = described_class.social_image_draw_background("#0f766e", blobs)
+      described_class.social_image_draw_profile_window(profile_bg, "#0f766e")
+      handle = described_class.social_image_render_text("label", "@janedoe", medium_font, 22, "#525252")
+      follow = described_class.social_image_render_text("label", "Follow", bold_font, 21, "white")
+      bio = described_class.social_image_render_text(
+        "caption", "Distributed systems & Rust.", medium_font, 30, "black", width: 878
+      )
+      described_class.social_image_add_logo(profile_bg, logo)
+      described_class.social_image_add_profile_header(profile_bg, name, handle, follow)
+      described_class.social_image_add_profile_bio(profile_bg, bio)
+      described_class.social_image_add_profile_card_avatar(profile_bg, avatar, mask)
+      described_class.social_image_add_profile_meta(profile_bg, meta)
+
+      Tempfile.create(["social_card", ".png"]) do |tmp|
+        profile_bg.write(tmp.path)
+        expect(File.size(tmp.path)).to be > 10_000
+      end
+    ensure
+      [bg, decoded, profile_bg, logo, avatar, mask, quote, name, meta, handle, follow, bio].each do |img|
+        img&.destroy!
+      end
+    end
+  end
+
+  describe ".render_comment_tree" do
+    let(:view) do
+      controller = ArticlesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      ctx = controller.view_context
+      ctx.define_singleton_method(:user_signed_in?) { false }
+      ctx
+    end
+
+    let(:organization) { create(:organization, name: "Forem & <Org>") }
+    let(:author_a) { create(:user, name: "Alice \"OP\" & Co") }
+    let(:author_b) { create(:user, name: "Bob <Dev> O'Connor") }
+    let(:article) { create(:article, user: author_a, organization: organization, tags: "ruby, rust") }
+
+    before do
+      allow(InlineSvg::IdGenerator::Randomness).to receive(:call).and_return("fixed")
+
+      author_a.setting.update_columns(brand_color1: "#234567", display_email_on_profile: true)
+      Profile.find_or_create_by!(user: author_a).update_columns(
+        summary: "Building native extensions & tools " * 8,
+        location: "New York, NY",
+      )
+      author_a.reload
+
+      author_b.setting.update_columns(brand_color1: "", display_email_on_profile: false)
+      Profile.find_or_create_by!(user: author_b).update_columns(
+        summary: "Short bio <script>",
+        location: "",
+      )
+      create(:organization_membership, user: author_b, organization: organization, type_of_user: "member")
+      author_b.add_role(:base_subscriber)
+      author_b.reload
+    end
+
+    it "matches CommentsHelper#legacy_nested_comments across 1,000 randomized comment trees" do
+      pool = [
+        create(
+          :comment,
+          user: author_a,
+          commentable: article,
+          body_markdown: "Root A with [link](https://example.com) & code",
+          score: 25,
+          public_reactions_count: 4,
+          ai_disclosure_level: :some_ai,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Comment B edited",
+          score: 3,
+          public_reactions_count: 1,
+          edited_at: 2.hours.ago,
+          favorited_by_user_id: author_a.id,
+          ai_disclosure_level: :fully_autonomous,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Low quality comment",
+          score: -120,
+          public_reactions_count: 0,
+          created_at: 2.years.ago,
+        ),
+        create(
+          :comment,
+          user: author_a,
+          commentable: article,
+          body_markdown: "Hidden comment",
+          hidden_by_commentable_user: true,
+          score: 0,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Deleted comment",
+          deleted: true,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Super low quality <a href='http://spam.test'>spam</a>",
+          score: -100,
+        ),
+      ]
+
+      rng = Random.new(202_611)
+      ancestry_for = lambda do |ancestors|
+        ancestors.empty? ? nil : ancestors.map(&:id).join("/")
+      end
+
+      1_000.times do |iter|
+        chosen = pool.sample(rng.rand(1..5), random: rng)
+        tree = {}
+        # Build a random tree structure and sync each comment's in-memory `ancestry`
+        cursor_hashes = [[tree, []]]
+        chosen.each do |comment|
+          parent_map, ancestors = cursor_hashes.sample(random: rng)
+          comment.ancestry = ancestry_for.call(ancestors)
+          child_map = {}
+          parent_map[comment] = child_map
+          cursor_hashes << [child_map, ancestors + [comment]] if ancestors.length < 4
+        end
+
+        is_admin = rng.rand(2).zero?
+        is_view_root = rng.rand(2).zero?
+        discussion_lock = rng.rand(2).zero?
+        start_idx = [nil, 0, 5, 7].sample(random: rng)
+        start_bb = rng.rand(2).zero?
+
+        view.instance_variable_set(:@article, article)
+        view.instance_variable_set(:@discussion_lock, discussion_lock)
+        view.instance_variable_set(:@root_comment, nil)
+
+        view.instance_variable_set(:@current_comment_index, start_idx)
+        view.instance_variable_set(:@shown_billboard, start_bb)
+        native_html = view.__send__(
+          :native_nested_comments,
+          tree: tree,
+          commentable: article,
+          is_view_root: is_view_root,
+          is_admin: is_admin,
+        )
+        native_idx = view.instance_variable_get(:@current_comment_index)
+        native_bb = view.instance_variable_get(:@shown_billboard)
+
+        view.instance_variable_set(:@current_comment_index, start_idx)
+        view.instance_variable_set(:@shown_billboard, start_bb)
+        legacy_html = view.__send__(
+          :legacy_nested_comments,
+          tree: tree,
+          commentable: article,
+          is_view_root: is_view_root,
+          is_admin: is_admin,
+        )
+        legacy_idx = view.instance_variable_get(:@current_comment_index)
+        legacy_bb = view.instance_variable_get(:@shown_billboard)
+
+        expect(native_html).not_to be_nil, "iteration #{iter} returned nil"
+        expect(native_html).to eq(legacy_html), "iteration #{iter} HTML mismatch"
+        expect(native_idx).to eq(legacy_idx), "iteration #{iter} @current_comment_index mismatch"
+        expect(native_bb).to eq(legacy_bb), "iteration #{iter} @shown_billboard mismatch"
+      end
+    end
+
+    it "returns nil for malformed flat buffers so Ruby falls back safely" do
+      static_ctx = view.__send__(:comment_tree_static_context)
+      expect(described_class.render_comment_tree(static_ctx, [], [], [], 0)).to be_nil
+    end
+  end
+
+  describe ".render_tag_link" do
+    let(:view) do
+      controller = StoriesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      controller.view_context
+    end
+
+    it "matches ApplicationHelper#legacy_render_tag_link byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(202_611_11)
+      alphabet = (
+        ("a".."z").to_a + ("0".."9").to_a +
+        ["-", "_", ".", "~", "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=", ":", "@",
+         " ", "\"", "<", ">", "#", "?", "%", "é", "日", "🚀"]
+      ).freeze
+      hex_digits = "0123456789abcdef"
+
+      1_000.times do |iter|
+        len = rng.rand(1..18)
+        raw_route = Array.new(len) { alphabet.sample(random: rng) }.join
+        raw_label = rng.rand(3).zero? ? "#{raw_route} <Tag & 'Label'>" : raw_route
+        bg_hex = "##{Array.new(6) { hex_digits[rng.rand(16)] }.join}"
+        bg_hex = bg_hex.upcase if rng.rand(4).zero?
+        filled = rng.rand(2).zero?
+        monochrome = rng.rand(2).zero?
+        classes = ["", "mr-1", "custom-tag & \"quoted\""].sample(random: rng)
+        path_suffix = [nil, "", "/edit", "?sort=top&dir='asc'"].sample(random: rng)
+
+        tag_obj = Tag.new(name: raw_route, bg_color_hex: bg_hex, text_color_hex: "#ffffff")
+        allow(tag_obj).to receive(:accessible_name).and_return(raw_label) if raw_label != raw_route
+
+        native_html = view.__send__(
+          :native_render_tag_link,
+          tag_obj,
+          filled: filled,
+          monochrome: monochrome,
+          classes: classes,
+          path_suffix: path_suffix,
+        )
+        legacy_html = view.__send__(
+          :legacy_render_tag_link,
+          tag_obj,
+          filled: filled,
+          monochrome: monochrome,
+          classes: classes,
+          path_suffix: path_suffix,
+        )
+
+        expect(native_html).not_to be_nil, "iteration #{iter} returned nil for route=#{raw_route.inspect}"
+        expect(native_html).to eq(legacy_html), "iteration #{iter} mismatch for route=#{raw_route.inspect}"
+      end
+    end
+
+    it "declines SafeBuffer, empty/slash routes, 3-digit hexes, and sub-URI script_name cleanly" do
+      expect(described_class.render_tag_link("ruby".html_safe, "ruby", "#3b49df")).to be_nil
+      expect(described_class.render_tag_link("ruby", "", "#3b49df")).to be_nil
+      expect(described_class.render_tag_link("ruby", "a/b", "#3b49df")).to be_nil
+      expect(described_class.render_tag_link("ruby", "ruby", "#fff")).to be_nil
+
+      tag = create(:tag, name: "rustlang", bg_color_hex: "#dea584", text_color_hex: "#000000")
+      sub_controller = StoriesController.new
+      sub_controller.request = ActionDispatch::TestRequest.create
+      sub_controller.response = ActionDispatch::TestResponse.new
+      sub_controller.default_url_options = { script_name: "/subpath" }
+      sub_view = sub_controller.view_context
+      expect(sub_view.__send__(:native_render_tag_link, tag)).to be_nil
+      expect(sub_view.render_tag_link(tag)).to eq(sub_view.__send__(:legacy_render_tag_link, tag))
+      expect(sub_view.render_tag_link(tag)).to include('href="/subpath/t/rustlang"')
+    end
+  end
+
+  describe ".render_story_cards" do
+    let(:view) do
+      controller = StoriesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      ctx = controller.view_context
+      ctx.define_singleton_method(:user_signed_in?) { false }
+      ctx.define_singleton_method(:feed_style_preference) { "basic" }
+      ctx
+    end
+
+    let(:organization) { create(:organization, name: "Forem & <Org>") }
+    let(:author_a) { create(:user, name: "Alice \"Rust\" & O'Connor") }
+    let(:author_b) { create(:user, name: "Bob <Systems> Dev") }
+    let(:curator) { create(:user, name: "Curator Jane") }
+
+    before do
+      allow(InlineSvg::IdGenerator::Randomness).to receive(:call).and_return("fixed")
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:community_favorites).and_return(true)
+      allow(FeatureFlag).to receive(:enabled?).with("subscriber_icon").and_return(true)
+      author_a.add_role(:base_subscriber)
+      author_b.add_role(:admin)
+      unless Tag.exists?(name: "discuss")
+        create(:tag, name: "discuss", bg_color_hex: "#1ad643", text_color_hex: "#ffffff")
+      end
+      create(:tag, name: "rust", bg_color_hex: "#dea584", text_color_hex: "#000000") unless Tag.exists?(name: "rust")
+      create(:tag, name: "ruby", bg_color_hex: "#cc342d", text_color_hex: "#ffffff") unless Tag.exists?(name: "ruby")
+      stub_const("FlareTag::FLARE_TAG_IDS_HASH", Tag.where(name: %w[discuss]).pluck(:name, :id).to_h.freeze)
+      RequestStore.store.clear
+    end
+
+    it "matches StoryCardHelper#legacy_render_story_cards byte-for-byte across 1,000 randomized feeds" do
+      rich_article = create(
+        :article,
+        user: author_a,
+        organization: organization,
+        title: "Rewriting <Hot> Story Cards & \"Tag Pills\" in 'Rust'",
+        tags: "discuss, rust, ruby",
+        main_image: "https://s3.amazonaws.com/bucket/cover-image.png",
+        main_image_height: 420,
+        main_image_background_hex_color: "#223344",
+      )
+      create(:context_note, article: rich_article, body_markdown: "Helpful **community** note & context")
+      create(:reaction, reactable: rich_article, user: author_b, category: "like")
+      create(:reaction, reactable: rich_article, user: curator, category: "unicorn")
+      rich_article.update_columns(
+        public_reactions_count: 2,
+        comments_count: 5,
+        reading_time: 6,
+        favorited_by_user_id: curator.id,
+      )
+      rich_article.reload
+
+      long_status_title = (1..10).map do |n|
+        "Line #{n} <tag> & https://www.example.com/very/long/status/path/#{n}"
+      end.join("\n")
+      status_article = create(:article, user: author_b)
+      status_article.update_columns(
+        type_of: "status",
+        title: long_status_title,
+        body_markdown: nil,
+        processed_html: "<p>Status preview with <img src=\"https://media.dev.to/pic.png\" /> &amp; details</p>",
+        comments_count: 0,
+        reading_time: 0,
+        favorited_by_user_id: author_a.id,
+      )
+      status_article.reload
+
+      embed_video_article = create(
+        :article,
+        user: author_a,
+        title: "YouTube Embed & Stream",
+        tags: "ruby",
+      )
+      embed_video_article.update_columns(
+        video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        comments_count: 1,
+        public_reactions_count: 1,
+      )
+      create(:reaction, reactable: embed_video_article, user: author_b, category: "like")
+      embed_video_article.reload
+
+      native_video_article = create(
+        :article,
+        user: author_b,
+        organization: organization,
+        title: "Native Video Upload 'Demo'",
+        tags: "rust",
+      )
+      native_video_article.update_columns(
+        video: "https://dw71fyauz7yz9.cloudfront.net/video-upload/demo.m3u8",
+        video_thumbnail_url: "https://s3.amazonaws.com/bucket/video-thumb.jpg",
+        video_duration_in_seconds: 3725,
+        comments_count: 2,
+        published_at: 2.years.ago,
+        crossposted_at: 1.year.ago,
+      )
+      native_video_article.reload
+      native_video_article.favorited_by_user_id = 999_999_999
+
+      minimal_projection_article = Article
+        .minimal_feed_column_select
+        .find(rich_article.id)
+
+      pool = [
+        rich_article,
+        rich_article.decorate,
+        status_article,
+        embed_video_article,
+        native_video_article.decorate,
+        minimal_projection_article,
+      ]
+
+      discuss_tag_record = Tag.find_by!(name: "discuss")
+      locales = %i[en fr pt]
+      rng = Random.new(202_611_12)
+
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return("media.dev.to")
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("media2.dev.to")
+
+      1_000.times do |iter|
+        chosen_locale = locales.sample(random: rng)
+        I18n.with_locale(chosen_locale) do
+          batch = pool.sample(rng.rand(1..5), random: rng)
+
+          signed_in = rng.rand(2).zero?
+          viewer = [author_a, curator, nil].sample(random: rng)
+          signed_in = false if viewer.nil?
+          feed_pref = %w[basic rich].sample(random: rng)
+          curation_view = rng.rand(3).zero?
+          is_home_feed = rng.rand(2).zero?
+          featured = rng.rand(3).zero?
+          pinned = rng.rand(4).zero?
+          org_index = rng.rand(3).zero?
+          tag_ivar = [nil, "discuss", discuss_tag_record].sample(random: rng)
+
+          RequestStore.store[:user_signed_in] = signed_in
+          view.define_singleton_method(:user_signed_in?) { signed_in }
+          view.define_singleton_method(:current_user) { signed_in ? viewer : nil }
+          view.define_singleton_method(:feed_style_preference) { feed_pref }
+          view.instance_variable_set(:@user, signed_in ? viewer : nil)
+          view.instance_variable_set(:@organization_article_index, org_index)
+          view.instance_variable_set(:@tag, tag_ivar)
+
+          opts = {
+            featured: featured,
+            pinned: pinned,
+            curation_view: curation_view,
+            is_home_feed: is_home_feed
+          }
+          opts[:show_organization] = rng.rand(2).zero? if rng.rand(3).zero?
+          if !featured && rng.rand(4).zero?
+            opts[:featured_for] = ->(s) { s.main_image.present? }
+          end
+
+          native_html = view.__send__(:native_render_story_cards, batch, **opts)
+          legacy_html = view.__send__(:legacy_render_story_cards, batch, **opts)
+
+          expect(native_html).not_to be_nil, "iteration #{iter} (locale=#{chosen_locale}) returned nil"
+          expect(native_html).to eq(legacy_html), "iteration #{iter} (locale=#{chosen_locale}) HTML mismatch"
+        end
+      end
+    end
+
+    it "returns nil for malformed flat buffers and falls back cleanly for non-Article doubles" do
+      static_ctx = view.__send__(:story_card_static_context)
+      expect(described_class.render_story_cards(static_ctx, [], [], [], [])).to be_nil
+      expect(view.__send__(:native_render_story_cards, ["not-an-article"])).to be_nil
+    end
+  end
+
+  describe "Pure-Rust Image Manipulation & Avatar Rendering (MiniMagick Replacement)" do
+    let(:fixture_jpg_path) { Rails.root.join("spec/fixtures/files/800x600.jpg").to_s }
+    let(:fixture_png_path) { Rails.root.join("spec/fixtures/files/800x600.png").to_s }
+    let(:fixture_webp_path) { Rails.root.join("spec/fixtures/files/800x600.webp").to_s }
+    let(:fixture_gif_path) { Rails.root.join("spec/fixtures/files/high_frame_count.gif").to_s }
+    let(:fixture_gps_jpg_path) { Rails.root.join("spec/fixtures/files/image_gps_data.jpg").to_s }
+    let(:fixture_svg_path) { Rails.root.join("spec/fixtures/files/300x100.svg").to_s }
+    let(:fixture_gradient_svg_path) { Rails.root.join("spec/fixtures/files/unicorn.svg").to_s }
+    let(:default_svg_font_path) { BaseUploader::DEFAULT_SVG_FONT_PATH }
+
+    # Pure-Ruby 8-bit RGB/RGBA PNG scanline decoder (`Zlib::Inflate` + RFC 2083 filter reconstruction)
+    # used as an independent pixel-level verification oracle in specs without external gems/CLIs.
+    let(:pure_ruby_png_pixels) do
+      lambda do |png_bytes|
+        pos = 8
+        width = height = channels = nil
+        idat = +"".b
+        while pos + 8 <= png_bytes.bytesize
+          len, type = png_bytes.byteslice(pos, 8).unpack("Na4")
+          chunk = png_bytes.byteslice(pos + 8, len)
+          case type
+          when "IHDR"
+            width, height, bit_depth, color_type = chunk.unpack("NNC2")
+            raise "unsupported bit depth #{bit_depth}" unless bit_depth == 8
+
+            channels = color_type == 6 ? 4 : 3
+          when "IDAT"
+            idat << chunk
+          when "IEND"
+            break
+          end
+          pos += 12 + len
+        end
+        raw = Zlib::Inflate.inflate(idat)
+        stride = width * channels
+        prev = Array.new(stride, 0)
+        rows = Array.new(height)
+        offset = 0
+        height.times do |y|
+          filter = raw.getbyte(offset)
+          offset += 1
+          cur = raw.byteslice(offset, stride).bytes
+          offset += stride
+          case filter
+          when 1 # Sub
+            (channels...stride).each { |i| cur[i] = (cur[i] + cur[i - channels]) & 0xFF }
+          when 2 # Up
+            stride.times { |i| cur[i] = (cur[i] + prev[i]) & 0xFF }
+          when 3 # Average
+            stride.times do |i|
+              left = i >= channels ? cur[i - channels] : 0
+              cur[i] = (cur[i] + ((left + prev[i]) >> 1)) & 0xFF
+            end
+          when 4 # Paeth
+            stride.times do |i|
+              a = i >= channels ? cur[i - channels] : 0
+              b = prev[i]
+              c = i >= channels ? prev[i - channels] : 0
+              p = a + b - c
+              pa = (p - a).abs
+              pb = (p - b).abs
+              pc = (p - c).abs
+              pr = if pa <= pb && pa <= pc
+                     a
+                   else
+                     (pb <= pc ? b : c)
+                   end
+              cur[i] = (cur[i] + pr) & 0xFF
+            end
+          end
+          rows[y] = cur
+          prev = cur
+        end
+        [width, height, channels, rows]
+      end
+    end
+
+    describe ".render_profile_image_png (Images::ProfileImageGenerator)" do
+      it "renders deterministic 400x400 8-bit RGB PNGs verified by pure-Ruby pixel oracle across 1,000 combinations",
+         :aggregate_failures do
+        rng = Random.new(20_261_111)
+        parse_hex_rgb = ->(hex) { [hex[1..2].to_i(16), hex[3..4].to_i(16), hex[5..6].to_i(16)] }
+
+        1_000.times do |iteration|
+          palette = Images::ProfileImageGenerator::PALETTES.sample(random: rng)
+          traits = {
+            palette: rng.rand(2).zero? ? palette : palette.transform_keys(&:to_s),
+            backdrop: Images::ProfileImageGenerator::BACKDROP_STYLES.sample(random: rng),
+            outfit: Images::ProfileImageGenerator::OUTFIT_STYLES.sample(random: rng),
+            arm: Images::ProfileImageGenerator::ARM_STYLES.sample(random: rng),
+            head: Images::ProfileImageGenerator::HEAD_STYLES.sample(random: rng),
+            topper: Images::ProfileImageGenerator::TOPPER_STYLES.sample(random: rng),
+            eyes: Images::ProfileImageGenerator::EYE_STYLES.sample(random: rng),
+            accessory: Images::ProfileImageGenerator::ACCESSORY_STYLES.sample(random: rng),
+            cheeks: Images::ProfileImageGenerator::CHEEK_STYLES.sample(random: rng),
+            mouth: Images::ProfileImageGenerator::MOUTH_STYLES.sample(random: rng)
+          }
+          traits = traits.transform_keys(&:to_s) if rng.rand(3).zero?
+
+          png = described_class.render_profile_image_png(traits)
+          expect(png.byteslice(0, 8)).to eq("\x89PNG\r\n\x1A\n".b), "iteration #{iteration} invalid PNG magic"
+          # Width=400, Height=400, BitDepth=8, ColorType=2 (RGB), non-blank compressed payload
+          expect(png.byteslice(16, 10).unpack("NNC2")).to eq([400, 400, 8, 2]),
+                                                          "iteration #{iteration} invalid IHDR"
+          expect(png.bytesize).to be > 1_500, "iteration #{iteration} suspiciously blank PNG"
+
+          next unless (iteration % 40).zero?
+
+          expect(described_class.render_profile_image_png(traits)).to eq(png)
+
+          w, h, ch, rows = pure_ruby_png_pixels.call(png)
+          expect([w, h, ch]).to eq([400, 400, 3])
+          bg_rgb = parse_hex_rgb.call(palette[:bg])
+          body_rgb = parse_hex_rgb.call(palette[:body])
+          shirt_rgb = parse_hex_rgb.call(palette[:shirt])
+          pixel_at = ->(x, y) { rows[y][x * ch, 3] }
+
+          # Outer corner (2, 2) sits outside backdrop decorations and matches palette[:bg]
+          expect(pixel_at.call(2, 2)).to eq(bg_rgb), "iteration #{iteration} corner bg mismatch"
+          # Lower chin/bezel (200, 248) sits inside every head style's body fill (`palette[:body]`)
+          expect(pixel_at.call(200, 248)).to eq(body_rgb), "iteration #{iteration} head body color mismatch"
+          # Lower torso (165, 355) renders outfit/body foreground distinct from background
+          expect(pixel_at.call(165, 355)).not_to eq(bg_rgb), "iteration #{iteration} blank torso"
+          expect(body_rgb == bg_rgb && shirt_rgb == bg_rgb).to be(false)
+        end
+      end
+
+      it "validates trait hash inputs and unknown trait variants", :aggregate_failures do
+        expect { described_class.render_profile_image_png(nil) }.to raise_error(ArgumentError)
+        expect { described_class.render_profile_image_png({ palette: nil }) }.to raise_error(ArgumentError)
+
+        invalid_traits = Images::ProfileImageGenerator.__send__(:select_traits, Random.new(1))
+          .merge(mouth: :unknown_mouth)
+        expect { described_class.render_profile_image_png(invalid_traits) }.to raise_error(ArgumentError)
+      end
+    end
+
+    describe ".image_inspect, .image_inspect_file, and .image_frame_count" do
+      it "matches FastImage dimensions and format across real repository fixtures", :aggregate_failures do
+        [
+          [fixture_jpg_path, "jpeg", 1],
+          [fixture_png_path, "png", 1],
+          [fixture_webp_path, "webp", 1],
+          [fixture_svg_path, "svg", 1],
+          [fixture_gps_jpg_path, "jpeg", 1],
+        ].each do |path, expected_format, expected_frames|
+          info = described_class.image_inspect_file(path)
+          expect(info[:format]).to eq(expected_format)
+          expect([info[:width], info[:height]]).to eq(FastImage.size(path))
+          expect(info[:frame_count]).to eq(expected_frames)
+        end
+
+        gif_info = described_class.image_inspect_file(fixture_gif_path)
+        expect(gif_info[:format]).to eq("gif")
+        expect([gif_info[:width], gif_info[:height]]).to eq(FastImage.size(fixture_gif_path))
+        expect(gif_info[:frame_count]).to be > 20
+        expect(described_class.image_frame_count(fixture_gif_path)).to eq(gif_info[:frame_count])
+      end
+
+      it "matches FastImage across 1,000 randomized PNG, GIF, BMP, and SVG headers", :aggregate_failures do
+        rng = Random.new(99_887_766)
+
+        1_000.times do |iteration|
+          w = rng.rand(1..4096)
+          h = rng.rand(1..4096)
+
+          case iteration % 4
+          when 0
+            ihdr = [w, h, 8, 6, 0, 0, 0].pack("NNC5")
+            crc = [Zlib.crc32("IHDR".b + ihdr)].pack("N")
+            bytes = "\x89PNG\r\n\x1A\n".b + [13].pack("N") + "IHDR".b + ihdr + crc +
+              [0].pack("N") + "IEND".b + [Zlib.crc32("IEND".b)].pack("N")
+            expected_fmt = "png"
+            expected_frames = 1
+          when 1
+            frames = rng.rand(1..12)
+            # Minimal GIF89a header + N minimal image descriptors (',' + 9 header bytes + LZW min=2 + 0x00)
+            frame_block = [",".b, [0, 0, 1, 1, 0].pack("v4C"), "\x02\x00".b].join * frames
+            bytes = "GIF89a".b + [w, h, 0x80, 0, 0].pack("vvCCC") + ("\x00" * 6).b + frame_block + ";".b
+            expected_fmt = "gif"
+            expected_frames = frames
+          when 2
+            # Minimal 24-bit BMP header (BITMAPINFOHEADER = 40 bytes)
+            file_header = "BM".b + [54, 0, 0, 54].pack("VvvV")
+            dib_header = [40, w, h, 1, 24, 0, 0, 0, 0, 0, 0].pack("Vl<l<vvVVl<l<VV")
+            bytes = file_header + dib_header
+            expected_fmt = "bmp"
+            expected_frames = 1
+          when 3
+            bytes = %(<svg xmlns="http://www.w3.org/2000/svg" width="#{w}" height="#{h}"></svg>).b
+            expected_fmt = "svg"
+            expected_frames = 1
+          end
+
+          info = described_class.image_inspect(bytes)
+          expect(info[:format]).to eq(expected_fmt), "iteration #{iteration}"
+          expect([info[:width], info[:height]]).to eq([w, h]), "iteration #{iteration}"
+          expect(info[:frame_count]).to eq(expected_frames), "iteration #{iteration}"
+          expect(FastImage.size(StringIO.new(bytes))).to eq([w, h]), "iteration #{iteration} FastImage parity"
+        end
+      end
+
+      it "raises ArgumentError on empty, truncated, or unrecognized binary inputs", :aggregate_failures do
+        ["", "not an image", "\x89PNG\r\n\x1A\n\x00\x00", "\xFF\xD8\xFF", "RIFF\x04\x00\x00\x00WEBP"].each do |bad|
+          expect { described_class.image_inspect(bad.b) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    describe ".image_strip_and_auto_orient" do
+      it "handles all 8 EXIF orientations (lossless strip on 1, pixel orientation + dimension swap on 2..8)",
+         :aggregate_failures do
+        raw_jpg = File.binread(fixture_jpg_path)
+
+        (1..8).each do |orientation|
+          exif_app1 =
+            "\xFF\xE1\x00\x22Exif\x00\x00MM\x00\x2A\x00\x00\x00\x08" \
+            "\x00\x01\x01\x12\x00\x03\x00\x00\x00\x01".b +
+            [orientation].pack("n") + "\x00\x00\x00\x00\x00\x00".b
+          tagged = "\xFF\xD8".b + exif_app1 + raw_jpg.byteslice(2..)
+
+          expect(described_class.image_inspect(tagged)[:exif_orientation]).to eq(orientation)
+
+          stripped = described_class.image_strip_and_auto_orient(tagged)
+          expect(stripped).not_to be_nil
+
+          info = described_class.image_inspect(stripped)
+          expect(info[:exif_orientation]).to eq(1), "orientation #{orientation} not reset"
+          expected_dims = orientation >= 5 ? [600, 800] : [800, 600]
+          expect([info[:width], info[:height]]).to eq(expected_dims), "orientation #{orientation} dims mismatch"
+          expect(EXIFR::JPEG.new(StringIO.new(stripped)).exif?).to be(false)
+        end
+      end
+    end
+
+    describe ".image_resize_to_fill, .image_resize_to_limit, and .image_convert_to_png" do
+      let(:legacy_resize_to_limit_dims) do
+        lambda do |src_w, src_h, max_w, max_h|
+          return [src_w, src_h] if max_w.nil? && max_h.nil?
+
+          scale_w = max_w ? max_w.to_f / src_w : Float::INFINITY
+          scale_h = max_h ? max_h.to_f / src_h : Float::INFINITY
+          scale = [scale_w, scale_h].min
+          return [src_w, src_h] if scale >= 1.0
+
+          [(src_w * scale).round.clamp(1, src_w), (src_h * scale).round.clamp(1, src_h)]
+        end
+      end
+
+      it "matches CarrierWave/MiniMagick dimension math across 1,000 randomized resize operations",
+         :aggregate_failures do
+        rng = Random.new(424_242)
+        gravities = %w[Center North South East West NorthWest NorthEast SouthWest SouthEast]
+
+        # Build a compact pool of distinct synthetic RGB/RGBA PNGs of varied aspect ratios
+        sample_sources = [[48, 32], [32, 48], [64, 64], [90, 30], [25, 75], [120, 80]].map do |sw, sh|
+          svg = %(<svg xmlns="http://www.w3.org/2000/svg" width="#{sw}" height="#{sh}">) +
+            %(<rect width="#{sw}" height="#{sh}" fill="#3b49df"/>) +
+            %(<circle cx="#{sw / 2}" cy="#{sh / 2}" r="#{[sw, sh].min / 3}" fill="#ffffff"/></svg>)
+          [sw, sh, described_class.image_convert_to_png(svg)]
+        end
+
+        1_000.times do |iteration|
+          sw, sh, src_png = sample_sources.sample(random: rng)
+
+          if iteration.even?
+            tw = rng.rand(4..96)
+            th = rng.rand(4..96)
+            gravity = gravities.sample(random: rng)
+            resized_bytes, fmt = described_class.image_resize_to_fill(src_png, tw, th, gravity)
+            info = described_class.image_inspect(resized_bytes)
+            expect([fmt, info[:format], info[:width], info[:height]]).to eq(["png", "png", tw, th]),
+                                                                         "fill iter #{iteration}"
+          else
+            max_w = rng.rand(4).zero? ? nil : rng.rand(8..140)
+            max_h = max_w.nil? || rng.rand(4) != 0 ? rng.rand(8..140) : nil
+            resized_bytes, fmt = described_class.image_resize_to_limit(src_png, max_w, max_h)
+            info = described_class.image_inspect(resized_bytes)
+            expected_w, expected_h = legacy_resize_to_limit_dims.call(sw, sh, max_w, max_h)
+            expect([fmt, info[:format]]).to eq(%w[png png]), "limit fmt iter #{iteration}"
+            expect(info[:width]).to be_within(1).of(expected_w), "limit width iter #{iteration}"
+            expect(info[:height]).to be_within(1).of(expected_h), "limit height iter #{iteration}"
+            expect(info[:width]).to be <= max_w if max_w
+            expect(info[:height]).to be <= max_h if max_h
+          end
+        end
+      end
+
+      it "converts text and gradient SVGs and composites Subforem social images in-process",
+         :aggregate_failures do
+        svg_png = described_class.image_convert_to_png(
+          File.binread(fixture_svg_path),
+          font_path: default_svg_font_path,
+        )
+        expect(described_class.image_inspect(svg_png)).to include(format: "png", width: 300, height: 100)
+
+        gradient_png = described_class.image_convert_to_png(
+          File.binread(fixture_gradient_svg_path),
+          font_path: default_svg_font_path,
+        )
+        expect(described_class.image_inspect(gradient_png)[:format]).to eq("png")
+
+        logo_bytes = File.binread(fixture_png_path)
+        template_bytes = Rails.root.join("app/assets/images/social_template.png").binread
+        social_png = described_class.subforem_social_image_png(
+          logo_bytes,
+          template_bytes,
+          custom_background: true,
+        )
+        expect(described_class.image_inspect(social_png)).to include(format: "png", width: 1000, height: 500)
+      end
+
+      it "handles extreme aspect ratios, <defs>/<symbol>/<use>/<style> SVGs, and multi-threaded GVL execution",
+         :aggregate_failures do
+        # 1. Extreme 4096x1 banner -> 1000x500 without multi-GB intermediate allocation
+        banner_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="1">' \
+                     '<rect width="4096" height="1" fill="#16a34a"/></svg>'
+        banner_png = described_class.image_convert_to_png(banner_svg)
+        filled_png, fmt = described_class.image_resize_to_fill(banner_png, 1000, 500, "Center")
+        expect([fmt, described_class.image_inspect(filled_png)]).to eq(
+          ["png", { format: "png", width: 1000, height: 500, frame_count: 1, exif_orientation: 1 }],
+        )
+
+        # 2. SVG with <style>, <defs>, <symbol>, and <use href> + reject_blank verification
+        symbol_svg = <<~SVG
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 48 24">
+            <style>.mark { fill: #e11d48; }</style>
+            <defs><symbol id="badge" viewBox="0 0 12 12"><rect width="12" height="12" class="mark"/></symbol></defs>
+            <use href="#badge" x="12" y="0" width="24" height="24"/>
+          </svg>
+        SVG
+        rendered_png = described_class.image_convert_to_png(symbol_svg, reject_blank: true)
+        w, h, ch, rows = pure_ruby_png_pixels.call(rendered_png)
+        expect([w, h, ch]).to eq([48, 24, 4])
+        expect(rows[12][24 * 4, 4]).to eq([0xE1, 0x1D, 0x48, 0xFF])
+
+        empty_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"></svg>'
+        expect { described_class.image_convert_to_png(empty_svg, reject_blank: true) }.to raise_error(ArgumentError)
+
+        # 3. Concurrent Ruby threads executing GVL-released native image operations in parallel
+        jpg_bytes = File.binread(fixture_jpg_path)
+        results = Array.new(8) do |idx|
+          Thread.new do
+            out, out_fmt = described_class.image_resize_to_fill(jpg_bytes, 64 + idx, 64 + idx, "Center")
+            [out_fmt, described_class.image_inspect(out)[:width]]
+          end
+        end.map(&:value)
+        expect(results).to eq((0...8).map { |idx| ["jpeg", 64 + idx] })
+      end
+
+      it "verifies exported symbols on disk before requiring candidate binaries" do
+        Tempfile.create(["stale_forem_native", ".#{ForemNative::Builder.dlext}"]) do |tmp|
+          tmp.binmode
+          tmp.write("ELF_WITHOUT_REQUIRED_SYMBOL")
+          tmp.flush
+
+          expect(ForemNative::Builder.binary_exports_symbol?(tmp.path, described_class::LATEST_NATIVE_SYMBOL))
+            .to be(false)
+          expect(ForemNative::Builder.binary_exports_symbol?(tmp.path, :ELF_WITHOUT_REQUIRED_SYMBOL))
+            .to be(true)
+        end
       end
     end
   end

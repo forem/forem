@@ -1,4 +1,19 @@
-let pendingMediaPlaybackPromise = null;
+import { createAssetBundleLoader } from './loadAssetBundle';
+
+const mediaPlaybackBundleLoader = createAssetBundleLoader({
+  metaName: 'media-playback-script',
+  fallbackSrc: '/assets/mediaPlayback.js',
+  dataAttribute: 'mediaPlaybackBundle',
+  getReadyValue: () =>
+    typeof window.Forem?.initializePodcastPlayback === 'function'
+      ? {
+          initializePodcastPlayback: window.Forem.initializePodcastPlayback,
+          initializeVideoPlayback: window.Forem.initializeVideoPlayback,
+        }
+      : null,
+  errorMessage:
+    'mediaPlayback bundle loaded without registering initializePodcastPlayback',
+});
 
 /**
  * Checks whether the current page has podcast playback elements or a persisted
@@ -49,76 +64,9 @@ export function shouldInitializePodcastPlayback(runtime) {
  * @returns {Promise<{ initializePodcastPlayback: Function, initializeVideoPlayback: Function }>}
  */
 export function loadMediaPlaybackBundle() {
-  if (
-    typeof window !== 'undefined' &&
-    typeof window.Forem?.initializePodcastPlayback === 'function' &&
-    typeof window.Forem?.initializeVideoPlayback === 'function'
-  ) {
-    return Promise.resolve({
-      initializePodcastPlayback: window.Forem.initializePodcastPlayback,
-      initializeVideoPlayback: window.Forem.initializeVideoPlayback,
-    });
-  }
-
-  if (pendingMediaPlaybackPromise) {
-    return pendingMediaPlaybackPromise;
-  }
-
-  const metaTag = document.querySelector('meta[name="media-playback-script"]');
-  const scriptSrc = metaTag?.content || '/assets/mediaPlayback.js';
-
-  pendingMediaPlaybackPromise = new Promise((resolve, reject) => {
-    const existingScript = document.querySelector(
-      `script[src="${scriptSrc}"], script[data-media-playback-bundle="true"]`,
-    );
-    const script = existingScript || document.createElement('script');
-
-    const cleanupFailure = (err) => {
-      pendingMediaPlaybackPromise = null;
-      if (!existingScript) {
-        script.remove();
-      }
-      reject(err);
-    };
-
-    script.addEventListener(
-      'load',
-      () => {
-        if (typeof window.Forem?.initializePodcastPlayback === 'function') {
-          resolve({
-            initializePodcastPlayback: window.Forem.initializePodcastPlayback,
-            initializeVideoPlayback: window.Forem.initializeVideoPlayback,
-          });
-        } else {
-          cleanupFailure(
-            new Error(
-              'mediaPlayback bundle loaded without registering initializePodcastPlayback',
-            ),
-          );
-        }
-      },
-      { once: true },
-    );
-
-    script.addEventListener(
-      'error',
-      () => {
-        cleanupFailure(new Error(`Failed to load ${scriptSrc}`));
-      },
-      { once: true },
-    );
-
-    if (!existingScript) {
-      script.src = scriptSrc;
-      script.defer = true;
-      script.dataset.mediaPlaybackBundle = 'true';
-      document.head.appendChild(script);
-    }
-  });
-
-  return pendingMediaPlaybackPromise;
+  return mediaPlaybackBundleLoader.load();
 }
 
 export function resetMediaPlaybackLoaderForTests() {
-  pendingMediaPlaybackPromise = null;
+  mediaPlaybackBundleLoader.reset();
 }

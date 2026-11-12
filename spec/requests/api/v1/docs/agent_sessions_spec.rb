@@ -66,7 +66,7 @@ RSpec.describe "api/v1/agent_sessions" do
 
           ### S3 Upload Workflow:
           1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.
-          2. Upload the raw transcript to S3.
+          2. Upload the raw transcript to S3 with a PUT to `presigned_url`, sending exactly the returned `headers`.
           3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).
         DESCRIBE
         operationId "createAgentSession"
@@ -172,27 +172,60 @@ RSpec.describe "api/v1/agent_sessions" do
         tags "agent_sessions"
         description(<<~DESCRIBE.strip)
           Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.
+
+          ### Upload Rules:
+          - Declare the exact size of the file in bytes as `content_length`. The maximum is #{AgentSessions::S3Storage::MAX_UPLOAD_SIZE} bytes (#{AgentSessions::S3Storage::MAX_UPLOAD_SIZE / 1.megabyte}MB), the same limit applied to curated session data.
+          - PUT the file to `presigned_url` within 15 minutes, sending exactly the returned `headers`. The size is part of the signature, so S3 rejects a body of any other length.
+          - Rate limited per user to a configurable number of URLs per configurable window (by default 20 per hour), counted whether or not a session is later created. Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable uploads.
         DESCRIBE
         operationId "presignAgentSession"
         produces "application/json"
+        consumes "application/json"
+
+        parameter name: :presign_params, in: :body,
+                  description: "Size of the file to upload.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      content_length: { type: :integer, minimum: 1, maximum: AgentSessions::S3Storage::MAX_UPLOAD_SIZE,
+                                        description: "Exact size of the raw transcript in bytes." }
+                    },
+                    required: %w[content_length]
+                  }
+
+        let(:presign_params) { { content_length: 1024 } }
+        let(:s3_enabled) { true }
+        let(:presign_limit) { 20 }
+
+        before do
+          allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+          allow(Settings::RateLimit).to receive(:agent_session_presign).and_return(presign_limit)
+          allow(AgentSessions::S3Storage).to receive_messages(
+            enabled?: s3_enabled,
+            generate_key: "agent_sessions/#{user.id}/#{SecureRandom.uuid}.jsonl",
+            presigned_put_url: "https://s3.example.com/presigned",
+          )
+        end
 
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
 
-          before do
-            allow(AgentSessions::S3Storage).to receive_messages(
-              enabled?: true,
-              generate_key: "agent_sessions/#{user.id}/#{SecureRandom.uuid}.jsonl",
-              presigned_put_url: "https://s3.example.com/presigned",
-            )
-          end
-
           schema type: :object,
                  properties: {
                    s3_key: { type: :string },
-                   presigned_url: { type: :string }
+                   presigned_url: { type: :string },
+                   headers: {
+                     type: :object,
+                     description: "Headers to send with the PUT to presigned_url. Each is part of the signature.",
+                     properties: {
+                       "Content-Type": { type: :string },
+                       "Content-Length": { type: :string },
+                       "x-amz-acl": { type: :string }
+                     },
+                     required: %w[Content-Type Content-Length x-amz-acl]
+                   }
                  },
-                 required: %w[s3_key presigned_url]
+                 required: %w[s3_key presigned_url headers]
           add_examples
 
           run_test!
@@ -205,13 +238,25 @@ RSpec.describe "api/v1/agent_sessions" do
           run_test!
         end
 
+        response "422", "missing or too large content_length" do
+          let(:"api-key") { api_secret.secret }
+          let(:presign_params) { { content_length: AgentSessions::S3Storage::MAX_UPLOAD_SIZE + 1 } }
+          add_examples
+
+          run_test!
+        end
+
+        response "429", "too many requests" do
+          let(:"api-key") { api_secret.secret }
+          let(:presign_limit) { 0 }
+          add_examples
+
+          run_test!
+        end
+
         response "503", "service unavailable" do
           let(:"api-key") { api_secret.secret }
-
-          before do
-            allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(false)
-          end
-
+          let(:s3_enabled) { false }
           add_examples
 
           run_test!

@@ -7,13 +7,15 @@ RSpec.describe Organizations::BustCacheWorker, type: :worker do
 
     before do
       allow(EdgeCache::BustOrganization).to receive(:call)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
     end
 
     describe "when no organization is found" do
-      it "doest not call the service" do
+      it "purges the deleted organization surrogate key instead of calling BustOrganization", :aggregate_failures do
         allow(Organization).to receive(:find_by).and_return(nil)
         worker.perform(789, "SlUg")
         expect(EdgeCache::BustOrganization).not_to have_received(:call)
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with("organizations/789", fallback_paths: "/SlUg")
       end
     end
 

@@ -69,7 +69,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :notification_setting, class_name: "Users::NotificationSetting",
+                                 dependent: :delete, inverse_of: :user
   has_one :onboarding_checklist, dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
@@ -321,6 +322,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
   after_create_commit :create_onboarding_checklist
+  after_create_commit :bust_legacy_username_redirect_cache
 
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
@@ -435,6 +437,7 @@ class User < ApplicationRecord
 
     if new_record?
       self.score = calculated_score
+      sync_base_email_eligible!
     else
       update_column(:score, calculated_score)
       sync_base_email_eligible!
@@ -789,17 +792,28 @@ class User < ApplicationRecord
   #
   # @return [Array<String>] an array of subforem domains
   def moderator_for_subforems_not_cached
+    return [] if Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
+
+    if association(:roles).loaded?
+      subforem_roles = roles.select { |role| role.name == "subforem_moderator" && role.resource_type == "Subforem" }
+      return [] if subforem_roles.empty?
+
+      subforem_ids = subforem_roles.map(&:resource_id)
+      return Subforem.with_role(:subforem_moderator, self).pluck(:domain) if subforem_ids.include?(nil)
+
+      domains_by_id = Subforem.cached_id_to_domain_hash
+      return subforem_ids.filter_map { |id| domains_by_id[id] }
+    end
+
     Subforem.with_role(:subforem_moderator, self).pluck(:domain)
   end
 
   def admin_organizations
-    org_ids = organization_memberships.admin.pluck(:organization_id)
-    organizations.where(id: org_ids)
+    organizations.merge(OrganizationMembership.admin)
   end
 
   def member_organizations
-    org_ids = organization_memberships.member.pluck(:organization_id)
-    organizations.where(id: org_ids)
+    organizations.merge(OrganizationMembership.member)
   end
 
   def org_member?(organization)
@@ -933,9 +947,7 @@ class User < ApplicationRecord
   end
 
   def send_magic_link!
-    # Generate random string
-    number = rand(10**8)
-    self.sign_in_token = number.to_s.rjust(8, "0")
+    self.sign_in_token = SecureRandom.random_number(10**10).to_s.rjust(10, "0")
     self.sign_in_token_sent_at = Time.now.utc
     if save
       VerificationMailer.with(user_id: id).magic_link.deliver_now
@@ -966,20 +978,24 @@ class User < ApplicationRecord
     track_engagement!(last_presence_at)
   end
 
-  def sync_base_email_eligible!
+  def sync_base_email_eligible!(touch: false)
     # User is eligible if they are registered, have an email, are not suspended,
     # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
       email.present? &&
       score.to_i >= 0 &&
-      notification_setting&.email_newsletter? &&
-      !has_role?(:suspended) &&
-      !has_role?(:spam)
+      notification_setting&.email_newsletter? == true &&
+      !spam_or_suspended?
 
-    return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+    unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+      update_columns(updated_at: Time.current) if touch && !new_record?
+      return
+    end
 
     if new_record?
       self.base_email_eligible = is_eligible
+    elsif touch
+      update_columns(base_email_eligible: is_eligible, updated_at: Time.current)
     else
       update_column(:base_email_eligible, is_eligible)
     end
@@ -1211,6 +1227,13 @@ class User < ApplicationRecord
     Users::BustProfileIdentityCacheWorker.perform_async(id)
   end
 
+  def bust_legacy_username_redirect_cache
+    legacy_keys = EdgeCache::LegacySlugRedirectKeys.call(username, exclude_user_id: id)
+    return if legacy_keys.empty?
+
+    EdgeCache::PurgeByKeyWorker.perform_async(legacy_keys, [path])
+  end
+
   def bust_profile_details_cache
     Users::BustProfileDetailsCacheWorker.perform_async(id)
   end
@@ -1299,8 +1322,10 @@ class User < ApplicationRecord
 
   # super is Devise's !confirmed?: without it, users confirmed at creation
   # (OAuth signups via skip_confirmation!) still get a confirmation email.
+  # Check super first so Devise's after_set_user hook short-circuits in memory
+  # for already-confirmed users without reading Settings::SMTP from Redis.
   def confirmation_required?
-    ForemInstance.smtp_enabled? && super
+    super && ForemInstance.smtp_enabled?
   end
 
   def update_user_roles_cache(role)
@@ -1315,17 +1340,15 @@ class User < ApplicationRecord
     trusted?
 
     # Check for spam patterns when user gets spam or suspended role
-    if role.name.in?(%w[spam suspended])
-      # The domain scan can hit the statement timeout, so keep it out of this
-      # callback: an error here rolls back the role grant (and aborts a banish).
-      Spam::DomainDetectorWorker.perform_async(id)
-      calculate_score
-      # Article scores include a spam penalty that also governs Algolia indexability,
-      # so rescore on every grant/removal regardless of which code path changed the role.
-      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
-      articles.published.find_each(&:async_score_calc)
-    end
+    return unless role.name.in?(%w[spam suspended])
 
-    sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
+    # The domain scan can hit the statement timeout, so keep it out of this
+    # callback: an error here rolls back the role grant (and aborts a banish).
+    Spam::DomainDetectorWorker.perform_async(id)
+    calculate_score
+    # Article scores include a spam penalty that also governs Algolia indexability,
+    # so rescore on every grant/removal regardless of which code path changed the role.
+    # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+    articles.published.find_each(&:async_score_calc)
   end
 end

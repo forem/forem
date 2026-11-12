@@ -26,6 +26,7 @@ RSpec.describe "Feed config visibility visits" do
   it "credits a visible return immediately and supplies the remaining cooldown" do
     post feed_config_visits_path, params: params
     expect(response).to have_http_status(:ok)
+    expect(request.session_options[:skip]).to be(true)
     expect(response.headers["X-Feed-Visit-Wait"]).to eq("1800")
     expect(response.headers["Cache-Control"]).to eq("private, no-store")
     expect(config.reload).to have_attributes(feed_repeat_visits_count: 1, feed_success_score: 0.5)

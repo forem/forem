@@ -95,7 +95,10 @@
     </table>
   </div>
 
-  <div class="mt-4 flex justify-center">
-    <%= paginate @linked_domains %>
-  </div>
+  <nav class="admin-pagination mt-4 flex justify-center gap-2 fs-s items-center">
+    <% if @linked_domains.current_page > 1 %>
+      <%= link_to t("views.pagination.aria_previous"), admin_linked_domains_path(page: (@linked_domains.current_page - 1 if @linked_domains.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+    <% end %>
+    <%= link_to_next_page @linked_domains, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+  </nav>
 </div>

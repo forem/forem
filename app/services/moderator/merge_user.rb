@@ -30,7 +30,7 @@ module Moderator
       @keep_user.track!("user_merged", { "merged_forem_user_id" => @delete_user.id })
       Users::MergeSyncWorker.perform_async(@keep_user.id)
 
-      EdgeCache::Bust.call("/#{@keep_user.username}")
+      EdgeCache::BustUser.call(@keep_user)
     end
 
     private

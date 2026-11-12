@@ -10,6 +10,7 @@ module Ai
   #
   # Supports both Gemini and TypeSafe Jev via Ai::FunctionConfig (:phishing_signup_check).
   class PhishingSignupCheck
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
     VERSION = "1.0".freeze
@@ -66,7 +67,7 @@ module Ai
       @record = record
       @user = record.is_a?(User) ? record : record.user
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       affected_content = record.is_a?(User) ? nil : record
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_user: @user,
@@ -75,7 +76,7 @@ module Ai
 
     # @return [Boolean] true if the record is phishing, platform impersonation, or low-trust signup spam.
     def spam?
-      return spam_via_jev? if @selection.jev?
+      return spam_via_jev? if @selection.decision?
 
       response = @ai_client.call(build_prompt)
       parse_response(response)
@@ -92,6 +93,13 @@ module Ai
 
     # Re-evaluates a comment without parent post context when the parent post triggers a safety block.
     def spam_in_isolation?
+      if @selection.decision?
+        client = @selection.decision_client(wrapper: self, affected_user: @user,
+                                            affected_content: @record, **Ai::TypeSafe::Client::FAIL_FAST)
+        result = client.evaluate(state: jev_state.except(:parent_post), questions: jev_questions)
+        return spam_from_jev?(result)
+      end
+
       parse_response(@ai_client.call(<<~PROMPT))
         Is the following comment or author identity CLEARLY phishing, platform impersonation, or deceptive signup spam? Answer only with YES or NO.
         ---
@@ -111,8 +119,8 @@ module Ai
     # Evaluates the record using TypeSafe Jev structured questions.
     def spam_via_jev?
       affected_content = @record.is_a?(User) ? nil : @record
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @user,
-                                        affected_content: affected_content, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = @selection.decision_client(wrapper: self, affected_user: @user,
+                                          affected_content: affected_content, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: jev_state, questions: jev_questions)
       spam_from_jev?(result)
     end
@@ -352,14 +360,14 @@ module Ai
 
     # Returns the configured community name or default fallback.
     def community_name
-      Settings::Community.community_name.presence || "DEV Community"
+      subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : nil
+      resolve_community_name(subforem_id).presence || "DEV Community"
     end
 
     # Returns the subforem/community description for context.
     def community_description
-      subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : Subforem.cached_default_id
-      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-        Settings::Community.community_description(subforem_id: subforem_id)
+      subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : nil
+      resolve_community_description(subforem_id)
     end
 
     # Memoized normalized author display name.

@@ -110,4 +110,54 @@ RSpec.describe Redcarpet::Render::HTMLRouge do
       expect(img["onload"]).to be_nil
     end
   end
+
+  describe "native syntax highlighting (block_code & rouge_formatter)" do
+    it "resolves language aliases, CGI query options, and guess heuristics identically to Rouge", :aggregate_failures do
+      expect(markdown.render("```js\nconst x = 1;\n```")).to include('<pre class="highlight javascript"><code>')
+      expect(markdown.render("```c++\nint main() {}\n```")).to include('<pre class="highlight cpp"><code>')
+      expect(markdown.render("```ruby?start_inline=1\nputs 1\n```")).to include('<pre class="highlight ruby"><code>')
+      expect(markdown.render("```guess?mimetype=application/json\n{\"a\":1}\n```")).to include(
+        '<pre class="highlight json"><code>',
+      )
+      expect(markdown.render("```guess\n#!/usr/bin/env python3\nprint(1)\n```")).to include(
+        '<pre class="highlight python"><code>',
+      )
+      expect(markdown.render("```guess\n<!DOCTYPE html>\n<html></html>\n```")).to include(
+        '<pre class="highlight html"><code>',
+      )
+    end
+
+    it "renders unlabeled or unknown language fences with class='highlight plaintext'", :aggregate_failures do
+      unlabeled = markdown.render("```\nplain <tag> & text\n```")
+      expect(unlabeled).to include('<div class="highlight"><pre class="highlight plaintext"><code>')
+      expect(unlabeled).to include("plain &lt;tag&gt; &amp; text")
+
+      unknown = markdown.render("```not_a_real_lang\nplain <tag>\n```")
+      expect(unknown).to include('<div class="highlight"><pre class="highlight plaintext"><code>')
+      expect(unknown).to include("plain &lt;tag&gt;")
+    end
+
+    it "converts leading 4 spaces to a tab for Makefile code blocks" do
+      output = markdown.render("```Makefile\nall:\n    echo hi\n```")
+      expect(output).to include('<pre class="highlight make"><code>')
+      expect(output).to include("\n\t<span class=\"nb\">echo</span>")
+    end
+
+    it "supports direct block_code calls with nil, uppercase, or whitespace language hints", :aggregate_failures do
+      expect(renderer.block_code("x < y & z > 0", nil)).to eq(
+        '<div class="highlight"><pre class="highlight plaintext"><code>x &lt; y &amp; z &gt; 0</code></pre></div>',
+      )
+      expect(renderer.block_code("puts 1", "RUBY")).to include('<pre class="highlight ruby"><code>')
+    end
+
+    it "renders shell `$` prompts and single-brace HTML/template attributes without hanging", :aggregate_failures do
+      shell_output = markdown.render("```bash\n$ npm install\necho $ $$\n```")
+      expect(shell_output).to include('<pre class="highlight shell"><code>')
+      expect(shell_output).to include("npm install")
+
+      html_output = markdown.render("```html\n<div class={cls} {...props}>{body}</div>\n```")
+      expect(html_output).to include('<pre class="highlight html"><code>')
+      expect(html_output).to include('<span class="na">class</span>')
+    end
+  end
 end

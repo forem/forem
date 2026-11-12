@@ -9,9 +9,10 @@ module Ai
   # holistic YES/NO prompt is replaced by narrow TypeSafe Noul questions combined by the
   # explicit policy in #spam_from_jev?.
   class CommentCheck
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :comment_spam_check
 
     # Jev policy thresholds: act only on clear spam. Validate against labeled outcomes.
@@ -23,7 +24,7 @@ module Ai
     def initialize(comment)
       @comment = comment
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: comment,
                                 affected_user: comment.user)
@@ -34,7 +35,7 @@ module Ai
     #
     # @return [Boolean] true if the comment is likely spam, false otherwise.
     def spam?
-      return spam_via_jev? if @selection.jev?
+      return spam_via_jev? if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -51,6 +52,14 @@ module Ai
     # The full prompt includes the parent post, which may be someone else's. Re-ask about the
     # comment alone, so a PROHIBITED_CONTENT block only reaches its author if the comment caused it.
     def spam_in_isolation?
+      if @selection.decision?
+        client = @selection.decision_client(wrapper: self, affected_content: @comment,
+                                            affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
+        state = { comment: @comment.body_markdown.to_s.truncate(4_000) }
+        result = client.evaluate(state: state, questions: { spam: noul("Is `comment` CLEARLY spam?") })
+        return result.noul(:spam) >= CLEAR
+      end
+
       parse_response(@ai_client.call(<<~PROMPT))
         Is the following comment CLEARLY spam? Answer only with YES or NO.
         ---
@@ -66,8 +75,8 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def spam_via_jev?
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @comment,
-                                        affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = @selection.decision_client(wrapper: self, affected_content: @comment,
+                                          affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
       spam_from_jev?(client.evaluate(state: jev_state, questions: jev_questions))
     end
 
@@ -77,6 +86,7 @@ module Ai
         post: { title: post.title, body: post.body_markdown.to_s.truncate(1_500) },
         comment: @comment.body_markdown.to_s.truncate(4_000)
       }
+      state[:community] = { description: community_description } if community_description.present?
       state[:author_recent_comments] = recent_comments if recent_comments.any?
       state
     end
@@ -141,6 +151,10 @@ module Ai
         .map { |c| c.body_markdown.to_s.first(1_000) }
     end
 
+    def community_description
+      @community_description ||= resolve_community_description(@comment.commentable.try(:subforem_id))
+    end
+
     # --- Gemini ---
 
     ##
@@ -150,6 +164,18 @@ module Ai
       user_history = @comment.user.comments.last(10).map.with_index(1) do |c, i|
         "Comment #{i}: \"#{c.body_markdown.first(1_000)}\""
       end.join("\n")
+
+      community_context_section = if community_description.present?
+                                    <<~COMMUNITY
+                                      0.  **Community Context**:
+                                          ---
+                                          #{community_description}
+                                          ---
+
+                                    COMMUNITY
+                                  else
+                                    ""
+                                  end
 
       <<~PROMPT
         Analyze the following comment for spam. Your answer must be a single word: YES or NO.
@@ -164,7 +190,7 @@ module Ai
 
         Here is the context:
 
-        1.  **The Parent Content Post** (The post the comment was left in reply to):
+        #{community_context_section}1.  **The Parent Content Post** (The post the comment was left in reply to):
             ---
             Title: #{@comment.commentable.title}
             Body#{'(truncated)' if @comment.commentable.body_markdown.size > 1500}: #{@comment.commentable.body_markdown.first(1_500)}

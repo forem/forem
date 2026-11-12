@@ -30,7 +30,7 @@
                 <%= survey.active? ? "Active" : "Inactive" %>
               </span>
             </td>
-            <td><%= survey.polls.count %></td>
+            <td><%= @polls_counts ? @polls_counts.fetch(survey.id, 0) : survey.polls.size %></td>
             <td><%= survey.created_at.strftime("%B %d, %Y") %></td>
             <td class="text-right">
               <div class="flex items-center justify-end">

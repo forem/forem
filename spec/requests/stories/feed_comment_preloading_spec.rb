@@ -20,9 +20,12 @@ RSpec.describe "Feed comment preview loading" do
   end
 
   def capture_comment_loading(&block)
-    result = { queries: [], rows: 0 }
+    result = { queries: [], rows: 0, context_note_queries: [] }
     sql_callback = lambda do |*, payload|
-      result[:queries] << payload[:sql] if payload[:sql].include?('FROM "comments"') && payload[:name] != "SCHEMA"
+      next if payload[:name] == "SCHEMA"
+
+      result[:queries] << payload[:sql] if payload[:sql].include?('FROM "comments"')
+      result[:context_note_queries] << payload[:sql] if payload[:sql].include?('FROM "context_notes"')
     end
     instantiation_callback = lambda do |*, payload|
       result[:rows] += payload[:record_count] if payload[:class_name] == "Comment"
@@ -79,6 +82,8 @@ RSpec.describe "Feed comment preview loading" do
         end
         expect(loading[:rows]).to eq(6)
         expect(loading[:queries].size).to eq(1)
+        expect(loading[:context_note_queries].size).to eq(1)
+        expect(loading[:context_note_queries].first).to include('ORDER BY "context_notes"."id" ASC')
         projection = loading[:queries].first.split(" FROM ").first
         expect(projection).to include('"comments"."processed_html"')
         expect(projection).not_to include('"comments".*', '"body_markdown"', '"body_html"', '"semantic_embedding"')
@@ -87,7 +92,7 @@ RSpec.describe "Feed comment preview loading" do
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body.sort_by { |item| item["id"] }).to eq(first_payload.sort_by { |item| item["id"] })
-        expect(cached_loading).to eq(queries: [], rows: 0)
+        expect(cached_loading).to eq(queries: [], rows: 0, context_note_queries: [])
 
         unchanged_card = first_payload.detect { |item| item["id"] == articles.last.id }
         articles.first.update_column(:last_comment_at, 1.minute.from_now)
@@ -98,6 +103,7 @@ RSpec.describe "Feed comment preview loading" do
         expect(response.parsed_body.detect { |item| item["id"] == articles.last.id }).to eq(unchanged_card)
         expect(partial_loading[:rows]).to eq(3)
         expect(partial_loading[:queries].size).to eq(1)
+        expect(partial_loading[:context_note_queries].size).to eq(1)
       end
     end
   end
@@ -131,7 +137,7 @@ RSpec.describe "Feed comment preview loading" do
     loading = capture_comment_loading { get "/" }
 
     expect(response).to have_http_status(:ok)
-    expect(loading).to eq(queries: [], rows: 0)
+    expect(loading).to eq(queries: [], rows: 0, context_note_queries: [])
   end
 
   it "renders the same bounded previews for signed-out visitors" do
@@ -147,6 +153,8 @@ RSpec.describe "Feed comment preview loading" do
     end
     expect(loading[:rows]).to eq(6)
     expect(loading[:queries].size).to eq(1)
+    expect(loading[:context_note_queries].size).to eq(1)
+    expect(loading[:context_note_queries].first).to include('ORDER BY "context_notes"."id" ASC')
   end
 
   it "does not load comments for an article with no comments" do
@@ -176,6 +184,7 @@ RSpec.describe "Feed comment preview loading" do
     expect(card.fetch("top_comments").pluck("comment_id")).to match_array(pinned_comments.last(3).map(&:id))
     expect(loading[:rows]).to eq(9)
     expect(loading[:queries].size).to eq(1)
+    expect(loading[:context_note_queries].size).to eq(1)
   end
 
   it "keeps later-page previews bounded even when fragment caching is enabled" do

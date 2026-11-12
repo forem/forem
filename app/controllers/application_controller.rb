@@ -84,6 +84,13 @@ class ApplicationController < ActionController::Base
   ].freeze
   private_constant :CONTENT_CHANGE_PATHS
 
+  CONTENT_CHANGE_SURROGATE_KEYS = %w[
+    tags
+    onboarding-slideshow
+    main_app_home_page
+  ].freeze
+  private_constant :CONTENT_CHANGE_SURROGATE_KEYS
+
   # @!scope class
   # @!attribute [w] api_action
   #   If set to true, all actions on the class (and subclasses) will be considered "api_actions"
@@ -107,7 +114,7 @@ class ApplicationController < ActionController::Base
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"
-    return if user_signed_in? || Settings::UserExperience.public
+    return if Settings::UserExperience.public || user_signed_in?
 
     if api_action?
       authenticate!
@@ -259,6 +266,8 @@ class ApplicationController < ActionController::Base
   end
 
   def should_redirect_to_subforem?(article)
+    return false if Subforem.disabled_by_env?
+
     subforem_not_same = article.subforem_id.present? && article.subforem_id != RequestStore.store[:subforem_id]
     subforem_not_default_and_no_subforem_id = article.subforem_id.blank? &&
       RequestStore.store[:subforem_id].present? &&
@@ -267,11 +276,13 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_page_if_different_subforem
+    return if Subforem.disabled_by_env?
     return unless @page.subforem_id.present? &&
       RequestStore.store[:subforem_id].present? &&
       @page.subforem_id != RequestStore.store[:subforem_id]
 
-    redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
+    target_url = embedded_view? ? "#{URL.page(@page)}?mode=embed" : URL.page(@page)
+    redirect_to target_url, allow_other_host: true, status: :moved_permanently
   end
 
   def respond_with_request_for_authentication
@@ -349,6 +360,11 @@ class ApplicationController < ActionController::Base
   end
   helper_method :internal_navigation?
 
+  def embedded_view?
+    params[:mode] == "embed"
+  end
+  helper_method :embedded_view?
+
   def feed_style_preference
     Settings::UserExperience.feed_style
   end
@@ -413,8 +429,8 @@ class ApplicationController < ActionController::Base
 
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
-    if user_signed_in? &&
-        cookies[:remember_user_token].blank?
+    if cookies[:remember_user_token].blank? &&
+        user_signed_in?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
@@ -434,7 +450,7 @@ class ApplicationController < ActionController::Base
     auth_header = request.headers["Authorization"]
     return unless auth_header.present? && auth_header.start_with?("Bearer ")
 
-    token = auth_header.split(" ").last
+    token = auth_header.split.last
     payload = decode_auth_token(token)
     return unless payload && payload["user_id"]
 
@@ -450,11 +466,11 @@ class ApplicationController < ActionController::Base
   end
 
   def decode_auth_token(token)
-    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
-  rescue JWT::ExpiredSignature
-    nil
-  rescue StandardError
-    nil
+    native = ForemNative.verify_hs256_jwt(token, Rails.application.secret_key_base, Time.now.to_i)
+    return if native == false
+    return native if native
+
+    legacy_decode_auth_token(token)
   end
 
   def client_geolocation
@@ -490,7 +506,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bust_content_change_caches
-    EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
+    EdgeCache::PurgeByKey.call(CONTENT_CHANGE_SURROGATE_KEYS, fallback_paths: CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 
@@ -535,7 +551,8 @@ class ApplicationController < ActionController::Base
       new_host = host.sub(/^www\./i, "")
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
-    elsif host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") &&
+    elsif RequestStore.store[:root_subforem_domain].present? &&
+        host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") &&
         RequestStore.store[:subforem_id].blank?
       # Check memory-first cache to avoid redirecting custom organization domains
       cache_key = "org_custom_domain_id:#{host}"
@@ -572,7 +589,8 @@ class ApplicationController < ActionController::Base
     is_custom_org_domain = org_id.present? && org_id != "not_found"
     return if is_custom_org_domain
 
-    is_subforem_subdomain = host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
+    is_subforem_subdomain = RequestStore.store[:root_subforem_domain].present? &&
+      host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
     is_registered_subforem = RequestStore.store[:subforem_id].present? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
@@ -591,6 +609,7 @@ class ApplicationController < ActionController::Base
   def set_unauthenticated_session_expiry
     # If the user is unauthenticated, expire their session quickly to save Redis memory.
     # Authenticated users use the default `expire_after` defined in config/initializers/session_store.rb
+    return if request.session_options[:skip]
     return if user_signed_in?
 
     configured_ttl = ApplicationConfig["ANONYMOUS_SESSION_EXPIRY_SECONDS"]
@@ -601,6 +620,14 @@ class ApplicationController < ActionController::Base
                   end
 
     request.session_options[:expire_after] = ttl_seconds
+  end
+
+  def legacy_decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue StandardError
+    nil
   end
 
   def set_session_domain

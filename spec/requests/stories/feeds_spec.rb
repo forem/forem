@@ -15,6 +15,23 @@ RSpec.describe "Stories::Feeds" do
     let(:response_json) { response.parsed_body }
     let(:response_article) { response_json.first }
 
+    it "sets feed and article Surrogate-Key headers on signed-out edge-cached feeds", :aggregate_failures do
+      article.update_column(:score, 25)
+
+      get stories_feed_path
+      expect(response.headers["Surrogate-Key"].split).to include("main_app_home_page", article.record_key)
+
+      get stories_feed_path, params: { timeframe: "week" }
+      expect(response.headers["Surrogate-Key"].split).to include("stories-top-week", article.record_key)
+
+      get stories_feed_path, params: { tag: "alpha", timeframe: "latest" }
+      expect(response.headers["Surrogate-Key"].split).to include("tag-alpha-latest", article.record_key)
+
+      get stories_feed_path, params: { tag: "bad\r\ntag", timeframe: "latest" }
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).not_to include("bad")
+    end
+
     context "with sticky configured home feeds" do
       let!(:feed_config) { create(:feed_config) }
 
@@ -950,9 +967,18 @@ RSpec.describe "Stories::Feeds" do
       # Remove all public reactions
       article.reactions.public_category.destroy_all
 
-      get stories_feed_path
+      reaction_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        reaction_queries << sql if sql.include?('FROM "reactions"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get stories_feed_path
+      end
+
       response_article = response.parsed_body.find { |item| item["id"] == article.id }
       expect(response_article["public_reaction_categories"]).to eq([])
+      expect(reaction_queries).to be_empty
     end
 
     it "does not return stale cached data" do

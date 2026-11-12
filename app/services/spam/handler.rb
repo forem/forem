@@ -537,8 +537,8 @@ module Spam
 
     # NEW/private: Check if article should be reassigned to a different subforem
     def self.check_subforem_reassignment(article)
+      return unless Subforem.multiple_subforems_enabled?
       return unless Ai::FunctionConfig.available?(:subforem_matching)
-      return if ENV["SKIP_SUBFOREM_REASSIGNMENT"] == "yes"
 
       begin
         reassignment_service = SubforemReassignmentService.new(article)
@@ -747,8 +747,9 @@ module Spam
     def self.article_linked_domain_spam?(article)
       html = article.processed_html
       return false if html.blank? || !html.include?("<a")
+      return false if skip_linked_domain_spam_check?(article)
 
-      score = article.user.score
+      score = effective_linked_domain_author_score(article.user)
       return false if score > 50
 
       threshold = linked_domain_spam_net_score_threshold(score)
@@ -757,6 +758,26 @@ module Spam
       return false if domains.empty?
 
       LinkedDomain.where(host: domains).where("net_score <= ?", threshold).exists?
+    end
+
+    # Skips the blind linked-domain net_score override for established, trusted, badged,
+    # or proven authors so legitimate developers linking to shared platforms (e.g. Medium,
+    # Substack, Vercel, Notion) still get evaluated by AI moderation in context.
+    def self.skip_linked_domain_spam_check?(article)
+      user = article.user
+      return true unless low_trust_user?(user)
+      return true if user.score.to_i > 50
+
+      prior_articles = user.articles.published.where.not(id: article.id)
+      return true if prior_articles.exists?(automod_label: HIGH_QUALITY_LABELS)
+      return true if prior_articles.exists?(["score >= ?", Settings::UserExperience.index_minimum_score])
+      return true if prior_articles.where(automod_label: "okay_and_on_topic").where("score > 0").count >= 2
+
+      false
+    end
+
+    def self.effective_linked_domain_author_score(user)
+      [user.score.to_i, user.badge_achievements_count.to_i * 10].max
     end
 
     # The (negative) net_score at or below which a linked domain flags a post
@@ -801,7 +822,8 @@ module Spam
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,
-                         :article_linked_domain_spam?, :extract_all_domains_from, :repeated_title_spam?,
+                         :article_linked_domain_spam?, :skip_linked_domain_spam_check?,
+                         :effective_linked_domain_author_score, :extract_all_domains_from, :repeated_title_spam?,
                          :escalate_flagged_author!, :repeat_auto_flagged_author?,
                          :spam_block!,
                          :recent_auto_flagged_article_count, :mark_as_spam!,

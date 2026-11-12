@@ -69,8 +69,9 @@ module MarkdownProcessor
   # A container module for the allowed attributes in various rendering
   # contexts.
   module AllowedAttributes
-    FEED = %w[alt class colspan data-conversation data-lang em height href id ref rel
-              rowspan size span src start strong title value width].freeze
+    FEED = %w[allow alt class colspan credentialless data-conversation data-lang em height
+              href id ref referrerpolicy rel rowspan sandbox size span src start strong
+              title value width].freeze
 
     PODCAST_SHOW = %w[alt class colspan data-conversation data-lang em height href id ref
                       rel rowspan size span src start strong title value width].freeze

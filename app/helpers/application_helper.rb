@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include StoryCardHelper
+
   LARGE_USERBASE_THRESHOLD = 1000
 
   # @return [Hash<String, String>] the key is the timeframe name and the corresponding is the
@@ -347,12 +349,14 @@ module ApplicationHelper
   end
 
   def root_unless_default_subforem
+    return if Subforem.disabled_by_env?
+
     if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
       # Domain string instead of a record to avoid an uncached query on every logged-out render;
       # URL.url accepts either.
       Subforem.cached_default_domain
     elsif RequestStore.store[:subforem_id].present?
-      Subforem.where(root: true).first
+      Subforem.cached_root_domain
     end
   end
 
@@ -366,7 +370,8 @@ module ApplicationHelper
   end
 
   def is_root_subforem?
-    RequestStore.store[:subforem_id].present? &&
+    !Subforem.disabled_by_env? &&
+      RequestStore.store[:subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 
@@ -426,9 +431,11 @@ module ApplicationHelper
   end
 
   def constructed_full_url(path, subforem_id)
-    return path unless subforem_id.present?
+    return path if Subforem.disabled_by_env? || subforem_id.blank?
 
     domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    return path if domain.blank?
+
     "#{URL.protocol}#{domain}#{path}"
   end
 
@@ -503,35 +510,8 @@ module ApplicationHelper
   end
 
   def render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
-    tag_name =
-      if tag.respond_to?(:accessible_name)
-        tag.accessible_name
-      elsif tag.respond_to?(:name)
-        tag.name
-      else
-        tag.to_s
-      end
-    tag_route =
-      if tag.respond_to?(:name)
-        tag.name
-      else
-        tag.to_s
-      end
-    color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
-    color_faded = Color::CompareHex.new([color]).opacity(0.1)
-    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag_name])
-
-    options = {
-      class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
-      style: "
-        --tag-bg: #{color_faded};
-        --tag-prefix: #{color};
-        --tag-bg-hover: #{color_faded};
-        --tag-prefix-hover: #{color};
-      "
-    }
-
-    link_to(label, tag_path(tag_route) + path_suffix.to_s, options)
+    native_render_tag_link(tag, filled: filled, monochrome: monochrome, classes: classes, path_suffix: path_suffix) ||
+      legacy_render_tag_link(tag, filled: filled, monochrome: monochrome, classes: classes, path_suffix: path_suffix)
   end
 
   def creator_settings_form?
@@ -615,6 +595,83 @@ module ApplicationHelper
 
   private
 
+  def native_render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
+    return unless defined?(ForemNative) && ForemNative.respond_to?(:render_tag_link)
+    return if sub_uri_script_name_present?
+
+    tag_name, tag_route = resolve_tag_name_and_route(tag)
+    bg_hex = if tag.instance_of?(String) && (cached = preloaded_tag_colors[tag])
+               cached[:background]
+             else
+               tag_colors(tag)[:background]
+             end
+    color = bg_hex.presence || Settings::UserExperience.primary_brand_color_hex
+    ForemNative.render_tag_link(
+      tag_name,
+      tag_route,
+      color,
+      filled: filled,
+      monochrome: monochrome,
+      classes: classes,
+      path_suffix: path_suffix.nil? ? "" : path_suffix,
+    )&.html_safe # rubocop:disable Rails/OutputSafety
+  end
+
+  def resolve_tag_name_and_route(tag)
+    return [tag, tag] if tag.instance_of?(String)
+
+    tag_name = if tag.respond_to?(:accessible_name)
+                 tag.accessible_name
+               elsif tag.respond_to?(:name)
+                 tag.name
+               else
+                 tag.to_s
+               end
+    tag_route = tag.respond_to?(:name) ? tag.name : tag.to_s
+    [tag_name, tag_route]
+  end
+
+  def sub_uri_script_name_present?
+    return true if respond_to?(:request) && request && !request.script_name.empty?
+    if respond_to?(:controller) && controller
+      return controller.default_url_options[:script_name].present?
+    end
+
+    respond_to?(:url_options) && url_options[:script_name].present?
+  end
+
+  def legacy_render_tag_link(tag, filled: false, monochrome: false, classes: "", path_suffix: nil)
+    tag_name =
+      if tag.respond_to?(:accessible_name)
+        tag.accessible_name
+      elsif tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
+    tag_route =
+      if tag.respond_to?(:name)
+        tag.name
+      else
+        tag.to_s
+      end
+    color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
+    color_faded = Color::CompareHex.new([color]).opacity(0.1)
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag_name])
+
+    options = {
+      class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
+      style: "
+        --tag-bg: #{color_faded};
+        --tag-prefix: #{color};
+        --tag-bg-hover: #{color_faded};
+        --tag-prefix-hover: #{color};
+      "
+    }
+
+    link_to(label, tag_path(tag_route) + path_suffix.to_s, options)
+  end
+
   # ForemNative mirrors ActiveSupport's default JSONGemEncoder, so only use it while that encoder
   # is in place. It returns nil for Floats, Times, SafeBuffers, and other values needing as_json.
   def native_structured_data_json(data)
@@ -661,4 +718,3 @@ module ApplicationHelper
     tag_names.index_with { |name| found[name] || DEFAULT_TAG_COLORS.dup }
   end
 end
-

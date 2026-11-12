@@ -15,6 +15,8 @@ module Articles
       ".podcastliquidtag img", # PodcastTag
     ].join(", ").freeze
 
+    # Enriches <img> tags in article.processed_html with width, height, and
+    # data-animated attributes and computes article.main_image_height.
     def self.call(article)
       fast_image_headers = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
       store_image_if_appropriate(article)
@@ -24,9 +26,15 @@ module Articles
 
       images.each do |img|
         src = img.attr("src")
-        next unless src
+        next if src.blank?
 
-        image = if URI.parse(src).relative?
+        begin
+          parsed_src = URI.parse(src)
+        rescue URI::InvalidURIError
+          next
+        end
+
+        image = if parsed_src.relative?
                   retrieve_image_from_uploader_store(src)
                 else
                   src
@@ -100,21 +108,25 @@ module Articles
     end
     private_class_method :default_image_height
 
+    # Extracts external images from article.body_markdown, stores them in
+    # MediaStore, and re-renders the article's processed_html when new images are stored.
     def self.store_image_if_appropriate(article)
-      return if ApplicationConfig["AWS_BUCKET_NAME"].blank?
+      bucket = ApplicationConfig["AWS_BUCKET_NAME"]
+      return if bucket.blank?
 
       markdown_text = article.body_markdown.to_s
       return if markdown_text.blank?
 
-      stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
-      filtered_urls = ForemNative.extract_markdown_and_html_image_urls(markdown_text, stored_image_url) ||
+      stored_image_url = "https://#{bucket}.s3.amazonaws.com"
+      raw_urls = ForemNative.extract_markdown_and_html_image_urls(markdown_text, stored_image_url) ||
         legacy_extract_image_urls(markdown_text, stored_image_url)
+      filtered_urls = ArticleImageUploader.normalize_external_image_urls(raw_urls, bucket)
       return if filtered_urls.empty?
 
       images_converted = []
       filtered_urls.each do |url|
         store = MediaStore.where(original_url: url).first_or_create
-        images_converted << store.output_url if store&.created_at&.> 1.minute.ago
+        images_converted << store.output_url if store&.persisted? && store.created_at&.after?(1.minute.ago)
       rescue StandardError => e
         Rails.logger.error("Error storing images: #{e.message}")
       end

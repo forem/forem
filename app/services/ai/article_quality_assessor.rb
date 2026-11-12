@@ -11,9 +11,10 @@ module Ai
   # keeps each request's state small and focused, instead of asking one question over a large
   # state holding every article.
   class ArticleQualityAssessor
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :article_quality_ranking
 
     # Weights for the composite quality score. They sum to 1.
@@ -33,7 +34,7 @@ module Ai
       @articles = articles
       @subforem_id = subforem_id
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self)
     end
@@ -45,7 +46,7 @@ module Ai
     def assess
       return { best: nil, worst: nil } if @articles.empty?
       return { best: @articles.first, worst: @articles.first } if @articles.length == 1
-      return assess_via_jev if @selection.jev?
+      return assess_via_jev if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -81,12 +82,15 @@ module Ai
     end
 
     def jev_client
-      @jev_client ||= Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self)
+      @jev_client ||= @selection.decision_client(wrapper: self)
     end
 
     def jev_state(article)
+      community_state = { description: community_description.presence || "No specific community description provided." }
+      community_state[:content_advisement] = content_advisement_spec if content_advisement_spec.present?
+
       state = {
-        community: { description: community_description.presence || "No specific community description provided." },
+        community: community_state,
         article: {
           title: article.title,
           tags: article.cached_tag_list,
@@ -165,22 +169,13 @@ module Ai
     # default subforem and global settings when needed.
     # @return [String, nil]
     def community_description
-      @community_description ||= begin
-        default_subforem_id = RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
-        subforem_id = @subforem_id || default_subforem_id
-        description = if subforem_id
-                        Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-                          Settings::Community.community_description(subforem_id: subforem_id).presence
-                      end
-        if description.blank? && default_subforem_id && default_subforem_id != subforem_id
-          description =
-            Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id).presence ||
-            Settings::Community.community_description(subforem_id: default_subforem_id).presence
-        end
-        description ||
-          Settings::RateLimit.internal_content_description_spec.presence ||
-          Settings::Community.community_description
-      end
+      @community_description ||= resolve_community_description(@subforem_id)
+    end
+
+    # Resolves the expanded content advisement playbook for the target subforem.
+    # @return [String, nil]
+    def content_advisement_spec
+      @content_advisement_spec ||= resolve_content_advisement_spec(@subforem_id)
     end
 
     # --- Gemini ---
@@ -201,13 +196,23 @@ module Ai
         ARTICLE
       end.join("\n")
 
+      advisement_section = if content_advisement_spec.present?
+                             <<~ADVISEMENT
+
+                               **Community Content Advisement & Quality Playbook:**
+                               #{content_advisement_spec}
+                             ADVISEMENT
+                           else
+                             ""
+                           end
+
       <<~PROMPT
         Analyze the following #{@articles.length} articles and identify which one is the HIGHEST QUALITY and which one is the LOWEST QUALITY.
 
         Your assessment should focus on AUTHENTIC COMMUNITY-ORIENTED CONTENT that demonstrates genuine human connection and value that cannot be easily simulated by AI.
 
         **Community Context:**
-        #{community_description.presence || 'No specific community description provided.'}
+        #{community_description.presence || 'No specific community description provided.'}#{advisement_section}
 
         **Assessment Criteria:**
 

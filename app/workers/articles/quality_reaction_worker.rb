@@ -16,9 +16,11 @@ module Articles
     private
 
     def process_subforem_articles(subforem_id)
+      subforem_scope = subforem_id == Subforem.cached_default_id ? [subforem_id, nil] : subforem_id
+
       # Get articles from the past day with score >= 0 and no existing mascot reactions
       eligible_articles = Article.published
-        .where(subforem_id: subforem_id)
+        .where(subforem_id: subforem_scope)
         .where("published_at > ?", 1.day.ago)
         .where("score >= 0")
         .where(type_of: "full_post")

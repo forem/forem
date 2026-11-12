@@ -102,12 +102,16 @@ class UserDecorator < ApplicationDecorator
   end
 
   def ordered_subforems
+    return [] if Subforem.disabled_by_env?
+
+    all_subforem_ids = Subforem.cached_discoverable_ids
+    return [] if all_subforem_ids.empty?
+
     activity_store = user_activity
     return [] unless activity_store
 
     recent_subforem_ids = activity_store.recent_subforems.compact
     followed_subforem_ids = activity_store.alltime_subforems.compact
-    all_subforem_ids = Subforem.cached_discoverable_ids
     ordered = ForemNative.order_subforem_ids(recent_subforem_ids, followed_subforem_ids, all_subforem_ids)
     return ordered if ordered
 
@@ -137,7 +141,7 @@ class UserDecorator < ApplicationDecorator
     ]
 
     # Add subforem moderator status for current subforem
-    if RequestStore.store[:subforem_id].present?
+    if !Subforem.disabled_by_env? && RequestStore.store[:subforem_id].present?
       current_subforem_domain = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
       if current_subforem_domain
         is_subforem_moderator = any_admin? || moderator_for_subforems.include?(current_subforem_domain)

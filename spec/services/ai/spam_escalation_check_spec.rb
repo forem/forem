@@ -73,11 +73,14 @@ RSpec.describe Ai::SpamEscalationCheck do
       allow(Subforem).to receive(:cached_default_id).and_return(1)
       allow(Settings::RateLimit).to receive(:internal_content_description_spec)
         .with(subforem_id: 1).and_return("DEV default community spec.")
+      allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec)
+        .with(subforem_id: 1).and_return("DEV Playbook details.")
       requests = stub_jev
 
       check.escalate?
 
-      expect(requests.first[:state][:community]).to eq("DEV default community spec.")
+      expect(requests.first[:state][:community]).to include("DEV default community spec.")
+      expect(requests.first[:state][:community]).to include("DEV Playbook details.")
     end
 
     it "does not escalate when every answer is below the threshold" do
@@ -117,6 +120,14 @@ RSpec.describe Ai::SpamEscalationCheck do
                                               wrapper_object_version: described_class::VERSION,
                                               affected_content: article, prompt_token_count: 42)
     end
+  end
+
+  it "escalates via Gemini Decision using GEMINI_API_KEY without needing a TypeSafe key" do
+    stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", nil)
+    enable_gemini_decision_for(:spam_escalation)
+    stub_gemini_decision(offplatform_contact: 0.5)
+
+    expect(check.escalate?).to be(true)
   end
 
   it "does not escalate or call Jev when :spam_escalation is off, even with a TypeSafe key" do

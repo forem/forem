@@ -110,7 +110,7 @@
 
   <% org_actor = FeatureFlag::Actor[@organization] %>
   <%# Read flags uncached so the buttons show the value just saved on any web worker. %>
-  <% org_flags = FeatureFlag.uncached %>
+  <% org_flags = @org_flags || FeatureFlag.uncached %>
 
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
@@ -192,6 +192,27 @@
     <% if verification_enabled %>
       <div class="crayons-notice crayons-notice--success">
         <%= t("views.admin.organizations.org_features.verification.enabled_notice", default: "The verification feature is active for this organization.") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.related_articles.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.related_articles.description") %></p>
+      </div>
+      <% related_articles_enabled = org_flags.enabled?(:org_related_articles, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_related_articles" %>
+        <%= hidden_field_tag :enabled, !related_articles_enabled %>
+        <%= submit_tag related_articles_enabled ? t("views.admin.organizations.org_features.related_articles.disable") : t("views.admin.organizations.org_features.related_articles.enable"),
+                       class: "crayons-btn #{related_articles_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if related_articles_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.related_articles.enabled_notice") %>
       </div>
     <% end %>
   </div>

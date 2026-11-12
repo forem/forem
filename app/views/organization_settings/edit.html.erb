@@ -308,7 +308,7 @@
           </header>
 
           <div class="grid gap-3 mt-4">
-            <% if @organization.pages.any? %>
+            <% if @organization.ordered_pages.any? %>
               <% @organization.ordered_pages.each do |page| %>
                 <% 
                   is_showcase = page == @organization.main_page
@@ -824,11 +824,10 @@
   })();
 </script>
 
-
 <div id="editor-guide-sidecar" class="editor-sidecar hidden">
   <div class="editor-sidecar__header">
     <h3 class="fs-base fw-bold m-0">Editor Guide</h3>
-    <button id="editor-guide-close-btn" class="crayons-btn crayons-btn--icon crayons-btn--ghost" aria-label="Close Editor Guide" title="Close Editor Guide">
+    <button id="editor-guide-close-btn" type="button" class="crayons-btn crayons-btn--icon crayons-btn--ghost" aria-label="Close Editor Guide" title="Close Editor Guide">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="crayons-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
   </div>
@@ -838,23 +837,53 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var guideSidecar = document.getElementById('editor-guide-sidecar');
-    var guideCloseBtn = document.getElementById('editor-guide-close-btn');
+  (function() {
+    function initializeEditorGuideSidecar() {
+      var guideSidecar = document.getElementById('editor-guide-sidecar');
+      var guideCloseBtn = document.getElementById('editor-guide-close-btn');
 
-    if (guideSidecar && guideCloseBtn) {
+      if (guideSidecar && guideCloseBtn && !guideCloseBtn.dataset.editorGuideInitialized) {
+        guideCloseBtn.dataset.editorGuideInitialized = 'true';
+        guideCloseBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          guideSidecar.classList.add('hidden');
+          guideSidecar.classList.remove('editor-sidecar--open');
+        });
+      }
+    }
+
+    if (!window.__editorGuideListenerAttached) {
+      window.__editorGuideListenerAttached = true;
       document.addEventListener('toggle-editor-guide', function() {
-        guideSidecar.classList.toggle('hidden');
-        guideSidecar.classList.toggle('editor-sidecar--open');
+        var guideSidecar = document.getElementById('editor-guide-sidecar');
+        if (guideSidecar) {
+          guideSidecar.classList.toggle('hidden');
+          guideSidecar.classList.toggle('editor-sidecar--open');
+        }
       });
 
-      guideCloseBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        guideSidecar.classList.add('hidden');
-        guideSidecar.classList.remove('editor-sidecar--open');
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && (!e.target || !e.target.closest || !e.target.closest('#overflow-menu'))) {
+          var guideSidecar = document.getElementById('editor-guide-sidecar');
+          if (guideSidecar && !guideSidecar.classList.contains('hidden')) {
+            guideSidecar.classList.add('hidden');
+            guideSidecar.classList.remove('editor-sidecar--open');
+          }
+        }
       });
     }
-  });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeEditorGuideSidecar);
+    } else {
+      initializeEditorGuideSidecar();
+    }
+
+    if (typeof InstantClick !== 'undefined' && !window.__editorGuideInstantClickAttached) {
+      window.__editorGuideInstantClickAttached = true;
+      InstantClick.on('change', initializeEditorGuideSidecar);
+    }
+  })();
 </script>
 
 <script>

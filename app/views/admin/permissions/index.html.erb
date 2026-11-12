@@ -60,7 +60,7 @@
             <div class="flex flex-col items-start gap-3">
               <div class="flex flex-wrap gap-2">
                 <% 
-                fetched_roles = user.roles.pluck(:name, :resource_type, :resource_id)
+                fetched_roles = user.roles.map { |r| [r.name, r.resource_type, r.resource_id] }
                 display_roles = []
                 if fetched_roles.any? { |r| r[0] == 'super_admin' }
                   display_roles = [{ label: "Super Admin", value: "super_admin" }]

@@ -1,0 +1,10 @@
+pt:
+  api:
+    related_articles:
+      invalid_mode: O modo deve ser keyword ou hybrid.
+      invalid_query: "q deve ser um texto não vazio com no máximo %{maximum} caracteres"
+      invalid_terms: "q deve conter entre 1 e %{maximum} buscas separadas por vírgulas"
+      invalid_term: "Cada busca deve conter uma letra ou um número"
+      invalid_interval: "end deve ser igual ou posterior a start"
+      invalid_date: "%{parameter} deve ser uma data válida no formato YYYY-MM-DD"
+      invalid_pagination: "%{parameter} deve ser um número"

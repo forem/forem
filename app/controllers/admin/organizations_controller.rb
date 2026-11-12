@@ -2,7 +2,9 @@ module Admin
   class OrganizationsController < Admin::ApplicationController
     layout "admin"
     PER_PAGE_MAX = 50
-    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification].freeze
+    INDEX_COLUMNS = %i[id name twitter_username github_username url created_at].freeze
+    ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification
+                      org_related_articles].freeze
 
     CREDIT_ACTIONS = {
       add: :add_to,
@@ -10,16 +12,21 @@ module Admin
     }.with_indifferent_access.freeze
 
     def index
-      @organizations = Organization.page(params[:page]).per(PER_PAGE_MAX)
+      @organizations = Organization.select(INDEX_COLUMNS).page(params[:page]).per(PER_PAGE_MAX)
       @organizations = if params[:search].present?
                          @organizations.simple_name_match(params[:search].presence)
                        else
-                         @organizations.order("created_at DESC")
+                         @organizations.order(created_at: :desc)
                        end
+      @organizations = @organizations.without_count
     end
 
     def show
       @organization = Organization.find(params[:id])
+      @org_flags = Flipper.new(FeatureFlag.uncached.adapter).tap do |flipper|
+        flipper.memoize = true
+        flipper.preload(ORG_FEATURES.map(&:to_sym))
+      end
     end
 
     def update_org_credits

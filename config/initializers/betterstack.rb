@@ -24,14 +24,16 @@ if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
     Logtail::Integrations::ActiveRecord,
     Logtail::Integrations::Rails::RackLogger,
     Logtail::Integrations::Rails::ErrorEvent,
+    Logtail::Integrations::Rails::SessionContext,
     Logtail::Integrations::Rack::HTTPContext,
+    Logtail::Integrations::Rack::UserContext,
   ].each { |integration| integration.enabled = false }
-  # Above DebugExceptions, so unhandled exceptions carry the request too (see RequestContext).
+  # Above DebugExceptions, so unhandled exceptions carry the request and user id too (see RequestContext).
   Rails.application.config.middleware.insert_after ActionDispatch::RequestId, Betterstack::RequestContext
-  # Only the user's id: logtail-rack would otherwise send names and emails.
-  Logtail::Integrations::Rack::UserContext.custom_user_hash = lambda do |env|
-    (user = env["warden"]&.user) && { id: user.id }
-  end
+  # Only the user's id (without hydrating User from DB or force-loading the session):
+  # logtail-rack would otherwise call env["warden"].user on every request and send names and emails.
+  Logtail::Integrations::Rack::UserContext.custom_user_hash =
+    Betterstack::RequestContext.method(:user_hash).to_proc
   # Request events (info level) record headers; never send credentials. One event per request.
   Logtail::Integrations::Rack::HTTPEvents.http_header_filters = %w[
     Authorization Proxy-Authorization Cookie Set-Cookie X-CSRF-Token

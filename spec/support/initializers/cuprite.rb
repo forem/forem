@@ -1,5 +1,31 @@
 require "capybara/cuprite"
 
+# In Ferrum 0.14, `Page.frameStoppedLoading` sets `@event` before calling
+# `document_node_id` (`DOM.getDocument`), and `DOM.documentUpdated` (e.g. from
+# InstantClick or injected iframes) invalidates the CDP document root without
+# re-fetching it. When `DOM.requestNode` is called before `DOM.getDocument`,
+# Chrome returns `nodeId: 0` and `DOM.describeNode` raises `Ferrum::NodeNotFoundError`.
+module FerrumRequestNodeDocumentRefresh
+  private
+
+  def handle_response(response)
+    if response.is_a?(Hash) && response["type"] == "object" && response["subtype"] == "node"
+      object_id = response["objectId"]
+      node_id = @page.command("DOM.requestNode", objectId: object_id)["nodeId"]
+      if node_id.zero?
+        @page.document_node_id
+        node_id = @page.command("DOM.requestNode", objectId: object_id)["nodeId"]
+      end
+      description = @page.command("DOM.describeNode", nodeId: node_id)["node"]
+      return Ferrum::Node.new(self, @page.target_id, node_id, description)
+    end
+
+    super
+  end
+end
+
+Ferrum::Frame.prepend(FerrumRequestNodeDocumentRefresh)
+
 REMOTE_CHROME_URL = ENV.fetch("CHROME_URL", nil)
 REMOTE_CHROME_HOST, REMOTE_CHROME_PORT =
   if REMOTE_CHROME_URL

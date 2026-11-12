@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe EdgeCache::BustTag, type: :service do
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:tag) { create(:tag) }
   let(:paths) do
     [
@@ -12,24 +11,16 @@ RSpec.describe EdgeCache::BustTag, type: :service do
   end
 
   before do
-    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-
-    paths.each do |path|
-      allow(cache_bust).to receive(:call).with(path).once
-    end
-
-    allow(tag).to receive(:purge).once
-    allow(Tag).to receive(:purge_supported_tags)
+    tag
+    allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
-  it "busts the cache", :aggregate_failures do
+  it "purges the tag, tags table, and supported_tags surrogate keys in a single call" do
     described_class.call(tag)
 
-    paths.each do |path|
-      expect(cache_bust).to have_received(:call).with(path).once
-    end
-
-    expect(tag).to have_received(:purge).once
-    expect(Tag).to have_received(:purge_supported_tags)
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      [tag.record_key, Tag.table_key, Tag::SUPPORTED_TAGS_SURROGATE_KEY],
+      fallback_paths: paths,
+    ).once
   end
 end

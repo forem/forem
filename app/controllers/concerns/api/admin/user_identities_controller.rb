@@ -3,24 +3,29 @@ module Api
     module UserIdentitiesController
       extend ActiveSupport::Concern
 
-      def index
-        target = User.find(params[:user_id])
-        @identities = target.identities.order(created_at: :asc)
-      end
-
+      IDENTITY_RENDER_COLUMNS = %i[id user_id provider uid created_at].freeze
       BULK_IDENTITY_LIMIT = 1_000
 
+      def index
+        target = User.select(:id).find(params[:user_id])
+        @identities = target.identities.select(IDENTITY_RENDER_COLUMNS).order(created_at: :asc)
+      end
+
       def create
-        target = User.find(params[:user_id])
+        target = params[:username].present? ? User.find(params[:user_id]) : User.select(:id).find(params[:user_id])
         provider = params.require(:provider)
         uid = params.require(:uid).to_s
 
         ensure_enabled_provider!(provider)
 
         already_linked = false
-        ActiveRecord::Base.transaction do
+        if params[:username].present?
+          ActiveRecord::Base.transaction do
+            @identity, already_linked = resolve_identity_for_link(target, provider, uid)
+            update_provider_username(target, provider, params[:username])
+          end
+        else
           @identity, already_linked = resolve_identity_for_link(target, provider, uid)
-          update_provider_username(target, provider, params[:username]) if params[:username].present?
         end
 
         if already_linked
@@ -40,7 +45,7 @@ module Api
 
       def destroy
         target = User.find(params[:user_id])
-        identity = target.identities.find_by(id: params[:id])
+        identity = target.identities.select(:id, :provider, :uid).find_by(id: params[:id])
         unless identity
           raise Api::Admin::ApiError.new(
             :identity_not_found, I18n.t("admin_api.errors.identity_not_found"), status: 404
@@ -51,7 +56,7 @@ module Api
         uid = identity.uid
         identity_id = identity.id
 
-        identity.destroy!
+        identity.delete
         update_provider_username(target, provider, nil)
         target.github_repos.destroy_all if provider.to_sym == :github
 
@@ -118,8 +123,10 @@ module Api
         user_ids = objects.filter_map { |entry| entry[:user_id].presence }
         uids = objects.filter_map { |entry| entry[:uid].presence&.to_s }
         {
-          users: User.where(id: user_ids).index_by(&:id),
-          identities_by_user: Identity.where(provider: provider, user_id: user_ids).index_by(&:user_id),
+          user_ids: User.where(id: user_ids).ids.to_set,
+          identities_by_user: Identity.where(provider: provider, user_id: user_ids)
+            .select(:id, :user_id, :uid)
+            .index_by(&:user_id),
           taken_uids: Identity.where(provider: provider, uid: uids).pluck(:uid).to_set
         }
       end
@@ -136,41 +143,42 @@ module Api
         uid = entry[:uid].to_s
         return { "user_id" => user_id, "status" => "invalid" } if user_id.blank? || uid.blank?
 
-        target = preload[:users][user_id.to_i]
-        return { "user_id" => user_id.to_i, "status" => "not_found" } unless target
+        resolved_user_id = user_id.to_i
+        return { "user_id" => resolved_user_id, "status" => "not_found" } unless
+          preload[:user_ids].include?(resolved_user_id)
 
-        link_preloaded_identity(provider, target, uid, preload)
+        link_preloaded_identity(provider, resolved_user_id, uid, preload)
       end
 
-      def link_preloaded_identity(provider, target, uid, preload)
-        existing = preload[:identities_by_user][target.id]
+      def link_preloaded_identity(provider, user_id, uid, preload)
+        existing = preload[:identities_by_user][user_id]
         if existing
-          return { "user_id" => target.id, "identity_id" => existing.id, "status" => "already_linked" } if
+          return { "user_id" => user_id, "identity_id" => existing.id, "status" => "already_linked" } if
             existing.uid == uid
 
-          return { "user_id" => target.id, "status" => "conflict",
+          return { "user_id" => user_id, "status" => "conflict",
                    "error_code" => "user_already_has_identity_for_provider" }
         end
 
         if preload[:taken_uids].include?(uid)
-          return { "user_id" => target.id, "status" => "conflict", "error_code" => "identity_uid_taken" }
+          return { "user_id" => user_id, "status" => "conflict", "error_code" => "identity_uid_taken" }
         end
 
-        identity = Identity.create!(user: target, provider: provider, uid: uid)
+        identity = insert_verified_identity!(user_id: user_id, provider: provider, uid: uid)
         preload[:taken_uids] << uid
-        preload[:identities_by_user][target.id] = identity
-        { "user_id" => target.id, "identity_id" => identity.id, "status" => "created" }
+        preload[:identities_by_user][user_id] = identity
+        { "user_id" => user_id, "identity_id" => identity.id, "status" => "created" }
       rescue ActiveRecord::RecordNotUnique
-        { "user_id" => target.id, "status" => "conflict", "error_code" => "identity_uid_taken" }
+        { "user_id" => user_id, "status" => "conflict", "error_code" => "identity_uid_taken" }
       end
 
       # Returns [identity, already_linked]. Raises Api::Admin::ApiError for the
       # strict-fail-closed conflict states (user has different uid for provider,
       # or uid already linked to another user). Catches RecordNotUnique from
-      # the create! to handle the race window between the exists? pre-check
+      # the insert to handle the race window between the exists? pre-check
       # and the insert.
       def resolve_identity_for_link(target, provider, uid)
-        existing_for_user = target.identities.find_by(provider: provider)
+        existing_for_user = target.identities.select(IDENTITY_RENDER_COLUMNS).find_by(provider: provider)
         if existing_for_user
           return [existing_for_user, true] if existing_for_user.uid == uid
 
@@ -189,7 +197,7 @@ module Api
           )
         end
 
-        [Identity.create!(user: target, provider: provider, uid: uid), false]
+        [insert_verified_identity!(user_id: target.id, provider: provider, uid: uid), false]
       rescue ActiveRecord::RecordNotUnique
         raise Api::Admin::ApiError.new(
           :identity_uid_taken,
@@ -198,14 +206,32 @@ module Api
         )
       end
 
+      # Skips ActiveRecord uniqueness queries on (provider, uid) and
+      # (provider, user_id) because callers have already checked both and
+      # unique DB indexes + rescue RecordNotUnique enforce them atomically.
+      def insert_verified_identity!(user_id:, provider:, uid:)
+        identity = Identity.new(user_id: user_id, provider: provider, uid: uid)
+        if uid.blank?
+          identity.validate
+          raise ActiveRecord::RecordInvalid, identity
+        end
+
+        identity.save!(validate: false)
+        identity
+      end
+
       # Uses `update` (not `update_column`) so the User model's
       # `before_validation clean_provider_username` and uniqueness check on
       # `<provider>_username` run, matching the existing admin UI's
-      # `remove_identity` action.
+      # `remove_identity` action. Short-circuits when the normalized value is
+      # unchanged to avoid a no-op User save, role validations, and Algolia sync.
       def update_provider_username(user, provider, username)
         field = "#{provider}_username"
         return unless user.respond_to?(:"#{field}=")
-        return if user.update(field => username)
+
+        cleaned_username = username.presence
+        return if user.public_send(field) == cleaned_username
+        return if user.update(field => cleaned_username)
 
         raise ActiveRecord::RecordInvalid, user
       end

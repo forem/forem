@@ -6,7 +6,7 @@ module Admin
         error_message = I18n.t("views.admin.organizations.delete.role_notice")
       end
 
-      if organization.credits.length.positive?
+      if organization.credits_count.positive?
         error_message = "#{error_message} #{I18n.t('views.admin.organizations.delete.credits_notice')}"
       end
 

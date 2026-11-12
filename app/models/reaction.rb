@@ -9,7 +9,9 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
+                    unless model.destroyed_by_reactable_association?
+                      ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
+                    end
                   }
   counter_culture :user
 
@@ -60,15 +62,19 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
-  before_destroy :bust_reactable_cache_without_delay
-  before_destroy :bust_reaction_counts_cache
+  before_destroy :bust_reactable_cache_without_delay, unless: :destroyed_by_reactable_association?
+  before_destroy :bust_reaction_counts_cache, unless: :destroyed_by_reactable_association?
   before_destroy :update_reactable, unless: :destroyed_by_association
-  after_commit :async_bust
+  after_commit :async_bust, unless: :destroyed_by_reactable_association?
   after_commit :bust_reactable_cache, :update_reactable, :bust_reaction_counts_cache, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
   after_commit :check_for_reaction_ring, on: :create
-  after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
+  after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?,
+                                                 unless: :destroyed_by_reactable_association?
   after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
+  after_destroy_commit :enqueue_dependent_embeds_update,
+                       if: :reactable_is_article?,
+                       unless: :destroyed_by_reactable_association?
   after_commit :enqueue_user_reading_list_activity_update,
                on: %i[create destroy update], if: :reading_list_article_reaction?
 
@@ -199,7 +205,11 @@ class Reaction < ApplicationRecord
   delegate :negative?, :positive?, :visible_to_public?, to: :reaction_category, allow_nil: true
 
   def reaction_category
-    ReactionCategory[category.to_sym]
+    ReactionCategory[category.to_sym] if category
+  end
+
+  def destroyed_by_reactable_association?
+    destroyed_by_association&.options&.dig(:as) == :reactable
   end
 
   def readable_date
@@ -264,7 +274,7 @@ class Reaction < ApplicationRecord
 
   def reading_list_article_reaction?
     return false unless reactable_is_article?
-    return true if destroyed?
+    return category == "readinglist" if destroyed?
     return true if saved_change_to_category?(to: "readinglist") || saved_change_to_category?(from: "readinglist")
 
     category == "readinglist" && saved_change_to_status?
@@ -276,6 +286,13 @@ class Reaction < ApplicationRecord
 
   def enqueue_update_user_interest_embedding
     UpdateUserInterestEmbeddingWorker.perform_async(user_id, reactable_id, 0.2)
+  end
+
+  def enqueue_dependent_embeds_update
+    Articles::UpdateDependentEmbedsWorker.schedule_for_engagement(reactable_id) if visible_to_public?
+    return unless LiquidEmbedReference.score_feed_target_for_article?(reactable_id)
+
+    Articles::ScoreCalcWorker.perform_async(reactable_id)
   end
 
   def enqueue_article_activity_update
@@ -301,7 +318,7 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheWorker.new.perform(id)
+    Reactions::BustReactableCacheWorker.new.perform(id, destroying: true)
   end
 
   def bust_reaction_counts_cache
@@ -320,9 +337,10 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return false if user&.any_admin? || user&.id == Settings::General.mascot_user_id
+    return false unless negative? && user
+    return false if user.id == Settings::General.mascot_user_id || user.any_admin?
 
-    negative? && !user.trusted?
+    !user.trusted?
   end
 
   def notify_slack_channel_about_vomit_reaction
