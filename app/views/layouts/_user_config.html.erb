@@ -10,10 +10,10 @@
 </div>
 <div id="user-prestyle"></div>
 <%# Inlined so the color mode is resolved before first paint. %>
-<script>
+<script data-no-instant>
   <%= Rails.application.assets["utilities/applyColorMode.js"].to_s.html_safe %>
 </script>
-<script>
+<script data-no-instant>
   try {
     const bodyClass = localStorage.getItem('config_body_class');
     const userString = localStorage.getItem('current_user');
@@ -26,9 +26,9 @@
 
       if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
         const link = document.createElement('link');
-        link.as = 'font'
-        link.rel = 'preload'
-        crossorigin = 'anonymous'
+        link.as = 'font';
+        link.rel = 'preload';
+        link.crossOrigin = 'anonymous';
         link.href = '<%= asset_path "OpenDyslexic-Regular.otf" %>';
         document.head.appendChild(link);
       }
