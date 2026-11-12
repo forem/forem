@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_08_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_12_120200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1406,10 +1406,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_08_160000) do
     t.jsonb "template_data", default: {}
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "user_id"
     t.index ["organization_id"], name: "index_pages_on_organization_id"
     t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
     t.index ["subforem_id"], name: "index_pages_on_subforem_id"
+    t.index ["user_id"], name: "index_pages_on_user_id"
   end
 
   create_table "pghero_query_stats", force: :cascade do |t|
@@ -2376,6 +2378,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_08_160000) do
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
   add_foreign_key "pages", "organizations", on_delete: :nullify
+  add_foreign_key "pages", "users", on_delete: :cascade
   add_foreign_key "podcast_episode_appearances", "podcast_episodes"
   add_foreign_key "podcast_episode_appearances", "users"
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
