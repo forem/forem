@@ -1,0 +1,11 @@
+<% title t("views.dashboard.embed_pages.edit_heading") %>
+
+<div id="index-container">
+  <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
+    <%= render("dashboards/header_and_action", page_title: t("views.dashboard.embed_pages.edit_heading"), dashboard_state: "embed_pages") %>
+
+    <div class="crayons-layout__content mb-5" id="user-dashboard">
+      <%= render "form", url: dashboard_embed_page_path(@page), method: :patch, is_new: false %>
+    </div>
+  </main>
+</div>
