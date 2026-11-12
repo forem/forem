@@ -211,7 +211,7 @@ module Middlewares
       req = ActionDispatch::Request.new(env)
       raw_params = req.parameters
       page_view_params = raw_params.slice(
-        "article_id", "viewable_type", "viewable_id", "referrer", "user_agent"
+        "article_id", "viewable_type", "viewable_id", "referrer", "user_agent", "utm_source"
       )
 
       viewable_type = page_view_params[:viewable_type]

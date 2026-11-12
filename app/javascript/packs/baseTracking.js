@@ -176,6 +176,12 @@ function trackCustomImpressions() {
         referrer: currentReferrer,
         user_agent: navigator.userAgent,
       };
+      // AI assistants often drop the referrer but tag links with utm_source.
+      // Fastly strips utm_source before the origin, so send it from here.
+      const utmSource = new URLSearchParams(window.location.search).get('utm_source');
+      if (utmSource) {
+        dataBody.utm_source = utmSource;
+      }
       if (viewableType && viewableId) {
         dataBody.viewable_type = viewableType;
         dataBody.viewable_id = viewableId;

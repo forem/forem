@@ -23,6 +23,7 @@ module Articles
 
     def perform(create_params)
       create_params = sanitize_params(create_params.with_indifferent_access)
+      attribute_ai_assistant_referral(create_params)
       return if bot_user_agent?(create_params[:user_agent])
       return unless valid_target?(create_params)
 
@@ -39,6 +40,16 @@ module Articles
     end
 
     private
+
+    # utm_source is not a page_views column. When the browser sent no
+    # referrer, use it only to name a known AI assistant as the referrer.
+    def attribute_ai_assistant_referral(create_params)
+      utm_source = create_params.delete(:utm_source)
+      return if create_params[:referrer].present?
+
+      ai_referrer = AiAssistantReferral.referrer_for(utm_source)
+      create_params[:referrer] = ai_referrer if ai_referrer
+    end
 
     def sanitize_params(create_params)
       has_viewable_id = create_params[:viewable_id].present?

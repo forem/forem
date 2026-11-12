@@ -16,7 +16,8 @@ class PageViewsController < ApplicationMetalController
   ALLOWED_VIEWABLE_TYPES = %w[User Organization Tag Page PodcastEpisode FeedConfig].freeze
 
   def create
-    page_view_create_params = params.slice(:article_id, :viewable_type, :viewable_id, :referrer, :user_agent)
+    page_view_create_params = params.slice(:article_id, :viewable_type, :viewable_id, :referrer, :user_agent,
+                                           :utm_source)
 
     if page_view_create_params[:viewable_type].blank? || page_view_create_params[:viewable_id].blank?
       page_view_create_params.delete(:viewable_type)

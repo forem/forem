@@ -41,6 +41,25 @@ RSpec.describe "PageViews" do
         expect(PageView.last.user_agent).to eq("test")
       end
 
+      it "attributes a referrer-less view to an AI assistant from utm_source", :aggregate_failures do
+        page_views_post(article_id: article.id, referrer: "", utm_source: "chatgpt.com")
+
+        expect(PageView.last.referrer).to eq("https://chatgpt.com/")
+        expect(PageView.last.domain).to eq("chatgpt.com")
+      end
+
+      it "keeps the browser referrer when one is present" do
+        page_views_post(article_id: article.id, referrer: "https://www.google.com/", utm_source: "chatgpt.com")
+
+        expect(PageView.last.referrer).to eq("https://www.google.com/")
+      end
+
+      it "ignores a utm_source that is not a known AI assistant" do
+        page_views_post(article_id: article.id, referrer: "", utm_source: "evil.example.com")
+
+        expect(PageView.last.referrer).to be_blank
+      end
+
       it "sends viewable attributes and region" do
         user = create(:user)
 
