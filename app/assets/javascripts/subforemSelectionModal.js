@@ -6,7 +6,8 @@
 (function() {
   // Subforem Selection Modal functionality
   const modal = document.getElementById('subforem-selection-modal');
-  if (!modal) return;
+  if (!modal || modal.dataset.initialized === 'true') return;
+  modal.dataset.initialized = 'true';
 
   const backdrop = modal.querySelector('.subforem-modal__backdrop');
   const closeButton = modal.querySelector('.subforem-modal__close');
