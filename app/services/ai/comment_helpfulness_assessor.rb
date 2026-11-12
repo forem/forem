@@ -27,7 +27,7 @@ module Ai
       @comment = comment
       @welcome_thread = welcome_thread
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: comment,
                                 affected_user: comment.user)
@@ -38,7 +38,7 @@ module Ai
     #
     # @return [Boolean] true if the comment is helpful/contextual, false otherwise.
     def helpful?
-      return helpful_via_jev? if @selection.jev?
+      return helpful_via_jev? if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -54,8 +54,8 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def helpful_via_jev?
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @comment,
-                                        affected_user: @comment.user)
+      client = @selection.decision_client(wrapper: self, affected_content: @comment,
+                                          affected_user: @comment.user)
       helpful_from_jev?(client.evaluate(state: jev_state, questions: jev_questions))
     end
 

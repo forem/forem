@@ -9,12 +9,6 @@ module Users
       legacy_keys = EdgeCache::LegacySlugRedirectKeys.call(user.username, exclude_user_id: user.id)
       keys = legacy_keys.any? ? [user.profile_identity_record_key, *legacy_keys] : user.profile_identity_record_key
       EdgeCache::PurgeByKey.call(keys, fallback_paths: user.profile_cache_bust_paths)
-      cutover_paths = [
-        ("/#{user.old_username}" if user.old_username.present?),
-        ("/#{user.old_old_username}" if user.old_old_username.present?),
-        (user.path if legacy_keys.any?),
-      ].compact
-      EdgeCache::CutoverUrlBust.call(cutover_paths) if cutover_paths.any?
     end
   end
 end

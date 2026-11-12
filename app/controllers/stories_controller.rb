@@ -61,7 +61,7 @@ class StoriesController < ApplicationController
         RequestStore.store[:subforem_id] = previous_subforem_id
       end
     elsif FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) &&
-          (@org_page = @organization.pages.find_by(slug: "#{@organization.slug}/#{params[:slug]}"))
+        (@org_page = @organization.pages.non_embed_html.find_by(slug: "#{@organization.slug}/#{params[:slug]}"))
       params[:page_suffix] = params[:slug]
       handle_organization_index
       return if performed?
@@ -85,7 +85,7 @@ class StoriesController < ApplicationController
     elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
-    elsif (@page = Page.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
+    elsif (@page = Page.non_embed_html.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
       handle_page_display
     else
       not_found
@@ -169,7 +169,7 @@ class StoriesController < ApplicationController
       handle_user_index
     elsif (@organization = Organization.find_by(slug: params[:username]))
       handle_organization_index
-    elsif (@page = Page.find_by(slug: params[:username], is_top_level_path: true))
+    elsif (@page = Page.non_embed_html.find_by(slug: params[:username], is_top_level_path: true))
       if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
         handle_page_display
       else
@@ -183,6 +183,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_page_display
+    not_found if @page.embed_html?
     set_surrogate_key_header "show-page-#{@page.slug}", @page.organization&.record_key
 
     redirect_page_if_different_subforem
@@ -263,7 +264,7 @@ class StoriesController < ApplicationController
     @org_page = nil
     if params[:page_suffix].present?
       if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
-        @org_page = @organization.pages.find_by(slug: "#{@organization.slug}/#{params[:page_suffix]}")
+        @org_page = @organization.pages.non_embed_html.find_by(slug: "#{@organization.slug}/#{params[:page_suffix]}")
       end
       not_found if @org_page.nil?
     elsif has_readme && params[:mode] != "all-posts"
