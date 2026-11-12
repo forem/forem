@@ -133,6 +133,7 @@ Rails.application.routes.draw do
         end
 
         resources :organizations, only: %i[index create update destroy]
+        get "/organizations/:organization_id/article_analytics", to: "organization_article_analytics#index"
 
         scope("/users/:id") do
           constraints(role: /suspend|suspended|limited|spam|trusted|base_subscriber/) do

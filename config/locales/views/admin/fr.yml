@@ -667,6 +667,12 @@ fr:
             enable: Activer Articles Associés
             disable: Désactiver Articles Associés
             enabled_notice: L'API des articles associés est activée pour cette organisation.
+          article_analytics:
+            label: API Analytique des Articles
+            description: Lorsque activé, les membres de cette organisation peuvent exporter les performances de leurs propres articles via l'API analytique.
+            enable: Activer Analytique des Articles
+            disable: Désactiver Analytique des Articles
+            enabled_notice: L'API analytique des articles est activée pour cette organisation.
         bulk_add_users:
           heading: Ajouter des membres en bloc
           description: "Ajoutez plusieurs utilisateurs à cette organisation en une seule fois. Entrez une liste de noms d'utilisateur séparés par des virgules (avec ou sans @ et espaces). Les membres existants seront ignorés."

@@ -575,6 +575,12 @@ pt:
             enable: Habilitar Artigos Relacionados
             disable: Desabilitar Artigos Relacionados
             enabled_notice: A API de artigos relacionados está habilitada para esta organização.
+          article_analytics:
+            label: API de Análise de Artigos
+            description: Quando habilitado, os membros desta organização podem exportar o desempenho dos seus próprios artigos através da API de análise.
+            enable: Habilitar Análise de Artigos
+            disable: Desabilitar Análise de Artigos
+            enabled_notice: A API de análise de artigos está habilitada para esta organização.
         bulk_add_users:
           heading: Adicionar Membros em Massa
           description: "Adicione múltiplos usuários a esta organização de uma só vez. Digite uma lista de nomes de usuário separados por vírgula (com ou sem @ e espaços). Membros existentes serão ignorados."
