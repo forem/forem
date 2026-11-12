@@ -1,0 +1,50 @@
+app/controllers/organization_embeds_controller.rb
+  h_f968154a99632d 98-99,101-104
+app/controllers/user_embed_pages_controller.rb
+  h_f968154a99632d 72,85
+app/javascript/utilities/__tests__/pageEmbedFullscreen.test.js
+  h_f968154a99632d 23,28,31-34,111-157
+app/javascript/utilities/pageEmbedFullscreen.js
+  h_f968154a99632d 3-12,21,26-67,83-84,119,121-128,137,156-157,164
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 79,87,177,284-285,287-290
+app/models/page.rb
+  h_f968154a99632d 35,97,172-179
+app/models/user.rb
+  h_f968154a99632d 319,1371-1376,1387-1400
+app/services/edge_cache/bust_page.rb
+  h_f968154a99632d 14
+app/views/organization_pages/_embed_form.html.erb
+  h_f968154a99632d 53
+app/views/user_embed_pages/_form.html.erb
+  h_f968154a99632d 51
+app/workers/pages/bust_cache_worker.rb
+  h_f968154a99632d 7-12
+config/locales/models/en.yml
+  h_f968154a99632d 122
+config/locales/models/fr.yml
+  h_f968154a99632d 121
+config/locales/models/pt.yml
+  h_f968154a99632d 121
+spec/factories/pages.rb
+  h_f968154a99632d 4-13,15
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 347,357,360-385
+spec/requests/user_embed_pages_spec.rb
+  h_f968154a99632d 109-124,265-266,340,343-348,368-378,380,385,390-393,396
+spec/services/edge_cache/bust_page_spec.rb
+  h_f968154a99632d 10,52-67
+spec/workers/pages/bust_cache_worker_spec.rb
+  h_f968154a99632d 34-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e6868def5d7dfb3947ced911d8567b821e181549",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
