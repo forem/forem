@@ -218,7 +218,7 @@ module Ai
       return false if existing_description.blank? || new_description.blank?
 
       selection = Ai::FunctionConfig.selection_for(SIMILARITY_FUNCTION_KEY)
-      return similar_meaning_via_jev?(selection, existing_description, new_description) if selection.jev?
+      return similar_meaning_via_jev?(selection, existing_description, new_description) if selection.decision?
 
       # Use AI to determine if the descriptions have similar meaning
       prompt = build_similarity_prompt(existing_description, new_description)
@@ -240,7 +240,7 @@ module Ai
         "for the same kind of content?",
         no: { includes: "Related but distinct topics, such as a language and one of its frameworks." },
       )
-      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self)
+      client = selection.decision_client(wrapper: self)
       client.evaluate(state: state, questions: { same_topic: question }).noul(:same_topic) >= SIMILAR_THRESHOLD
     rescue StandardError => e
       Rails.logger.warn("Jev similarity check failed, falling back to word overlap: #{e.message}")

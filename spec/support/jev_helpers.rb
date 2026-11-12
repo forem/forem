@@ -1,9 +1,16 @@
-# Helpers for exercising the TypeSafe Jev path of AI functions (see Ai::FunctionConfig).
+# Helpers for exercising the structured decision (TypeSafe Jev / Gemini Decision) path of AI functions
+# (see Ai::FunctionConfig).
 module JevHelpers
   # Selects Jev for the given AI functions and provides a fake TypeSafe key.
   def enable_jev_for(*function_keys)
     stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", "test-typesafe-key")
     Settings::AiFunctions.set_global_function_models(function_keys.to_h { |key| [key.to_s, "jev"] })
+  end
+
+  # Selects Gemini Decision 1 for the given AI functions and provides a fake Gemini key.
+  def enable_gemini_decision_for(*function_keys)
+    stub_const("Ai::Base::DEFAULT_KEY", "test-gemini-key")
+    Settings::AiFunctions.set_global_function_models(function_keys.to_h { |key| [key.to_s, "gemini_decision"] })
   end
 
   # Replaces Ai::TypeSafe::Client with a fake that answers every question actually sent.
@@ -16,22 +23,31 @@ module JevHelpers
   # @yieldparam state [Object] With a block, answers are computed per request from its state.
   # @return [Array<Hash>] The requests sent, each with :state and :questions.
   def stub_jev(answers = {}, **keyword_answers, &per_request)
+    stub_decision_client(Ai::TypeSafe::Client, "jev-1.13.0", answers, **keyword_answers, &per_request)
+  end
+
+  # Replaces Ai::GeminiDecision::Client with a fake that answers every question actually sent.
+  def stub_gemini_decision(answers = {}, **keyword_answers, &per_request)
+    stub_decision_client(Ai::GeminiDecision::Client, "gemini-decision-1", answers, **keyword_answers, &per_request)
+  end
+
+  private
+
+  def stub_decision_client(client_class, model_name, answers = {}, **keyword_answers)
     fixed_answers = answers.merge(keyword_answers)
     requests = []
-    client = instance_double(Ai::TypeSafe::Client)
-    allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+    client = instance_double(client_class)
+    allow(client_class).to receive(:new).and_return(client)
     allow(client).to receive(:evaluate) do |state:, questions:|
       requests << { state: state, questions: questions }
-      request_answers = per_request ? yield(state) : fixed_answers
+      request_answers = block_given? ? yield(state) : fixed_answers
       Ai::TypeSafe::Result.new(
-        "model" => "jev-1.13.0",
+        "model" => model_name,
         "answers" => fake_jev_answers(questions, request_answers.transform_keys(&:to_s)),
       )
     end
     requests
   end
-
-  private
 
   def fake_jev_answers(questions, answers)
     questions.to_h do |id, question|

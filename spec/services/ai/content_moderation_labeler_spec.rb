@@ -488,4 +488,45 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       end
     end
   end
+
+  describe "#evaluate with Gemini Decision selected" do
+    before { enable_gemini_decision_for(:content_moderation) }
+
+    it "composes moderation label and compellingness score from Gemini Decision answers" do
+      stub_gemini_decision(
+        on_topic: 0.9,
+        quality: 3.5,
+        originality: 3.0,
+        personal_voice: 3.0,
+        discussion_potential: 3.0,
+      )
+
+      result = described_class.new(article).evaluate
+      expect(result[:label]).to eq("great_and_on_topic")
+      expect(result[:compellingness_score]).to be > 0.8
+    end
+
+    it "falls back to the built-in generative Gemini model rather than gemini-decision-1 when Decision API fails" do
+      decision_client = instance_double(Ai::GeminiDecision::Client)
+      allow(Ai::GeminiDecision::Client).to receive(:new).and_return(decision_client)
+      allow(decision_client).to receive(:evaluate).and_raise(Ai::GeminiDecision::Client::Error, "overloaded")
+      allow(ai_client).to receive(:call)
+        .and_return('{"moderation_label": "very_good_and_on_topic", "compellingness_score": 0.8}')
+
+      expect(described_class.new(article).evaluate)
+        .to eq(label: "very_good_and_on_topic", compellingness_score: 0.8)
+      expect(Ai::Base).to have_received(:new).with(hash_including(model: Ai::Base::DEFAULT_MODEL))
+    end
+
+    it "re-raises Ai::Base::ProhibitedContentError without falling back to generative Gemini" do
+      decision_client = instance_double(Ai::GeminiDecision::Client)
+      allow(Ai::GeminiDecision::Client).to receive(:new).and_return(decision_client)
+      allow(decision_client).to receive(:evaluate).and_raise(Ai::Base::ProhibitedContentError, "prohibited_content")
+      allow(ai_client).to receive(:call)
+
+      expect { described_class.new(article).evaluate }.to raise_error(Ai::Base::ProhibitedContentError)
+      expect(Ai::Base).not_to have_received(:new)
+      expect(ai_client).not_to have_received(:call)
+    end
+  end
 end

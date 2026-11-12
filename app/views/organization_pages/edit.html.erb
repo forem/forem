@@ -1,10 +1,15 @@
-<% title t("views.organization_settings.pages.edit_page") %>
+<% page_heading = @page.embed_html? ? t("views.organization_settings.pages.edit_embed_page") : t("views.organization_settings.pages.edit_page") %>
+<% title page_heading %>
 
 <div class="crayons-layout crayons-layout--limited-l pt-7">
   <div class="flex items-center justify-between mb-6">
-    <h1 class="crayons-title"><%= t("views.organization_settings.pages.edit_page") %></h1>
-    <%= link_to "&larr; Back to pages".html_safe, organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
+    <h1 class="crayons-title"><%= page_heading %></h1>
+    <%= link_to "&larr; #{t("views.organization_settings.pages.back_to_pages")}".html_safe, organization_pages_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
   </div>
 
-  <%= render "form", url: update_organization_page_path(@organization.slug, @page), method: :patch, is_new: false %>
+  <% if @page.embed_html? %>
+    <%= render "embed_form", url: update_organization_page_path(@organization.slug, @page), method: :patch, is_new: false %>
+  <% else %>
+    <%= render "form", url: update_organization_page_path(@organization.slug, @page), method: :patch, is_new: false %>
+  <% end %>
 </div>

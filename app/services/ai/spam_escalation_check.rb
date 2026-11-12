@@ -53,10 +53,10 @@ module Ai
     # @return [Boolean] true if the content should go to the full spam check
     def escalate?
       selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return false unless selection.jev?
+      return false unless selection.decision?
 
-      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: @content,
-                                        affected_user: @content.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = selection.decision_client(wrapper: self, affected_content: @content,
+                                         affected_user: @content.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: { content: @text, community: community_description }, questions: QUESTIONS)
       QUESTIONS.keys.any? { |id| result.noul(id) >= threshold }
     rescue StandardError => e

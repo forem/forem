@@ -33,9 +33,40 @@ module Follows
       followed_pairs = Follow.unblocked.where(follower_type: "User", followable_type: "User")
         .where(%i[follower_id followable_id] => misses.map(&:last))
         .pluck(:follower_id, :followable_id).to_set
-      results = misses.to_h { |key, pair| [key, followed_pairs.include?(pair)] }
+      results = misses.to_h.transform_values { |pair| followed_pairs.include?(pair) }
       Rails.cache.write_multi(results, expires_in: CACHE_EXPIRY)
       prefetched.merge(results)
+    end
+
+    # Computes every non-User follow check missing from +prefetched+ in one target-id check and one
+    # follows query (instead of a find plus a COUNT per id), caches the results, and returns them
+    # merged into +prefetched+. Nonexistent followable ids are skipped so .call still raises for them.
+    def self.fill_followable_misses(follower, followable_type, followable_ids, prefetched)
+      return prefetched unless follower
+
+      misses = followable_ids.uniq.each_with_object({}) do |id, acc|
+        key = new(follower, followable_type, id).cache_key
+        acc[key] = id.to_i unless prefetched.key?(key)
+      end
+      return prefetched if misses.empty?
+
+      klass = followable_klass(followable_type)
+      existing_ids = klass.where(id: misses.values).ids.to_set
+      misses.select! { |_, id| existing_ids.include?(id) }
+      return prefetched if misses.empty?
+
+      followed_ids = Follow.unblocked
+        .where(follower_type: "User", follower_id: follower.id,
+               followable_type: klass.base_class.name, followable_id: misses.values)
+        .pluck(:followable_id).to_set
+      results = misses.transform_values { |id| followed_ids.include?(id) }
+      Rails.cache.write_multi(results, expires_in: CACHE_EXPIRY)
+      prefetched.merge(results)
+    end
+
+    # Resolves the ActiveRecord model class for the given +followable_type+ string.
+    def self.followable_klass(followable_type)
+      %w[Tag Organization Podcast Subforem].include?(followable_type) ? followable_type.constantize : User
     end
 
     def initialize(follower, followable_type, followable_id)
@@ -82,13 +113,9 @@ module Follows
       follower.following?(followable.select(:id).find(followable_id))
     end
 
+    # Returns the target followable model class for this instance's +followable_type+.
     def followable
-      case followable_type
-      when "Tag", "Organization", "Podcast", "Subforem"
-        followable_type.constantize
-      else
-        User
-      end
+      self.class.followable_klass(followable_type)
     end
   end
 end
