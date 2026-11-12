@@ -29,6 +29,10 @@
     display: block;
     width: 100%;
     border: 0;
+    // Article body styles add margin/radius to iframes; inside the card that
+    // shows up as a gap between the embed and its footer.
+    margin: 0 !important;
+    border-radius: 0 !important;
   }
 }
 
