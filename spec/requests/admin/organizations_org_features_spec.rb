@@ -10,6 +10,7 @@ RSpec.describe "/admin/content_manager/organizations org features" do
     FeatureFlag.add(:org_lead_forms)
     FeatureFlag.add(:org_verification)
     FeatureFlag.add(:org_related_articles)
+    FeatureFlag.add(:org_article_analytics)
   end
 
   after do
@@ -17,6 +18,7 @@ RSpec.describe "/admin/content_manager/organizations org features" do
     FeatureFlag.disable(:org_lead_forms)
     FeatureFlag.disable(:org_verification)
     FeatureFlag.disable(:org_related_articles)
+    FeatureFlag.disable(:org_article_analytics)
   end
 
   describe "PATCH /admin/organizations/:id/update_org_feature" do
@@ -115,6 +117,33 @@ RSpec.describe "/admin/content_manager/organizations org features" do
             params: { feature: "org_related_articles", enabled: "true" }
 
       expect(FeatureFlag.enabled?(:org_related_articles, FeatureFlag::Actor[other])).to be(false)
+    end
+
+    it "enables org_article_analytics for an organization" do
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_article_analytics", enabled: "true" }
+
+      expect(FeatureFlag.enabled?(:org_article_analytics, FeatureFlag::Actor[organization])).to be(true)
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to include("enabled")
+    end
+
+    it "disables org_article_analytics for an organization" do
+      FeatureFlag.enable(:org_article_analytics, FeatureFlag::Actor[organization])
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_article_analytics", enabled: "false" }
+
+      expect(FeatureFlag.enabled?(:org_article_analytics, FeatureFlag::Actor[organization])).to be(false)
+    end
+
+    it "leaves other organizations untouched when enabling org_article_analytics" do
+      other = create(:organization)
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_article_analytics", enabled: "true" }
+
+      expect(FeatureFlag.enabled?(:org_article_analytics, FeatureFlag::Actor[other])).to be(false)
     end
 
     it "rejects unknown feature names" do

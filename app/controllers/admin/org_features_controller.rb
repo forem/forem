@@ -23,6 +23,11 @@ module Admin
         name: "Related Articles API",
         description: "When enabled, members of this organization can call the related articles API to find " \
                      "public community writing about their technology."
+      },
+      org_article_analytics: {
+        name: "Article Analytics API",
+        description: "When enabled, members of this organization can export their own articles' performance " \
+                     "through the analytics API."
       }
     }.freeze
 

@@ -676,6 +676,12 @@ en:
             enable: Enable Related Articles
             disable: Disable Related Articles
             enabled_notice: The related articles API is enabled for this organization.
+          article_analytics:
+            label: Article Analytics API
+            description: When enabled, members of this organization can export their own articles' performance through the analytics API.
+            enable: Enable Article Analytics
+            disable: Disable Article Analytics
+            enabled_notice: The article analytics API is enabled for this organization.
         bulk_add_users:
           heading: Bulk Add Members
           description: "Add multiple users to this organization at once. Enter a comma-separated list of usernames (with or without @ and spaces). Existing members will be skipped."
