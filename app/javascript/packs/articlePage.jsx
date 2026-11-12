@@ -32,6 +32,11 @@ function backfillLinkTarget() {
   });
 }
 
+// Bind page embed fullscreen first: it only needs delegated clicks, so a
+// missing element further down (e.g. no share button on draft previews) must
+// never prevent it from initializing.
+initializePageEmbedFullscreen(document);
+
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
 );
@@ -62,7 +67,7 @@ function hideCopyLinkAnnouncerIfVisible() {
 // Initialize the share options
 const shareDropdownButton = document.getElementById('article-show-more-button');
 
-if (shareDropdownButton.dataset.initialized !== 'true') {
+if (shareDropdownButton && shareDropdownButton.dataset.initialized !== 'true') {
   if (isNativeAndroid('shareText')) {
     // Android native apps have enhanced sharing capabilities for Articles and don't use our standard dropdown
     shareDropdownButton.addEventListener('click', () =>
@@ -98,7 +103,7 @@ function focusOnComments() {
     //handle focus event on text area
     const element = document.getElementById('text-area');
     const event = new FocusEvent('focus');
-    element.dispatchEvent(event);
+    element?.dispatchEvent(event);
   }
 }
 
@@ -108,7 +113,7 @@ function renderBottomContent() {
   const commentsElement = document.getElementById('comments');
 
   // Early return if bottom content container doesn't exist (SKIP_BOTTOM_CONTENT enabled)
-  if (!bottomContent) {
+  if (!bottomContent || !commentsElement || !articleContainer) {
     return;
   }
 
@@ -156,4 +161,3 @@ renderBottomContent();
 
 // Open article body images in the in-page lightbox instead of navigating to the CDN URL
 initializeImageLightbox(document);
-initializePageEmbedFullscreen(document);
