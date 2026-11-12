@@ -802,17 +802,21 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(I18n.t("views.users.pinned"))
         expect(response.body.scan(/id="article-link-#{pinned_article.id}"/).size).to eq(1)
 
-        # The pinned label text uses the organization's Brand color 2
-        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
+        # The pinned label uses the organization's Brand color 1 / Brand color 2 pair,
+        # not the community accent, so the two colors are always the org's own pairing
+        label = Nokogiri::HTML(response.body).at_css(".crayons-card > header > h3")
         expect(label.text).to include(I18n.t("views.users.pinned"))
-        expect(label["style"]).to include("color: #abcdef")
+        expect(label["style"]).to include("background-color: #112233")
+        expect(label["style"]).to match(/(?<!-)color: #abcdef/)
+        expect(label["class"]).not_to include("bg-accent-brand")
         expect(label["class"]).not_to include("color-base-inverted")
 
         # Falls back to the default text color when Brand color 2 is blank
         organization.update!(text_color_hex: nil)
         get "/#{organization.slug}"
-        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
-        expect(label["style"]).to include("color: #ffffff")
+        label = Nokogiri::HTML(response.body).at_css(".crayons-card > header > h3")
+        expect(label["style"]).to include("background-color: #112233")
+        expect(label["style"]).to match(/(?<!-)color: #ffffff/)
 
         other_org = create(:organization)
         pinned_article.update_column(:organization_id, other_org.id)
