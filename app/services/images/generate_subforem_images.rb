@@ -4,6 +4,9 @@ module Images
   class GenerateSubforemImages
     TEMPLATE_PATH = "app/assets/images/social_template.png".freeze
     DEFAULT_FONT_PATH = Rails.root.join("app/assets/fonts/NotoSans-Bold.ttf").to_s.freeze
+    MAX_SOURCE_BYTES = 25.megabytes
+    OPEN_TIMEOUT_SECONDS = 5
+    READ_TIMEOUT_SECONDS = 15
 
     def self.call(subforem_id, image_url, background_url = nil)
       new(subforem_id, image_url, background_url).call
@@ -88,10 +91,34 @@ module Images
     def read_image_bytes(source)
       str = source.to_s
       if str.match?(%r{\Ahttps?://}i)
-        URI.parse(str).open("rb", &:read).b
+        URI.parse(str).open(
+          "rb",
+          open_timeout: OPEN_TIMEOUT_SECONDS,
+          read_timeout: READ_TIMEOUT_SECONDS,
+          content_length_proc: lambda { |content_length|
+            if content_length && content_length > MAX_SOURCE_BYTES
+              raise ArgumentError, "Image exceeds maximum allowed size (#{MAX_SOURCE_BYTES} bytes)"
+            end
+          },
+        ) { |io| read_bounded_stream(io) }
       else
+        if File.size(str) > MAX_SOURCE_BYTES
+          raise ArgumentError, "Image exceeds maximum allowed size (#{MAX_SOURCE_BYTES} bytes)"
+        end
+
         File.binread(str)
       end
+    end
+
+    def read_bounded_stream(io)
+      data = io.read(MAX_SOURCE_BYTES + 1)
+      return "".b if data.nil?
+
+      if data.bytesize > MAX_SOURCE_BYTES
+        raise ArgumentError, "Image exceeds maximum allowed size (#{MAX_SOURCE_BYTES} bytes)"
+      end
+
+      data.b
     end
 
     def upload_image(png_bytes)

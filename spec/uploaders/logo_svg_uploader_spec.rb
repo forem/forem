@@ -65,6 +65,49 @@ describe LogoSvgUploader, type: :uploader do
       expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError)
     end
 
+    it "converts SVGs using <defs>, <symbol>, <use>, and <style> rules into visible PNGs", :aggregate_failures do
+      svg_content = <<~SVG
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="100" viewBox="0 0 200 100">
+          <style>.logo-fill { fill: #2563eb; }</style>
+          <defs>
+            <symbol id="brand-icon" viewBox="0 0 50 50">
+              <rect x="0" y="0" width="50" height="50" rx="8" class="logo-fill"/>
+            </symbol>
+          </defs>
+          <use xlink:href="#brand-icon" x="50" y="10" width="80" height="80"/>
+        </svg>
+      SVG
+
+      Tempfile.create(["symbol_logo", ".svg"]) do |tmp|
+        tmp.write(svg_content)
+        tmp.rewind
+        uploaded = Rack::Test::UploadedFile.new(tmp.path, "image/svg+xml", false, original_filename: "symbol_logo.svg")
+
+        uploader.store!(uploaded)
+
+        expect(uploader).to be_format("png")
+        expect(uploader).to have_dimensions(200, 100)
+        expect(uploader.resized_logo).to have_dimensions(160, 80)
+      end
+    end
+
+    it "rejects empty or unsupported <foreignObject>-only SVGs instead of storing a blank PNG", :aggregate_failures do
+      foreign_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60">' \
+                    '<foreignObject width="120" height="60"><div>HTML</div></foreignObject></svg>'
+      [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60"></svg>',
+        foreign_svg,
+      ].each do |blank_or_unsupported_svg|
+        Tempfile.create(["blank_logo", ".svg"]) do |tmp|
+          tmp.write(blank_or_unsupported_svg)
+          tmp.rewind
+          uploaded = Rack::Test::UploadedFile.new(tmp.path, "image/svg+xml", false, original_filename: "blank.svg")
+
+          expect { described_class.new.store!(uploaded) }.to raise_error(CarrierWave::ProcessingError)
+        end
+      end
+    end
+
     it "raises CarrierWave::ProcessingError when ForemNative.image_convert_to_png fails" do
       allow(ForemNative).to receive(:image_convert_to_png).and_raise(ArgumentError, "malformed SVG")
 

@@ -3650,7 +3650,9 @@ fn load_cached_font_bytes(ruby: &Ruby, path: &str) -> Result<Arc<Vec<u8>>, Error
         .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
     let arc = Arc::new(data);
     if let Ok(mut guard) = cache.lock() {
-        guard.insert(path.to_owned(), Arc::clone(&arc));
+        if guard.len() < 32 {
+            guard.insert(path.to_owned(), Arc::clone(&arc));
+        }
     }
     Ok(arc)
 }
@@ -3785,11 +3787,11 @@ fn parse_rgba_arg(ruby: &Ruby, color: RString) -> Result<forem_core::social_imag
 }
 
 fn social_image_decode(ruby: &Ruby, bytes: RString) -> Result<RubySocialCanvas, Error> {
-    let canvas = {
-        let slice = unsafe { bytes.as_slice() };
-        forem_core::social_image::decode_image(slice)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
-    };
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let canvas = without_gvl(ruby, move || {
+        forem_core::social_image::decode_image(&input).map_err(|e| e.to_string())
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok(RubySocialCanvas::new(canvas))
 }
 
@@ -4668,21 +4670,90 @@ fn render_story_cards(
     Some(ruby.str_new(&html))
 }
 
-fn with_optional_font<T>(
+/// Runs a pure-Rust `Send` closure with Ruby's Global VM Lock (GVL) released via
+/// `rb_thread_call_without_gvl` and catches any Rust panic before crossing the C FFI boundary.
+///
+/// Because `Ruby`, `Value`, and `RString` are `!Send`, the `F: Send` bound statically prevents
+/// touching any Ruby VM object while the GVL is released.
+fn without_gvl<F, T>(ruby: &Ruby, f: F) -> Result<T, Error>
+where
+    F: FnOnce() -> T + Send,
+    T: Send,
+{
+    struct GvlPayload<F, T> {
+        func: Option<F>,
+        output: Option<std::thread::Result<T>>,
+    }
+
+    unsafe extern "C" fn gvl_trampoline<F, T>(data: *mut std::ffi::c_void) -> *mut std::ffi::c_void
+    where
+        F: FnOnce() -> T + Send,
+        T: Send,
+    {
+        let payload = unsafe { &mut *(data as *mut GvlPayload<F, T>) };
+        if let Some(func) = payload.func.take() {
+            payload.output = Some(std::panic::catch_unwind(std::panic::AssertUnwindSafe(func)));
+        }
+        std::ptr::null_mut()
+    }
+
+    let mut payload = GvlPayload {
+        func: Some(f),
+        output: None,
+    };
+    unsafe {
+        rb_sys::rb_thread_call_without_gvl(
+            Some(gvl_trampoline::<F, T>),
+            (&mut payload as *mut GvlPayload<F, T>).cast::<std::ffi::c_void>(),
+            None,
+            std::ptr::null_mut(),
+        );
+    }
+
+    match payload.output {
+        Some(Ok(value)) => Ok(value),
+        Some(Err(panic_payload)) => {
+            let msg = if let Some(s) = panic_payload.downcast_ref::<&str>() {
+                (*s).to_owned()
+            } else if let Some(s) = panic_payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                "unexpected panic inside native image operation".to_owned()
+            };
+            Err(Error::new(ruby.exception_runtime_error(), msg))
+        }
+        None => Err(Error::new(
+            ruby.exception_runtime_error(),
+            "native image operation interrupted before completion",
+        )),
+    }
+}
+
+fn load_optional_font_bytes(
     ruby: &Ruby,
     font_path: Option<RString>,
-    f: impl FnOnce(Option<&forem_core::social_image::Font<'_>>) -> Result<T, Error>,
-) -> Result<T, Error> {
+) -> Result<Option<Arc<Vec<u8>>>, Error> {
     let Some(path_rstr) = font_path else {
-        return f(None);
+        return Ok(None);
     };
     let path_str = std::str::from_utf8(unsafe { path_rstr.as_slice() })
         .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
         .to_owned();
-    let bytes = load_cached_font_bytes(ruby, &path_str)?;
-    let font = forem_core::social_image::Font::from_bytes(&bytes)
-        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
-    f(Some(&font))
+    load_cached_font_bytes(ruby, &path_str).map(Some)
+}
+
+fn with_font_ref<T>(
+    font_bytes: Option<&[u8]>,
+    f: impl FnOnce(Option<&forem_core::social_image::Font<'_>>) -> Result<T, String>,
+) -> Result<T, String> {
+    match font_bytes {
+        Some(bytes) => {
+            let font =
+                forem_core::social_image::Font::from_bytes(bytes).map_err(|e| e.to_string())?;
+            f(Some(&font))
+        }
+        None => f(None),
+    }
 }
 
 fn render_profile_image_png(ruby: &Ruby, flat_traits: RArray) -> Result<RString, Error> {
@@ -4695,8 +4766,11 @@ fn render_profile_image_png(ruby: &Ruby, flat_traits: RArray) -> Result<RString,
     let refs: Vec<&str> = owned.iter().map(String::as_str).collect();
     let traits = forem_core::social_image::avatar::ProfileAvatarTraits::from_flat_strings(&refs)
         .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
-    let png = forem_core::social_image::avatar::render_profile_avatar_png(&traits)
-        .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+    let png = without_gvl(ruby, move || {
+        forem_core::social_image::avatar::render_profile_avatar_png(&traits)
+            .map_err(|e| e.to_string())
+    })?
+    .map_err(|msg| Error::new(ruby.exception_runtime_error(), msg))?;
     Ok(ruby.str_from_slice(&png))
 }
 
@@ -4720,11 +4794,12 @@ fn image_strip_and_auto_orient(
     bytes: RString,
     frame_strip_max: usize,
 ) -> Result<Option<RString>, Error> {
-    let result = {
-        let slice = unsafe { bytes.as_slice() };
-        forem_core::image_ops::strip_and_auto_orient(slice, frame_strip_max)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
-    };
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let result = without_gvl(ruby, move || {
+        forem_core::image_ops::strip_and_auto_orient(&input, frame_strip_max)
+            .map_err(|e| e.to_string())
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok(result.map(|buf| ruby.str_from_slice(&buf)))
 }
 
@@ -4736,13 +4811,18 @@ fn image_resize_to_fill(
     gravity: RString,
     font_path: Option<RString>,
 ) -> Result<(RString, String), Error> {
-    let (out, fmt) = with_optional_font(ruby, font_path, |font| {
-        let slice = unsafe { bytes.as_slice() };
-        let grav = std::str::from_utf8(unsafe { gravity.as_slice() })
-            .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid gravity encoding"))?;
-        forem_core::image_ops::resize_to_fill_bytes(slice, width, height, grav, font)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
-    })?;
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let grav = std::str::from_utf8(unsafe { gravity.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid gravity encoding"))?
+        .to_owned();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let (out, fmt) = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::resize_to_fill_bytes(&input, width, height, &grav, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok((ruby.str_from_slice(&out), fmt.as_str().to_owned()))
 }
 
@@ -4753,11 +4833,15 @@ fn image_resize_to_limit(
     max_height: Option<usize>,
     font_path: Option<RString>,
 ) -> Result<(RString, String), Error> {
-    let (out, fmt) = with_optional_font(ruby, font_path, |font| {
-        let slice = unsafe { bytes.as_slice() };
-        forem_core::image_ops::resize_to_limit_bytes(slice, max_width, max_height, font)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
-    })?;
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let (out, fmt) = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::resize_to_limit_bytes(&input, max_width, max_height, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok((ruby.str_from_slice(&out), fmt.as_str().to_owned()))
 }
 
@@ -4766,11 +4850,24 @@ fn image_convert_to_png(
     bytes: RString,
     font_path: Option<RString>,
 ) -> Result<RString, Error> {
-    let png = with_optional_font(ruby, font_path, |font| {
-        let slice = unsafe { bytes.as_slice() };
-        forem_core::image_ops::convert_to_png_bytes(slice, font)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
-    })?;
+    image_convert_to_png_checked(ruby, bytes, font_path, false)
+}
+
+fn image_convert_to_png_checked(
+    ruby: &Ruby,
+    bytes: RString,
+    font_path: Option<RString>,
+    reject_blank: bool,
+) -> Result<RString, Error> {
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let png = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::convert_to_png_bytes_with_options(&input, font, reject_blank)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok(ruby.str_from_slice(&png))
 }
 
@@ -4781,11 +4878,15 @@ fn subforem_resize_png(
     height: usize,
     font_path: Option<RString>,
 ) -> Result<RString, Error> {
-    let png = with_optional_font(ruby, font_path, |font| {
-        let slice = unsafe { bytes.as_slice() };
-        forem_core::image_ops::subforem_resize_png(slice, width, height, font)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
-    })?;
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let png = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::subforem_resize_png(&input, width, height, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok(ruby.str_from_slice(&png))
 }
 
@@ -4796,12 +4897,16 @@ fn subforem_social_image_png(
     custom_background: bool,
     font_path: Option<RString>,
 ) -> Result<RString, Error> {
-    let png = with_optional_font(ruby, font_path, |font| {
-        let logo = unsafe { logo_bytes.as_slice() };
-        let bg = unsafe { bg_bytes.as_slice() };
-        forem_core::image_ops::subforem_social_image_png(logo, bg, custom_background, font)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))
-    })?;
+    let logo = unsafe { logo_bytes.as_slice() }.to_vec();
+    let bg = unsafe { bg_bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let png = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::subforem_social_image_png(&logo, &bg, custom_background, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok(ruby.str_from_slice(&png))
 }
 
@@ -5268,6 +5373,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         .define_singleton_method("image_resize_to_limit", function!(image_resize_to_limit, 4))?;
     native_mod
         .define_singleton_method("image_convert_to_png", function!(image_convert_to_png, 2))?;
+    native_mod.define_singleton_method(
+        "image_convert_to_png_checked",
+        function!(image_convert_to_png_checked, 3),
+    )?;
     native_mod.define_singleton_method("subforem_resize_png", function!(subforem_resize_png, 4))?;
     native_mod.define_singleton_method(
         "subforem_social_image_png",

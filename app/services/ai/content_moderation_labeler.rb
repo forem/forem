@@ -68,7 +68,7 @@ module Ai
       @article = article
       @is_negative = @article.score.to_i.negative?
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       gemini_client
     end
@@ -86,7 +86,7 @@ module Ai
     #
     # @return [Hash] Hash with :label and :compellingness_score.
     def evaluate
-      return evaluate_via_jev if @selection.jev?
+      return evaluate_via_jev if @selection.decision?
 
       evaluate_via_gemini
     end
@@ -102,10 +102,12 @@ module Ai
     #
     # @return [Hash] Hash with :label and :compellingness_score.
     def evaluate_via_jev
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @article,
-                                        affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = @selection.decision_client(wrapper: self, affected_content: @article,
+                                          affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: jev_state, questions: jev_questions)
       { label: label_from_jev(result), compellingness_score: compellingness_from_jev(result) }
+    rescue Ai::Base::ProhibitedContentError
+      raise
     rescue StandardError => e
       Rails.logger.error("Content Moderation Labeling via Jev failed: #{e}")
       if Ai::Base::DEFAULT_KEY.present?
@@ -553,7 +555,7 @@ module Ai
     def gemini_client
       @gemini_client ||= begin
         builtin_model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
-        model = @selection.jev? ? builtin_model : @selection.gemini_model(builtin_model)
+        model = @selection.decision? ? builtin_model : @selection.gemini_model(builtin_model)
         Ai::Base.new(model: model, wrapper: self,
                      affected_content: @article, affected_user: @article.user)
       end

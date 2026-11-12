@@ -4,13 +4,13 @@ module Reactions
 
     sidekiq_options queue: :high_priority, retry: 10
 
-    def perform(reaction_id)
+    def perform(reaction_id, destroying: false)
       reaction = Reaction.find_by(id: reaction_id)
       return unless reaction
 
       case reaction.reactable_type
       when "Article"
-        bust_article_reaction_cache(reaction)
+        bust_article_reaction_cache(reaction, destroying: destroying)
       when "Comment"
         bust_comment_reaction_cache(reaction)
       else
@@ -22,7 +22,7 @@ module Reactions
 
     private
 
-    def bust_article_reaction_cache(reaction)
+    def bust_article_reaction_cache(reaction, destroying: false)
       article_id = reaction.reactable_id
       return unless Article.exists?(id: article_id)
 
@@ -38,7 +38,10 @@ module Reactions
       if Reaction.for_articles([article_id]).public_category.size == 1 && (article = reaction.reactable)
         EdgeCache::BustArticle.call(article)
       end
-      Articles::UpdateDependentEmbedsWorker.perform_async(article_id)
+
+      return if destroying || !reaction.visible_to_public?
+
+      Articles::UpdateDependentEmbedsWorker.schedule_for_engagement(article_id)
     end
 
     def bust_comment_reaction_cache(reaction)

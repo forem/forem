@@ -95,7 +95,7 @@ module Articles
 
     # An injected client always wins so callers and specs can force the Gemini path.
     def use_jev?
-      @ai_client.blank? && selection.jev?
+      @ai_client.blank? && selection.decision?
     end
 
     def ai_client_unconfigured?
@@ -105,14 +105,14 @@ module Articles
     # --- Jev (TypeSafe System One) ---
 
     def detect_languages_via_jev(unlabeled_blocks)
-      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: article,
-                                        affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = selection.decision_client(wrapper: self, affected_content: article,
+                                         affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       unlabeled_blocks.map do |code|
         answer = client.evaluate(state: { code: code.to_s.strip.first(MAX_BLOCK_CHARS) },
                                  questions: { language: language_question }).choice(:language)
         answer.confidence >= MIN_JEV_CONFIDENCE ? normalize_language(answer.choice) : "plaintext"
-      rescue Ai::TypeSafe::Client::CircuitOpenError
-        # TypeSafe is down: abort rather than write "plaintext" for every remaining block.
+      rescue Ai::TypeSafe::Client::CircuitOpenError, Ai::GeminiDecision::Client::CircuitOpenError
+        # Decision provider is down: abort rather than write "plaintext" for every remaining block.
         raise
       rescue StandardError => e
         Rails.logger.error("Jev code block language detection failed for article #{article.id}: #{e}")

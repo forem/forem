@@ -48,7 +48,7 @@ RSpec.describe PageTag, type: :liquid_tag do
       end
     end
 
-    it "renders an iframe for an organization custom page when org_readme is enabled" do
+    it "renders a trusted unsandboxed iframe for an organization custom page when org_readme is enabled" do
       organization = create(:organization, slug: "acme-org")
       FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
       create(
@@ -63,6 +63,46 @@ RSpec.describe PageTag, type: :liquid_tag do
       rendered = Liquid::Template.parse("{% page /acme-org/p/handbook %}").render
       expect(rendered).to include("src=\"#{URL.url}/acme-org/p/handbook?mode=embed\"")
       expect(rendered).to include('title="Acme Handbook"')
+      expect(rendered).not_to include("sandbox=")
+      expect(rendered).not_to include("credentialless")
+    ensure
+      FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization]) if organization
+    end
+
+    it "renders a strictly sandboxed credentialless iframe for an organization embed_html page", :aggregate_failures do
+      organization = create(:organization, slug: "sandbox-org")
+      FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+      create(
+        :page,
+        organization: organization,
+        slug: "sandbox-org/embed/calculator",
+        title: "Sandboxed Calculator",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div><script>window.ok = 1</script></div>",
+      )
+
+      [
+        "{% page /sandbox-org/embed/calculator %}",
+        "{% page sandbox-org/embed/calculator %}",
+        "{% embed #{URL.url}/sandbox-org/embed/calculator %}",
+        "{% embed /sandbox-org/embed/calculator 450 %}",
+      ].each do |markup|
+        html = MarkdownProcessor::Parser.new(markup).finalize
+        expect(html).to include("src=\"#{URL.url}/sandbox-org/embed/calculator?mode=embed\"")
+        expect(html).to include("sandbox=\"#{PageTag::IFRAME_SANDBOX}\"")
+        expect(html).not_to include("allow-same-origin")
+        expect(html).not_to include("allowfullscreen")
+        expect(html).to include("credentialless")
+        expect(html).to include('referrerpolicy="no-referrer"')
+      end
+
+      article_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator %}").finalize
+      feed_html = ActionController::Base.helpers.sanitize(article_html, scrubber: FeedMarkdownScrubber.new)
+      expect(feed_html).to include("sandbox=\"#{PageTag::IFRAME_SANDBOX}\"")
+      expect(feed_html).to include("credentialless")
+      expect(feed_html).to include('referrerpolicy="no-referrer"')
+      expect(feed_html).to include("allow=\"#{PageTag::IFRAME_ALLOW_POLICY}\"")
     ensure
       FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization]) if organization
     end
