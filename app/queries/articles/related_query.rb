@@ -5,6 +5,8 @@ module Articles
     MAX_TERMS = 5
     MAX_QUERY_LENGTH = 500
     MAX_PER_PAGE = 100
+    SORTS = %w[recent relevance].freeze
+    DEFAULT_SORT = "recent".freeze
 
     def self.call(...)
       new(...).call
@@ -16,9 +18,27 @@ module Articles
     end
 
     def call
-      filtered_scope.where(search_predicate)
+      (sort == "relevance" ? ranked_relation : recent_relation).page(page).per(per_page)
+    end
+
+    # Newest first, the ordering this endpoint shipped with.
+    def recent_relation
+      scored_relation
         .reorder(Arel.sql("(articles.published_at + INTERVAL '0 seconds') DESC, articles.id DESC"))
-        .page(page).per(per_page)
+    end
+
+    # Best match first, tie-broken by recency and then ID so paging stays deterministic.
+    def ranked_relation
+      scored_relation
+        .reorder(Arel.sql("#{rank_expression} DESC, " \
+                          "(articles.published_at + INTERVAL '0 seconds') DESC, articles.id DESC"))
+    end
+
+    def sort
+      value = @params[:sort].presence || DEFAULT_SORT
+      raise InvalidRequest, I18n.t("api.related_articles.invalid_sort") unless SORTS.include?(value)
+
+      value
     end
 
     def page
@@ -39,7 +59,25 @@ module Articles
 
     private
 
-    def search_predicate
+    def scored_relation
+      filtered_scope.where(search_predicate)
+        .select(Arel.sql("#{rank_expression} AS discovery_rank"))
+    end
+
+    # One tsquery OR-ing every term, so a result's score reflects whichever term matched.
+    # ts_rank already accounts for term frequency and the document's field weights, so a
+    # title match outranks a passing mention in a long body.
+    def rank_expression
+      "ts_rank(articles.reading_list_document, #{term_queries.map { |sql| "(#{sql})" }.join(' || ')})"
+    end
+
+    def term_queries
+      @term_queries ||= search_terms.map do |term|
+        tsquery_for(term) || raise(InvalidRequest, I18n.t("api.related_articles.invalid_term"))
+      end
+    end
+
+    def search_terms
       query = @params[:q]
       raise InvalidRequest, I18n.t("api.related_articles.invalid_query", maximum: MAX_QUERY_LENGTH) unless
         query.is_a?(String) && query.present? && query.length <= MAX_QUERY_LENGTH
@@ -48,13 +86,11 @@ module Articles
       raise InvalidRequest, I18n.t("api.related_articles.invalid_terms", maximum: MAX_TERMS) unless
         terms.size.between?(1, MAX_TERMS)
 
-      predicates = terms.map do |term|
-        sql = tsquery_for(term)
-        raise InvalidRequest, I18n.t("api.related_articles.invalid_term") unless sql
+      terms
+    end
 
-        "articles.reading_list_document @@ #{sql}"
-      end
-      predicates.map { |predicate| "(#{predicate})" }.join(" OR ")
+    def search_predicate
+      term_queries.map { |sql| "(articles.reading_list_document @@ #{sql})" }.join(" OR ")
     end
 
     # A single-word term keeps the shared builder, including its prefix matching.

@@ -4776,7 +4776,7 @@
           "articles"
         ],
         "operationId": "getRelatedArticles",
-        "description": "Requires active membership and the org_related_articles feature for organization_id. Query supports up to five comma-separated alternative names and date bounds. In keyword matching, a name of several words matches those words next to each other; hybrid semantic candidates are not phrase-filtered and need not contain the phrase. Page size is capped at 100, page at 1000. Keyword mode sorts newest first. Hybrid mode fuses at most 100 keyword and 100 semantic candidates using reciprocal rank fusion; it is not an exhaustive export. Semantic candidates require cosine distance <= 0.4. Query embeddings are cached for one hour. Missing vectors remain eligible for keyword matches; provider failures fall back to keyword. X-Discovery-Mode reports the effective mode; hybrid also returns X-Discovery-Candidate-Limit: 200 and X-Discovery-Exhaustive: false. discovery_match identifies keyword/semantic sources. Visibility, community, score and publication-date filters apply before candidate limits. Keyword matches include author/org metadata and are not literal body-mention counts.",
+        "description": "Requires active membership and the org_related_articles feature for organization_id. Query supports up to five comma-separated alternative names and date bounds. In keyword matching, a name of several words matches those words next to each other; hybrid semantic candidates are not phrase-filtered and need not contain the phrase. Page size is capped at 100, page at 1000. Keyword mode sorts newest first unless sort=relevance. Each result carries discovery_rank, a relevance score comparable within one response but not across responses. Hybrid mode fuses at most 100 keyword and 100 semantic candidates using reciprocal rank fusion; it is not an exhaustive export. Semantic candidates require cosine distance <= 0.4. Query embeddings are cached for one hour. Missing vectors remain eligible for keyword matches; provider failures fall back to keyword. X-Discovery-Mode reports the effective mode; hybrid also returns X-Discovery-Candidate-Limit: 200 and X-Discovery-Exhaustive: false. discovery_match identifies keyword/semantic sources. Visibility, community, score and publication-date filters apply before candidate limits. Keyword matches include author/org metadata and are not literal body-mention counts.",
         "parameters": [
           {
             "name": "organization_id",
@@ -4809,6 +4809,20 @@
               "maxLength": 500
             },
             "description": "Technology names, for example PostgreSQL,Postgres. Up to five comma-separated searches. In keyword matching, a search of several words matches those words next to each other, so Tiger Data matches that phrase rather than mentions of tiger and data separately; hybrid semantic candidates are not phrase-filtered and need not contain the phrase."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "recent",
+                "relevance"
+              ],
+              "default": "recent"
+            },
+            "description": "recent returns newest first. relevance ranks by match strength, which accounts for how often a term occurs and whether it appears in the title rather than the body."
           },
           {
             "name": "start",
@@ -4880,6 +4894,10 @@
                                 "semantic"
                               ]
                             }
+                          },
+                          "discovery_rank": {
+                            "type": "number",
+                            "description": "Relevance score, comparable within one response only."
                           }
                         }
                       }
