@@ -46,7 +46,7 @@ module Follows
 
       misses = followable_ids.uniq.each_with_object({}) do |id, acc|
         key = new(follower, followable_type, id).cache_key
-        acc[key] = id unless prefetched.key?(key)
+        acc[key] = id.to_i unless prefetched.key?(key)
       end
       return prefetched if misses.empty?
 
@@ -57,7 +57,7 @@ module Follows
 
       followed_ids = Follow.unblocked
         .where(follower_type: "User", follower_id: follower.id,
-               followable_type: klass.name, followable_id: misses.values)
+               followable_type: klass.base_class.name, followable_id: misses.values)
         .pluck(:followable_id).to_set
       results = misses.transform_values { |id| followed_ids.include?(id) }
       Rails.cache.write_multi(results, expires_in: CACHE_EXPIRY)

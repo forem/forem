@@ -100,6 +100,21 @@ RSpec.describe "Follows #bulk_show" do
       expect(response.parsed_body).to eq(followed_subforem.id.to_s => "true", unfollowed_subforem.id.to_s => "false")
     end
 
+    it "resolves Tag follows using ActsAsTaggableOn::Tag polymorphic base_class and populates shared cache" do
+      cache = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(cache)
+      followed_tag = create(:tag)
+      unfollowed_tag = create(:tag)
+      current_user.follow(followed_tag)
+
+      get bulk_show_follows_path, params: { ids: [followed_tag.id, unfollowed_tag.id], followable_type: "Tag" }
+
+      expect(response.parsed_body).to eq(followed_tag.id.to_s => "true", unfollowed_tag.id.to_s => "false")
+
+      get "/follows/#{followed_tag.id}", params: { followable_type: "Tag" }
+      expect(response.body).to eq("true")
+    end
+
     it "raises RecordNotFound for nonexistent non-User followable ids" do
       missing_id = Subforem.maximum(:id).to_i + 1
       expect do
