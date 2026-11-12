@@ -5,6 +5,10 @@ class PageTag < LiquidTagBase
   PORTRAIT_HEIGHT = "900px".freeze
   MIN_HEIGHT = 150
   MAX_HEIGHT = 2000
+  FRAMELESS_OPTION = "frameless".freeze
+  FRAMED_STYLE = "width: 100%; border: 1px solid var(--card-border, #e1e5e9); " \
+                 "border-radius: var(--radius-auto, 6px); background: var(--card-bg, #fff);".freeze
+  FRAMELESS_STYLE = "width: 100%; border: 0; display: block;".freeze
   HTML_TEMPLATES = %w[contained full_within_layout nav_bar_included].freeze
   RESERVED_FIRST_SEGMENTS = %w[p t events api admin rails sidekiq settings dashboard mod].freeze
   IFRAME_SANDBOX = OrganizationEmbedsController::SANDBOX_DIRECTIVE
@@ -335,7 +339,9 @@ class PageTag < LiquidTagBase
     @url = target[:url]
     @title = target[:title]
     @sandboxed = target[:sandboxed] == true
-    @height = parse_height(args[1])
+    options = args.drop(1)
+    @frameless = options.any? { |option| option.casecmp?(FRAMELESS_OPTION) }
+    @height = parse_height(options.detect { |option| !option.casecmp?(FRAMELESS_OPTION) })
   end
 
   def render(_context)
@@ -345,7 +351,8 @@ class PageTag < LiquidTagBase
         url: @url,
         title: @title,
         height: @height,
-        sandboxed: @sandboxed
+        sandboxed: @sandboxed,
+        style: @frameless ? FRAMELESS_STYLE : FRAMED_STYLE
       },
     )
   end

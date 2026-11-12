@@ -53,20 +53,31 @@ module Articles
     end
 
     def top_articles
-      if q.present?
-        # Wrap `published_at` in an expression when combined with full-text search so
-        # PostgreSQL does not abandon `index_articles_on_reading_list_document` to scan
-        # `index_articles_on_published_at_and_score` and de-TOAST `reading_list_document`
-        # on every article in the timeframe window.
-        @articles.where("(articles.published_at + INTERVAL '0 seconds') > ?", top.to_i.days.ago)
-      else
-        @articles.where("published_at > ?", top.to_i.days.ago)
-      end
+      @articles.where("published_at > ?", top.to_i.days.ago)
     end
 
     def published_articles_with_users_and_organizations
+      base_scope = if q.present?
+                     published_scope = if top.present?
+                                         # Keep `published = true` bare when `top` is present so PostgreSQL can
+                                         # intersect the partial index `index_articles_on_published_at_and_score`
+                                         # (`WHERE published = true`) with `index_articles_on_reading_list_document`
+                                         # via `BitmapAnd`, while wrapping the `published_at <= NOW()` upper bound so
+                                         # `rangeselectivity` does not collapse the timeframe row estimate.
+                                         Article.where(published: true)
+                                       else
+                                         # When `top` is absent, wrap `published` so PostgreSQL does not build a
+                                         # 3.3M-row bitmap on `index_articles_on_published` to `BitmapAnd` with the
+                                         # GIN full-text index on broad search queries.
+                                         Article.where("COALESCE(articles.published, false) = TRUE")
+                                       end
+                     published_scope.where("(articles.published_at + INTERVAL '0 seconds') <= ?", Time.current)
+                   else
+                     Article.published
+                   end
+
       score_clause = q.present? ? "(articles.score + 0) >= ?" : "score >= ?"
-      Article.published.from_subforem
+      base_scope.from_subforem
         .includes([{ user: :profile }, :organization])
         .where(score_clause, Settings::UserExperience.index_minimum_score)
     end

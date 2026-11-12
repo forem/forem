@@ -8,7 +8,6 @@ module EdgeCache
         ["podcasts/#{slug}", "podcast_episodes_all", *EdgeCache::LegacySlugRedirectKeys.call(slug)],
         fallback_paths: ["/#{slug}", "/pod"],
       )
-      EdgeCache::CutoverUrlBust.call("/#{slug}")
     end
   end
 end

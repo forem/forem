@@ -30,7 +30,6 @@ module Users
         EdgeCache::PurgeByKeyWorker.perform_in(
           BustCacheBaseWorker::AFTER_COMMIT_DELAY, profile_cache_keys, profile_cache_bust_paths
         )
-        EdgeCache::CutoverUrlBust.call(profile_cache_bust_paths, delay: BustCacheBaseWorker::AFTER_COMMIT_DELAY)
         yield if block_given?
       end
 
