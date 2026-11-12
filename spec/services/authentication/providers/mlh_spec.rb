@@ -22,6 +22,12 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
     end
   end
 
+  describe ".settings_url" do
+    it "points to the MLH account profile page" do
+      expect(described_class.settings_url).to eq("https://www.mlh.com/account/profile")
+    end
+  end
+
   describe ".persist_credentials?" do
     it "is false so bearer material never outlives the callback request" do
       expect(described_class.persist_credentials?).to be(false)
