@@ -128,6 +128,7 @@ class User < ApplicationRecord
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
   has_many :organizations, through: :organization_memberships
+  has_many :pages, dependent: :destroy
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
   has_many :podcast_episode_appearances, dependent: :delete_all, inverse_of: :user
@@ -358,6 +359,14 @@ class User < ApplicationRecord
 
   def self.mascot_account
     find_by(id: Settings::General.mascot_user_id)
+  end
+
+  def self.for_username_or_legacy(username)
+    find_by(username: username) || for_legacy_username(username)
+  end
+
+  def self.for_legacy_username(username)
+    find_by(old_username: username) || find_by(old_old_username: username)
   end
 
   def self.ransackable_attributes(auth_object = nil)
@@ -927,6 +936,22 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  def ordered_embed_pages
+    pages.embed_html.order(:created_at, :id)
+  end
+
+  def embed_pages_enabled?
+    FeatureFlag.enabled_for_user?(:user_embed_pages, self) || FeatureFlag.enabled?(:user_embed_pages, self)
+  end
+
+  def can_manage_embed_pages?
+    registered? && !actively_spam_or_suspended? && embed_pages_enabled?
+  end
+
+  def can_serve_embed_pages?
+    registered? && !spam_or_suspended? && embed_pages_enabled?
+  end
+
   def reactions_to
     Reaction.for_user(self)
   end
@@ -1341,6 +1366,9 @@ class User < ApplicationRecord
 
     # Check for spam patterns when user gets spam or suspended role
     return unless role.name.in?(%w[spam suspended])
+
+    Users::BustCacheWorker.perform_async(id)
+    pages.embed_html.pluck(:slug).each { |page_slug| Pages::BustCacheWorker.perform_async(page_slug, nil, id) }
 
     # The domain scan can hit the statement timeout, so keep it out of this
     # callback: an error here rolls back the role grant (and aborts a banish).

@@ -23,15 +23,26 @@
         <% if page.landing_page? %>
           <%= crayons_icon_tag(:lock, title: "Current locked screen") %>
         <% end %>
-        <%= link_to page.title, page.path %>
+        <% if page.embed_html? %>
+          <span><%= page.title %></span>
+          <span class="crayons-tag crayons-tag--monochrome fs-xs" title="Sandboxed iframe embed only">
+            Embed-only
+          </span>
+        <% else %>
+          <%= link_to page.title, page.path %>
+        <% end %>
         <% if page.page_template.present? %>
           <span class="crayons-tag crayons-tag--monochrome fs-xs" title="Created from template">
             <%= page.page_template.name %>
           </span>
         <% end %>
-        <% if page.organization_id.present? %>
+        <% if page.organization.present? %>
           <span class="crayons-tag crayons-tag--monochrome fs-xs ml-2" title="Belongs to an organization">
             Org: <%= page.organization.name %>
+          </span>
+        <% elsif page.user.present? %>
+          <span class="crayons-tag crayons-tag--monochrome fs-xs ml-2" title="Belongs to a user">
+            User: @<%= page.user.username %>
           </span>
         <% end %>
       </div>

@@ -8,6 +8,7 @@ import {
 } from './dateHelpers';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists, loadPostScribe } from '../utilities/gist';
+import { initializePageEmbedFullscreen } from '../utilities/pageEmbedFullscreen';
 import {
   submitArticle,
   previewArticle,
@@ -282,6 +283,7 @@ export class ArticleForm extends Component {
       embedGists(this.formElement);
       this.constructor.handleAsciinemaPreview();
       this.constructor.handleAgentSessionPreview();
+      initializePageEmbedFullscreen(this.formElement);
     }
   }
 

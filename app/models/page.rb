@@ -3,6 +3,8 @@ class Page < ApplicationRecord
   extend UniqueAcrossModels
   EMBED_HTML_TEMPLATE = "embed_html".freeze
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt embed_html].freeze
+  MAX_EMBED_HTML_BYTES = 256.kilobytes
+  MAX_USER_EMBED_PAGES = 50
 
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
@@ -13,10 +15,12 @@ class Page < ApplicationRecord
   belongs_to :subforem, optional: true
   belongs_to :page_template, optional: true
   belongs_to :organization, optional: true
+  belongs_to :user, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
+  validate :validate_owner_constraints
   validate :validate_embed_html_constraints
   validate :body_present
   validate :validate_template_data
@@ -89,7 +93,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id position])
+                         organization_id user_id position])
   end
 
   def uses_page_template?
@@ -146,6 +150,24 @@ class Page < ApplicationRecord
     self.template = "contained" if template.blank?
   end
 
+  def validate_owner_constraints
+    if organization_id.present? && user_id.present?
+      errors.add(:base, I18n.t("models.page.multiple_owners_not_allowed"))
+      return
+    end
+
+    return if user.blank?
+
+    unless embed_html?
+      errors.add(:template, I18n.t("models.page.user_page_must_be_embed_html"))
+      return
+    end
+
+    return unless new_record? && user.pages.embed_html.count >= MAX_USER_EMBED_PAGES
+
+    errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+  end
+
   def validate_embed_html_constraints
     if persisted? && template_changed? && (embed_html? || template_was == EMBED_HTML_TEMPLATE)
       errors.add(:template, I18n.t("models.page.embed_html_template_immutable"))
@@ -154,9 +176,13 @@ class Page < ApplicationRecord
 
     return unless embed_html?
 
-    if organization.blank?
+    if organization.blank? && user.blank?
       errors.add(:organization, I18n.t("models.page.embed_html_requires_organization"))
       return
+    end
+
+    if body_html.present? && body_html.bytesize > MAX_EMBED_HTML_BYTES
+      errors.add(:body_html, I18n.t("models.page.embed_html_too_large", max_kb: MAX_EMBED_HTML_BYTES / 1.kilobyte))
     end
 
     validate_embed_html_slug
@@ -168,8 +194,9 @@ class Page < ApplicationRecord
       return
     end
 
+    owner_slug = organization&.slug || user&.username
     valid_format = slug.match?(%r{\A[a-z0-9_\-]+/embed/[a-z0-9\-]+\z})
-    expected_prefix = "#{organization.slug}/embed/"
+    expected_prefix = "#{owner_slug}/embed/"
     prefix_matches = !new_record? && !slug_changed? ? true : slug.start_with?(expected_prefix)
     return if valid_format && prefix_matches
 
@@ -218,19 +245,22 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    enqueue_page_cache_bust(slug, organization_id)
+    enqueue_page_cache_bust(slug, organization_id, user_id)
 
     previous_slug = saved_change_to_slug&.first
     return if previous_slug.blank? || previous_slug == slug
 
     previous_org_id = saved_change_to_organization_id ? saved_change_to_organization_id.first : organization_id
-    enqueue_page_cache_bust(previous_slug, previous_org_id)
+    previous_user_id = saved_change_to_user_id ? saved_change_to_user_id.first : user_id
+    enqueue_page_cache_bust(previous_slug, previous_org_id, previous_user_id)
   end
 
-  def enqueue_page_cache_bust(target_slug, target_organization_id)
-    # Keep the historical single-arg form for non-org pages so the
+  def enqueue_page_cache_bust(target_slug, target_organization_id, target_user_id = nil)
+    # Keep the historical single-arg and two-arg forms so the
     # until_executing unique-job lock digest stays stable and jobs coalesce.
-    if target_organization_id
+    if target_user_id
+      Pages::BustCacheWorker.perform_async(target_slug, target_organization_id, target_user_id)
+    elsif target_organization_id
       Pages::BustCacheWorker.perform_async(target_slug, target_organization_id)
     else
       Pages::BustCacheWorker.perform_async(target_slug)

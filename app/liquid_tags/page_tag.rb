@@ -9,6 +9,7 @@ class PageTag < LiquidTagBase
   FRAMED_STYLE = "width: 100%; border: 1px solid var(--card-border, #e1e5e9); " \
                  "border-radius: var(--radius-auto, 6px); background: var(--card-bg, #fff);".freeze
   FRAMELESS_STYLE = "width: 100%; border: 0; display: block;".freeze
+  ARTICLE_IFRAME_STYLE = "width: 100%; border: 0; display: block; background: var(--card-bg, #fff);".freeze
   HTML_TEMPLATES = %w[contained full_within_layout nav_bar_included].freeze
   RESERVED_FIRST_SEGMENTS = %w[p t events api admin rails sidekiq settings dashboard mod].freeze
   IFRAME_SANDBOX = OrganizationEmbedsController::SANDBOX_DIRECTIVE
@@ -57,6 +58,43 @@ class PageTag < LiquidTagBase
   rescue Addressable::URI::InvalidURIError
     nil
   end
+
+  def self.build_attribution(target)
+    owner = target[:owner]
+    case owner
+    when User
+      {
+        owner_type: "user",
+        owner_name: owner.name,
+        owner_path: owner.path,
+        owner_avatar_url: owner.profile_image_90,
+        canonical_url: nil
+      }
+    when Organization
+      {
+        owner_type: "organization",
+        owner_name: owner.name,
+        owner_path: owner.path,
+        owner_avatar_url: owner.profile_image_90,
+        canonical_url: target[:sandboxed] ? nil : target[:path]
+      }
+    else
+      {
+        owner_type: "site",
+        owner_name: Settings::Community.community_name.presence || "Forem",
+        owner_path: "/",
+        owner_avatar_url: site_logo_url,
+        canonical_url: target[:sandboxed] ? nil : target[:path]
+      }
+    end
+  end
+
+  def self.site_logo_url
+    Settings::General.resized_logo.presence ||
+      Settings::General.original_logo.presence ||
+      Settings::General.logo_png.presence
+  end
+  private_class_method :site_logo_url
 
   def self.resolve_full_url(token)
     uri = Addressable::URI.parse(token)
@@ -136,8 +174,10 @@ class PageTag < LiquidTagBase
     base = build_page_url(target[:path], page: target[:page], origin_base: origin_base)
     {
       url: append_embed_params(base, query: query, fragment: fragment),
+      path: target[:path],
       title: target[:title],
       page: target[:page],
+      owner: target[:owner],
       sandboxed: target[:sandboxed] == true
     }
   end
@@ -174,7 +214,7 @@ class PageTag < LiquidTagBase
     elsif segments.size == 3 && segments[1] == "p"
       resolve_organization_page(segments[0], segments[2], normalized_path)
     elsif segments.size == 3 && segments[1] == "embed"
-      resolve_organization_embed_page(segments[0], segments[2])
+      resolve_owner_embed_page(segments[0], segments[2])
     end
   end
   private_class_method :resolve_prefixed_page
@@ -186,45 +226,73 @@ class PageTag < LiquidTagBase
     org_page = org.pages.non_embed_html.find_by(slug: "#{org.slug}/#{page_suffix}")
     return unless org_page && embeddable_record?(org_page)
 
-    { path: normalized_path, title: org_page.title, page: org_page, sandboxed: false }
+    { path: normalized_path, title: org_page.title, page: org_page, owner: org, sandboxed: false }
   end
   private_class_method :resolve_organization_page
 
-  def self.resolve_organization_embed_page(org_slug, page_suffix)
+  def self.resolve_owner_embed_page(owner_slug, page_suffix)
+    normalized_owner = owner_slug.to_s.downcase
     normalized_suffix = page_suffix.to_s.downcase
     return unless normalized_suffix.match?(OrganizationEmbedsController::SLUG_SUFFIX_REGEXP)
 
-    org = Organization.find_by_slug_or_legacy(org_slug.to_s.downcase) # rubocop:disable Rails/DynamicFindBy
-    return unless org && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[org])
+    owner = resolve_embed_owner(normalized_owner)
+    return unless owner && embed_owner_allowed?(owner)
 
-    org_page = find_org_embed_page(org, normalized_suffix)
-    return unless org_page && embeddable_org_html_record?(org_page)
+    embed_page = find_owner_embed_page(owner, normalized_suffix)
+    return unless embed_page && embeddable_html_record?(embed_page)
 
-    { path: "/#{org.slug}/embed/#{normalized_suffix}", title: org_page.title, page: org_page, sandboxed: true }
+    {
+      path: "/#{owner.username}/embed/#{normalized_suffix}",
+      title: embed_page.title,
+      page: embed_page,
+      owner: owner,
+      sandboxed: true
+    }
   end
-  private_class_method :resolve_organization_embed_page
+  private_class_method :resolve_owner_embed_page
 
-  def self.find_org_embed_page(org, normalized_suffix)
-    current_page = org.pages.embed_html.find_by(slug: "#{org.slug}/embed/#{normalized_suffix}")
+  def self.resolve_embed_owner(slug)
+    Organization.find_by(slug: slug) ||
+      User.find_by(username: slug) ||
+      Organization.find_by(old_slug: slug) ||
+      Organization.find_by(old_old_slug: slug) ||
+      User.for_legacy_username(slug)
+  end
+  private_class_method :resolve_embed_owner
+
+  def self.embed_owner_allowed?(owner)
+    case owner
+    when Organization
+      FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[owner])
+    when User
+      owner.can_serve_embed_pages?
+    else
+      false
+    end
+  end
+  private_class_method :embed_owner_allowed?
+
+  def self.find_owner_embed_page(owner, normalized_suffix)
+    current_page = owner.pages.embed_html.find_by(slug: "#{owner.username}/embed/#{normalized_suffix}")
     return current_page if current_page
 
-    legacy_slugs = [org.old_slug, org.old_old_slug]
+    legacy_slugs = [owner.old_username, owner.old_old_username]
       .compact_blank
       .uniq
       .map { |slug| "#{slug}/embed/#{normalized_suffix}" }
     return if legacy_slugs.empty?
 
-    org.pages.embed_html.find_by(slug: legacy_slugs)
+    owner.pages.embed_html.find_by(slug: legacy_slugs)
   end
-  private_class_method :find_org_embed_page
+  private_class_method :find_owner_embed_page
 
-  def self.embeddable_org_html_record?(page)
+  def self.embeddable_html_record?(page)
     Settings::UserExperience.public &&
       page.embed_html? &&
       page.redirect_to_url.blank? &&
       FeatureFlag.accessible?(page.feature_flag_name)
   end
-  private_class_method :embeddable_org_html_record?
+  private_class_method :embeddable_html_record?
 
   def self.resolve_top_level_or_nested_page(segments, subforem_id)
     return if RESERVED_FIRST_SEGMENTS.include?(segments[0]) || %w[comment embed].include?(segments[1])
@@ -274,7 +342,7 @@ class PageTag < LiquidTagBase
   private_class_method :find_scoped_page
 
   def self.embeddable_standalone_page?(page)
-    page.present? && page.organization_id.nil? && embeddable_record?(page)
+    page.present? && page.organization_id.nil? && page.user_id.nil? && embeddable_record?(page)
   end
   private_class_method :embeddable_standalone_page?
 
@@ -299,7 +367,7 @@ class PageTag < LiquidTagBase
   private_class_method :shadowed_two_segment?
 
   def self.build_page_url(path, page:, origin_base:)
-    if page&.organization_id.nil? && page&.subforem_id.present? && !Subforem.disabled_by_env?
+    if page&.organization_id.nil? && page&.user_id.nil? && page&.subforem_id.present? && !Subforem.disabled_by_env?
       domain = Subforem.cached_id_to_domain_hash[page.subforem_id]
       URL.url(path, domain)
     elsif origin_base.present?
@@ -329,7 +397,7 @@ class PageTag < LiquidTagBase
   end
   private_class_method :parse_query_params
 
-  def initialize(_tag_name, input, _parse_context)
+  def initialize(_tag_name, input, parse_context)
     super
     cleaned = CGI.unescape_html(strip_tags(input.to_s)).strip
     args = cleaned.split(/\s+/)
@@ -339,6 +407,8 @@ class PageTag < LiquidTagBase
     @url = target[:url]
     @title = target[:title]
     @sandboxed = target[:sandboxed] == true
+    @in_article = parse_context.partial_options[:source].is_a?(Article)
+    @attribution = @in_article ? self.class.build_attribution(target) : nil
     options = args.drop(1)
     @frameless = options.any? { |option| option.casecmp?(FRAMELESS_OPTION) }
     @height = parse_height(options.detect { |option| !option.casecmp?(FRAMELESS_OPTION) })
@@ -352,12 +422,21 @@ class PageTag < LiquidTagBase
         title: @title,
         height: @height,
         sandboxed: @sandboxed,
-        style: @frameless ? FRAMELESS_STYLE : FRAMED_STYLE
+        in_article: @in_article,
+        frameless: @frameless,
+        attribution: @attribution,
+        style: iframe_style
       },
     )
   end
 
   private
+
+  def iframe_style
+    return ARTICLE_IFRAME_STYLE if @in_article
+
+    @frameless ? FRAMELESS_STYLE : FRAMED_STYLE
+  end
 
   def parse_height(option)
     return DEFAULT_HEIGHT if option.blank?

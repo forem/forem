@@ -8,7 +8,7 @@ module Admin
     ].freeze
 
     def index
-      @pages = Page.from_subforem.includes(:page_template).order(created_at: :desc)
+      @pages = Page.from_subforem.includes(:page_template, :organization, :user).order(created_at: :desc)
       @code_of_conduct = Page.find_by(slug: Page::CODE_OF_CONDUCT_SLUG)
       @privacy = Page.find_by(slug: Page::PRIVACY_SLUG)
       @terms = Page.find_by(slug: Page::TERMS_SLUG)

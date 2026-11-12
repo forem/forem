@@ -37,10 +37,10 @@ class OrganizationEmbedsController < ActionController::Metal
     return render_plain_error(404, "Not Found") unless request.GET["mode"] == "embed"
     return render_plain_error(403, "Forbidden: embed only") if forbidden_fetch_destination?
 
-    organization, page = resolve_embed_page
+    owner, page = resolve_embed_page
     return render_plain_error(404, "Not Found") unless page
 
-    apply_embed_headers(organization, page)
+    apply_embed_headers(owner, page)
     discard_session_and_cookies!
     self.status = 200
     self.content_type = "text/html; charset=utf-8"
@@ -55,30 +55,49 @@ class OrganizationEmbedsController < ActionController::Metal
   end
 
   def resolve_embed_page
-    org_slug = params[:org_slug].to_s.downcase
+    owner_slug = params[:org_slug].to_s.downcase
     suffix = params[:slug_suffix].to_s.downcase
     return [nil, nil] unless suffix.match?(SLUG_SUFFIX_REGEXP)
 
-    organization = Organization.find_by_slug_or_legacy(org_slug) # rubocop:disable Rails/DynamicFindBy
-    return [nil, nil] unless organization && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
+    owner = resolve_embed_owner(owner_slug)
+    return [nil, nil] unless owner && owner_embed_allowed?(owner)
 
-    page = find_org_embed_page(organization, suffix)
+    page = find_owner_embed_page(owner, suffix)
     return [nil, nil] unless page && FeatureFlag.accessible?(page.feature_flag_name)
 
-    [organization, page]
+    [owner, page]
   end
 
-  def find_org_embed_page(organization, suffix)
-    current_page = organization.pages.embed_html.find_by(slug: "#{organization.slug}/embed/#{suffix}")
+  def resolve_embed_owner(slug)
+    Organization.find_by(slug: slug) ||
+      User.find_by(username: slug) ||
+      Organization.find_by(old_slug: slug) ||
+      Organization.find_by(old_old_slug: slug) ||
+      User.for_legacy_username(slug)
+  end
+
+  def owner_embed_allowed?(owner)
+    case owner
+    when Organization
+      FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[owner])
+    when User
+      owner.can_serve_embed_pages?
+    else
+      false
+    end
+  end
+
+  def find_owner_embed_page(owner, suffix)
+    current_page = owner.pages.embed_html.find_by(slug: "#{owner.username}/embed/#{suffix}")
     return current_page if current_page
 
-    legacy_slugs = [organization.old_slug, organization.old_old_slug]
+    legacy_slugs = [owner.old_username, owner.old_old_username]
       .compact_blank
       .uniq
       .map { |slug| "#{slug}/embed/#{suffix}" }
     return if legacy_slugs.empty?
 
-    organization.pages.embed_html.find_by(slug: legacy_slugs)
+    owner.pages.embed_html.find_by(slug: legacy_slugs)
   end
 
   def apply_base_headers
@@ -88,20 +107,22 @@ class OrganizationEmbedsController < ActionController::Metal
     add_vary_header("Sec-Fetch-Dest")
   end
 
-  def apply_embed_headers(organization, page)
+  def apply_embed_headers(owner, page)
     response.headers["Content-Security-Policy"] = [
       "sandbox #{SANDBOX_DIRECTIVE}",
-      "frame-ancestors #{allowed_frame_ancestors(organization)}",
+      "frame-ancestors #{allowed_frame_ancestors(owner)}",
       "base-uri 'none'",
       "object-src 'none'",
     ].join("; ")
     response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
-    apply_cache_headers(organization, page)
+    apply_cache_headers(owner, page)
   end
 
-  def apply_cache_headers(organization, page)
+  def apply_cache_headers(owner, page)
     max_age = (ApplicationConfig["EDGE_CACHE_DURATION_IN_HOURS"] || 24).to_i.hours.to_i
-    surrogate_keys = ["show-page-#{page.slug}", organization.record_key]
+    owner_keys = [owner.record_key]
+    owner_keys << owner.profile_identity_record_key if owner.is_a?(User)
+    surrogate_keys = (["show-page-#{page.slug}"] + owner_keys)
       .filter_map { |key| key.to_s.delete("\r\n").strip.presence }
       .uniq
     response.headers["Surrogate-Key"] = surrogate_keys.join(" ")
@@ -110,8 +131,9 @@ class OrganizationEmbedsController < ActionController::Metal
     response.headers["Surrogate-Control"] = "max-age=#{max_age}, stale-if-error=#{STALE_IF_ERROR_SECONDS}"
   end
 
-  def allowed_frame_ancestors(organization)
-    domains = (Subforem.cached_all_domains + [Settings::General.app_domain, organization.custom_domain])
+  def allowed_frame_ancestors(owner)
+    custom_domain = owner.respond_to?(:custom_domain) ? owner.custom_domain : nil
+    domains = (Subforem.cached_all_domains + [Settings::General.app_domain, custom_domain])
       .compact_blank
       .uniq
       .select { |domain| domain.to_s.match?(SAFE_HOST_REGEXP) }

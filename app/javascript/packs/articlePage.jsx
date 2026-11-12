@@ -1,4 +1,5 @@
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
+import { initializePageEmbedFullscreen } from '../utilities/pageEmbedFullscreen';
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import { embedGists } from '../utilities/gist';
@@ -155,3 +156,4 @@ renderBottomContent();
 
 // Open article body images in the in-page lightbox instead of navigating to the CDN URL
 initializeImageLightbox(document);
+initializePageEmbedFullscreen(document);
