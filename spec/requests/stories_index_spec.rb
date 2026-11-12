@@ -796,6 +796,24 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(I18n.t("views.users.pinned"))
       end
 
+      it "colors the pinned label text with the organization's Brand color 2" do
+        organization.update!(bg_color_hex: "#112233", text_color_hex: "#abcdef")
+
+        get "/#{organization.slug}"
+        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
+        expect(label.text.strip).to eq(I18n.t("views.users.pinned"))
+        expect(label["style"]).to include("color: #abcdef")
+        expect(label["class"]).not_to include("color-base-inverted")
+      end
+
+      it "falls back to the default text color when Brand color 2 is blank" do
+        organization.update!(bg_color_hex: "#112233", text_color_hex: nil)
+
+        get "/#{organization.slug}"
+        label = Nokogiri::HTML(response.body).at_css("h3.bg-accent-brand")
+        expect(label["style"]).to include("color: #ffffff")
+      end
+
       it "does not repeat the pinned post in the regular feed" do
         # A rendered story card references its own "article-link-<id>" DOM id twice
         # (once as the id= attribute itself, once as an aria-labelledby reference to
