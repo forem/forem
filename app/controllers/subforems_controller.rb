@@ -409,9 +409,6 @@ class SubforemsController < ApplicationController
       ["navigation_links", "navigation_links-#{@subforem.id}"],
       fallback_paths: "/async_info/navigation_links",
     )
-    cutover_paths = ["/async_info/navigation_links"]
-    cutover_paths << URL.url("/async_info/navigation_links", @subforem.domain) if @subforem.domain.present?
-    EdgeCache::CutoverUrlBust.call(cutover_paths)
   end
 
   def render_forbidden

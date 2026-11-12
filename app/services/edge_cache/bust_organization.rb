@@ -22,7 +22,6 @@ module EdgeCache
       # the organization's surrogate key, so Fastly evicts them in one call without iterating
       # over every article path. Self-hosted Nginx/OpenResty resolves fallback_paths lazily.
       EdgeCache::PurgeByKey.call(keys, fallback_paths: fallback_paths)
-      EdgeCache::CutoverUrlBust.call(fallback_paths)
     end
   end
 end
