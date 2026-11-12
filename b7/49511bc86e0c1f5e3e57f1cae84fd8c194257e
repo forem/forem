@@ -1,0 +1,48 @@
+.env_sample
+  h_f968154a99632d 99-103
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 52-65,67,110-114,168,198,1073-1086
+app/helpers/application_helper.rb
+  h_f968154a99632d 26-41
+app/javascript/packs/admin.js
+  h_f968154a99632d 6-8
+app/javascript/packs/betterstackErrorsClient.js
+  h_f968154a99632d 1-8
+app/javascript/utilities/__tests__/betterstackErrorsAdapter.test.js
+  h_f968154a99632d 1-241
+app/javascript/utilities/__tests__/frontendErrorTracking.test.js
+  h_f968154a99632d 1-166
+app/javascript/utilities/betterstackErrorsAdapter.js
+  h_f968154a99632d 1-513
+app/javascript/utilities/frontendErrorTracking.js
+  h_f968154a99632d 1-313
+app/views/layouts/_user_config.html.erb
+  h_f968154a99632d 65
+app/views/layouts/admin.html.erb
+  h_f968154a99632d 15,19-23,29-32
+app/views/layouts/application.html.erb
+  h_f968154a99632d 46-49,103-106
+esbuild.config.mjs
+  h_f968154a99632d 304-305
+package.json
+  h_f968154a99632d 131
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 141-142,147,150,154
+spec/initializers/honeybadger_spec.rb
+  h_f968154a99632d 99-100,105-108,110-113
+spec/requests/frontend_error_tracking_spec.rb
+  h_f968154a99632d 1-109
+yarn.lock
+  h_f968154a99632d 3119-3188,7783,17466-17472
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b749511bc86e0c1f5e3e57f1cae84fd8c194257e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
