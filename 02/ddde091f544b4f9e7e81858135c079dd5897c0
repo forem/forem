@@ -1,0 +1,23 @@
+app/assets/stylesheets/ltags/PageTag.scss
+  s_f4f73faac1e4dc::t_e326f8a27413c1 32-35
+app/javascript/packs/articlePage.jsx
+  s_f4f73faac1e4dc::t_e326f8a27413c1 35-39,70,106,116
+app/javascript/packs/__tests__/articlePage.test.js
+  s_f4f73faac1e4dc::t_0b7ffa9a95c008 1-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "02ddde091f544b4f9e7e81858135c079dd5897c0",
+  "prompts": {},
+  "sessions": {
+    "s_f4f73faac1e4dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0f8a5a37-5b51-43b9-abfa-d1b218f6c1f5",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
