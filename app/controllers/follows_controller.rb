@@ -169,13 +169,20 @@ class FollowsController < ApplicationController
     end
   end
 
+  # Batch-reads and fills cached forward (and User-to-User reverse) follow flags for +ids+.
   def compute_bulk_follow_flags(viewer, users_by_id, ids, is_user_type)
     followable_type = params[:followable_type]
-    checks = ids.flat_map do |id|
-      [[viewer, followable_type, id], [users_by_id[id], followable_type, viewer.id]]
-    end
+    checks = if is_user_type
+               ids.flat_map { |id| [[viewer, followable_type, id], [users_by_id[id], followable_type, viewer.id]] }
+             else
+               ids.map { |id| [viewer, followable_type, id] }
+             end
     cached = Follows::CheckCached.read_multi(checks)
-    cached = Follows::CheckCached.fill_user_misses(checks, cached, users_by_id.keys) if is_user_type
+    cached = if is_user_type
+               Follows::CheckCached.fill_user_misses(checks, cached, users_by_id.keys)
+             else
+               Follows::CheckCached.fill_followable_misses(viewer, followable_type, ids, cached)
+             end
 
     forward_flags = Array.new(ids.size, false)
     reverse_flags = is_user_type ? Array.new(ids.size, false) : []

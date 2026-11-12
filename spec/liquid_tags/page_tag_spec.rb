@@ -87,6 +87,7 @@ RSpec.describe PageTag, type: :liquid_tag do
         "{% page sandbox-org/embed/calculator %}",
         "{% embed #{URL.url}/sandbox-org/embed/calculator %}",
         "{% embed /sandbox-org/embed/calculator 450 %}",
+        "{% embed /sandbox-org/embed/calculator 450 frameless %}",
       ].each do |markup|
         html = MarkdownProcessor::Parser.new(markup).finalize
         expect(html).to include("src=\"#{URL.url}/sandbox-org/embed/calculator?mode=embed\"")
@@ -96,6 +97,10 @@ RSpec.describe PageTag, type: :liquid_tag do
         expect(html).to include("credentialless")
         expect(html).to include('referrerpolicy="no-referrer"')
       end
+
+      frameless_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator 450 frameless %}").finalize
+      expect(frameless_html).to include("style=\"#{PageTag::FRAMELESS_STYLE}\"")
+      expect(frameless_html).to include('height="450px"')
 
       article_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator %}").finalize
       feed_html = ActionController::Base.helpers.sanitize(article_html, scrubber: FeedMarkdownScrubber.new)
@@ -132,6 +137,25 @@ RSpec.describe PageTag, type: :liquid_tag do
       expect(Liquid::Template.parse("{% page /page/#{page.slug} portrait %}").render).to include('height="900px"')
       expect(Liquid::Template.parse("{% page /page/#{page.slug} 50 %}").render).to include('height="150px"')
       expect(Liquid::Template.parse("{% page /page/#{page.slug} 5000 %}").render).to include('height="2000px"')
+    end
+
+    it "keeps the frame by default and drops it with the frameless keyword", :aggregate_failures do
+      page = create(:page, slug: "framed-page", title: "Framed Page", body_markdown: "Body")
+
+      framed = Liquid::Template.parse("{% page /page/#{page.slug} 450 %}").render
+      expect(framed).to include("style=\"#{described_class::FRAMED_STYLE}\"")
+
+      [
+        ["{% page /page/#{page.slug} 450 frameless %}", "450px"],
+        ["{% page /page/#{page.slug} frameless 450 %}", "450px"],
+        ["{% page /page/#{page.slug} frameless %}", described_class::DEFAULT_HEIGHT],
+        ["{% page /page/#{page.slug} landscape FRAMELESS %}", described_class::LANDSCAPE_HEIGHT],
+      ].each do |markup, height|
+        rendered = Liquid::Template.parse(markup).render
+        expect(rendered).to include("style=\"#{described_class::FRAMELESS_STYLE}\"")
+        expect(rendered).to include("height=\"#{height}\"")
+        expect(rendered).not_to include("var(--card-border")
+      end
     end
 
     it "rejects non-HTML, redirect, feature-disabled, external, and missing pages", :aggregate_failures do

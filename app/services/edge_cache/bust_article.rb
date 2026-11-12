@@ -12,18 +12,12 @@ module EdgeCache
 
       keys = [article.record_key]
       fallback_paths = [article.path].compact
-      cutover_paths = []
-
-      if article.id.present?
-        bottom_items_path = "/bottom_items?article_id=#{article.id}"
-        fallback_paths << bottom_items_path
-        cutover_paths << bottom_items_path
-      end
+      fallback_paths << "/bottom_items?article_id=#{article.id}" if article.id.present?
 
       if article.user
         keys.concat(article.user.profile_cache_keys)
         fallback_paths.concat(article.user.profile_cache_bust_paths)
-        collect_legacy_redirect_paths(article, cutover_paths)
+        collect_legacy_redirect_paths(article, fallback_paths)
       end
 
       if article.organization
@@ -33,21 +27,20 @@ module EdgeCache
 
       collect_custom_domain_paths(article, fallback_paths)
       collect_home_page_targets(article, keys, fallback_paths)
-      collect_tag_page_targets(article, keys, fallback_paths, cutover_paths)
+      collect_tag_page_targets(article, keys, fallback_paths)
 
       EdgeCache::PurgeByKey.call(keys.uniq, fallback_paths: fallback_paths.uniq)
-      EdgeCache::CutoverUrlBust.call(cutover_paths)
     end
 
-    def self.collect_legacy_redirect_paths(article, cutover_paths)
+    def self.collect_legacy_redirect_paths(article, fallback_paths)
       return if article.slug.blank?
 
       user = article.user
       if article.organization && user.username.present?
-        cutover_paths << "/#{user.username}/#{article.slug}"
+        fallback_paths << "/#{user.username}/#{article.slug}"
       end
-      cutover_paths << "/#{user.old_username}/#{article.slug}" if user.old_username.present?
-      cutover_paths << "/#{user.old_old_username}/#{article.slug}" if user.old_old_username.present?
+      fallback_paths << "/#{user.old_username}/#{article.slug}" if user.old_username.present?
+      fallback_paths << "/#{user.old_old_username}/#{article.slug}" if user.old_old_username.present?
     end
 
     private_class_method :collect_legacy_redirect_paths
@@ -98,7 +91,7 @@ module EdgeCache
 
     private_class_method :collect_home_page_targets
 
-    def self.collect_tag_page_targets(article, keys, fallback_paths, cutover_paths)
+    def self.collect_tag_page_targets(article, keys, fallback_paths)
       return unless article.published
 
       article.tag_list.each do |tag|
@@ -107,10 +100,9 @@ module EdgeCache
         if article.published_at.to_i > 2.minutes.ago.to_i
           keys << "tag-#{tag_name}-latest"
           fallback_paths << "/t/#{tag_name}/latest"
-          cutover_paths << "/t/#{tag_name}/latest"
         end
 
-        collect_tag_timeframe_targets(article, tag_name, keys, fallback_paths, cutover_paths)
+        collect_tag_timeframe_targets(article, tag_name, keys, fallback_paths)
 
         next unless rand(2) == 1 &&
           at_least_as_hot(Article.published.cached_tagged_with(tag_name), article)
@@ -118,13 +110,12 @@ module EdgeCache
 
         keys << "tag-#{tag_name}-home"
         fallback_paths << "/t/#{tag_name}"
-        cutover_paths << "/t/#{tag_name}"
       end
     end
 
     private_class_method :collect_tag_page_targets
 
-    def self.collect_tag_timeframe_targets(article, tag_name, keys, fallback_paths, cutover_paths)
+    def self.collect_tag_timeframe_targets(article, tag_name, keys, fallback_paths)
       TIMEFRAMES.each do |timestamp, interval|
         cutoff = timestamp.call
         next if article.published_at.blank? || article.published_at <= cutoff
@@ -138,11 +129,8 @@ module EdgeCache
         keys << "api-articles-tag-#{tag_name}-top"
         fallback_paths << "/top/#{interval}"
         fallback_paths << "/t/#{tag_name}/top/#{interval}"
-        cutover_paths << "/t/#{tag_name}/top/#{interval}"
         12.times do |i|
-          api_path = "/api/articles?tag=#{tag_name}&top=#{i}"
-          fallback_paths << api_path
-          cutover_paths << api_path
+          fallback_paths << "/api/articles?tag=#{tag_name}&top=#{i}"
         end
       end
     end

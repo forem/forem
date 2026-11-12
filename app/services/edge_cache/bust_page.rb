@@ -20,12 +20,6 @@ module EdgeCache
       end
 
       EdgeCache::PurgeByKey.call(keys, fallback_paths: fallback_paths)
-      cutover_paths = [
-        *fallback_paths,
-        ("/bounty" if slug == "security"),
-        ("/faq" if slug == "faq"),
-      ].compact
-      EdgeCache::CutoverUrlBust.call(cutover_paths)
     end
   end
 end
