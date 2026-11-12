@@ -96,16 +96,21 @@ RSpec.describe "Honeybadger initializer" do # rubocop:disable RSpec/DescribeClas
     end
   end
 
-  describe "HONEYBADGER_JS_API_KEY frontend gating" do
-    it "gates the honeybadger-script meta tag and data-honeybadger-key attributes on HONEYBADGER_JS_API_KEY" do
+  describe "Frontend error tracking gating and Better Stack precedence" do
+    it "gates betterstack-errors-script and honeybadger-script mutually exclusively with Better Stack precedence" do
       application_layout = Rails.root.join("app/views/layouts/application.html.erb").read
       admin_layout = Rails.root.join("app/views/layouts/admin.html.erb").read
       base_js_erb = Rails.root.join("app/assets/javascripts/base.js.erb").read
 
-      expect(application_layout.scan('if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present?').size).to eq(2)
-      expect(admin_layout).to include('if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present?')
+      expect(application_layout.scan("if betterstack_js_errors_enabled?").size).to eq(2)
+      expect(application_layout.scan("elsif honeybadger_js_enabled?").size).to eq(2)
+      expect(admin_layout.scan("if betterstack_js_errors_enabled?").size).to eq(2)
+      expect(admin_layout.scan("elsif honeybadger_js_enabled?").size).to eq(2)
       expect(base_js_erb).to include(
-        "if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey)",
+        "if (document.body && document.body.dataset && document.body.dataset.betterstackErrorsDsn)",
+      )
+      expect(base_js_erb).to include(
+        "else if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey)",
       )
     end
   end

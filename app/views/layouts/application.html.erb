@@ -43,8 +43,10 @@
       <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
       <meta name="postscribe-script" content="<%= asset_path 'postscribeLoader.js' %>">
       <meta name="media-playback-script" content="<%= asset_path 'mediaPlayback.js' %>">
-      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
-        <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <% if betterstack_js_errors_enabled? %>
+        <meta name="betterstack-errors-script" content="<%= asset_path "betterstackErrorsClient.js" %>">
+      <% elsif honeybadger_js_enabled? %>
+        <meta name="honeybadger-script" content="<%= asset_path "honeybadgerClient.js" %>">
       <% end %>
       <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
       <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
@@ -98,8 +100,10 @@
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
       data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
       data-locale="<%= j(I18n.locale) %>"
-      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
-        data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% if betterstack_js_errors_enabled? %>
+        data-betterstack-errors-dsn="<%= j(betterstack_js_errors_dsn) %>"
+      <% elsif honeybadger_js_enabled? %>
+        data-honeybadger-key="<%= j(honeybadger_js_api_key) %>"
       <% end %>
       data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
       data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"

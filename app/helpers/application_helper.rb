@@ -23,6 +23,22 @@ module ApplicationHelper
     user_signed_in? ? "logged-in" : "logged-out"
   end
 
+  def betterstack_js_errors_dsn
+    ApplicationConfig["BETTER_STACK_JS_ERRORS_DSN"].presence
+  end
+
+  def betterstack_js_errors_enabled?
+    betterstack_js_errors_dsn.present?
+  end
+
+  def honeybadger_js_api_key
+    ApplicationConfig["HONEYBADGER_JS_API_KEY"].presence
+  end
+
+  def honeybadger_js_enabled?
+    !betterstack_js_errors_enabled? && honeybadger_js_api_key.present?
+  end
+
   # Provides a string for HTML data attributes; comprised of the response's Rails controller name
   # and action name.
   #

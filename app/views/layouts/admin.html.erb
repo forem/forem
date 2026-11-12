@@ -12,16 +12,24 @@
   <title><%= controller_name.titleize %></title>
 
   <!-- StimulusJS -->
+  <meta name="environment" content="<%= Rails.env %>">
   <%= javascript_include_tag "admin", defer: true %>
   <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
   <meta name="preact-runtime-script" content="<%= asset_path 'preactRuntime.js' %>">
+  <% if betterstack_js_errors_enabled? %>
+    <meta name="betterstack-errors-script" content="<%= asset_path "betterstackErrorsClient.js" %>">
+  <% elsif honeybadger_js_enabled? %>
+    <meta name="honeybadger-script" content="<%= asset_path "honeybadgerClient.js" %>">
+  <% end %>
 
   <%= stylesheet_link_tag "admin" %>
 
 </head>
 <body class="admin default-header"
-  <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
-    data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+  <% if betterstack_js_errors_enabled? %>
+    data-betterstack-errors-dsn="<%= j(betterstack_js_errors_dsn) %>"
+  <% elsif honeybadger_js_enabled? %>
+    data-honeybadger-key="<%= j(honeybadger_js_api_key) %>"
   <% end %>
   data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
   data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
