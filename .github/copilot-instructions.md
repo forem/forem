@@ -16,6 +16,9 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Re-usability**: Changes should strengthen Forem as a platform, avoiding DEV-specific hardcoding unless absolutely necessary.
 - **Disruption & Clarification**: Always be vigilant about not disrupting existing functionality (e.g., core auth, feed sorting, cache pipelines). If a proposal touches or runs adjacent to a major subsystem, explicitly ask clarifying questions to validate isolation and proactively determine if extra tests are needed to guarantee no side-effects occur.
 
+## Feature Flags
+- **No Data Update Scripts for Feature Flags**: Do not create `lib/data_update_scripts` (or matching specs) just to add or register a feature flag. Gate code with `FeatureFlag.enabled?(:flag_name, ...)`; admins manually add and enable flags as needed via the admin Feature Flags (Flipper) UI.
+
 ## Background Workers & Sidekiq
 - **Job Storm Prevention**: When enqueuing jobs that might trigger rapidly (e.g., from reactions, comments, or article updates), carefully assess if a debounce lock is required. 
 - **Modern Configuration**: Prefer `include Sidekiq::Job` over `Sidekiq::Worker`. Use `sidekiq_options lock: :until_executing, on_conflict: :replace` for coalescing repetitive events.
