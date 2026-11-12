@@ -3,6 +3,26 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex" do
+  let(:user) { create(:user) }
+  let(:org) { create(:organization) }
+
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:user] ||= user unless options.key?(:user_id)
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:main_image) || options.key?(:with_main_image)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    return Array.new(amount) { create(name, *traits, **options) } if %i[user article].include?(name)
+
+    super
+  end
+
   it "redirects to the lowercase route", :aggregate_failures do
     get "/Bad_name"
     expect(response).to have_http_status(:moved_permanently)
@@ -14,9 +34,6 @@ RSpec.describe "StoriesIndex" do
   end
 
   describe "GET stories index" do
-    let(:user) { create(:user) }
-    let(:org) { create(:organization) }
-
     it "preserves the configured Discover preload for visibility acknowledgements" do
       sign_in user
       allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
@@ -56,8 +73,7 @@ RSpec.describe "StoriesIndex" do
 
     it "redirects unfound subforem to root if ENV var set" do
       allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
-      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
-      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      allow(Subforem).to receive_messages(cached_id_by_domain: nil, cached_root_domain: "example.com")
       get "http://not-found.example.com"
       expect(response).to have_http_status(:moved_permanently)
       expect(response).to redirect_to("http://example.com/")
@@ -66,9 +82,8 @@ RSpec.describe "StoriesIndex" do
     it "does not redirect an unfound subforem if it is a custom organization domain" do
       ENV["REDIRECT_WWW_TO_ROOT"] = "true"
       create(:organization, custom_domain: "mlh.example.com")
-      allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
-      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
-      
+      allow(Subforem).to receive_messages(cached_id_by_domain: nil, cached_root_domain: "example.com")
+
       get "http://mlh.example.com"
       expect(response).not_to redirect_to("http://example.com/")
       ENV["REDIRECT_WWW_TO_ROOT"] = nil
@@ -76,8 +91,7 @@ RSpec.describe "StoriesIndex" do
 
     it "does not redirect found subforem to root if ENV var set" do
       ENV["REDIRECT_WWW_TO_ROOT"] = "true" # stubbing doesn't work properly here
-      allow(Subforem).to receive(:cached_id_by_domain).and_return(1)
-      allow(Subforem).to receive(:cached_root_domain).and_return("example.com")
+      allow(Subforem).to receive_messages(cached_id_by_domain: 1, cached_root_domain: "example.com")
       get "http://found.example.com"
       expect(response).to have_http_status(:ok)
       expect(response).not_to redirect_to("http://example.com/")
@@ -91,7 +105,7 @@ RSpec.describe "StoriesIndex" do
           cached_root_domain: "example.com",
           cached_root_id: 1,
           cached_default_domain: "default.example.com",
-          cached_default_id: 3
+          cached_default_id: 3,
         )
       end
 
@@ -192,7 +206,8 @@ RSpec.describe "StoriesIndex" do
     end
 
     it "Does not render article with [Boost] as the title" do
-      boost_article = create(:article, title: "[Boost]", score: 1000, featured: true, type_of: "status", body_markdown: "", main_image: "")
+      boost_article = create(:article, title: "[Boost]", score: 1000, featured: true,
+                                       type_of: "status", body_markdown: "", main_image: "")
       non_boost_article = create(:article, title: "Not a boost article", score: 1000, featured: true)
 
       get "/"
@@ -251,31 +266,21 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders billboards when published and approved for sidebar right (first position)" do
-      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
-                              organization: org)
+    it "renders published and approved billboards across sidebar, hero, and footer placements and omits unapproved ads",
+       :aggregate_failures do
+      allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
+      ads = %w[sidebar_right sidebar_right_second sidebar_right_third home_hero footer].map do |area|
+        create(:billboard, published: true, approved: true, placement_area: area, organization: org)
+      end
+      unapproved = create(:billboard, published: true, approved: false, placement_area: "feed_first",
+                                      organization: org)
 
       get "/"
-      expect(response.body).to include(ad.processed_html)
+      ads.each { |ad| expect(response.body).to include(ad.processed_html) }
+      expect(response.body).not_to include(unapproved.processed_html)
     end
 
-    it "renders billboards when published and approved for sidebar right (second position)" do
-      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_second",
-                              organization: org)
-
-      get "/"
-      expect(response.body).to include(ad.processed_html)
-    end
-
-    it "renders billboards when published and approved for sidebar right (third position)" do
-      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_third",
-                              organization: org)
-
-      get "/"
-      expect(response.body).to include(ad.processed_html)
-    end
-
-    it "renders billboards hidden when their placement area is hidden by default" do
+    it "renders billboards hidden when their placement area is hidden by default", :aggregate_failures do
       ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
                               organization: org)
       BillboardPlacementAreaConfig.create!(placement_area: "sidebar_right", hidden_by_default: true)
@@ -283,22 +288,9 @@ RSpec.describe "StoriesIndex" do
       get "/"
       expect(response.body).to include(ad.processed_html)
       expect(response.body).to include('data-placement-area="sidebar_right" data-placement-hidden="true"')
-    end
-
-    it "lets server-rendered billboard scripts queue placement reveals before the application pack loads" do
-      get "/"
       queue_stub_position = response.body.index("window.Forem.queuedBillboardPlacementReveals")
-
       expect(queue_stub_position).to be_present
       expect(queue_stub_position).to be < response.body.index('id="page-content"')
-    end
-
-    it "does not render billboards when not approved" do
-      ad = create(:billboard, published: true, approved: false, placement_area: "sidebar_right",
-                              organization: org)
-
-      get "/"
-      expect(response.body).not_to include(ad.processed_html)
     end
 
     it "renders only one billboard per placement" do
@@ -311,19 +303,6 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(billboard.processed_html).or(include(second_billboard.processed_html))
       expect(response.body).to include("crayons-card crayons-card--secondary crayons-bb").once
       expect(response.body).to include("sponsorship-dropdown-trigger-").once
-    end
-
-    it "renders a hero billboard" do
-      allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
-      billboard = create(:billboard, published: true, approved: true, placement_area: "home_hero", organization: org)
-      get "/"
-      expect(response.body).to include(billboard.processed_html)
-    end
-
-    it "renders a footer billboard" do
-      billboard = create(:billboard, published: true, approved: true, placement_area: "footer", organization: org)
-      get "/"
-      expect(response.body).to include(billboard.processed_html)
     end
 
     it "does not set cache-related headers if private" do
@@ -465,24 +444,17 @@ RSpec.describe "StoriesIndex" do
         )
       end
 
-      it "displays hero html when it exists and is set in config" do
+      it "displays hero html only when configured and approved", :aggregate_failures do
         allow(Settings::Campaign).to receive(:hero_html_variant_name).and_return("hero")
-
         get root_path
         expect(response.body).to include(hero_html.html)
-      end
 
-      it "doesn't display when hero_html_variant_name is not set" do
         allow(Settings::Campaign).to receive(:hero_html_variant_name).and_return("")
-
         get root_path
         expect(response.body).not_to include(hero_html.html)
-      end
 
-      it "doesn't display when hero html is not approved" do
         allow(Settings::Campaign).to receive(:hero_html_variant_name).and_return("hero")
         hero_html.update_column(:approved, false)
-
         get root_path
         expect(response.body).not_to include(hero_html.html)
       end
@@ -506,28 +478,18 @@ RSpec.describe "StoriesIndex" do
 
   describe "GET stories index with timeframe" do
     describe "/latest" do
-      let(:user) { create(:user) }
       let!(:low_score) { create(:article, score: Settings::UserExperience.home_feed_minimum_score - 50) }
 
       before do
         create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 1)
       end
 
-      it "includes a link to Relevant", :aggregate_failures do
+      it "renders Relevant link, signed-out notice, and filters out low-score posts", :aggregate_failures do
         get "/latest"
 
-        expected_tag = "<a data-text=\"Relevant\" href=\"/\""
-        expect(response.body).to include(expected_tag)
-      end
-
-      it "includes message and a link to sign in for signed-out" do
-        get "/latest"
+        expect(response.body).to include('<a data-text="Relevant" href="/"')
         expect(response.body).to include("Some latest posts are only visible for members")
         expect(response.body).to match(/Sign in.*to see all latest/)
-      end
-
-      it "excludes low-score content for signed-out" do
-        get "/latest"
         expect(response.body).not_to include(low_score.title)
       end
     end
@@ -614,7 +576,7 @@ RSpec.describe "StoriesIndex" do
 
         # "Set-Cookie" won't exist if the middleware has deleted it
         # or you might see a blank or partial string. Let's just confirm it's not present:
-        expect(response.headers["Set-Cookie"].to_s).not_to include(ENV["SESSION_KEY"])
+        expect(response.headers["Set-Cookie"].to_s).not_to include(ENV.fetch("SESSION_KEY", nil).to_s)
         expect(response.headers["Set-Cookie"].to_s).not_to include("remember_user_token")
       end
     end
@@ -768,14 +730,10 @@ RSpec.describe "StoriesIndex" do
     end
 
     context "when organization has no readme page" do
-      it "renders the classic show template" do
+      it "renders the classic show template without showcase/all posts tabs", :aggregate_failures do
         get "/#{organization.slug}"
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("sidebar-left")
-      end
-
-      it "does not render showcase/all posts tabs" do
-        get "/#{organization.slug}"
         expect(response.body).not_to include("Organization Profile Navigation")
         expect(response.body).not_to include("Showcase")
         expect(response.body).not_to include("All Posts")
@@ -824,28 +782,34 @@ RSpec.describe "StoriesIndex" do
     context "when organization has a readme page and org_readme flag is enabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
-               title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
-               template: "full_within_layout")
+                      title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
+                      template: "full_within_layout")
         FeatureFlag.add(:org_readme)
         FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
       end
 
       after { FeatureFlag.disable(:org_readme) }
 
-      it "renders the readme show template with showcase tab active" do
+      it "renders the readme show template by default and the classic feed when mode is all-posts",
+         :aggregate_failures do
         get "/#{organization.slug}"
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("<strong>Welcome to our org!</strong>")
         expect(response.body).not_to include("sidebar-left")
-        
-        # Tabs should be present
-        expect(response.body).to include("Organization Profile Navigation")
-        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
-        expect(response.body).to include("Showcase")
-        expect(response.body).to include("All Posts")
+        expect(response.body).to include(
+          "Organization Profile Navigation",
+          "crayons-tabs__item crayons-tabs__item--current",
+          "Showcase",
+          "All Posts",
+        )
+
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("<strong>Welcome to our org!</strong>")
+        expect(response.body).to include("sidebar-left", "Organization Profile Navigation", "Showcase", "All Posts")
       end
 
-      it "uses the editable page title for the showcase tab" do
+      it "uses the editable page title for the showcase tab and falls back when nil", :aggregate_failures do
         organization.main_page.update!(title: "✨ Showcase")
 
         get "/#{organization.slug}"
@@ -856,9 +820,7 @@ RSpec.describe "StoriesIndex" do
         get "/#{organization.slug}", params: { mode: "all-posts" }
         showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
         expect(showcase_tab.text.strip).to eq("✨ Showcase")
-      end
 
-      it "falls back to the translated label for a legacy page without a title" do
         organization.main_page.update_column(:title, nil)
 
         get "/#{organization.slug}"
@@ -867,86 +829,48 @@ RSpec.describe "StoriesIndex" do
         expect(showcase_tab["data-text"]).to eq(I18n.t("views.organizations.showcase"))
       end
 
-      it "renders the classic feed template with all posts tab active when mode is all-posts" do
-        get "/#{organization.slug}", params: { mode: "all-posts" }
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include("<strong>Welcome to our org!</strong>")
-        expect(response.body).to include("sidebar-left")
-
-        # Tabs should be present
-        expect(response.body).to include("Organization Profile Navigation")
-        expect(response.body).to include("Showcase")
-        expect(response.body).to include("All Posts")
-      end
-
-      it "renders the custom page via clean permalink" do
+      it "renders a custom page via clean and custom-domain permalinks and returns 404 when missing",
+         :aggregate_failures do
         create(:page, organization: organization, body_markdown: "**Custom About Us**",
-               title: "About Us", description: "desc", slug: "#{organization.slug}/about",
-               template: "full_within_layout")
+                      title: "About Us", description: "desc", slug: "#{organization.slug}/about",
+                      template: "full_within_layout")
         get "/#{organization.slug}/p/about"
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("<strong>Custom About Us</strong>")
-        expect(response.body).to include("Organization Profile Navigation")
-        expect(response.body).to include("About Us")
-      end
+        expect(response.body).to include(
+          "<strong>Custom About Us</strong>", "Organization Profile Navigation", "About Us"
+        )
 
-      it "returns 404 for nonexistent custom page permalink" do
-        expect {
+        expect do
           get "/#{organization.slug}/p/nonexistent"
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+        end.to raise_error(ActiveRecord::RecordNotFound)
 
-      context "under a custom domain" do
-        before do
-          FeatureFlag.add(:org_custom_domain)
-          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
-          organization.update!(custom_domain: "custom.example.com")
-          allow(Subforem).to receive(:cached_id_by_domain).with("custom.example.com").and_return(nil)
-          create(:page, organization: organization, body_markdown: "**Custom About Us**",
-                 title: "About Us", description: "desc", slug: "#{organization.slug}/about",
-                 template: "full_within_layout")
-        end
+        FeatureFlag.add(:org_custom_domain)
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
+        organization.update!(custom_domain: "custom.example.com")
+        allow(Subforem).to receive(:cached_id_by_domain).with("custom.example.com").and_return(nil)
 
-        after do
-          FeatureFlag.disable(:org_custom_domain)
-        end
-
-        it "renders the custom page via /about permalink" do
-          get "http://custom.example.com/about"
+        ["/about", "/p/about", "/#{organization.slug}/p/about"].each do |path|
+          get "http://custom.example.com#{path}"
           expect(response).to have_http_status(:ok)
           expect(response.body).to include("<strong>Custom About Us</strong>")
         end
-
-        it "renders the custom page via /p/about permalink" do
-          get "http://custom.example.com/p/about"
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("<strong>Custom About Us</strong>")
-        end
-
-        it "renders the custom page via /orgname/p/about permalink" do
-          get "http://custom.example.com/#{organization.slug}/p/about"
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("<strong>Custom About Us</strong>")
-        end
+      ensure
+        FeatureFlag.disable(:org_custom_domain)
       end
     end
 
     context "when organization has a readme page but org_readme flag is disabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
-               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
-               template: "full_within_layout")
+                      title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+                      template: "full_within_layout")
         FeatureFlag.add(:org_readme)
       end
 
-      it "shows classic feed view instead of readme" do
+      it "shows classic feed view without showcase/all posts tabs", :aggregate_failures do
         get "/#{organization.slug}"
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("sidebar-left")
-      end
-
-      it "does not render showcase/all posts tabs" do
-        get "/#{organization.slug}"
         expect(response.body).not_to include("Organization Profile Navigation")
       end
     end

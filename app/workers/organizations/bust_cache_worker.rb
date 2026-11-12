@@ -9,7 +9,6 @@ module Organizations
         EdgeCache::BustOrganization.call(organization, slug)
       else
         EdgeCache::PurgeByKey.call("organizations/#{organization_id}", fallback_paths: "/#{slug}")
-        EdgeCache::CutoverUrlBust.call("/#{slug}")
       end
     end
   end
