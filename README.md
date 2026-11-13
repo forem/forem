@@ -1,5 +1,4 @@
 <div align="center">
-  <br>
   <h1>Forem 🌱</h1>
   <strong>For Empowering Community</strong>
 </div>

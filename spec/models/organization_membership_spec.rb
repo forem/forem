@@ -119,4 +119,45 @@ RSpec.describe OrganizationMembership do
       expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
     end
   end
+
+  describe "invitation notifications" do
+    let(:organization) { create(:organization) }
+    let(:invitee) { create(:user) }
+    let(:inviter) { create(:user) }
+
+    it "enqueues a notification for the invitee when a pending membership is created" do
+      membership = nil
+      sidekiq_assert_enqueued_with(job: Notifications::OrganizationInvitationWorker) do
+        membership = create(:organization_membership, user: invitee, organization: organization,
+                                                      type_of_user: "pending", invited_by: inviter)
+      end
+
+      expect(membership).to be_persisted
+    end
+
+    it "does not notify when the user is added directly as a member" do
+      sidekiq_assert_no_enqueued_jobs(only: Notifications::OrganizationInvitationWorker) do
+        create(:organization_membership, user: invitee, organization: organization, type_of_user: "member")
+      end
+    end
+
+    it "updates the invitee's notification when the invitation is confirmed", :aggregate_failures do
+      membership = create(:organization_membership, user: invitee, organization: organization,
+                                                    type_of_user: "pending")
+      notification = Notifications::OrganizationInvitations::Send.call(membership)
+
+      membership.confirm!
+
+      expect(notification.reload.read).to be(true)
+      expect(notification.json_data.dig("organization_invitation", "status")).to eq("accepted")
+    end
+
+    it "deletes the notification with the membership" do
+      membership = create(:organization_membership, user: invitee, organization: organization,
+                                                    type_of_user: "pending")
+      Notifications::OrganizationInvitations::Send.call(membership)
+
+      expect { membership.destroy }.to change(Notification, :count).by(-1)
+    end
+  end
 end

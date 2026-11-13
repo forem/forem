@@ -277,6 +277,12 @@ Rails.application.routes.draw do
         patch :decline
       end
     end
+    resources :organization_invitations, only: [] do
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
     resources :tags, only: [:index] do
       collection do
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
