@@ -113,6 +113,8 @@ en:
     lead_submission:
       already_submitted: You have already submitted this form.
     page:
+      navigation_organization_only: "can only be turned off for organization pages"
+      navigation_showcase_required: "must stay on for the Showcase page"
       body_must_exist: must exist if body_html or body_json doesn't exist.
       embed_html_invalid_slug: must use the embed path format (<owner>/embed/<slug>).
       embed_html_requires_organization: must belong to an organization or user for embed_html pages.

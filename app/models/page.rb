@@ -26,6 +26,8 @@ class Page < ApplicationRecord
   validate :validate_template_data
   validate :validate_redirect_to_url
 
+  validates :show_in_navigation, inclusion: { in: [true, false] }
+  validate :validate_show_in_navigation
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
@@ -94,7 +96,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id position])
+                         organization_id position show_in_navigation])
   end
 
   def uses_page_template?
@@ -116,6 +118,26 @@ class Page < ApplicationRecord
   end
 
   private
+
+  def validate_show_in_navigation
+    return unless show_in_navigation == false
+    return unless will_save_change_to_show_in_navigation? || will_save_change_to_organization_id?
+
+    # Checked only when the flag or the page's organization changes, so a page whose
+    # organization was deleted (pages are nullified without validation) or that was promoted
+    # to Showcase while hidden still saves.
+    if organization_id.blank?
+      errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
+    elsif showcase_or_first_page?
+      # The header always renders the Showcase tab, so a stored flag has no effect on it.
+      errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
+    end
+  end
+
+  def showcase_or_first_page?
+    main_page = organization&.main_page
+    main_page.nil? || main_page.id == id
+  end
 
   def normalize_embed_html_attributes
     return unless embed_html?

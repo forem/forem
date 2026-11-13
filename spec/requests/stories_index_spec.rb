@@ -767,6 +767,12 @@ RSpec.describe "StoriesIndex" do
     end
 
     context "when organization has a readme page and org_readme flag is enabled" do
+      let(:hidden_page) do
+        create(:page, organization: organization, slug: "#{organization.slug}/talk", position: 2,
+                      title: "Conference Talk", body_markdown: "**Hidden talk content**",
+                      template: "full_within_layout", show_in_navigation: false)
+      end
+
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
                       title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
@@ -841,6 +847,45 @@ RSpec.describe "StoriesIndex" do
           expect(response).to have_http_status(:ok)
           expect(response.body).to include("<strong>Custom About Us</strong>")
         end
+      ensure
+        FeatureFlag.disable(:org_custom_domain)
+      end
+
+      it "omits a hidden page's tab on the Showcase and All Posts views while keeping it public at its permalink",
+         :aggregate_failures do
+        hidden_page
+        create(:page, organization: organization, slug: "#{organization.slug}/docs", position: 1)
+
+        [nil, "all-posts"].each do |mode|
+          get "/#{organization.slug}", params: { mode: mode }
+          nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+          expect(nav.at_css("a[href='/#{organization.slug}/p/talk']")).to be_nil
+          expect(nav.at_css("a[href='/#{organization.slug}/p/docs']")).to be_present
+          expect(nav.at_css(".org-tab-all-posts")["style"]).to include("margin-left: auto")
+        end
+
+        get "/#{organization.slug}/p/talk"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Hidden talk content</strong>")
+        nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+        expect(nav.at_css("a[href='/#{organization.slug}/p/talk']")).to be_nil
+        expect(nav.at_css("a[href='/#{organization.slug}/p/docs']")).to be_present
+      end
+
+      it "keeps a hidden page public at the custom-domain permalink without its tab", :aggregate_failures do
+        hidden_page
+        FeatureFlag.add(:org_custom_domain)
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
+        organization.update!(custom_domain: "custom.example.com")
+        allow(Subforem).to receive(:cached_id_by_domain).with("custom.example.com").and_return(nil)
+
+        get "http://custom.example.com/p/talk"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Hidden talk content</strong>")
+        nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+        expect(nav.at_css("a[href='/p/talk']")).to be_nil
+        expect(nav.at_css("a[href='/']")).to be_present
       ensure
         FeatureFlag.disable(:org_custom_domain)
       end

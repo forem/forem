@@ -344,6 +344,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 type: :integer, format: :int32,
                 description: "Display order position for organization pages"
               },
+              show_in_navigation: {
+                type: :boolean, default: true,
+                description: "Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API."
+              },
               template: {
                 type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
                 description: "Controls what kind of layout the page is rendered in"
