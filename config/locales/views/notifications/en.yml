@@ -103,6 +103,13 @@ en:
         deverification_heading: Verification revoked
         deverification_html: "The verification for %{org} has been revoked because we could no longer find a link back to your organization page on the previously verified URL."
         reverify: Re-verify your organization
+      organization_invitation:
+        accept: Accept
+        decline: Decline
+        invited_by_html: "%{user} invited you to join the %{org} organization"
+        invited_html: "You've been invited to join the %{org} organization"
+        joined: You joined this organization.
+        pending: If you accept, you'll become a member of this organization.
       settings: Settings
       tag:
         heading: "Hey there 👋"
