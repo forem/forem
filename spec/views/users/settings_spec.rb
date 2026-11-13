@@ -40,5 +40,30 @@ RSpec.describe "users/edit" do
         expect(rendered).to have_button(I18n.t("views.settings.org.leave.submit"))
       end
     end
+
+    context "when editing a specific organization's settings" do
+      let(:org) { create(:organization, bg_color_hex: "#e036c4", text_color_hex: "") }
+
+      before do
+        membership = create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+        assign(:tab, "org-admin")
+        assign(:organization, org)
+        assign(:organization_membership, membership)
+        assign(:org_organization_memberships, [membership])
+      end
+
+      it "renders the logo color preview and preserves bg_color_hex", :aggregate_failures do
+        render
+        expect(rendered).to have_css(
+          'input#organization_bg_color_hex[value="#e036c4"][data-preview-property="backgroundColor"]',
+        )
+        expect(rendered).to have_css(
+          'input#organization_text_color_hex[value="#ffffff"][data-preview-property="fill"]',
+        )
+        expect(rendered).to have_css(
+          'svg#color-select-preview-logo[style*="background-color: #e036c4;"][style*="fill: #ffffff;"]',
+        )
+      end
+    end
   end
 end
