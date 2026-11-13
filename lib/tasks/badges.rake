@@ -35,3 +35,21 @@ task :award_fab_five_badges, [:arg1] => :environment do |_t, args|
   Badges::AwardFabFive.call(usernames)
   puts "Done!"
 end
+
+# Full-history backfill of the 4/8/16 week writing streak badges. Idempotent,
+# so it is safe to re-run after creating streak badges that did not exist when
+# the BackfillWritingStreakBadges data update script ran.
+# rake award_streak_badges_backfill
+task award_streak_badges_backfill: :environment do
+  puts "Backfilling writing streak badges across full publishing history..."
+  begin
+    missing = Badges::AwardStreak.backfill
+  rescue Badges::AwardStreak::IncompleteError => e
+    abort "Backfill incomplete, some awards failed: #{e.message}. Re-run to retry the remaining users."
+  end
+  missing.each do |weeks|
+    slugs = Badges::AwardStreak.new(weeks: weeks).candidate_slugs.join(" or ")
+    puts "Skipped #{weeks} week streak: no badge with slug #{slugs}"
+  end
+  puts "Done!"
+end
