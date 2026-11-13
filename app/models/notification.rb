@@ -97,6 +97,14 @@ class Notification < ApplicationRecord
       Notifications::CoAuthorInvitationWorker.perform_async(invitation.id)
     end
 
+    # Queues the notification asking a user to join an organization.
+    #
+    # @param membership [OrganizationMembership] the pending membership
+    # @param inviter_id [Integer, nil]
+    def send_organization_invitation_notification(membership, inviter_id = nil)
+      Notifications::OrganizationInvitationWorker.perform_async(membership.id, inviter_id)
+    end
+
     def send_to_followers(notifiable, action = nil)
       Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
