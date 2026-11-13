@@ -748,6 +748,8 @@ RSpec.describe "StoriesIndex" do
       end
 
       it "renders a dedicated pinned section without repeating the post and hides it if moved", :aggregate_failures do
+        organization.update!(bg_color_hex: "#112233", text_color_hex: "#abcdef")
+
         # A rendered story card references its own "article-link-<id>" DOM id twice
         # (once as the id= attribute itself, once as an aria-labelledby reference to
         # it), so scanning for that bare string gives 2 per card. Match the id=
@@ -758,9 +760,24 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(I18n.t("views.users.pinned"))
         expect(response.body.scan(/id="article-link-#{pinned_article.id}"/).size).to eq(1)
 
+        # The pinned label uses the organization's Brand color 1 / Brand color 2 pair,
+        # not the community accent, so the two colors are always the org's own pairing
+        label = Nokogiri::HTML(response.body).at_css("#substories .crayons-card > header > h3")
+        expect(label.text).to include(I18n.t("views.users.pinned"))
+        expect(label["style"]).to include("background-color: #112233")
+        expect(label["style"]).to match(/(?<!-)color: #abcdef/)
+        expect(label["class"]).not_to include("bg-accent-brand")
+        expect(label["class"]).not_to include("color-base-inverted")
+
+        # Falls back to the default text color when Brand color 2 is blank
+        organization.update!(text_color_hex: nil)
+        get "/#{organization.slug}"
+        label = Nokogiri::HTML(response.body).at_css("#substories .crayons-card > header > h3")
+        expect(label["style"]).to include("background-color: #112233")
+        expect(label["style"]).to match(/(?<!-)color: #ffffff/)
+
         other_org = create(:organization)
         pinned_article.update_column(:organization_id, other_org.id)
-
         get "/#{organization.slug}"
         expect(response.body).not_to include(%(id="article-link-#{pinned_article.id}"))
       end
