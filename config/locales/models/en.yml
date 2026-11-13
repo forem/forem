@@ -116,6 +116,14 @@ en:
       navigation_organization_only: "can only be turned off for organization pages"
       navigation_showcase_required: "must stay on for the Showcase page"
       body_must_exist: must exist if body_html or body_json doesn't exist.
+      embed_html_invalid_slug: must use the embed path format (<owner>/embed/<slug>).
+      embed_html_requires_organization: must belong to an organization or user for embed_html pages.
+      embed_html_template_immutable: cannot be converted to or from embed_html.
+      embed_html_too_large: cannot exceed %{max_kb} KB.
+      multiple_owners_not_allowed: Page cannot belong to both an organization and a user.
+      slug_blank: can't be blank
+      user_embed_pages_limit_reached: You have reached the maximum of %{max} embedded pages.
+      user_page_must_be_embed_html: must be embed_html for user-owned pages.
       redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).
       redirect_to_url_invalid_path: is not a recognized path in this application.
     podcast_episode_appearance:

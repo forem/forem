@@ -51,6 +51,19 @@ fr:
         move_down: Déplacer vers le bas
         move_up_title: "Déplacer %{title} vers le haut"
         move_down_title: "Déplacer %{title} vers le bas"
+        back_to_pages: Retour aux pages
+        embed_section_heading: Pages HTML intégrées (isolées)
+        embed_section_description: Créez des widgets HTML personnalisés et des intégrations interactives uniquement accessibles via une intégration dans un article ou Showcase. Par sécurité, ces pages s'exécutent dans un iframe strictement isolé sans aucun accès aux cookies, au stockage du navigateur ni aux données utilisateur.
+        new_embed_page: Créer une page HTML intégrée
+        edit_embed_page: Modifier la page HTML intégrée
+        no_embed_pages: Aucune page HTML intégrée créée pour le moment. Cliquez sur "Créer une page HTML intégrée" pour commencer.
+        embed_only_badge: Intégration seule · Isolée
+        embed_slug_help: Uniquement des lettres minuscules, des chiffres et des traits d'union (par ex. "calculateur-tarifs"). Non accessible directement par URL — intégrable uniquement via une balise Liquid.
+        embed_content_label: HTML personnalisé (isolé)
+        embed_content_placeholder: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <style>\n      body { font-family: system-ui, sans-serif; margin: 16px; }\n    </style>\n  </head>\n  <body>\n    <h2>Widget interactif</h2>\n    <script>\n      // Exécuté dans une origine opaque strictement isolée (aucun accès aux cookies ou données utilisateur)\n    </script>\n  </body>\n</html>"
+        embed_sandbox_notice_title: Isolation stricte du bac à sable (Sandbox)
+        embed_sandbox_notice_body: "Cette page ne peut être affichée que via les iframes {% embed ... %} ou {% page ... %} et ne peut pas être ouverte directement dans un onglet. Les balises <style>, <script>, les formulaires et les liens target=\"_blank\" sont pris en charge, tandis que les cookies, le stockage du navigateur et les données utilisateur de la page parente sont totalement bloqués."
+        embed_usage_label: Balise d'intégration Liquid
       header_cta:
         heading: Bouton CTA de l'en-tête
         description: "Ajoutez un bouton d'appel à l'action dans l'en-tête de la page de votre organisation. Vous pouvez créer un bouton simple ou un menu déroulant avec plusieurs liens."

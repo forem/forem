@@ -15,8 +15,10 @@ en:
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
           agent_sessions: Agent Sessions (%{num})
+          embed_pages: Embedded Pages (%{num})
           feed_imports: RSS Import Feeds
         agent_sessions: Agent Sessions
+        embed_pages: Embedded Pages
         posts: Posts
         series: Series
         followers: Followers
@@ -31,6 +33,19 @@ en:
         feed_imports: RSS Import Feeds
         for_org: Analytics for %{org}
         upload: Upload a video
+      embed_pages:
+        heading: Embedded Pages
+        section_heading: Sandboxed Embedded HTML Pages
+        section_description: "Create standalone HTML widgets and interactive demos that can only be rendered inside isolated, cookie-free iframes via {% embed %} or {% page %}."
+        new_button: New Embedded Page
+        new_heading: New Embedded HTML Page
+        edit_heading: Edit Embedded HTML Page
+        slug_help: "Lowercase letters, numbers, and hyphens only. Embed in posts with {% embed <url> %} or set a custom height with {% embed <url> 450 %}."
+        empty: "You haven't created any embedded HTML pages yet."
+        confirm_delete: "Are you sure you want to delete this embedded page? Any posts embedding it will stop rendering it."
+        created: Embedded page created.
+        updated: Embedded page updated.
+        deleted: Embedded page deleted.
       analytics:
         meta:
           title: Analytics

@@ -3,13 +3,10 @@ module EdgeCache
     def self.call(tag)
       return unless tag
 
-      tag.purge
-      Tag.purge_supported_tags
-
-      cache_bust = EdgeCache::Bust.new
-      cache_bust.call("/t/#{tag.name}")
-      cache_bust.call("/t/#{tag.name}/")
-      cache_bust.call("/tags")
+      EdgeCache::PurgeByKey.call(
+        [tag.record_key, Tag.table_key, Tag::SUPPORTED_TAGS_SURROGATE_KEY],
+        fallback_paths: ["/t/#{tag.name}", "/t/#{tag.name}/", "/tags"],
+      )
     end
   end
 end

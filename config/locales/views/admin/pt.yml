@@ -569,6 +569,12 @@ pt:
             enable: Habilitar Dofollow
             disable: Desabilitar Dofollow
             enabled_notice: Links dofollow estão habilitados para a página readme desta organização.
+          related_articles:
+            label: API de Artigos Relacionados
+            description: Quando habilitado, os membros desta organização podem chamar a API de artigos relacionados para encontrar publicações públicas da comunidade sobre sua tecnologia.
+            enable: Habilitar Artigos Relacionados
+            disable: Desabilitar Artigos Relacionados
+            enabled_notice: A API de artigos relacionados está habilitada para esta organização.
         bulk_add_users:
           heading: Adicionar Membros em Massa
           description: "Adicione múltiplos usuários a esta organização de uma só vez. Digite uma lista de nomes de usuário separados por vírgula (com ou sem @ e espaços). Membros existentes serão ignorados."

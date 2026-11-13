@@ -308,7 +308,7 @@
           </header>
 
           <div class="grid gap-3 mt-4">
-            <% if @organization.pages.any? %>
+            <% if @organization.ordered_pages.any? %>
               <% @organization.ordered_pages.each do |page| %>
                 <% 
                   is_showcase = page == @organization.main_page

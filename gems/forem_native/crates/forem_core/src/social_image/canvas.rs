@@ -153,6 +153,18 @@ impl Canvas {
         }
         out
     }
+
+    /// Quantizes to 8-bit straight RGBA (`width * height * 4` bytes).
+    pub fn to_rgba8(&self) -> Vec<u8> {
+        let mut out = Vec::with_capacity(self.width * self.height * 4);
+        for p in &self.pixels {
+            out.push(quantize8(p.r));
+            out.push(quantize8(p.g));
+            out.push(quantize8(p.b));
+            out.push(quantize8(p.a));
+        }
+        out
+    }
 }
 
 /// Straight-alpha source-over, matching ImageMagick's `MagickCompositeOver` /

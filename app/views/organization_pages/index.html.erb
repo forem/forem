@@ -9,74 +9,127 @@
     </div>
   </div>
 
-  <% if @pages.any? %>
-    <div class="crayons-card crayons-card--content-rows">
-      <h2><%= t("views.organization_settings.pages.your_pages") %></h2>
-      <p class="color-base-60 fs-s mt-1"><%= t("views.organization_settings.pages.order_help") %></p>
-      <div class="grid gap-4 mt-4">
-        <% custom_pages = @pages.reject { |page| page == @showcase_page } %>
-        <% custom_index_map = custom_pages.each_with_index.to_h %>
-        <% @pages.each do |page| %>
-          <% 
-            is_showcase = page == @showcase_page
-            suffix = page.slug.split("/").last
-            custom_index = custom_index_map[page]
-          %>
-          <div class="crayons-card crayons-card--secondary p-4 flex items-start justify-between gap-4">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <h3 class="crayons-subtitle-2"><%= page.title %></h3>
-                <%
-                  is_custom_domain = request.env["forem.custom_domain_org"].present?
-                  page_url = is_showcase ? (is_custom_domain ? "/" : "/#{@organization.slug}") : (is_custom_domain ? "/p/#{suffix}" : "/#{@organization.slug}/p/#{suffix}")
-                %>
-                <% if is_showcase %>
-                  <%= link_to t("views.organization_settings.pages.showcase"), page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "background: var(--accent-brand-a10); color: var(--accent-brand); text-decoration: none;" %>
-                <% else %>
-                  <%= link_to "/#{suffix}", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "font-family: var(--ff-monospace); text-decoration: none;" %>
-                <% end %>
-                <% unless is_showcase || page.show_in_navigation? %>
-                  <span class="c-indicator"><%= t("views.organization_settings.pages.hidden_from_tabs") %></span>
-                <% end %>
-              </div>
-              <p class="fs-s color-base-60 mb-0"><%= page.description %></p>
-            </div>
-            <div class="flex gap-2 shrink-0">
-              <% if is_showcase %>
-                <span class="color-base-60 fs-s self-center mr-2"><%= t("views.organization_settings.pages.pinned_first") %></span>
-              <% else %>
-                <div class="flex gap-1" role="group" aria-label="<%= t("views.organization_settings.pages.reorder", title: page.title) %>">
-                  <%= button_to "↑",
-                                reorder_organization_page_path(@organization.slug, page),
-                                method: :patch,
-                                params: { direction: "up" },
-                                class: "crayons-btn crayons-btn--secondary crayons-btn--xs",
-                                form: { class: "inline-block" },
-                                disabled: custom_index&.zero?,
-                                title: t("views.organization_settings.pages.move_up"),
-                                aria: { label: t("views.organization_settings.pages.move_up_title", title: page.title) } %>
-                  <%= button_to "↓",
-                                reorder_organization_page_path(@organization.slug, page),
-                                method: :patch,
-                                params: { direction: "down" },
-                                class: "crayons-btn crayons-btn--secondary crayons-btn--xs",
-                                form: { class: "inline-block" },
-                                disabled: custom_index == custom_pages.length - 1,
-                                title: t("views.organization_settings.pages.move_down"),
-                                aria: { label: t("views.organization_settings.pages.move_down_title", title: page.title) } %>
+  <%# ── Top-Level Markdown Pages (Showcase & Profile Tabs) ── %>
+  <section id="section-markdown-pages">
+    <% if @pages.any? %>
+      <div class="crayons-card crayons-card--content-rows">
+        <h2><%= t("views.organization_settings.pages.your_pages") %></h2>
+        <p class="color-base-60 fs-s mt-1"><%= t("views.organization_settings.pages.order_help") %></p>
+        <div class="grid gap-4 mt-4">
+          <% custom_pages = @pages.reject { |page| page == @showcase_page } %>
+          <% custom_index_map = custom_pages.each_with_index.to_h %>
+          <% @pages.each do |page| %>
+            <%
+              is_showcase = page == @showcase_page
+              suffix = page.slug.split("/").last
+              custom_index = custom_index_map[page]
+            %>
+            <div class="crayons-card crayons-card--secondary p-4 flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="crayons-subtitle-2"><%= page.title %></h3>
+                  <%
+                    is_custom_domain = request.env["forem.custom_domain_org"].present?
+                    page_url = is_showcase ? (is_custom_domain ? "/" : "/#{@organization.slug}") : (is_custom_domain ? "/p/#{suffix}" : "/#{@organization.slug}/p/#{suffix}")
+                  %>
+                  <% if is_showcase %>
+                    <%= link_to t("views.organization_settings.pages.showcase"), page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "background: var(--accent-brand-a10); color: var(--accent-brand); text-decoration: none;" %>
+                  <% else %>
+                    <%= link_to "/#{suffix}", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "font-family: var(--ff-monospace); text-decoration: none;" %>
+                  <% end %>
+                  <% unless is_showcase || page.show_in_navigation? %>
+                    <span class="c-indicator"><%= t("views.organization_settings.pages.hidden_from_tabs") %></span>
+                  <% end %>
                 </div>
-              <% end %>
-              <%= link_to t("views.organization_settings.pages.edit"), edit_organization_page_path(@organization.slug, page), class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
-              <%= button_to t("views.organization_settings.lead_forms.delete"), organization_page_path(@organization.slug, page), method: :delete, data: { confirm: t("views.organization_settings.pages.confirm_delete") }, class: "crayons-btn crayons-btn--danger crayons-btn--xs" %>
+                <p class="fs-s color-base-60 mb-0"><%= page.description %></p>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <% if is_showcase %>
+                  <span class="color-base-60 fs-s self-center mr-2"><%= t("views.organization_settings.pages.pinned_first") %></span>
+                <% else %>
+                  <div class="flex gap-1" role="group" aria-label="<%= t("views.organization_settings.pages.reorder", title: page.title) %>">
+                    <%= button_to "↑",
+                                  reorder_organization_page_path(@organization.slug, page),
+                                  method: :patch,
+                                  params: { direction: "up" },
+                                  class: "crayons-btn crayons-btn--secondary crayons-btn--xs",
+                                  form: { class: "inline-block" },
+                                  disabled: custom_index&.zero?,
+                                  title: t("views.organization_settings.pages.move_up"),
+                                  aria: { label: t("views.organization_settings.pages.move_up_title", title: page.title) } %>
+                    <%= button_to "↓",
+                                  reorder_organization_page_path(@organization.slug, page),
+                                  method: :patch,
+                                  params: { direction: "down" },
+                                  class: "crayons-btn crayons-btn--secondary crayons-btn--xs",
+                                  form: { class: "inline-block" },
+                                  disabled: custom_index == custom_pages.length - 1,
+                                  title: t("views.organization_settings.pages.move_down"),
+                                  aria: { label: t("views.organization_settings.pages.move_down_title", title: page.title) } %>
+                  </div>
+                <% end %>
+                <%= link_to t("views.organization_settings.pages.edit"), edit_organization_page_path(@organization.slug, page), class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
+                <%= button_to t("views.organization_settings.lead_forms.delete"), organization_page_path(@organization.slug, page), method: :delete, data: { confirm: t("views.organization_settings.pages.confirm_delete") }, class: "crayons-btn crayons-btn--danger crayons-btn--xs" %>
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
+    <% else %>
+      <div class="crayons-card p-8 text-center color-base-60">
+        <p><%= t("views.organization_settings.pages.no_pages") %></p>
+        <%= link_to t("views.organization_settings.pages.new_page"), new_organization_page_path(@organization.slug), class: "crayons-btn mt-4" %>
+      </div>
+    <% end %>
+  </section>
+
+  <%# ── Separate Section: Embed-Only Sandboxed HTML Pages ── %>
+  <section id="section-embed-pages" class="mt-6">
+    <div class="crayons-card crayons-card--content-rows">
+      <div class="flex items-start justify-between flex-wrap gap-3">
+        <div class="flex-1">
+          <h2><%= t("views.organization_settings.pages.embed_section_heading") %></h2>
+          <p class="color-base-60 fs-s mt-1 mb-0"><%= t("views.organization_settings.pages.embed_section_description") %></p>
+        </div>
+        <%= link_to t("views.organization_settings.pages.new_embed_page"), new_organization_page_path(@organization.slug, kind: "embed"), class: "crayons-btn crayons-btn--secondary shrink-0" %>
+      </div>
+
+      <% if @embed_pages.any? %>
+        <div class="grid gap-4 mt-4">
+          <% @embed_pages.each do |embed_page| %>
+            <%
+              embed_suffix = embed_page.slug.split("/").last
+              embed_url = URL.url("/#{@organization.slug}/embed/#{embed_suffix}")
+            %>
+            <div class="crayons-card crayons-card--secondary p-4 flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h3 class="crayons-subtitle-2"><%= embed_page.title %></h3>
+                  <span class="crayons-tag crayons-tag--monochrome fs-xs">
+                    <%= t("views.organization_settings.pages.embed_only_badge") %>
+                  </span>
+                </div>
+                <p class="fs-s color-base-60 mb-2"><%= embed_page.description %></p>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <code class="crayons-code fs-xs">{% embed <%= embed_url %> %}</code>
+                  <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s"
+                          onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.trim());
+                                   this.textContent='Copied!';
+                                   setTimeout(function(){this.textContent='<%= j t("views.organization_settings.lead_forms.copy_embed") %>';}.bind(this), 1500);">
+                    <%= t("views.organization_settings.lead_forms.copy_embed") %>
+                  </button>
+                </div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <%= link_to t("views.organization_settings.pages.edit"), edit_organization_page_path(@organization.slug, embed_page), class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
+                <%= button_to t("views.organization_settings.lead_forms.delete"), organization_page_path(@organization.slug, embed_page), method: :delete, data: { confirm: t("views.organization_settings.pages.confirm_delete") }, class: "crayons-btn crayons-btn--danger crayons-btn--xs" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="color-base-60 fs-s mt-3 mb-0"><%= t("views.organization_settings.pages.no_embed_pages") %></p>
+      <% end %>
     </div>
-  <% else %>
-    <div class="crayons-card p-8 text-center color-base-60">
-      <p><%= t("views.organization_settings.pages.no_pages") %></p>
-      <%= link_to t("views.organization_settings.pages.new_page"), new_organization_page_path(@organization.slug), class: "crayons-btn mt-4" %>
-    </div>
-  <% end %>
+  </section>
 </div>

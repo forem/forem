@@ -226,6 +226,30 @@ RSpec.describe ReactionHandler, type: :service do
           expect(result.action).to eq("create")
         end
       end
+
+      it "reuses current_user and skips loading the article author or organization when notification is skipped",
+         :aggregate_failures do
+        org = create(:organization)
+        org_article = create(:article, organization: org, with_tags: false, with_main_image: false)
+        bookmark_params = { reactable_id: org_article.id, reactable_type: "Article", category: "readinglist" }
+        user
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          res = described_class.new(bookmark_params, current_user: user).toggle
+          expect(res.reaction.association(:user)).to be_loaded
+          expect(res.reaction.user).to equal(user)
+          expect(res.reaction.reactable.association(:user)).not_to be_loaded
+          expect(res.reaction.reactable.association(:organization)).not_to be_loaded
+        end
+
+        expect(queries.grep(/\ASELECT "users"\.\* FROM "users"/i)).to be_empty
+        expect(queries.grep(/\ASELECT "organizations"\.\* FROM "organizations"/i)).to be_empty
+        expect(queries.grep(/super_moderator/i)).to be_empty
+      end
     end
 
     context "when there's an existing/matching reaction by user" do

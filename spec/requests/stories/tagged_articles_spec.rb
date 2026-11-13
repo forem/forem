@@ -42,12 +42,36 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
 
             # articles/139
-            expected_surrogate_key_headers = ["articles/#{Article.last.id} tags/#{tag.id}"]
+            expected_surrogate_key_headers = ["articles/#{Article.last.id} tags/#{tag.id} tag-#{tag.name}-home"]
             expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
           end
 
           def sets_nginx_headers
             expect(response.headers["X-Accel-Expires"]).to eq("86400")
+          end
+
+          it "tags timeframe and latest tag feeds with dedicated surrogate keys", :aggregate_failures do
+            article
+
+            get "/t/#{tag.name}/top/week"
+            expect(response.headers["Surrogate-Key"].split).to include(
+              article.record_key, tag.record_key, "tag-#{tag.name}-top-week"
+            )
+
+            get "/t/#{tag.name}/latest"
+            expect(response.headers["Surrogate-Key"].split).to include(
+              article.record_key, tag.record_key, "tag-#{tag.name}-latest"
+            )
+          end
+
+          it "tags alias redirects with the aliased tag surrogate key", :aggregate_failures do
+            aliased_tag = create(:tag, name: "jsalias", alias_for: tag.name)
+
+            get "/t/#{aliased_tag.name}"
+            expect(response).to have_http_status(:moved_permanently)
+            expect(response.headers["Surrogate-Key"].split).to include(
+              aliased_tag.record_key, "tag-#{aliased_tag.name}-home"
+            )
           end
         end
 
@@ -73,6 +97,24 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(response.body).to include(CGI.escapeHTML(article.title))
           expect(queries).not_to be_empty
           expect(queries.grep(/processed_html/)).to be_empty
+        end
+
+        it "keeps featured, favorited and min-score stories in the default feed via an unindexed score arm",
+           :aggregate_failures do
+          allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(10)
+          featured = create(:article, user: user, tags: tag.name, featured: true, score: 0)
+          favorited = create(:article, user: user, tags: tag.name, favorited_by_user_id: user.id, score: 0)
+          scored = create(:article, user: user, tags: tag.name, score: 10)
+          create(:article, user: user, tags: tag.name, score: 9)
+          queries = []
+          callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("hotness_score") }
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/t/#{tag.name}" }
+
+          expect(response).to have_http_status(:ok)
+          expect(controller.instance_variable_get(:@stories).map(&:id))
+            .to contain_exactly(featured.id, favorited.id, scored.id)
+          expect(queries.first).to include("(articles.score + 0) >=")
+          expect(queries.first).not_to include('"articles"."score" >=')
         end
 
         it "renders page when tag is not supported but has at least one approved article" do

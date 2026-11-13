@@ -51,6 +51,19 @@ pt:
         move_down: Mover para baixo
         move_up_title: "Mover %{title} para cima"
         move_down_title: "Mover %{title} para baixo"
+        back_to_pages: Voltar às páginas
+        embed_section_heading: Páginas HTML incorporadas (isoladas)
+        embed_section_description: Crie widgets HTML personalizados e incorporações interativas que só podem ser exibidos dentro de artigos ou páginas Showcase. Por segurança, essas páginas são executadas em um iframe estritamente isolado sem acesso a cookies, armazenamento do navegador ou dados de usuários.
+        new_embed_page: Criar página HTML incorporada
+        edit_embed_page: Editar página HTML incorporada
+        no_embed_pages: Nenhuma página HTML incorporada criada ainda. Clique em "Criar página HTML incorporada" para começar.
+        embed_only_badge: Apenas incorporação · Isolada
+        embed_slug_help: Apenas letras minúsculas, números e hifens (ex. "calculadora-precos"). Não acessível diretamente por URL — incorporável apenas via tag Liquid.
+        embed_content_label: HTML personalizado (isolado)
+        embed_content_placeholder: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <style>\n      body { font-family: system-ui, sans-serif; margin: 16px; }\n    </style>\n  </head>\n  <body>\n    <h2>Widget interativo</h2>\n    <script>\n      // Executado em uma origem opaca estritamente isolada (sem acesso a cookies ou dados do usuário)\n    </script>\n  </body>\n</html>"
+        embed_sandbox_notice_title: Isolamento estrito de Sandbox
+        embed_sandbox_notice_body: "Esta página só pode ser visualizada via iframes {% embed ... %} ou {% page ... %} e não pode ser aberta diretamente em uma guia do navegador. Tags <style>, <script>, formulários e links target=\"_blank\" são suportados, enquanto cookies, armazenamento do navegador e dados do usuário da página pai são completamente bloqueados."
+        embed_usage_label: Tag Liquid de incorporação
       header_cta:
         heading: Botão CTA do Cabeçalho
         description: "Adicione um botão de chamada para ação no cabeçalho da página da sua organização. Você pode criar um botão simples ou um menu suspenso com vários links."

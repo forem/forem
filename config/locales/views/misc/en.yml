@@ -112,6 +112,7 @@ en:
         views: Views
       reactions_history: "Reactions History"
       by: by
+      gem: Gem
       top_contributors:
         heading: Top Engagers
     sticky:

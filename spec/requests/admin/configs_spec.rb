@@ -38,7 +38,7 @@ RSpec.describe "/admin/customization/config" do
       end
 
       it "updates settings admin action taken and expires cached agent guidance", :aggregate_failures do
-        allow(EdgeCache::Bust).to receive(:call)
+        allow(EdgeCache::PurgeByKey).to receive(:call)
 
         expect do
           post admin_settings_general_settings_path, params: {
@@ -46,7 +46,7 @@ RSpec.describe "/admin/customization/config" do
           }
         end.to change(Settings::General, :admin_action_taken_at)
 
-        expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with("llms_page", fallback_paths: "/llms.txt")
       end
 
       describe "API tokens" do
@@ -168,7 +168,7 @@ RSpec.describe "/admin/customization/config" do
 
       describe "Community Content" do
         it "updates community settings and expires cached agent guidance", :aggregate_failures do
-          allow(EdgeCache::Bust).to receive(:call)
+          allow(EdgeCache::PurgeByKey).to receive(:call)
           allow(Settings::Community).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"
           name_magoo = "Hey hey #{rand(100)}"
@@ -185,7 +185,7 @@ RSpec.describe "/admin/customization/config" do
             }
           }
 
-          expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
+          expect(EdgeCache::PurgeByKey).to have_received(:call).with("llms_page", fallback_paths: "/llms.txt")
           expect(Settings::Community.community_description).to eq(description)
           expect(Settings::Community.community_name).to eq(name_magoo)
           expect(Settings::Community.member_label).to eq("developer")

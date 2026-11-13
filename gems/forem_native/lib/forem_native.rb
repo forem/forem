@@ -10,34 +10,43 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
+  LATEST_NATIVE_SYMBOL = :image_convert_to_png_checked
+  PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
+  PROFILE_AVATAR_STYLE_KEYS = %i[
+    backdrop outfit arm head topper eyes accessory cheeks mouth
+  ].freeze
   @native_loaded = false
 
   class << self
     def load_native!
-      return true if @native_loaded && defined?(Native)
+      return true if @native_loaded && defined?(Native) && Native.respond_to?(LATEST_NATIVE_SYMBOL)
 
-      # 1. If a local `cargo build --release` has already produced an artifact in `target/release`
-      #    (and no precompiled or staged binary is present yet), stage it into `lib/forem_native/`.
-      if !Builder.precompiled_binary_exists? && File.exist?(Builder.cargo_artifact_path)
+      # 1. If a local `cargo build --release` has already produced an up-to-date artifact in
+      #    `target/release` (and no fresh staged/precompiled binary is present yet), stage it.
+      if ENV["FOREM_NATIVE_SKIP_BUILD"] != "1" &&
+          !Builder.fresh_binary_exists?(LATEST_NATIVE_SYMBOL) &&
+          Builder.binary_exports_symbol?(Builder.cargo_artifact_path, LATEST_NATIVE_SYMBOL)
         Builder.install_built_artifact!
       end
 
-      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary.
-      if require_candidate_binary
+      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary
+      #    that exports `LATEST_NATIVE_SYMBOL` (checked before `require` so a stale binary is
+      #    never cached in `$LOADED_FEATURES` / `dlopen` prior to auto-compilation).
+      if require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
-      # 3. If no binary is present on disk yet (e.g. an exotic platform),
-      #    compile the Rust workspace automatically via `cargo` and load it.
-      if Builder.compile! && require_candidate_binary
+      # 3. If no up-to-date binary is present on disk yet and `cargo` is available, compile the
+      #    Rust workspace automatically and load the freshly staged build.
+      if Builder.compile! && require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
       raise LoadError,
-            "Failed to load ForemNative Rust extension for #{RUBY_PLATFORM}. " \
-            "Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
+            "Failed to load up-to-date ForemNative Rust extension (requiring #{LATEST_NATIVE_SYMBOL}) " \
+            "for #{RUBY_PLATFORM}. Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
     end
 
     # Returns true when the compiled Rust `magnus` extension is loaded and active.
@@ -1535,6 +1544,159 @@ module ForemNative
       target
     end
 
+    # Renders a nested comment tree (`CommentsHelper#nested_comments`) and its full partial
+    # hierarchy in a single native pass, returning `[html, current_comment_index, shown_billboard]`
+    # or `nil` when any input falls outside the native domain.
+    def render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+      return unless Native.respond_to?(:render_comment_tree)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && nodes_flat.is_a?(Array)
+      return unless root_count.is_a?(Integer) && root_count >= 0
+
+      Native.render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+    end
+
+    # Renders a `<a class="crayons-tag ...">` pill matching `ApplicationHelper#render_tag_link`
+    # byte-for-byte, or `nil` when any argument is a String subclass (`SafeBuffer`), non-UTF-8,
+    # an empty/`/`-containing route segment, or a malformed `#rrggbb` color hex.
+    def render_tag_link(tag_name, tag_route, bg_color_hex, filled: false, monochrome: false,
+                        classes: "", path_suffix: "")
+      return unless Native.respond_to?(:render_tag_link)
+      return unless tag_name.instance_of?(String) && tag_route.instance_of?(String) &&
+        bg_color_hex.instance_of?(String) && classes.instance_of?(String) && path_suffix.instance_of?(String)
+
+      Native.render_tag_link(
+        tag_name,
+        tag_route,
+        bg_color_hex,
+        filled ? true : false,
+        monochrome ? true : false,
+        classes,
+        path_suffix,
+      )
+    end
+
+    # Renders `1..=N` story cards matching `app/views/articles/_single_story.html.erb` into a
+    # single UTF-8 HTML buffer, or `nil` when any input falls outside the native domain.
+    def render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+      return unless Native.respond_to?(:render_story_cards)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && orgs_flat.is_a?(Array) && cards_flat.is_a?(Array)
+
+      Native.render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+    end
+
+    # Renders a deterministic `400x400` 8-bit RGB PNG mascot avatar from `traits`
+    # (`{ palette: { bg:, halo:, ... }, backdrop:, outfit:, arm:, head:, topper:, eyes:,
+    # accessory:, cheeks:, mouth: }`), replacing `MiniMagick::Tool::Convert` in
+    # `Images::ProfileImageGenerator`.
+    def render_profile_image_png(traits)
+      raise ArgumentError, "traits must be a Hash" unless traits.is_a?(Hash)
+
+      palette = traits[:palette] || traits["palette"]
+      raise ArgumentError, "traits[:palette] must be a Hash" unless palette.is_a?(Hash)
+
+      flat = PROFILE_AVATAR_PALETTE_KEYS.map do |key|
+        (palette.key?(key) ? palette[key] : palette[key.to_s]).to_s
+      end
+      PROFILE_AVATAR_STYLE_KEYS.each do |key|
+        flat << (traits.key?(key) ? traits[key] : traits[key.to_s]).to_s
+      end
+
+      Native.render_profile_image_png(flat)
+    end
+
+    # Inspects raw image bytes without full pixel decompression, returning
+    # `{ format: String, width: Integer, height: Integer, frame_count: Integer,
+    # exif_orientation: Integer }`. Raises `ArgumentError` on unrecognized or corrupt bytes.
+    def image_inspect(bytes)
+      fmt, width, height, frame_count, exif_orientation = Native.image_inspect(bytes.to_s)
+      {
+        format: fmt,
+        width: width,
+        height: height,
+        frame_count: frame_count,
+        exif_orientation: exif_orientation
+      }
+    end
+
+    # Inspects an image file at `path`, returning the `image_inspect` Hash.
+    def image_inspect_file(path)
+      image_inspect(File.binread(path.to_s))
+    end
+
+    # Counts animation frames / container pages in the image file at `path`.
+    def image_frame_count(path)
+      image_inspect_file(path)[:frame_count]
+    end
+
+    # Strips EXIF/XMP/IPTC/comment/trailing metadata (losslessly when EXIF orientation is `1`,
+    # or orienting pixels and re-encoding when EXIF orientation is `2..=8`) for images with
+    # `<= frame_strip_max` frames. Returns modified binary `String` or `nil` when unchanged.
+    def image_strip_and_auto_orient(bytes, frame_strip_max: 150)
+      Native.image_strip_and_auto_orient(bytes.to_s, frame_strip_max.to_i)
+    end
+
+    # Strips metadata and applies EXIF orientation in-place at `path` when modified.
+    # Returns `true` when the file was updated, or `false` when already clean / skipped.
+    def strip_and_auto_orient_file!(path, frame_strip_max: 150)
+      file_path = path.to_s
+      updated = image_strip_and_auto_orient(File.binread(file_path), frame_strip_max: frame_strip_max)
+      return false if updated.nil?
+
+      File.binwrite(file_path, updated)
+      true
+    end
+
+    # Resizes to cover `width x height` and crops according to `gravity` (`"Center"`, `"North"`,
+    # `"South"`, `"East"`, `"West"`, etc.), returning `[encoded_bytes, format_str]`.
+    def image_resize_to_fill(bytes, width, height, gravity = "Center", font_path: nil)
+      Native.image_resize_to_fill(
+        bytes.to_s,
+        width.to_i,
+        height.to_i,
+        gravity.to_s,
+        font_path&.to_s,
+      )
+    end
+
+    # Downscales proportionally so dimensions do not exceed `max_width x max_height` (never
+    # upscaling smaller images), returning `[encoded_bytes, format_str]`.
+    def image_resize_to_limit(bytes, max_width, max_height, font_path: nil)
+      Native.image_resize_to_limit(
+        bytes.to_s,
+        max_width&.to_i,
+        max_height&.to_i,
+        font_path&.to_s,
+      )
+    end
+
+    # Decodes any supported raster or SVG image and encodes it as an 8-bit PNG (preserving alpha).
+    # Pass `reject_blank: true` to raise `ArgumentError` if the decoded canvas has no visible pixels.
+    def image_convert_to_png(bytes, font_path: nil, reject_blank: false)
+      Native.image_convert_to_png_checked(
+        bytes.to_s,
+        font_path&.to_s,
+        reject_blank ? true : false,
+      )
+    end
+
+    # Resizes an image to fit within `width x height` and encodes as PNG (`Images::GenerateSubforemImages`).
+    def subforem_resize_png(bytes, width, height, font_path: nil)
+      Native.subforem_resize_png(bytes.to_s, width.to_i, height.to_i, font_path&.to_s)
+    end
+
+    # Composites `logo_bytes` (`300x300` fit at `+350+100`) over `background_bytes` (cropped to
+    # `1000x500` when `custom_background` is true) and encodes as PNG (`Images::GenerateSubforemImages`).
+    def subforem_social_image_png(logo_bytes, background_bytes, custom_background: false, font_path: nil)
+      Native.subforem_social_image_png(
+        logo_bytes.to_s,
+        background_bytes.to_s,
+        custom_background ? true : false,
+        font_path&.to_s,
+      )
+    end
+
     private
 
     def coerce_social_canvas(image)
@@ -1560,18 +1722,35 @@ module ForemNative
       end
     end
 
-    def require_candidate_binary
-      candidates = ["forem_native/forem_native"] +
-        Builder.platform_candidates.map { |dir| "forem_native/#{dir}/forem_native" }
+    def candidate_binaries
+      [["forem_native/forem_native", Builder.extension_binary_path]] +
+        Builder.platform_candidates.map do |dir|
+          ["forem_native/#{dir}/forem_native", Builder.extension_binary_path(platform_dir: dir)]
+        end
+    end
 
-      candidates.each do |candidate|
-        require candidate
-        return true if defined?(ForemNative::Native)
+    def require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      candidate_binaries.each do |require_name, binary_path|
+        next unless File.file?(binary_path)
+        next if require_symbol && !Builder.binary_exports_symbol?(binary_path, require_symbol)
+
+        require require_name
+        return true if defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol))
       rescue LoadError
         next
       end
 
       false
+    end
+
+    def require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      staged_path = Builder.extension_binary_path
+      return false if require_symbol && !Builder.binary_exports_symbol?(staged_path, require_symbol)
+
+      require "forem_native/forem_native"
+      defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol)) ? true : false
+    rescue LoadError
+      require_candidate_binary(require_symbol: require_symbol)
     end
   end
 end

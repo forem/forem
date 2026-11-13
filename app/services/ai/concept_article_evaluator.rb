@@ -20,7 +20,7 @@ module Ai
       @concept = concept
       @article = article
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_user: article.user,
                                 affected_content: article)
@@ -29,7 +29,7 @@ module Ai
     # Asks the AI if the article is appropriate/relevant for the concept.
     # @return [Boolean, nil] true if appropriate, false if inappropriate, nil if AI evaluation fails.
     def appropriate?
-      return appropriateness_via_jev if @selection.jev?
+      return appropriateness_via_jev if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -44,8 +44,8 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def appropriateness_via_jev
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @article.user,
-                                        affected_content: @article)
+      client = @selection.decision_client(wrapper: self, affected_user: @article.user,
+                                          affected_content: @article)
       state = {
         concept: { name: @concept.name, description: @concept.description.presence || "No description provided." },
         article: { title: @article.title, body: @article.body_markdown.to_s.truncate(2000) }

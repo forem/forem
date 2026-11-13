@@ -132,6 +132,31 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
     end
   end
 
+  describe "#call with Gemini Decision selected" do
+    let(:markdown) { "```\ndef hello\n  puts 'hi'\nend\n```\n\nText\n\n```\nconst x = 1;\n```" }
+    let(:service) { described_class.new(article) }
+
+    before { enable_gemini_decision_for(:code_block_language_detection) }
+
+    it "detects code block languages via Gemini Decision" do
+      stub_gemini_decision do |state|
+        { language: state[:code].start_with?("def") ? ["ruby", 0.9] : ["javascript", 0.8] }
+      end
+
+      expect(service.call).to be(true)
+      expect(article.reload.body_markdown).to include("```ruby").and include("```javascript")
+    end
+
+    it "leaves the article unchanged when the Gemini Decision circuit breaker is open" do
+      client = instance_double(Ai::GeminiDecision::Client)
+      allow(Ai::GeminiDecision::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::GeminiDecision::Client::CircuitOpenError, "open")
+
+      expect { expect(service.call).to be(false) }.not_to(change { article.reload.body_markdown })
+      expect(client).to have_received(:evaluate).once
+    end
+  end
+
   describe ".language_criteria and language normalization" do
     let(:markdown) { "```\nputs 1\n```" }
 

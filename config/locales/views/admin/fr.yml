@@ -661,6 +661,12 @@ fr:
             enable: Activer Dofollow
             disable: Désactiver Dofollow
             enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+          related_articles:
+            label: API Articles Associés
+            description: Lorsque activé, les membres de cette organisation peuvent appeler l'API des articles associés pour trouver des écrits publics de la communauté sur leur technologie.
+            enable: Activer Articles Associés
+            disable: Désactiver Articles Associés
+            enabled_notice: L'API des articles associés est activée pour cette organisation.
         bulk_add_users:
           heading: Ajouter des membres en bloc
           description: "Ajoutez plusieurs utilisateurs à cette organisation en une seule fois. Entrez une liste de noms d'utilisateur séparés par des virgules (avec ou sans @ et espaces). Les membres existants seront ignorés."
