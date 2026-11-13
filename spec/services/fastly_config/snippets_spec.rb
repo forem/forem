@@ -50,6 +50,17 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
           content: include('table.lookup(forem_edge, "cloudflare_secret", "")'),
         ),
       )
+      expect(fastly).to have_received(:create).with(
+        Fastly::Snippet,
+        hash_including(
+          name: "Stale while revalidate controls",
+          content: satisfy do |vcl|
+            vcl.include?('set beresp.http.Surrogate-Control = "max-age=30";') &&
+              vcl.include?("beresp.status != 429") &&
+              vcl.include?("(private|no-store)")
+          end,
+        ),
+      )
     end
 
     it "replaces table.lookup with its default value when the referenced Fastly dictionary does not exist" do

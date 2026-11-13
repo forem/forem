@@ -6,9 +6,11 @@ module Api
 
       def index
         @pages = if params[:organization_id].present?
-                   Page.where(organization_id: params[:organization_id]).order(:position, :created_at, :id)
+                   Page.non_embed_html
+                     .where(organization_id: params[:organization_id])
+                     .order(:position, :created_at, :id)
                  else
-                   Page.all
+                   Page.non_embed_html
                  end
         render json: @pages
       end
@@ -115,6 +117,7 @@ module Api
 
       def set_page
         @page = Page.find(params[:id])
+        raise ActiveRecord::RecordNotFound if @page.is_a?(Page) && @page.embed_html?
       end
 
       def page_admin?
@@ -130,7 +133,7 @@ module Api
       end
 
       def build_org_page
-        is_first_page = !@organization.pages.exists?
+        is_first_page = !@organization.ordered_pages.exists?
         @page = @organization.pages.build(org_admin_permitted_params)
         @page.template = "full_within_layout"
 
@@ -151,7 +154,7 @@ module Api
                          elsif params[:position].present?
                            [params[:position].to_i, 1].max
                          else
-                           [(@organization.pages.maximum(:position) || 0) + 1, 1].max
+                           [(@organization.ordered_pages.maximum(:position) || 0) + 1, 1].max
                          end
         @page.description = @organization.summary.presence || @organization.name if @page.description.blank?
       end
@@ -195,7 +198,7 @@ module Api
       end
 
       def org_admin_permitted_params
-        params.permit(:title, :description, :body_markdown)
+        params.permit(:title, :description, :body_markdown, :show_in_navigation)
       end
 
       def permitted_params
@@ -204,7 +207,7 @@ module Api
         end
         params.permit(*%i[title slug description is_top_level_path subforem_id
                           body_json body_markdown body_html body_css remote_social_image_url
-                          template redirect_to_url organization_id position])
+                          template redirect_to_url organization_id position show_in_navigation])
       end
     end
   end

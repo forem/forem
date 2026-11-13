@@ -307,6 +307,7 @@ fr:
       odd: doit être étrange
       other_than: doit être différent de %{count}
       present: doit être vide
+      processing_error: "Échec du traitement de l'image, ce fichier n'est peut-être pas une image ?"
       required: doit exister
       taken: a déjà été pris
       too_long:

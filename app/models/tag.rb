@@ -64,6 +64,7 @@ class Tag < ActsAsTaggableOn::Tag
   after_save :update_suggested_tags, if: :saved_change_to_suggested?
   after_commit :bust_cache
   after_commit :purge_tag_lists, on: :create
+  after_commit :resolve_pending_liquid_embed_references, on: :create
 
   # @note Even though we have a data migration script (see further
   #       comments below), as of <2022-01-04 Tue> we had 5 tags where
@@ -366,6 +367,16 @@ class Tag < ActsAsTaggableOn::Tag
   # nothing) carry only the table key, so a new tag must purge it.
   def purge_tag_lists
     EdgeCache::PurgeByKey.call(table_key)
+  end
+
+  def resolve_pending_liquid_embed_references
+    return if name.blank?
+
+    normalized_name = name.downcase
+    updated = LiquidEmbedReference
+      .where(tag_name: "feed", referenced_id: nil, referenced_type: [nil, "Tag"], url: [name, normalized_name].uniq)
+      .update_all(referenced_type: "Tag", referenced_id: id, url: normalized_name)
+    LiquidEmbedReference.bust_feed_targets_cache! if updated.positive?
   end
 
   def validate_alias_for

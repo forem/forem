@@ -3650,7 +3650,9 @@ fn load_cached_font_bytes(ruby: &Ruby, path: &str) -> Result<Arc<Vec<u8>>, Error
         .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
     let arc = Arc::new(data);
     if let Ok(mut guard) = cache.lock() {
-        guard.insert(path.to_owned(), Arc::clone(&arc));
+        if guard.len() < 32 {
+            guard.insert(path.to_owned(), Arc::clone(&arc));
+        }
     }
     Ok(arc)
 }
@@ -3785,11 +3787,11 @@ fn parse_rgba_arg(ruby: &Ruby, color: RString) -> Result<forem_core::social_imag
 }
 
 fn social_image_decode(ruby: &Ruby, bytes: RString) -> Result<RubySocialCanvas, Error> {
-    let canvas = {
-        let slice = unsafe { bytes.as_slice() };
-        forem_core::social_image::decode_image(slice)
-            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
-    };
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let canvas = without_gvl(ruby, move || {
+        forem_core::social_image::decode_image(&input).map_err(|e| e.to_string())
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
     Ok(RubySocialCanvas::new(canvas))
 }
 
@@ -4417,6 +4419,497 @@ fn render_comment_tree(
     Some(out_ary)
 }
 
+const STORY_CARD_STATIC_CTX_LEN: usize = 38;
+const STORY_CARD_VIEW_CTX_LEN: usize = 16;
+const STORY_AUTHOR_STRIDE: usize = 6;
+const STORY_ORG_STRIDE: usize = 3;
+const STORY_CARD_STRIDE: usize = 31;
+
+#[allow(clippy::too_many_arguments)]
+fn render_tag_link(
+    ruby: &Ruby,
+    tag_name: RString,
+    tag_route: RString,
+    bg_color_hex: RString,
+    filled: bool,
+    monochrome: bool,
+    classes: RString,
+    path_suffix: RString,
+) -> Option<RString> {
+    // SAFETY: All `RString` byte borrows live strictly inside this block while pure-Rust
+    // `forem_core::story_card::render_tag_link` runs; no Ruby VM calls occur until all
+    // borrows are dropped.
+    let html = unsafe {
+        if !tag_name.is_utf8_compatible_encoding()
+            || !tag_route.is_utf8_compatible_encoding()
+            || !bg_color_hex.is_utf8_compatible_encoding()
+            || !classes.is_utf8_compatible_encoding()
+            || !path_suffix.is_utf8_compatible_encoding()
+        {
+            return None;
+        }
+        forem_core::story_card::render_tag_link(
+            tag_name.test_as_str()?,
+            tag_route.test_as_str()?,
+            bg_color_hex.test_as_str()?,
+            filled,
+            monochrome,
+            classes.test_as_str()?,
+            path_suffix.test_as_str()?,
+        )
+    }?;
+    Some(ruby.str_new(&html))
+}
+
+fn render_story_cards(
+    ruby: &Ruby,
+    static_ctx_arr: RArray,
+    view_ctx_arr: RArray,
+    authors_arr: RArray,
+    orgs_arr: RArray,
+    cards_flat_arr: RArray,
+) -> Option<RString> {
+    // SAFETY: All `RArray::as_slice` and `RString` borrows live strictly inside this block
+    // while pure-Rust `forem_core::story_card::render_story_cards` runs. Zero Ruby VM calls
+    // or allocations happen until the block ends and every borrow has been dropped.
+    let html = unsafe {
+        let s = static_ctx_arr.as_slice();
+        if s.len() != STORY_CARD_STATIC_CTX_LEN {
+            return None;
+        }
+        let months_arr = RArray::from_value(s[35])?;
+        let months_slice = months_arr.as_slice();
+        if months_slice.len() != 12 {
+            return None;
+        }
+        let mut abbr_month_names = [""; 12];
+        for (idx, &m_val) in months_slice.iter().enumerate() {
+            abbr_month_names[idx] = borrow_utf8_rstr(m_val)?;
+        }
+
+        let static_ctx = forem_core::story_card::StoryCardStaticContext {
+            subscription_icon_html: borrow_utf8_rstr(s[0])?,
+            community_leader_icon_html: borrow_utf8_rstr(s[1])?,
+            favorites_enabled: s[2].to_bool(),
+            icon_favorite_checked_curation: borrow_utf8_rstr(s[3])?,
+            icon_pin_svg: borrow_utf8_rstr(s[4])?,
+            icon_small_favorite_filled: borrow_utf8_rstr(s[5])?,
+            icon_small_favorite_checked: borrow_utf8_rstr(s[6])?,
+            icon_small_comment: borrow_utf8_rstr(s[7])?,
+            icon_small_save_svg: borrow_utf8_rstr(s[8])?,
+            icon_small_save_filled_svg: borrow_utf8_rstr(s[9])?,
+            primary_brand_color_hex: borrow_utf8_rstr(s[10])?,
+            escape_html_entities_in_json: s[11].to_bool(),
+            t_users_details_template: borrow_utf8_rstr(s[12])?,
+            t_users_follow: borrow_utf8_rstr(s[13])?,
+            t_for_org_html_template: borrow_utf8_rstr(s[14])?,
+            t_picked_by_you: borrow_utf8_rstr(s[15])?,
+            t_picked_by_user_template: borrow_utf8_rstr(s[16])?,
+            t_favorited: borrow_utf8_rstr(s[17])?,
+            t_pinned_article: borrow_utf8_rstr(s[18])?,
+            t_comments_aria_template: borrow_utf8_rstr(s[19])?,
+            t_reactions_count_one_html: borrow_utf8_rstr(s[20])?,
+            t_reactions_count_other_html_template: borrow_utf8_rstr(s[21])?,
+            t_start_discussion: borrow_utf8_rstr(s[22])?,
+            t_further_discussion: borrow_utf8_rstr(s[23])?,
+            t_curation_comments_one: borrow_utf8_rstr(s[24])?,
+            t_curation_comments_other_template: borrow_utf8_rstr(s[25])?,
+            t_comments_count_one_html: borrow_utf8_rstr(s[26])?,
+            t_comments_count_other_html_template: borrow_utf8_rstr(s[27])?,
+            t_comments_add: borrow_utf8_rstr(s[28])?,
+            t_reading_time_one: borrow_utf8_rstr(s[29])?,
+            t_reading_time_other_template: borrow_utf8_rstr(s[30])?,
+            t_save_aria_template: borrow_utf8_rstr(s[31])?,
+            t_save_title_template: borrow_utf8_rstr(s[32])?,
+            time_format_short: borrow_utf8_rstr(s[33])?,
+            time_format_short_with_yy: borrow_utf8_rstr(s[34])?,
+            abbr_month_names,
+            prior_cloudflare_domain: borrow_opt_utf8_rstr(s[36])?,
+            current_cloudflare_domain: borrow_opt_utf8_rstr(s[37])?,
+        };
+
+        let v = view_ctx_arr.as_slice();
+        if v.len() != STORY_CARD_VIEW_CTX_LEN {
+            return None;
+        }
+        let cover_mode = match extract_i64_val(v[6])? {
+            0 => forem_core::story_card::CoverImageMode::Passthrough,
+            1 => forem_core::story_card::CoverImageMode::Cloudflare {
+                domain: borrow_utf8_rstr(v[7])?,
+                directory: borrow_utf8_rstr(v[8])?,
+                default_height: borrow_utf8_rstr(v[9])?,
+                default_fit: borrow_utf8_rstr(v[10])?,
+            },
+            2 => forem_core::story_card::CoverImageMode::ExplicitOnly,
+            _ => return None,
+        };
+
+        let allowed_arr = RArray::from_value(v[12])?;
+        let allowed_slice = allowed_arr.as_slice();
+        let mut allowed_flare_tags = Vec::with_capacity(allowed_slice.len());
+        for &val in allowed_slice {
+            allowed_flare_tags.push(borrow_utf8_rstr(val)?);
+        }
+
+        let valid_arr = RArray::from_value(v[13])?;
+        let valid_slice = valid_arr.as_slice();
+        let mut valid_flare_tags = Vec::with_capacity(valid_slice.len());
+        for &val in valid_slice {
+            valid_flare_tags.push(borrow_utf8_rstr(val)?);
+        }
+
+        let icons_arr = RArray::from_value(v[14])?;
+        let icons_slice = icons_arr.as_slice();
+        let mut reaction_icon_htmls = Vec::with_capacity(icons_slice.len());
+        for &val in icons_slice {
+            reaction_icon_htmls.push(borrow_utf8_rstr(val)?);
+        }
+
+        let tag_colors_arr = RArray::from_value(v[15])?;
+        let tag_color_chunks = exact_stride_chunks(tag_colors_arr.as_slice(), 2)?;
+        let mut tag_bg_colors = Vec::with_capacity(tag_color_chunks.len());
+        for pair in tag_color_chunks {
+            tag_bg_colors.push((borrow_utf8_rstr(pair[0])?, borrow_utf8_rstr(pair[1])?));
+        }
+
+        let view_ctx = forem_core::story_card::StoryCardViewContext {
+            feed_style_rich: v[0].to_bool(),
+            curation_view: v[1].to_bool(),
+            show_bookmark_buttons: v[2].to_bool(),
+            assigned_user_id: extract_opt_i64_val(v[3])?,
+            current_year: i32::try_from(extract_i64_val(v[4])?).ok()?,
+            default_base_url: borrow_utf8_rstr(v[5])?,
+            cover_mode,
+            except_flare_tag: borrow_opt_utf8_rstr(v[11])?,
+            allowed_flare_tags,
+            valid_flare_tags,
+            reaction_icon_htmls,
+            tag_bg_colors,
+        };
+
+        let a_chunks = exact_stride_chunks(authors_arr.as_slice(), STORY_AUTHOR_STRIDE)?;
+        let mut authors = Vec::with_capacity(a_chunks.len());
+        for chunk in a_chunks {
+            authors.push(forem_core::story_card::StoryAuthorInput {
+                user_id: extract_i64_val(chunk[0])?,
+                name: borrow_utf8_rstr(chunk[1])?,
+                username: borrow_utf8_rstr(chunk[2])?,
+                profile_image_90: borrow_utf8_rstr(chunk[3])?,
+                is_subscriber: chunk[4].to_bool(),
+                is_community_leader: chunk[5].to_bool(),
+            });
+        }
+
+        let o_chunks = exact_stride_chunks(orgs_arr.as_slice(), STORY_ORG_STRIDE)?;
+        let mut orgs = Vec::with_capacity(o_chunks.len());
+        for chunk in o_chunks {
+            orgs.push(forem_core::story_card::StoryOrgInput {
+                slug: borrow_utf8_rstr(chunk[0])?,
+                name: borrow_utf8_rstr(chunk[1])?,
+                profile_image_90: borrow_utf8_rstr(chunk[2])?,
+            });
+        }
+
+        let c_chunks = exact_stride_chunks(cards_flat_arr.as_slice(), STORY_CARD_STRIDE)?;
+        let mut cards = Vec::with_capacity(c_chunks.len());
+        for chunk in c_chunks {
+            let org_idx = match extract_opt_i64_val(chunk[2])? {
+                Some(idx) => Some(usize::try_from(idx).ok()?),
+                None => None,
+            };
+            let displayable_published_at = match extract_opt_i64_val(chunk[19])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[20])?)),
+                None => None,
+            };
+            let mut reaction_icon_indices = Vec::new();
+            if !chunk[25].is_nil() {
+                let idx_arr = RArray::from_value(chunk[25])?;
+                let idx_slice = idx_arr.as_slice();
+                reaction_icon_indices.reserve(idx_slice.len());
+                for &idx_val in idx_slice {
+                    reaction_icon_indices.push(usize::try_from(extract_i64_val(idx_val)?).ok()?);
+                }
+            }
+            cards.push(forem_core::story_card::StoryCardInput {
+                id: extract_i64_val(chunk[0])?,
+                author_idx: usize::try_from(extract_i64_val(chunk[1])?).ok()?,
+                org_idx,
+                featured: chunk[3].to_bool(),
+                pinned: chunk[4].to_bool(),
+                type_of: borrow_utf8_rstr(chunk[5])?,
+                title: borrow_utf8_rstr(chunk[6])?,
+                path: borrow_utf8_rstr(chunk[7])?,
+                explicit_article_url: borrow_opt_utf8_rstr(chunk[8])?,
+                main_image: borrow_opt_utf8_rstr(chunk[9])?,
+                explicit_cover_url: borrow_opt_utf8_rstr(chunk[10])?,
+                main_image_height: extract_opt_i64_val(chunk[11])?,
+                main_image_bg_hex: borrow_opt_utf8_rstr(chunk[12])?,
+                video: borrow_opt_utf8_rstr(chunk[13])?,
+                video_thumbnail_url: borrow_opt_utf8_rstr(chunk[14])?,
+                cloudinary_video_url: borrow_opt_utf8_rstr(chunk[15])?,
+                video_duration_str: borrow_opt_utf8_rstr(chunk[16])?,
+                context_note_html: borrow_opt_utf8_rstr(chunk[17])?,
+                published: chunk[18].to_bool(),
+                displayable_published_at,
+                published_at_int: extract_i64_val(chunk[21])?,
+                cached_tag_list: borrow_utf8_rstr(chunk[22])?,
+                status_body_preview_html: borrow_opt_utf8_rstr(chunk[23])?,
+                public_reactions_count: extract_i64_val(chunk[24])?,
+                reaction_icon_indices,
+                favorited_by_user_id: extract_opt_i64_val(chunk[26])?,
+                curation_picker_state: u8::try_from(extract_i64_val(chunk[27])?).ok()?,
+                favorited_by_username: borrow_opt_utf8_rstr(chunk[28])?,
+                comments_count: extract_i64_val(chunk[29])?,
+                reading_time: extract_i64_val(chunk[30])?,
+            });
+        }
+
+        forem_core::story_card::render_story_cards(&static_ctx, &view_ctx, &authors, &orgs, &cards)
+    }?;
+
+    Some(ruby.str_new(&html))
+}
+
+/// Runs a pure-Rust `Send` closure with Ruby's Global VM Lock (GVL) released via
+/// `rb_thread_call_without_gvl` and catches any Rust panic before crossing the C FFI boundary.
+///
+/// Because `Ruby`, `Value`, and `RString` are `!Send`, the `F: Send` bound statically prevents
+/// touching any Ruby VM object while the GVL is released.
+fn without_gvl<F, T>(ruby: &Ruby, f: F) -> Result<T, Error>
+where
+    F: FnOnce() -> T + Send,
+    T: Send,
+{
+    struct GvlPayload<F, T> {
+        func: Option<F>,
+        output: Option<std::thread::Result<T>>,
+    }
+
+    unsafe extern "C" fn gvl_trampoline<F, T>(data: *mut std::ffi::c_void) -> *mut std::ffi::c_void
+    where
+        F: FnOnce() -> T + Send,
+        T: Send,
+    {
+        let payload = unsafe { &mut *(data as *mut GvlPayload<F, T>) };
+        if let Some(func) = payload.func.take() {
+            payload.output = Some(std::panic::catch_unwind(std::panic::AssertUnwindSafe(func)));
+        }
+        std::ptr::null_mut()
+    }
+
+    let mut payload = GvlPayload {
+        func: Some(f),
+        output: None,
+    };
+    unsafe {
+        rb_sys::rb_thread_call_without_gvl(
+            Some(gvl_trampoline::<F, T>),
+            (&mut payload as *mut GvlPayload<F, T>).cast::<std::ffi::c_void>(),
+            None,
+            std::ptr::null_mut(),
+        );
+    }
+
+    match payload.output {
+        Some(Ok(value)) => Ok(value),
+        Some(Err(panic_payload)) => {
+            let msg = if let Some(s) = panic_payload.downcast_ref::<&str>() {
+                (*s).to_owned()
+            } else if let Some(s) = panic_payload.downcast_ref::<String>() {
+                s.clone()
+            } else {
+                "unexpected panic inside native image operation".to_owned()
+            };
+            Err(Error::new(ruby.exception_runtime_error(), msg))
+        }
+        None => Err(Error::new(
+            ruby.exception_runtime_error(),
+            "native image operation interrupted before completion",
+        )),
+    }
+}
+
+fn load_optional_font_bytes(
+    ruby: &Ruby,
+    font_path: Option<RString>,
+) -> Result<Option<Arc<Vec<u8>>>, Error> {
+    let Some(path_rstr) = font_path else {
+        return Ok(None);
+    };
+    let path_str = std::str::from_utf8(unsafe { path_rstr.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
+        .to_owned();
+    load_cached_font_bytes(ruby, &path_str).map(Some)
+}
+
+fn with_font_ref<T>(
+    font_bytes: Option<&[u8]>,
+    f: impl FnOnce(Option<&forem_core::social_image::Font<'_>>) -> Result<T, String>,
+) -> Result<T, String> {
+    match font_bytes {
+        Some(bytes) => {
+            let font =
+                forem_core::social_image::Font::from_bytes(bytes).map_err(|e| e.to_string())?;
+            f(Some(&font))
+        }
+        None => f(None),
+    }
+}
+
+fn render_profile_image_png(ruby: &Ruby, flat_traits: RArray) -> Result<RString, Error> {
+    let owned = extract_utf8_string_vec(flat_traits).ok_or_else(|| {
+        Error::new(
+            ruby.exception_arg_error(),
+            "expected array of UTF-8 trait strings",
+        )
+    })?;
+    let refs: Vec<&str> = owned.iter().map(String::as_str).collect();
+    let traits = forem_core::social_image::avatar::ProfileAvatarTraits::from_flat_strings(&refs)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let png = without_gvl(ruby, move || {
+        forem_core::social_image::avatar::render_profile_avatar_png(&traits)
+            .map_err(|e| e.to_string())
+    })?
+    .map_err(|msg| Error::new(ruby.exception_runtime_error(), msg))?;
+    Ok(ruby.str_from_slice(&png))
+}
+
+fn image_inspect(ruby: &Ruby, bytes: RString) -> Result<(String, u32, u32, usize, u8), Error> {
+    let info = {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::image_ops::inspect_image(slice)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
+    };
+    Ok((
+        info.format.as_str().to_owned(),
+        info.width,
+        info.height,
+        info.frame_count,
+        info.exif_orientation,
+    ))
+}
+
+fn image_strip_and_auto_orient(
+    ruby: &Ruby,
+    bytes: RString,
+    frame_strip_max: usize,
+) -> Result<Option<RString>, Error> {
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let result = without_gvl(ruby, move || {
+        forem_core::image_ops::strip_and_auto_orient(&input, frame_strip_max)
+            .map_err(|e| e.to_string())
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
+    Ok(result.map(|buf| ruby.str_from_slice(&buf)))
+}
+
+fn image_resize_to_fill(
+    ruby: &Ruby,
+    bytes: RString,
+    width: usize,
+    height: usize,
+    gravity: RString,
+    font_path: Option<RString>,
+) -> Result<(RString, String), Error> {
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let grav = std::str::from_utf8(unsafe { gravity.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid gravity encoding"))?
+        .to_owned();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let (out, fmt) = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::resize_to_fill_bytes(&input, width, height, &grav, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
+    Ok((ruby.str_from_slice(&out), fmt.as_str().to_owned()))
+}
+
+fn image_resize_to_limit(
+    ruby: &Ruby,
+    bytes: RString,
+    max_width: Option<usize>,
+    max_height: Option<usize>,
+    font_path: Option<RString>,
+) -> Result<(RString, String), Error> {
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let (out, fmt) = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::resize_to_limit_bytes(&input, max_width, max_height, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
+    Ok((ruby.str_from_slice(&out), fmt.as_str().to_owned()))
+}
+
+fn image_convert_to_png(
+    ruby: &Ruby,
+    bytes: RString,
+    font_path: Option<RString>,
+) -> Result<RString, Error> {
+    image_convert_to_png_checked(ruby, bytes, font_path, false)
+}
+
+fn image_convert_to_png_checked(
+    ruby: &Ruby,
+    bytes: RString,
+    font_path: Option<RString>,
+    reject_blank: bool,
+) -> Result<RString, Error> {
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let png = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::convert_to_png_bytes_with_options(&input, font, reject_blank)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
+    Ok(ruby.str_from_slice(&png))
+}
+
+fn subforem_resize_png(
+    ruby: &Ruby,
+    bytes: RString,
+    width: usize,
+    height: usize,
+    font_path: Option<RString>,
+) -> Result<RString, Error> {
+    let input = unsafe { bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let png = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::subforem_resize_png(&input, width, height, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
+    Ok(ruby.str_from_slice(&png))
+}
+
+fn subforem_social_image_png(
+    ruby: &Ruby,
+    logo_bytes: RString,
+    bg_bytes: RString,
+    custom_background: bool,
+    font_path: Option<RString>,
+) -> Result<RString, Error> {
+    let logo = unsafe { logo_bytes.as_slice() }.to_vec();
+    let bg = unsafe { bg_bytes.as_slice() }.to_vec();
+    let font_bytes = load_optional_font_bytes(ruby, font_path)?;
+    let png = without_gvl(ruby, move || {
+        with_font_ref(font_bytes.as_deref().map(Vec::as_slice), |font| {
+            forem_core::image_ops::subforem_social_image_png(&logo, &bg, custom_background, font)
+                .map_err(|e| e.to_string())
+        })
+    })?
+    .map_err(|msg| Error::new(ruby.exception_arg_error(), msg))?;
+    Ok(ruby.str_from_slice(&png))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -4863,5 +5356,31 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(social_image_add_byline, 3),
     )?;
     native_mod.define_singleton_method("render_comment_tree", function!(render_comment_tree, 5))?;
+    native_mod.define_singleton_method("render_tag_link", function!(render_tag_link, 7))?;
+    native_mod.define_singleton_method("render_story_cards", function!(render_story_cards, 5))?;
+    native_mod.define_singleton_method(
+        "render_profile_image_png",
+        function!(render_profile_image_png, 1),
+    )?;
+    native_mod.define_singleton_method("image_inspect", function!(image_inspect, 1))?;
+    native_mod.define_singleton_method(
+        "image_strip_and_auto_orient",
+        function!(image_strip_and_auto_orient, 2),
+    )?;
+    native_mod
+        .define_singleton_method("image_resize_to_fill", function!(image_resize_to_fill, 5))?;
+    native_mod
+        .define_singleton_method("image_resize_to_limit", function!(image_resize_to_limit, 4))?;
+    native_mod
+        .define_singleton_method("image_convert_to_png", function!(image_convert_to_png, 2))?;
+    native_mod.define_singleton_method(
+        "image_convert_to_png_checked",
+        function!(image_convert_to_png_checked, 3),
+    )?;
+    native_mod.define_singleton_method("subforem_resize_png", function!(subforem_resize_png, 4))?;
+    native_mod.define_singleton_method(
+        "subforem_social_image_png",
+        function!(subforem_social_image_png, 4),
+    )?;
     Ok(())
 }

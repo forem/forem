@@ -37,4 +37,19 @@ RSpec.describe Articles::Destroyer, type: :service do
       described_class.call(article)
     end
   end
+
+  it "enqueues a delayed deleted-article cache bust and home-page purge for top articles", :aggregate_failures do
+    organization = create(:organization)
+    org_article = create(:article, organization: organization, hotness_score: 1_000_000)
+    expected_attrs = Articles::BustDeletedArticleCacheWorker.attributes_for(org_article)
+
+    described_class.call(org_article)
+
+    expect(Articles::BustDeletedArticleCacheWorker.jobs).to include(
+      hash_including("args" => [expected_attrs]),
+    )
+    expect(EdgeCache::PurgeByKeyWorker.jobs).to include(
+      hash_including("args" => Users::DeleteArticles::HOME_PAGE_PURGE_ARGS),
+    )
+  end
 end

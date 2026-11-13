@@ -112,6 +112,7 @@ fr:
         views: Views
       reactions_history: "Historique des réactions"
       by: par
+      gem: Pépite
       top_contributors:
         heading: Meilleurs participants
     sticky:

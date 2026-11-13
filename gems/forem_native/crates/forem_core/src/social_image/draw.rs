@@ -43,6 +43,47 @@ pub enum FillRule {
     NonZero,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum LineCap {
+    Butt,
+    Round,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum LineJoin {
+    Miter,
+    Round,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct StrokeStyle {
+    pub width: f64,
+    pub cap: LineCap,
+    pub join: LineJoin,
+}
+
+impl StrokeStyle {
+    pub const fn new(width: f64, cap: LineCap, join: LineJoin) -> Self {
+        StrokeStyle { width, cap, join }
+    }
+
+    pub const fn butt_miter(width: f64) -> Self {
+        StrokeStyle {
+            width,
+            cap: LineCap::Butt,
+            join: LineJoin::Miter,
+        }
+    }
+
+    pub const fn round(width: f64) -> Self {
+        StrokeStyle {
+            width,
+            cap: LineCap::Round,
+            join: LineJoin::Round,
+        }
+    }
+}
+
 /// `TraceEllipse`: "ellipses are just short segmented polys".
 pub fn trace_ellipse(center: Point, radii: Point, arc_start: f64, arc_end: f64) -> Vec<Point> {
     let mut points = Vec::new();
@@ -154,6 +195,537 @@ pub fn line(start: Point, end: Point) -> Subpath {
         points: vec![start, end],
         closed: false,
     }
+}
+
+/// `polygon x0,y0 x1,y1 ...` (`TracePolygon` closed).
+pub fn polygon(vertices: &[Point]) -> Subpath {
+    let mut points = Vec::with_capacity(vertices.len() + 1);
+    points.extend_from_slice(vertices);
+    if points.len() >= 2 && !is_closed(&points) {
+        points.push(points[0]);
+    }
+    Subpath {
+        points,
+        closed: true,
+    }
+}
+
+/// `polyline x0,y0 x1,y1 ...` (open polyline).
+pub fn polyline(vertices: &[Point]) -> Subpath {
+    Subpath {
+        points: vertices.to_vec(),
+        closed: false,
+    }
+}
+
+struct SvgPathCursor<'a> {
+    bytes: &'a [u8],
+    pos: usize,
+}
+
+impl<'a> SvgPathCursor<'a> {
+    fn new(d: &'a str) -> Self {
+        Self {
+            bytes: d.as_bytes(),
+            pos: 0,
+        }
+    }
+
+    fn skip_ws_and_commas(&mut self) {
+        while self.pos < self.bytes.len() {
+            let b = self.bytes[self.pos];
+            if b.is_ascii_whitespace() || b == b',' {
+                self.pos += 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    fn peek_command(&mut self) -> Option<u8> {
+        self.skip_ws_and_commas();
+        let b = *self.bytes.get(self.pos)?;
+        if b.is_ascii_alphabetic() {
+            Some(b)
+        } else {
+            None
+        }
+    }
+
+    fn next_command(&mut self) -> Option<u8> {
+        let cmd = self.peek_command()?;
+        self.pos += 1;
+        Some(cmd)
+    }
+
+    fn has_number(&mut self) -> bool {
+        self.skip_ws_and_commas();
+        matches!(
+            self.bytes.get(self.pos),
+            Some(b'+' | b'-' | b'.' | b'0'..=b'9')
+        )
+    }
+
+    fn read_number(&mut self) -> Option<f64> {
+        self.skip_ws_and_commas();
+        let start = self.pos;
+        if self.pos < self.bytes.len() && matches!(self.bytes[self.pos], b'+' | b'-') {
+            self.pos += 1;
+        }
+        let mut has_digits = false;
+        while self.pos < self.bytes.len() && self.bytes[self.pos].is_ascii_digit() {
+            self.pos += 1;
+            has_digits = true;
+        }
+        if self.pos < self.bytes.len() && self.bytes[self.pos] == b'.' {
+            self.pos += 1;
+            while self.pos < self.bytes.len() && self.bytes[self.pos].is_ascii_digit() {
+                self.pos += 1;
+                has_digits = true;
+            }
+        }
+        if !has_digits {
+            self.pos = start;
+            return None;
+        }
+        if self.pos < self.bytes.len() && matches!(self.bytes[self.pos], b'e' | b'E') {
+            let exp_start = self.pos;
+            self.pos += 1;
+            if self.pos < self.bytes.len() && matches!(self.bytes[self.pos], b'+' | b'-') {
+                self.pos += 1;
+            }
+            let digits_start = self.pos;
+            while self.pos < self.bytes.len() && self.bytes[self.pos].is_ascii_digit() {
+                self.pos += 1;
+            }
+            if self.pos == digits_start {
+                self.pos = exp_start;
+            }
+        }
+        let s = std::str::from_utf8(&self.bytes[start..self.pos]).ok()?;
+        s.parse::<f64>().ok().filter(|v| v.is_finite())
+    }
+
+    fn read_flag(&mut self) -> Option<bool> {
+        self.skip_ws_and_commas();
+        match self.bytes.get(self.pos) {
+            Some(b'0') => {
+                self.pos += 1;
+                Some(false)
+            }
+            Some(b'1') => {
+                self.pos += 1;
+                Some(true)
+            }
+            _ => None,
+        }
+    }
+}
+
+fn flatten_quad_bezier(p0: Point, p1: Point, p2: Point, out: &mut Vec<Point>) {
+    let approx_len = (p1.x - p0.x).hypot(p1.y - p0.y) + (p2.x - p1.x).hypot(p2.y - p1.y);
+    let steps = ((approx_len / 1.25).ceil() as usize).clamp(8, 128);
+    for i in 1..=steps {
+        let t = i as f64 / steps as f64;
+        let mt = 1.0 - t;
+        let x = mt * mt * p0.x + 2.0 * mt * t * p1.x + t * t * p2.x;
+        let y = mt * mt * p0.y + 2.0 * mt * t * p1.y + t * t * p2.y;
+        out.push(Point::new(x, y));
+    }
+}
+
+fn flatten_cubic_bezier(p0: Point, p1: Point, p2: Point, p3: Point, out: &mut Vec<Point>) {
+    let approx_len = (p1.x - p0.x).hypot(p1.y - p0.y)
+        + (p2.x - p1.x).hypot(p2.y - p1.y)
+        + (p3.x - p2.x).hypot(p3.y - p2.y);
+    let steps = ((approx_len / 1.25).ceil() as usize).clamp(12, 192);
+    for i in 1..=steps {
+        let t = i as f64 / steps as f64;
+        let mt = 1.0 - t;
+        let b0 = mt * mt * mt;
+        let b1 = 3.0 * mt * mt * t;
+        let b2 = 3.0 * mt * t * t;
+        let b3 = t * t * t;
+        out.push(Point::new(
+            b0 * p0.x + b1 * p1.x + b2 * p2.x + b3 * p3.x,
+            b0 * p0.y + b1 * p1.y + b2 * p2.y + b3 * p3.y,
+        ));
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn flatten_svg_arc(
+    p0: Point,
+    mut rx: f64,
+    mut ry: f64,
+    x_axis_rotation_deg: f64,
+    large_arc: bool,
+    sweep: bool,
+    p1: Point,
+    out: &mut Vec<Point>,
+) {
+    if (p0.x - p1.x).abs() < MAGICK_EPSILON && (p0.y - p1.y).abs() < MAGICK_EPSILON {
+        return;
+    }
+    rx = rx.abs();
+    ry = ry.abs();
+    if rx < MAGICK_EPSILON || ry < MAGICK_EPSILON {
+        out.push(p1);
+        return;
+    }
+
+    // W3C SVG 1.1 Appendix F.6.5 endpoint-to-center conversion.
+    let phi = x_axis_rotation_deg.to_radians();
+    let (sin_phi, cos_phi) = phi.sin_cos();
+    let dx2 = 0.5 * (p0.x - p1.x);
+    let dy2 = 0.5 * (p0.y - p1.y);
+    let x1p = cos_phi * dx2 + sin_phi * dy2;
+    let y1p = -sin_phi * dx2 + cos_phi * dy2;
+
+    let mut rx2 = rx * rx;
+    let mut ry2 = ry * ry;
+    let x1p2 = x1p * x1p;
+    let y1p2 = y1p * y1p;
+
+    let lambda = x1p2 / rx2 + y1p2 / ry2;
+    if lambda > 1.0 {
+        let s = lambda.sqrt();
+        rx *= s;
+        ry *= s;
+        rx2 = rx * rx;
+        ry2 = ry * ry;
+    }
+
+    let num = (rx2 * ry2 - rx2 * y1p2 - ry2 * x1p2).max(0.0);
+    let den = rx2 * y1p2 + ry2 * x1p2;
+    let factor = if den > MAGICK_EPSILON {
+        (num / den).sqrt() * if large_arc == sweep { -1.0 } else { 1.0 }
+    } else {
+        0.0
+    };
+    let cxp = factor * rx * y1p / ry;
+    let cyp = -factor * ry * x1p / rx;
+
+    let cx = cos_phi * cxp - sin_phi * cyp + 0.5 * (p0.x + p1.x);
+    let cy = sin_phi * cxp + cos_phi * cyp + 0.5 * (p0.y + p1.y);
+
+    let vec_angle = |ux: f64, uy: f64, vx: f64, vy: f64| -> f64 {
+        let dot = ux * vx + uy * vy;
+        let len = (ux.hypot(uy) * vx.hypot(vy)).max(MAGICK_EPSILON);
+        let cos_a = (dot / len).clamp(-1.0, 1.0);
+        let sign = if ux * vy - uy * vx < 0.0 { -1.0 } else { 1.0 };
+        sign * cos_a.acos()
+    };
+
+    let ux = (x1p - cxp) / rx;
+    let uy = (y1p - cyp) / ry;
+    let vx = (-x1p - cxp) / rx;
+    let vy = (-y1p - cyp) / ry;
+
+    let theta1 = vec_angle(1.0, 0.0, ux, uy);
+    let mut dtheta = vec_angle(ux, uy, vx, vy);
+    let two_pi = 2.0 * std::f64::consts::PI;
+    if !sweep && dtheta > 0.0 {
+        dtheta -= two_pi;
+    } else if sweep && dtheta < 0.0 {
+        dtheta += two_pi;
+    }
+
+    let arc_len = dtheta.abs() * rx.max(ry);
+    let steps = ((arc_len / 1.25).ceil() as usize).clamp(8, 128);
+    for i in 1..steps {
+        let t = theta1 + dtheta * (i as f64 / steps as f64);
+        let (st, ct) = t.sin_cos();
+        let x = cos_phi * rx * ct - sin_phi * ry * st + cx;
+        let y = sin_phi * rx * ct + cos_phi * ry * st + cy;
+        out.push(Point::new(x, y));
+    }
+    out.push(p1);
+}
+
+/// Maximum flattened vertices retained per SVG `<path>` to bound memory/CPU on adversarial inputs.
+const MAX_SVG_PATH_POINTS: usize = 65_536;
+
+/// Parses an SVG `d` path data string (`M/m`, `L/l`, `H/h`, `V/v`, `C/c`, `S/s`, `Q/q`,
+/// `T/t`, `A/a`, `Z/z`) into flattened [`Subpath`]s ready for rasterization.
+pub fn parse_svg_path(d: &str) -> Vec<Subpath> {
+    let mut cursor = SvgPathCursor::new(d);
+    let mut subpaths: Vec<Subpath> = Vec::new();
+    let mut cur_pts: Vec<Point> = Vec::new();
+    let mut total_pts = 0usize;
+    let mut cur = Point::new(0.0, 0.0);
+    let mut subpath_start = Point::new(0.0, 0.0);
+    let mut last_cubic_ctrl: Option<Point> = None;
+    let mut last_quad_ctrl: Option<Point> = None;
+
+    let flush_open = |pts: &mut Vec<Point>, out: &mut Vec<Subpath>, total: &mut usize| {
+        if pts.len() >= 2 {
+            *total += pts.len();
+            out.push(Subpath {
+                points: std::mem::take(pts),
+                closed: false,
+            });
+        } else {
+            pts.clear();
+        }
+    };
+
+    while let Some(cmd) = cursor.next_command() {
+        if total_pts + cur_pts.len() >= MAX_SVG_PATH_POINTS {
+            break;
+        }
+        let rel = cmd.is_ascii_lowercase();
+        match cmd.to_ascii_uppercase() {
+            b'M' => {
+                flush_open(&mut cur_pts, &mut subpaths, &mut total_pts);
+                let Some(mut x) = cursor.read_number() else {
+                    break;
+                };
+                let Some(mut y) = cursor.read_number() else {
+                    break;
+                };
+                if rel {
+                    x += cur.x;
+                    y += cur.y;
+                }
+                cur = Point::new(x, y);
+                subpath_start = cur;
+                cur_pts.push(cur);
+                last_cubic_ctrl = None;
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(mut lx), Some(mut ly)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        lx += cur.x;
+                        ly += cur.y;
+                    }
+                    cur = Point::new(lx, ly);
+                    cur_pts.push(cur);
+                }
+            }
+            b'L' => {
+                last_cubic_ctrl = None;
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        x += cur.x;
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    cur = Point::new(x, y);
+                    cur_pts.push(cur);
+                }
+            }
+            b'H' => {
+                last_cubic_ctrl = None;
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS {
+                    let Some(mut x) = cursor.read_number() else {
+                        break;
+                    };
+                    if rel {
+                        x += cur.x;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    cur = Point::new(x, cur.y);
+                    cur_pts.push(cur);
+                }
+            }
+            b'V' => {
+                last_cubic_ctrl = None;
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS {
+                    let Some(mut y) = cursor.read_number() else {
+                        break;
+                    };
+                    if rel {
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    cur = Point::new(cur.x, y);
+                    cur_pts.push(cur);
+                }
+            }
+            b'C' => {
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(mut x1), Some(mut y1)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    let (Some(mut x2), Some(mut y2)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        x1 += cur.x;
+                        y1 += cur.y;
+                        x2 += cur.x;
+                        y2 += cur.y;
+                        x += cur.x;
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    let p1 = Point::new(x1, y1);
+                    let p2 = Point::new(x2, y2);
+                    let p3 = Point::new(x, y);
+                    flatten_cubic_bezier(cur, p1, p2, p3, &mut cur_pts);
+                    last_cubic_ctrl = Some(p2);
+                    cur = p3;
+                }
+            }
+            b'S' => {
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(mut x2), Some(mut y2)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        x2 += cur.x;
+                        y2 += cur.y;
+                        x += cur.x;
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    let p1 = match last_cubic_ctrl {
+                        Some(prev) => Point::new(2.0 * cur.x - prev.x, 2.0 * cur.y - prev.y),
+                        None => cur,
+                    };
+                    let p2 = Point::new(x2, y2);
+                    let p3 = Point::new(x, y);
+                    flatten_cubic_bezier(cur, p1, p2, p3, &mut cur_pts);
+                    last_cubic_ctrl = Some(p2);
+                    cur = p3;
+                }
+            }
+            b'Q' => {
+                last_cubic_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(mut x1), Some(mut y1)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        x1 += cur.x;
+                        y1 += cur.y;
+                        x += cur.x;
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    let p1 = Point::new(x1, y1);
+                    let p2 = Point::new(x, y);
+                    flatten_quad_bezier(cur, p1, p2, &mut cur_pts);
+                    last_quad_ctrl = Some(p1);
+                    cur = p2;
+                }
+            }
+            b'T' => {
+                last_cubic_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        x += cur.x;
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    let p1 = match last_quad_ctrl {
+                        Some(prev) => Point::new(2.0 * cur.x - prev.x, 2.0 * cur.y - prev.y),
+                        None => cur,
+                    };
+                    let p2 = Point::new(x, y);
+                    flatten_quad_bezier(cur, p1, p2, &mut cur_pts);
+                    last_quad_ctrl = Some(p1);
+                    cur = p2;
+                }
+            }
+            b'A' => {
+                last_cubic_ctrl = None;
+                last_quad_ctrl = None;
+                while total_pts + cur_pts.len() < MAX_SVG_PATH_POINTS && cursor.has_number() {
+                    let (Some(rx), Some(ry), Some(rot)) = (
+                        cursor.read_number(),
+                        cursor.read_number(),
+                        cursor.read_number(),
+                    ) else {
+                        break;
+                    };
+                    let (Some(large_arc), Some(sweep)) = (cursor.read_flag(), cursor.read_flag())
+                    else {
+                        break;
+                    };
+                    let (Some(mut x), Some(mut y)) = (cursor.read_number(), cursor.read_number())
+                    else {
+                        break;
+                    };
+                    if rel {
+                        x += cur.x;
+                        y += cur.y;
+                    }
+                    if cur_pts.is_empty() {
+                        cur_pts.push(cur);
+                    }
+                    let p1 = Point::new(x, y);
+                    flatten_svg_arc(cur, rx, ry, rot, large_arc, sweep, p1, &mut cur_pts);
+                    cur = p1;
+                }
+            }
+            b'Z' => {
+                last_cubic_ctrl = None;
+                last_quad_ctrl = None;
+                if !cur_pts.is_empty() {
+                    if !is_closed(&cur_pts) {
+                        cur_pts.push(subpath_start);
+                    }
+                    total_pts += cur_pts.len();
+                    subpaths.push(Subpath {
+                        points: std::mem::take(&mut cur_pts),
+                        closed: true,
+                    });
+                }
+                cur = subpath_start;
+            }
+            _ => break,
+        }
+    }
+    flush_open(&mut cur_pts, &mut subpaths, &mut total_pts);
+    subpaths
 }
 
 fn is_closed(points: &[Point]) -> bool {
@@ -655,13 +1227,342 @@ fn stroke_outline(sub: &Subpath, width: f64) -> Vec<Subpath> {
     ]
 }
 
-/// Offset of a miter join between two unit normals at distance `mid`.
+/// Offset of a miter join between two unit normals at distance `mid` (clamped at miterlimit 4).
 fn miter(na: Point, nb: Point, mid: f64) -> Point {
     let denom = 1.0 + na.x * nb.x + na.y * nb.y;
     if denom.abs() < 1e-9 {
         return Point::new(na.x * mid, na.y * mid);
     }
-    Point::new((na.x + nb.x) * mid / denom, (na.y + nb.y) * mid / denom)
+    let mx = (na.x + nb.x) * mid / denom;
+    let my = (na.y + nb.y) * mid / denom;
+    let len = mx.hypot(my);
+    let limit = 4.0 * mid;
+    if len > limit {
+        let scale = limit / len;
+        Point::new(mx * scale, my * scale)
+    } else {
+        Point::new(mx, my)
+    }
+}
+
+/// Appends circular arc points from normal `n_from` to `n_to` around `center` at radius `mid`.
+fn push_arc_between_normals(
+    center: Point,
+    n_from: Point,
+    n_to: Point,
+    mid: f64,
+    ccw: bool,
+    out: &mut Vec<Point>,
+) {
+    let a0 = n_from.y.atan2(n_from.x);
+    let a1 = n_to.y.atan2(n_to.x);
+    let two_pi = 2.0 * std::f64::consts::PI;
+    let mut delta = a1 - a0;
+    if ccw {
+        while delta < 0.0 {
+            delta += two_pi;
+        }
+    } else {
+        while delta > 0.0 {
+            delta -= two_pi;
+        }
+    }
+    let steps = ((delta.abs() * mid / 1.0).ceil() as usize).clamp(4, 32);
+    for i in 0..=steps {
+        let a = a0 + delta * (i as f64 / steps as f64);
+        out.push(Point::new(
+            center.x + a.cos() * mid,
+            center.y + a.sin() * mid,
+        ));
+    }
+}
+
+/// Builds stroke outlines supporting mixed `LineCap` / `LineJoin` modes.
+fn stroke_outline_styled(sub: &Subpath, style: StrokeStyle) -> Vec<Subpath> {
+    if style.cap == LineCap::Butt && style.join == LineJoin::Miter {
+        return stroke_outline(sub, style.width);
+    }
+    let mid = style.width / 2.0;
+    let mut pts: Vec<Point> = Vec::with_capacity(sub.points.len());
+    for &p in &sub.points {
+        if pts.last().is_none_or(|l: &Point| {
+            (l.x - p.x).abs() >= MAGICK_EPSILON || (l.y - p.y).abs() >= MAGICK_EPSILON
+        }) {
+            pts.push(p);
+        }
+    }
+    let closed = sub.closed || is_closed(&sub.points);
+    if closed && pts.len() > 1 && is_closed(&pts) {
+        pts.pop();
+    }
+    if pts.len() < 2 {
+        return Vec::new();
+    }
+    let normal = |a: Point, b: Point| {
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let len = dx.hypot(dy).max(MAGICK_EPSILON);
+        Point::new(-dy / len, dx / len)
+    };
+    let n = pts.len();
+    let mut left: Vec<Point> = Vec::with_capacity(n * 4);
+    let mut right: Vec<Point> = Vec::with_capacity(n * 4);
+
+    if !closed {
+        let n_start = normal(pts[0], pts[1]);
+        left.push(Point::new(
+            pts[0].x + n_start.x * mid,
+            pts[0].y + n_start.y * mid,
+        ));
+        right.push(Point::new(
+            pts[0].x - n_start.x * mid,
+            pts[0].y - n_start.y * mid,
+        ));
+
+        for i in 1..n - 1 {
+            let na = normal(pts[i - 1], pts[i]);
+            let nb = normal(pts[i], pts[i + 1]);
+            match style.join {
+                LineJoin::Miter => {
+                    let m = miter(na, nb, mid);
+                    left.push(Point::new(pts[i].x + m.x, pts[i].y + m.y));
+                    right.push(Point::new(pts[i].x - m.x, pts[i].y - m.y));
+                }
+                LineJoin::Round => {
+                    let cross = na.x * nb.y - na.y * nb.x;
+                    if cross > 1e-6 {
+                        push_arc_between_normals(pts[i], na, nb, mid, true, &mut left);
+                        let m = miter(na, nb, mid);
+                        right.push(Point::new(pts[i].x - m.x, pts[i].y - m.y));
+                    } else if cross < -1e-6 {
+                        let m = miter(na, nb, mid);
+                        left.push(Point::new(pts[i].x + m.x, pts[i].y + m.y));
+                        push_arc_between_normals(
+                            pts[i],
+                            Point::new(-na.x, -na.y),
+                            Point::new(-nb.x, -nb.y),
+                            mid,
+                            false,
+                            &mut right,
+                        );
+                    } else {
+                        left.push(Point::new(pts[i].x + nb.x * mid, pts[i].y + nb.y * mid));
+                        right.push(Point::new(pts[i].x - nb.x * mid, pts[i].y - nb.y * mid));
+                    }
+                }
+            }
+        }
+
+        let n_end = normal(pts[n - 2], pts[n - 1]);
+        left.push(Point::new(
+            pts[n - 1].x + n_end.x * mid,
+            pts[n - 1].y + n_end.y * mid,
+        ));
+        right.push(Point::new(
+            pts[n - 1].x - n_end.x * mid,
+            pts[n - 1].y - n_end.y * mid,
+        ));
+
+        let mut outline = left;
+        if style.cap == LineCap::Round {
+            push_arc_between_normals(
+                pts[n - 1],
+                n_end,
+                Point::new(-n_end.x, -n_end.y),
+                mid,
+                false,
+                &mut outline,
+            );
+        }
+        right.reverse();
+        outline.extend(right);
+        if style.cap == LineCap::Round {
+            push_arc_between_normals(
+                pts[0],
+                Point::new(-n_start.x, -n_start.y),
+                n_start,
+                mid,
+                false,
+                &mut outline,
+            );
+        }
+        if let Some(&first) = outline.first() {
+            if !is_closed(&outline) {
+                outline.push(first);
+            }
+        }
+        return vec![Subpath {
+            points: outline,
+            closed: true,
+        }];
+    }
+
+    stroke_outline(sub, style.width)
+}
+
+/// Exact Minkowski-capsule stroke rasterizer for wide strokes (`mid > 1.0`) with round joins
+/// and round caps (or closed paths with round joins). Evaluates exact Euclidean distance to
+/// the polyline segments so tight Bézier curves never self-intersect.
+fn draw_round_stroke(canvas: &mut Canvas, polygon: &Polygon, mid: f64, stroke_color: Rgba) {
+    if stroke_color.a <= 0.0 {
+        return;
+    }
+    let Some((mut x1, mut y1, mut x2, mut y2)) = polygon.bounds() else {
+        return;
+    };
+    let pad = mid + 1.0;
+    x1 -= pad;
+    y1 -= pad;
+    x2 += pad;
+    y2 += pad;
+    let cols = canvas.width as f64;
+    let rows = canvas.height as f64;
+    if x1 >= cols || y1 >= rows || x2 <= 0.0 || y2 <= 0.0 {
+        return;
+    }
+    let clamp = |v: f64, max: f64| v.clamp(0.0, max - 1.0);
+    let (x1, y1, x2, y2) = (
+        clamp(x1, cols),
+        clamp(y1, rows),
+        clamp(x2, cols),
+        clamp(y2, rows),
+    );
+    let ex1 = (x1 - 0.5).ceil() as i64;
+    let ey1 = (y1 - 0.5).ceil() as i64;
+    let ex2 = (x2 + 0.5).floor() as i64;
+    let ey2 = (y2 + 0.5).floor() as i64;
+
+    let outer = mid + 1.0;
+    let outer_sq = outer * outer;
+    let inner_sq = mid * mid;
+    // `prepare_row` uses `mid_arg + 0.5` as `reach`, so pass `mid + 0.5` to get `mid + 1.0`.
+    let row_reach_mid = mid + 0.5;
+    let mut row_edges = Vec::with_capacity(polygon.edges.len());
+
+    for y in ey1..=ey2 {
+        let yf = y as f64;
+        polygon.prepare_row(row_reach_mid, yf, &mut row_edges);
+        for x in ex1..=ex2 {
+            let xf = x as f64;
+            let mut min_dist_sq = f64::INFINITY;
+            for (edge, re) in polygon.edges.iter().zip(&row_edges) {
+                if edge.ghostline || !re.dist_active || xf <= re.dist_x1 || xf > re.dist_x2 {
+                    continue;
+                }
+                let pts = &edge.points;
+                for i in re.seg_start..re.seg_end {
+                    let q = pts[i - 1];
+                    let q1 = pts[i];
+                    let dx = q1.x - q.x;
+                    let dy = q1.y - q.y;
+                    let beta = dx * (xf - q.x) + dy * (yf - q.y);
+                    let dist_sq = if beta <= 0.0 {
+                        let px = xf - q.x;
+                        let py = yf - q.y;
+                        px * px + py * py
+                    } else {
+                        let alpha = dx * dx + dy * dy;
+                        if beta >= alpha {
+                            let px = xf - q1.x;
+                            let py = yf - q1.y;
+                            px * px + py * py
+                        } else {
+                            let cross = dx * (yf - q.y) - dy * (xf - q.x);
+                            perceptible_reciprocal(alpha) * cross * cross
+                        }
+                    };
+                    if dist_sq < min_dist_sq {
+                        min_dist_sq = dist_sq;
+                        if min_dist_sq <= inner_sq {
+                            break;
+                        }
+                    }
+                }
+                if min_dist_sq <= inner_sq {
+                    break;
+                }
+            }
+            if min_dist_sq <= inner_sq {
+                canvas.blend(x as usize, y as usize, stroke_color, 1.0);
+            } else if min_dist_sq < outer_sq {
+                let d = min_dist_sq.sqrt() - mid;
+                let opacity = (1.0 - d) * (1.0 - d);
+                if opacity > 0.0 {
+                    canvas.blend(x as usize, y as usize, stroke_color, opacity as f32);
+                }
+            }
+        }
+    }
+}
+
+/// Fills and strokes a multi-subpath primitive with explicit [`StrokeStyle`] and [`FillRule`].
+pub fn draw_subpaths_styled(
+    canvas: &mut Canvas,
+    subpaths: &[Subpath],
+    fill: Option<Rgba>,
+    stroke: Option<Rgba>,
+    style: StrokeStyle,
+    rule: FillRule,
+) {
+    if canvas.width == 0 || canvas.height == 0 || !style.width.is_finite() {
+        return;
+    }
+    let valid_any = subpaths.iter().any(|s| {
+        s.points.len() >= 2 && s.points.iter().all(|p| p.x.is_finite() && p.y.is_finite())
+    });
+    if !valid_any {
+        return;
+    }
+    let mid = style.width / 2.0;
+    let stroke_visible = stroke.is_some_and(|s| s.a > 0.0) && style.width > 0.0;
+    let fill_visible = fill.is_some_and(|f| f.a > 0.0);
+    let polygon = Polygon::new(subpaths);
+
+    if mid > 1.0 && stroke_visible {
+        if fill_visible {
+            draw_polygon(canvas, &polygon, 0.0, fill, None, rule);
+        }
+        let all_closed = subpaths.iter().all(|s| s.closed || is_closed(&s.points));
+        if (all_closed || style.cap == LineCap::Round) && style.join == LineJoin::Round {
+            if let Some(sc) = stroke {
+                draw_round_stroke(canvas, &polygon, mid, sc);
+            }
+        } else {
+            let mut outlines = Vec::new();
+            for sub in subpaths {
+                outlines.extend(stroke_outline_styled(sub, style));
+            }
+            let outline_poly = Polygon::new(&outlines);
+            draw_polygon(canvas, &outline_poly, 0.0, stroke, None, FillRule::NonZero);
+        }
+    } else {
+        draw_polygon(
+            canvas,
+            &polygon,
+            if stroke_visible { mid } else { 0.0 },
+            fill,
+            if stroke_visible { stroke } else { None },
+            rule,
+        );
+    }
+}
+
+/// Draws a single [`Subpath`] with explicit [`StrokeStyle`] (`LineCap` + `LineJoin`).
+pub fn draw_primitive_styled(
+    canvas: &mut Canvas,
+    sub: &Subpath,
+    fill: Option<Rgba>,
+    stroke: Option<Rgba>,
+    style: StrokeStyle,
+) {
+    draw_subpaths_styled(
+        canvas,
+        std::slice::from_ref(sub),
+        fill,
+        stroke,
+        style,
+        FillRule::EvenOdd,
+    );
 }
 
 /// `DrawPrimitive` for path-like primitives: fills, then strokes, with ImageMagick's split

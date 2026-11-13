@@ -239,8 +239,20 @@ RSpec.describe "UserSettings" do
         sign_in user
         get user_settings_path(tab: "account")
 
-        expect(response.body).to include("https://my.mlh.com/", "Sign in to MLH", "MLH email", "Reconnect MLH Account")
-        expect(response.body).not_to include("Please relink your", "MyMLH email")
+        expect(response.body).to include("https://www.mlh.com/account/profile", "Sign in to MLH", "MLH email",
+                                         "Reconnect MLH Account")
+        expect(response.body).not_to include("Please relink your", "MyMLH email", "my.mlh.io", "my.mlh.com")
+      end
+
+      it "links MLH profile settings to the MLH account profile page", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :without_profile, :with_identity, profile_image: nil, identities: %i[github mlh])
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include('href="https://www.mlh.com/account/profile">MLH profile settings</a>')
+        expect(response.body).not_to include("my.mlh.io/oauth/applications")
       end
 
       it "does not offer a relink for an mlh identity that has a payload", :aggregate_failures do

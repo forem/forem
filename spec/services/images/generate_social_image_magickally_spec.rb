@@ -121,38 +121,16 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         end
       end
 
-      context "when MiniMagick throws an error" do
-        it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
-          allow(generator).to receive(:generate_image).and_raise(MiniMagick::Error.new("`convert` failed with status: 15"))
-          allow(Rails.logger).to receive(:warn)
-          allow(Rails.error).to receive(:report)
-
-          described_class.call(article)
-
-          expect(Rails.logger).to have_received(:warn).with(/SIGTERM/)
-          expect(Rails.error).not_to have_received(:report)
-        end
-
-        it "logs a warning and does not alert Honeybadger if identify is signal-killed with status nil" do
-          allow(generator).to receive(:generate_image).and_raise(
-            MiniMagick::Invalid.new("`identify /tmp/mini_magick.png` failed with status: nil and error:"),
-          )
-          allow(Rails.logger).to receive(:warn)
-          allow(Rails.error).to receive(:report)
-
-          described_class.call(article)
-
-          expect(Rails.logger).to have_received(:warn).with(/SIGTERM/)
-          expect(Rails.error).not_to have_received(:report)
-        end
-
-        it "alerts Honeybadger for other MiniMagick errors" do
-          error = MiniMagick::Error.new("`convert` failed with status: 1")
+      context "when image generation raises an unexpected error" do
+        it "logs and reports the error" do
+          error = StandardError.new("unexpected render failure")
           allow(generator).to receive(:generate_image).and_raise(error)
+          allow(Rails.logger).to receive(:error)
           allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
+          expect(Rails.logger).to have_received(:error).with(error)
           expect(Rails.error).to have_received(:report).with(error)
         end
       end
@@ -555,27 +533,14 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       expect(Rails.error).not_to have_received(:report)
     end
 
-    it "gracefully rescues a corrupt PNG MiniMagick::Error, logs a warning without reporting, and returns the image without an avatar" do
-      error = MiniMagick::Error.new(
-        "`mogrify -quality 100 /tmp/mini_magick.png[0]` failed with status: 1 and error:\n" \
-        "mogrify-im6.q16: Expected 4096 bytes; found 2685 bytes `/tmp/mini_magick.png' @ warning/png.c/MagickPNGWarningHandler/1669.\n" \
-        "mogrify-im6.q16: Read Exception `/tmp/mini_magick.png' @ error/png.c/MagickPNGErrorHandler/1643.",
-      )
+    it "gracefully rescues a corrupt avatar ArgumentError, logs a warning without reporting, and returns the image without an avatar" do
+      error = ArgumentError.new("failed to decode image: corrupt PNG chunk")
       allow(ForemNative).to receive(:social_image_add_profile_image).and_raise(error)
       allow(Rails.logger).to receive(:warn)
       allow(Rails.error).to receive(:report)
 
       expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
-      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed:.*Read Exception/m)
-      expect(Rails.error).not_to have_received(:report)
-    end
-
-    it "re-raises status 15 SIGTERM MiniMagick errors without reporting them" do
-      sigterm_error = MiniMagick::Error.new("`composite` failed with status: 15 and error:")
-      allow(ForemNative).to receive(:social_image_add_profile_image).and_raise(sigterm_error)
-      allow(Rails.error).to receive(:report)
-
-      expect { generator.send(:add_profile_image, result_image) }.to raise_error(sigterm_error)
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed:.*corrupt PNG chunk/)
       expect(Rails.error).not_to have_received(:report)
     end
   end
@@ -600,19 +565,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       expect(ForemNative).not_to have_received(:social_image_add_profile_card_avatar)
     end
 
-    it "re-raises status 15 SIGTERM MiniMagick errors without reporting them" do
-      sigterm_error = MiniMagick::Error.new(
-        "`mogrify -fill white -stroke none -draw circle 203,200 203,138 /tmp/mini_magick.miff` failed with status: 15 and error:",
-      )
-      allow(ForemNative).to receive(:social_image_add_profile_card_avatar).and_raise(sigterm_error)
-      allow(Rails.error).to receive(:report)
-
-      expect { generator.send(:add_profile_card_avatar, result_image) }.to raise_error(sigterm_error)
-      expect(Rails.error).not_to have_received(:report)
-    end
-
-    it "logs a warning for non-SIGTERM errors without reporting and returns the image without an avatar" do
-      error = MiniMagick::Error.new("`mogrify` failed with status: 1 and error:")
+    it "logs a warning for avatar processing errors without reporting and returns the image without an avatar" do
+      error = ArgumentError.new("failed to composite profile avatar")
       allow(ForemNative).to receive(:social_image_add_profile_card_avatar).and_raise(error)
       allow(Rails.logger).to receive(:warn)
       allow(Rails.error).to receive(:report)
@@ -765,11 +719,11 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(Rails.error).not_to have_received(:report)
       end
 
-      it "re-raises signal-killed MiniMagick::Invalid errors" do
-        sigterm_invalid = MiniMagick::Invalid.new("`identify /tmp/mini_magick.png` failed with status: nil and error:")
-        allow(ForemNative).to receive(:social_image_open).with("https://example.com/corrupt_avatar.png").and_raise(sigterm_invalid)
+      it "re-raises non-ArgumentError fetch exceptions such as OpenURI::HTTPError" do
+        http_error = OpenURI::HTTPError.new("503 Service Unavailable", StringIO.new)
+        allow(ForemNative).to receive(:social_image_open).with("https://example.com/corrupt_avatar.png").and_raise(http_error)
 
-        expect { instance.send(:read_files, article) }.to raise_error(sigterm_invalid)
+        expect { instance.send(:read_files, article) }.to raise_error(OpenURI::HTTPError)
       end
     end
   end

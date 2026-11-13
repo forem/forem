@@ -1,6 +1,108 @@
 require "rails_helper"
 
 RSpec.describe Page do
+  describe "organization tab visibility" do
+    it "defaults to visible" do
+      expect(build(:page).show_in_navigation?).to be(true)
+    end
+
+    it "rejects a hidden site page" do
+      page = build(:page, show_in_navigation: false)
+
+      expect(page).not_to be_valid
+      expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
+    end
+
+    it "rejects a null value with a validation error instead of a database error" do
+      page = build(:page, organization: create(:organization), position: 2, show_in_navigation: nil)
+
+      expect(page).not_to be_valid
+      expect(page.errors[:show_in_navigation]).to be_present
+    end
+
+    it "adds an error instead of raising when the organization no longer exists" do
+      page = build(:page, organization_id: 0, show_in_navigation: false)
+
+      expect { page.valid? }.not_to raise_error
+      expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+    end
+
+    it "keeps a hidden page editable after its organization is deleted" do
+      organization = create(:organization)
+      create(:page, organization: organization, position: 0)
+      hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+      organization.destroy!
+
+      expect(hidden.reload.organization_id).to be_nil
+      expect(hidden.update(title: "Renamed")).to be(true)
+    end
+
+    it "rejects moving a hidden organization page out of its organization" do
+      organization = create(:organization)
+      create(:page, organization: organization, position: 0)
+      hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+      expect(hidden.update(organization_id: nil)).to be(false)
+      expect(hidden.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
+    end
+
+    it "rejects a hidden subforem page" do
+      page = build(:page, subforem: create(:subforem), show_in_navigation: false)
+
+      expect(page).not_to be_valid
+      expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
+    end
+
+    context "with an organization" do
+      let(:organization) { create(:organization) }
+
+      it "rejects a hidden first page" do
+        page = build(:page, organization: organization, show_in_navigation: false)
+
+        expect(page).not_to be_valid
+        expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+      end
+
+      it "rejects hiding the Showcase by id, even without the readme slug" do
+        page = create(:page, organization: organization, position: 0)
+        page.show_in_navigation = false
+
+        expect(page).not_to be_valid
+        expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+      end
+
+      it "allows a new or existing custom page to be hidden without changing its position" do
+        create(:page, organization: organization, position: 0)
+        page = build(:page, organization: organization, position: 2, show_in_navigation: false)
+
+        expect(page).to be_valid
+        page.save!
+        expect(page.reload).to have_attributes(show_in_navigation: false, position: 2)
+        expect(page).to be_valid
+      end
+
+      it "keeps a hidden page editable after the Showcase is deleted and it becomes the Showcase" do
+        showcase = create(:page, organization: organization, position: 0)
+        hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+        showcase.destroy!
+
+        expect(organization.reload.main_page).to eq(hidden)
+        expect(hidden.reload.update(title: "Renamed")).to be(true)
+      end
+
+      it "keeps a hidden page editable when it is moved to the first position" do
+        create(:page, organization: organization, position: 0)
+        hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+        expect(hidden.update(position: -1)).to be(true)
+        expect(organization.reload.main_page).to eq(hidden)
+        expect(hidden.update(title: "Renamed")).to be(true)
+      end
+    end
+  end
+
   describe ".from_subforem" do
     let!(:page_subforem_1) { create(:page, subforem_id: 1) }
     let!(:page_subforem_2) { create(:page, subforem_id: 2) }
@@ -250,6 +352,16 @@ RSpec.describe Page do
       sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [org_page.slug, organization.id]) do
         org_page.save
       end
+    end
+
+    it "enqueues cache busts for both the new and previous slug when slug changes" do
+      page = create(:page, slug: "old-page-slug")
+      allow(Pages::BustCacheWorker).to receive(:perform_async)
+
+      page.update!(slug: "new-page-slug")
+
+      expect(Pages::BustCacheWorker).to have_received(:perform_async).with("new-page-slug")
+      expect(Pages::BustCacheWorker).to have_received(:perform_async).with("old-page-slug")
     end
 
     it "ensures only one page can be a landing page on create" do

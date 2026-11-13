@@ -38,12 +38,12 @@ module Ai
       return default_order if @query.blank? || @scored_articles.size <= 1
 
       selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return default_order unless selection.jev?
+      return default_order unless selection.decision?
 
       shortlist = @scored_articles.first(SHORTLIST_LIMIT)
       remainder = @scored_articles.drop(SHORTLIST_LIMIT)
 
-      probabilities = fetch_jev_probabilities(shortlist.map(&:first), selection.model)
+      probabilities = fetch_jev_probabilities(shortlist.map(&:first), selection)
       return default_order if probabilities.blank?
 
       combine_scores(shortlist, probabilities) + remainder.map(&:first)
@@ -71,11 +71,12 @@ module Ai
       reranked.sort_by { |_article, score, index| [-score, index] }.map(&:first)
     end
 
-    def fetch_jev_probabilities(articles, model)
+    def fetch_jev_probabilities(articles, selection)
       cache_digest = Digest::SHA256.hexdigest(
         [
           VERSION,
-          model,
+          selection.provider,
+          selection.model,
           @query,
           articles.map { |a| "#{a.id}:#{a.updated_at.to_i}" }.join(","),
         ].join("/"),
@@ -83,7 +84,7 @@ module Ai
 
       Rails.cache.fetch("semantic_search_jev_rerank/#{cache_digest}", expires_in: 1.hour) do
         questions = build_questions(articles)
-        client = Ai::TypeSafe::Client.new(model: model, wrapper: self, **FAIL_FAST)
+        client = selection.decision_client(wrapper: self, **FAIL_FAST)
         result = client.evaluate(state: { query: @query }, questions: questions)
 
         articles.each_with_object({}) do |article, memo|

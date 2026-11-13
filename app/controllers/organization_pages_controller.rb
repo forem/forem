@@ -4,34 +4,28 @@ class OrganizationPagesController < ApplicationController
   before_action :set_page, only: %i[edit update destroy reorder]
   before_action :validate_reorder_direction, only: :reorder
 
+  SLUG_REQUIRED_MESSAGE = "suffix is required and must contain alphanumeric characters or hyphens".freeze
+
   def index
     @pages = @organization.ordered_pages
     @showcase_page = @pages.first
+    @embed_pages = @organization.ordered_embed_pages
   end
 
   def new
-    @page = @organization.pages.build(template: "full_within_layout")
+    template = params[:kind] == "embed" ? Page::EMBED_HTML_TEMPLATE : "full_within_layout"
+    @page = @organization.pages.build(template: template)
   end
 
-  def create
-    is_first_page = !@organization.pages.exists?
-    @page = @organization.pages.build(page_params)
-    @page.template = "full_within_layout"
-    @page.position = (@organization.pages.maximum(:position) || -1) + 1
-    
-    if is_first_page
-      @page.slug = "#{@organization.slug}/readme"
-      @page.title = I18n.t("views.organizations.showcase") if @page.title.blank?
-    else
-      suffix = params.dig(:page, :slug_suffix).to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").gsub(/\A-+|-+\z/, "")
-      if suffix.blank?
-        @page.errors.add(:slug, "suffix is required and must contain alphanumeric characters or hyphens")
-        return render :new, status: :unprocessable_entity
-      end
-      @page.slug = "#{@organization.slug}/#{suffix}"
-    end
+  def edit; end
 
-    @page.description = @organization.summary.presence || @organization.name if @page.description.blank?
+  def create
+    if creating_embed_page?
+      build_embed_page
+    else
+      build_markdown_page
+    end
+    return render :new, status: :unprocessable_entity if @page.errors.any?
 
     if @page.save
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.created")
@@ -41,25 +35,16 @@ class OrganizationPagesController < ApplicationController
     end
   end
 
-  def edit
-  end
-
   def update
-    @page.assign_attributes(page_params)
-    
-    if @page.slug.end_with?("/readme")
-      @page.slug = "#{@organization.slug}/readme"
+    if @page.embed_html?
+      assign_embed_page_updates
     else
-      suffix = params.dig(:page, :slug_suffix).to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").gsub(/\A-+|-+\z/, "")
-      if suffix.blank?
-        @page.errors.add(:slug, "suffix is required and must contain alphanumeric characters or hyphens")
-        return render :edit, status: :unprocessable_entity
-      end
-      @page.slug = "#{@organization.slug}/#{suffix}"
+      assign_markdown_page_updates
     end
+    return render :edit, status: :unprocessable_entity if @page.errors.any?
 
     if @page.save
-      Pages::BustCacheWorker.perform_async(@page.slug)
+      Pages::BustCacheWorker.perform_async(@page.slug, @organization.id)
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.updated")
       redirect_to organization_pages_path(@organization.slug)
     else
@@ -100,8 +85,90 @@ class OrganizationPagesController < ApplicationController
     not_found unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
   end
 
-  def page_params
-    params.require(:page).permit(:title, :body_markdown, :description)
+  def creating_embed_page?
+    params[:kind] == "embed" || params.dig(:page, :template) == Page::EMBED_HTML_TEMPLATE
+  end
+
+  def build_embed_page
+    @page = @organization.pages.build(embed_page_params)
+    @page.template = Page::EMBED_HTML_TEMPLATE
+    @page.position = 0
+    @page.description = default_page_description if @page.description.blank?
+
+    suffix = normalized_slug_suffix
+    if suffix.blank?
+      @page.errors.add(:slug, SLUG_REQUIRED_MESSAGE)
+      return
+    end
+
+    @page.slug = "#{@organization.slug}/embed/#{suffix}"
+  end
+
+  def build_markdown_page
+    is_first_page = !@organization.ordered_pages.exists?
+    @page = @organization.pages.build(markdown_page_params)
+    @page.template = "full_within_layout"
+    @page.position = (@organization.ordered_pages.maximum(:position) || -1) + 1
+    @page.description = default_page_description if @page.description.blank?
+
+    if is_first_page
+      @page.slug = "#{@organization.slug}/readme"
+      @page.title = I18n.t("views.organizations.showcase") if @page.title.blank?
+    else
+      suffix = normalized_slug_suffix
+      if suffix.blank?
+        @page.errors.add(:slug, SLUG_REQUIRED_MESSAGE)
+        return
+      end
+      @page.slug = "#{@organization.slug}/#{suffix}"
+    end
+  end
+
+  def assign_embed_page_updates
+    @page.assign_attributes(embed_page_params)
+    suffix = normalized_slug_suffix
+    if suffix.blank?
+      @page.errors.add(:slug, SLUG_REQUIRED_MESSAGE)
+      return
+    end
+
+    @page.slug = "#{@organization.slug}/embed/#{suffix}"
+  end
+
+  def assign_markdown_page_updates
+    @page.assign_attributes(markdown_page_params)
+    if @page.slug.end_with?("/readme")
+      @page.slug = "#{@organization.slug}/readme"
+    else
+      suffix = normalized_slug_suffix
+      if suffix.blank?
+        @page.errors.add(:slug, SLUG_REQUIRED_MESSAGE)
+        return
+      end
+      @page.slug = "#{@organization.slug}/#{suffix}"
+    end
+  end
+
+  def default_page_description
+    @organization.summary.presence || @organization.name
+  end
+
+  def normalized_slug_suffix
+    params.dig(:page, :slug_suffix)
+      .to_s
+      .strip
+      .downcase
+      .gsub(/[^a-z0-9\-]/, "-")
+      .squeeze("-")
+      .gsub(/\A-+|-+\z/, "")
+  end
+
+  def markdown_page_params
+    params.require(:page).permit(:title, :body_markdown, :description, :show_in_navigation)
+  end
+
+  def embed_page_params
+    params.require(:page).permit(:title, :body_html, :description)
   end
 
   def showcase_page?(page)
@@ -109,7 +176,7 @@ class OrganizationPagesController < ApplicationController
   end
 
   def reorder_page(direction)
-    return false if showcase_page?(@page)
+    return false if showcase_page?(@page) || @page.embed_html?
 
     Page.transaction do
       pages = ordered_custom_pages

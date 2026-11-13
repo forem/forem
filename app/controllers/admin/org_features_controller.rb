@@ -18,6 +18,11 @@ module Admin
       org_verification: {
         name: "Organization Verification",
         description: "When enabled, organizations can request verification and display a verified badge."
+      },
+      org_related_articles: {
+        name: "Related Articles API",
+        description: "When enabled, members of this organization can call the related articles API to find " \
+                     "public community writing about their technology."
       }
     }.freeze
 

@@ -27,7 +27,7 @@ module Ai
     def initialize(article)
       @article = article
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_user: article.user,
                                 affected_content: article)
@@ -38,7 +38,7 @@ module Ai
     #
     # @return [Boolean] true if the article is likely spam, false otherwise.
     def spam?
-      return spam_via_jev? if @selection.jev?
+      return spam_via_jev? if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -60,8 +60,8 @@ module Ai
     end
 
     def jev_client
-      Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @article.user,
-                               affected_content: @article, **Ai::TypeSafe::Client::FAIL_FAST)
+      @selection.decision_client(wrapper: self, affected_user: @article.user,
+                                 affected_content: @article, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
     # Builds the structured state payload passed to Jev for spam evaluation.

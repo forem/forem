@@ -33,6 +33,7 @@ gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 5.6", require: false # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
+gem "excon", "~> 1.8.0"
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 4.0" # A feed fetching and parsing library
@@ -49,7 +50,7 @@ gem "honeybadger", "~> 5.1", require: false # Used for tracking application erro
 gem "honeycomb-beeline", "~> 2.11.0", require: false # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.24" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
+gem "httpclient", "~> 2.10.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
@@ -63,7 +64,6 @@ gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "logtail-rails", "~> 0.2.12", require: false # Ships Rails logs to Better Stack when BETTERSTACK_SOURCE_TOKEN is set (see lib/betterstack/log_device.rb and config/initializers/betterstack.rb before upgrading)
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
-gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.18" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 10.0" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer

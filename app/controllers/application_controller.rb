@@ -84,6 +84,13 @@ class ApplicationController < ActionController::Base
   ].freeze
   private_constant :CONTENT_CHANGE_PATHS
 
+  CONTENT_CHANGE_SURROGATE_KEYS = %w[
+    tags
+    onboarding-slideshow
+    main_app_home_page
+  ].freeze
+  private_constant :CONTENT_CHANGE_SURROGATE_KEYS
+
   # @!scope class
   # @!attribute [w] api_action
   #   If set to true, all actions on the class (and subclasses) will be considered "api_actions"
@@ -274,7 +281,8 @@ class ApplicationController < ActionController::Base
       RequestStore.store[:subforem_id].present? &&
       @page.subforem_id != RequestStore.store[:subforem_id]
 
-    redirect_to URL.page(@page), allow_other_host: true, status: :moved_permanently
+    target_url = embedded_view? ? "#{URL.page(@page)}?mode=embed" : URL.page(@page)
+    redirect_to target_url, allow_other_host: true, status: :moved_permanently
   end
 
   def respond_with_request_for_authentication
@@ -351,6 +359,11 @@ class ApplicationController < ActionController::Base
     params[:i] == "i" || params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/)
   end
   helper_method :internal_navigation?
+
+  def embedded_view?
+    params[:mode] == "embed"
+  end
+  helper_method :embedded_view?
 
   def feed_style_preference
     Settings::UserExperience.feed_style
@@ -493,7 +506,7 @@ class ApplicationController < ActionController::Base
   end
 
   def bust_content_change_caches
-    EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
+    EdgeCache::PurgeByKey.call(CONTENT_CHANGE_SURROGATE_KEYS, fallback_paths: CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 

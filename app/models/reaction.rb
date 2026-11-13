@@ -72,6 +72,9 @@ class Reaction < ApplicationRecord
   after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?,
                                                  unless: :destroyed_by_reactable_association?
   after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
+  after_destroy_commit :enqueue_dependent_embeds_update,
+                       if: :reactable_is_article?,
+                       unless: :destroyed_by_reactable_association?
   after_commit :enqueue_user_reading_list_activity_update,
                on: %i[create destroy update], if: :reading_list_article_reaction?
 
@@ -285,6 +288,13 @@ class Reaction < ApplicationRecord
     UpdateUserInterestEmbeddingWorker.perform_async(user_id, reactable_id, 0.2)
   end
 
+  def enqueue_dependent_embeds_update
+    Articles::UpdateDependentEmbedsWorker.schedule_for_engagement(reactable_id) if visible_to_public?
+    return unless LiquidEmbedReference.score_feed_target_for_article?(reactable_id)
+
+    Articles::ScoreCalcWorker.perform_async(reactable_id)
+  end
+
   def enqueue_article_activity_update
     action = destroyed? ? "destroy" : "create"
     payload = {
@@ -308,7 +318,7 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheWorker.new.perform(id)
+    Reactions::BustReactableCacheWorker.new.perform(id, destroying: true)
   end
 
   def bust_reaction_counts_cache

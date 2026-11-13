@@ -16,6 +16,9 @@ en:
         save: Save page
         preview: Preview
       pages:
+        show_in_navigation: "Show in organization tabs"
+        navigation_hint: "Hidden pages still load at their URL."
+        hidden_from_tabs: "Hidden from tabs"
         heading: Custom Pages
         new_page: Create new page
         edit_page: Edit page
@@ -35,7 +38,7 @@ en:
         description_help: Manage the pages of your organization, including the default Showcase page.
         create_heading: Create a new page
         edit_heading: Edit page
-        slug_help: Only lowercase letters, numbers, and hyphens (e.g. "about-us"). Accessible via the profile tab.
+        slug_help: Only lowercase letters, numbers, and hyphens (e.g. "about-us").
         showcase_slug_help: This is the Showcase (default) page, so the slug suffix is fixed to "readme".
         content_label: Page Content (Markdown)
         description_placeholder: Short description for SEO and sharing...
@@ -48,6 +51,19 @@ en:
         move_down: Move down
         move_up_title: "Move %{title} up"
         move_down_title: "Move %{title} down"
+        back_to_pages: Back to pages
+        embed_section_heading: Embedded HTML Pages (Sandboxed)
+        embed_section_description: Create custom HTML widgets and interactive embeds that can only be rendered inside article or Showcase embeds. For security, these pages are strictly sandboxed in an isolated iframe with no access to cookies, browser storage, or user data.
+        new_embed_page: Create embed HTML page
+        edit_embed_page: Edit embed HTML page
+        no_embed_pages: No embedded HTML pages created yet. Click "Create embed HTML page" to build a sandboxed embed widget.
+        embed_only_badge: Embed only · Sandboxed
+        embed_slug_help: Only lowercase letters, numbers, and hyphens (e.g. "pricing-calculator"). Not directly accessible by URL — embeddable only via Liquid tag.
+        embed_content_label: Custom HTML (Sandboxed)
+        embed_content_placeholder: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <style>\n      body { font-family: system-ui, sans-serif; margin: 16px; }\n    </style>\n  </head>\n  <body>\n    <h2>Interactive Widget</h2>\n    <script>\n      // Runs inside a strictly sandboxed opaque origin (no cookie or user data access)\n    </script>\n  </body>\n</html>"
+        embed_sandbox_notice_title: Strict Sandbox Isolation
+        embed_sandbox_notice_body: "This page can only be viewed via {% embed ... %} or {% page ... %} iframes and cannot be opened directly in a browser tab. Custom <style>, <script>, forms, and target=\"_blank\" links are supported, while cookies, browser storage, and parent-page user data are completely blocked."
+        embed_usage_label: Liquid embed tag
       header_cta:
         heading: Header CTA Button
         description: Add a call-to-action button to your organization's page header. You can create a simple button or a dropdown with multiple links.

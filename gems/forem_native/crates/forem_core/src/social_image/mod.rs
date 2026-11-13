@@ -5,6 +5,7 @@
 //! so cards keep the same geometry, typography, and colors while rendering in-process with
 //! no subprocesses, temp files, or ImageMagick dependency.
 
+pub mod avatar;
 pub mod canvas;
 pub mod card;
 pub mod decode;
@@ -51,6 +52,28 @@ pub fn encode_png(canvas: &Canvas) -> Result<Vec<u8>, SocialImageError> {
             .map_err(|e| SocialImageError::Encode(e.to_string()))?;
         writer
             .write_image_data(&canvas.to_rgb8())
+            .map_err(|e| SocialImageError::Encode(e.to_string()))?;
+    }
+    Ok(out)
+}
+
+/// Encodes `canvas` as an 8-bit RGBA PNG when `canvas.has_alpha` is true, or an 8-bit RGB PNG
+/// when opaque, preserving transparency for logos, favicons, and PNG uploads.
+pub fn encode_png_preserving_alpha(canvas: &Canvas) -> Result<Vec<u8>, SocialImageError> {
+    if !canvas.has_alpha {
+        return encode_png(canvas);
+    }
+    let mut out = Vec::new();
+    {
+        let mut encoder = png::Encoder::new(&mut out, canvas.width as u32, canvas.height as u32);
+        encoder.set_color(png::ColorType::Rgba);
+        encoder.set_depth(png::BitDepth::Eight);
+        encoder.set_compression(png::Compression::Balanced);
+        let mut writer = encoder
+            .write_header()
+            .map_err(|e| SocialImageError::Encode(e.to_string()))?;
+        writer
+            .write_image_data(&canvas.to_rgba8())
             .map_err(|e| SocialImageError::Encode(e.to_string()))?;
     }
     Ok(out)

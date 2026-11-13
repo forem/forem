@@ -77,4 +77,34 @@ RSpec.describe Follows::CheckCached, type: :service do
       expect(cache).not_to have_received(:read_multi)
     end
   end
+
+  describe ".fill_followable_misses" do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+    let(:followed_tag) { create(:tag) }
+    let(:unfollowed_tag) { create(:tag) }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(cache)
+      user.follow(followed_tag)
+    end
+
+    it "batches uncached Tag checks with string or integer ids and skips nonexistent ids" do
+      ids = [followed_tag.id.to_s, unfollowed_tag.id]
+      missing_id = Tag.maximum(:id).to_i + 1
+      allow(cache).to receive(:write_multi).and_call_original
+
+      prefetched = described_class.fill_followable_misses(
+        user,
+        "Tag",
+        ids + [missing_id],
+        {},
+      )
+
+      expect(cache).to have_received(:write_multi).once
+      expect(described_class.call(user, "Tag", followed_tag.id.to_s, prefetched)).to be(true)
+      expect(described_class.call(user, "Tag", unfollowed_tag.id, prefetched)).to be(false)
+      expect { described_class.call(user, "Tag", missing_id, prefetched) }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

@@ -27,7 +27,7 @@ RSpec.describe Users::BustProfileIdentityCacheWorker, type: :worker do
     expect(full_user_queries).to be_empty
   end
 
-  it "explicitly busts current and previous username paths when old_username is present" do
+  it "passes current and previous username fallback paths without firing duplicate URL busts" do
     user.update_columns(old_username: "thebitforge_dev", old_old_username: "thebitforge_old")
 
     described_class.new.perform(user.id)
@@ -42,7 +42,19 @@ RSpec.describe Users::BustProfileIdentityCacheWorker, type: :worker do
         "/thebitforge_old",
       ],
     )
-    expect(EdgeCache::Bust).to have_received(:call).with([user.path, "/thebitforge_dev", "/thebitforge_old"])
+    expect(EdgeCache::Bust).not_to have_received(:call)
+  end
+
+  it "also purges a former owner's identity key when claiming their old_username" do
+    former_user = create(:user)
+    former_user.update_columns(old_username: user.username)
+
+    described_class.new.perform(user.id)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      [user.profile_identity_record_key, former_user.profile_identity_record_key],
+      fallback_paths: user.profile_cache_bust_paths,
+    )
   end
 
   it "does not fail when user is missing" do

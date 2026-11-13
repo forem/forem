@@ -80,6 +80,8 @@ pt:
     organization_tag:
       invalid_slug: Slug da organização inválido
       invalid_url: URL da organização inválida
+    page_tag:
+      invalid_page: URL ou caminho da página inválido ou inexistente
     parler_tag:
       invalid_parler_url: URL do Parler inválida
     podcast_tag:

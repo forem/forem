@@ -1,58 +1,68 @@
 require "rails_helper"
 
 RSpec.describe EdgeCache::BustPage, type: :service do
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:slug) { "slug" }
   let(:paths) do
     [
       "/page/#{slug}",
       "/#{slug}",
       "/#{slug}/",
+      "/#{slug}?mode=embed",
     ]
   end
 
   before do
-    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
     allow(EdgeCache::PurgeByKey).to receive(:call)
-
-    paths.each do |path|
-      allow(cache_bust).to receive(:call).with(path).once
-    end
   end
 
-  it "busts the cache", :aggregate_failures do
+  it "purges the page surrogate key with path fallbacks in a single call" do
     described_class.call(slug)
 
-    paths.each do |path|
-      expect(cache_bust).to have_received(:call).with(path).once
-    end
+    expect(EdgeCache::PurgeByKey).to have_received(:call)
+      .with(["show-page-#{slug}"], fallback_paths: paths)
+      .once
   end
 
-  it "purges the page's surrogate key so query variants of its URLs are purged too" do
+  it "includes legacy redirect keys when a top-level page claims a former username" do
+    former_user = create(:user)
+    former_user.update_columns(old_username: slug)
+
     described_class.call(slug)
 
-    expect(EdgeCache::PurgeByKey).to have_received(:call).with("show-page-#{slug}").once
+    expect(EdgeCache::PurgeByKey).to have_received(:call)
+      .with(["show-page-#{slug}", former_user.profile_identity_record_key], fallback_paths: paths)
+      .once
   end
 
   context "when an organization is given" do
     let(:organization) { create(:organization) }
     let(:slug) { "#{organization.slug}/readme" }
 
-    it "purges the organization's surrogate key with a profile path fallback", :aggregate_failures do
+    it "purges both page and organization surrogate keys in a single call" do
       described_class.call(slug, organization: organization)
 
-      paths.each do |path|
-        expect(cache_bust).to have_received(:call).with(path).once
-      end
       expect(EdgeCache::PurgeByKey).to have_received(:call)
-        .with(organization.record_key, fallback_paths: "/#{organization.slug}")
+        .with(
+          ["show-page-#{slug}", organization.record_key],
+          fallback_paths: [*paths, "/#{organization.slug}"],
+        )
         .once
     end
+  end
 
-    it "does not purge the organization's key when no organization is given" do
-      described_class.call(slug)
+  context "when a user is given" do
+    let(:user) { create(:user) }
+    let(:slug) { "#{user.username}/embed/demo" }
 
-      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with(organization.record_key, anything)
+    it "purges page and user surrogate keys alongside the mode=embed fallback path" do
+      described_class.call(slug, user: user)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call)
+        .with(
+          ["show-page-#{slug}", user.record_key, user.profile_identity_record_key],
+          fallback_paths: [*paths, user.path],
+        )
+        .once
     end
   end
 end

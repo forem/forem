@@ -23,6 +23,7 @@ class Podcast < ApplicationRecord
   extend UniqueAcrossModels
   unique_across_models :slug
 
+  after_destroy :bust_cache
   after_save :bust_cache
 
   scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
@@ -56,8 +57,11 @@ class Podcast < ApplicationRecord
   private
 
   def bust_cache
-    return unless path
+    Podcasts::BustCacheWorker.perform_async(path) if path.present?
 
-    Podcasts::BustCacheWorker.perform_async(path)
+    previous_slug = saved_change_to_slug&.first
+    return if previous_slug.blank? || previous_slug == slug
+
+    Podcasts::BustCacheWorker.perform_async(previous_slug)
   end
 end

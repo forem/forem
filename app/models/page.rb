@@ -1,7 +1,10 @@
 class Page < ApplicationRecord
   include LiquidEmbeddable
   extend UniqueAcrossModels
-  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt].freeze
+  EMBED_HTML_TEMPLATE = "embed_html".freeze
+  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt embed_html].freeze
+  MAX_EMBED_HTML_BYTES = 256.kilobytes
+  MAX_USER_EMBED_PAGES = 50
 
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
@@ -12,25 +15,35 @@ class Page < ApplicationRecord
   belongs_to :subforem, optional: true
   belongs_to :page_template, optional: true
   belongs_to :organization, optional: true
+  belongs_to :user, optional: true
 
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
+  validate :validate_owner_constraints
+  validate :validate_embed_html_constraints
   validate :body_present
   validate :validate_template_data
   validate :validate_redirect_to_url
 
+  validates :show_in_navigation, inclusion: { in: [true, false] }
+  validate :validate_show_in_navigation
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
+  before_validation :normalize_embed_html_attributes
   before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
+  before_create :enforce_user_embed_page_limit_with_lock, if: -> { user_id.present? && embed_html? }
 
   after_commit :ensure_uniqueness_of_landinge_page
   after_commit :bust_cache
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify
+
+  scope :embed_html, -> { where(template: EMBED_HTML_TEMPLATE) }
+  scope :non_embed_html, -> { where.not(template: EMBED_HTML_TEMPLATE) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if Subforem.disabled_by_env?
@@ -54,7 +67,7 @@ class Page < ApplicationRecord
   #
   # rubocop:disable Rails/OutputSafety
   def self.render_safe_html_for(slug:)
-    page = find_by(slug: slug)
+    page = non_embed_html.find_by(slug: slug)
     if page
       page.processed_html.html_safe
     else
@@ -64,7 +77,11 @@ class Page < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def self.landing_page
-    find_by(landing_page: true)
+    non_embed_html.find_by(landing_page: true)
+  end
+
+  def embed_html?
+    template == EMBED_HTML_TEMPLATE
   end
 
   def path
@@ -79,7 +96,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id position])
+                         organization_id position show_in_navigation])
   end
 
   def uses_page_template?
@@ -90,6 +107,7 @@ class Page < ApplicationRecord
   def re_render_from_template!
     return unless uses_page_template?
 
+    mark_liquid_embed_template_rerender!
     render_from_page_template
     save!
   end
@@ -101,8 +119,40 @@ class Page < ApplicationRecord
 
   private
 
+  def validate_show_in_navigation
+    return unless show_in_navigation == false
+    return unless will_save_change_to_show_in_navigation? || will_save_change_to_organization_id?
+
+    # Checked only when the flag or the page's organization changes, so a page whose
+    # organization was deleted (pages are nullified without validation) or that was promoted
+    # to Showcase while hidden still saves.
+    if organization_id.blank?
+      errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
+    elsif showcase_or_first_page?
+      # The header always renders the Showcase tab, so a stored flag has no effect on it.
+      errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
+    end
+  end
+
+  def showcase_or_first_page?
+    main_page = organization&.main_page
+    main_page.nil? || main_page.id == id
+  end
+
+  def normalize_embed_html_attributes
+    return unless embed_html?
+
+    self.is_top_level_path = false
+    self.landing_page = false
+    self.redirect_to_url = nil
+    self.page_template_id = nil
+  end
+
   def evaluate_markdown
-    if body_markdown.present?
+    if embed_html?
+      self.body_markdown = nil
+      self.processed_html = body_html
+    elsif body_markdown.present?
       renderer = ContentRenderer.new(body_markdown, source: organization)
       self.processed_html = renderer.process(link_attributes: link_attributes_for_org).processed_html
     else
@@ -123,7 +173,73 @@ class Page < ApplicationRecord
     self.template = "contained" if template.blank?
   end
 
+  def validate_owner_constraints
+    if organization_id.present? && user_id.present?
+      errors.add(:base, I18n.t("models.page.multiple_owners_not_allowed"))
+      return
+    end
+
+    return if user.blank?
+
+    unless embed_html?
+      errors.add(:template, I18n.t("models.page.user_page_must_be_embed_html"))
+      return
+    end
+
+    return unless new_record? && user.pages.embed_html.count >= MAX_USER_EMBED_PAGES
+
+    errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+  end
+
+  def enforce_user_embed_page_limit_with_lock
+    User.where(id: user_id).lock.pick(:id)
+    return unless Page.embed_html.where(user_id: user_id).count >= MAX_USER_EMBED_PAGES
+
+    errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+    throw(:abort)
+  end
+
+  def validate_embed_html_constraints
+    if persisted? && template_changed? && (embed_html? || template_was == EMBED_HTML_TEMPLATE)
+      errors.add(:template, I18n.t("models.page.embed_html_template_immutable"))
+      return
+    end
+
+    return unless embed_html?
+
+    if organization.blank? && user.blank?
+      errors.add(:organization, I18n.t("models.page.embed_html_requires_organization"))
+      return
+    end
+
+    if body_html.present? && body_html.bytesize > MAX_EMBED_HTML_BYTES
+      errors.add(:body_html, I18n.t("models.page.embed_html_too_large", max_kb: MAX_EMBED_HTML_BYTES / 1.kilobyte))
+    end
+
+    validate_embed_html_slug
+  end
+
+  def validate_embed_html_slug
+    if slug.blank?
+      errors.add(:slug, I18n.t("models.page.embed_html_invalid_slug"))
+      return
+    end
+
+    owner_slug = organization&.slug || user&.username
+    valid_format = slug.match?(%r{\A[a-z0-9_\-]+/embed/[a-z0-9\-]+\z})
+    expected_prefix = "#{owner_slug}/embed/"
+    prefix_matches = !new_record? && !slug_changed? ? true : slug.start_with?(expected_prefix)
+    return if valid_format && prefix_matches
+
+    errors.add(:slug, I18n.t("models.page.embed_html_invalid_slug"))
+  end
+
   def body_present
+    if embed_html?
+      errors.add(:body_html, I18n.t("models.page.body_must_exist")) if body_html.blank?
+      return
+    end
+
     # Skip body validation if using a page template
     return if uses_page_template?
     # Skip body validation if a redirect URL is set
@@ -160,12 +276,25 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    # Keep the historical single-arg form for non-org pages so the
+    enqueue_page_cache_bust(slug, organization_id, user_id)
+
+    previous_slug = saved_change_to_slug&.first
+    return if previous_slug.blank? || previous_slug == slug
+
+    previous_org_id = saved_change_to_organization_id ? saved_change_to_organization_id.first : organization_id
+    previous_user_id = saved_change_to_user_id ? saved_change_to_user_id.first : user_id
+    enqueue_page_cache_bust(previous_slug, previous_org_id, previous_user_id)
+  end
+
+  def enqueue_page_cache_bust(target_slug, target_organization_id, target_user_id = nil)
+    # Keep the historical single-arg and two-arg forms so the
     # until_executing unique-job lock digest stays stable and jobs coalesce.
-    if organization_id
-      Pages::BustCacheWorker.perform_async(slug, organization_id)
+    if target_user_id
+      Pages::BustCacheWorker.perform_async(target_slug, target_organization_id, target_user_id)
+    elsif target_organization_id
+      Pages::BustCacheWorker.perform_async(target_slug, target_organization_id)
     else
-      Pages::BustCacheWorker.perform_async(slug)
+      Pages::BustCacheWorker.perform_async(target_slug)
     end
   end
 

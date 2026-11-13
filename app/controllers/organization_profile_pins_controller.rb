@@ -35,9 +35,6 @@ class OrganizationProfilePinsController < ApplicationController
   end
 
   def bust_organization_page
-    EdgeCache::PurgeByKey.call(@organization.record_key)
-    cache_bust = EdgeCache::Bust.new
-    cache_bust.call(@organization.path)
-    cache_bust.call("#{@organization.path}?i=i")
+    EdgeCache::PurgeByKey.call(@organization.record_key, fallback_paths: @organization.path)
   end
 end
