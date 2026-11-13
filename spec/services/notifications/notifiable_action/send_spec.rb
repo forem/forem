@@ -157,6 +157,36 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       expect(Notification.count).to eq(0)
       expect(ContextNotification.count).to eq(0)
     end
+
+    it "keeps only the mention notification for a mentioned follower", :aggregate_failures do
+      user2.follow(user)
+      mention = create(:mention, mentionable: article, user: user2)
+      Notification.send_mention_notification_without_delay(mention)
+
+      expect { described_class.call(article, "Published") }
+        .not_to(change { user2.notifications.count })
+
+      expect(user2.notifications.pluck(:notifiable_type)).to contain_exactly("Mention")
+    end
+
+    it "notifies unmentioned followers but not mentioned followers", :aggregate_failures do
+      user2.follow(user)
+      user3.follow(user)
+      create(:mention, mentionable: article, user: user2)
+
+      described_class.call(article, "Published")
+
+      expect(user2.notifications.where(notifiable_type: "Article")).to be_empty
+      expect(user3.notifications.where(notifiable_type: "Article", action: "Published").count).to eq(1)
+    end
+
+    it "does not notify a mentioned user who does not follow the author" do
+      create(:mention, mentionable: article, user: user2)
+
+      described_class.call(article, "Published")
+
+      expect(user2.notifications.where(notifiable_type: "Article")).to be_empty
+    end
   end
 
   context "when publishing an article under an organization" do
