@@ -61,6 +61,9 @@ RSpec.describe "users/edit" do
           'input#organization_text_color_hex[value="#ffffff"][data-preview-property="fill"]',
         )
         expect(rendered).to have_css(
+          'svg#color-select-preview-logo[data-default-bg-color="#0a0a0a"][data-default-text-color="#ffffff"]',
+        )
+        expect(rendered).to have_css(
           'svg#color-select-preview-logo[style*="background-color: #e036c4;"][style*="fill: #ffffff;"]',
         )
       end

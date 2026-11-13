@@ -1,13 +1,13 @@
 <div class="grid gap-6 m:grid-cols-2">
   <div class="grid gap-6">
+    <% assigned_colors = account.decorate.assigned_color %>
+    <% preview_colors = user_colors(account) %>
     <% if account.class.name == "User" %>
-      <% account.setting.brand_color1 = user_colors(account)[:bg] if account.setting && account.setting.brand_color1.blank? %>
+      <% account.setting.brand_color1 = preview_colors[:bg] if account.setting && account.setting.brand_color1.blank? %>
     <% else %>
-      <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
-      <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
+      <% account.bg_color_hex = preview_colors[:bg] if account.bg_color_hex.blank? %>
+      <% account.text_color_hex = preview_colors[:text] if account.text_color_hex.blank? %>
     <% end %>
-    <% preview_bg_color = f.object&.bg_color_hex.presence || user_colors(account)[:bg] %>
-    <% preview_text_color = f.object&.text_color_hex.presence || user_colors(account)[:text] %>
     <div class="crayons-field">
       <%= f.label :bg_color_hex, t("views.logo.color_1.label"), class: "crayons-field__label" %>
       <p id="color-1-description" class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
@@ -27,7 +27,7 @@
 
   <div class="crayons-card crayons-card--secondary flex-1 p-6">
     <p class="text-uppercase color-base-50 mb-4 fs-s ff-monospace"><%= t("views.logo.preview.text") %></p>
-    <%= inline_svg_tag("preview-logo.svg", id: "color-select-preview-logo", class: "p-4 radius-default", style: "background-color: #{preview_bg_color}; fill: #{preview_text_color};", title: t("views.logo.preview.icon")) %>
+    <%= inline_svg_tag("preview-logo.svg", id: "color-select-preview-logo", class: "p-4 radius-default", style: "background-color: #{preview_colors[:bg]}; fill: #{preview_colors[:text]};", data: { default_bg_color: assigned_colors[:bg], default_text_color: assigned_colors[:text] }, title: t("views.logo.preview.icon")) %>
   </div>
 </div>
 <%= javascript_include_tag "enhanceColorPickers", defer: true %>
