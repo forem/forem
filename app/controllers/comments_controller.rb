@@ -3,6 +3,9 @@ class CommentsController < ApplicationController
   # The settings page (and CommentPolicy#settings?) only reads these, so skip the comment's body,
   # processed HTML and ~3KB TOASTed semantic_embedding vector.
   SETTINGS_COMMENT_COLUMNS = %i[id user_id commentable_id commentable_type].freeze
+  # The permalink header only links to the parent comment and shows its title (Comment#path and
+  # Comment#title), so skip its body_markdown and ~3KB TOASTed semantic_embedding vector.
+  PARENT_HEADER_COMMENT_COLUMNS = %i[id user_id ancestry deleted hidden_by_commentable_user processed_html].freeze
 
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
@@ -46,6 +49,7 @@ class CommentsController < ApplicationController
     end
 
     @commentable_type = @commentable.class.name if @commentable
+    @root_parent_comment = load_root_parent_comment if @root_comment
 
     set_surrogate_key_header @commentable.record_key if @commentable
   end
@@ -171,6 +175,7 @@ class CommentsController < ApplicationController
       else
         @user = @commentable&.user
       end
+      @root_parent_comment = load_root_parent_comment
 
       render :index
     else
@@ -320,6 +325,12 @@ class CommentsController < ApplicationController
     else
       not_found
     end
+  end
+
+  def load_root_parent_comment
+    return unless @root_comment.depth.positive?
+
+    Comment.select(*PARENT_HEADER_COMMENT_COLUMNS).find_by(id: @root_comment.parent_id)
   end
 
   # The comments page never reads the article's TOASTed semantic_embedding vector or

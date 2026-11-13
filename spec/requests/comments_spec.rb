@@ -243,6 +243,30 @@ RSpec.describe "Comments" do
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
       end
+
+      it "links to the parent comment without loading its markdown or embedding columns", :aggregate_failures do
+        child
+        parent_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          bind_values = Array(payload[:type_casted_binds])
+          next unless sql.include?('FROM "comments" WHERE "comments"."id" =')
+
+          parent_queries << sql if bind_values.include?(comment.id) || sql.include?(%(= #{comment.id} ))
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get child.path }
+
+        expect(response.body).to include(comment.path, CGI.escapeHTML(comment.title(150)))
+        expect(parent_queries).not_to be_empty
+        expect(parent_queries.join).not_to include('"comments".*', "semantic_embedding", "body_markdown")
+      end
+
+      it "shows the parent's deleted placeholder title" do
+        comment.update_columns(deleted: true)
+        get child.path
+        expect(response.body).to include(CGI.escapeHTML(Comment.title_deleted))
+      end
     end
 
     context "when the comment is two levels nested and hidden" do # child of a child
@@ -519,6 +543,15 @@ RSpec.describe "Comments" do
 
       expect(response).to have_http_status(:ok)
       expect(flash[:error]).not_to be_nil
+    end
+
+    it "keeps the parent comment header when updating a reply", :aggregate_failures do
+      child = create(:comment, commentable: article, user: user, parent: comment)
+
+      put "/comments/#{child.id}", params: { comment: { body_markdown: "edited reply" } }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(comment.path, CGI.escapeHTML(comment.title(150)))
     end
 
     context "when the article is deleted" do

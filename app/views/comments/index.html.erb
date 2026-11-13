@@ -114,7 +114,7 @@
     </header>
   <% end %>
 
-  <% if @root_comment.present? && (@root_comment.depth > 0 && parent = @root_comment.parent) %>
+  <% if (parent = @root_parent_comment) %>
     <div class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary s:mx-1 m:mx-2 -mb-2 z-0">
       <h2 class="crayons-subtitle-2 pb-2">
         <a href="<%= parent.path %>" class="crayons-link">
