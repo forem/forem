@@ -1,0 +1,721 @@
+spec/services/markdown_processor/parser_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 101-130,322-376
+  s_cf6118ab9ba895::t_ec41206a402bd1 377
+app/views/pages/show.fr.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 20,24,46-49
+spec/uploaders/article_image_uploader_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 73-74,79,85-86,88-93,106,114,123,129,137,142,148,170-197
+spec/services/edge_cache/bust_tag_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 14-15,18,21-24
+app/views/users/_main_feed.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 11,16,19
+gems/forem_native/ext/forem_native/src/lib.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3653-3655,3790-3794,4162-4912,5358-5384
+app/helpers/story_card_helper.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-520
+app/services/edge_cache/purge_by_key.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3-5,11-16,18,22-23,25,32-69,71-76
+app/views/organization_pages/index.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 12-39,43-46,48,50-69,71-72,75-110,112-126,128-132,134
+  s_cf6118ab9ba895::t_84a6dd7700ceb3 40-42
+app/views/shared/_gem_history_entry.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-17
+spec/services/edge_cache/bust_article_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-8,24,27-30,36,40-43,47,50-51,54-58,61,65-66,69-73,77-84,90-94,99-106,109,113-117,126-128,131-133,136,139-143,154-156,159-161
+app/views/pages/show.en.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 20,24,46-49
+app/controllers/admin/pages_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 11
+spec/services/images/generate_subforem_images_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-8,13-15,17-19,23-25,27-29,34,38-41,50-55,58-71,82-84,88-96,157-158,167-168,198-205,207,209-213,216-223,227-229,234-246,248-249,251,253-260
+app/views/collections/show.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 20
+spec/uploaders/logo_svg_uploader_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-117
+spec/workers/bust_cache_path_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 10-11,14-29
+config/locales/views/admin/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 664-669
+config/locales/liquid_tags/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 83-84
+spec/services/authentication/providers/mlh_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 25-30
+app/models/comment.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 113-115,332-344
+  s_cf6118ab9ba895::t_073f60c99dfc22 345
+app/helpers/application_helper.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2-3,513-514,598-673
+  s_cf6118ab9ba895::t_b29681fe7f898a 674
+app/controllers/pages_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8-9,53,77,183
+app/assets/stylesheets/base/main.scss
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18-21
+spec/queries/articles/related_query_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-83
+app/services/edge_cache/bust_podcast_episode.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-12
+config/locales/liquid_tags/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 83-84
+app/workers/users/bust_profile_identity_cache_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9-11
+config/locales/views/admin/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 673-678
+config/locales/controllers/api/related_articles.fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-10
+config/locales/views/dashboard/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 17-18,20-21,36-48
+db/migrate/20261112120100_add_index_to_pages_user_id.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-18
+spec/services/moderator/merge_user_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18-19,25
+app/assets/stylesheets/ltags/LiquidTags.scss
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 13
+spec/services/ai/search_reranker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 117-124
+spec/initializers/rack_attack_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 234-262
+app/services/ai/search_reranker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 41,46,74,78-79,87
+app/controllers/follows_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18-22,25,30,36-38,172,175-179,181-185
+app/services/edge_cache/bust/fastly.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3-5
+app/controllers/stories/tagged_articles_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 14,26,34-43,138,141-150
+app/views/organization_pages/edit.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-2,6-7,10-14
+app/services/ai/comment_helpfulness_assessor.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 30,41,57-58
+app/controllers/api/v1/pages_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9-11,13,120,136,157
+config/locales/views/misc/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 115
+spec/policies/reaction_policy_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-9,85
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 30,45-57
+spec/workers/articles/bust_deleted_article_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 42-43,47-50
+app/services/liquid_embed_extractor.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-15,18-19,27-55,70-71,73-74,76-78,82,86-194,196-208,211-212,214-219,231-337,342,350-389,391-452,455,457-461,463-464,466-495,497-498,500,502
+app/controllers/tags_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 21
+app/uploaders/logo_svg_uploader.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 36-41,44-46,53-54
+spec/workers/sync_liquid_embed_references_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 91-140
+app/controllers/api/v1/related_articles_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-36
+spec/requests/admin/settings/ai_functions_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 19,28-32,34,41-47,58-61,66,138
+spec/liquid_tags/page_tag_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-410
+spec/uploaders/navigation_link_image_uploader_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 12,16,20,66
+app/queries/articles/related_discovery.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-96
+app/assets/stylesheets/billboards.scss
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 12-83
+spec/requests/admin/configs_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 41,49,171,188
+app/controllers/profile_pins_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 35-38
+app/javascript/packs/application.jsx
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 128-132,140-152,155-159,171,174-175,191-195,236-238,273-276
+app/javascript/utilities/__tests__/honeybadgerSanitizer.test.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-203
+app/javascript/article-form/articleForm.jsx
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 11,286
+app/workers/reactions/bust_reactable_cache_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7,13,25,41-44
+app/controllers/podcast_episodes_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 14-15
+app/javascript/utilities/__tests__/instantClickNavigation.test.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-273
+app/liquid_tags/forem_tag.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 23
+app/views/api/v1/related_articles/index.json.jbuilder
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-24
+app/assets/javascripts/subforemSelectionModal.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9-10
+app/services/edge_cache/bust_organization.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-12,14-18,20-24
+spec/queries/articles/api_search_query_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4-5,7-11,46-47,54,58,61-62,68-71
+spec/requests/follows_show_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 60-61,66,71,74-76
+app/services/reaction_handler.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 125,130-131,164-165,173-174
+spec/requests/organization_embeds_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-284
+spec/services/edge_cache/legacy_slug_redirect_keys_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-36
+app/models/podcast.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 26,60,62-65
+app/views/magic_links/create.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 32-38,40-55
+spec/lib/redcarpet/render/html_rouge_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 152-161
+app/workers/sync_liquid_embed_references_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3,17-30,36-50,52-53,55-56
+config/fastly/snippets/safe_params_list.vcl
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 5
+app/services/edge_cache/bust_article.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9,13-33,35-36,38-43,46-48,54,57,59,61-62,66-67,76-77,81-82,88-89,92,94,98-99,101-102,105,108,111-112,116-138
+spec/models/notification_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 153,159,246,256,268,304,312,359,370,396,408,423,434,450,463,476-478,487,497,505-507,513,554
+spec/helpers/story_card_helper_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-79
+app/views/articles/_single_story_legacy.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-258
+spec/models/concerns/activity_trackable_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 5,8-37,62-63,67-68,71-72,74,76,78,81-82,85,99-102,110,112-113,116-122,129-132,139,143,265-269,271-276,281,286,296-298,301-302,304-305,308-310,312-315,317,319-321,376,383
+spec/requests/async_info_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 77,81
+spec/workers/pages/bust_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 34-46
+app/views/organizations/_main_feed.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 11,16
+config/locales/views/admin/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 572-577
+app/services/ai/function_registry.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8-9,12,14-15,24,29,107
+spec/support/carrierwave_matchers.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-12
+spec/requests/articles/articles_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 51,353-380
+  s_cf6118ab9ba895::t_f24a11f0ae28a3 381
+spec/models/page_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 357-366
+spec/services/ai/spam_escalation_check_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 125-132
+spec/helpers/comments_helper_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 51,53,169-375
+  s_cf6118ab9ba895::t_50b476691dba4f 376
+app/models/article.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 85-91,404,1226-1227,1238-1244,1354-1355,1993,2039-2062,2298-2308,2310-2331
+app/assets/javascripts/base.js.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 186-192,209,230,343,345-347,350-352,355,363,392,412-414,616-624,645-648,650,652,654,664,678,684-687,1004,1006,1008,1013-1017,1019-1024,1060
+spec/services/edge_cache/purge_by_key_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4,7,12-62,65-81,84-88,91-127,129-130,132-133
+spec/support/jev_helpers.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-2,10-15,26-36,39-40,43,45
+app/controllers/admin/org_features_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 21-25
+app/controllers/api/v1/articles_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 254
+app/services/ai/article_quality_assessor.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 37,49,85
+spec/uploaders/event_cover_image_uploader_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-54
+app/views/dashboards/_actions.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 126-136
+app/controllers/subforems_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 408-411
+spec/initializers/carrierwave_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 170-171
+spec/requests/api/v0/articles_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 71-93
+spec/requests/billboards_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 328-329,334-381,809-815,821-860
+  s_cf6118ab9ba895::t_56dabbb33f6c04 861-863
+app/models/page.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4-7,18,23-24,34,37,45-47,70,80-84,110,142-150,152-155,176-236,238-242,279-290,292-295,297
+app/models/organization.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 197-201
+app/models/concerns/purgeable.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 11,13,17,19,37,39,43,45
+spec/services/ai/function_config_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 23-24,28-49,65,67,69,74,76-77,101-103,107-108,110-111,120,124-125,134-135,139,143-147,151,153
+config/fastly/snippets/stale_while_revalidate_controls.vcl
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-15
+app/controllers/articles_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 68,249-252
+config/locales/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 310
+spec/requests/user_embed_pages_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-404
+.github/workflows/forem-native.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 23-27,43-44,47-50,63-65,161-162,164-175
+app/services/images/generate_subforem_images.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1,3,5-10,20,64-72,74-85,87-88,91-103,105-107,109-111,113-115,117-118,121,124,126-134
+spec/uploaders/logo_uploader_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 61-62,96,99-100
+app/controllers/admin/navigation_links_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 60
+app/controllers/stories_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 64,88,172,186-188,216,224-233,247-248,254-255,267,274,358-359,379,443,845
+config/routes.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 86-87,572-574,595-601,603-605
+spec/models/github_repo_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9,38,41-44
+spec/workers/organizations/bust_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 10,14,18
+spec/requests/user/user_settings_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 242-255
+app/services/ai/comment_check.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 27,38,55-62,78-79
+spec/services/articles/destroyer_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 40-54
+spec/services/edge_cache/bust_podcast_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-8,10-16,19-22,25-28
+app/views/layouts/_main_side_bar.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 47,163
+app/services/ai/badge_criteria_assessor.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 27,38,54-55
+app/services/edge_cache/bust_page.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3,6-15,17-20,22-28
+spec/requests/stories_index_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-25,76,85-86,94,108,209-210,269-276,279-280,283,336-349,447,487,490,579,733,750,756-758,778-779,786-787,792-802,805,825-826,828-829,832-851,897-898,902
+  s_cf6118ab9ba895::t_1bd304f7970d97 854-855,872,875-880,882,884-890
+app/controllers/events_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2-5,31-37,52-53
+app/javascript/packs/__tests__/articlePage.test.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-74
+app/views/user_embed_pages/index.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-59
+spec/requests/organization_profile_pins_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 25,32-33
+spec/workers/comments/bust_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 15-19,43,46-47
+app/controllers/videos_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 14
+app/views/user_embed_pages/edit.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-11
+app/services/rate_limit_checker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 16-17
+config/locales/models/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 119-126
+spec/models/article_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3950-3999
+spec/requests/admin/tools_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 88-115
+app/services/ai/concept_article_evaluator.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 23,32,47-48
+app/views/users/confirm_destroy.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 34-46
+app/javascript/utilities/__tests__/animatedImageUtils.test.jsx
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-101
+app/workers/organizations/bust_cache_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8-12
+gems/forem_native/crates/forem_core/src/story_card.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-1404
+app/models/settings/rate_limit.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 36-37
+app/views/layouts/application.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 90,96,119-143,162-166,168-169,181,198-203,211
+app/services/images/profile_image_generator.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 65-66,111
+gems/forem_native/ext/forem_native/Cargo.toml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 16
+gems/forem_native/lib/forem_native.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 13-17,22,24-28,32-35,40-42,48-49,1547-1699,1725-1735,1737-1738,1745-1754
+spec/requests/stories/tagged_articles_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 45,52-75,102-117
+  s_cf6118ab9ba895::t_355799a5897490 118-119
+spec/workers/reactions/bust_homepage_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 10,13,15-16,20,26-27,36,48-49,53
+app/views/devise/registrations/_registration_form.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 91-95,101-110
+spec/requests/tags_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 5-7,13
+app/javascript/utilities/honeybadgerSanitizer.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-222
+spec/services/liquid_embed_extractor_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4,7,17-18,24,33,38-39,46,51,55-56,62,68,72-75,79,82,87-88,94,98-99,105,110,114-115,121-125,131,135-136,154,185-422
+spec/models/liquid_embed_reference_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3,6,14-25,47,66-87
+  s_cf6118ab9ba895::t_7e190725211d2b 88
+config/locales/controllers/api/related_articles.en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-10
+spec/services/ai/content_moderation_labeler_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 491-531
+config/locales/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 271
+app/controllers/admin/organizations_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-7
+app/views/admin/organizations/show.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 198-218
+app/views/user_embed_pages/_form.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-132
+app/services/ai/subforem_finder.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 26,74,92-93
+app/views/organization_pages/_embed_form.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-134
+spec/services/edge_cache/bust_podcast_episode_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 17-18,21,24-27,30,32-35
+spec/tasks/cache_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 5,9,12,19-23,33-39
+spec/requests/admin/org_features_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 23
+app/services/ai/profile_moderation_labeler.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 42,69
+app/views/organization_settings/edit.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 311
+app/controllers/concerns/api/articles_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 47-52
+app/controllers/dashboards_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18,191-192
+  s_cf6118ab9ba895::t_7e162eee4752ef 193-194
+app/liquid_tags/unified_embed/registry.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 30-41,63-68,70
+spec/requests/api/v0/surveys_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4,24-26,38,42,44,46,86-87,91,103,106,111,120-121,123-129,138-141,172-174,176-181,188,198-201,203,205,209-210,242-244,246-251,258,267-270,272,274,278-279,329,331,335,337,342,354,382-383,396,398,411,415,432,454-455,457
+app/controllers/concerns/caching_headers.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 61-62
+app/services/ai/article_enhancer.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 120,129-130
+db/migrate/20261112120000_add_user_id_to_pages.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-13
+app/controllers/organization_profile_pins_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 38
+app/liquid_tags/page_tag.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-463
+app/services/markdown_processor/parser.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6,14-16,69-101,145-150,218-225,230
+app/uploaders/base_uploader.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2,7,12-21,51-93,98,100,107,110-111,120-121,125,128-130,132,136-138,140-142
+app/workers/bust_cache_path_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-3,5-25
+.env_sample
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 245-247
+gems/forem_native/crates/forem_core/src/comment_tree.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-1630
+gems/forem_native/crates/forem_core/src/social_image/avatar.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-1295
+app/assets/stylesheets/ltags/PageTag.scss
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-218
+spec/models/comment_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 884-904
+app/services/articles/detect_code_block_languages.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 98,108-109,114-115
+app/workers/pages/bust_cache_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 3,7-12
+spec/fixtures/files/emudhra_ca_certificates.md
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-7
+app/controllers/organization_embeds_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-168
+gems/forem_native/lib/forem_native/builder.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 52-66,78-82,84-85
+app/workers/reactions/bust_homepage_cache_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18
+app/services/ai/article_check.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 30,41,63-64
+gems/forem_native/crates/forem_core/src/social_image/draw.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 46-86,200-730,1230,1236-1565
+gems/forem_native/crates/forem_core/src/social_image/canvas.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 156-167
+app/views/articles/_single_story.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1
+spec/models/concerns/purgeable_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 20,24,26-27,30,32-33,40-41,43-46,61,63-70,73-76,78-79
+spec/requests/api/v1/related_articles_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-187
+app/views/layouts/_bottom_scripts.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 17
+spec/services/moderator/banish_user_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 35,37,43-44
+app/assets/javascripts/initializers/initializeBodyData.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 71-80
+app/services/ai/phishing_signup_check.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 70,79,96-102,122-123
+app/services/moderator/banish_user.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 51
+lib/tasks/cache.rake
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2,14-18
+spec/lib/forem_native_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2,6144-6145,6150-6152,6182-6209,6337-7100
+spec/workers/articles/bust_multiple_caches_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9,12,15-25
+app/controllers/user_embed_pages_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-109
+app/views/trends/show.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 40
+spec/services/articles/detect_code_block_languages_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 135-159
+spec/models/podcast_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18-35
+app/policies/organization_policy.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 35-38
+app/views/stories/_main_stories_feed.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 23,28,38,41-42,50-51,58,63
+config/locales/controllers/api/related_articles.pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-10
+app/controllers/application_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 87-93,284-285,363-367,509
+app/javascript/utilities/pageEmbedFullscreen.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-196
+app/javascript/utilities/__tests__/pageEmbedFullscreen.test.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-158
+app/workers/articles/update_dependent_embeds_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4-474,476-541
+gems/forem_native/crates/forem_core/src/syntax.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 828-833,1154-1156,1161,1165-1171,1428,1431-1453,1495-1500,1579-1584,4349-4480
+.windsurfrules
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 19-21
+app/views/organizations/show_readme.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 10-13
+config/locales/liquid_tags/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 83-84
+app/controllers/bottom_items_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-11,13
+app/views/shared/_billboard.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 13-48,64
+spec/requests/follows_bulk_show_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 82-123
+spec/services/follows/check_cached_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 80-109
+spec/requests/organization_pages_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 273-374
+app/workers/organizations/recompile_pages_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 12
+app/controllers/async_info_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 67-68
+config/locales/views/organizations/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 54-66
+config/locales/views/dashboard/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 17-18,20-21,36-48
+db/schema.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 13,1410,1415,2382
+AGENTS.md
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 19-21
+db/migrate/20261112120200_validate_user_id_on_pages.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-5
+lib/tasks/forem_native.rake
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 85-87,883-1360
+app/services/images/generate_social_image_magickally.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 17,552
+app/models/github_repo.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 40-43
+spec/requests/instant_click_layout_scripts_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-56
+spec/requests/stories/feeds_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18-34
+app/javascript/packs/articlePage.jsx
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2,35-39,70,106,116
+config/locales/views/organizations/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 54-66
+.github/copilot-instructions.md
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 19-21
+app/views/admin/pages/index.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 26-33,39,43-46
+spec/services/edge_cache/bust_page_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 10,18,21-23,26-29,32-34,41,45-48,51-55,57-58,60-65
+spec/requests/stories_show_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 99
+app/queries/articles/api_search_query.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 56,60-78,80
+spec/workers/reactions/bust_reactable_cache_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 15,18,28-48
+app/views/user_embed_pages/new.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-11
+app/services/markdown_processor.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 72-74
+app/views/organization_pages/new.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-2,6-7,10-14
+Gemfile
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 36,53
+spec/services/ai/gemini_decision/client_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-267
+config/locales/models/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 118-125
+app/models/user.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 131,319,327,365-372,940-955,1256-1262,1371-1377,1387-1400
+config/locales/views/misc/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 115
+gems/forem_native/crates/forem_core/src/social_image/mod.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8,59-78
+  s_cf6118ab9ba895::t_5e79cffdb00c22 79-80
+app/javascript/packs/honeybadgerClient.js
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2-4
+spec/services/reaction_handler_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 229-252
+app/views/liquids/_feed.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2
+app/javascript/utilities/animatedImageUtils.jsx
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-8,10-12,21-35,38-90,96,98,100-103,105-109,111-113,115-116,136,138-151
+app/models/liquid_embed_reference.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2-28,40-319
+config/locales/views/organizations/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 54-66
+app/services/edge_cache/legacy_slug_redirect_keys.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-23
+spec/services/edge_cache/bust_organization_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 5,12,15-19,22-26,29-32,35,37-41
+app/models/billboard.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2,124,484-497,504-508,521,524-525,527-528,530-551,562-565,607-613,618-619,621,740-809
+  s_cf6118ab9ba895::t_5388f1bbaaabea 810
+spec/services/images/generate_social_image_magickally_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 124-126,128,133,536-537,543,568-569,722-724,726
+CLA.md
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 29-31,35-37,47-49,60-62,81-83,99-101,105-107,111-113,120-122
+config/locales/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 302
+app/services/authentication/providers/mlh.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8
+app/views/stories/tagged_articles/_main_feed.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2
+app/views/pages/show.pt.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 20,24,46-49
+app/helpers/comments_helper.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 110-111,113,118,120,122,129-135,147,151,160,162,175-575
+config/initializers/rack_attack.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 12-15
+swagger/v1/api_v1.json
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4777-4908
+config/initializers/tls_trust.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-6
+app/services/edge_cache/bust_tag.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-9
+app/views/shared/_subforem_selection_modal.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 45
+spec/lib/open_ssl/x509/store_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-135
+config/schedule.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 124,126-127,131,133-134
+config/locales/views/dashboard/en.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 18,21,36-48
+README.md
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8,51,53,58,60,62,64-70,72,74,76-77
+spec/requests/events_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 85-120
+config/locales/models/fr.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 118-125
+lib/data_update_scripts/20261111120000_backfill_billboard_and_unresolved_embed_references.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-80
+app/views/dashboards/_actions_mobile.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 9-11
+spec/requests/profile_pins_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 16-19,24-27
+app/workers/articles/bust_multiple_caches_worker.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 10-16
+spec/services/users/delete_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4-14,20-33,35-39,93,99-100,102,129,142-146,148,151-153,155-158,162-166,168-174,177-180,182-184,188,190,199-234,265-269,302,310-317
+  s_cf6118ab9ba895::t_d088fcceb5e971 318
+spec/services/ai/comment_check_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 66-95
+app/assets/stylesheets/base/layout.scss
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 43,49,104-112
+  s_cf6118ab9ba895::t_83abafbfa0bff0 113-114
+app/controllers/admin/tools_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 68
+gems/forem_native/crates/forem_core/src/lib.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 11,18,26
+app/services/follows/check_cached.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 36,41-71,116,118
+app/models/organization_membership.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 56
+spec/requests/bottom_items_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-28
+app/liquid_tags/unified_embed/tag.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 29,33-35,37,44-77
+  s_cf6118ab9ba895::t_9f7ea1d5ca1392 78
+app/controllers/stories/feeds_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 39,45-64
+  s_cf6118ab9ba895::t_88fd6acda7f492 65
+app/services/edge_cache/bust_podcast.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-10
+app/views/liquids/_org_posts.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 2
+app/views/users/_account_providers_emails.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 15,21
+spec/models/feed_event_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8-23,36-37,42-45,66-67,75-76,91,101,110,112-113,120-122,140,181,184-186,192,194,213-220,234-241,249-264,287-294,371,453-454,464,467-468,487-489,491-492,516,635,666,674-676,679,752,755,759-766,768-773,775,777
+app/views/layouts/_user_config.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 13,16,29-31,40-41
+app/services/ai/forem_tags.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 221,243
+spec/requests/subforems_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 301,308-315,384,451,459,510-511,519,523-530,571,638-641,648-649,656,660-667,722,759,761,769-776,879-880,958,972-973,997,1063,1103,1148-1151,1153,1160,1171-1174,1176,1183,1204-1207,1209,1216
+spec/workers/articles/update_dependent_embeds_worker_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 6-121,123,126-158,161-537,542,552-553,555
+spec/models/billboard_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 303-313,1565-1663
+  s_cf6118ab9ba895::t_9582eb14bc8ee6 1664
+spec/uploaders/subforem_image_uploader_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-61
+docs/rust_native_extensions.md
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 124-156,167
+app/views/dashboards/_header_and_action.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1,8,10-21,26,34,40,46,52,58,64,77,83,93-100,111,137
+app/controllers/organization_pages_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-8,12,16-17,20-21,23-24,26,28,39-40,42,44,47,88-166,170-173,179
+gems/forem_native/crates/forem_core/src/image_ops.rs
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-3843
+config/locales/views/misc/pt.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 115
+.cursorrules
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 19-21
+app/views/shared/_stats.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 96,119-126,143-144
+  s_cf6118ab9ba895::t_e43248d0e9509e 145
+app/services/ai/gemini_decision/client.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-373
+app/models/reaction.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 75-77,208,291-297,321,340-341,343
+app/models/concerns/liquid_embeddable.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 7-14,19-98,100-120,124-126,128-129,131-135
+app/queries/articles/related_query.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-126
+.github/workflows/ci.yml
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 40,46-52,54-71,175,179-181,183,204-215,217-219
+spec/requests/admin/organizations_org_features_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 12,19,91-119,179-190
+  s_cf6118ab9ba895::t_3a5a2734a5a57f 191
+app/views/events/show.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 29,37-38,47,151
+spec/requests/api/v1/docs/related_articles_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-86
+spec/fixtures/files/emudhra_ca_certificates.json
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-37
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 14-16,52-58
+app/views/liquids/_page.html.erb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-44
+app/services/ai/function_config.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 8,15,24,29-32,37-40,45-56,59,84-87,102-104,109,114,125,132,165
+spec/lib/data_update_scripts/backfill_billboard_and_unresolved_embed_references_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 1-68
+spec/requests/pages_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 55,60,74,79,583-667
+  s_cf6118ab9ba895::t_cb0755991ceff7 668
+spec/services/fastly_config/snippets_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 53-63
+spec/factories/pages.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 4-13,15
+app/services/ai/content_moderation_labeler.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 71,89,105-106,109-110,558
+app/services/ai/spam_escalation_check.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 56,58-59
+app/controllers/admin/settings/base_controller.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 25
+spec/models/organization_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 461-462,464-467
+spec/services/images/profile_image_generator_spec.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 5-7,12,14-16,35-36
+app/models/tag.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 67,372-379
+  s_cf6118ab9ba895::t_9228a746ee6436 380-381
+app/services/moderator/merge_user.rb
+  s_cf6118ab9ba895::t_5ec7549ff3b00d 33
+Gemfile.lock
+  s_cf6118ab9ba895::t_c45ef771b50966 287-288,364,366,459,1188,1212
+gems/forem_native/Cargo.lock
+  s_cf6118ab9ba895::t_9cf703adfa5e4e 163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "23e604726ec8fe11ef6e20e084ad5b318d38d0be",
+  "prompts": {},
+  "sessions": {
+    "s_cf6118ab9ba895": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51e81916-7c5b-4f7b-907a-8c2e2928eaa5",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
