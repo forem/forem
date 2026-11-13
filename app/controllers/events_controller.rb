@@ -1,4 +1,8 @@
 class EventsController < ApplicationController
+  SHOW_ARTICLE_COLUMNS = %i[id user_id path title cached_tag_list published_at].freeze
+  SHOW_USER_COLUMNS = %i[id name profile_image].freeze
+  private_constant :SHOW_ARTICLE_COLUMNS, :SHOW_USER_COLUMNS
+
   def index
     @events = Event.published.includes(:page).where('end_time >= ?', Time.current).order(start_time: :asc)
   end
@@ -24,12 +28,13 @@ class EventsController < ApplicationController
         return
       end
 
-      tag_name = @event.tags.first&.name
-      if tag_name.present?
-        @articles = Article.published.cached_tagged_with(tag_name).order(hotness_score: :desc).limit(15)
-      else
-        @articles = Article.published.order(hotness_score: :desc).limit(15)
-      end
+      @tag_name = @event.tags.select(:name).first&.name
+      articles = Article.published.select(SHOW_ARTICLE_COLUMNS).order(hotness_score: :desc).limit(15)
+      articles = articles.cached_tagged_with(@tag_name) if @tag_name.present?
+      @articles = articles.to_a
+      ActiveRecord::Associations::Preloader.new(
+        records: @articles, associations: :user, scope: User.select(SHOW_USER_COLUMNS),
+      ).call
     else
       check_for_page_fallback
     end

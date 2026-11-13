@@ -48,38 +48,33 @@ We welcome pull requests on any issue, regardless of its current status, if it p
 
 **All pull requests should include appropriate tests.** Our current focus is primarily on backend-related regression tests, while frontend changes may require more extensive user review.
 
-We welcome AI-assisted pull requests but will turn away "slop"—all submissions must maintain high standards of code quality and meaningful utility.
+We welcome AI-assisted pull requests but will turn away "slop" — all submissions must maintain high standards of code quality and meaningful utility.
 
-🤖 AI Agents should check out `AGENTS.md` for more instructions. For specific IDEs and environments, Forem also synchronizes these rules across `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md`.
+> 🤖 **AI Agents:** Check out `AGENTS.md` for more instructions. Forem also synchronizes these rules across `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md` for specific IDEs and environments.
 
 Please also check out the [Contributing to Forem guide](https://developers.forem.com/contributing-guide/forem) for more detailed guidelines.
 
+
 ## Getting Started
 
-This section provides a high-level quick start guide. If you're looking for a
-more thorough installation guide (for example
-[with macOS](https://developers.forem.com/getting-started/installation/mac)),
-you'll want to refer to our complete
-[Developer Documentation](https://developers.forem.com/).
+This section provides a high-level quick start guide. If you're looking for a more thorough installation guide (for example [with macOS](https://developers.forem.com/getting-started/installation/mac)), you'll want to refer to our complete [Developer Documentation](https://developers.forem.com/).
 
-We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
-transitioning to a [Preact](https://preactjs.com/)-first frontend.
+We run on a [Rails](https://rubyonrails.org/) backend, and we are currently transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
-**Prerequisites Note**: Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app. 
+> **Prerequisites Note:** Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app.
+>
+> To install `pgvector`:
+> - **macOS (Homebrew):** `brew install pgvector`
+> - **Linux (Debian/Ubuntu):** `sudo apt install postgresql-15-pgvector` (adjust `15` to match your installed PostgreSQL version), or compile from source following the [pgvector installation guide](https://github.com/pgvector/pgvector#installation).
+>
+> Providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the embeddings is completely optional; if omitted, the app will continue to function normally without semantic recommendations.
 
-To install `pgvector`:
-- **macOS (Homebrew)**: `brew install pgvector`
-- **Linux (Debian/Ubuntu)**: `sudo apt install postgresql-15-pgvector` (adjust `15` to match your installed PostgreSQL version), or compile from source following the [pgvector installation guide](https://github.com/pgvector/pgvector#installation).
+A more complete overview of our stack is available in [our docs](https://developers.forem.com/technical-overview/stack).
 
-However, providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the embeddings is completely optional; if omitted, the app will continue to function normally without semantic recommendations.
+### Launching in a Cloud Dev Environment
 
-A more complete overview of our stack is available in
-[our docs](https://developers.forem.com/technical-overview/stack).
-
-To **launch Forem in Gitpod**, please navigate to
-[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
-
-To **launch Forem in Ona** (formerly Gitpod), the project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
+- **Ona** (formerly Gitpod): The project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
+- **Gitpod:** Navigate to [`https://gitpod.io/#https://github.com/{your_github_username}/forem`](https://gitpod.io/#https://github.com/{your_github_username}/forem).
 
 ### Installation Documentation
 
