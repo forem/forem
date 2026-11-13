@@ -762,7 +762,7 @@ RSpec.describe "StoriesIndex" do
 
         # The pinned label uses the organization's Brand color 1 / Brand color 2 pair,
         # not the community accent, so the two colors are always the org's own pairing
-        label = Nokogiri::HTML(response.body).at_css(".crayons-card > header > h3")
+        label = Nokogiri::HTML(response.body).at_css("#substories .crayons-card > header > h3")
         expect(label.text).to include(I18n.t("views.users.pinned"))
         expect(label["style"]).to include("background-color: #112233")
         expect(label["style"]).to match(/(?<!-)color: #abcdef/)
@@ -772,7 +772,7 @@ RSpec.describe "StoriesIndex" do
         # Falls back to the default text color when Brand color 2 is blank
         organization.update!(text_color_hex: nil)
         get "/#{organization.slug}"
-        label = Nokogiri::HTML(response.body).at_css(".crayons-card > header > h3")
+        label = Nokogiri::HTML(response.body).at_css("#substories .crayons-card > header > h3")
         expect(label["style"]).to include("background-color: #112233")
         expect(label["style"]).to match(/(?<!-)color: #ffffff/)
 
