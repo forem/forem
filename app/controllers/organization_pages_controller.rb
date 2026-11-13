@@ -164,7 +164,7 @@ class OrganizationPagesController < ApplicationController
   end
 
   def markdown_page_params
-    params.require(:page).permit(:title, :body_markdown, :description)
+    params.require(:page).permit(:title, :body_markdown, :description, :show_in_navigation)
   end
 
   def embed_page_params
