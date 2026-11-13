@@ -112,6 +112,8 @@ fr:
     lead_submission:
       already_submitted: Vous avez déjà soumis ce formulaire.
     page:
+      navigation_organization_only: "ne peut être désactivé que pour les pages d’une organisation"
+      navigation_showcase_required: "doit rester activé pour la page Showcase"
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
       embed_html_invalid_slug: doit utiliser le format de chemin d'intégration (<owner>/embed/<slug>).
       embed_html_requires_organization: doit appartenir à une organisation ou à un utilisateur pour les pages embed_html.

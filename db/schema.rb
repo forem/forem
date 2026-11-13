@@ -1399,6 +1399,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_12_120200) do
     t.integer "position", default: 0, null: false
     t.text "processed_html"
     t.string "redirect_to_url"
+    t.boolean "show_in_navigation", default: true, null: false
     t.string "slug"
     t.string "social_image"
     t.bigint "subforem_id"
