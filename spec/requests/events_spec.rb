@@ -82,6 +82,42 @@ RSpec.describe "Events" do
           expect(response.body).to include(article.path)
           expect(response.body).to include("##{tag.name}")
         end
+
+        it "batches article authors, skips unrendered article columns, and avoids duplicate tag/signup queries" do
+          second_author = create(:user)
+          second_article = create(
+            :article, user: second_author, title: "Second Event Article", tag_list: tag.name, published: true,
+          )
+          viewer = create(:user)
+          login_as(viewer)
+
+          queries = []
+          callback = lambda { |_name, _start, _finish, _id, payload|
+            sql = payload[:sql].to_s
+            queries << sql unless payload[:name] == "SCHEMA" || sql.match?(/\A(BEGIN|COMMIT|SAVEPOINT|RELEASE)/)
+          }
+
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get event_path(published_event.event_name_slug, published_event.event_variation_slug)
+          end
+
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(
+            CGI.escapeHTML(article.user.name),
+            CGI.escapeHTML(second_article.user.name),
+          )
+
+          article_queries = queries.grep(/FROM "articles"/)
+          expect(article_queries.size).to eq(1)
+          expect(article_queries.first).not_to include("body_markdown", "processed_html", "SELECT \"articles\".*")
+
+          author_queries = queries.grep(/FROM "users" WHERE "users"\."id" IN/)
+          expect(author_queries.size).to eq(1)
+          expect(queries.grep(/FROM "users" WHERE "users"\."id" = \$1 LIMIT/)).to be_empty
+
+          expect(queries.grep(/FROM "tags" INNER JOIN "taggings"/).size).to eq(1)
+          expect(queries.grep(/FROM "event_signups"/).size).to eq(1)
+        end
       end
     end
 
