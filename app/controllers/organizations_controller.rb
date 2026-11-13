@@ -183,7 +183,8 @@ class OrganizationsController < ApplicationController
       # Create pending membership for regular organizations
       membership = @organization.organization_memberships.create!(
         user: @user,
-        type_of_user: "pending"
+        type_of_user: "pending",
+        invited_by: current_user
       )
 
       # Send invitation email
