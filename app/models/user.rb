@@ -175,6 +175,7 @@ class User < ApplicationRecord
   end
 
   mount_uploader :profile_image, ProfileImageUploader
+  mount_uploader :profile_banner_image, ProfileBannerUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
          :recoverable, :lockable, :trackable

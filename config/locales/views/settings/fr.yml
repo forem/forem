@@ -310,6 +310,11 @@ fr:
       profile_image:
         remove: Supprimer l'image de profil
         remove_description: Votre profil utilisera l'avatar par défaut.
+      profile_banner_image:
+        label: Image de bannière du profil
+        description: Importez une image à afficher comme bannière de votre profil à la place de votre couleur de marque. Les images larges fonctionnent le mieux. La taille maximale est de %{max} Mo.
+        remove: Supprimer l'image de bannière du profil
+        remove_description: La bannière de votre profil utilisera votre couleur de marque.
       tab:
         Profile: Profil
         Customization: Personnalisation

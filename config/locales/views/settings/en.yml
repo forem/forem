@@ -310,6 +310,11 @@ en:
       profile_image:
         remove: Remove profile image
         remove_description: Your profile will fall back to the default avatar.
+      profile_banner_image:
+        label: Profile banner image
+        description: Upload an image to show as your profile banner instead of your brand color. Wide images work best. Maximum size is %{max} MB.
+        remove: Remove profile banner image
+        remove_description: Your profile banner will fall back to your brand color.
       tab:
         Profile: Profile
         Customization: Customization

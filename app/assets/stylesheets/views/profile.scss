@@ -154,6 +154,40 @@
   }
 }
 
+// A custom banner image replaces the brand color gradient strip. The gradient
+// stays underneath as the fallback while the image loads.
+.brand-bg--image {
+  position: relative;
+
+  // Positioned so it paints above the absolutely positioned banner image.
+  > .crayons-layout {
+    position: relative;
+  }
+}
+
+.brand-bg__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--su-9);
+  object-fit: cover;
+  pointer-events: none;
+
+  @media (min-width: $breakpoint-m) {
+    height: var(--su-10);
+  }
+}
+
+// Preview of the current banner image in the profile settings form.
+.profile-banner-preview {
+  display: block;
+  width: 100%;
+  max-height: 8rem;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
 .profile-comment-card {
   border-radius: 0;
 
