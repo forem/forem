@@ -86,6 +86,47 @@ RSpec.describe "Api::V1::Docs::Organizations" do
       end
     end
 
+    path "/api/organizations/{organization_id_or_username}/listings" do
+      get "Organization's listings" do
+        tags "organizations", "listings"
+        security []
+        description "This endpoint has been retired and always returns an empty array for an existing organization.
+
+### Path Parameter Options:
+- **organization_id_or_username**: Supports either the organization's numerical ID or its string username (slug)."
+        operationId "getOrgListings"
+        produces "application/json"
+        parameter name: :organization_id_or_username, in: :path, type: :string, required: true,
+                  description: "The organization's numerical ID or string username."
+
+        response "200", "An Organization's listings (with username)" do
+          let(:organization_id_or_username) { organization.username }
+          schema  type: :array,
+                  items: { type: :object }
+          add_examples
+          run_test! do |response|
+            expect(response.parsed_body).to eq([])
+          end
+        end
+
+        response "200", "An Organization's listings (with ID)" do
+          let(:organization_id_or_username) { organization.id }
+          schema  type: :array,
+                  items: { type: :object }
+          add_examples
+          run_test! do |response|
+            expect(response.parsed_body).to eq([])
+          end
+        end
+
+        response "404", "Not Found" do
+          let(:organization_id_or_username) { "non-existent-id-or-username" }
+          add_examples
+          run_test!
+        end
+      end
+    end
+
     path "/api/organizations/{organization_id_or_username}/articles" do
       get "Organization's Articles" do
         tags "organizations", "articles"

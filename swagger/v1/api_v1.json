@@ -3792,6 +3792,49 @@
         }
       }
     },
+    "/api/organizations/{organization_id_or_username}/listings": {
+      "get": {
+        "summary": "Organization's listings",
+        "tags": [
+          "organizations",
+          "listings"
+        ],
+        "security": [
+
+        ],
+        "description": "This endpoint has been retired and always returns an empty array for an existing organization.\n\n### Path Parameter Options:\n- **organization_id_or_username**: Supports either the organization's numerical ID or its string username (slug).",
+        "operationId": "getOrgListings",
+        "parameters": [
+          {
+            "name": "organization_id_or_username",
+            "in": "path",
+            "required": true,
+            "description": "The organization's numerical ID or string username.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Organization's listings (with ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/organizations/{organization_id_or_username}/articles": {
       "get": {
         "summary": "Organization's Articles",
