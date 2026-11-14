@@ -7,6 +7,8 @@ module Users
     CORE_PROFILE_FIELDS = %i[summary].freeze
     CORE_USER_FIELDS = %i[name username profile_image remove_profile_image].freeze
     CORE_SETTINGS_FIELDS = %i[brand_color1].freeze
+    # Uploaded image attributes on +User+ that must be real files with a sane filename.
+    UPLOADED_IMAGE_FIELDS = %i[profile_image profile_banner_image].freeze
 
     # @param user [User] the user whose profile we are updating
     # @param updated_attributes [Hash<Symbol, Hash<Symbol, Object>>] the profile
@@ -70,11 +72,12 @@ module Users
       end
       # CarrierWave discards a newly cached file when the remove flag is set, so a replacement wins.
       attrs.delete(:remove_profile_image) if attrs[:profile_image].present?
+      attrs.delete(:remove_profile_banner_image) if attrs[:profile_banner_image].present?
       attrs
     end
 
     def update_successful?
-      return false unless verify_profile_image
+      return false unless verify_uploaded_images
 
       Profile.transaction do
         update_profile
@@ -86,8 +89,11 @@ module Users
       false
     end
 
-    def verify_profile_image
-      image = @updated_user_attributes[:profile_image]
+    def verify_uploaded_images
+      UPLOADED_IMAGE_FIELDS.all? { |field| verify_uploaded_image(@updated_user_attributes[field]) }
+    end
+
+    def verify_uploaded_image(image)
       return true unless image
       return true if valid_image_file?(image) && valid_filename?(image)
 
