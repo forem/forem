@@ -1785,6 +1785,39 @@ RSpec.describe User do
       end
     end
 
+    context "when only the profile banner image changes" do
+      let(:banner_image) { fixture_file_upload("800x600.png", "image/png") }
+
+      before do
+        user # create the user first so creation callbacks don't count
+        Users::BustProfileDetailsCacheWorker.clear
+      end
+
+      it "enqueues a profile details cache bust when a banner image is uploaded" do
+        sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+          user.update!(profile_banner_image: banner_image)
+        end
+      end
+
+      it "enqueues a profile details cache bust when the banner image is replaced" do
+        user.update!(profile_banner_image: banner_image)
+        Users::BustProfileDetailsCacheWorker.clear
+
+        sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+          user.update!(profile_banner_image: fixture_file_upload("800x600.jpg", "image/jpeg"))
+        end
+      end
+
+      it "enqueues a profile details cache bust when the banner image is removed" do
+        user.update!(profile_banner_image: banner_image)
+        Users::BustProfileDetailsCacheWorker.clear
+
+        sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
+          user.update!(remove_profile_banner_image: true)
+        end
+      end
+    end
+
     it "does not enqueue identity cache bust for unrelated changes" do
       sidekiq_assert_no_enqueued_jobs(only: Users::BustProfileIdentityCacheWorker) do
         user.update!(last_comment_at: Time.current)

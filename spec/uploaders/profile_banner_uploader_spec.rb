@@ -15,7 +15,6 @@ describe ProfileBannerUploader, type: :uploader do
   let!(:uploader) { described_class.new(user, mounted_as) }
 
   before do
-    described_class.include CarrierWave::MiniMagick # needed for processing
     described_class.enable_processing = true
   end
 
@@ -29,7 +28,7 @@ describe ProfileBannerUploader, type: :uploader do
   end
 
   it "limits files to 8 megabytes" do
-    expect(uploader.size_range).to eq(1..8.megabytes)
+    expect(uploader.size_range).to eq(1..(8.megabytes))
   end
 
   describe "filename" do
