@@ -19,11 +19,13 @@ RSpec.describe "Billboards" do
   end
 
   describe "billboard delivery columns" do
-    it "omits Markdown sources across selection strategies and caching modes", :aggregate_failures do
+    it "omits unused columns across selection strategies and caching modes", :aggregate_failures do
       area = "post_fixed_bottom"
       billboard = create_billboard(placement_area: area, special_behavior: :persistent,
                                    minimized_body_markdown: "Synthetic minimized content")
       config = BillboardPlacementAreaConfig.create!(placement_area: area, fully_cached: false)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:article_id_adjusted_weight).and_return(true)
 
       [false, true].product(%w[random_selection weighted_performance new_and_priority new_only]) do |cached, strategy|
         config.update!(fully_cached: cached)
@@ -43,6 +45,12 @@ RSpec.describe "Billboards" do
         expect(response.body).to include(billboard.processed_html, billboard.minimized_processed_html)
         expect(queries).not_to be_empty
         expect(queries.join("\n")).not_to include('"display_ads".*', '"body_markdown"', '"minimized_body_markdown"')
+        projections = queries.filter_map { |sql| sql[/SELECT (.*?) FROM "display_ads"/m, 1] }
+        expect(projections).not_to be_empty
+        expect(projections.join("\n")).not_to include(
+          '"display_ads"."name"', '"display_ads"."clicks_count"',
+          '"display_ads"."exclude_article_ids"', '"display_ads"."target_role_names"'
+        )
       end
     end
   end
