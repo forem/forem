@@ -14,7 +14,11 @@ pt:
           following_orgs: Organizações seguidas (%{num})
           following_pods: Podcasts seguidos (%{num})
           hidden_tags: Tags ocultas (%{num})
+          agent_sessions: Sessões de agente (%{num})
+          embed_pages: Páginas incorporadas (%{num})
           feed_imports: Importações de Feeds RSS
+        agent_sessions: Sessões de agente
+        embed_pages: Páginas incorporadas
         posts: Posts
         series: Séries
         followers: Seguidores
@@ -29,6 +33,19 @@ pt:
         feed_imports: Importações de Feeds RSS
         for_org: Analytics para %{org}
         upload: Fazer upload de um vídeo
+      embed_pages:
+        heading: Páginas incorporadas
+        section_heading: Páginas HTML incorporadas em sandbox
+        section_description: "Crie widgets HTML independentes e demonstrações interativas exibidas apenas em iframes isolados e sem cookies via {% embed %} ou {% page %}."
+        new_button: Nova página incorporada
+        new_heading: Nova página HTML incorporada
+        edit_heading: Editar página HTML incorporada
+        slug_help: "Apenas letras minúsculas, números e hífens. Incorpore em posts com {% embed <url> %} ou defina uma altura personalizada com {% embed <url> 450 %}."
+        empty: "Você ainda não criou nenhuma página HTML incorporada."
+        confirm_delete: "Tem certeza de que deseja excluir esta página incorporada? As publicações que a incorporam deixarão de exibi-la."
+        created: Página incorporada criada.
+        updated: Página incorporada atualizada.
+        deleted: Página incorporada excluída.
       posts:
         heading: Posts
         archived: Mostrar arquivados

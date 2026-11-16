@@ -75,6 +75,32 @@ RSpec.describe "Api::V1::Pages" do
     let(:body_html) { "<div>hi, folks</div>" }
     let(:body_css) { "h1 {font-size: 120px}" }
 
+    it "allows site admins to create hidden custom organization pages and restore their visibility" do
+      organization = create(:organization)
+      create(:page, organization: organization, position: 0)
+
+      post api_pages_path,
+           params: post_params.merge(organization_id: organization.id, position: 1,
+                                     show_in_navigation: false).to_json, headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["show_in_navigation"]).to be(false)
+      custom_page = Page.find(response.parsed_body["id"])
+      expect(custom_page.show_in_navigation?).to be(false)
+
+      put api_page_path(custom_page), params: { show_in_navigation: true }.to_json, headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+      expect(custom_page.reload.show_in_navigation?).to be(true)
+    end
+
+    it "rejects hiding a site page through the API" do
+      put api_page_path(page), params: { show_in_navigation: false }.to_json, headers: auth_header
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(page.reload.show_in_navigation?).to be(true)
+    end
+
     it "can create a new page via post" do
       post api_pages_path, params: post_params.to_json, headers: auth_header
       expect(response).to have_http_status(:success)
@@ -220,7 +246,7 @@ RSpec.describe "Api::V1::Pages" do
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
                      page_template_id template_data redirect_to_url
-                     organization_id position])
+                     organization_id position show_in_navigation])
   end
 
   it "filters pages by organization_id ordered by position" do
@@ -243,7 +269,7 @@ RSpec.describe "Api::V1::Pages" do
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
                      page_template_id template_data redirect_to_url
-                     organization_id position])
+                     organization_id position show_in_navigation])
   end
 
   context "when authenticated as an organization admin" do
@@ -318,6 +344,37 @@ RSpec.describe "Api::V1::Pages" do
       let!(:readme_page) do
         create(:page, organization: organization, slug: "#{organization.slug}/readme",
                       template: "full_within_layout", position: 0)
+      end
+
+      it "creates a hidden custom page, exposes it publicly, and restores its tab visibility" do
+        post api_pages_path,
+             params: { organization_id: organization.id, title: "Talk", slug: "talk",
+                       body_markdown: "# Talk", show_in_navigation: false }.to_json,
+             headers: org_auth_header
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["show_in_navigation"]).to be(false)
+        custom_page = organization.pages.find_by!(slug: "#{organization.slug}/talk")
+
+        get api_page_path(custom_page), headers: v1_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["show_in_navigation"]).to be(false)
+
+        get api_pages_path(organization_id: organization.id), headers: v1_headers
+        expect(response.parsed_body.pluck("id")).to include(custom_page.id)
+
+        put api_page_path(custom_page), params: { show_in_navigation: true }.to_json, headers: org_auth_header
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["show_in_navigation"]).to be(true)
+        expect(custom_page.reload.show_in_navigation?).to be(true)
+      end
+
+      it "rejects hiding the Showcase through the API" do
+        put api_page_path(readme_page), params: { show_in_navigation: false }.to_json, headers: org_auth_header
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.headers["X-Error-Text"]).to include(I18n.t("models.page.navigation_showcase_required"))
+        expect(readme_page.reload.show_in_navigation?).to be(true)
       end
 
       it "creates subsequent pages with a slug suffix or full org slug and auto-increments position" do

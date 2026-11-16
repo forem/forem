@@ -277,6 +277,12 @@ Rails.application.routes.draw do
         patch :decline
       end
     end
+    resources :organization_invitations, only: [] do
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
     resources :tags, only: [:index] do
       collection do
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
@@ -569,6 +575,9 @@ Rails.application.routes.draw do
     get "dashboard/hidden_tags", to: "dashboards#hidden_tags"
     get "dashboard/feed_imports", to: "dashboards#feed_imports"
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
+    scope "/dashboard", as: :dashboard do
+      resources :embed_pages, controller: "user_embed_pages", only: %i[index new create edit update destroy]
+    end
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",
                                      constraints: {

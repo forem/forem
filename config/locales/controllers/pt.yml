@@ -101,6 +101,9 @@ pt:
     account_switch_expired: "Esta tentativa de login expirou. Tente entrar novamente."
     log_in_error: 'Erro de login: %{e}'
     username_taken: nome de usuário já foi usado
+  organization_invitations_controller:
+    accepted: Você entrou em %{organization_name}.
+    declined: Você recusou o convite para participar de %{organization_name}.
   organizations_controller:
     secret_updated: Seu segredo da organização foi atualizado
     deletion_scheduled: 'Sua organização: "%{organization_name}" exclusão está agendada. Você será notificado quando for excluída.'

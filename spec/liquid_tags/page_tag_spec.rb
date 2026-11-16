@@ -230,4 +230,181 @@ RSpec.describe PageTag, type: :liquid_tag do
       expect(ForemTag.determine_klass("#{URL.url}/about")).to eq(described_class)
     end
   end
+
+  describe "user embed_html pages and article-only attribution footer" do
+    before do
+      FeatureFlag.add(:user_embed_pages)
+    end
+
+    it "renders a sandboxed iframe for a user embed_html page when flag is enabled", :aggregate_failures do
+      embed_owner = create(:user, username: "devwidgetauthor", name: "Widget Author")
+      FeatureFlag.enable(:user_embed_pages, FeatureFlag::Actor[embed_owner])
+      create(
+        :page,
+        user: embed_owner,
+        slug: "#{embed_owner.username}/embed/live-chart",
+        title: "Live Chart",
+        description: "Chart widget",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div>Chart</div>",
+      )
+
+      rendered = MarkdownProcessor::Parser.new("{% embed /#{embed_owner.username}/embed/live-chart 420 %}").finalize
+      expect(rendered).to include("src=\"#{URL.url}/#{embed_owner.username}/embed/live-chart?mode=embed\"")
+      expect(rendered).to include("sandbox=\"#{PageTag::IFRAME_SANDBOX}\"")
+      expect(rendered).not_to include("allow-same-origin")
+      expect(rendered).not_to include("allowfullscreen")
+      expect(rendered).to include("credentialless")
+      expect(rendered).to include('referrerpolicy="no-referrer"')
+      expect(rendered).to include('height="420px"')
+    ensure
+      FeatureFlag.disable(:user_embed_pages, FeatureFlag::Actor[embed_owner]) if embed_owner
+    end
+
+    it "rejects user embed_html pages when feature flag is disabled or owner is suspended", :aggregate_failures do
+      embed_owner = create(:user, username: "gatedwidgetuser")
+      create(
+        :page,
+        user: embed_owner,
+        slug: "#{embed_owner.username}/embed/secret-chart",
+        title: "Secret Chart",
+        description: "desc",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div>Chart</div>",
+      )
+
+      expect do
+        Liquid::Template.parse("{% page /#{embed_owner.username}/embed/secret-chart %}")
+      end.to raise_error(StandardError, I18n.t("liquid_tags.page_tag.invalid_page"))
+
+      FeatureFlag.enable(:user_embed_pages, FeatureFlag::Actor[embed_owner])
+      embed_owner.add_role(:suspended)
+
+      expect do
+        Liquid::Template.parse("{% page /#{embed_owner.username}/embed/secret-chart %}")
+      end.to raise_error(StandardError, I18n.t("liquid_tags.page_tag.invalid_page"))
+    ensure
+      FeatureFlag.disable(:user_embed_pages, FeatureFlag::Actor[embed_owner]) if embed_owner
+    end
+
+    it "renders the attribution bar and fullscreen button only in articles", :aggregate_failures do
+      embed_owner = create(:user, username: "barowner", name: "Bar Owner")
+      article_author = create(:user, username: "postwriter")
+      article = build(:article, user: article_author)
+      comment = build(:comment, user: article_author)
+      org = create(:organization, slug: "bar-org", name: "Bar Org")
+
+      FeatureFlag.enable(:user_embed_pages, FeatureFlag::Actor[embed_owner])
+      FeatureFlag.enable(:org_readme, FeatureFlag::Actor[org])
+
+      create(
+        :page,
+        user: embed_owner,
+        slug: "#{embed_owner.username}/embed/interactive-card",
+        title: "Interactive Card",
+        description: "desc",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "<div>Card</div>",
+      )
+      create(
+        :page,
+        organization: org,
+        slug: "#{org.slug}/docs",
+        title: "Org Docs",
+        description: "desc",
+        template: "full_within_layout",
+        body_markdown: "Docs body",
+      )
+
+      user_article_html = ContentRenderer.new(
+        "{% embed /#{embed_owner.username}/embed/interactive-card %}",
+        source: article,
+        user: article_author,
+      ).process_article.processed_html
+
+      expect(user_article_html).to include("ltag__page--article")
+      expect(user_article_html).to include("js-page-embed")
+      expect(user_article_html).to include("ltag__page-footer")
+      expect(user_article_html).to include("js-fullscreen-page-action")
+      expect(user_article_html).to include("Interactive Card")
+      expect(user_article_html).to include("Bar Owner")
+      expect(user_article_html).to include("href=\"#{embed_owner.path}\"")
+      expect(user_article_html).to include('data-ignore-prefix="true"')
+      expect(user_article_html).not_to include("article-body-image-wrapper")
+      expect(user_article_html).not_to include("<pre><code>")
+
+      org_article_html = ContentRenderer.new(
+        "{% embed /#{org.slug}/p/docs %}",
+        source: article,
+        user: article_author,
+      ).process_article.processed_html
+
+      expect(org_article_html).to include("ltag__page-footer")
+      expect(org_article_html).to include("Bar Org")
+      expect(org_article_html).to include("href=\"#{URL.url}/#{org.slug}/p/docs\"")
+      expect(org_article_html).to include("js-fullscreen-page-action")
+
+      site_article_html = ContentRenderer.new(
+        "{% embed /about %}",
+        source: article,
+        user: article_author,
+      ).process_article.processed_html
+
+      expect(site_article_html).to include("ltag__page-footer")
+      expect(site_article_html).to include("href=\"#{URL.url}/about\"")
+      expect(site_article_html).to include("js-fullscreen-page-action")
+
+      subforem = create(:subforem, domain: "other.forem.test")
+      allow(Subforem).to receive_messages(
+        disabled_by_env?: false,
+        cached_domains: ["other.forem.test"],
+        cached_id_by_domain: subforem.id,
+        cached_id_to_domain_hash: { subforem.id => "other.forem.test" },
+      )
+      create(
+        :page,
+        subforem: subforem,
+        slug: "remote-guide",
+        title: "Remote Guide",
+        description: "desc",
+        is_top_level_path: true,
+        template: "full_within_layout",
+        body_markdown: "Remote body",
+      )
+
+      cross_subforem_html = ContentRenderer.new(
+        "{% embed https://other.forem.test/remote-guide %}",
+        source: article,
+        user: article_author,
+      ).process_article.processed_html
+
+      expect(cross_subforem_html).to include("href=\"#{URL.url('/remote-guide', 'other.forem.test')}\"")
+
+      feed_html = ActionController::Base.helpers.sanitize(user_article_html, scrubber: FeedMarkdownScrubber.new)
+      expect(feed_html).to include("Interactive Card")
+      expect(feed_html).to include("Bar Owner")
+      expect(feed_html).not_to include(I18n.t("services.html.parser.enter_fullscreen_mode"))
+
+      in_page_html = ContentRenderer.new(
+        "{% embed /#{embed_owner.username}/embed/interactive-card %}",
+        source: org,
+      ).process.processed_html
+      expect(in_page_html).not_to include("ltag__page-footer")
+      expect(in_page_html).not_to include("js-fullscreen-page-action")
+
+      in_comment_html = ContentRenderer.new(
+        "{% embed /about %}",
+        source: comment,
+        user: article_author,
+      ).process.processed_html
+      expect(in_comment_html).not_to include("ltag__page-footer")
+      expect(in_comment_html).not_to include("js-fullscreen-page-action")
+    ensure
+      FeatureFlag.disable(:user_embed_pages, FeatureFlag::Actor[embed_owner]) if embed_owner
+      FeatureFlag.disable(:org_readme, FeatureFlag::Actor[org]) if org
+    end
+  end
 end

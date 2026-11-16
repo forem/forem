@@ -60,6 +60,7 @@ RSpec.describe "api/v1/pages" do
         - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.
         - **organization_id**: Optional ID of the organization this page belongs to.
         - **position**: Optional display order position for organization pages.
+        - **show_in_navigation**: Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API.
         DESCRIBE
 
         produces "application/json"
@@ -81,6 +82,8 @@ RSpec.describe "api/v1/pages" do
                                          description: "The ID of the organization the page belongs to" },
                       position: { type: :integer, format: :int32,
                                   description: "Display order position for organization pages" },
+                      show_in_navigation: { type: :boolean, default: true,
+                                            description: "Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API." },
                       template: {
                         type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
                         description: "Controls what kind of layout the page is rendered in"
@@ -157,7 +160,7 @@ RSpec.describe "api/v1/pages" do
       put("update details for a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.
+        Update an existing page's details by ID. `show_in_navigation` controls organization tabs only. Hidden pages remain public at their URL and through the API. Only non-Showcase organization pages can set it to false. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.
         DESCRIBE
 
         produces "application/json"

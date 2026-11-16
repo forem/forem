@@ -135,8 +135,18 @@ module Stories
         if @page == 1 && !user_signed_in?
           stories = stories.where("published_at > ?", 3.months.ago)
         end
-        stories.order(hotness_score: :desc).with_at_least_home_feed_minimum_score
+        stories.order(hotness_score: :desc).where(home_feed_eligibility_clause)
       end
+    end
+
+    # Same rows as Article.with_at_least_home_feed_minimum_score, but `score + 0` keeps
+    # PostgreSQL from turning the OR into a BitmapOr over the featured/favorited/score
+    # indexes (~500k rows) only to BitmapAnd it with the much smaller tags_array GIN bitmap.
+    def home_feed_eligibility_clause
+      [
+        "articles.featured = TRUE OR articles.favorited_by_user_id IS NOT NULL OR (articles.score + 0) >= ?",
+        Settings::UserExperience.home_feed_minimum_score,
+      ]
     end
   end
 end

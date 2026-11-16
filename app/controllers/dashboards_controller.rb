@@ -15,6 +15,7 @@ class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
   before_action :set_agent_sessions_count
+  before_action :set_embed_pages_count
 
   layout false, only: :sidebar
 
@@ -185,6 +186,10 @@ class DashboardsController < ApplicationController
 
   def set_agent_sessions_count
     @agent_sessions_count = current_user.agent_sessions_count
+  end
+
+  def set_embed_pages_count
+    @embed_pages_count = current_user.can_manage_embed_pages? ? current_user.pages.embed_html.count : 0
   end
 
   def follows_for(user:, type:, order_by: :created_at)

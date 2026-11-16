@@ -14,7 +14,11 @@ fr:
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
           hidden_tags: Hidden tags (%{num})
+          agent_sessions: Sessions d'agent (%{num})
+          embed_pages: Pages intégrées (%{num})
           feed_imports: Importations de flux RSS
+        agent_sessions: Sessions d'agent
+        embed_pages: Pages intégrées
         posts: Publications
         series: Séries
         followers: Suiveurs
@@ -29,6 +33,19 @@ fr:
         feed_imports: Importations de flux RSS
         for_org: Analytics for %{org}
         upload: Charger une vidéo
+      embed_pages:
+        heading: Pages intégrées
+        section_heading: Pages HTML intégrées isolées (sandbox)
+        section_description: "Créez des widgets HTML autonomes et des démos interactives affichés uniquement dans des iframes isolées sans cookies via {% embed %} ou {% page %}."
+        new_button: Nouvelle page intégrée
+        new_heading: Nouvelle page HTML intégrée
+        edit_heading: Modifier la page HTML intégrée
+        slug_help: "Lettres minuscules, chiffres et tirets uniquement. Intégrez-la dans vos articles avec {% embed <url> %} ou ajustez la hauteur avec {% embed <url> 450 %}."
+        empty: "Vous n'avez pas encore créé de page HTML intégrée."
+        confirm_delete: "Voulez-vous vraiment supprimer cette page intégrée ? Les articles qui l'intègrent ne l'afficheront plus."
+        created: Page intégrée créée.
+        updated: Page intégrée mise à jour.
+        deleted: Page intégrée supprimée.
       analytics:
         meta:
           title: Analytics

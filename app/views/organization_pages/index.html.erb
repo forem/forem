@@ -37,6 +37,9 @@
                   <% else %>
                     <%= link_to "/#{suffix}", page_url, target: "_blank", class: "crayons-tag crayons-tag--monochrome", style: "font-family: var(--ff-monospace); text-decoration: none;" %>
                   <% end %>
+                  <% unless is_showcase || page.show_in_navigation? %>
+                    <span class="c-indicator"><%= t("views.organization_settings.pages.hidden_from_tabs") %></span>
+                  <% end %>
                 </div>
                 <p class="fs-s color-base-60 mb-0"><%= page.description %></p>
               </div>

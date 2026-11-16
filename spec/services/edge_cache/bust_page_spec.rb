@@ -7,6 +7,7 @@ RSpec.describe EdgeCache::BustPage, type: :service do
       "/page/#{slug}",
       "/#{slug}",
       "/#{slug}/",
+      "/#{slug}?mode=embed",
     ]
   end
 
@@ -44,6 +45,22 @@ RSpec.describe EdgeCache::BustPage, type: :service do
         .with(
           ["show-page-#{slug}", organization.record_key],
           fallback_paths: [*paths, "/#{organization.slug}"],
+        )
+        .once
+    end
+  end
+
+  context "when a user is given" do
+    let(:user) { create(:user) }
+    let(:slug) { "#{user.username}/embed/demo" }
+
+    it "purges page and user surrogate keys alongside the mode=embed fallback path" do
+      described_class.call(slug, user: user)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call)
+        .with(
+          ["show-page-#{slug}", user.record_key, user.profile_identity_record_key],
+          fallback_paths: [*paths, user.path],
         )
         .once
     end

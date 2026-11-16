@@ -748,6 +748,8 @@ RSpec.describe "StoriesIndex" do
       end
 
       it "renders a dedicated pinned section without repeating the post and hides it if moved", :aggregate_failures do
+        organization.update!(bg_color_hex: "#112233", text_color_hex: "#abcdef")
+
         # A rendered story card references its own "article-link-<id>" DOM id twice
         # (once as the id= attribute itself, once as an aria-labelledby reference to
         # it), so scanning for that bare string gives 2 per card. Match the id=
@@ -758,15 +760,36 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(I18n.t("views.users.pinned"))
         expect(response.body.scan(/id="article-link-#{pinned_article.id}"/).size).to eq(1)
 
+        # The pinned label uses the organization's Brand color 1 / Brand color 2 pair,
+        # not the community accent, so the two colors are always the org's own pairing
+        label = Nokogiri::HTML(response.body).at_css("#substories .crayons-card > header > h3")
+        expect(label.text).to include(I18n.t("views.users.pinned"))
+        expect(label["style"]).to include("background-color: #112233")
+        expect(label["style"]).to match(/(?<!-)color: #abcdef/)
+        expect(label["class"]).not_to include("bg-accent-brand")
+        expect(label["class"]).not_to include("color-base-inverted")
+
+        # Falls back to the default text color when Brand color 2 is blank
+        organization.update!(text_color_hex: nil)
+        get "/#{organization.slug}"
+        label = Nokogiri::HTML(response.body).at_css("#substories .crayons-card > header > h3")
+        expect(label["style"]).to include("background-color: #112233")
+        expect(label["style"]).to match(/(?<!-)color: #ffffff/)
+
         other_org = create(:organization)
         pinned_article.update_column(:organization_id, other_org.id)
-
         get "/#{organization.slug}"
         expect(response.body).not_to include(%(id="article-link-#{pinned_article.id}"))
       end
     end
 
     context "when organization has a readme page and org_readme flag is enabled" do
+      let(:hidden_page) do
+        create(:page, organization: organization, slug: "#{organization.slug}/talk", position: 2,
+                      title: "Conference Talk", body_markdown: "**Hidden talk content**",
+                      template: "full_within_layout", show_in_navigation: false)
+      end
+
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
                       title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
@@ -841,6 +864,45 @@ RSpec.describe "StoriesIndex" do
           expect(response).to have_http_status(:ok)
           expect(response.body).to include("<strong>Custom About Us</strong>")
         end
+      ensure
+        FeatureFlag.disable(:org_custom_domain)
+      end
+
+      it "omits a hidden page's tab on the Showcase and All Posts views while keeping it public at its permalink",
+         :aggregate_failures do
+        hidden_page
+        create(:page, organization: organization, slug: "#{organization.slug}/docs", position: 1)
+
+        [nil, "all-posts"].each do |mode|
+          get "/#{organization.slug}", params: { mode: mode }
+          nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+          expect(nav.at_css("a[href='/#{organization.slug}/p/talk']")).to be_nil
+          expect(nav.at_css("a[href='/#{organization.slug}/p/docs']")).to be_present
+          expect(nav.at_css(".org-tab-all-posts")["style"]).to include("margin-left: auto")
+        end
+
+        get "/#{organization.slug}/p/talk"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Hidden talk content</strong>")
+        nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+        expect(nav.at_css("a[href='/#{organization.slug}/p/talk']")).to be_nil
+        expect(nav.at_css("a[href='/#{organization.slug}/p/docs']")).to be_present
+      end
+
+      it "keeps a hidden page public at the custom-domain permalink without its tab", :aggregate_failures do
+        hidden_page
+        FeatureFlag.add(:org_custom_domain)
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization])
+        organization.update!(custom_domain: "custom.example.com")
+        allow(Subforem).to receive(:cached_id_by_domain).with("custom.example.com").and_return(nil)
+
+        get "http://custom.example.com/p/talk"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Hidden talk content</strong>")
+        nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+        expect(nav.at_css("a[href='/p/talk']")).to be_nil
+        expect(nav.at_css("a[href='/']")).to be_present
       ensure
         FeatureFlag.disable(:org_custom_domain)
       end

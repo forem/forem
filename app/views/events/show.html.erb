@@ -26,6 +26,7 @@
         <% end %>
         
         <% if @event.start_time > Time.current %>
+          <% signed_up = current_user.present? && current_user.event_signups.exists?(event: @event) %>
           <div class="event-signup-container ml-auto">
             <button data-event-signup-button="true"
                     data-event-name-slug="<%= @event.event_name_slug %>"
@@ -33,8 +34,8 @@
                     data-signup-confirm-message="<%= @event.signup_confirm_message %>"
                     data-signed-up-class="crayons-btn--outlined"
                     data-unsigned-up-class="crayons-btn--primary"
-                    class="crayons-btn event-signup-btn <%= current_user && current_user.event_signups.exists?(event: @event) ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
-                    data-signed-up="<%= current_user && current_user.event_signups.exists?(event: @event) ? 'true' : 'false' %>">
+                    class="crayons-btn event-signup-btn <%= signed_up ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+                    data-signed-up="<%= signed_up ? 'true' : 'false' %>">
               <template data-signed-up-html>
                 <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 <%= @event.signup_button_text(signed_up: true) %>
@@ -43,7 +44,7 @@
                 <%= @event.signup_button_text(signed_up: false) %>
               </template>
 
-              <% if current_user && current_user.event_signups.exists?(event: @event) %>
+              <% if signed_up %>
                 <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 <%= @event.signup_button_text(signed_up: true) %>
               <% else %>
@@ -147,7 +148,7 @@
         <% end %>
     </div>
 
-    <% tag_name = @event.tags.first&.name %>
+    <% tag_name = defined?(@tag_name) ? @tag_name : @event.tags.first&.name %>
 
     <% if @articles.any? %>
       <div class="community-header mt-8 mb-4">

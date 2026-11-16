@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe LiquidEmbedExtractor do
+  # Only reference targets need persistence; extraction reads the source's markdown directly.
   describe ".extract" do
     it "returns an empty array if the record has no markdown" do
-      comment = create(:comment, body_markdown: "empty")
-      comment.update_column(:body_markdown, "") # Bypass presence Validation
+      comment = Comment.new(body_markdown: "")
       expect(described_class.extract(comment)).to eq([])
     end
 
@@ -15,7 +15,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% twitter 1234567890 %}
       MARKDOWN
 
-      comment = create(:comment, body_markdown: body)
+      comment = Comment.new(body_markdown: body)
       data = described_class.extract(comment)
 
       # NOTE: Historically TweetTag registered as 'tweet', but regex matches raw 'twitter'.
@@ -30,7 +30,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% embed https://youtube.com/watch?v=dQw4w9WgXcQ %}
       MARKDOWN
 
-      comment = create(:comment, body_markdown: body)
+      comment = Comment.new(body_markdown: body)
       data = described_class.extract(comment)
 
       # The raw URL remains assigned to embed inherently bypassing ActionView.
@@ -48,7 +48,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% user benhalpern %}
       MARKDOWN
 
-      comment = create(:comment, body_markdown: body)
+      comment = Comment.new(body_markdown: body)
       data = described_class.extract(comment)
 
       expect(data).to contain_exactly(
@@ -65,8 +65,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% org_posts test_org %}
       MARKDOWN
 
-      article = create(:article)
-      article.update_column(:body_markdown, body)
+      article = Article.new(body_markdown: body)
       data = described_class.extract(article)
 
       expect(data).to contain_exactly(
@@ -92,7 +91,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% embed #{article_url} %}
       MARKDOWN
 
-      comment = create(:comment, body_markdown: body)
+      comment = Comment.new(body_markdown: body)
       data = described_class.extract(comment)
 
       expect(data).to contain_exactly(
@@ -108,7 +107,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% comment #{target_comment.id_code} %}
       MARKDOWN
 
-      parent = create(:comment, body_markdown: body)
+      parent = Comment.new(body_markdown: body)
       data = described_class.extract(parent)
 
       expect(data).to contain_exactly(
@@ -129,7 +128,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% embed https://example.com/unsupported-embed %}
       MARKDOWN
 
-      parent = create(:comment, body_markdown: body)
+      parent = Comment.new(body_markdown: body)
       data = described_class.extract(parent)
 
       expect(data).to contain_exactly(
@@ -152,7 +151,7 @@ RSpec.describe LiquidEmbedExtractor do
         Inline `{% user ignored_inline_user %}` tag.
       MARKDOWN
 
-      comment = create(:comment, body_markdown: body)
+      comment = Comment.new(body_markdown: body)
       user_queries = []
       callback = lambda do |*, payload|
         sql = payload[:sql].to_s
@@ -198,8 +197,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% link legacyorg/#{org_article.slug} %}
       MARKDOWN
 
-      holder = create(:article)
-      holder.update_column(:body_markdown, body)
+      holder = Article.new(body_markdown: body)
       data = described_class.extract(holder)
 
       expect(data).to contain_exactly(
@@ -242,8 +240,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% embed #{subforem_url} minimal %}
       MARKDOWN
 
-      holder = create(:article)
-      holder.update_column(:body_markdown, body)
+      holder = Article.new(body_markdown: body)
       data = described_class.extract(holder)
 
       expect(data).to contain_exactly(
@@ -274,8 +271,7 @@ RSpec.describe LiquidEmbedExtractor do
         {% feed tags=rubyfeed,railsfeed sort=reactions %}
       MARKDOWN
 
-      holder = create(:article)
-      holder.update_column(:body_markdown, body)
+      holder = Article.new(body_markdown: body)
       data = described_class.extract(holder)
 
       expect(data).to contain_exactly(
@@ -307,8 +303,7 @@ RSpec.describe LiquidEmbedExtractor do
       org = create(:organization, slug: "aliasorg")
       target_comment = create(:comment)
 
-      holder = create(:article)
-      holder.update_column(:body_markdown, "{% org aliasorg %}\n{% devcomment #{target_comment.id_code} %}")
+      holder = Article.new(body_markdown: "{% org aliasorg %}\n{% devcomment #{target_comment.id_code} %}")
 
       expect(described_class.extract(holder)).to contain_exactly(
         {
@@ -377,10 +372,9 @@ RSpec.describe LiquidEmbedExtractor do
       author_url = "https://#{domain}/#{author.username}/#{org_article.slug}"
       org_url = "https://#{domain}/#{org.slug}/#{org_article.slug}"
 
-      holder = create(:article)
-      holder.update_column(
-        :body_markdown,
-        "{% embed #{author_url} %}\n{% link /#{author.username}/#{org_article.slug} %}\n{% embed #{org_url} %}",
+      holder = Article.new(
+        body_markdown: "{% embed #{author_url} %}\n" \
+                       "{% link /#{author.username}/#{org_article.slug} %}\n{% embed #{org_url} %}",
       )
 
       expect(described_class.extract(holder)).to contain_exactly(
@@ -414,8 +408,7 @@ RSpec.describe LiquidEmbedExtractor do
       legacy_org = create(:organization, slug: "renamedslug")
       legacy_org.update_columns(old_slug: "sharedslug")
 
-      holder = create(:article)
-      holder.update_column(:body_markdown, "{% feed org=sharedslug %}")
+      holder = Article.new(body_markdown: "{% feed org=sharedslug %}")
 
       expect(described_class.extract(holder)).to contain_exactly(
         {

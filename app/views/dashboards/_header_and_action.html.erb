@@ -1,25 +1,29 @@
+<% dashboard_state = local_assigns[:dashboard_state] || params[:action] %>
 <header class="crayons-page-header block">
     <%= render "flag_appeals/suspended_notice" %>
     <h1 class="crayons-title"><%= page_title %></h1>
     <div id="dashboard-mobile-sidebar-wrapper">
       <div class="block m:hidden pt-3">
         <select id="mobile_nav_dashboard" class="crayons-select">
-          <option value="/dashboard" <%= "selected" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>><%= t("views.dashboard.actions.posts") %></option>
+          <option value="/dashboard" <%= "selected" if dashboard_state == "show" && (params[:which] == "organization" || params[:which].blank?) %>><%= t("views.dashboard.actions.posts") %></option>
           <% if current_user %>
-            <option value="<%= user_series_path(current_user.username) %>" <%= "selected" if params[:action] == "series" %>><%= t("views.dashboard.actions.series") %></option>
+            <option value="<%= user_series_path(current_user.username) %>" <%= "selected" if dashboard_state == "series" %>><%= t("views.dashboard.actions.series") %></option>
           <% end %>
-          <option value="/dashboard/user_followers" <%= "selected" if params[:action] == "followers" %>><%= t("views.dashboard.actions.followers") %></option>
-          <option value="/dashboard/following_tags" <%= "selected" if params[:action] == "following_tags" %>><%= t("views.dashboard.actions.following_tags") %></option>
-          <option value="/dashboard/following_users" <%= "selected" if params[:action] == "following_users" %>><%= t("views.dashboard.actions.following_users") %></option>
-          <option value="/dashboard/following_organizations" <%= "selected" if params[:action] == "following_organizations" %>><%= t("views.dashboard.actions.following_orgs") %></option>
-          <option value="<%= dashboard_analytics_path %>" <%= "selected" if params[:action] == "analytics" %>><%= t("views.dashboard.actions.analytics") %></option>
-          <option value="/dashboard/feed_imports" <%= "selected" if params[:action] == "feed_imports" %>><%= t("views.dashboard.actions.feed_imports") %></option>
-          <option value="/dashboard/hidden_tags" <%= "selected" if params[:action] == "hidden_tags" %>><%= t("views.dashboard.actions.hidden_tags") %></option>
-          <option value="<%= agent_sessions_path %>" <%= "selected" if params[:action] == "agent_sessions" %>><%= t("views.dashboard.actions.agent_sessions") %></option>
+          <option value="/dashboard/user_followers" <%= "selected" if dashboard_state == "followers" %>><%= t("views.dashboard.actions.followers") %></option>
+          <option value="/dashboard/following_tags" <%= "selected" if dashboard_state == "following_tags" %>><%= t("views.dashboard.actions.following_tags") %></option>
+          <option value="/dashboard/following_users" <%= "selected" if dashboard_state == "following_users" %>><%= t("views.dashboard.actions.following_users") %></option>
+          <option value="/dashboard/following_organizations" <%= "selected" if dashboard_state == "following_organizations" %>><%= t("views.dashboard.actions.following_orgs") %></option>
+          <option value="<%= dashboard_analytics_path %>" <%= "selected" if dashboard_state == "analytics" %>><%= t("views.dashboard.actions.analytics") %></option>
+          <option value="/dashboard/feed_imports" <%= "selected" if dashboard_state == "feed_imports" %>><%= t("views.dashboard.actions.feed_imports") %></option>
+          <option value="/dashboard/hidden_tags" <%= "selected" if dashboard_state == "hidden_tags" %>><%= t("views.dashboard.actions.hidden_tags") %></option>
+          <option value="<%= agent_sessions_path %>" <%= "selected" if dashboard_state == "agent_sessions" %>><%= t("views.dashboard.actions.agent_sessions") %></option>
+          <% if current_user&.can_manage_embed_pages? %>
+            <option value="<%= dashboard_embed_pages_path %>" <%= "selected" if dashboard_state == "embed_pages" %>><%= t("views.dashboard.actions.embed_pages") %></option>
+          <% end %>
         </select>
       </div>
     </div>
-    <%= render "analytics" if params[:action] == "show" %>
+    <%= render "dashboards/analytics" if dashboard_state == "show" %>
   </header>
 
   <div class="crayons-layout__sidebar-left">
@@ -27,37 +31,37 @@
       <nav class="hidden m:block" aria-label="Dashboards">
         <ul class="list-none p-0">
           <li>
-            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
               <%= t("views.dashboard.actions.posts") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" %>" href="<%= user_series_path(current_user.username) %>">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "series" %>" href="<%= user_series_path(current_user.username) %>">
               <%= t("views.dashboard.actions.series") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "followers" %>" href="/dashboard/user_followers">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "followers" %>" href="/dashboard/user_followers">
               <%= t("views.dashboard.actions.followers") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block js-following-tags-link <%= "crayons-link--current" if params[:action] == "following_tags" %>" href="/dashboard/following_tags">
+            <a class="crayons-link crayons-link--block js-following-tags-link <%= "crayons-link--current" if dashboard_state == "following_tags" %>" href="/dashboard/following_tags">
               <%= t("views.dashboard.actions.following_tags") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_users" %>" href="/dashboard/following_users">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "following_users" %>" href="/dashboard/following_users">
               <%= t("views.dashboard.actions.following_users") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_organizations" %>" href="/dashboard/following_organizations">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "following_organizations" %>" href="/dashboard/following_organizations">
               <%= t("views.dashboard.actions.following_orgs") %>
             </a>
           </li>
@@ -70,13 +74,13 @@
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "feed_imports" %>" href="/dashboard/feed_imports">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "feed_imports" %>" href="/dashboard/feed_imports">
               <%= t("views.dashboard.actions.feed_imports") %>
             </a>
           </li>
 
           <li>
-            <a class="crayons-link crayons-link--block js-hidden-tags-link <%= "crayons-link--current" if params[:action] == "hidden_tags" %>" href="/dashboard/hidden_tags">
+            <a class="crayons-link crayons-link--block js-hidden-tags-link <%= "crayons-link--current" if dashboard_state == "hidden_tags" %>" href="/dashboard/hidden_tags">
               <%= t("views.dashboard.actions.hidden_tags") %>
             </a>
           </li>
@@ -86,6 +90,14 @@
               <%= t("views.dashboard.actions.agent_sessions") %>
             </a>
           </li>
+
+          <% if current_user&.can_manage_embed_pages? %>
+            <li>
+              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if dashboard_state == "embed_pages" %>" href="<%= dashboard_embed_pages_path %>">
+                <%= t("views.dashboard.actions.embed_pages") %>
+              </a>
+            </li>
+          <% end %>
         </ul>
       </nav>
     </div>
@@ -96,7 +108,7 @@
       const mainWrapper = document.getElementById('dashboard-main-sidebar-wrapper');
       const mobileWrapper = document.getElementById('dashboard-mobile-sidebar-wrapper');
 
-      fetch('/dashboard/sidebar?state=<%= params[:action] %>&which=<%= params[:which] %>', {
+      fetch('/dashboard/sidebar?state=<%= dashboard_state %>&which=<%= params[:which] %>', {
         credentials: 'same-origin'
       })
         .then(response => (response.ok && !response.redirected ? response.text() : ''))
@@ -122,7 +134,7 @@
 
       bindMobileNav();
 
-      window.fetch('/dashboard/sidebar?type_of=mobile&state=<%= params[:action] %>&which=<%= params[:which] %>', {
+      window.fetch('/dashboard/sidebar?type_of=mobile&state=<%= dashboard_state %>&which=<%= params[:which] %>', {
         credentials: 'same-origin'
       })
         .then(response => (response.ok && !response.redirected ? response.text() : ''))

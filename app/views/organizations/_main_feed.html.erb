@@ -1,8 +1,10 @@
 <% preload_tag_colors(@pinned_stories.to_a + @stories.to_a) %>
 <% if @pinned_stories.present? %>
-  <div class="crayons-card mb-2 border-2 border-solid border-accent-brand">
+  <%# Use the org's own Brand color 1/2 pair (as the org header does) so the label stays readable. %>
+  <% org_colors = user_colors(@user) %>
+  <div class="crayons-card mb-2 border-2 border-solid" style="border-color: var(--profile-brand-color, <%= @user.decorate.darker_color %>);">
     <header>
-      <h3 class="crayons-subtitle-3 inline-flex items-center bg-accent-brand color-base-inverted pl-3 pr-4 py-2 ml-4 -mt-2 radius-default">
+      <h3 class="crayons-subtitle-3 inline-flex items-center pl-3 pr-4 py-2 ml-4 -mt-2 radius-default" style="background-color: <%= org_colors[:bg] %>; color: <%= org_colors[:text] %>;">
         <%= crayons_icon_tag(:pin, class: "mr-2", title: t("views.users.pin_icon")) %>
         <%= t("views.users.pinned") %>
       </h3>
