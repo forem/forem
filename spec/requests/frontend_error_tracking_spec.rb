@@ -27,7 +27,20 @@ RSpec.describe "Frontend error tracking provider precedence and isolation" do
 
       body = doc.at_css("body")
       expect(body["data-betterstack-errors-dsn"]).to eq(betterstack_dsn)
+      expect(body["data-betterstack-errors-environment"]).to be_nil
       expect(body["data-honeybadger-key"]).to be_nil
+    end
+
+    it "renders data-betterstack-errors-environment when SENTRY_ENVIRONMENT is set", :aggregate_failures do
+      allow(ApplicationConfig).to receive(:[]).with("BETTER_STACK_JS_ERRORS_DSN").and_return(betterstack_dsn)
+      allow(ApplicationConfig).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("staging")
+
+      get "/"
+
+      expect(response).to have_http_status(:ok)
+      body = Nokogiri::HTML5(response.body).at_css("body")
+      expect(body["data-betterstack-errors-dsn"]).to eq(betterstack_dsn)
+      expect(body["data-betterstack-errors-environment"]).to eq("staging")
     end
 
     it "renders only Honeybadger tags when BETTER_STACK_JS_ERRORS_DSN is blank and HONEYBADGER_JS_API_KEY is set",
@@ -89,6 +102,23 @@ RSpec.describe "Frontend error tracking provider precedence and isolation" do
       expect(doc.at_css('head meta[name="honeybadger-script"]')).to be_nil
       expect(doc.at_css("body")["data-betterstack-errors-dsn"]).to eq(betterstack_dsn)
       expect(doc.at_css("body")["data-honeybadger-key"]).to be_nil
+    end
+
+    it "renders only Honeybadger tags in the admin layout when Better Stack is blank", :aggregate_failures do
+      allow(ApplicationConfig).to receive(:[]).with("BETTER_STACK_JS_ERRORS_DSN").and_return("")
+      allow(ApplicationConfig).to receive(:[]).with("HONEYBADGER_JS_API_KEY").and_return(honeybadger_js_key)
+
+      get "/admin"
+
+      expect(response).to have_http_status(:ok)
+      doc = Nokogiri::HTML5(response.body)
+
+      hb_meta = doc.at_css('head meta[name="honeybadger-script"]')
+      expect(hb_meta).to be_present
+      expect(hb_meta["content"]).to include("honeybadgerClient")
+      expect(doc.at_css('head meta[name="betterstack-errors-script"]')).to be_nil
+      expect(doc.at_css("body")["data-honeybadger-key"]).to eq(honeybadger_js_key)
+      expect(doc.at_css("body")["data-betterstack-errors-dsn"]).to be_nil
     end
 
     it "omits both providers in the admin layout when neither ENV var is configured", :aggregate_failures do

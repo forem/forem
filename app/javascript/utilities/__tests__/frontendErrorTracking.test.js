@@ -12,6 +12,7 @@ describe('frontendErrorTracking', () => {
     document.head.innerHTML = '';
     document.body.innerHTML = '';
     delete document.body.dataset.betterstackErrorsDsn;
+    delete document.body.dataset.betterstackErrorsEnvironment;
     delete document.body.dataset.honeybadgerKey;
     delete document.body.dataset.latestCommitId;
     delete document.body.dataset.releaseFootprint;
@@ -125,7 +126,7 @@ describe('frontendErrorTracking', () => {
     addListenerSpy.mockRestore();
   });
 
-  it('drops ignored browser noise before injecting any client script', () => {
+  it('drops ignored browser noise (by message or error name) before injecting any client script', () => {
     document.head.innerHTML = `
       <meta name="betterstack-errors-script" content="/assets/betterstackErrorsClient.js">
     `;
@@ -134,17 +135,56 @@ describe('frontendErrorTracking', () => {
 
     initializeFrontendErrorTracking({ environment: 'production' });
 
+    const chunkError = new Error('Loading chunk 2 failed');
+    chunkError.name = 'ChunkLoadError';
+
     expect(
       window.Honeybadger.notify(
         new Error('ResizeObserver loop limit exceeded'),
       ),
     ).toBe(false);
-    expect(
-      window.Honeybadger.notify(
-        new Error('ChunkLoadError: Loading chunk 2 failed'),
-      ),
-    ).toBe(false);
+    expect(window.Honeybadger.notify(chunkError)).toBe(false);
     expect(document.head.querySelectorAll('script')).toHaveLength(0);
+  });
+
+  it('uses data-betterstack-errors-environment and replays queued breadcrumbs on script load', async () => {
+    document.head.innerHTML = `
+      <meta name="environment" content="production">
+      <meta name="betterstack-errors-script" content="/assets/betterstackErrorsClient.js">
+    `;
+    document.body.dataset.betterstackErrorsDsn =
+      'https://token@in.betterstackdata.com/2775219';
+    document.body.dataset.betterstackErrorsEnvironment = 'staging';
+
+    initializeFrontendErrorTracking();
+
+    window.Honeybadger.addBreadcrumb('clicked button', {
+      category: 'ui.click',
+    });
+    expect(window.Honeybadger.notify(new Error('Failure in staging'))).toBe(
+      true,
+    );
+
+    const script = document.head.querySelector('script');
+    const mockClient = {
+      configure: jest.fn(),
+      beforeNotify: jest.fn(),
+      setContext: jest.fn(),
+      addBreadcrumb: jest.fn(),
+      notify: jest.fn(),
+    };
+    window.Honeybadger = mockClient;
+    script.onload();
+
+    await Promise.resolve();
+
+    expect(mockClient.configure).toHaveBeenCalledWith(
+      expect.objectContaining({ environment: 'staging' }),
+    );
+    expect(mockClient.addBreadcrumb).toHaveBeenCalledWith('clicked button', {
+      category: 'ui.click',
+    });
+    expect(mockClient.notify).toHaveBeenCalledTimes(1);
   });
 
   it('removes failed script elements on error so broken tags do not linger in head', () => {

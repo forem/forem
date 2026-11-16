@@ -1,3 +1,4 @@
+// Keep this lazy proxy and ignore list in sync with app/assets/javascripts/base.js.erb.
 const MAX_LAZY_QUEUE = 20;
 
 export const DEFAULT_FRONTEND_ERROR_IGNORE_PATTERNS = [
@@ -8,11 +9,22 @@ export const DEFAULT_FRONTEND_ERROR_IGNORE_PATTERNS = [
 ];
 
 export function defaultBeforeNotifyFilter(notice) {
-  if (!notice || typeof notice.message !== 'string') {
+  if (!notice) {
     return true;
   }
+  const parts = [];
+  if (typeof notice.name === 'string' && notice.name) {
+    parts.push(notice.name);
+  }
+  if (typeof notice.message === 'string' && notice.message) {
+    parts.push(notice.message);
+  }
+  if (parts.length === 0) {
+    return true;
+  }
+  const haystack = parts.join(': ');
   return !DEFAULT_FRONTEND_ERROR_IGNORE_PATTERNS.some((pattern) =>
-    pattern.test(notice.message),
+    pattern.test(haystack),
   );
 }
 
@@ -38,6 +50,7 @@ export function createLazyErrorTrackingProxy({
   const clientConfig = {};
   const beforeNotifyHandlers = [];
   let contextData = {};
+  const breadcrumbs = [];
   const queue = [];
   let loadingPromise = null;
   let loadFailed = false;
@@ -57,9 +70,25 @@ export function createLazyErrorTrackingProxy({
     return null;
   }
 
+  function getLoadedClient() {
+    if (win && win.Honeybadger && !win.Honeybadger.__isLazyProxy) {
+      return win.Honeybadger;
+    }
+    return null;
+  }
+
   function passesBeforeNotify(err) {
-    const message = typeof err === 'string' ? err : err && err.message;
-    const notice = { message };
+    const message =
+      typeof err === 'string'
+        ? err
+        : err && typeof err.message === 'string'
+          ? err.message
+          : undefined;
+    const name =
+      err && typeof err === 'object' && typeof err.name === 'string'
+        ? err.name
+        : undefined;
+    const notice = { name, message };
     for (let i = 0; i < beforeNotifyHandlers.length; i += 1) {
       try {
         if (beforeNotifyHandlers[i](notice) === false) {
@@ -76,8 +105,9 @@ export function createLazyErrorTrackingProxy({
     if (!win || !doc) {
       return Promise.resolve(null);
     }
-    if (win.Honeybadger && !win.Honeybadger.__isLazyProxy) {
-      return Promise.resolve(win.Honeybadger);
+    const loadedClient = getLoadedClient();
+    if (loadedClient) {
+      return Promise.resolve(loadedClient);
     }
     if (loadFailed) {
       return Promise.resolve(null);
@@ -102,8 +132,8 @@ export function createLazyErrorTrackingProxy({
       script.src = scriptSrc;
       script.defer = true;
       script.onload = () => {
-        const realClient = win.Honeybadger;
-        if (realClient && !realClient.__isLazyProxy) {
+        const realClient = getLoadedClient();
+        if (realClient) {
           if (typeof realClient.configure === 'function') {
             realClient.configure(clientConfig);
           }
@@ -118,6 +148,12 @@ export function createLazyErrorTrackingProxy({
           ) {
             realClient.setContext(contextData);
           }
+          while (breadcrumbs.length > 0) {
+            const crumbArgs = breadcrumbs.shift();
+            if (typeof realClient.addBreadcrumb === 'function') {
+              realClient.addBreadcrumb(...crumbArgs);
+            }
+          }
           while (queue.length > 0) {
             const args = queue.shift();
             if (typeof realClient.notify === 'function') {
@@ -127,6 +163,7 @@ export function createLazyErrorTrackingProxy({
           resolve(realClient);
         } else {
           loadFailed = true;
+          breadcrumbs.length = 0;
           queue.length = 0;
           resolve(null);
         }
@@ -134,6 +171,7 @@ export function createLazyErrorTrackingProxy({
       script.onerror = () => {
         loadFailed = true;
         loadingPromise = null;
+        breadcrumbs.length = 0;
         queue.length = 0;
         script.remove();
         resolve(null);
@@ -178,6 +216,10 @@ export function createLazyErrorTrackingProxy({
     config: clientConfig,
 
     configure(opts) {
+      const realClient = getLoadedClient();
+      if (realClient && typeof realClient.configure === 'function') {
+        return realClient.configure(opts);
+      }
       if (opts && typeof opts === 'object') {
         Object.assign(clientConfig, opts);
         if (isConfigured()) {
@@ -188,6 +230,10 @@ export function createLazyErrorTrackingProxy({
     },
 
     beforeNotify(handler) {
+      const realClient = getLoadedClient();
+      if (realClient && typeof realClient.beforeNotify === 'function') {
+        return realClient.beforeNotify(handler);
+      }
       if (typeof handler === 'function') {
         beforeNotifyHandlers.push(handler);
       }
@@ -195,6 +241,10 @@ export function createLazyErrorTrackingProxy({
     },
 
     setContext(ctx) {
+      const realClient = getLoadedClient();
+      if (realClient && typeof realClient.setContext === 'function') {
+        return realClient.setContext(ctx);
+      }
       if (ctx && typeof ctx === 'object') {
         Object.assign(contextData, ctx);
       }
@@ -207,11 +257,34 @@ export function createLazyErrorTrackingProxy({
 
     clear() {
       contextData = {};
+      breadcrumbs.length = 0;
+      const realClient = getLoadedClient();
+      if (realClient && typeof realClient.clear === 'function') {
+        return realClient.clear();
+      }
       return this;
     },
 
     resetContext(ctx) {
+      const realClient = getLoadedClient();
+      if (realClient && typeof realClient.resetContext === 'function') {
+        return realClient.resetContext(ctx);
+      }
       contextData = ctx && typeof ctx === 'object' ? { ...ctx } : {};
+      return this;
+    },
+
+    addBreadcrumb(message, opts) {
+      const realClient = getLoadedClient();
+      if (realClient && typeof realClient.addBreadcrumb === 'function') {
+        return realClient.addBreadcrumb(message, opts);
+      }
+      if (isConfigured()) {
+        if (breadcrumbs.length >= MAX_LAZY_QUEUE) {
+          breadcrumbs.shift();
+        }
+        breadcrumbs.push([message, opts]);
+      }
       return this;
     },
 
@@ -219,13 +292,17 @@ export function createLazyErrorTrackingProxy({
       if (loadFailed || !isConfigured() || !passesBeforeNotify(err)) {
         return false;
       }
-      if (win && win.Honeybadger && !win.Honeybadger.__isLazyProxy) {
-        return win.Honeybadger.notify(err, name, extra);
+      const realClient = getLoadedClient();
+      if (realClient) {
+        return realClient.notify(err, name, extra);
       }
-      const errKey =
+      let errKey =
         typeof err === 'string'
           ? err
           : err && `${err.name || ''}:${err.message || ''}`;
+      if (errKey === ':') {
+        errKey = '';
+      }
       const alreadyQueued =
         errKey &&
         queue.some((item) => {
@@ -280,6 +357,7 @@ export function initializeFrontendErrorTracking({
   const envMeta = doc.querySelector('meta[name="environment"]');
   const resolvedEnv =
     environment ||
+    dataset.betterstackErrorsEnvironment ||
     dataset.environment ||
     (envMeta && envMeta.getAttribute('content')) ||
     'production';
@@ -301,7 +379,11 @@ export function initializeFrontendErrorTracking({
     if (!win.Honeybadger.config || !win.Honeybadger.config.apiKey) {
       win.Honeybadger.configure({
         apiKey: dataset.honeybadgerKey,
-        environment: resolvedEnv,
+        environment:
+          environment ||
+          dataset.environment ||
+          (envMeta && envMeta.getAttribute('content')) ||
+          'production',
         revision: dataset.releaseFootprint || dataset.latestCommitId,
         maxErrors: MAX_LAZY_QUEUE,
       });

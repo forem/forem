@@ -1,3 +1,8 @@
+import {
+  addBreadcrumb as addSdkBreadcrumb,
+  getIsolationScope,
+  setCurrentClient,
+} from '@sentry/browser';
 import { createBetterstackErrorsClient } from '../betterstackErrorsAdapter';
 import { defaultBeforeNotifyFilter } from '../frontendErrorTracking';
 
@@ -15,6 +20,19 @@ function extractEventsFromEnvelopes(envelopes) {
     }
   }
   return events;
+}
+
+function extractEnvelopeItemTypes(envelopes) {
+  const types = [];
+  for (const envelope of envelopes) {
+    const items = envelope[1] || [];
+    for (const [itemHeader] of items) {
+      if (itemHeader && itemHeader.type) {
+        types.push(itemHeader.type);
+      }
+    }
+  }
+  return types;
 }
 
 describe('betterstackErrorsAdapter', () => {
@@ -178,24 +196,102 @@ describe('betterstackErrorsAdapter', () => {
     expect(events).toHaveLength(2);
   });
 
-  it('backs off sending envelopes after receiving HTTP 429 Too Many Requests', async () => {
-    sendMock.mockImplementationOnce((envelope) => {
-      envelopes.push(envelope);
-      return Promise.resolve({ statusCode: 429 });
-    });
+  it('backs off sending envelopes after receiving HTTP 429 Too Many Requests without consuming maxErrors', async () => {
+    const nowSpy = jest.spyOn(Date, 'now');
+    let currentTime = 1_700_000_000_000;
+    nowSpy.mockImplementation(() => currentTime);
 
-    client.configure({ dsn: TEST_DSN, environment: 'production' });
+    try {
+      sendMock.mockImplementationOnce((envelope) => {
+        envelopes.push(envelope);
+        return Promise.resolve({ statusCode: 429 });
+      });
 
-    client.notify(new Error('Triggers 429'));
-    await client.getSentryClient().flush(100);
-    expect(sendMock).toHaveBeenCalledTimes(1);
+      client.configure({
+        dsn: TEST_DSN,
+        environment: 'production',
+        maxErrors: 2,
+      });
 
-    client.notify(new Error('Dropped during backoff'));
-    await client.getSentryClient().flush(100);
-    expect(sendMock).toHaveBeenCalledTimes(1);
+      client.notify(new Error('Triggers 429'));
+      await client.getSentryClient().flush(100);
+      expect(sendMock).toHaveBeenCalledTimes(1);
+
+      // Errors suppressed during the 60s backoff must not exhaust maxErrors
+      for (let i = 0; i < 5; i += 1) {
+        client.notify(new Error(`Suppressed during backoff ${i}`));
+      }
+      await client.getSentryClient().flush(100);
+      expect(sendMock).toHaveBeenCalledTimes(1);
+
+      // Once backoff expires, subsequent errors can still be reported
+      currentTime += 60_001;
+      client.notify(new Error('Sent after backoff window'));
+      await client.getSentryClient().flush(100);
+      expect(sendMock).toHaveBeenCalledTimes(2);
+    } finally {
+      nowSpy.mockRestore();
+    }
   });
 
-  it('attaches only signed-in user ID and scrubs sensitive headers/cookies/PII', async () => {
+  it('disables client_report envelopes when events are dropped in beforeSend', async () => {
+    client.configure({
+      dsn: TEST_DSN,
+      environment: 'production',
+      maxErrors: 1,
+    });
+    client.beforeNotify(defaultBeforeNotifyFilter);
+
+    client.notify(new Error('ResizeObserver loop limit exceeded'));
+    client.notify(new Error('First actionable failure'));
+    client.notify(new Error('Dropped by maxErrors'));
+
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'hidden',
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    await client.getSentryClient().flush(100);
+
+    const itemTypes = extractEnvelopeItemTypes(envelopes);
+    expect(itemTypes).toEqual(['event']);
+    expect(itemTypes).not.toContain('client_report');
+  });
+
+  it('clears both manual and SDK isolation-scope automatic breadcrumbs on clear()', async () => {
+    const globalClient = createBetterstackErrorsClient({
+      bindGlobal: true,
+      enableGlobalHandlers: false,
+      transport: () => ({
+        send: sendMock,
+        flush: () => Promise.resolve(true),
+      }),
+    });
+
+    try {
+      globalClient.configure({ dsn: TEST_DSN, environment: 'production' });
+      globalClient.addBreadcrumb('manual breadcrumb');
+      addSdkBreadcrumb({
+        category: 'navigation',
+        message: 'automatic breadcrumb',
+      });
+
+      globalClient.clear();
+
+      globalClient.notify(new Error('After clear'));
+      await globalClient.getSentryClient().flush(100);
+
+      const events = extractEventsFromEnvelopes(envelopes);
+      expect(events).toHaveLength(1);
+      expect(events[0].breadcrumbs).toBeUndefined();
+    } finally {
+      globalClient.clear();
+      getIsolationScope().clearBreadcrumbs();
+      setCurrentClient(undefined);
+    }
+  });
+
+  it('attaches only signed-in user ID and scrubs sensitive headers/cookies/contexts/URLs/PII', async () => {
     document.body.dataset.userStatus = 'logged-in';
     localStorage.setItem(
       'current_user',
@@ -207,15 +303,36 @@ describe('betterstackErrorsAdapter', () => {
     );
 
     client.configure({ dsn: TEST_DSN, environment: 'production' });
+    client.setContext({
+      user_id: 777,
+      email: 'context@example.com',
+      token: 'context-secret-token',
+      apiKey: 'context-api-key',
+      section: 'dashboard',
+    });
+    client.addBreadcrumb('GET /api/users', {
+      category: 'fetch',
+      metadata: {
+        url: 'https://dev.to/api/users?confirmation_token=secret-tok',
+        token: 'crumb-secret',
+        method: 'GET',
+      },
+    });
     client.getScope().addEventProcessor((event) => {
       event.request = {
-        url: 'https://dev.to/dashboard',
+        url: 'https://dev.to/users/password/edit?reset_password_token=secret123',
+        query_string: 'reset_password_token=secret123',
         cookies: { remember_user_token: 'secret-cookie' },
         data: { password: 'secret' },
         headers: {
           Authorization: 'Bearer secret',
           Cookie: 'remember_user_token=secret',
           'X-CSRF-Token': 'csrf-secret',
+          'X-API-Key': 'api-key-secret',
+          'X-Auth-Token': 'auth-token-secret',
+          'X-Forwarded-For': '203.0.113.5',
+          Referer:
+            'https://dev.to/users/confirmation?confirmation_token=ref123',
           Accept: 'application/json',
         },
       };
@@ -228,14 +345,74 @@ describe('betterstackErrorsAdapter', () => {
       return event;
     });
 
-    client.notify(new Error('Authenticated dashboard error'));
+    client.notify(new Error('Authenticated dashboard error'), {
+      params: { password: 'secret-password', reset_password_token: 'rp-tok' },
+      extraToken: 'secret-extra-token',
+      safeFlag: 'enabled',
+    });
     await client.getSentryClient().flush(100);
 
     const events = extractEventsFromEnvelopes(envelopes);
     expect(events).toHaveLength(1);
+    expect(events[0].sdk.settings.infer_ip).toBe('never');
     expect(events[0].user).toEqual({ id: '777' });
+    expect(events[0].request.url).toBe('https://dev.to/users/password/edit');
+    expect(events[0].request.query_string).toBeUndefined();
     expect(events[0].request.cookies).toBeUndefined();
     expect(events[0].request.data).toBeUndefined();
-    expect(events[0].request.headers).toEqual({ Accept: 'application/json' });
+    expect(events[0].request.headers).toEqual({
+      Referer: 'https://dev.to/users/confirmation',
+      Accept: 'application/json',
+    });
+    expect(events[0].contexts.forem).toEqual({
+      user_id: 777,
+      email: '[Filtered]',
+      token: '[Filtered]',
+      apiKey: '[Filtered]',
+      section: 'dashboard',
+    });
+    expect(events[0].contexts.notify_params).toEqual({
+      password: '[Filtered]',
+      reset_password_token: '[Filtered]',
+    });
+    expect(events[0].extra).toEqual({
+      extraToken: '[Filtered]',
+      safeFlag: 'enabled',
+    });
+    const fetchCrumb = events[0].breadcrumbs.find(
+      (crumb) => crumb.category === 'fetch',
+    );
+    expect(fetchCrumb.data).toEqual({
+      url: 'https://dev.to/api/users',
+      token: '[Filtered]',
+      method: 'GET',
+    });
+  });
+
+  it('formats Response-like objects meaningfully and ignores invalid DSNs safely', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+    try {
+      client.configure({ dsn: 'not-a-valid-dsn', environment: 'production' });
+      expect(client.notify(new Error('Invalid DSN error'))).toBe(false);
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
+
+    client.configure({ dsn: TEST_DSN, environment: 'production' });
+    const responseLike = {
+      ok: false,
+      status: 422,
+      statusText: 'Unprocessable Entity',
+      url: 'https://dev.to/onboarding?token=secret',
+    };
+    expect(client.notify(responseLike)).toBe(true);
+    await client.getSentryClient().flush(100);
+
+    const events = extractEventsFromEnvelopes(envelopes);
+    expect(events).toHaveLength(1);
+    expect(events[0].message).toBe('HTTP 422 Unprocessable Entity');
+    expect(events[0].extra.response_url).toBe('https://dev.to/onboarding');
   });
 });

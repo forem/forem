@@ -31,6 +31,10 @@ module ApplicationHelper
     betterstack_js_errors_dsn.present?
   end
 
+  def betterstack_js_errors_environment
+    ApplicationConfig["SENTRY_ENVIRONMENT"].presence
+  end
+
   def honeybadger_js_api_key
     ApplicationConfig["HONEYBADGER_JS_API_KEY"].presence
   end

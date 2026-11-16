@@ -28,6 +28,9 @@
 <body class="admin default-header"
   <% if betterstack_js_errors_enabled? %>
     data-betterstack-errors-dsn="<%= j(betterstack_js_errors_dsn) %>"
+    <% if betterstack_js_errors_environment.present? %>
+      data-betterstack-errors-environment="<%= j(betterstack_js_errors_environment) %>"
+    <% end %>
   <% elsif honeybadger_js_enabled? %>
     data-honeybadger-key="<%= j(honeybadger_js_api_key) %>"
   <% end %>
