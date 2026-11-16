@@ -1,0 +1,54 @@
+app/controllers/organization_embeds_controller.rb
+  h_f968154a99632d 74,152-157
+app/javascript/utilities/__tests__/embedEditorPreview.test.js
+  h_f968154a99632d 2-5,17-18,39-40,44,47,63,73,76-99,104-110,118-124
+app/javascript/utilities/__tests__/embedInnerGuard.test.js
+  h_f968154a99632d 268-273,280-309,359-385,467,471-478
+app/javascript/utilities/__tests__/pageEmbedWrapper.test.js
+  h_f968154a99632d 11,154-164,322-439
+app/javascript/utilities/embedEditorPreview.js
+  h_f968154a99632d 1,7-17,19-20,22,81-83,89,96-110,118,123,125-128
+app/javascript/utilities/embedInnerGuard.js
+  h_f968154a99632d 42-45,185-210,679,877-887,895-896,906-911,972,975-983,998,1000,1017,1027,1070,1080,1087,1100-1101,1112,1124,1469-1477,1479-1495,1498-1525,1536-1663
+app/javascript/utilities/pageEmbedFullscreen.js
+  h_f968154a99632d 1-20,142,167,198-202
+app/javascript/utilities/pageEmbedSandboxLoader.js
+  h_f968154a99632d 7-17,23,31-33,35-36
+app/javascript/utilities/pageEmbedWrapper.js
+  h_f968154a99632d 1-2,11-44,46-59,114-115,125,212-214,256-257,259,275-278,282,325,327-328,330,340-343,347,352,363-366,373-383,432-436,449-452,456,461-462,466,487-490,497-507,513-517,534,538,541,548,552,589-593,605-607,611-613,633-641,648-658,708-712,727-728,730-732,734,737-739,741,744-746,749-750
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 4,438-442
+app/services/pages/embed_html_wrapper.rb
+  h_f968154a99632d 61-66,68-70,139-146,159-160,336-337,340,348
+app/views/shared/_embed_html_editor.html.erb
+  h_f968154a99632d 10-11,19-20,29-32,43-44
+config/locales/en.yml
+  h_f968154a99632d 105-118
+config/locales/fr.yml
+  h_f968154a99632d 105-118
+config/locales/pt.yml
+  h_f968154a99632d 105-118
+config/locales/services/en.yml
+  h_f968154a99632d 86-88
+config/locales/services/fr.yml
+  h_f968154a99632d 86-88
+config/locales/services/pt.yml
+  h_f968154a99632d 86-88
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 107,110-113
+spec/requests/organization_embeds_spec.rb
+  h_f968154a99632d 163-167,228-232
+spec/services/pages/embed_html_wrapper_spec.rb
+  h_f968154a99632d 128-129,135-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "da989349c1040457945e294cba067ed2cb3e2001",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
