@@ -190,6 +190,23 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(user.pages.embed_html.count).to eq(0)
     end
+
+    it "renders server-wrapped HTML from POST /dashboard/embed_pages/preview and rejects oversized previews",
+       :aggregate_failures do
+      post "/dashboard/embed_pages/preview",
+           params: { body_html: '<meta http-equiv="refresh" content="0;url=https://evil.test"><div id="p">Hi</div>' }
+
+      expect(response).to have_http_status(:ok)
+      wrapped = response.parsed_body.fetch("wrapped_html")
+      expect(wrapped).to include('data-forem-embed="1"')
+      expect(wrapped).to include('data-forem-wrapper-script="1"')
+      expect(wrapped).to include('<div id="p">Hi</div>')
+      expect(wrapped).not_to include('http-equiv="refresh"')
+
+      post "/dashboard/embed_pages/preview", params: { body_html: "a" * (Page::MAX_EMBED_HTML_BYTES + 1) }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to be_present
+    end
   end
 
   describe "model and resource constraints" do
@@ -235,6 +252,19 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
       )
       expect(oversized).not_to be_valid
       expect(oversized.errors[:body_html]).to be_present
+
+      deeply_nested = build(
+        :page,
+        user: user,
+        title: "Deep HTML",
+        description: "desc",
+        slug: "#{user.username}/embed/deep",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: "#{'<div>' * 300}deep#{'</div>' * 300}",
+      )
+      expect(deeply_nested).not_to be_valid
+      expect(deeply_nested.errors[:body_html]).to include(I18n.t("models.page.embed_html_too_complex"))
 
       stub_const("Page::MAX_USER_EMBED_PAGES", 2)
       2.times do |idx|
@@ -296,7 +326,10 @@ RSpec.describe "User Sandboxed HTML Embed Pages" do
           }
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to eq(custom_html)
+      expect(response.body).to include('data-forem-embed="1"')
+      expect(response.body).to include('data-forem-wrapper-script="1"')
+      expect(response.body).to include('<div id="demo-widget">Interactive Shader Demo</div>')
+      expect(response.body).to include('document.getElementById("demo-widget").dataset.booted = "1";')
       expect(response.headers["Set-Cookie"]).to be_nil
 
       csp = response.headers["Content-Security-Policy"]

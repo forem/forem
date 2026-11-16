@@ -1,3 +1,9 @@
+import {
+  initializeSandboxedEmbeds,
+  notifyEmbedFullscreenChange,
+  registerFullscreenExitHandler,
+} from './pageEmbedWrapper';
+
 let screenScroll = 0;
 
 const FOCUSABLE_SELECTOR = [
@@ -118,6 +124,7 @@ export function enterPageEmbedFullscreen(embed) {
   updateButtonState(button, true);
   applyBodyOverflowLock(true);
   toggleGlobalListeners(true);
+  notifyEmbedFullscreenChange(embed);
 
   if (
     button &&
@@ -142,6 +149,7 @@ export function exitPageEmbedFullscreen({
   openEmbed.classList.remove('is-fullscreen');
   openEmbed.style.minHeight = '';
   updateButtonState(button, false);
+  notifyEmbedFullscreenChange(null);
 
   if (restoreScroll && typeof globalThis.scrollTo === 'function') {
     globalThis.scrollTo(0, screenScroll);
@@ -172,6 +180,9 @@ function handleActionClick(event) {
 }
 
 export function initializePageEmbedFullscreen(root = document) {
+  registerFullscreenExitHandler(exitPageEmbedFullscreen);
+  initializeSandboxedEmbeds(root);
+
   const target =
     root === document ? document.documentElement || document.body : root;
   if (!target || target.dataset?.pageEmbedFullscreenBound === 'true') {

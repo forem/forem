@@ -1,11 +1,13 @@
 class PageTag < LiquidTagBase
   PARTIAL = "liquids/page".freeze
   DEFAULT_HEIGHT = "600px".freeze
+  AUTO_INITIAL_HEIGHT = "360px".freeze
   LANDSCAPE_HEIGHT = "400px".freeze
   PORTRAIT_HEIGHT = "900px".freeze
   MIN_HEIGHT = 150
   MAX_HEIGHT = 2000
   FRAMELESS_OPTION = "frameless".freeze
+  AUTO_HEIGHT_OPTIONS = %w[auto height=auto].freeze
   FRAMED_STYLE = "width: 100%; border: 1px solid var(--card-border, #e1e5e9); " \
                  "border-radius: var(--radius-auto, 6px); background: var(--card-bg, #fff);".freeze
   FRAMELESS_STYLE = "width: 100%; border: 0; display: block;".freeze
@@ -14,14 +16,31 @@ class PageTag < LiquidTagBase
   RESERVED_FIRST_SEGMENTS = %w[p t events api admin rails sidekiq settings dashboard mod].freeze
   IFRAME_SANDBOX = OrganizationEmbedsController::SANDBOX_DIRECTIVE
   IFRAME_ALLOW_POLICY = [
+    "autoplay 'none'",
+    "bluetooth 'none'",
     "camera 'none'",
-    "microphone 'none'",
-    "geolocation 'none'",
-    "payment 'none'",
-    "usb 'none'",
     "clipboard-read 'none'",
-    "storage-access 'none'",
+    "display-capture 'none'",
+    "encrypted-media 'none'",
+    "fullscreen 'none'",
+    "gamepad 'none'",
+    "geolocation 'none'",
+    "hid 'none'",
     "identity-credentials-get 'none'",
+    "idle-detection 'none'",
+    "local-fonts 'none'",
+    "microphone 'none'",
+    "midi 'none'",
+    "payment 'none'",
+    "picture-in-picture 'none'",
+    "publickey-credentials-create 'none'",
+    "publickey-credentials-get 'none'",
+    "screen-wake-lock 'none'",
+    "serial 'none'",
+    "storage-access 'none'",
+    "sync-xhr 'none'",
+    "usb 'none'",
+    "xr-spatial-tracking 'none'",
   ].join("; ").freeze
 
   STATIC_PAGE_SLUGS = {
@@ -416,7 +435,9 @@ class PageTag < LiquidTagBase
     @attribution = @in_article ? self.class.build_attribution(target) : nil
     options = args.drop(1)
     @frameless = options.any? { |option| option.casecmp?(FRAMELESS_OPTION) }
-    @height = parse_height(options.detect { |option| !option.casecmp?(FRAMELESS_OPTION) })
+    height_option = options.detect { |option| !option.casecmp?(FRAMELESS_OPTION) }
+    @auto_height = @sandboxed && height_option.present? && AUTO_HEIGHT_OPTIONS.include?(height_option.strip.downcase)
+    @height = parse_height(height_option)
   end
 
   def render(_context)
@@ -426,6 +447,7 @@ class PageTag < LiquidTagBase
         url: @url,
         title: @title,
         height: @height,
+        auto_height: @auto_height,
         sandboxed: @sandboxed,
         in_article: @in_article,
         frameless: @frameless,
@@ -447,6 +469,8 @@ class PageTag < LiquidTagBase
     return DEFAULT_HEIGHT if option.blank?
 
     normalized = option.strip.downcase
+    return AUTO_INITIAL_HEIGHT if @sandboxed && AUTO_HEIGHT_OPTIONS.include?(normalized)
+
     case normalized
     when "landscape"
       LANDSCAPE_HEIGHT

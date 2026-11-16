@@ -304,13 +304,21 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect(organization.ordered_embed_pages).to eq([embed_page])
     end
 
-    it "renders the sandboxed HTML editor on GET /:slug/settings/pages/new?kind=embed", :aggregate_failures do
+    it "renders the sandboxed HTML editor and preview endpoint for embed pages", :aggregate_failures do
       get new_organization_page_path(organization.slug, kind: "embed")
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('id="org-embed-html-editor"')
       expect(response.body).to include("sandbox=\"#{OrganizationEmbedsController::SANDBOX_DIRECTIVE}\"")
       expect(response.body).not_to include("allow-same-origin")
+
+      post organization_pages_preview_path(organization.slug),
+           params: { body_html: '<iframe srcdoc="bad"></iframe><div id="org-p">OK</div>' }
+      expect(response).to have_http_status(:ok)
+      wrapped = response.parsed_body.fetch("wrapped_html")
+      expect(wrapped).to include('<div id="org-p">OK</div>')
+      expect(wrapped).to include('data-forem-wrapper-script="1"')
+      expect(wrapped).not_to include('srcdoc="bad"')
     end
 
     it "creates an embed_html page without hijacking the Showcase /readme slot", :aggregate_failures do

@@ -124,7 +124,13 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/html")
-      expect(response.body).to eq(custom_html)
+      expect(response.body).to start_with("<!DOCTYPE html>")
+      expect(response.body).to include('data-forem-embed="1"')
+      expect(response.body).to include('data-forem-wrapper-script="1"')
+      expect(response.body).to include("<style>body { color: rebeccapurple; }</style>")
+      expect(response.body).to include('<div id="widget-root">Interactive ROI Calculator</div>')
+      expect(response.body).to include('document.getElementById("widget-root").dataset.ready = "true";')
+      expect(response.body.index("data-forem-wrapper-script")).to be < response.body.index('dataset.ready = "true"')
       expect(response.body).not_to include("csrf-token")
       expect(response.body).not_to include("data-user-status")
       expect(response.body).not_to include("crayons-header")
@@ -136,16 +142,56 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(csp).to include("frame-ancestors")
       expect(csp).to include("base-uri 'none'")
       expect(csp).to include("object-src 'none'")
+      expect(csp).to include("frame-src 'none'")
+      expect(csp).to include("worker-src 'none'")
+      expect(csp).to include("form-action 'none'")
 
       permissions = response.headers["Permissions-Policy"]
       expect(permissions).to include("storage-access=()")
       expect(permissions).to include("identity-credentials-get=()")
       expect(permissions).to include("clipboard-read=()")
+      expect(permissions).to include("fullscreen=()")
+      expect(permissions).to include("sync-xhr=()")
 
       expect(response.headers["Referrer-Policy"]).to eq("no-referrer")
       expect(response.headers["X-Content-Type-Options"]).to eq("nosniff")
-      expect(response.headers["Vary"]).to include("Sec-Fetch-Dest")
+      expect(response.headers["Origin-Agent-Cluster"]).to eq("?1")
+      expect(response.headers["Cross-Origin-Opener-Policy"]).to eq("same-origin")
+      expect(response.headers["X-Robots-Tag"]).to eq("noindex, nofollow, noarchive")
+      expect(response.headers["X-DNS-Prefetch-Control"]).to eq("off")
+      expect(response.headers["Vary"]).to include("Sec-Fetch-Dest", "Sec-Fetch-User")
       expect(response.headers["Surrogate-Key"]).to include("show-page-#{embed_page.slug}", organization.record_key)
+    end
+
+    it "strips dangerous elements and attributes when serving wrapped embed HTML", :aggregate_failures do
+      unsafe_page = create(
+        :page,
+        organization: organization,
+        title: "Unsafe Markup",
+        description: "desc",
+        slug: "#{organization.slug}/embed/unsafe-markup",
+        template: "embed_html",
+        body_markdown: nil,
+        body_html: <<~HTML,
+          <base href="https://evil.test/">
+          <meta http-equiv="refresh" content="0;url=https://evil.test/">
+          <iframe srcdoc="<script>alert(1)</script>"></iframe>
+          <a href="https://example.com" ping="https://track.test">Safe</a>
+          <input autofocus>
+        HTML
+      )
+
+      get "/#{unsafe_page.slug}",
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+
+      expect(response).to have_http_status(:ok)
+      doc = response.parsed_body
+      expect(doc.css("base, iframe")).to be_empty
+      expect(doc.css('meta[http-equiv="refresh"]')).to be_empty
+      expect(doc.at_css("input")["autofocus"]).to be_nil
+      expect(doc.at_css("a")["target"]).to eq("_blank")
+      expect(doc.at_css("a")["ping"]).to be_nil
     end
 
     it "rejects requests missing ?mode=embed without exposing HTML", :aggregate_failures do
@@ -158,7 +204,8 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(response.headers["Set-Cookie"]).to be_nil
     end
 
-    it "rejects direct top-level browser navigation and non-iframe destinations", :aggregate_failures do
+    it "rejects direct top-level browser navigation, Sec-Fetch-User requests, and non-iframe destinations",
+       :aggregate_failures do
       %w[document object embed window frame].each do |dest|
         get "/#{organization.slug}/embed/roi-calculator",
             params: { mode: "embed" },
@@ -169,6 +216,11 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
         expect(response.body).not_to include("ROI Calculator")
         expect(response.headers["Set-Cookie"]).to be_nil
       end
+
+      get "/#{organization.slug}/embed/roi-calculator",
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-User" => "?1" }
+      expect(response).to have_http_status(:forbidden)
     end
 
     it "returns 404 when the org_readme feature flag is disabled" do
@@ -201,9 +253,9 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to eq(custom_html)
+      expect(response.body).to include("Interactive ROI Calculator")
 
-      replacement = create(
+      create(
         :page,
         organization: organization,
         title: "Replacement Calculator",
@@ -218,14 +270,14 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to eq(replacement.body_html)
+      expect(response.body).to include("<div>Replacement Widget</div>")
     end
 
     it "preserves article action routes when an article literally has slug 'embed'", :aggregate_failures do
       expect(Rails.application.routes.recognize_path("/alice/embed/edit", method: :get))
         .to include(controller: "articles", action: "edit", username: "alice", slug: "embed")
 
-      edit_embed = create(
+      create(
         :page,
         organization: organization,
         title: "Edit Widget",
@@ -240,7 +292,7 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
           params: { mode: "embed" },
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to eq(edit_embed.body_html)
+      expect(response.body).to include("<div>Edit Embed Widget</div>")
     end
   end
 

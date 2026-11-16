@@ -65,6 +65,7 @@ en:
           warning: Warning
         enter_fullscreen_mode: Enter fullscreen mode
         exit_fullscreen_mode: Exit fullscreen mode
+        reload_embed: Reload widget
     markdown_processor:
       parser:
         invalid_markdown_detected: Invalid markdown detected!

@@ -118,6 +118,7 @@ pt:
       embed_html_invalid_slug: deve usar o formato de caminho de incorporação (<owner>/embed/<slug>).
       embed_html_requires_organization: deve pertencer a uma organização ou a um usuário para páginas embed_html.
       embed_html_template_immutable: não pode ser convertido para ou a partir de embed_html.
+      embed_html_too_complex: excede os limites seguros de profundidade de aninhamento ou contagem de elementos HTML.
       embed_html_too_large: não pode exceder %{max_kb} KB.
       multiple_owners_not_allowed: A página não pode pertencer simultaneamente a uma organização e a um usuário.
       slug_blank: não pode ficar em branco

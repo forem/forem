@@ -65,6 +65,7 @@ pt:
           warning: Aviso
         enter_fullscreen_mode: Entrar no modo tela cheia
         exit_fullscreen_mode: Sair do modo tela cheia
+        reload_embed: Recarregar widget
     markdown_processor:
       parser:
         invalid_markdown_detected: Markdown inválido detectado!

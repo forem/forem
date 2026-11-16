@@ -63,6 +63,7 @@ en:
         embed_content_placeholder: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <style>\n      body { font-family: system-ui, sans-serif; margin: 16px; }\n    </style>\n  </head>\n  <body>\n    <h2>Interactive Widget</h2>\n    <script>\n      // Runs inside a strictly sandboxed opaque origin (no cookie or user data access)\n    </script>\n  </body>\n</html>"
         embed_sandbox_notice_title: Strict Sandbox Isolation
         embed_sandbox_notice_body: "This page can only be viewed via {% embed ... %} or {% page ... %} iframes and cannot be opened directly in a browser tab. Custom <style>, <script>, forms, and target=\"_blank\" links are supported, while cookies, browser storage, and parent-page user data are completely blocked."
+        embed_preview_error: Unable to render sandboxed preview right now.
         embed_usage_label: Liquid embed tag
       header_cta:
         heading: Header CTA Button

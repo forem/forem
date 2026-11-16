@@ -8,6 +8,7 @@ import { initializeTurnstile } from '../initializers/initializeTurnstile';
 import { initializeHcaptcha } from '../initializers/initializeHcaptcha';
 import { initializeGifVideos } from '@utilities/gifVideo';
 import { initializeMermaidDiagrams } from '@utilities/mermaidDiagrams';
+import { initializePageEmbedSandboxLoader } from '@utilities/pageEmbedSandboxLoader';
 import {
   showUserAlertModal,
   showModalAfterError,
@@ -21,6 +22,7 @@ initializeTimeFixer();
 initializeDateHelpers();
 initializeGifVideos(document);
 initializeMermaidDiagrams(document);
+initializePageEmbedSandboxLoader(document);
 initializeTurnstile();
 initializeHcaptcha();
 
@@ -32,6 +34,7 @@ InstantClick.on('change', () => {
   initializeDateHelpers(); // Re-format dates on page navigation
   initializeGifVideos(document);
   initializeMermaidDiagrams(document);
+  initializePageEmbedSandboxLoader(document);
   initializeTurnstile();
   initializeHcaptcha();
 });
