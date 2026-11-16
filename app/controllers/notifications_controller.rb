@@ -55,7 +55,7 @@ class NotificationsController < ApplicationController
     @last_user_reaction = @user.reactions.order(Arel.sql("reactions.id + 0 DESC")).pick(:id)
     @last_user_comment = @user.comments.order(Arel.sql("comments.id + 0 DESC")).pick(:id)
 
-    @organizations = @user.member_organizations if @user.organizations
+    @organizations = @user.member_organizations.select(:id, :name) if @user.organizations
     @selected_organization = Organization.find(params[:org_id]) if params[:org_id].present?
 
     # The first call, the one coming from the browser URL bar will render the "index" view, which renders
