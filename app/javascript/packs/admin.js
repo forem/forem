@@ -3,6 +3,9 @@ import { Application } from '@hotwired/stimulus';
 import { definitions } from 'stimulus:../admin/controllers'; // eslint-disable-line import/no-unresolved
 import Rails from '@rails/ujs';
 import 'focus-visible';
+import { initializeFrontendErrorTracking } from '@utilities/frontendErrorTracking';
+
+initializeFrontendErrorTracking();
 
 // Initialize Rails unobtrusive scripting adapter
 // https://github.com/rails/rails/blob/main/actionview/app/assets/javascripts/README.md#es2015

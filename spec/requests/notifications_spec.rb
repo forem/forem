@@ -54,6 +54,27 @@ RSpec.describe "NotificationsIndex" do
     end
 
     context "when signed in" do
+      it "loads only organization navigation columns and preserves membership filtering", :aggregate_failures do
+        organizations = %w[admin member guest pending].map do |role|
+          org = create(:organization, name: "Navigation #{role}")
+          create(:organization_membership, user: user, organization: org, type_of_user: role)
+          org
+        end
+        sign_in user
+
+        get "/notifications"
+
+        navigation_organizations = controller.instance_variable_get(:@organizations)
+        expect(navigation_organizations.map(&:id)).to match_array(organizations.first(2).map(&:id))
+        navigation_organizations.each do |org|
+          expect(org.attributes.keys).to match_array(%w[id name])
+          expect(response.body).to include(CGI.escapeHTML(org.name))
+          expect(response.body).to include(notifications_filter_org_path(filter: :org, org_id: org.id))
+        end
+        menu = Nokogiri::HTML(response.body).at_css("#notifications-filter__select")
+        organizations.last(2).each { |org| expect(menu.text).not_to include(org.name) }
+      end
+
       it "assigns the ids of the user's latest reaction and comment", :aggregate_failures do
         article = create(:article)
         create(:reaction, user: user, reactable: article, category: "like")

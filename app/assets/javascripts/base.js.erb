@@ -39,18 +39,41 @@ var I18n = window.I18n = {
   }
 };
 
+// Keep this lazy proxy and ignore list in sync with app/javascript/utilities/frontendErrorTracking.js.
 (function() {
   var hbConfig = {};
   var hbBeforeNotifyHandlers = [];
   var hbContext = {};
+  var hbBreadcrumbs = [];
   var hbQueue = [];
   var hbLoadingPromise = null;
   var hbLoadFailed = false;
   var hbListenersAttached = false;
   var HB_MAX_QUEUE = 20;
 
+  function isErrorClientConfigured() {
+    return Boolean(hbConfig.dsn || hbConfig.apiKey);
+  }
+
+  function getActiveErrorScriptMetaName() {
+    if (hbConfig.dsn) {
+      return 'betterstack-errors-script';
+    }
+    if (hbConfig.apiKey) {
+      return 'honeybadger-script';
+    }
+    return null;
+  }
+
+  function getLoadedErrorClient() {
+    if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
+      return window.Honeybadger;
+    }
+    return null;
+  }
+
   function attachHoneybadgerWindowListeners() {
-    if (hbListenersAttached || !hbConfig.apiKey) return;
+    if (hbListenersAttached || !isErrorClientConfigured()) return;
     hbListenersAttached = true;
 
     window.addEventListener('error', function(event) {
@@ -71,8 +94,9 @@ var I18n = window.I18n = {
   }
 
   function passesBeforeNotify(err) {
-    var message = typeof err === 'string' ? err : (err && err.message);
-    var notice = { message: message };
+    var message = typeof err === 'string' ? err : (err && typeof err.message === 'string' ? err.message : undefined);
+    var name = err && typeof err === 'object' && typeof err.name === 'string' ? err.name : undefined;
+    var notice = { name: name, message: message };
     for (var i = 0; i < hbBeforeNotifyHandlers.length; i++) {
       try {
         if (hbBeforeNotifyHandlers[i](notice) === false) {
@@ -84,8 +108,9 @@ var I18n = window.I18n = {
   }
 
   function loadHoneybadgerClient() {
-    if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
-      return Promise.resolve(window.Honeybadger);
+    var loadedClient = getLoadedErrorClient();
+    if (loadedClient) {
+      return Promise.resolve(loadedClient);
     }
     if (hbLoadFailed) {
       return Promise.resolve(null);
@@ -93,7 +118,11 @@ var I18n = window.I18n = {
     if (hbLoadingPromise) {
       return hbLoadingPromise;
     }
-    var meta = document.querySelector('meta[name="honeybadger-script"]');
+    var metaName = getActiveErrorScriptMetaName();
+    if (!metaName) {
+      return Promise.resolve(null);
+    }
+    var meta = document.querySelector('meta[name="' + metaName + '"]');
     var scriptSrc = meta && meta.getAttribute('content');
     if (!scriptSrc) {
       return Promise.resolve(null);
@@ -103,8 +132,8 @@ var I18n = window.I18n = {
       script.src = scriptSrc;
       script.defer = true;
       script.onload = function() {
-        var realHb = window.Honeybadger;
-        if (realHb && !realHb.__isLazyProxy) {
+        var realHb = getLoadedErrorClient();
+        if (realHb) {
           if (typeof realHb.configure === 'function') {
             realHb.configure(hbConfig);
           }
@@ -116,6 +145,12 @@ var I18n = window.I18n = {
           if (Object.keys(hbContext).length > 0 && typeof realHb.setContext === 'function') {
             realHb.setContext(hbContext);
           }
+          while (hbBreadcrumbs.length > 0) {
+            var crumbArgs = hbBreadcrumbs.shift();
+            if (typeof realHb.addBreadcrumb === 'function') {
+              realHb.addBreadcrumb.apply(realHb, crumbArgs);
+            }
+          }
           while (hbQueue.length > 0) {
             var args = hbQueue.shift();
             if (typeof realHb.notify === 'function') {
@@ -125,6 +160,7 @@ var I18n = window.I18n = {
           resolve(realHb);
         } else {
           hbLoadFailed = true;
+          hbBreadcrumbs.length = 0;
           hbQueue.length = 0;
           resolve(null);
         }
@@ -132,6 +168,7 @@ var I18n = window.I18n = {
       script.onerror = function() {
         hbLoadFailed = true;
         hbLoadingPromise = null;
+        hbBreadcrumbs.length = 0;
         hbQueue.length = 0;
         script.remove();
         resolve(null);
@@ -145,21 +182,33 @@ var I18n = window.I18n = {
     __isLazyProxy: true,
     config: hbConfig,
     configure: function(opts) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.configure === 'function') {
+        return realHb.configure(opts);
+      }
       if (opts && typeof opts === 'object') {
         Object.assign(hbConfig, opts);
-        if (hbConfig.apiKey) {
+        if (isErrorClientConfigured()) {
           attachHoneybadgerWindowListeners();
         }
       }
       return this;
     },
     beforeNotify: function(handler) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.beforeNotify === 'function') {
+        return realHb.beforeNotify(handler);
+      }
       if (typeof handler === 'function') {
         hbBeforeNotifyHandlers.push(handler);
       }
       return this;
     },
     setContext: function(ctx) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.setContext === 'function') {
+        return realHb.setContext(ctx);
+      }
       if (ctx && typeof ctx === 'object') {
         Object.assign(hbContext, ctx);
       }
@@ -170,20 +219,46 @@ var I18n = window.I18n = {
     },
     clear: function() {
       hbContext = {};
+      hbBreadcrumbs.length = 0;
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.clear === 'function') {
+        return realHb.clear();
+      }
       return this;
     },
     resetContext: function(ctx) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.resetContext === 'function') {
+        return realHb.resetContext(ctx);
+      }
       hbContext = ctx && typeof ctx === 'object' ? Object.assign({}, ctx) : {};
       return this;
     },
+    addBreadcrumb: function(message, opts) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.addBreadcrumb === 'function') {
+        return realHb.addBreadcrumb(message, opts);
+      }
+      if (isErrorClientConfigured()) {
+        if (hbBreadcrumbs.length >= HB_MAX_QUEUE) {
+          hbBreadcrumbs.shift();
+        }
+        hbBreadcrumbs.push([message, opts]);
+      }
+      return this;
+    },
     notify: function(err, name, extra) {
-      if (hbLoadFailed || !hbConfig.apiKey || !passesBeforeNotify(err)) {
+      if (hbLoadFailed || !isErrorClientConfigured() || !passesBeforeNotify(err)) {
         return false;
       }
-      if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
-        return window.Honeybadger.notify(err, name, extra);
+      var realHb = getLoadedErrorClient();
+      if (realHb) {
+        return realHb.notify(err, name, extra);
       }
       var errKey = typeof err === 'string' ? err : (err && (err.name || '') + ':' + (err.message || ''));
+      if (errKey === ':') {
+        errKey = '';
+      }
       var alreadyQueued = errKey && hbQueue.some(function(item) {
         var queued = item[0];
         var queuedKey = typeof queued === 'string' ? queued : (queued && (queued.name || '') + ':' + (queued.message || ''));
@@ -1052,7 +1127,25 @@ var instantClick
 
 // INITIALIZE/ERROR HANDLING
 
-  if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
+  if (document.body && document.body.dataset && document.body.dataset.betterstackErrorsDsn) {
+    Honeybadger.configure({
+      dsn: document.body.dataset.betterstackErrorsDsn,
+      environment: document.body.dataset.betterstackErrorsEnvironment || "<%= Rails.env %>",
+      revision: document.body.dataset.latestCommitId || document.body.dataset.releaseFootprint || document.body.dataset.deployedAt,
+      maxErrors: 20,
+    });
+
+    Honeybadger.beforeNotify(function(notice) {
+      if (!notice) return true
+      const parts = []
+      if (typeof notice.name === 'string' && notice.name) parts.push(notice.name)
+      if (typeof notice.message === 'string' && notice.message) parts.push(notice.message)
+      if (parts.length === 0) return true
+      const haystack = parts.join(': ')
+      const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i, /ChunkLoadError/i]
+      return !(ignorePatterns.some((pattern) => pattern.test(haystack)));
+    });
+  } else if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
     Honeybadger.configure({
       apiKey: document.body.dataset.honeybadgerKey,
       environment: "<%= Rails.env %>",
