@@ -33,7 +33,20 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
       end.not_to(change { unfeatured.reload.updated_at })
 
       expect(queries.grep(/SELECT "articles"\.\*/)).to be_empty
+      expect(queries.grep(/FROM "articles"/).first).to include('"articles"."published"', '"articles"."featured"')
       expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+    end
+
+    it "ignores unpublished featured articles when ranking the top 3 featured articles" do
+      create_list(:article, 3, featured: true, published: false, hotness_score: 100_000)
+      published_featured = create(:article, featured: true, published: true, hotness_score: 10)
+      reaction = create(:reaction, reactable: published_featured, user: user)
+      RSpec::Mocks.space.proxy_for(EdgeCache::PurgeByKey).reset
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+
+      worker.perform(reaction.id)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/").once
     end
 
     it "touches the featured article it busts" do
