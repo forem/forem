@@ -2,28 +2,42 @@ class OrganizationEmbedsController < ActionController::Metal
   include ActionController::Head
   include ActionController::Instrumentation
 
-  SANDBOX_DIRECTIVE = "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox".freeze
+  SANDBOX_DIRECTIVE = Pages::EmbedHtmlWrapper::SANDBOX_DIRECTIVE
   PERMISSIONS_POLICY = %w[
     accelerometer=()
     autoplay=()
+    bluetooth=()
+    browsing-topics=()
     camera=()
     clipboard-read=()
+    compute-pressure=()
     display-capture=()
+    encrypted-media=()
+    fullscreen=()
+    gamepad=()
     geolocation=()
     gyroscope=()
     hid=()
     identity-credentials-get=()
+    idle-detection=()
     local-fonts=()
     magnetometer=()
     microphone=()
     midi=()
     otp-credentials=()
     payment=()
+    picture-in-picture=()
     publickey-credentials-create=()
     publickey-credentials-get=()
+    screen-wake-lock=()
     serial=()
+    speaker-selection=()
     storage-access=()
+    sync-xhr=()
     usb=()
+    web-share=()
+    window-management=()
+    xr-spatial-tracking=()
   ].join(", ").freeze
   SAFE_HOST_REGEXP = /\A[a-z0-9]+(?:[.-][a-z0-9]+)*(?::\d+)?\z/i
   SLUG_SUFFIX_REGEXP = /\A[a-z0-9\-]+\z/
@@ -44,14 +58,20 @@ class OrganizationEmbedsController < ActionController::Metal
     discard_session_and_cookies!
     self.status = 200
     self.content_type = "text/html; charset=utf-8"
-    self.response_body = page.body_html.to_s
+    self.response_body = Pages::EmbedHtmlWrapper.call(
+      page.body_html.to_s,
+      blocked_hosts: allowed_embed_domains(owner),
+      local_http: Rails.env.local?,
+    )
   end
 
   private
 
   def forbidden_fetch_destination?
     sec_fetch_dest = request.headers["Sec-Fetch-Dest"]
-    sec_fetch_dest.present? && sec_fetch_dest != "iframe"
+    return true if sec_fetch_dest.present? && sec_fetch_dest != "iframe"
+
+    sec_fetch_dest.blank? && request.headers["Sec-Fetch-User"] == "?1"
   end
 
   def resolve_embed_page
@@ -108,16 +128,19 @@ class OrganizationEmbedsController < ActionController::Metal
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Permissions-Policy"] = PERMISSIONS_POLICY
+    response.headers["Origin-Agent-Cluster"] = "?1"
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
+    response.headers["X-DNS-Prefetch-Control"] = "off"
     add_vary_header("Sec-Fetch-Dest")
+    add_vary_header("Sec-Fetch-User")
   end
 
   def apply_embed_headers(owner, page)
-    response.headers["Content-Security-Policy"] = [
-      "sandbox #{SANDBOX_DIRECTIVE}",
-      "frame-ancestors #{allowed_frame_ancestors(owner)}",
-      "base-uri 'none'",
-      "object-src 'none'",
-    ].join("; ")
+    response.headers["Content-Security-Policy"] = Pages::EmbedHtmlWrapper.http_csp_header(
+      frame_ancestors: allowed_frame_ancestors(owner),
+      local_http: Rails.env.local?,
+    )
     response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
     apply_cache_headers(owner, page)
   end
@@ -126,7 +149,12 @@ class OrganizationEmbedsController < ActionController::Metal
     max_age = (ApplicationConfig["EDGE_CACHE_DURATION_IN_HOURS"] || 24).to_i.hours.to_i
     owner_keys = [owner.record_key]
     owner_keys << owner.profile_identity_record_key if owner.is_a?(User)
-    surrogate_keys = (["show-page-#{page.slug}"] + owner_keys)
+    surrogate_keys = (
+      [
+        "show-page-#{page.slug}",
+        "embed-html-wrapper-#{Pages::EmbedHtmlWrapper.wrapper_digest}",
+      ] + owner_keys
+    )
       .filter_map { |key| key.to_s.delete("\r\n").strip.presence }
       .uniq
     response.headers["Surrogate-Key"] = surrogate_keys.join(" ")
@@ -135,13 +163,16 @@ class OrganizationEmbedsController < ActionController::Metal
     response.headers["Surrogate-Control"] = "max-age=#{max_age}, stale-if-error=#{STALE_IF_ERROR_SECONDS}"
   end
 
-  def allowed_frame_ancestors(owner)
+  def allowed_embed_domains(owner)
     custom_domain = owner.respond_to?(:custom_domain) ? owner.custom_domain : nil
-    domains = (Subforem.cached_all_domains + [Settings::General.app_domain, custom_domain])
+    (Subforem.cached_all_domains + [Settings::General.app_domain, custom_domain])
       .compact_blank
       .uniq
       .select { |domain| domain.to_s.match?(SAFE_HOST_REGEXP) }
-    origins = domains.map { |domain| "https://#{domain}" }
+  end
+
+  def allowed_frame_ancestors(owner)
+    origins = allowed_embed_domains(owner).map { |domain| "https://#{domain}" }
     origins.unshift("'self'") if Rails.env.local?
     origins.presence&.join(" ") || "'self'"
   end

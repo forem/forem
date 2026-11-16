@@ -1,3 +1,24 @@
+const COORDINATOR_BRIDGE_KEY = '__foremPageEmbedCoordinatorBridge';
+
+function getCoordinatorBridge() {
+  if (!globalThis[COORDINATOR_BRIDGE_KEY]) {
+    globalThis[COORDINATOR_BRIDGE_KEY] = {
+      exitFullscreenCallback: null,
+      currentFullscreenEmbed: null,
+      notifyFullscreenChange: null,
+    };
+  }
+  return globalThis[COORDINATOR_BRIDGE_KEY];
+}
+
+function syncCoordinatorFullscreen(embedEl) {
+  const bridge = getCoordinatorBridge();
+  bridge.currentFullscreenEmbed = embedEl || null;
+  if (typeof bridge.notifyFullscreenChange === 'function') {
+    bridge.notifyFullscreenChange(bridge.currentFullscreenEmbed);
+  }
+}
+
 let screenScroll = 0;
 
 const FOCUSABLE_SELECTOR = [
@@ -118,6 +139,7 @@ export function enterPageEmbedFullscreen(embed) {
   updateButtonState(button, true);
   applyBodyOverflowLock(true);
   toggleGlobalListeners(true);
+  syncCoordinatorFullscreen(embed);
 
   if (
     button &&
@@ -142,6 +164,7 @@ export function exitPageEmbedFullscreen({
   openEmbed.classList.remove('is-fullscreen');
   openEmbed.style.minHeight = '';
   updateButtonState(button, false);
+  syncCoordinatorFullscreen(null);
 
   if (restoreScroll && typeof globalThis.scrollTo === 'function') {
     globalThis.scrollTo(0, screenScroll);
@@ -172,6 +195,12 @@ function handleActionClick(event) {
 }
 
 export function initializePageEmbedFullscreen(root = document) {
+  const bridge = getCoordinatorBridge();
+  bridge.exitFullscreenCallback = exitPageEmbedFullscreen;
+  if (typeof globalThis.__foremInitSandboxedEmbeds === 'function') {
+    globalThis.__foremInitSandboxedEmbeds(root);
+  }
+
   const target =
     root === document ? document.documentElement || document.body : root;
   if (!target || target.dataset?.pageEmbedFullscreenBound === 'true') {

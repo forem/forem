@@ -50,6 +50,11 @@ class UserEmbedPagesController < ApplicationController
     redirect_to dashboard_embed_pages_path
   end
 
+  def preview
+    result = Pages::EmbedHtmlWrapper.preview_result(params[:body_html])
+    render json: result[:json], status: result[:status]
+  end
+
   private
 
   def require_embed_pages_access!

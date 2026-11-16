@@ -65,6 +65,7 @@ en:
           warning: Warning
         enter_fullscreen_mode: Enter fullscreen mode
         exit_fullscreen_mode: Exit fullscreen mode
+        reload_embed: Reload widget
     markdown_processor:
       parser:
         invalid_markdown_detected: Invalid markdown detected!
@@ -82,6 +83,9 @@ en:
         new: "💬 New Comment"
       new_mention:
         new: "🗣️ New Mention"
+    pages:
+      embed_html_wrapper:
+        complexity_fallback: "This embedded widget exceeds safe HTML complexity limits and cannot be rendered."
     payments:
       customer:
         usd: usd

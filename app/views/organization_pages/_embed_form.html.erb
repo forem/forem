@@ -48,48 +48,10 @@
       <%= f.text_field :description, class: "crayons-textfield", placeholder: t("views.organization_settings.pages.description_placeholder") %>
     </div>
 
-    <div class="crayons-field" id="org-embed-html-editor">
-      <div class="flex items-center justify-between mb-2">
-        <%= f.label :body_html, t("views.organization_settings.pages.embed_content_label"), for: "org_embed_body_html", class: "crayons-field__label mb-0" %>
-        <div class="flex gap-1" role="tablist">
-          <button type="button"
-                  id="org-embed-tab-edit"
-                  class="crayons-btn crayons-btn--secondary crayons-btn--s"
-                  aria-selected="true">
-            <%= t("views.organization_settings.pages.edit") %>
-          </button>
-          <button type="button"
-                  id="org-embed-tab-preview"
-                  class="crayons-btn crayons-btn--ghost crayons-btn--s"
-                  aria-selected="false">
-            <%= t("views.organization_settings.page.preview") %>
-          </button>
-        </div>
-      </div>
-
-      <div id="org-embed-edit-pane">
-        <%= f.text_area :body_html,
-                        id: "org_embed_body_html",
-                        class: "crayons-textfield ff-monospace fs-base",
-                        style: "min-height: 400px;",
-                        required: true,
-                        placeholder: t("views.organization_settings.pages.embed_content_placeholder") %>
-      </div>
-
-      <div id="org-embed-preview-pane" class="hidden">
-        <iframe id="org-embed-preview-frame"
-                title="<%= t("views.organization_settings.page.preview") %>"
-                width="100%"
-                height="480"
-                frameborder="0"
-                sandbox="<%= OrganizationEmbedsController::SANDBOX_DIRECTIVE %>"
-                credentialless
-                referrerpolicy="no-referrer"
-                allow="<%= PageTag::IFRAME_ALLOW_POLICY %>"
-                style="width: 100%; border: 1px solid var(--card-border, #e1e5e9); border-radius: var(--radius-auto, 6px); background: #fff;">
-        </iframe>
-      </div>
-    </div>
+    <%= render "shared/embed_html_editor",
+               f: f,
+               prefix: "org",
+               preview_url: organization_pages_preview_path(@organization.slug) %>
 
     <div class="flex gap-2 mt-4">
       <button type="submit" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
@@ -97,38 +59,3 @@
     </div>
   </div>
 <% end %>
-
-<script>
-  (function() {
-    var root = document.getElementById("org-embed-html-editor");
-    if (!root || root.dataset.initialized === "true") return;
-    root.dataset.initialized = "true";
-
-    var editBtn = document.getElementById("org-embed-tab-edit");
-    var previewBtn = document.getElementById("org-embed-tab-preview");
-    var editPane = document.getElementById("org-embed-edit-pane");
-    var previewPane = document.getElementById("org-embed-preview-pane");
-    var textarea = document.getElementById("org_embed_body_html");
-    var frame = document.getElementById("org-embed-preview-frame");
-    if (!editBtn || !previewBtn || !editPane || !previewPane || !textarea || !frame) return;
-
-    editBtn.addEventListener("click", function() {
-      previewPane.classList.add("hidden");
-      editPane.classList.remove("hidden");
-      editBtn.className = "crayons-btn crayons-btn--secondary crayons-btn--s";
-      previewBtn.className = "crayons-btn crayons-btn--ghost crayons-btn--s";
-      editBtn.setAttribute("aria-selected", "true");
-      previewBtn.setAttribute("aria-selected", "false");
-    });
-
-    previewBtn.addEventListener("click", function() {
-      frame.srcdoc = textarea.value || "";
-      editPane.classList.add("hidden");
-      previewPane.classList.remove("hidden");
-      previewBtn.className = "crayons-btn crayons-btn--secondary crayons-btn--s";
-      editBtn.className = "crayons-btn crayons-btn--ghost crayons-btn--s";
-      previewBtn.setAttribute("aria-selected", "true");
-      editBtn.setAttribute("aria-selected", "false");
-    });
-  })();
-</script>

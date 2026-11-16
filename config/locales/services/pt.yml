@@ -65,6 +65,7 @@ pt:
           warning: Aviso
         enter_fullscreen_mode: Entrar no modo tela cheia
         exit_fullscreen_mode: Sair do modo tela cheia
+        reload_embed: Recarregar widget
     markdown_processor:
       parser:
         invalid_markdown_detected: Markdown inválido detectado!
@@ -82,6 +83,9 @@ pt:
         new: "💬 Novo Comentário"
       new_mention:
         new: "🗣️ Nova Menção"
+    pages:
+      embed_html_wrapper:
+        complexity_fallback: "Este widget incorporado excede os limites seguros de complexidade HTML e não pode ser exibido."
     payments:
       customer:
         usd: usd
