@@ -301,6 +301,8 @@ let ctx = {
   define: {
     'global': 'window',
     'process.env.NODE_ENV': '"production"',
+    '__SENTRY_DEBUG__': 'false',
+    '__SENTRY_TRACING__': 'false',
   },
   alias: {
     'react': 'preact/compat',

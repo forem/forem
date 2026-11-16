@@ -65,15 +65,26 @@ class ArticleApiIndexService
   end
 
   def tag_articles
-    articles = published_articles_with_users_and_organizations.cached_tagged_with(tag)
-
     articles = if Tag.where(name: tag).pick(:requires_approval)
-                 articles.approved.order(published_at: :desc)
+                 published_articles_with_users_and_organizations
+                   .cached_tagged_with(tag)
+                   .approved
+                   .order(published_at: :desc)
                elsif top.present?
-                 articles.where("published_at > ?", top.to_i.days.ago)
+                 published_articles_with_users_and_organizations
+                   .cached_tagged_with(tag)
+                   .where("published_at > ?", top.to_i.days.ago)
                    .order(score: :desc)
                else
-                 articles.order(hotness_score: :desc)
+                 # Evaluating the published check as a single boolean expression keeps
+                 # PostgreSQL from intersecting the selective `index_articles_on_tags_array`
+                 # GIN bitmap with multi-million-row full-history B-tree bitmaps on
+                 # `index_articles_on_published` and `index_articles_on_published_at`.
+                 Article.from_subforem
+                   .includes([{ user: :profile }, :organization])
+                   .where("COALESCE(articles.published AND articles.published_at <= ?, false)", Time.current)
+                   .cached_tagged_with(tag)
+                   .order(hotness_score: :desc)
                end
 
     articles.page(page).per(per_page || DEFAULT_PER_PAGE)

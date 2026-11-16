@@ -62,7 +62,7 @@
       }
     }
   } catch (e) {
-    if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
+    if (document.body && document.body.dataset && (document.body.dataset.betterstackErrorsDsn || document.body.dataset.honeybadgerKey)) {
       setTimeout(function () {
         if (window.Honeybadger) Honeybadger.notify(e);
       }, 1000);
