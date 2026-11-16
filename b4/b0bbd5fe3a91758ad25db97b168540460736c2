@@ -1,0 +1,86 @@
+app/assets/stylesheets/ltags/PageTag.scss
+  h_f968154a99632d 11-12,27,30-31,44-93
+app/controllers/organization_embeds_controller.rb
+  h_f968154a99632d 5,9-10,13,15-17,22,29,32,34,36,38-40,61-65,72-74,131-134,136,140-143,161,163,167-170
+app/controllers/organization_pages_controller.rb
+  h_f968154a99632d 71-76
+app/controllers/user_embed_pages_controller.rb
+  h_f968154a99632d 53-57
+app/javascript/packs/baseInitializers.js
+  h_f968154a99632d 11,25,37
+app/javascript/packs/pageEmbedSandbox.js
+  h_f968154a99632d 1-11
+app/javascript/utilities/__tests__/embedEditorPreview.test.js
+  h_f968154a99632d 1-82
+app/javascript/utilities/__tests__/embedInnerGuard.test.js
+  h_f968154a99632d 1-424
+app/javascript/utilities/__tests__/pageEmbedWrapper.test.js
+  h_f968154a99632d 1-311
+app/javascript/utilities/embedEditorPreview.js
+  h_f968154a99632d 1-111
+app/javascript/utilities/embedInnerGuard.js
+  h_f968154a99632d 1-1554
+app/javascript/utilities/pageEmbedFullscreen.js
+  h_f968154a99632d 1-6,127,152,183-185
+app/javascript/utilities/pageEmbedSandboxLoader.js
+  h_f968154a99632d 1-47
+app/javascript/utilities/pageEmbedWrapper.js
+  h_f968154a99632d 1-644
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 4,10,19-20,22-26,28-33,35-39,41-43,438-440,450,472-473
+app/models/page.rb
+  h_f968154a99632d 217-219
+app/services/pages/embed_html_wrapper.rb
+  h_f968154a99632d 1-342
+app/views/layouts/application.html.erb
+  h_f968154a99632d 41
+app/views/liquids/_page.html.erb
+  h_f968154a99632d 4-5,9,33-38,43,45-47
+app/views/organization_pages/_embed_form.html.erb
+  h_f968154a99632d 51-54
+app/views/shared/_embed_html_editor.html.erb
+  h_f968154a99632d 1-60
+app/views/user_embed_pages/_form.html.erb
+  h_f968154a99632d 49-52
+config/locales/models/en.yml
+  h_f968154a99632d 122
+config/locales/models/fr.yml
+  h_f968154a99632d 121
+config/locales/models/pt.yml
+  h_f968154a99632d 121
+config/locales/services/en.yml
+  h_f968154a99632d 68
+config/locales/services/fr.yml
+  h_f968154a99632d 68
+config/locales/services/pt.yml
+  h_f968154a99632d 68
+config/locales/views/organizations/en.yml
+  h_f968154a99632d 66
+config/locales/views/organizations/fr.yml
+  h_f968154a99632d 66
+config/locales/views/organizations/pt.yml
+  h_f968154a99632d 66
+config/routes.rb
+  h_f968154a99632d 579-583
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 104-108,335-336,338
+spec/requests/organization_embeds_spec.rb
+  h_f968154a99632d 127-133,145-147,153-154,158-162,166-196,207-208,219-223,256,258,273,280,295
+spec/requests/organization_pages_spec.rb
+  h_f968154a99632d 307,314-321
+spec/requests/user_embed_pages_spec.rb
+  h_f968154a99632d 193-209,256-268,329-332
+spec/services/pages/embed_html_wrapper_spec.rb
+  h_f968154a99632d 1-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b4b0bbd5fe3a91758ad25db97b168540460736c2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
