@@ -71,7 +71,7 @@ class OrganizationEmbedsController < ActionController::Metal
     sec_fetch_dest = request.headers["Sec-Fetch-Dest"]
     return true if sec_fetch_dest.present? && sec_fetch_dest != "iframe"
 
-    request.headers["Sec-Fetch-User"] == "?1"
+    sec_fetch_dest.blank? && request.headers["Sec-Fetch-User"] == "?1"
   end
 
   def resolve_embed_page
@@ -149,7 +149,12 @@ class OrganizationEmbedsController < ActionController::Metal
     max_age = (ApplicationConfig["EDGE_CACHE_DURATION_IN_HOURS"] || 24).to_i.hours.to_i
     owner_keys = [owner.record_key]
     owner_keys << owner.profile_identity_record_key if owner.is_a?(User)
-    surrogate_keys = (["show-page-#{page.slug}"] + owner_keys)
+    surrogate_keys = (
+      [
+        "show-page-#{page.slug}",
+        "embed-html-wrapper-#{Pages::EmbedHtmlWrapper.wrapper_digest}",
+      ] + owner_keys
+    )
       .filter_map { |key| key.to_s.delete("\r\n").strip.presence }
       .uniq
     response.headers["Surrogate-Key"] = surrogate_keys.join(" ")

@@ -58,15 +58,18 @@ module Pages
       { status: :ok, json: { wrapped_html: call(html) } }
     end
 
+    def self.parse_html5(cleaned)
+      Nokogiri::HTML5.parse(cleaned, max_tree_depth: MAX_TREE_DEPTH, max_errors: -1)
+    rescue ArgumentError
+      nil
+    end
+
     def self.validate_complexity(raw_html)
-      cleaned = clean_raw_string(raw_html)
-      doc = Nokogiri::HTML5.parse(cleaned, max_tree_depth: MAX_TREE_DEPTH, max_errors: -1)
-      node_count = doc.xpath("count(//*)").to_i
-      return :too_many_nodes if node_count > MAX_DOM_NODES
+      doc = parse_html5(clean_raw_string(raw_html))
+      return :too_deep if doc.nil?
+      return :too_many_nodes if doc.xpath("count(//*)").to_i > MAX_DOM_NODES
 
       :ok
-    rescue ArgumentError
-      :too_deep
     end
 
     def self.meta_csp_directives(local_http: Rails.env.local?)
@@ -133,6 +136,14 @@ module Pages
       end
     end
 
+    def self.wrapper_digest
+      if Rails.env.development?
+        Digest::SHA256.hexdigest("#{BASE_WRAPPER_CSS}\n#{inner_guard_source}").first(12)
+      else
+        @wrapper_digest ||= Digest::SHA256.hexdigest("#{BASE_WRAPPER_CSS}\n#{inner_guard_source}").first(12)
+      end
+    end
+
     def self.load_inner_guard_source
       GUARD_SCRIPT_PATH.read.sub(/^export\s+/, "").gsub("</script", '<\\/script')
     end
@@ -145,13 +156,12 @@ module Pages
     end
 
     def call
-      source_doc = Nokogiri::HTML5.parse(@raw_html, max_tree_depth: MAX_TREE_DEPTH, max_errors: -1)
+      source_doc = self.class.parse_html5(@raw_html)
+      return fallback_complexity_document if source_doc.nil?
       return fallback_complexity_document if source_doc.xpath("count(//*)").to_i > MAX_DOM_NODES
 
       sanitize_tree!(source_doc)
       assemble_document(source_doc)
-    rescue ArgumentError
-      fallback_complexity_document
     end
 
     private
@@ -323,9 +333,11 @@ module Pages
     end
 
     def fallback_complexity_document
+      notice = CGI.escapeHTML(I18n.t("services.pages.embed_html_wrapper.complexity_fallback"))
+      locale = CGI.escapeHTML(I18n.locale.to_s)
       <<~HTML
         <!DOCTYPE html>
-        <html data-forem-embed="1" data-forem-theme="light">
+        <html lang="#{locale}" data-forem-embed="1" data-forem-theme="light">
           <head>
             <meta charset="utf-8">
             <meta name="referrer" content="no-referrer" data-forem-wrapper-meta="1">
@@ -333,7 +345,7 @@ module Pages
             <style data-forem-wrapper-style="1">#{BASE_WRAPPER_CSS}</style>
           </head>
           <body>
-            <p role="status">This embedded widget exceeds safe HTML complexity limits and cannot be rendered.</p>
+            <p role="status">#{notice}</p>
           </body>
         </html>
       HTML

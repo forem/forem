@@ -39,6 +39,10 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
   const ObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
   const ReflectApply = Reflect.apply;
   const URLCtor = win.URL || globalThis.URL;
+  const RequestCtor = win.Request || globalThis.Request || null;
+  const requestUrlGetter = RequestCtor
+    ? ObjectGetOwnPropertyDescriptor(RequestCtor.prototype, 'url')?.get || null
+    : null;
   const MessageChannelCtor =
     win.MessageChannel || globalThis.MessageChannel || null;
   const CustomEventCtor = win.CustomEvent || globalThis.CustomEvent || null;
@@ -174,6 +178,32 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
         } catch (_err2) {
           // Ignore non-writable globals in constrained environments
         }
+      }
+    });
+  }
+
+  function patchAccessor(targets, propName, getFn, setFn) {
+    targets.forEach((target) => {
+      if (!target) return;
+      const desc = ObjectGetOwnPropertyDescriptor(target, propName);
+      if (desc && desc.configurable === false) {
+        return;
+      }
+      try {
+        patchedDescriptors.push({
+          target,
+          propName,
+          hadOwn: Boolean(desc),
+          descriptor: desc,
+        });
+        ObjectDefineProperty(target, propName, {
+          get: getFn || desc?.get,
+          set: setFn !== undefined ? setFn : desc?.set,
+          configurable: true,
+          enumerable: desc ? desc.enumerable : true,
+        });
+      } catch (_err) {
+        // Ignore non-configurable host accessors
       }
     });
   }
@@ -646,6 +676,7 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
           loopMeta.heavyStreak += 1;
           if (loopMeta.heavyStreak >= limits.maxConsecutiveHeavyFrames) {
             loopMeta.delay = Math.max(loopMeta.delay || 16, 500);
+            loopMeta.heavyStreak = 0;
             if (loopMeta.nativeId != null) {
               nativeClearInterval(loopMeta.nativeId);
               loopMeta.nativeId = nativeSetInterval(() => {
@@ -841,8 +872,18 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
     /^::$/,
     /^fe[89ab][0-9a-f]:/,
     /^f[cd][0-9a-f]{2}:/,
-    /^::ffff:(127\.|10\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/,
   ];
+
+  function decodeMappedIpv4(host) {
+    const hexMatch = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(host);
+    if (hexMatch) {
+      const hi = parseInt(hexMatch[1], 16);
+      const lo = parseInt(hexMatch[2], 16);
+      return `${(hi >> 8) & 255}.${hi & 255}.${(lo >> 8) & 255}.${lo & 255}`;
+    }
+    const dottedMatch = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/.exec(host);
+    return dottedMatch ? dottedMatch[1] : null;
+  }
 
   function isPrivateOrBlockedHostname(hostname) {
     const host = String(hostname || '')
@@ -851,6 +892,8 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
       .replace(/^\[|\]$/g, '');
     if (!host) return true;
     if (blockedHosts.has(host)) return true;
+    const mappedV4 = decodeMappedIpv4(host);
+    if (mappedV4 && blockedHosts.has(mappedV4)) return true;
     if (
       !allowLocalHttp &&
       (host === 'localhost' ||
@@ -860,7 +903,12 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
     ) {
       return true;
     }
-    return PRIVATE_IP_PATTERNS.some((pattern) => pattern.test(host));
+    if (PRIVATE_IP_PATTERNS.some((pattern) => pattern.test(host))) {
+      return true;
+    }
+    return Boolean(
+      mappedV4 && PRIVATE_IP_PATTERNS.some((pattern) => pattern.test(mappedV4)),
+    );
   }
 
   function resolveBaseHref() {
@@ -921,13 +969,18 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
     return { allowed: true };
   }
 
+  // Defense-in-depth egress wrappers (alongside CSP connect-src/worker-src/frame-src).
   if (nativeFetch) {
     patchMethod([win, winProto], 'fetch', function guardedFetch(input, init) {
-      const targetUrl =
-        input && typeof input === 'object' && 'url' in input
-          ? input.url
-          : input;
-      const check = validateOutboundUrl(targetUrl, 'fetch');
+      const isNativeRequest = Boolean(
+        RequestCtor && input instanceof RequestCtor,
+      );
+      const rawTarget = isNativeRequest
+        ? requestUrlGetter
+          ? ReflectApply(requestUrlGetter, input, [])
+          : input.url
+        : String(input);
+      const check = validateOutboundUrl(rawTarget, 'fetch');
       if (!check.allowed) {
         reportGuard('network-blocked', { reason: check.reason });
         return Promise.reject(
@@ -942,8 +995,9 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
         );
       }
 
+      const safeInput = isNativeRequest ? input : check.url;
       activeFetchCount += 1;
-      return nativeFetch(input, init).finally(() => {
+      return nativeFetch(safeInput, init).finally(() => {
         activeFetchCount = Math.max(0, activeFetchCount - 1);
       });
     });
@@ -960,7 +1014,7 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
             'Synchronous XMLHttpRequest is disabled in Forem embeds',
           );
         }
-        const check = validateOutboundUrl(url, 'xhr');
+        const check = validateOutboundUrl(String(url), 'xhr');
         xhrMeta.set(this, check);
         if (!check.allowed) {
           reportGuard('network-blocked', { reason: check.reason });
@@ -970,7 +1024,7 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
         }
         return ReflectApply(nativeXHROpen, this, [
           method,
-          url,
+          check.url,
           true,
           ...rest,
         ]);
@@ -1013,7 +1067,7 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
       [win.navigator, win.Navigator.prototype],
       'sendBeacon',
       function guardedSendBeacon(url, data) {
-        const check = validateOutboundUrl(url, 'beacon');
+        const check = validateOutboundUrl(String(url), 'beacon');
         if (!check.allowed) {
           reportGuard('network-blocked', { reason: check.reason });
           return false;
@@ -1023,14 +1077,14 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
           reportGuard('network-rate-limited', { reason: budget.reason });
           return false;
         }
-        return nativeSendBeacon(url, data);
+        return nativeSendBeacon(check.url, data);
       },
     );
   }
 
   if (NativeWebSocket) {
     const GuardedWebSocket = function WebSocket(url, protocols) {
-      const check = validateOutboundUrl(url, 'websocket');
+      const check = validateOutboundUrl(String(url), 'websocket');
       if (!check.allowed) {
         reportGuard('network-blocked', { reason: check.reason });
         throw createSecurityError(
@@ -1043,8 +1097,8 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
         throw createSecurityError('WebSocket rate-limited by embed sandbox');
       }
       return protocols !== undefined
-        ? new NativeWebSocket(url, protocols)
-        : new NativeWebSocket(url);
+        ? new NativeWebSocket(check.url, protocols)
+        : new NativeWebSocket(check.url);
     };
     GuardedWebSocket.prototype = NativeWebSocket.prototype;
     ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'].forEach((k) => {
@@ -1055,7 +1109,7 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
 
   if (NativeEventSource) {
     const GuardedEventSource = function EventSource(url, eventSourceInitDict) {
-      const check = validateOutboundUrl(url, 'eventsource');
+      const check = validateOutboundUrl(String(url), 'eventsource');
       if (!check.allowed) {
         reportGuard('network-blocked', { reason: check.reason });
         throw createSecurityError(
@@ -1067,7 +1121,7 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
         reportGuard('network-rate-limited', { reason: budget.reason });
         throw createSecurityError('EventSource rate-limited by embed sandbox');
       }
-      return new NativeEventSource(url, eventSourceInitDict);
+      return new NativeEventSource(check.url, eventSourceInitDict);
     };
     GuardedEventSource.prototype = NativeEventSource.prototype;
     ['CONNECTING', 'OPEN', 'CLOSED'].forEach((k) => {
@@ -1412,30 +1466,34 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
     'window-target',
   ]);
 
+  function isBlockedMetaNode(node) {
+    const equiv = (node.getAttribute('http-equiv') || '').trim().toLowerCase();
+    const name = (node.getAttribute('name') || '').trim().toLowerCase();
+    return (
+      !node.hasAttribute('data-forem-wrapper-meta') &&
+      ((equiv && BLOCKED_META_HTTP_EQUIV.has(equiv)) || name === 'referrer')
+    );
+  }
+
   function sanitizeInjectedNode(node) {
-    if (!node || node.nodeType !== 1) return;
-    const tag = node.tagName ? node.tagName.toUpperCase() : '';
-    if (BLOCKED_DYNAMIC_TAGS.has(tag)) {
-      node.remove();
-      reportGuard('dynamic-element-blocked', { tag: tag.toLowerCase() });
-      return;
-    }
-    if (tag === 'META') {
-      const equiv = (node.getAttribute('http-equiv') || '').trim().toLowerCase();
-      const name = (node.getAttribute('name') || '').trim().toLowerCase();
-      if (
-        (equiv && BLOCKED_META_HTTP_EQUIV.has(equiv)) ||
-        name === 'referrer'
-      ) {
-        if (!node.hasAttribute('data-forem-wrapper-meta')) {
-          node.remove();
-          reportGuard('dynamic-meta-blocked', { equiv: equiv || name });
-          return;
-        }
+    if (!node || (node.nodeType !== 1 && node.nodeType !== 11)) return;
+    if (node.nodeType === 1) {
+      const tag = node.tagName ? node.tagName.toUpperCase() : '';
+      if (BLOCKED_DYNAMIC_TAGS.has(tag)) {
+        node.remove();
+        reportGuard('dynamic-element-blocked', { tag: tag.toLowerCase() });
+        return;
       }
-    }
-    if (node.hasAttribute && node.hasAttribute('autofocus')) {
-      node.removeAttribute('autofocus');
+      if (tag === 'META' && isBlockedMetaNode(node)) {
+        const equiv = (node.getAttribute('http-equiv') || '').trim().toLowerCase();
+        const name = (node.getAttribute('name') || '').trim().toLowerCase();
+        node.remove();
+        reportGuard('dynamic-meta-blocked', { equiv: equiv || name });
+        return;
+      }
+      if (node.hasAttribute && node.hasAttribute('autofocus')) {
+        node.removeAttribute('autofocus');
+      }
     }
     if (typeof node.querySelectorAll === 'function') {
       node
@@ -1446,6 +1504,163 @@ export function initEmbedInnerGuard(config = {}, win = globalThis, doc = documen
           sanitizeInjectedNode(descendant);
         });
     }
+  }
+
+  function scrubNodeBeforeInsertion(node) {
+    if (!node || (node.nodeType !== 1 && node.nodeType !== 11)) return true;
+    if (node.nodeType === 1) {
+      const tag = node.tagName ? node.tagName.toUpperCase() : '';
+      if (BLOCKED_DYNAMIC_TAGS.has(tag)) {
+        reportGuard('dynamic-element-blocked', { tag: tag.toLowerCase() });
+        return false;
+      }
+      if (tag === 'META' && isBlockedMetaNode(node)) {
+        const equiv = (node.getAttribute('http-equiv') || '').trim().toLowerCase();
+        const name = (node.getAttribute('name') || '').trim().toLowerCase();
+        reportGuard('dynamic-meta-blocked', { equiv: equiv || name });
+        return false;
+      }
+      if (node.hasAttribute && node.hasAttribute('autofocus')) {
+        node.removeAttribute('autofocus');
+      }
+    }
+    if (typeof node.querySelectorAll === 'function') {
+      node
+        .querySelectorAll(
+          'base, iframe, frame, frameset, portal, object, embed, applet, meta[http-equiv], meta[name="referrer"], [autofocus]',
+        )
+        .forEach((descendant) => {
+          sanitizeInjectedNode(descendant);
+        });
+    }
+    return true;
+  }
+
+  // Block child-realm escapes synchronously before DOM insertion or contentWindow access.
+  if (win.HTMLIFrameElement?.prototype) {
+    patchAccessor(
+      [win.HTMLIFrameElement.prototype],
+      'contentWindow',
+      () => null,
+      undefined,
+    );
+    patchAccessor(
+      [win.HTMLIFrameElement.prototype],
+      'contentDocument',
+      () => null,
+      undefined,
+    );
+    patchMethod([win.HTMLIFrameElement.prototype], 'getSVGDocument', () => null);
+  }
+
+  if (win.Node?.prototype) {
+    const nativeAppendChild = win.Node.prototype.appendChild;
+    const nativeInsertBefore = win.Node.prototype.insertBefore;
+    const nativeReplaceChild = win.Node.prototype.replaceChild;
+
+    if (typeof nativeAppendChild === 'function') {
+      patchMethod([win.Node.prototype], 'appendChild', function guardedAppendChild(child) {
+        if (!scrubNodeBeforeInsertion(child)) return child;
+        return ReflectApply(nativeAppendChild, this, [child]);
+      });
+    }
+    if (typeof nativeInsertBefore === 'function') {
+      patchMethod([win.Node.prototype], 'insertBefore', function guardedInsertBefore(newNode, refNode) {
+        if (!scrubNodeBeforeInsertion(newNode)) return newNode;
+        return ReflectApply(nativeInsertBefore, this, [newNode, refNode]);
+      });
+    }
+    if (typeof nativeReplaceChild === 'function') {
+      patchMethod([win.Node.prototype], 'replaceChild', function guardedReplaceChild(newChild, oldChild) {
+        if (!scrubNodeBeforeInsertion(newChild)) return oldChild;
+        return ReflectApply(nativeReplaceChild, this, [newChild, oldChild]);
+      });
+    }
+  }
+
+  if (win.Element?.prototype) {
+    ['append', 'prepend', 'before', 'after', 'replaceWith'].forEach((methodName) => {
+      const nativeDomMethod = win.Element.prototype[methodName];
+      if (typeof nativeDomMethod !== 'function') return;
+      patchMethod([win.Element.prototype], methodName, function guardedDomInsert(...nodes) {
+        const safeNodes = nodes.filter((item) => scrubNodeBeforeInsertion(item));
+        return ReflectApply(nativeDomMethod, this, safeNodes);
+      });
+    });
+
+    const nativeInsertAdjacentElement =
+      win.Element.prototype.insertAdjacentElement;
+    if (typeof nativeInsertAdjacentElement === 'function') {
+      patchMethod(
+        [win.Element.prototype],
+        'insertAdjacentElement',
+        function guardedInsertAdjacentElement(position, element) {
+          if (!scrubNodeBeforeInsertion(element)) return null;
+          return ReflectApply(nativeInsertAdjacentElement, this, [
+            position,
+            element,
+          ]);
+        },
+      );
+    }
+
+    const nativeInsertAdjacentHTML = win.Element.prototype.insertAdjacentHTML;
+    if (typeof nativeInsertAdjacentHTML === 'function') {
+      patchMethod(
+        [win.Element.prototype],
+        'insertAdjacentHTML',
+        function guardedInsertAdjacentHTML(position, text) {
+          ReflectApply(nativeInsertAdjacentHTML, this, [position, text]);
+          sanitizeInjectedNode(this.parentNode || this);
+        },
+      );
+    }
+
+    const innerHtmlDesc = ObjectGetOwnPropertyDescriptor(
+      win.Element.prototype,
+      'innerHTML',
+    );
+    if (innerHtmlDesc?.set && innerHtmlDesc.configurable) {
+      patchAccessor(
+        [win.Element.prototype],
+        'innerHTML',
+        innerHtmlDesc.get,
+        function guardedInnerHtmlSetter(html) {
+          ReflectApply(innerHtmlDesc.set, this, [html]);
+          sanitizeInjectedNode(this);
+        },
+      );
+    }
+
+    const outerHtmlDesc = ObjectGetOwnPropertyDescriptor(
+      win.Element.prototype,
+      'outerHTML',
+    );
+    if (outerHtmlDesc?.set && outerHtmlDesc.configurable) {
+      patchAccessor(
+        [win.Element.prototype],
+        'outerHTML',
+        outerHtmlDesc.get,
+        function guardedOuterHtmlSetter(html) {
+          const parent = this.parentNode;
+          ReflectApply(outerHtmlDesc.set, this, [html]);
+          if (parent) sanitizeInjectedNode(parent);
+        },
+      );
+    }
+  }
+
+  if (win.Range?.prototype?.createContextualFragment) {
+    const nativeCreateFragment = win.Range.prototype.createContextualFragment;
+    patchMethod(
+      [win.Range.prototype],
+      'createContextualFragment',
+      function guardedCreateContextualFragment(fragmentString) {
+        const frag = ReflectApply(nativeCreateFragment, this, [fragmentString]);
+        scrubNodeBeforeInsertion(frag);
+        return frag;
+      },
+    );
   }
 
   if (typeof win.MutationObserver === 'function' && doc.documentElement) {

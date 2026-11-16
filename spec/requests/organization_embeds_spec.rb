@@ -160,7 +160,11 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(response.headers["X-Robots-Tag"]).to eq("noindex, nofollow, noarchive")
       expect(response.headers["X-DNS-Prefetch-Control"]).to eq("off")
       expect(response.headers["Vary"]).to include("Sec-Fetch-Dest", "Sec-Fetch-User")
-      expect(response.headers["Surrogate-Key"]).to include("show-page-#{embed_page.slug}", organization.record_key)
+      expect(response.headers["Surrogate-Key"]).to include(
+        "show-page-#{embed_page.slug}",
+        "embed-html-wrapper-#{Pages::EmbedHtmlWrapper.wrapper_digest}",
+        organization.record_key,
+      )
     end
 
     it "strips dangerous elements and attributes when serving wrapped embed HTML", :aggregate_failures do
@@ -221,6 +225,11 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
           params: { mode: "embed" },
           headers: { "Sec-Fetch-User" => "?1" }
       expect(response).to have_http_status(:forbidden)
+
+      get "/#{organization.slug}/embed/roi-calculator",
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe", "Sec-Fetch-User" => "?1" }
+      expect(response).to have_http_status(:ok)
     end
 
     it "returns 404 when the org_readme feature flag is disabled" do

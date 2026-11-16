@@ -104,8 +104,12 @@ RSpec.describe PageTag, type: :liquid_tag do
       expect(frameless_html).to include('data-sandboxed-embed="true"')
 
       auto_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator auto %}").finalize
-      expect(auto_html).to include('height="360px"')
+      expect(auto_html).to include("height=\"#{PageTag::DEFAULT_HEIGHT}\"")
       expect(auto_html).to include('data-auto-height="true"')
+
+      hinted_auto_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator 572 auto %}").finalize
+      expect(hinted_auto_html).to include('height="572px"')
+      expect(hinted_auto_html).to include('data-auto-height="true"')
 
       article_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator %}").finalize
       feed_html = ActionController::Base.helpers.sanitize(article_html, scrubber: FeedMarkdownScrubber.new)

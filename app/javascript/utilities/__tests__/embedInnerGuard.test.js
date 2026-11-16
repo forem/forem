@@ -265,11 +265,47 @@ describe('embedInnerGuard', () => {
     await expect(window.fetch('http://example.com/insecure')).rejects.toThrow(
       /blocked/i,
     );
+    await expect(
+      window.fetch('https://[::ffff:127.0.0.1]/secret'),
+    ).rejects.toThrow(/blocked/i);
+    await expect(
+      window.fetch('https://[::ffff:169.254.169.254]/latest/meta-data'),
+    ).rejects.toThrow(/blocked/i);
 
     await expect(window.fetch('https://api.github.com/zen')).resolves.toEqual({
       ok: true,
     });
     await expect(window.fetch('blob:null/123')).resolves.toEqual({ ok: true });
+
+    // Validate canonical URL string check.url is passed rather than mutable { toString } / { url } objects
+    const rawFetchSpy = jest.fn(() => Promise.resolve({ ok: true }));
+    controller.destroy();
+    global.fetch = rawFetchSpy;
+    mountGuard();
+
+    const spoofObj = {
+      url: 'https://api.github.com/zen',
+      toString() {
+        return 'https://dev.to/api/articles';
+      },
+    };
+    await expect(window.fetch(spoofObj)).rejects.toThrow(/blocked/i);
+    expect(rawFetchSpy).not.toHaveBeenCalled();
+
+    let swaps = 0;
+    const toctouUrl = {
+      toString() {
+        swaps += 1;
+        return swaps === 1
+          ? 'https://api.github.com/zen'
+          : 'https://dev.to/api/articles';
+      },
+    };
+    await expect(window.fetch(toctouUrl)).resolves.toEqual({ ok: true });
+    expect(rawFetchSpy).toHaveBeenCalledWith(
+      'https://api.github.com/zen',
+      undefined,
+    );
 
     const xhr = new window.XMLHttpRequest();
     expect(() => xhr.open('GET', 'https://api.github.com/zen', false)).toThrow(
@@ -320,6 +356,33 @@ describe('embedInnerGuard', () => {
     expect(
       hostMessages.some((m) => m.type === 'guard' && m.reason === 'error-loop'),
     ).toBe(true);
+
+    // Heavy-frame streak resets after throttling so subsequent reports require another full streak
+    controller?.destroy();
+    controller = null;
+    jest.useFakeTimers();
+    let nowMs = 1000;
+    const origPerfNow = window.performance.now;
+    window.performance.now = () => nowMs;
+    mountGuard({ limits: { maxLongTaskMs: 100, maxConsecutiveHeavyFrames: 2 } });
+    const heavyMsgs = [];
+    hostPort.onmessage = (e) => heavyMsgs.push(e.data);
+    window.setInterval(() => {
+      nowMs += 150;
+    }, 20);
+    jest.advanceTimersByTime(25);
+    jest.advanceTimersByTime(25);
+    await flushMicrotasks();
+    expect(
+      heavyMsgs.filter((m) => m.type === 'guard' && m.reason === 'heavy-frame'),
+    ).toHaveLength(1);
+    jest.advanceTimersByTime(520);
+    await flushMicrotasks();
+    // Only 1 more heavy frame ran since delay increased -> streak is 1 < 2, no duplicate report
+    expect(
+      heavyMsgs.filter((m) => m.type === 'guard' && m.reason === 'heavy-frame'),
+    ).toHaveLength(1);
+    window.performance.now = origPerfNow;
     controller?.destroy();
     controller = null;
     jest.useRealTimers();
@@ -401,10 +464,18 @@ describe('embedInnerGuard', () => {
     expect(submitEvent.defaultPrevented).toBe(true);
   });
 
-  it('strips dynamically injected dangerous tags and autofocus via MutationObserver', async () => {
+  it('blocks child iframe realms synchronously before insertion and strips injected dangerous tags', async () => {
     const badIframe = document.createElement('iframe');
     badIframe.src = 'https://evil.com';
     document.body.appendChild(badIframe);
+    // Blocked synchronously before MutationObserver microtasks run
+    expect(document.querySelector('iframe')).toBeNull();
+    expect(badIframe.contentWindow).toBeNull();
+
+    const container = document.createElement('div');
+    container.innerHTML = '<iframe src="about:blank"></iframe><p>safe</p>';
+    expect(container.querySelector('iframe')).toBeNull();
+    expect(container.querySelector('p')?.textContent).toBe('safe');
 
     const badMeta = document.createElement('meta');
     badMeta.setAttribute('http-equiv', 'refresh');

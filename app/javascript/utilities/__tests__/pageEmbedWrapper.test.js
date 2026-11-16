@@ -8,6 +8,7 @@ import {
   isPageEmbedFullscreenOpen,
   exitPageEmbedFullscreen,
 } from '@utilities/pageEmbedFullscreen';
+import { initializePageEmbedSandboxLoader } from '@utilities/pageEmbedSandboxLoader';
 
 class MockMessageChannel {
   constructor() {
@@ -150,7 +151,17 @@ describe('pageEmbedWrapper host coordination', () => {
       ),
     ).toBe(true);
 
-    // Auto-height resize message updates iframe height clamped to [150, 2000]
+    // Auto-height avoids micro-shrink CLS (572 vs 600 -> stays 600) but resizes genuine short/tall embeds
+    iframe.style.height = '600px';
+    iframe.setAttribute('height', '600px');
+    realChannel.port1.postMessage({ type: 'resize', height: 572 });
+    await flushMicrotasks();
+    expect(iframe.style.height).toBe('600px');
+
+    realChannel.port1.postMessage({ type: 'resize', height: 220 });
+    await flushMicrotasks();
+    expect(iframe.style.height).toBe('220px');
+
     realChannel.port1.postMessage({ type: 'resize', height: 512 });
     await flushMicrotasks();
     expect(iframe.style.height).toBe('512px');
@@ -305,6 +316,124 @@ describe('pageEmbedWrapper host coordination', () => {
 
     // Escape forwarded from inside iframe A cleanly exits fullscreen
     chA.port1.postMessage({ type: 'exit-fullscreen' });
+    await flushMicrotasks();
+    expect(isPageEmbedFullscreenOpen()).toBe(false);
+  });
+
+  it('matches root element when root itself is [data-sandboxed-embed="true"] and removes srcdoc on suspend', () => {
+    jest.useFakeTimers();
+    document.body.innerHTML = `
+      <div id="preview-pane" data-sandboxed-embed="true" data-embed-preview="true">
+        <div class="ltag__page-viewport">
+          <iframe srcdoc="<!DOCTYPE html><body>Preview</body>"></iframe>
+        </div>
+      </div>
+    `;
+    const previewPane = document.getElementById('preview-pane');
+    const iframe = previewPane.querySelector('iframe');
+    const fakeWin = mockContentWindow(iframe);
+
+    const initialized = initializeSandboxedEmbeds(previewPane);
+    expect(initialized).toHaveLength(1);
+    expect(getSandboxedEmbedState(previewPane)?.isSrcdocPreview).toBe(true);
+
+    const fakePort = {
+      postMessage: jest.fn(),
+      start: jest.fn(),
+      close: jest.fn(),
+      onmessage: null,
+    };
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        data: { __foremEmbed: 'boot', protocol: 1 },
+        source: fakeWin,
+        ports: [fakePort],
+      }),
+    );
+
+    jest.advanceTimersByTime(22000);
+    expect(previewPane.classList.contains('is-suspended')).toBe(true);
+    expect(iframe.hasAttribute('srcdoc')).toBe(false);
+    expect(iframe.getAttribute('src')).toBe('about:blank');
+  });
+
+  it('re-initializes after beforeunload teardown on persisted pageshow and uses i18n overlay labels', () => {
+    const i18nEl = document.createElement('div');
+    i18nEl.id = 'i18n-translations';
+    i18nEl.dataset.locale = 'fr';
+    i18nEl.dataset.translations = JSON.stringify({
+      fr: {
+        core: {
+          embed_sandbox: {
+            deferred_message: 'Widget différé FR',
+            load_widget: 'Charger FR',
+          },
+        },
+      },
+    });
+    document.body.appendChild(i18nEl);
+    document.body.insertAdjacentHTML(
+      'beforeend',
+      `${buildEmbedMarkup('bf-1')}${buildEmbedMarkup('bf-2')}`,
+    );
+
+    initializeSandboxedEmbeds(document, { maxConcurrent: 1 });
+    const deferred = document.getElementById('bf-2');
+    expect(deferred.querySelector('.ltag__page-overlay-message')?.textContent).toBe(
+      'Widget différé FR',
+    );
+    expect(deferred.querySelector('.ltag__page-overlay button')?.textContent).toBe(
+      'Charger FR',
+    );
+
+    globalThis.dispatchEvent(new Event('beforeunload'));
+    expect(getSandboxedEmbedState(document.getElementById('bf-1'))).toBeNull();
+
+    const pageShowEvt = new Event('pageshow');
+    Object.defineProperty(pageShowEvt, 'persisted', { value: true });
+    globalThis.dispatchEvent(pageShowEvt);
+
+    expect(
+      getSandboxedEmbedState(document.getElementById('bf-1')),
+    ).not.toBeNull();
+  });
+
+  it('coordinates fullscreen bridge even when fullscreen initializes before sandbox boot and loader matches root', async () => {
+    delete globalThis.__foremInitSandboxedEmbeds;
+    delete globalThis.__foremInitEmbedEditors;
+    delete globalThis.__foremPageEmbedCoordinatorBridge;
+
+    document.body.innerHTML = buildEmbedMarkup('bridge-1');
+    const embedEl = document.getElementById('bridge-1');
+    const win = mockContentWindow(embedEl.querySelector('iframe'));
+
+    // Fullscreen pack boots first without pageEmbedSandbox loaded yet
+    initializePageEmbedFullscreen(document);
+    embedEl.querySelector('.js-fullscreen-page-action').click();
+    expect(isPageEmbedFullscreenOpen()).toBe(true);
+
+    // Sandbox loader detects root-level embed and initializes single coordinator
+    globalThis.__foremInitSandboxedEmbeds = initializeSandboxedEmbeds;
+    globalThis.__foremInitEmbedEditors = jest.fn();
+    initializePageEmbedSandboxLoader(embedEl);
+
+    const ch = new MockMessageChannel();
+    const msgs = [];
+    ch.port1.onmessage = (e) => msgs.push(e.data);
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        data: { __foremEmbed: 'boot', protocol: 1 },
+        source: win,
+        ports: [ch.port2],
+      }),
+    );
+    await flushMicrotasks();
+
+    expect(msgs.some((m) => m.type === 'state' && m.fullscreen === true)).toBe(
+      true,
+    );
+
+    ch.port1.postMessage({ type: 'exit-fullscreen' });
     await flushMicrotasks();
     expect(isPageEmbedFullscreenOpen()).toBe(false);
   });

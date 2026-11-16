@@ -7,6 +7,8 @@
     <div class="flex gap-1" role="tablist">
       <button type="button"
               id="<%= prefix %>-embed-tab-edit"
+              role="tab"
+              aria-controls="<%= prefix %>-embed-edit-pane"
               data-embed-tab="edit"
               class="crayons-btn crayons-btn--secondary crayons-btn--s"
               aria-selected="true">
@@ -14,6 +16,8 @@
       </button>
       <button type="button"
               id="<%= prefix %>-embed-tab-preview"
+              role="tab"
+              aria-controls="<%= prefix %>-embed-preview-pane"
               data-embed-tab="preview"
               class="crayons-btn crayons-btn--ghost crayons-btn--s"
               aria-selected="false">
@@ -22,7 +26,10 @@
     </div>
   </div>
 
-  <div id="<%= prefix %>-embed-edit-pane" data-embed-pane="edit">
+  <div id="<%= prefix %>-embed-edit-pane"
+       role="tabpanel"
+       aria-labelledby="<%= prefix %>-embed-tab-edit"
+       data-embed-pane="edit">
     <%= f.text_area :body_html,
                     id: "#{prefix}_embed_body_html",
                     data: { embed_input: "body_html" },
@@ -33,6 +40,8 @@
   </div>
 
   <div id="<%= prefix %>-embed-preview-pane"
+       role="tabpanel"
+       aria-labelledby="<%= prefix %>-embed-tab-preview"
        data-embed-pane="preview"
        data-sandboxed-embed="true"
        data-embed-preview="true"

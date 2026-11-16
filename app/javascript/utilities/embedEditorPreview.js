@@ -1,18 +1,25 @@
+import { locale } from './locale';
 import {
   initializeSandboxedEmbeds,
   prepareEmbedPreviewReload,
 } from './pageEmbedWrapper';
 
-function getCsrfTokenValue() {
+function tPreview(key, fallback) {
+  const translated = locale(`core.embed_sandbox.${key}`);
+  return translated.startsWith('[missing ') ? fallback : translated;
+}
+
+async function getCsrfTokenValue() {
+  const metaToken = document
+    .querySelector('meta[name="csrf-token"]')
+    ?.getAttribute('content');
+  if (metaToken) return metaToken;
+
   if (typeof globalThis.getCsrfToken === 'function') {
-    const token = globalThis.getCsrfToken();
-    if (token) return token;
+    const token = await globalThis.getCsrfToken();
+    if (typeof token === 'string' && token) return token;
   }
-  return (
-    document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute('content') || ''
-  );
+  return '';
 }
 
 export function initializeEmbedEditorPreviews(root = document) {
@@ -71,21 +78,36 @@ export function initializeEmbedEditorPreviews(root = document) {
       if (!previewUrl) return;
 
       try {
+        const csrfToken = await getCsrfTokenValue();
+        if (currentReq !== requestCounter) return;
+
         const response = await fetch(previewUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            'X-CSRF-Token': getCsrfTokenValue(),
+            'X-CSRF-Token': csrfToken,
           },
           credentials: 'same-origin',
           body: JSON.stringify({ body_html: textarea.value || '' }),
         });
 
         if (currentReq !== requestCounter) return;
-        const payload = await response.json();
-        if (!response.ok || typeof payload.wrapped_html !== 'string') {
-          throw new Error(payload?.error || 'Unable to render preview');
+
+        let payload = null;
+        try {
+          payload = await response.json();
+        } catch (_parseErr) {
+          payload = null;
+        }
+        if (currentReq !== requestCounter) return;
+
+        if (!response.ok || typeof payload?.wrapped_html !== 'string') {
+          const failure = new Error('Unable to render preview');
+          if (typeof payload?.error === 'string' && payload.error) {
+            failure.serverMessage = payload.error;
+          }
+          throw failure;
         }
 
         initializeSandboxedEmbeds(previewPane);
@@ -93,13 +115,17 @@ export function initializeEmbedEditorPreviews(root = document) {
           loadPreview();
         });
         frame.srcdoc = payload.wrapped_html;
-      } catch (_err) {
+      } catch (err) {
         if (currentReq !== requestCounter) return;
         frame.srcdoc = '';
         if (errorNotice) {
           errorNotice.textContent =
+            (err && err.serverMessage) ||
             errorNotice.dataset.defaultError ||
-            'Unable to render sandboxed preview right now.';
+            tPreview(
+              'preview_error',
+              'Unable to render sandboxed preview right now.',
+            );
           errorNotice.classList.remove('hidden');
         }
       }

@@ -1,5 +1,8 @@
 import { initializeEmbedEditorPreviews } from '@utilities/embedEditorPreview';
-import { destroyAllPageEmbedWrappers } from '@utilities/pageEmbedWrapper';
+import {
+  destroyAllPageEmbedWrappers,
+  getSandboxedEmbedState,
+} from '@utilities/pageEmbedWrapper';
 
 function flushMicrotasks() {
   return new Promise((resolve) => setTimeout(resolve, 0));
@@ -11,7 +14,8 @@ describe('embedEditorPreview', () => {
   beforeEach(() => {
     destroyAllPageEmbedWrappers();
     originalFetch = global.fetch;
-    global.getCsrfToken = () => 'csrf-secret-token';
+    global.getCsrfToken = jest.fn(() => Promise.resolve('csrf-secret-token'));
+    document.head.innerHTML = '';
     document.body.innerHTML = `
       <div id="user-embed-html-editor" data-embed-editor="true" data-preview-url="/dashboard/embed_pages/preview">
         <button type="button" data-embed-tab="edit" aria-selected="true">Edit</button>
@@ -32,12 +36,15 @@ describe('embedEditorPreview', () => {
   afterEach(() => {
     destroyAllPageEmbedWrappers();
     global.fetch = originalFetch;
+    document.head.innerHTML = '';
+    document.body.innerHTML = '';
     delete global.getCsrfToken;
   });
 
-  it('fetches server-wrapped HTML instead of writing raw untrusted HTML into srcdoc', async () => {
+  it('awaits async getCsrfToken and fetches server-wrapped HTML instead of writing raw untrusted HTML into srcdoc', async () => {
     const textarea = document.querySelector('[data-embed-input="body_html"]');
     const previewBtn = document.querySelector('[data-embed-tab="preview"]');
+    const previewPane = document.querySelector('[data-embed-pane="preview"]');
     const frame = document.querySelector('[data-embed-preview-frame="true"]');
 
     textarea.value = '<meta http-equiv="refresh" content="0;url=https://evil.com"><p>Widget</p>';
@@ -53,6 +60,7 @@ describe('embedEditorPreview', () => {
     previewBtn.click();
     await flushMicrotasks();
 
+    expect(global.getCsrfToken).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
       '/dashboard/embed_pages/preview',
       expect.objectContaining({
@@ -62,14 +70,44 @@ describe('embedEditorPreview', () => {
     );
     expect(frame.srcdoc).toContain('data-forem-embed="1"');
     expect(frame.srcdoc).not.toContain('http-equiv="refresh"');
+    expect(getSandboxedEmbedState(previewPane)?.isSrcdocPreview).toBe(true);
   });
 
-  it('shows a safe error notice and clears srcdoc if preview request fails', async () => {
+  it('prefers synchronous meta[name="csrf-token"] without calling async getCsrfToken', async () => {
+    document.head.innerHTML = '<meta name="csrf-token" content="meta-csrf-token">';
+    const previewBtn = document.querySelector('[data-embed-tab="preview"]');
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ wrapped_html: '<!DOCTYPE html><html></html>' }),
+      }),
+    );
+
+    initializeEmbedEditorPreviews(document);
+    previewBtn.click();
+    await flushMicrotasks();
+
+    expect(global.getCsrfToken).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/dashboard/embed_pages/preview',
+      expect.objectContaining({
+        headers: expect.objectContaining({ 'X-CSRF-Token': 'meta-csrf-token' }),
+      }),
+    );
+  });
+
+  it('surfaces localized server JSON errors on 422 responses and falls back on network failure', async () => {
     const previewBtn = document.querySelector('[data-embed-tab="preview"]');
     const frame = document.querySelector('[data-embed-preview-frame="true"]');
     const errorNotice = document.querySelector('[data-embed-preview-error="true"]');
 
-    global.fetch = jest.fn(() => Promise.reject(new Error('network down')));
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 422,
+        json: () => Promise.resolve({ error: 'Body HTML is too large (maximum 100 KB)' }),
+      }),
+    );
 
     initializeEmbedEditorPreviews(document);
     previewBtn.click();
@@ -77,6 +115,13 @@ describe('embedEditorPreview', () => {
 
     expect(frame.srcdoc).toBe('');
     expect(errorNotice.classList.contains('hidden')).toBe(false);
+    expect(errorNotice.textContent).toBe('Body HTML is too large (maximum 100 KB)');
+
+    global.fetch = jest.fn(() => Promise.reject(new Error('network down')));
+    previewBtn.click();
+    await flushMicrotasks();
+
+    expect(frame.srcdoc).toBe('');
     expect(errorNotice.textContent).toBe('Preview failed');
   });
 });

@@ -83,6 +83,9 @@ fr:
         new: "💬 Nouveau commentaire"
       new_mention:
         new: "🗣️ Nouvelle mention"
+    pages:
+      embed_html_wrapper:
+        complexity_fallback: "Ce widget intégré dépasse les limites de complexité HTML autorisées et ne peut pas être affiché."
     payments:
       customer:
         usd: usd

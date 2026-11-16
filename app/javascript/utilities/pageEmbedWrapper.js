@@ -1,3 +1,5 @@
+import { locale } from './locale';
+
 const SANDBOXED_EMBED_SELECTOR =
   '[data-sandboxed-embed="true"], .js-sandboxed-embed';
 const MAX_CONCURRENT_EMBEDS = 8;
@@ -6,15 +8,55 @@ const UNRESPONSIVE_TIMEOUT_MS = 6000;
 const AUTO_SUSPEND_TIMEOUT_MS = 15000;
 const MIN_EMBED_HEIGHT = 150;
 const MAX_EMBED_HEIGHT = 2000;
+const AUTO_HEIGHT_SHRINK_TOLERANCE = 48;
+const STATE_KEY = '__foremPageEmbedState';
+const COORDINATOR_BRIDGE_KEY = '__foremPageEmbedCoordinatorBridge';
 
-const controllers = new Map();
-let intersectionObserver = null;
-let themeObserver = null;
-let heartbeatTimer = null;
-let globalListenersBound = false;
-let instantClickCleanupBound = false;
-let currentFullscreenEmbed = null;
-let exitFullscreenCallback = null;
+function getState() {
+  if (!globalThis[STATE_KEY]) {
+    globalThis[STATE_KEY] = {
+      controllers: new Map(),
+      intersectionObserver: null,
+      themeObserver: null,
+      heartbeatTimer: null,
+      globalListenersBound: false,
+      instantClickCleanupBound: false,
+      pageShowBound: false,
+      currentFullscreenEmbed: null,
+      exitFullscreenCallback: null,
+    };
+  }
+  return globalThis[STATE_KEY];
+}
+
+function getCoordinatorBridge() {
+  if (!globalThis[COORDINATOR_BRIDGE_KEY]) {
+    globalThis[COORDINATOR_BRIDGE_KEY] = {
+      exitFullscreenCallback: null,
+      currentFullscreenEmbed: null,
+      notifyFullscreenChange: null,
+    };
+  }
+  return globalThis[COORDINATOR_BRIDGE_KEY];
+}
+
+const state = getState();
+const controllers = state.controllers;
+
+function tEmbed(key, fallback) {
+  const translated = locale(`core.embed_sandbox.${key}`);
+  return translated.startsWith('[missing ') ? fallback : translated;
+}
+
+function getCurrentFullscreenEmbed() {
+  const bridge = getCoordinatorBridge();
+  return bridge.currentFullscreenEmbed ?? state.currentFullscreenEmbed;
+}
+
+function getExitFullscreenCallback() {
+  const bridge = getCoordinatorBridge();
+  return bridge.exitFullscreenCallback || state.exitFullscreenCallback;
+}
 
 function nowMs() {
   if (
@@ -69,7 +111,8 @@ function computeIsActive(controller) {
   if (document.hidden) {
     return false;
   }
-  if (currentFullscreenEmbed && currentFullscreenEmbed !== controller.embedEl) {
+  const fullscreenEmbed = getCurrentFullscreenEmbed();
+  if (fullscreenEmbed && fullscreenEmbed !== controller.embedEl) {
     return false;
   }
   return controller.inViewport;
@@ -79,7 +122,7 @@ function postStateToController(controller) {
   if (!controller?.port) return;
   const { theme, tokens } = readHostTheme();
   const active = computeIsActive(controller);
-  const fullscreen = currentFullscreenEmbed === controller.embedEl;
+  const fullscreen = getCurrentFullscreenEmbed() === controller.embedEl;
   controller.lastSentActive = active;
 
   try {
@@ -166,6 +209,9 @@ function suspendController(controller, reasonText, buttonLabel) {
 
   if (controller.iframe) {
     controller.expectingReload = true;
+    if (controller.isSrcdocPreview || controller.iframe.hasAttribute('srcdoc')) {
+      controller.iframe.removeAttribute('srcdoc');
+    }
     controller.iframe.setAttribute('src', 'about:blank');
   }
 
@@ -207,10 +253,10 @@ export function reloadSandboxedEmbed(embedEl) {
   if (targetSrc && targetSrc !== 'about:blank') {
     delete controller.iframe.dataset.deferredSrc;
     if (
-      intersectionObserver &&
-      typeof intersectionObserver.observe === 'function'
+      state.intersectionObserver &&
+      typeof state.intersectionObserver.observe === 'function'
     ) {
-      intersectionObserver.observe(controller.embedEl);
+      state.intersectionObserver.observe(controller.embedEl);
     }
     controller.iframe.setAttribute('src', targetSrc);
   }
@@ -226,11 +272,14 @@ function deferControllerLoad(controller) {
   controller.suspended = true;
   controller.embedEl.classList.add('is-suspended');
   renderOverlay(controller, {
-    message: 'Interactive widget deferred to keep page performance smooth.',
+    message: tEmbed(
+      'deferred_message',
+      'Interactive widget deferred to keep page performance smooth.',
+    ),
     tone: 'neutral',
     actions: [
       {
-        label: 'Load widget',
+        label: tEmbed('load_widget', 'Load widget'),
         variant: 'secondary',
         onClick: () => reloadSandboxedEmbed(controller.embedEl),
       },
@@ -273,11 +322,12 @@ function handlePortMessage(controller, event) {
       applyAutoHeight(controller, data.height);
     }
   } else if (data.type === 'exit-fullscreen') {
+    const exitCb = getExitFullscreenCallback();
     if (
-      currentFullscreenEmbed === controller.embedEl &&
-      typeof exitFullscreenCallback === 'function'
+      getCurrentFullscreenEmbed() === controller.embedEl &&
+      typeof exitCb === 'function'
     ) {
-      exitFullscreenCallback({ restoreScroll: true, restoreFocus: true });
+      exitCb({ restoreScroll: true, restoreFocus: true });
     }
   } else if (data.type === 'guard') {
     controller.guardCount += 1;
@@ -287,16 +337,19 @@ function handlePortMessage(controller, event) {
       data.reason === 'heavy-frame'
     ) {
       renderOverlay(controller, {
-        message: 'Widget was throttled by performance protection.',
+        message: tEmbed(
+          'throttled_message',
+          'Widget was throttled by performance protection.',
+        ),
         tone: 'warning',
         actions: [
           {
-            label: 'Reload widget',
+            label: tEmbed('reload_widget', 'Reload widget'),
             variant: 'secondary',
             onClick: () => reloadSandboxedEmbed(controller.embedEl),
           },
           {
-            label: 'Dismiss',
+            label: tEmbed('dismiss', 'Dismiss'),
             variant: 'ghost',
             onClick: () => clearOverlay(controller),
           },
@@ -307,13 +360,27 @@ function handlePortMessage(controller, event) {
 }
 
 function applyAutoHeight(controller, rawHeight) {
-  if (!controller.iframe || currentFullscreenEmbed === controller.embedEl) {
+  if (
+    !controller.iframe ||
+    getCurrentFullscreenEmbed() === controller.embedEl
+  ) {
     return;
   }
   const clamped = Math.max(
     MIN_EMBED_HEIGHT,
     Math.min(MAX_EMBED_HEIGHT, Math.round(rawHeight)),
   );
+  const currentHeight = parseInt(
+    controller.iframe.style.height || controller.iframe.getAttribute('height'),
+    10,
+  );
+  if (
+    Number.isFinite(currentHeight) &&
+    clamped <= currentHeight &&
+    currentHeight - clamped <= AUTO_HEIGHT_SHRINK_TOLERANCE
+  ) {
+    return;
+  }
   controller.iframe.style.height = `${clamped}px`;
   controller.iframe.setAttribute('height', `${clamped}px`);
 }
@@ -362,8 +429,11 @@ function runHeartbeatTick() {
     ) {
       suspendController(
         controller,
-        'This widget stopped responding and was paused to keep your browser smooth.',
-        'Reload widget',
+        tEmbed(
+          'stopped_responding',
+          'This widget stopped responding and was paused to keep your browser smooth.',
+        ),
+        tEmbed('reload_widget', 'Reload widget'),
       );
       return;
     }
@@ -376,21 +446,24 @@ function runHeartbeatTick() {
       controller.unresponsive = true;
       controller.embedEl.classList.add('is-unresponsive');
       renderOverlay(controller, {
-        message: 'This widget is taking too long to respond.',
+        message: tEmbed(
+          'slow_responding',
+          'This widget is taking too long to respond.',
+        ),
         tone: 'warning',
         actions: [
           {
-            label: 'Pause',
+            label: tEmbed('pause', 'Pause'),
             variant: 'secondary',
             onClick: () =>
               suspendController(
                 controller,
-                'Widget paused.',
-                'Resume widget',
+                tEmbed('paused', 'Widget paused.'),
+                tEmbed('resume_widget', 'Resume widget'),
               ),
           },
           {
-            label: 'Reload',
+            label: tEmbed('reload', 'Reload'),
             variant: 'primary',
             onClick: () => reloadSandboxedEmbed(controller.embedEl),
           },
@@ -411,23 +484,37 @@ function runHeartbeatTick() {
 }
 
 function ensureGlobalInfrastructure() {
-  if (!globalListenersBound) {
-    globalListenersBound = true;
+  getCoordinatorBridge().notifyFullscreenChange = notifyEmbedFullscreenChange;
+
+  if (!state.globalListenersBound) {
+    state.globalListenersBound = true;
     globalThis.addEventListener('message', onGlobalMessage);
     globalThis.addEventListener('beforeunload', destroyAllPageEmbedWrappers);
     document.addEventListener('visibilitychange', broadcastThemeAndState);
     document.addEventListener('click', onGlobalActionClick);
   }
 
-  if (!heartbeatTimer) {
-    heartbeatTimer = globalThis.setInterval(
+  if (!state.pageShowBound) {
+    state.pageShowBound = true;
+    globalThis.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        initializeSandboxedEmbeds(document);
+      }
+    });
+  }
+
+  if (!state.heartbeatTimer) {
+    state.heartbeatTimer = globalThis.setInterval(
       runHeartbeatTick,
       HEARTBEAT_INTERVAL_MS,
     );
   }
 
-  if (!intersectionObserver && typeof globalThis.IntersectionObserver === 'function') {
-    intersectionObserver = new globalThis.IntersectionObserver(
+  if (
+    !state.intersectionObserver &&
+    typeof globalThis.IntersectionObserver === 'function'
+  ) {
+    state.intersectionObserver = new globalThis.IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const controller = controllers.get(entry.target);
@@ -444,25 +531,25 @@ function ensureGlobalInfrastructure() {
   }
 
   if (
-    !themeObserver &&
+    !state.themeObserver &&
     typeof globalThis.MutationObserver === 'function' &&
     document.body
   ) {
-    themeObserver = new globalThis.MutationObserver(() => {
+    state.themeObserver = new globalThis.MutationObserver(() => {
       broadcastThemeAndState();
     });
-    themeObserver.observe(document.body, {
+    state.themeObserver.observe(document.body, {
       attributes: true,
       attributeFilter: ['class'],
     });
   }
 
   if (
-    !instantClickCleanupBound &&
+    !state.instantClickCleanupBound &&
     typeof globalThis.InstantClick !== 'undefined' &&
     typeof globalThis.InstantClick.on === 'function'
   ) {
-    instantClickCleanupBound = true;
+    state.instantClickCleanupBound = true;
     globalThis.InstantClick.on('change', () => {
       destroyAllPageEmbedWrappers();
       initializeSandboxedEmbeds(document);
@@ -499,8 +586,11 @@ function bindIframeLoadListener(controller) {
     ) {
       suspendController(
         controller,
-        'Navigation inside this embedded widget was blocked for your security.',
-        'Reload widget',
+        tEmbed(
+          'navigation_blocked',
+          'Navigation inside this embedded widget was blocked for your security.',
+        ),
+        tEmbed('reload_widget', 'Reload widget'),
       );
       return;
     }
@@ -512,11 +602,15 @@ function bindIframeLoadListener(controller) {
 }
 
 export function registerFullscreenExitHandler(callback) {
-  exitFullscreenCallback = typeof callback === 'function' ? callback : null;
+  const fn = typeof callback === 'function' ? callback : null;
+  state.exitFullscreenCallback = fn;
+  getCoordinatorBridge().exitFullscreenCallback = fn;
 }
 
 export function notifyEmbedFullscreenChange(openEmbedEl) {
-  currentFullscreenEmbed = openEmbedEl || null;
+  const target = openEmbedEl || null;
+  state.currentFullscreenEmbed = target;
+  getCoordinatorBridge().currentFullscreenEmbed = target;
   broadcastThemeAndState();
 }
 
@@ -536,14 +630,32 @@ export function initializeSandboxedEmbeds(root = document, options = {}) {
   if (!globalThis.__foremInitSandboxedEmbeds) {
     globalThis.__foremInitSandboxedEmbeds = initializeSandboxedEmbeds;
   }
-  if (!root || typeof root.querySelectorAll !== 'function') return [];
+  getCoordinatorBridge().notifyFullscreenChange = notifyEmbedFullscreenChange;
+
+  if (
+    !root ||
+    (typeof root.querySelectorAll !== 'function' &&
+      typeof root.matches !== 'function')
+  ) {
+    return [];
+  }
 
   const maxConcurrent =
     typeof options.maxConcurrent === 'number'
       ? options.maxConcurrent
       : MAX_CONCURRENT_EMBEDS;
 
-  const embedEls = Array.from(root.querySelectorAll(SANDBOXED_EMBED_SELECTOR));
+  const embedEls =
+    typeof root.querySelectorAll === 'function'
+      ? Array.from(root.querySelectorAll(SANDBOXED_EMBED_SELECTOR))
+      : [];
+  if (
+    typeof root.matches === 'function' &&
+    root.matches(SANDBOXED_EMBED_SELECTOR) &&
+    !embedEls.includes(root)
+  ) {
+    embedEls.unshift(root);
+  }
   if (embedEls.length === 0) return [];
 
   ensureGlobalInfrastructure();
@@ -593,8 +705,11 @@ export function initializeSandboxedEmbeds(root = document, options = {}) {
       deferControllerLoad(controller);
     } else {
       activeCount += 1;
-      if (intersectionObserver && typeof intersectionObserver.observe === 'function') {
-        intersectionObserver.observe(embedEl);
+      if (
+        state.intersectionObserver &&
+        typeof state.intersectionObserver.observe === 'function'
+      ) {
+        state.intersectionObserver.observe(embedEl);
       }
       sendDiscoverPing(controller);
     }
@@ -609,29 +724,30 @@ export function destroyAllPageEmbedWrappers() {
     clearOverlay(controller);
   });
   controllers.clear();
-  currentFullscreenEmbed = null;
+  state.currentFullscreenEmbed = null;
+  getCoordinatorBridge().currentFullscreenEmbed = null;
 
-  if (intersectionObserver) {
-    if (typeof intersectionObserver.disconnect === 'function') {
-      intersectionObserver.disconnect();
+  if (state.intersectionObserver) {
+    if (typeof state.intersectionObserver.disconnect === 'function') {
+      state.intersectionObserver.disconnect();
     }
-    intersectionObserver = null;
+    state.intersectionObserver = null;
   }
 
-  if (themeObserver) {
-    if (typeof themeObserver.disconnect === 'function') {
-      themeObserver.disconnect();
+  if (state.themeObserver) {
+    if (typeof state.themeObserver.disconnect === 'function') {
+      state.themeObserver.disconnect();
     }
-    themeObserver = null;
+    state.themeObserver = null;
   }
 
-  if (heartbeatTimer) {
-    globalThis.clearInterval(heartbeatTimer);
-    heartbeatTimer = null;
+  if (state.heartbeatTimer) {
+    globalThis.clearInterval(state.heartbeatTimer);
+    state.heartbeatTimer = null;
   }
 
-  if (globalListenersBound) {
-    globalListenersBound = false;
+  if (state.globalListenersBound) {
+    state.globalListenersBound = false;
     globalThis.removeEventListener('message', onGlobalMessage);
     globalThis.removeEventListener('beforeunload', destroyAllPageEmbedWrappers);
     document.removeEventListener('visibilitychange', broadcastThemeAndState);

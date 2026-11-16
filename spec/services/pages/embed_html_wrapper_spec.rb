@@ -125,13 +125,23 @@ RSpec.describe Pages::EmbedHtmlWrapper do
       deep_html = "#{'<div>' * 300}deep#{'</div>' * 300}"
       wrapped = described_class.call(deep_html, blocked_hosts: ["dev.to"], local_http: false)
 
-      expect(wrapped).to include("exceeds safe HTML complexity limits")
+      expect(wrapped).to include(I18n.t("services.pages.embed_html_wrapper.complexity_fallback"))
+      expect(wrapped).to include('<html lang="en" data-forem-embed="1"')
       expect(described_class.validate_complexity(deep_html)).to eq(:too_deep)
 
       stub_const("Pages::EmbedHtmlWrapper::MAX_DOM_NODES", 5)
       many_nodes = "<div><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>"
       expect(described_class.validate_complexity(many_nodes)).to eq(:too_many_nodes)
-      expect(described_class.call(many_nodes)).to include("exceeds safe HTML complexity limits")
+      expect(described_class.call(many_nodes)).to include(
+        I18n.t("services.pages.embed_html_wrapper.complexity_fallback"),
+      )
+    end
+
+    it "propagates unrelated ArgumentError exceptions from tree sanitization" do
+      wrapper = described_class.new("<p>Hello</p>", blocked_hosts: [], local_http: false)
+      allow(wrapper).to receive(:sanitize_tree!).and_raise(ArgumentError, "unexpected bug")
+
+      expect { wrapper.call }.to raise_error(ArgumentError, "unexpected bug")
     end
   end
 

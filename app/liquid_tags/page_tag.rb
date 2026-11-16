@@ -1,7 +1,7 @@
 class PageTag < LiquidTagBase
   PARTIAL = "liquids/page".freeze
   DEFAULT_HEIGHT = "600px".freeze
-  AUTO_INITIAL_HEIGHT = "360px".freeze
+  AUTO_INITIAL_HEIGHT = DEFAULT_HEIGHT
   LANDSCAPE_HEIGHT = "400px".freeze
   PORTRAIT_HEIGHT = "900px".freeze
   MIN_HEIGHT = 150
@@ -435,8 +435,11 @@ class PageTag < LiquidTagBase
     @attribution = @in_article ? self.class.build_attribution(target) : nil
     options = args.drop(1)
     @frameless = options.any? { |option| option.casecmp?(FRAMELESS_OPTION) }
-    height_option = options.detect { |option| !option.casecmp?(FRAMELESS_OPTION) }
-    @auto_height = @sandboxed && height_option.present? && AUTO_HEIGHT_OPTIONS.include?(height_option.strip.downcase)
+    @auto_height = @sandboxed && options.any? { |option| AUTO_HEIGHT_OPTIONS.include?(option.strip.downcase) }
+    height_option = options.detect do |option|
+      normalized = option.strip.downcase
+      normalized != FRAMELESS_OPTION && AUTO_HEIGHT_OPTIONS.exclude?(normalized)
+    end
     @height = parse_height(height_option)
   end
 

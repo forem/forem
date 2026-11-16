@@ -4,11 +4,23 @@ const SANDBOXED_EMBED_SELECTOR =
   '[data-sandboxed-embed="true"], .js-sandboxed-embed';
 const EMBED_EDITOR_SELECTOR = '[data-embed-editor="true"]';
 
+function rootHasMatch(root, selector) {
+  if (!root) return false;
+  if (typeof root.matches === 'function' && root.matches(selector)) {
+    return true;
+  }
+  return (
+    typeof root.querySelector === 'function' &&
+    Boolean(root.querySelector(selector))
+  );
+}
+
 const sandboxLoader = createAssetBundleLoader({
   metaName: 'page-embed-sandbox-script',
   fallbackSrc: '/assets/pageEmbedSandbox.js',
   dataAttribute: 'pageEmbedSandboxLoaded',
   getReadyValue: () =>
+    typeof window.__foremInitSandboxedEmbeds === 'function' &&
     typeof window.__foremInitEmbedEditors === 'function'
       ? window.__foremInitSandboxedEmbeds
       : null,
@@ -16,10 +28,12 @@ const sandboxLoader = createAssetBundleLoader({
 });
 
 export function initializePageEmbedSandboxLoader(root = document) {
-  if (typeof root?.querySelector !== 'function') return;
+  if (!root || (typeof root.querySelector !== 'function' && typeof root.matches !== 'function')) {
+    return;
+  }
 
-  const hasEmbed = Boolean(root.querySelector(SANDBOXED_EMBED_SELECTOR));
-  const hasEditor = Boolean(root.querySelector(EMBED_EDITOR_SELECTOR));
+  const hasEmbed = rootHasMatch(root, SANDBOXED_EMBED_SELECTOR);
+  const hasEditor = rootHasMatch(root, EMBED_EDITOR_SELECTOR);
   if (!hasEmbed && !hasEditor) return;
 
   const embedsReady = typeof window.__foremInitSandboxedEmbeds === 'function';
