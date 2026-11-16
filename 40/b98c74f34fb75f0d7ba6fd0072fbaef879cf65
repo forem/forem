@@ -1,0 +1,68 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 82-83,93,166-200,887-894,896,902,908-914
+app/helpers/application_helper.rb
+  h_f968154a99632d 501-514,605-606
+app/lib/org_custom_domain_constraint.rb
+  h_f968154a99632d 20
+app/models/organization.rb
+  h_f968154a99632d 50,52,413-437
+app/services/fastly_config/custom_domain_dictionary.rb
+  h_f968154a99632d 1-246
+app/services/fastly_config/dictionaries.rb
+  h_f968154a99632d 1-49
+app/services/fastly_config/snippets.rb
+  h_f968154a99632d 15,24,26,32,55-57,60-70,74-78,80-81,83
+app/services/fastly_config/update.rb
+  h_f968154a99632d 4
+app/views/layouts/_bottom_scripts.html.erb
+  h_f968154a99632d 27-29
+app/views/layouts/application.html.erb
+  h_f968154a99632d 129-141,143,228
+app/views/users/_meta.html.erb
+  h_f968154a99632d 1-2,7
+app/workers/organizations/sync_custom_domain_dictionary_worker.rb
+  h_f968154a99632d 1-21
+config/fastly/snippets/check_for_remember_user_token_in_cookie_to_set_header.vcl
+  h_f968154a99632d 2-15,22-23,26-27,64-249,258-286,317-324
+config/fastly/snippets/safe_params_list.vcl
+  h_f968154a99632d 4-5
+config/initializers/flipper.rb
+  h_f968154a99632d 1-6
+lib/flipper_org_custom_domain_sync.rb
+  h_f968154a99632d 1-69
+lib/tasks/fastly.rake
+  h_f968154a99632d 19,22-31
+spec/initializers/flipper_spec.rb
+  h_f968154a99632d 35-68
+spec/lib/org_custom_domain_constraint_spec.rb
+  h_f968154a99632d 117-130
+spec/models/organization_custom_domain_dictionary_spec.rb
+  h_f968154a99632d 1-53
+spec/requests/custom_domain_auth_redirect_spec.rb
+  h_f968154a99632d 61-76
+spec/requests/custom_domain_redirect_spec.rb
+  h_f968154a99632d 128-137
+spec/requests/org_custom_domain_spec.rb
+  h_f968154a99632d 225-260,292-308
+spec/services/fastly_config/custom_domain_dictionary_spec.rb
+  h_f968154a99632d 1-134
+spec/services/fastly_config/dictionaries_spec.rb
+  h_f968154a99632d 1-71
+spec/services/fastly_config/snippets_spec.rb
+  h_f968154a99632d 50-77,107-110,114-120
+spec/services/fastly_config/update_spec.rb
+  h_f968154a99632d 35-38
+spec/workers/organizations/sync_custom_domain_dictionary_worker_spec.rb
+  h_f968154a99632d 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "40b98c74f34fb75f0d7ba6fd0072fbaef879cf65",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
