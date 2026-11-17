@@ -109,7 +109,7 @@ module Api
         # Authenticator links accounts by email, so only a Google-verified address
         # may be trusted (mirrors omniauth-google-oauth2's `verified_email`).
         unless [true, "true"].include?(parsed_response["email_verified"])
-          raise StandardError, "Email address is not verified"
+          raise StandardError, I18n.t("api.v0.mobile_auth_controller.email_not_verified")
         end
 
         [parsed_response["email"], parsed_response["sub"], parsed_response]
