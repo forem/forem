@@ -92,6 +92,40 @@ RSpec.describe "ArticlesFeed" do
     end
   end
 
+  context "with an organization feed" do
+    let(:organization) { create(:organization) }
+
+    before { article.update!(organization: organization) }
+
+    [nil, "rss-organization.png"].each do |profile_image|
+      it "preserves the channel and cache tag with a narrow organization lookup (image: #{profile_image.inspect})" do
+        organization.update_column(:profile_image, profile_image)
+        organization.reload
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?('"organizations"."slug" =') && !payload[:cached]
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/feed/#{organization.slug}"
+        end
+
+        channel = Nokogiri::XML(response.body).at_xpath("/rss/channel")
+        expect(response).to have_http_status(:ok)
+        expect(channel.at_xpath("title").text).to eq("#{Settings::Community.community_name}: #{organization.name}")
+        expect(channel.at_xpath("description").text).to include("#{organization.name} (#{organization.slug})")
+        expect(channel.at_xpath("link").text).to end_with(organization.path)
+        expect(channel.at_xpath("image/url").text).to end_with(organization.profile_image_90)
+        expect(channel.xpath("item/title").map(&:text)).to eq([article.title])
+        expect(response.headers["Surrogate-Key"].split).to include(organization.record_key)
+        expect(queries).to contain_exactly(
+          a_string_starting_with('SELECT "organizations"."id", "organizations"."name", ' \
+                                 '"organizations"."slug", "organizations"."profile_image"'),
+        )
+      end
+    end
+  end
+
   context "with home and tag feeds" do
     let(:tag) { create(:tag, name: "rssperf") }
 
