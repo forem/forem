@@ -1,0 +1,44 @@
+spec/services/safe_http_spec.rb
+  s_3c0a181bee957c::t_fab9c63252400c 1-59,61-88,90-104
+  s_3c0a181bee957c::t_ceeefaa9e60c36 60,89
+spec/liquid_tags/medium_tag_spec.rb
+  s_3c0a181bee957c::t_d3d2534ca29e71 53,56-57,59-60
+  s_3c0a181bee957c::t_ceeefaa9e60c36 54-55,58
+spec/services/medium_article_retrieval_service_spec.rb
+  s_3c0a181bee957c::t_37ee2a3ca9a82e 16-24,26-35
+  s_3c0a181bee957c::t_ceeefaa9e60c36 25
+app/liquid_tags/medium_tag.rb
+  s_3c0a181bee957c::t_4277b6543faf45 8
+  s_3c0a181bee957c::t_d324ac3f93e84c 12
+spec/services/feeds/validate_url_spec.rb
+  s_3c0a181bee957c::t_d3d2534ca29e71 8-39
+app/services/feeds/import.rb
+  s_3c0a181bee957c::t_4277b6543faf45 414
+app/services/safe_http.rb
+  s_3c0a181bee957c::t_180934f1f76360 55-58
+  s_3c0a181bee957c::t_704745d610ef41 34
+  s_3c0a181bee957c::t_bef3f173a34c11 1-33,35-54,59-70
+app/services/feeds/validate_url.rb
+  s_3c0a181bee957c::t_4277b6543faf45 27
+app/services/medium_article_retrieval_service.rb
+  s_3c0a181bee957c::t_4277b6543faf45 13
+spec/services/feeds/import_spec.rb
+  s_3c0a181bee957c::t_abae04b93656b1 43
+  s_3c0a181bee957c::t_704745d610ef41 25-42,44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a4ca8420e55c46cfaa644e76ac5712b7c03ebb94",
+  "prompts": {},
+  "sessions": {
+    "s_3c0a181bee957c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be724a0e-0581-401b-a9e5-218e9fd3ded2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
