@@ -234,10 +234,10 @@
 
           <div class="crayons-article__main <%= "pt-0" if @article.type_of == "status" %>">
             <% if @collection %>
-              <%= render "articles/collection",
-                        rendered_article: @article,
-                        collection: @collection,
-                        articles: @collection_articles %>
+              <%= series_navigation = render "articles/collection",
+                                             rendered_article: @article,
+                                             collection: @collection,
+                                             articles: @collection_articles %>
             <% end %>
             <% if @context_note %>
               <div class="crayons-article__context-note">
@@ -266,10 +266,7 @@
             </div>
 
             <% if @article.long_markdown? && @collection %>
-              <%= render "articles/collection",
-                        rendered_article: @article,
-                        collection: @collection,
-                        articles: @collection_articles %>
+              <%= series_navigation %>
             <% end %>
             <% if @article.long_markdown? %>
               <div class="bb-shuffle-group js-bb-shuffle-group">
