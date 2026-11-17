@@ -47,6 +47,32 @@ RSpec.describe CrossModelSlugValidator do
     it { is_expected.not_to be_valid }
   end
 
+  %w[login signup].each do |slug|
+    context "when an organization uses the protected slug #{slug}" do
+      subject(:organization) { build(:organization, slug: slug) }
+
+      it "rejects the reserved slug" do
+        expect(organization).not_to be_valid
+        expect(organization.errors[:slug]).to include("is reserved")
+      end
+    end
+
+    context "when a podcast uses the protected slug #{slug}" do
+      subject(:podcast) { build(:podcast, slug: slug) }
+
+      it "rejects the reserved slug" do
+        expect(podcast).not_to be_valid
+        expect(podcast.errors[:slug]).to include("is reserved")
+      end
+    end
+
+    context "when a page uses the protected slug #{slug}" do
+      subject(:page) { build(:page, slug: slug) }
+
+      it { is_expected.to be_valid }
+    end
+  end
+
   context "when name exists in User model" do
     let(:user) { create(:user) }
     let(:name) { user.username }
