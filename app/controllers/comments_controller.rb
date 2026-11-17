@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[body_markdown body_html semantic_embedding reading_list_document].freeze
   # The settings page (and CommentPolicy#settings?) only reads these, so skip the comment's body,
   # processed HTML and ~3KB TOASTed semantic_embedding vector.
   SETTINGS_COMMENT_COLUMNS = %i[id user_id commentable_id commentable_type].freeze
@@ -330,7 +330,21 @@ class CommentsController < ApplicationController
   def load_root_parent_comment
     return unless @root_comment.depth.positive?
 
-    Comment.select(*PARENT_HEADER_COMMENT_COLUMNS).find_by(id: @root_comment.parent_id)
+    parent = Comment.select(*PARENT_HEADER_COMMENT_COLUMNS).find_by(id: @root_comment.parent_id)
+    return unless parent
+
+    loaded_user = [@user, (@root_comment.user if @root_comment.association(:user).loaded?),
+                   (@article.user if @article&.association(:user)&.loaded?)].detect do |candidate|
+      candidate.is_a?(User) && candidate.id == parent.user_id
+    end
+    if loaded_user
+      parent.association(:user).target = loaded_user
+    else
+      ActiveRecord::Associations::Preloader.new(
+        records: [parent], associations: :user, scope: User.select(:id, :username),
+      ).call
+    end
+    parent
   end
 
   # The comments page never reads the article's TOASTed semantic_embedding vector or
