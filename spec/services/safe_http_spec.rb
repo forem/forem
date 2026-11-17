@@ -97,6 +97,96 @@ RSpec.describe SafeHttp, type: :service do
     expect(a_request(:get, public_url)).to have_been_made.times(3)
   end
 
+  describe "connection pinning" do
+    it "connects to the address that was validated" do
+      stub_request(:get, public_url).to_return(status: 200)
+      allow(HTTParty).to receive(:get).and_call_original
+
+      described_class.get(public_url)
+
+      expect(HTTParty).to have_received(:get).with(
+        public_url,
+        hash_including(
+          connection_adapter: described_class::PinnedConnectionAdapter,
+          connection_adapter_options: { pinned_address: "203.0.113.10" },
+        ),
+      )
+    end
+
+    it "resolves each hop once, so a later DNS answer cannot change the destination" do
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with("feeds.example", nil, nil, :STREAM)
+        .and_return(
+          [instance_double(Addrinfo, ip_address: "203.0.113.10")],
+          [instance_double(Addrinfo, ip_address: "127.0.0.1")],
+        )
+      stub_request(:get, public_url).to_return(status: 200)
+      allow(HTTParty).to receive(:get).and_call_original
+
+      described_class.get(public_url)
+
+      expect(Addrinfo).to have_received(:getaddrinfo).with("feeds.example", nil, nil, :STREAM).once
+      expect(HTTParty).to have_received(:get)
+        .with(public_url, hash_including(connection_adapter_options: { pinned_address: "203.0.113.10" }))
+    end
+
+    it "blocks a host when any of its addresses is non-public" do
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with("mixed.example", nil, nil, :STREAM)
+        .and_return([
+                      instance_double(Addrinfo, ip_address: "203.0.113.10"),
+                      instance_double(Addrinfo, ip_address: "10.0.0.5"),
+                    ])
+      stub_request(:get, "https://mixed.example/")
+
+      expect { described_class.get("https://mixed.example/") }.to raise_error(described_class::BlockedUrlError)
+      expect(a_request(:get, "https://mixed.example/")).not_to have_been_made
+    end
+
+    it "keeps the hostname for the Host header and TLS while connecting to the pinned address" do
+      options = { connection_adapter_options: { pinned_address: "203.0.113.10" } }
+      http = described_class::PinnedConnectionAdapter.call(URI("https://feeds.example/rss"), options)
+
+      expect(http.address).to eq("feeds.example")
+      expect(http.ipaddr).to eq("203.0.113.10")
+      expect(http.use_ssl?).to be(true)
+    end
+  end
+
+  describe "cookies set during redirects" do
+    it "sends them to later hops on the same host" do
+      stub_request(:get, public_url)
+        .to_return(status: 302, headers: { "Location" => "/actual.xml",
+                                           "Set-Cookie" => "feed_session=abc; Path=/; HttpOnly" })
+      stub_request(:get, "https://feeds.example/actual.xml")
+        .with(headers: { "Cookie" => "feed_session=abc" })
+        .to_return(status: 200, body: "with cookie")
+
+      expect(described_class.get(public_url).body).to eq("with cookie")
+    end
+
+    it "keeps a Cookie header the caller supplied" do
+      stub_request(:get, public_url)
+        .to_return(status: 302, headers: { "Location" => "/actual.xml", "Set-Cookie" => "feed_session=abc" })
+      stub_request(:get, "https://feeds.example/actual.xml")
+        .with(headers: { "Cookie" => "pref=1; feed_session=abc" })
+        .to_return(status: 200, body: "merged")
+
+      expect(described_class.get(public_url, headers: { "Cookie" => "pref=1" }).body).to eq("merged")
+    end
+
+    it "does not send them to a different host" do
+      stub_request(:get, public_url)
+        .to_return(status: 302, headers: { "Location" => "https://other.example/feed",
+                                           "Set-Cookie" => "feed_session=abc" })
+      stub_request(:get, "https://other.example/feed").to_return(status: 200)
+
+      described_class.get(public_url)
+
+      expect(a_request(:get, "https://other.example/feed").with { |req| req.headers["Cookie"].nil? }).to have_been_made
+    end
+  end
+
   it "raises errors that callers rescuing HTTParty::Error already handle" do
     expect(described_class::BlockedUrlError.ancestors).to include(HTTParty::Error)
     expect(described_class::TooManyRedirectsError.ancestors).to include(HTTParty::Error)
