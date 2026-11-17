@@ -105,7 +105,13 @@ module Api
         if !valid_clients.include?(parsed_response["aud"])
           raise StandardError, 'Token audience mismatch'
         end
-        
+
+        # Authenticator links accounts by email, so only a Google-verified address
+        # may be trusted (mirrors omniauth-google-oauth2's `verified_email`).
+        unless [true, "true"].include?(parsed_response["email_verified"])
+          raise StandardError, "Email address is not verified"
+        end
+
         [parsed_response["email"], parsed_response["sub"], parsed_response]
       end
 
@@ -148,7 +154,9 @@ module Api
           end
           if emails_response.status == 200
             emails = JSON.parse(emails_response.body)
-            primary_email = emails.find { |e| e["primary"] } || emails.first
+            # Authenticator links accounts by email, so only a GitHub-verified primary
+            # address may be trusted (mirrors omniauth-github's `primary_email`).
+            primary_email = emails.detect { |e| e["primary"] && e["verified"] == true }
             extracted_email = primary_email["email"] if primary_email
           end
         end
