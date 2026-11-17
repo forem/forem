@@ -26,12 +26,13 @@ RSpec.describe Organizations::Delete, type: :service do
       expect(article.cached_organization).to be_nil
     end
 
-    it "removes the organization name from the .reading_list_document after destroy" do
+    it "removes the organization name from the .reading_list_document after destroy", :aggregate_failures do
       org.update(name: "ACME")
 
-      sidekiq_perform_enqueued_jobs
+      sidekiq_perform_enqueued_jobs(only: Organizations::SaveArticleWorker)
 
       expect(article.reload.reading_list_document).to include("acme")
+      expect(article.cached_organization.name).to eq("ACME")
 
       described_class.call(org)
 
