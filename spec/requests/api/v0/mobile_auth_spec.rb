@@ -34,7 +34,10 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
       context "with a valid token intended for Forem" do
         before do
           stub_request(:get, "https://oauth2.googleapis.com/tokeninfo?access_token=#{valid_access_token}")
-            .to_return(status: 200, body: { email: user.email, sub: "12345", aud: "google_client_id" }.to_json)
+            .to_return(
+              status: 200,
+              body: { email: user.email, email_verified: "true", sub: "12345", aud: "google_client_id" }.to_json,
+            )
         end
 
         it "authenticates the user successfully and issues an aligned jwt cookie" do
@@ -89,6 +92,33 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
         end
       end
 
+      context "with a token whose email is not verified by Google" do
+        before do
+          stub_request(:get, "https://oauth2.googleapis.com/tokeninfo?access_token=unverified_token")
+            .to_return(
+              status: 200,
+              body: { email: user.email, email_verified: "false", sub: "999", aud: "google_client_id" }.to_json,
+            )
+        end
+
+        it "rejects the login without authenticating anyone" do
+          post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: "unverified_token" }
+
+          expect(response).to have_http_status(:unauthorized)
+          expect(response.parsed_body["error"]).to eq(I18n.t("api.v0.mobile_auth_controller.email_not_verified"))
+          expect(Authentication::Authenticator).not_to have_received(:call)
+        end
+
+        it "returns the error in the instance's locale" do
+          allow(Settings::UserExperience).to receive(:default_locale).and_return("fr")
+
+          post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: "unverified_token" }
+
+          expect(response).to have_http_status(:unauthorized)
+          expect(response.parsed_body["error"]).to eq("L'adresse e-mail n'est pas vérifiée")
+        end
+      end
+
       context "with an invalid access token" do
         before do
           stub_request(:get, "https://oauth2.googleapis.com/tokeninfo?access_token=#{invalid_access_token}")
@@ -104,6 +134,21 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
     end
 
     describe "GitHub OAuth" do
+      def stub_github_email_lookup(emails, user_id: 67_890, login: nil)
+        stub_request(:post, "https://api.github.com/applications/github_client_id/token")
+          .to_return(status: 200, body: {}.to_json)
+        stub_request(:get, "https://api.github.com/user")
+          .to_return(status: 200, body: { id: user_id, login: login, name: login, email: nil }.to_json)
+        stub_request(:get, "https://api.github.com/user/emails")
+          .to_return(status: 200, body: emails.to_json)
+      end
+
+      def authenticated_github_email
+        payload = nil
+        expect(Authentication::Authenticator).to have_received(:call) { |auth| payload = auth }
+        payload.info.email
+      end
+
       context "with a valid token intended for Forem" do
         before do
           basic_auth_header = "Basic #{Base64.strict_encode64("github_client_id:github_secret")}"
@@ -122,6 +167,68 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
         it "authenticates successfully" do
           post "/api/auth/mobile_exchange", params: { provider: "github", access_token: valid_access_token }
           expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "when the verified primary email is looked up from /user/emails" do
+        before do
+          stub_github_email_lookup(
+            [
+              { email: "secondary@example.com", primary: false, verified: true },
+              { email: user.email, primary: true, verified: true },
+            ],
+          )
+        end
+
+        it "uses the verified primary email" do
+          post "/api/auth/mobile_exchange", params: { provider: "github", access_token: valid_access_token }
+
+          expect(response).to have_http_status(:ok)
+          expect(authenticated_github_email).to eq(user.email)
+        end
+      end
+
+      context "when the primary email from /user/emails is unverified" do
+        before do
+          stub_github_email_lookup(
+            [
+              { email: "unverified@example.com", primary: true, verified: false },
+              { email: "other@example.com", primary: false, verified: true },
+            ],
+          )
+        end
+
+        it "does not pass any email on to the authenticator" do
+          post "/api/auth/mobile_exchange", params: { provider: "github", access_token: valid_access_token }
+
+          expect(authenticated_github_email).to be_nil
+        end
+      end
+
+      context "with the real authenticator and an unverified email matching an existing account" do
+        let!(:existing_user) { create(:user, email: "existing@example.com") }
+
+        before do
+          allow(Authentication::Authenticator).to receive(:call).and_call_original
+          allow(JWT).to receive(:encode).and_call_original
+          allow(Authentication::Providers).to receive(:enabled?).and_return(true)
+          allow(Settings::Authentication).to receive(:providers).and_return(%w[github])
+          stub_github_email_lookup(
+            [{ email: existing_user.email, primary: true, verified: false }],
+            user_id: 999_001,
+            login: "octocat",
+          )
+        end
+
+        it "does not sign in as or link to the existing account" do
+          post "/api/auth/mobile_exchange", params: { provider: "github", access_token: valid_access_token }
+
+          expect(response).to have_http_status(:ok)
+          secret = Rails.application.secret_key_base
+          payload = JWT.decode(response.parsed_body["jwt"], secret, true, algorithm: "HS256")[0]
+          expect(payload["user_id"]).not_to eq(existing_user.id)
+          expect(existing_user.identities.where(provider: "github")).to be_empty
+          expect(Identity.find_by(provider: "github", uid: "999001").user).not_to eq(existing_user)
         end
       end
 
