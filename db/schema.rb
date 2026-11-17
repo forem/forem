@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_12_120200) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_14_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -2142,6 +2142,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_12_120200) do
     t.integer "onboarding_subforem_id"
     t.datetime "organization_info_updated_at", precision: nil
     t.string "payment_pointer"
+    t.string "profile_banner_image"
     t.string "profile_image"
     t.datetime "profile_updated_at", precision: nil, default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false

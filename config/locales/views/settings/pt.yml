@@ -138,6 +138,11 @@ pt:
       profile_image:
         remove: Remover imagem do perfil
         remove_description: Seu perfil voltará a usar o avatar padrão.
+      profile_banner_image:
+        label: Imagem do banner do perfil
+        description: Envie uma imagem para exibir como banner do seu perfil no lugar da sua cor da marca. Imagens largas funcionam melhor. O tamanho máximo é %{max} MB.
+        remove: Remover imagem do banner do perfil
+        remove_description: O banner do seu perfil voltará a usar a sua cor da marca.
       org:
         admin:
           members: Membros da Organização

@@ -21,7 +21,14 @@
       --profile-brand-color: <%= Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
     }
   </style>
-  <div class="brand-bg">
+  <% banner_image_url = @user.profile_banner_image_url %>
+  <div class="brand-bg<%= " brand-bg--image" if banner_image_url.present? %>">
+    <% if banner_image_url.present? %>
+      <%# The banner spans the full viewport width, so 1600px covers most 1x screens and 3200px covers 2x. %>
+      <% banner_1x = optimized_image_url(banner_image_url, width: 1600, random_fallback: false) %>
+      <% banner_2x = optimized_image_url(banner_image_url, width: 3200, random_fallback: false) %>
+      <img class="brand-bg__image" src="<%= banner_1x %>" srcset="<%= banner_1x %> 1x, <%= banner_2x %> 2x" alt="" fetchpriority="high" decoding="async">
+    <% end %>
     <div class="crayons-layout crayons-layout--limited-l pt-7 m:pt-9">
       <header class="profile-header crayons-card mt-2">
         <div class="relative profile-header__top">

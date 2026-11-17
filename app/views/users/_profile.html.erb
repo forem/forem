@@ -184,6 +184,33 @@
 
       </div>
     </div>
+
+    <div class="crayons-field">
+      <%= f.label :profile_banner_image, t("views.settings.profile_banner_image.label"), for: "user[profile_banner_image]", class: "crayons-field__label" %>
+      <p id="profile-banner-image-help" class="crayons-field__description"><%= t("views.settings.profile_banner_image.description", max: ProfileBannerUploader::MAX_FILE_SIZE / 1.megabyte) %></p>
+
+      <% if @user.profile_banner_image_url.present? %>
+        <img id="user-profile-banner-preview" class="profile-banner-preview mb-2" alt="" src="<%= @user.profile_banner_image_url %>" loading="lazy" />
+      <% end %>
+
+      <%= f.file_field "user[profile_banner_image]",
+                       accept: "image/*",
+                       class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100",
+                       aria: { describedby: "profile-banner-image-help" },
+                       data: { max_file_mb: ProfileBannerUploader::MAX_FILE_SIZE / 1.megabyte } %>
+
+      <% if @user.profile_banner_image_url.present? %>
+        <div class="crayons-field crayons-field--checkbox mt-2">
+          <%= f.check_box "user[remove_profile_banner_image]",
+                          class: "crayons-checkbox",
+                          aria: { describedby: "remove-profile-banner-image-description" } %>
+          <div class="mt-0">
+            <%= f.label :remove_profile_banner_image, t("views.settings.profile_banner_image.remove"), for: "user[remove_profile_banner_image]", class: "crayons-field__label" %>
+            <p id="remove-profile-banner-image-description" class="crayons-field__description"><%= t("views.settings.profile_banner_image.remove_description") %></p>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">

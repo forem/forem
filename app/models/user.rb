@@ -175,6 +175,7 @@ class User < ApplicationRecord
   end
 
   mount_uploader :profile_image, ProfileImageUploader
+  mount_uploader :profile_banner_image, ProfileBannerUploader
 
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
          :recoverable, :lockable, :trackable
@@ -1276,7 +1277,8 @@ class User < ApplicationRecord
     saved_change_to_email? ||
       saved_change_to_twitter_username? ||
       saved_change_to_github_username? ||
-      saved_change_to_facebook_username?
+      saved_change_to_facebook_username? ||
+      saved_change_to_profile_banner_image?
   end
 
   def profile_image_changed_for_cache?

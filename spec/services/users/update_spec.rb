@@ -125,6 +125,108 @@ RSpec.describe Users::Update, type: :service do
     end
   end
 
+  describe "the profile banner image" do
+    it "uploads a banner image" do
+      banner_image = fixture_file_upload("800x600.png", "image/png")
+
+      service = described_class.call(user, profile: {}, user: { profile_banner_image: banner_image })
+
+      expect(service.success?).to be true
+      expect(user.reload.profile_banner_image_url).to be_present
+    end
+
+    it "does not change the profile image when uploading a banner image" do
+      banner_image = fixture_file_upload("800x600.png", "image/png")
+
+      expect do
+        described_class.call(user, profile: {}, user: { profile_banner_image: banner_image })
+      end.not_to change { user.reload.profile_image_url }
+    end
+
+    it "returns an error if the banner image is too large" do
+      stub_const("ProfileBannerUploader::MAX_FILE_SIZE", 2.megabytes)
+      banner_image = fixture_file_upload("large_profile_img.jpg", "image/jpeg")
+
+      service = described_class.call(user, profile: {}, user: { profile_banner_image: banner_image })
+
+      expect(service.success?).to be false
+      expect(service.errors_as_sentence).to eq "Profile banner image File size should be less than 2 MB"
+    end
+
+    it "returns an error if the banner image is not a file" do
+      service = described_class.call(user, profile: {}, user: { profile_banner_image: "A String" })
+
+      expect(service.success?).to be false
+      expect(service.errors_as_sentence).to eq "invalid file type. Please upload a valid image."
+    end
+
+    it "returns an error if the banner image file name is too long" do
+      banner_image = fixture_file_upload("800x600.png", "image/png")
+      allow(banner_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+
+      service = described_class.call(user, profile: {}, user: { profile_banner_image: banner_image })
+
+      expect(service.success?).to be false
+      expect(service.errors_as_sentence).to eq "filename too long - the max is 250 characters."
+    end
+
+    it "does not save other changes when the banner image is invalid" do
+      expect do
+        described_class.call(user, profile: {}, user: { name: "Changed Name", profile_banner_image: "A String" })
+      end.not_to change { user.reload.name }
+    end
+
+    describe "removing the banner image" do
+      before do
+        described_class.call(
+          user,
+          profile: {},
+          user: { profile_banner_image: fixture_file_upload("800x600.png", "image/png") },
+        )
+      end
+
+      it "clears the banner image" do
+        expect(user.reload.profile_banner_image_url).to be_present
+
+        service = described_class.call(user, profile: {}, user: { remove_profile_banner_image: "1" })
+
+        expect(service.success?).to be true
+        expect(user.reload.profile_banner_image_url).to be_blank
+      end
+
+      it "does not touch the profile image when the banner is removed" do
+        expect do
+          described_class.call(user, profile: {}, user: { remove_profile_banner_image: "1" })
+        end.not_to change { user.reload.profile_image_url }
+      end
+
+      it "does nothing when the checkbox is left unchecked" do
+        expect do
+          described_class.call(user, profile: {}, user: { remove_profile_banner_image: "0" })
+        end.not_to change { user.reload.profile_banner_image_url }
+      end
+
+      it "keeps a newly uploaded banner image when removal is also requested" do
+        service = described_class.call(
+          user,
+          profile: {},
+          user: { profile_banner_image: fixture_file_upload("800x600.jpg", "image/jpeg"),
+                  remove_profile_banner_image: "1" },
+        )
+
+        expect(service.success?).to be true
+        expect(user.reload.profile_banner_image_url).to be_present
+      end
+    end
+
+    it "succeeds when removing a banner image for a user that has none" do
+      service = described_class.call(user, profile: {}, user: { remove_profile_banner_image: "1" })
+
+      expect(service.success?).to be true
+      expect(user.reload.profile_banner_image_url).to be_blank
+    end
+  end
+
   context "when changing username" do
     let(:new_username) { "#{user.username}_changed" }
 
