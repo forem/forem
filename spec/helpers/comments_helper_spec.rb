@@ -350,6 +350,25 @@ RSpec.describe CommentsHelper do
       end
     end
 
+    it "renders multiple root threads identically together or separately", :aggregate_failures do
+      roots = Array.new(3) { create(:comment, user: author_user, commentable: article) }
+      reply = create(:comment, user: replier_user, commentable: article, parent: roots.first)
+      tree = { roots[0] => { reply => {} }, roots[1] => {}, roots[2] => {} }
+      helper.instance_variable_set(:@article, article)
+
+      [false, true].each do |legacy|
+        allow(ForemNative).to receive(:render_comment_tree).and_return(nil) if legacy
+        separate = tree.map do |root, children|
+          helper.nested_comments(tree: { root => children }, commentable: article, is_view_root: true)
+        end.join
+
+        combined = helper.nested_comments(tree: tree, commentable: article, is_view_root: true)
+
+        expect(combined).to eq(separate)
+        expect(combined).to be_html_safe
+      end
+    end
+
     it "returns an empty html_safe string for an empty comment tree" do
       result = helper.nested_comments(tree: {}, commentable: article, is_view_root: true, is_admin: false)
       expect(result).to eq("")

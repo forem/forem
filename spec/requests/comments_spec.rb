@@ -201,6 +201,19 @@ RSpec.describe "Comments" do
                       sign_in: "placeholder").split("placeholder").first
         expect(response.body).not_to include(text)
       end
+
+      it "renders all selected root threads in one native call", :aggregate_failures do
+        allow(ForemNative).to receive(:render_comment_tree).and_call_original
+
+        get "#{article.path}/comments"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Top level one", "Top level two", "Sub one")
+        expect(response.body).not_to include("Top level three", "Sub two")
+        expect(ForemNative).to have_received(:render_comment_tree).once.with(
+          anything, anything, anything, anything, 2
+        )
+      end
     end
 
     context "when there are child spam comments" do
