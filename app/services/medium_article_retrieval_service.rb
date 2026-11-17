@@ -10,7 +10,7 @@ class MediumArticleRetrievalService
   end
 
   def call
-    response = HTTParty.get(url)
+    response = SafeHttp.get(url)
     page = Nokogiri::HTML(response.body)
 
     title = page.at("meta[name='title']")["content"]
