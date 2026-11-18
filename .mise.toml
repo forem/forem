@@ -1,4 +1,9 @@
+[settings]
+# Read .ruby-version and .nvmrc; current mise no longer does this by default.
+idiomatic_version_file_enable_tools = ["ruby", "node"]
+
 [tools]
 yarn = "1"
-postgres = "13.12"
-redis = "6.0.9"
+# Name the asdf plugins: current mise defaults postgres and redis to Conda, which has no builds of these versions.
+"asdf:smashedtoatoms/asdf-postgres" = "13.12"
+"asdf:smashedtoatoms/asdf-redis" = "6.0.9"
