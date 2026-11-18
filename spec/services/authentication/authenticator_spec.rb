@@ -277,6 +277,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.github_username).to eq(info.nickname)
       end
 
+      %w[LoGiN signup].each do |nickname|
+        it "registers a GitHub user with the reserved nickname #{nickname}" do
+          auth_payload.info.nickname = nickname
+
+          user = service.call
+
+          expect(user).to be_persisted
+          expect(user.username).to match(/\A#{nickname.downcase}_\d+\z/)
+          expect(user.github_username).to eq(nickname)
+        end
+      end
+
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
 

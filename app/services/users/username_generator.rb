@@ -47,7 +47,7 @@ module Users
     private
 
     def first_available_from(list)
-      list.detect { |username| !username_exists?(username) }
+      list.detect { |username| ReservedWords.all.exclude?(username) && !username_exists?(username) }
     end
 
     def username_exists?(username)
