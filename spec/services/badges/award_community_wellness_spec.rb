@@ -88,5 +88,13 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
 
       expect { described_class.call }.not_to change(BadgeAchievement, :count)
     end
+
+    it "skips users who already hold the single-award milestone badge" do
+      badge = create_wellness_badge(2)
+      create(:badge_achievement, user: user, badge: badge)
+      results << query_result(user, weeks: [1, 2], counts: [2, 2])
+
+      expect { described_class.call }.not_to change(BadgeAchievement, :count)
+    end
   end
 end

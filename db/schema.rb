@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_18_181000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -530,6 +530,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
     t.index ["favorited_by_user_id"], name: "index_comments_on_favorited_by_user_id"
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["id"], name: "index_comments_negative_public_reactions_count", where: "(public_reactions_count < 0)"
+    t.index ["public_reactions_count", "user_id"], name: "index_comments_on_public_reactions_count_for_beloved", where: "(public_reactions_count >= 25)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["semantic_embedding"], name: "index_comments_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["user_id"], name: "index_comments_on_user_id"

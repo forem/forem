@@ -36,5 +36,21 @@ RSpec.describe Badges::Award, type: :service do
       expect(user.badge_achievements.any?).to be true
       expect(spammer.badge_achievements.any?).to be false
     end
+
+    it "skips users who already hold a single-award badge" do
+      create(:badge_achievement, user: user, badge: badge)
+
+      expect do
+        described_class.call(
+          User.where(id: [user.id, user2.id]),
+          "one-year-club",
+          "Congrats!",
+          include_default_description: true,
+        )
+      end.to change(BadgeAchievement, :count).by(1)
+
+      expect(user.badge_achievements.count).to eq(1)
+      expect(user2.badge_achievements.count).to eq(1)
+    end
   end
 end
