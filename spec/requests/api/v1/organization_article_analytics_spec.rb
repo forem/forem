@@ -138,4 +138,98 @@ RSpec.describe "Api::V1::OrganizationArticleAnalytics" do
     get path, headers: headers
     expect(response).to have_http_status(:unauthorized)
   end
+
+  it "omits the daily series when no date range is given" do
+    create(:organization_membership, organization: organization, user: user)
+    create(:article, organization: organization)
+
+    get path, params: { start: "", end: "" }, headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.first).not_to have_key("daily")
+  end
+
+  it "adds a zero-filled daily series from article activities", :aggregate_failures do
+    create(:organization_membership, organization: organization, user: user)
+    article = create(:article, organization: organization)
+    inactive_article = create(:article, organization: organization)
+    ArticleActivity.create!(
+      article: article,
+      daily_page_views: {
+        "2026-02-28" => { "total" => 99, "sum_read_seconds" => 0, "logged_in_count" => 0 },
+        "2026-03-01" => { "total" => 12, "sum_read_seconds" => 30, "logged_in_count" => 2 },
+        "2026-03-03" => { "total" => 5, "sum_read_seconds" => 0, "logged_in_count" => 0 }
+      },
+      daily_reactions: {
+        "2026-03-01" => { "total" => 4, "like" => 2, "readinglist" => 1, "fire" => 1, "reactor_ids" => [1, 2, 3] }
+      },
+      daily_comments: { "2026-03-03" => 2, "2026-03-04" => 7 },
+    )
+
+    activity_queries = 0
+    callback = lambda do |*, payload|
+      activity_queries += 1 if payload[:sql].include?('"article_activities"')
+    end
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+      get path, params: { start: "2026-03-01", end: "2026-03-03" }, headers: headers
+    end
+
+    expect(response).to have_http_status(:ok)
+    expect(activity_queries).to eq(1)
+    expect(response.headers["Cache-Control"]).to eq("no-store")
+    expect(response.headers["Surrogate-Control"]).to eq("no-store")
+    body = response.parsed_body.index_by { |row| row["id"] }
+    zero_reactions = { "total" => 0, "like" => 0, "readinglist" => 0, "unicorn" => 0,
+                       "exploding_head" => 0, "raised_hands" => 0, "fire" => 0 }
+    expect(body[article.id]["daily"]).to eq(
+      [
+        { "date" => "2026-03-01", "page_views" => 12, "comments" => 0,
+          "reactions" => zero_reactions.merge("total" => 4, "like" => 2, "readinglist" => 1, "fire" => 1) },
+        { "date" => "2026-03-02", "page_views" => 0, "comments" => 0, "reactions" => zero_reactions },
+        { "date" => "2026-03-03", "page_views" => 5, "comments" => 2, "reactions" => zero_reactions },
+      ],
+    )
+    expect(body[inactive_article.id]["daily"]).to eq(
+      %w[2026-03-01 2026-03-02 2026-03-03].map do |date|
+        { "date" => date, "page_views" => 0, "comments" => 0, "reactions" => zero_reactions }
+      end,
+    )
+  end
+
+  it "accepts a range of up to 90 days" do
+    create(:organization_membership, organization: organization, user: user)
+    create(:article, organization: organization)
+
+    get path, params: { start: "2026-01-01", end: "2026-03-31" }, headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.first["daily"].pluck("date").values_at(0, -1)).to eq(%w[2026-01-01 2026-03-31])
+    expect(response.parsed_body.first["daily"].size).to eq(90)
+  end
+
+  it "rejects invalid date ranges", :aggregate_failures do
+    create(:organization_membership, organization: organization, user: user)
+    invalid_format = I18n.t("api.v0.analytics_controller.invalid_date_format")
+    {
+      { start: "2026-03-01" } => "Date parameters 'start' and 'end' must be provided together",
+      { end: "2026-03-01" } => "Date parameters 'start' and 'end' must be provided together",
+      { start: "2026-3-1", end: "2026-03-02" } => invalid_format,
+      { start: "2026-03-01", end: "2026-02-30" } => invalid_format,
+      { start: "yesterday", end: "today" } => invalid_format,
+      { start: "2026-03-02", end: "2026-03-01" } => "Date parameter 'end' must not be before 'start'",
+      { start: "2026-01-01", end: "2026-04-01" } => "Date range must not exceed 90 days"
+    }.each do |params, message|
+      get path, params: params, headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body).to eq("error" => message, "status" => 422)
+      expect(response.headers["Cache-Control"]).to eq("no-store")
+    end
+  end
+
+  it "denies outsiders before validating the date range" do
+    get path, params: { start: "2026-03-01", end: "2026-03-03" }, headers: headers
+    expect(response).to have_http_status(:unauthorized)
+    get path, params: { start: "2026-03-01" }, headers: headers
+    expect(response).to have_http_status(:unauthorized)
+  end
 end
