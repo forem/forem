@@ -36,5 +36,47 @@ RSpec.describe Badges::AwardThumbsUp, type: :service do
         described_class.call
       end.not_to change(user.badge_achievements, :count)
     end
+
+    describe ".get_user_thumbsup_counts and .backfill" do
+      let(:recent_article_ids) { (1..100).to_a }
+      let(:other_article_ids) { (101..105).to_a }
+
+      def insert_thumbsup_reactions(target_user, article_ids, created_at:)
+        now = Time.current
+        rows = article_ids.map do |article_id|
+          {
+            user_id: target_user.id,
+            reactable_id: article_id,
+            reactable_type: "Article",
+            category: "thumbsup",
+            points: 1.0,
+            status: "valid",
+            created_at: created_at,
+            updated_at: now
+          }
+        end
+        Reaction.insert_all!(rows)
+        target_user.update_column(:reactions_count, target_user.reactions_count + rows.size)
+      end
+
+      it "aggregates recent Article thumbsup reactions and skips out-of-window or under-threshold users" do
+        insert_thumbsup_reactions(prolific_user, recent_article_ids, created_at: 1.day.ago)
+        insert_thumbsup_reactions(user, other_article_ids, created_at: 1.day.ago)
+        insert_thumbsup_reactions(ghost_user, recent_article_ids, created_at: 10.days.ago)
+
+        counts = described_class.get_user_thumbsup_counts
+        expect(counts).to eq(prolific_user.id => 100)
+      end
+
+      it "backfills historical users who missed the incremental lookback window" do
+        insert_thumbsup_reactions(prolific_user, recent_article_ids, created_at: 10.days.ago)
+
+        expect do
+          described_class.backfill
+        end.to change { prolific_user.reload.badges.count }.by(1)
+
+        expect(prolific_user.badges).to contain_exactly(min_badge)
+      end
+    end
   end
 end

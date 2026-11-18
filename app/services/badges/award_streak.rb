@@ -1,8 +1,8 @@
 module Badges
   class AwardStreak
     LONGEST_STREAK_WEEKS = 16
-
     MINIMUM_QUALITY = -25
+    BATCH_SIZE = 500
 
     def self.call(weeks:)
       new(weeks: weeks).call
@@ -13,19 +13,20 @@ module Badges
     end
 
     def call
-      badge_slug = "#{weeks}-week-streak"
-      return unless (badge_id = Badge.id_for_slug(badge_slug))
+      badge = Badge.select(:id, :allow_multiple_awards).find_by(slug: "#{weeks}-week-streak")
+      return unless badge
 
-      users = User.where(id: article_user_ids).where("articles_count >= ?", weeks)
+      reference_time = Time.current
+      message = generate_message
 
-      users.find_each do |user|
-        count = weeks.times.count { |i| published_x_weeks_ago?(user, i + 1) }
-        next unless count >= weeks
-
-        user.badge_achievements.create(
-          badge_id: badge_id,
-          rewarding_context_message_markdown: generate_message,
-        )
+      candidate_user_ids(badge, reference_time).each_slice(BATCH_SIZE) do |batch_user_ids|
+        qualifying_user_ids(batch_user_ids, reference_time).each do |user_id|
+          BadgeAchievement.create(
+            user_id: user_id,
+            badge_id: badge.id,
+            rewarding_context_message_markdown: message,
+          )
+        end
       end
     end
 
@@ -33,16 +34,41 @@ module Badges
 
     attr_reader :weeks
 
-    # No credit for super low quality
-    def article_user_ids
-      Article.published
-        .where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY)
-        .pluck(:user_id)
+    # Filters down to active recent authors who meet the article count floor and do not already hold the badge.
+    def candidate_user_ids(badge, reference_time)
+      recent_author_ids = Article.published
+        .where("published_at > ? AND published_at <= ? AND score > ?",
+               1.week.ago(reference_time), reference_time, MINIMUM_QUALITY)
+        .select(:user_id)
+
+      scope = User.where(id: recent_author_ids).where("articles_count >= ?", weeks)
+      unless badge.allow_multiple_awards
+        scope = scope.where(
+          "NOT EXISTS (SELECT 1 FROM badge_achievements " \
+          "WHERE badge_achievements.user_id = users.id AND badge_achievements.badge_id = ?)",
+          badge.id,
+        )
+      end
+
+      scope.ids
     end
 
-    def published_x_weeks_ago?(user, num)
-      user.articles.published
-        .where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
+    # Checks every week bucket in one grouped index-only SQL scan per batch instead of `weeks` queries per user.
+    def qualifying_user_ids(batch_user_ids, reference_time)
+      oldest_cutoff = weeks.weeks.ago(reference_time)
+      bucket_cases = Array.new(weeks) do |i|
+        num = i + 1
+        ActiveRecord::Base.sanitize_sql_array(
+          ["WHEN published_at > ? AND published_at < ? THEN ?",
+           num.weeks.ago(reference_time), (num - 1).weeks.ago(reference_time), num],
+        )
+      end.join(" ")
+
+      Article.where(published: true, user_id: batch_user_ids)
+        .where("published_at > ? AND published_at < ?", oldest_cutoff, reference_time)
+        .group(:user_id)
+        .having("COUNT(DISTINCT CASE #{bucket_cases} END) = ?", weeks)
+        .pluck(:user_id)
     end
 
     def generate_message

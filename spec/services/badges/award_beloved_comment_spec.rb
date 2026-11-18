@@ -20,5 +20,32 @@ RSpec.describe Badges::AwardBelovedComment, type: :service do
         described_class.call
       end.not_to change(BadgeAchievement, :count)
     end
+
+    it "awards a user only once even when they have multiple qualifying comments" do
+      article = comment.commentable
+      comment.update!(public_reactions_count: 25)
+      create(:comment, user: comment.user, commentable: article, public_reactions_count: 30)
+
+      expect do
+        described_class.call
+      end.to change(BadgeAchievement, :count).by(1)
+    end
+
+    it "skips users who already hold the beloved-comment badge" do
+      comment.update!(public_reactions_count: 25)
+      described_class.call
+
+      expect do
+        described_class.call
+      end.not_to change(BadgeAchievement, :count)
+    end
+
+    it "skips orphaned comments without a user" do
+      comment.update_columns(public_reactions_count: 25, user_id: nil)
+
+      expect do
+        described_class.call
+      end.not_to change(BadgeAchievement, :count)
+    end
   end
 end
