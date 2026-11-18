@@ -16,4 +16,5 @@ env:
     APP_PROTOCOL: <%= ENV.fetch("APP_PROTOCOL", "https://").to_s.inspect %>
     FORCE_SSL_IN_RAILS: <%= ENV.fetch("FORCE_SSL_IN_RAILS", "true").to_s.inspect %>
     RAILS_ASSUME_SSL: <%= ENV.fetch("RAILS_ASSUME_SSL", "true").to_s.inspect %>
-    TRUST_X_FORWARDED_HOST: <%= ENV.fetch("TRUST_X_FORWARDED_HOST", "true").to_s.inspect %>
+    # Keep disabled unless your trusted ingress rewrites Host and strips client-supplied X-Forwarded-Host:
+    TRUST_X_FORWARDED_HOST: <%= ENV.fetch("TRUST_X_FORWARDED_HOST", "false").to_s.inspect %>

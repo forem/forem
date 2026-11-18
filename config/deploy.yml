@@ -14,6 +14,7 @@
     "KAMAL_LOCAL_UPLOADS",
     (%w[managed cluster].include?(destination) || ENV["AWS_ID"].present? || ENV["FILE_STORAGE_LOCATION"] == "fog") ? "false" : "true"
   ) == "true"
+  uploads_volume = [service_name, destination.presence, "uploads"].compact.join("_")
 
   registry_server = ENV.fetch("KAMAL_REGISTRY_SERVER", "localhost:5555")
   local_registry = registry_server.start_with?("localhost")
@@ -181,7 +182,7 @@ asset_path: /opt/apps/forem/public/assets
 <% if local_uploads %>
 # Persist local CarrierWave uploads across deploys on single-server hosts (disable when using S3/DO Spaces/R2).
 volumes:
-  - <%= service_name %>_uploads:/opt/apps/forem/public/uploads
+  - <%= uploads_volume %>:/opt/apps/forem/public/uploads
 <% end %>
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets-common and .kamal/secrets).

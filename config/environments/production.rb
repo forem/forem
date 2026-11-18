@@ -66,14 +66,15 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = ENV["FORCE_SSL_IN_RAILS"] == "true"
+  health_probe_request = ->(request) { (request.get? || request.head?) && request.path == "/up" }
   config.ssl_options = {
     hsts: { subdomains: true },
     redirect: {
-      exclude: ->(request) { request.path == "/up" }
+      exclude: health_probe_request
     }
   }
   config.host_authorization = {
-    exclude: ->(request) { request.path == "/up" }
+    exclude: health_probe_request
   }
 
   # Use the lowest log level to ensure availability of diagnostic information

@@ -142,7 +142,7 @@ bundle exec kamal deploy -d cluster
 
 #### C. Behind Cloudflare / Fastly / Load Balancer (`-d edge`)
 
-Uses [config/deploy.edge.yml](../config/deploy.edge.yml). Disables Let's Encrypt on the droplet while telling Rails the request arrived over HTTPS (`RAILS_ASSUME_SSL=true`, `FORCE_SSL_IN_RAILS=true`, `TRUST_X_FORWARDED_HOST=true`):
+Uses [config/deploy.edge.yml](../config/deploy.edge.yml). Disables Let's Encrypt on the droplet while telling Rails the request arrived over HTTPS (`RAILS_ASSUME_SSL=true`, `FORCE_SSL_IN_RAILS=true`). `TRUST_X_FORWARDED_HOST` stays `false` by default (enable it only if your trusted ingress rewrites `Host` and strips client-supplied `X-Forwarded-Host`):
 
 ```bash
 bundle exec kamal setup -d edge
@@ -327,3 +327,27 @@ $$\text{Total Connections} = (\text{Web Containers} \times \text{WEB\_CONCURRENC
 ### Upgrading an Existing `pg13` Kamal Accessory to `pg16`
 
 This configuration defaults to `pgvector/pgvector:pg16` (PostgreSQL 13 reached EOL in November 2025). If an existing host already initialized a volume with `pg13`, either keep `export KAMAL_POSTGRES_IMAGE="pgvector/pgvector:pg13"` until you migrate, or dump with `pg_dump` before recreating the Postgres accessory volume with `pg16`.
+
+---
+
+## 9. Security Boundaries & Deployment Invariants
+
+When adapting these profiles to real infrastructure, maintain these invariants:
+
+1. **Edge / LB / Cluster Origin Isolation (`-d edge`, `-d cluster`)**:
+   - Because `-d edge` and `-d cluster` disable TLS on `kamal-proxy` (`proxy.ssl: false`) and set `RAILS_ASSUME_SSL=true`, **restrict origin ports `80`/`443` via cloud firewalls or VPC rules exclusively to your trusted LB/CDN IPs** so clients cannot bypass edge TLS, WAF, or rate limits.
+   - Use verified origin TLS (e.g., Cloudflare Origin CA + `KAMAL_CUSTOM_SSL_CERT=true`) across untrusted links between edge and origin.
+   - Strip or overwrite client-supplied `X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`, `Fastly-Orig-Host`, and `X-Forem-Original-Host` headers at the edge ingress, and keep `TRUST_X_FORWARDED_HOST="false"` unless your ingress explicitly requires it.
+2. **Staging / Pre-DNS Raw-IP Isolation (`-d staging`)**:
+   - `-d staging` disables HTTPS (`proxy.ssl: false`, `FORCE_SSL_IN_RAILS=false`) and should **only** be used with synthetic data behind a VPN or IP allowlist — never with production accounts or credentials.
+   - Isolate staging `SECRET_KEY_BASE`, databases, Redis, and buckets from production. If multiple destinations share a Docker host, set a distinct `KAMAL_SERVICE` (e.g. `forem-staging`) so accessories and containers stay isolated (upload volumes are already scoped by `KAMAL_SERVICE` and `KAMAL_DESTINATION`).
+3. **S3-Compatible Object Storage & Private Agent Sessions (`AWS_ENDPOINT`)**:
+   - Always use `https://` for external `AWS_ENDPOINT` URLs (`http://` is only appropriate for an isolated private-network MinIO container).
+   - Scope storage credentials to only the required buckets/prefixes, configure a dedicated private `AWS_AGENT_SESSIONS_BUCKET_NAME` with public/unsigned reads disabled (do not reuse a public media bucket for private agent sessions), and verify presigned URLs work while anonymous `GET` is denied.
+4. **Database & Redis Network Controls**:
+   - On single-host deploys, keep the default `127.0.0.1` accessory port bindings (`KAMAL_DB_PORT`, `KAMAL_REDIS_PORT`).
+   - When splitting accessories across VPC hosts or connecting to managed PostgreSQL/Redis, enforce source IP allowlists, require Redis authentication (`requirepass` / ACLs), and require verified TLS (`rediss://`, `sslmode=require` or `verify-full`).
+5. **Public Liveness Probe (`/up`) & Build/Operator Trust**:
+   - Keep `GET`/`HEAD /up` ([Middlewares::HealthCheck](../app/lib/middlewares/health_check.rb)) strictly dependency-free, non-cacheable (`Cache-Control: no-store`), and free of tenant/diagnostic data; keep DB/Redis readiness checks on the authenticated `/api/health_checks/*` endpoints.
+   - Treat SSH keys, `KAMAL_REMOTE_BUILDER` hosts, and container registries as privileged production artifact producers; keep `.env*` and `.kamal/` excluded from build contexts (enforced via `.dockerignore`).
+
