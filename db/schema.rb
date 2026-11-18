@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_12_120200) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1644,6 +1644,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_12_120200) do
     t.index ["points"], name: "index_reactions_on_points"
     t.index ["reactable_id", "reactable_type", "created_at"], name: "index_reactions_on_reactable_and_created_at"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
+    t.index ["reactable_id", "reactable_type", "category"], name: "index_reactions_on_reactable_id_type_and_category"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["status"], name: "index_reactions_on_status"
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
