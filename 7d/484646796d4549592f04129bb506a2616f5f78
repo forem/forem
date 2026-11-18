@@ -1,0 +1,46 @@
+app/models/badge_achievement.rb
+  h_f968154a99632d 67
+app/queries/comments/community_wellness_query.rb
+  h_f968154a99632d 20-27,30-52,54-97
+app/services/badges/award.rb
+  h_f968154a99632d 4-5,7-16,20
+app/services/badges/award_beloved_comment.rb
+  h_f968154a99632d 4,15-22,26,29-32,40-50
+app/services/badges/award_community_wellness.rb
+  h_f968154a99632d 4,8,10-14,16-28,31-51,53-77
+app/services/badges/award_first_post.rb
+  h_f968154a99632d 6-7,9,16-30
+app/services/badges/award_streak.rb
+  h_f968154a99632d 5,16-17,19-20,22-29,37-53,56-71
+app/services/badges/award_thumbs_up.rb
+  h_f968154a99632d 12-13,16-17,20-21,23-27,29-33,35-48,50-51,54-57,63-93,97-106
+db/migrate/20261118181000_add_beloved_comment_index_to_comments.rb
+  h_f968154a99632d 1-62
+db/schema.rb
+  h_f968154a99632d 13,533
+lib/tasks/badges.rake
+  h_f968154a99632d 38-45
+spec/models/badge_achievement_spec.rb
+  h_f968154a99632d 222-233
+spec/services/badges/award_beloved_comment_spec.rb
+  h_f968154a99632d 23-49
+spec/services/badges/award_community_wellness_spec.rb
+  h_f968154a99632d 91-98
+spec/services/badges/award_spec.rb
+  h_f968154a99632d 39-54
+spec/services/badges/award_streak_spec.rb
+  h_f968154a99632d 25-68
+spec/services/badges/award_thumbs_up_spec.rb
+  h_f968154a99632d 39-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7d484646796d4549592f04129bb506a2616f5f78",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
