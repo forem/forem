@@ -51,6 +51,13 @@ RSpec.describe "NotificationsIndex" do
 
         expect(response.body).to redirect_to(new_magic_link_path)
       end
+
+      it "ignores malformed X-Forwarded-Host headers when redirecting" do
+        get "/notifications", headers: { "X-Forwarded-Host" => "'\"efx" }
+
+        expect(response).to redirect_to(new_magic_link_path)
+        expect(response.location).to eq("http://www.example.com#{new_magic_link_path}")
+      end
     end
 
     context "when signed in" do
