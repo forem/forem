@@ -1,0 +1,21 @@
+spec/requests/custom_domain_redirect_spec.rb
+  s_0e084c3998303d::t_74e1f603fb9527 62-78
+app/controllers/application_controller.rb
+  s_0e084c3998303d::t_756a30f6e620ac 133-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e5daa57719a955abb99d30cba9a77db4a15ff8a4",
+  "prompts": {},
+  "sessions": {
+    "s_0e084c3998303d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a0f1c1c-9ca9-4b35-9780-79742d8adce7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
