@@ -157,8 +157,6 @@ COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
 USER "${APP_USER}"
 WORKDIR "${APP_HOME}"
 
-VOLUME "${APP_HOME}"/public/
-
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "ruby", "bin/web", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
