@@ -16,7 +16,24 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
-  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[body_markdown semantic_embedding reading_list_document].freeze
+  # ArticleDecorator#long_markdown? only checks whether body_markdown is non-blank and > 900 chars;
+  # compute that boolean in SQL so article show never transfers the full Markdown payload.
+  # Match Rails' Unicode whitespace explicitly, independent of PostgreSQL collation.
+  # Keep database work bounded: OCTET_LENGTH reads the TOAST header without detoasting, and the
+  # length/non-blank checks inspect only a (threshold + 1)-character prefix slice. The full value
+  # is scanned only when that whole prefix is whitespace.
+  LONG_MARKDOWN_NON_BLANK = "'[^\t\n\v\f\r \u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005" \
+                            "\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000]'".freeze
+  LONG_MARKDOWN_PREFIX =
+    "SUBSTRING(articles.body_markdown FROM 1 FOR #{ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1})".freeze
+  LONG_MARKDOWN_PROJECTION = Arel.sql(
+    "CASE WHEN COALESCE(OCTET_LENGTH(articles.body_markdown), 0) <= #{ArticleDecorator::LONG_MARKDOWN_THRESHOLD} " \
+    "THEN FALSE WHEN CHAR_LENGTH(#{LONG_MARKDOWN_PREFIX}) <= #{ArticleDecorator::LONG_MARKDOWN_THRESHOLD} THEN FALSE " \
+    "WHEN #{LONG_MARKDOWN_PREFIX} ~ #{LONG_MARKDOWN_NON_BLANK} THEN TRUE " \
+    "ELSE articles.body_markdown ~ #{LONG_MARKDOWN_NON_BLANK} END",
+    retryable: true,
+  ).as("long_markdown")
   UNRENDERED_COMMENT_COLUMNS = %w[body_markdown semantic_embedding].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
@@ -48,7 +65,7 @@ class StoriesController < ApplicationController
     not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
 
     @article = Article.includes(user: %i[profile setting roles])
-      .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS)
+      .select(*(Article.column_names - UNRENDERED_ARTICLE_COLUMNS), LONG_MARKDOWN_PROJECTION)
       .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
@@ -77,7 +94,8 @@ class StoriesController < ApplicationController
     # Story cards still need the serialized author/organization snapshots.
     # The page never reads the embedding or search document, so skip those payloads.
     if (@article = Article.includes(:organization, user: %i[profile setting roles])
-        .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(path: path)&.decorate)
+        .select(*(Article.column_names - UNRENDERED_ARTICLE_COLUMNS), LONG_MARKDOWN_PROJECTION)
+        .find_by(path: path)&.decorate)
       handle_article_show
     # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
     elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)

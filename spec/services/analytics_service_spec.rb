@@ -1,9 +1,27 @@
 require "rails_helper"
 
 RSpec.describe AnalyticsService, type: :service do
-  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:user) { create(:user) }
   let(:organization) { create(:organization) }
-  let(:article) { create(:article, user: user, published: true, with_tags: false) }
+  let(:article) { create(:article, user: user, published: true) }
+
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    elsif name == :follow && !options.key?(:follower) && !options.key?(:follower_id)
+      options[:follower] = create(:user)
+    elsif name == :reaction && !options.key?(:user) && !options.key?(:user_id)
+      options[:user] = create(:user)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    Array.new(amount) { create(name, *traits, **options) }
+  end
 
   around do |example|
     # We use Zonebie to fortify the code and spot time zone related problems but in this
@@ -31,12 +49,10 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "initialization" do
-    it "raises an error if start date is invalid" do
-      expect { described_class.new(user, start_date: "2000-") }.to raise_error(ArgumentError)
-    end
-
-    it "raises an error if end date is invalid" do
-      expect { described_class.new(user, end_date: "2000-") }.to raise_error(ArgumentError)
+    it "raises an error if start date or end date is invalid", :aggregate_failures do
+      stubbed_user = build_stubbed(:user)
+      expect { described_class.new(stubbed_user, start_date: "2000-") }.to raise_error(ArgumentError)
+      expect { described_class.new(stubbed_user, end_date: "2000-") }.to raise_error(ArgumentError)
     end
 
     it "raises an error if an article does not belong to the user" do
@@ -46,7 +62,7 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     it "clamps start_date to the owner's registration date when an earlier date is requested" do
-      late_user = create(:user, registered_at: Time.zone.parse("2020-06-01"))
+      late_user = build_stubbed(:user, registered_at: Time.zone.parse("2020-06-01"))
       service = described_class.new(late_user, start_date: "2015-01-01", end_date: "2020-06-30")
       # Weekly bucketing kicks in here (range > 180 days), so the first bucket
       # is the Monday of the week containing the registration date, not 2015.
@@ -54,7 +70,7 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     it "leaves start_date unchanged when it is after the owner's registration" do
-      early_user = create(:user, registered_at: Time.zone.parse("2018-01-01"))
+      early_user = build_stubbed(:user, registered_at: Time.zone.parse("2018-01-01"))
       service = described_class.new(early_user, start_date: "2019-04-01", end_date: "2019-04-04")
       expect(service.grouped_by_day.keys.first).to eq("2019-04-01")
     end
@@ -95,12 +111,13 @@ RSpec.describe AnalyticsService, type: :service do
 
   describe "adaptive bucketing" do
     it "uses daily buckets when the range is within DAILY_HISTORY_DAYS" do
-      service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04")
+      stubbed_user = build_stubbed(:user, registered_at: Time.current)
+      service = described_class.new(stubbed_user, start_date: "2019-04-01", end_date: "2019-04-04")
       expect(service.grouped_by_day.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
     end
 
     it "uses weekly buckets for old data and daily buckets for the most recent DAILY_HISTORY_DAYS" do
-      long_user = create(:user, registered_at: Time.zone.parse("2018-01-01"))
+      long_user = build_stubbed(:user, registered_at: Time.zone.parse("2018-01-01"))
       Timecop.freeze("2020-04-01T12:00:00Z") do
         service = described_class.new(long_user, start_date: "2019-04-01", end_date: "2020-04-01")
         keys = service.grouped_by_day.keys
@@ -440,111 +457,72 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.referrers[:domains]).to be_empty
       end
 
-      it "returns the domains ordered by number of views" do
-        other_url = Faker::Internet.url
+      it "returns the domains ordered by number of views and respects top limit", :aggregate_failures do
+        other_url = Faker::Internet.url(host: "forem.dev")
         create_list(:page_view, 2, user: user, article: article, referrer: other_url)
         top_url = Faker::Internet.url
         create_list(:page_view, 3, user: user, article: article, referrer: top_url, counts_for_number_of_views: 10)
 
-        expected_result = [
-          { domain: Addressable::URI.parse(top_url).domain, count: 30 },
-          { domain: Addressable::URI.parse(other_url).domain, count: 2 },
-        ]
-        expect(analytics_service.referrers[:domains]).to eq(expected_result)
+        top_entry = { domain: Addressable::URI.parse(top_url).domain, count: 30 }
+        other_entry = { domain: Addressable::URI.parse(other_url).domain, count: 2 }
+        expect(analytics_service.referrers[:domains]).to eq([top_entry, other_entry])
+        expect(analytics_service.referrers(top: 1)[:domains]).to eq([top_entry])
       end
 
       it "returns 20 domains at most by default" do
-        21.times do |n|
-          create(:page_view, user: user, article: article, referrer: "http://fakeurl#{n}.com")
-        end
+        now = Time.current
+        PageView.insert_all!(
+          Array.new(21) do |n|
+            { user_id: user.id, article_id: article.id, domain: "fakeurl#{n}.com", created_at: now, updated_at: now }
+          end,
+        )
         expect(analytics_service.referrers[:domains].size).to eq(20)
-      end
-
-      it "returns the most visited domain if asked for only one result" do
-        top_url = Faker::Internet.url
-        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
-        # Faker url's generate colliding domain names about 1 to two times in 10,000
-        # Faker domains never end in ".dev" so this is a safe choice
-        other_url = Faker::Internet.url(host: "forem.dev")
-        create_list(:page_view, 2, user: user, article: article, referrer: other_url)
-
-        top_domain = Addressable::URI.parse(top_url).domain
-        result = analytics_service.referrers(top: 1)[:domains]
-        expect(result).to eq([{ domain: top_domain, count: 3 }])
       end
     end
   end
 
   describe "#top_contributors" do
     let(:analytics_service) { described_class.new(user) }
-    let(:contributor) { create(:user, :without_profile, profile_image: nil) }
+    let(:contributor) { create(:user) }
 
     it "returns an empty array when there are no articles" do
-      other_user = create(:user)
-      service = described_class.new(other_user)
-      expect(service.top_contributors).to eq([])
+      expect(described_class.new(build_stubbed(:user)).top_contributors).to eq([])
     end
 
-    it "excludes self-reactions from results" do
+    it "excludes self-interactions, readinglist reactions, and comments with score <= 0" do
       create(:reaction, reactable: article, category: :like, user: user)
-      expect(analytics_service.top_contributors).to eq([])
-    end
-
-    it "excludes readinglist reactions" do
       create(:reaction, reactable: article, category: :readinglist, user: contributor)
-      expect(analytics_service.top_contributors).to eq([])
-    end
-
-    it "includes non-readinglist reactions from other users" do
-      create(:reaction, reactable: article, category: :like, user: contributor)
-      result = analytics_service.top_contributors
-      expect(result.length).to eq(1)
-      expect(result.first[:username]).to eq(contributor.username)
-      expect(result.first[:reactions_count]).to eq(1)
-      expect(result.first[:comments_count]).to eq(0)
-      expect(result.first[:score]).to eq(1)
-    end
-
-    it "weights comments at 6x" do
-      create(:comment, commentable: article, user: contributor, score: 1)
-      result = analytics_service.top_contributors
-      expect(result.first[:comments_count]).to eq(1)
-      expect(result.first[:score]).to eq(6)
-    end
-
-    it "excludes comments with score <= 0" do
       create(:comment, commentable: article, user: contributor, score: 0)
-      expect(analytics_service.top_contributors).to eq([])
-    end
-
-    it "excludes self-comments" do
       create(:comment, commentable: article, user: user, score: 1)
       expect(analytics_service.top_contributors).to eq([])
     end
 
-    it "combines reactions and comments for the same user" do
-      create(:reaction, reactable: article, category: :like, user: contributor)
-      create(:comment, commentable: article, user: contributor, score: 1)
+    it "includes reactions, weights comments at 6x, combines both, and returns profile data", :aggregate_failures do
+      reaction = create(:reaction, reactable: article, category: :like, user: contributor)
       result = analytics_service.top_contributors
       expect(result.length).to eq(1)
-      expect(result.first[:reactions_count]).to eq(1)
-      expect(result.first[:comments_count]).to eq(1)
-      expect(result.first[:score]).to eq(7) # 1 + 6
+      expect(result.first).to include(
+        :user_id, :name, :profile_image,
+        username: contributor.username, reactions_count: 1, comments_count: 0, score: 1
+      )
+
+      create(:comment, commentable: article, user: contributor, score: 1)
+      combined = analytics_service.top_contributors
+      expect(combined.length).to eq(1)
+      expect(combined.first).to include(reactions_count: 1, comments_count: 1, score: 7)
+
+      reaction.destroy!
+      comment_only = analytics_service.top_contributors
+      expect(comment_only.first).to include(reactions_count: 0, comments_count: 1, score: 6)
     end
 
-    it "respects the limit parameter" do
-      3.times { create(:reaction, reactable: article, category: :like) }
-      result = analytics_service.top_contributors(limit: 2)
-      expect(result.length).to eq(2)
-    end
-
-    it "orders by score descending" do
-      user_a = create(:user)
+    it "orders by score descending and respects the limit parameter", :aggregate_failures do
       user_b = create(:user)
-      create(:reaction, reactable: article, category: :like, user: user_a)
+      create(:reaction, reactable: article, category: :like, user: contributor)
       create(:comment, commentable: article, user: user_b, score: 1) # score 6
       result = analytics_service.top_contributors
-      expect(result.first[:username]).to eq(user_b.username)
+      expect(result.pluck(:username)).to eq([user_b.username, contributor.username])
+      expect(analytics_service.top_contributors(limit: 1).pluck(:username)).to eq([user_b.username])
     end
 
     it "works with organization owner" do
@@ -555,12 +533,6 @@ RSpec.describe AnalyticsService, type: :service do
       result = service.top_contributors
       expect(result.length).to eq(1)
       expect(result.first[:username]).to eq(contributor.username)
-    end
-
-    it "returns profile data for each contributor" do
-      create(:reaction, reactable: article, category: :like, user: contributor)
-      result = analytics_service.top_contributors.first
-      expect(result).to include(:user_id, :username, :name, :profile_image, :reactions_count, :comments_count, :score)
     end
 
     it "uses preloaded article_ids instead of embedding an articles subquery" do
@@ -580,85 +552,45 @@ RSpec.describe AnalyticsService, type: :service do
 
   describe "#follower_engagement" do
     let(:analytics_service) { described_class.new(user) }
-    let(:follower) { create(:user, :without_profile, profile_image: nil) }
-
-    before do
-      create(:follow, follower: follower, followable: user, blocked: false)
-    end
+    let(:follower) { create(:user) }
 
     it "returns zero ratio when user has no followers" do
       other_user = create(:user)
       create(:article, user: other_user, published: true)
       service = described_class.new(other_user)
-      result = service.follower_engagement
-      expect(result).to eq({ total_followers: 0, engaged_followers: 0, ratio: 0.0 })
+      expect(service.follower_engagement).to eq({ total_followers: 0, engaged_followers: 0, ratio: 0.0 })
     end
 
-    it "returns zero engaged when follower has not interacted" do
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(1)
-      expect(result[:engaged_followers]).to eq(0)
-      expect(result[:ratio]).to eq(0.0)
-    end
+    it "excludes unengaged, readinglist, low-score comment, blocked-follower, and non-follower activity",
+       :aggregate_failures do
+      article
+      create(:follow, follower: follower, followable: user, blocked: false)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 0, ratio: 0.0)
 
-    it "counts a follower who reacted" do
-      create(:reaction, reactable: article, category: :like, user: follower)
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(1)
-      expect(result[:engaged_followers]).to eq(1)
-      expect(result[:ratio]).to eq(100.0)
-    end
-
-    it "counts a follower who commented" do
-      create(:comment, commentable: article, user: follower, score: 1)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(1)
-    end
-
-    it "counts a follower with both reaction and comment only once" do
-      create(:reaction, reactable: article, category: :like, user: follower)
-      create(:comment, commentable: article, user: follower, score: 1)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(1)
-    end
-
-    it "excludes readinglist reactions" do
-      create(:reaction, reactable: article, category: :readinglist, user: follower)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(0)
-    end
-
-    it "excludes low-score comments" do
-      create(:comment, commentable: article, user: follower, score: 0)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(0)
-    end
-
-    it "excludes blocked followers" do
       blocked_follower = create(:user)
       create(:follow, follower: blocked_follower, followable: user, blocked: true)
+      create(:reaction, reactable: article, category: :readinglist, user: follower)
+      create(:comment, commentable: article, user: follower, score: 0)
       create(:reaction, reactable: article, category: :like, user: blocked_follower)
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(1) # only the non-blocked follower
+      create(:reaction, reactable: article, category: :like, user: create(:user))
+
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 0, ratio: 0.0)
     end
 
-    it "does not count non-followers" do
-      non_follower = create(:user)
-      create(:reaction, reactable: article, category: :like, user: non_follower)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(0)
-    end
+    it "counts followers who reacted or commented once and calculates ratio with multiple followers",
+       :aggregate_failures do
+      create(:follow, follower: follower, followable: user, blocked: false)
+      comment = create(:comment, commentable: article, user: follower, score: 1)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 1, ratio: 100.0)
 
-    it "calculates correct ratio with multiple followers" do
-      follower2 = create(:user)
-      follower3 = create(:user)
-      create(:follow, follower: follower2, followable: user, blocked: false)
-      create(:follow, follower: follower3, followable: user, blocked: false)
       create(:reaction, reactable: article, category: :like, user: follower)
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(3)
-      expect(result[:engaged_followers]).to eq(1)
-      expect(result[:ratio]).to eq(33.3)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 1, ratio: 100.0)
+
+      comment.destroy!
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 1, ratio: 100.0)
+
+      create_list(:follow, 2, followable: user, blocked: false)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 3, engaged_followers: 1, ratio: 33.3)
     end
 
     it "works with organization owner" do

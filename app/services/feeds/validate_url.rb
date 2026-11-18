@@ -24,7 +24,7 @@ module Feeds
     def call
       return false if feed_url.blank?
 
-      response = HTTParty.get(feed_url,
+      response = SafeHttp.get(feed_url,
                               timeout: 20,
                               headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT })
 

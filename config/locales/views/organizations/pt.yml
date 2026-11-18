@@ -63,6 +63,7 @@ pt:
         embed_content_placeholder: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <style>\n      body { font-family: system-ui, sans-serif; margin: 16px; }\n    </style>\n  </head>\n  <body>\n    <h2>Widget interativo</h2>\n    <script>\n      // Executado em uma origem opaca estritamente isolada (sem acesso a cookies ou dados do usuário)\n    </script>\n  </body>\n</html>"
         embed_sandbox_notice_title: Isolamento estrito de Sandbox
         embed_sandbox_notice_body: "Esta página só pode ser visualizada via iframes {% embed ... %} ou {% page ... %} e não pode ser aberta diretamente em uma guia do navegador. Tags <style>, <script>, formulários e links target=\"_blank\" são suportados, enquanto cookies, armazenamento do navegador e dados do usuário da página pai são completamente bloqueados."
+        embed_preview_error: Não foi possível renderizar a pré-visualização isolada agora.
         embed_usage_label: Tag Liquid de incorporação
       header_cta:
         heading: Botão CTA do Cabeçalho

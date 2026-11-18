@@ -576,7 +576,11 @@ Rails.application.routes.draw do
     get "dashboard/feed_imports", to: "dashboards#feed_imports"
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
     scope "/dashboard", as: :dashboard do
-      resources :embed_pages, controller: "user_embed_pages", only: %i[index new create edit update destroy]
+      resources :embed_pages, controller: "user_embed_pages", only: %i[index new create edit update destroy] do
+        collection do
+          post :preview
+        end
+      end
     end
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",

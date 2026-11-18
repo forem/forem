@@ -67,6 +67,21 @@ RSpec.describe "ArticlesShow" do
       expect(response.body).to include('<meta name="author-trust" content="3">')
     end
 
+    [true, false].each do |with_main_image|
+      it "generates matching social image meta tags once with_main_image=#{with_main_image}" do
+        article = create(:article, user: user, published: true, with_main_image: with_main_image)
+        expected_url = ApplicationController.helpers.article_social_image_url(article)
+        allow(Articles::SocialImage).to receive(:new).and_call_original
+
+        get article.path
+
+        expect(response).to have_http_status(:ok)
+        expect(doc.css('meta[property="og:image"]').pluck("content")).to eq([expected_url])
+        expect(doc.css('meta[name="twitter:image:src"]').pluck("content")).to eq([expected_url])
+        expect(Articles::SocialImage).to have_received(:new).with(anything).once
+      end
+    end
+
     it "renders DiscussionForumPosting and Comment structured data when article has comments", :aggregate_failures do
       comment = create(:comment, commentable: article, user: user)
       article.update_columns(comments_count: 1, displayed_comments_count: 1)

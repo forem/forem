@@ -240,6 +240,32 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         expect(member_role_counts).to eq(0)
       end
 
+      it "filters out casual readers with fewer than ceil(MIN_REACTIONS_THRESHOLD * MIN_AUTHOR_CONCENTRATION) shared-author reactions in SQL",
+         :aggregate_failures do
+        casual_reader = create(:user, reputation_modifier: 1.0)
+        create(:reaction, user: casual_reader, reactable: author1.articles.first, category: "like", created_at: 2.months.ago)
+        create(:reaction, user: casual_reader, reactable: author2.articles.first, category: "like", created_at: 2.months.ago)
+
+        casual_user_loaded = false
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          binds = payload[:type_casted_binds]
+          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
+          next unless sql.include?('FROM "reactions"') && sql.include?("JOIN articles ON reactions.reactable_id = articles.id")
+
+          if binds.include?(casual_reader.id) || sql.match?(/"reactions"\."user_id" (?:=|IN \([^)]*)\s*#{casual_reader.id}\b/)
+            casual_user_loaded = true
+          end
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(detector.call).to be true
+        end
+
+        expect(casual_user_loaded).to be(false)
+        expect(casual_reader.reload.reputation_modifier).to eq(1.0)
+      end
+
       it "still skips ring members who are admins" do
         ring_member3.add_role(:admin)
 

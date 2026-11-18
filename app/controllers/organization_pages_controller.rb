@@ -68,6 +68,12 @@ class OrganizationPagesController < ApplicationController
   end
 
   def preview
+    if params.key?(:body_html)
+      result = Pages::EmbedHtmlWrapper.preview_result(params[:body_html])
+      render json: result[:json], status: result[:status]
+      return
+    end
+
     renderer = ContentRenderer.new(params[:body_markdown].to_s, source: @organization, user: current_user)
     result = renderer.process
     render json: { processed_html: result.processed_html }

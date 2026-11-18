@@ -63,6 +63,7 @@ fr:
         embed_content_placeholder: "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <style>\n      body { font-family: system-ui, sans-serif; margin: 16px; }\n    </style>\n  </head>\n  <body>\n    <h2>Widget interactif</h2>\n    <script>\n      // Exécuté dans une origine opaque strictement isolée (aucun accès aux cookies ou données utilisateur)\n    </script>\n  </body>\n</html>"
         embed_sandbox_notice_title: Isolation stricte du bac à sable (Sandbox)
         embed_sandbox_notice_body: "Cette page ne peut être affichée que via les iframes {% embed ... %} ou {% page ... %} et ne peut pas être ouverte directement dans un onglet. Les balises <style>, <script>, les formulaires et les liens target=\"_blank\" sont pris en charge, tandis que les cookies, le stockage du navigateur et les données utilisateur de la page parente sont totalement bloqués."
+        embed_preview_error: Impossible d'afficher l'aperçu isolé pour le moment.
         embed_usage_label: Balise d'intégration Liquid
       header_cta:
         heading: Bouton CTA de l'en-tête

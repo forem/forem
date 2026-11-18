@@ -50,6 +50,14 @@ RSpec.describe MediumTag, type: :liquid_tag do
     end
   end
 
+  it "rejects a non-Medium URL that only contains a Medium URL" do
+    internal_url = "http://169.254.0.1/?u=https://a.medium.com/b"
+    stub_request(:get, /169\.254\.0\.1/)
+
+    expect { generate_medium_tag(internal_url) }.to raise_error("Invalid link URL or link URL does not exist")
+    expect(a_request(:get, /169\.254\.0\.1/)).not_to have_been_made
+  end
+
   it "raises an error when invalid" do
     expect { generate_medium_tag("invalid link") }.to raise_error("Invalid link URL or link URL does not exist")
   end
