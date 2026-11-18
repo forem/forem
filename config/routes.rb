@@ -211,6 +211,8 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/meetups", to: "events#meetups", as: :meetups
+    get "/conferences", to: "events#conferences", as: :conferences
     get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
     get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status",

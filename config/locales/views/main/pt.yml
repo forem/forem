@@ -67,10 +67,18 @@ pt:
             upcoming_takeovers: "Próximos takeovers"
             live_takeovers: "Takeovers ao vivo"
             live_and_upcoming_takeovers: "Takeovers ao vivo e próximos"
+            upcoming_meetups: "Próximos meetups"
+            live_meetups: "Meetups ao vivo"
+            live_and_upcoming_meetups: "Meetups ao vivo e próximos"
+            upcoming_conferences: "Próximas conferências"
+            live_conferences: "Conferências ao vivo"
+            live_and_upcoming_conferences: "Conferências ao vivo e próximas"
           types:
             challenge: "Desafio"
             live_stream: "Transmissão ao vivo"
             takeover: "Takeover"
+            meetup: "Meetup"
+            conference: "Conferência"
             other: "Evento"
           live_badge: "AO VIVO"
         listings:

@@ -12,7 +12,7 @@ class Event < ApplicationRecord
   has_many :signed_up_users, through: :event_signups, source: :user
   has_many :emails, dependent: :nullify
 
-  enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3 }
+  enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3, meetup: 4, conference: 5 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
 
   validates :title, presence: true
@@ -157,6 +157,10 @@ class Event < ApplicationRecord
       "CHALLENGE"
     when "takeover"
       "TAKEOVER"
+    when "meetup"
+      "MEETUP"
+    when "conference"
+      "CONFERENCE"
     else
       "EVENT"
     end

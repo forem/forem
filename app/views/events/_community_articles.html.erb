@@ -1,0 +1,33 @@
+<% if articles.any? %>
+  <div class="community-header mt-8 mb-4">
+    <h2 class="crayons-title">
+      <% if tag_name.present? %>
+        What the <%= tag_name.upcase %> community has been writing about
+      <% else %>
+        What the community has been writing about
+      <% end %>
+    </h2>
+  </div>
+
+  <div id="feed-container" class="feed-grid">
+    <% articles.each do |article| %>
+      <article class="article-card">
+        <div class="article-user">
+          <img src="<%= article.user.profile_image_90 %>" alt="<%= article.user.name %>" loading="lazy">
+          <span><%= article.user.name %></span>
+        </div>
+        <a href="<%= article.path %>" target="_blank" rel="noopener">
+          <h3 class="article-title"><%= article.title %></h3>
+        </a>
+        <div class="article-tags">
+          <% article.decorate.cached_tag_list_array.take(3).each do |tag| %>
+            <span class="tag">#<%= tag %></span>
+          <% end %>
+        </div>
+        <div class="article-meta">
+          <span><%= article.published_at&.strftime("%b %-d") %></span>
+        </div>
+      </article>
+    <% end %>
+  </div>
+<% end %>
