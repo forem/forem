@@ -1,0 +1,70 @@
+app/assets/stylesheets/views/calendar.scss
+  h_f968154a99632d 131-132
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 338,340-344,346-357,359-361,364-368,370-373,379-423,507-516
+app/controllers/events_controller.rb
+  h_f968154a99632d 4-5,8-22,46-47,54-55,63-71
+app/helpers/events_helper.rb
+  h_f968154a99632d 6-19,25-27,40-45,55-56,85-97
+app/models/event.rb
+  h_f968154a99632d 15,160-163
+app/views/events/_community_articles.html.erb
+  h_f968154a99632d 1-33
+app/views/events/_event_card.html.erb
+  h_f968154a99632d 1-55
+app/views/events/_landing_nav.html.erb
+  h_f968154a99632d 1-14
+app/views/events/_stream_player.html.erb
+  h_f968154a99632d 1-138
+app/views/events/gathering.html.erb
+  h_f968154a99632d 1-168
+app/views/events/index.html.erb
+  h_f968154a99632d 15,19,31-33,35-37
+app/views/events/landing.html.erb
+  h_f968154a99632d 1-69
+app/views/events/show.html.erb
+  h_f968154a99632d 58,85
+config/initializers/reserved_words.rb
+  h_f968154a99632d 43,139
+config/locales/views/events/en.yml
+  h_f968154a99632d 13-53
+config/locales/views/events/fr.yml
+  h_f968154a99632d 13-53
+config/locales/views/events/pt.yml
+  h_f968154a99632d 13-53
+config/locales/views/main/en.yml
+  h_f968154a99632d 71-76,81-82
+config/locales/views/main/fr.yml
+  h_f968154a99632d 69-74,79-80
+config/locales/views/main/pt.yml
+  h_f968154a99632d 70-75,80-81
+config/routes.rb
+  h_f968154a99632d 213-214
+spec/helpers/events_helper_spec.rb
+  h_f968154a99632d 44-49,59-76,97-108,150-160,181-182
+spec/models/event_spec.rb
+  h_f968154a99632d 18-19,373-382
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 47-48,58-67
+spec/requests/api/v1/docs/events_spec.rb
+  h_f968154a99632d 20,29
+spec/requests/calendar_spec.rb
+  h_f968154a99632d 73-89
+spec/requests/events_spec.rb
+  h_f968154a99632d 17-28,45-106,233-271
+spec/swagger_helper.rb
+  h_f968154a99632d 914,949
+swagger/v1/api_v1.json
+  h_f968154a99632d 3061,3075-3077,4183-4184,5518,7748-7749,9344-9346,9479-9481
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "17b212ad53abd13c89fabe0049fadb117087d793",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
