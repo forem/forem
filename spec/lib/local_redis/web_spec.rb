@@ -81,7 +81,9 @@ RSpec.describe LocalRedis::Web do
 
   it "returns the web exit status and terminates the auxiliary process" do
     cache_command = ruby_command("File.write(ARGV[0], Process.pid); sleep 30", cache_pid_path)
-    launch(ruby_command("sleep 0.3; exit 7"), cache_command)
+    # Wait for the auxiliary to publish its PID before the web process exits.
+    web_command = ruby_command("sleep 0.01 until File.size?(ARGV[0]); exit 7", cache_pid_path)
+    launch(web_command, cache_command)
     result = nil
     wait_until { result = Process.waitpid2(process_state[:pid], Process::WNOHANG) }
     process_state[:pid] = nil
