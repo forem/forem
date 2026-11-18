@@ -95,7 +95,13 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def long_markdown?
-    body_markdown.present? && body_markdown.size > LONG_MARKDOWN_THRESHOLD
+    if object.has_attribute?(:body_markdown)
+      body_markdown.present? && body_markdown.size > LONG_MARKDOWN_THRESHOLD
+    elsif object.has_attribute?(:long_markdown)
+      ActiveModel::Type::Boolean.new.cast(object[:long_markdown]) == true
+    else
+      false
+    end
   end
 
   def co_authors

@@ -83,6 +83,30 @@ RSpec.describe "StoriesShow" do
       )
     end
 
+    [false, true].each do |custom_domain|
+      it "projects long_markdown without loading Markdown on #{custom_domain ? 'custom domains' : 'article paths'}",
+         :aggregate_failures do
+        organization = create(:organization, custom_domain: "blog.example.com") if custom_domain
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization]) if custom_domain
+        record = create(:article, user: user, organization: organization, published: true)
+
+        markdown_cases = [
+          nil, "", "a" * 900, "a" * 901, "word " * 200, " " * 950, "\u00A0" * 950, "#{' ' * 901}x"
+        ]
+        markdown_cases.each do |markdown|
+          record.update_column(:body_markdown, markdown)
+          get custom_domain ? "http://blog.example.com/#{record.slug}" : record.path
+
+          expect(response).to have_http_status(:ok)
+          loaded_article = controller.instance_variable_get(:@article).object
+          expected_long_markdown = markdown.present? && markdown.size > 900
+          expect(loaded_article.has_attribute?(:body_markdown)).to be(false)
+          expect(loaded_article[:long_markdown]).to eq(expected_long_markdown)
+          expect(response.body.include?("below-post-bb")).to eq(expected_long_markdown)
+        end
+      end
+    end
+
     it "preserves the article JSON response with the narrower show projection" do
       article.update_column(:body_html, "<p>Legacy article HTML</p>")
 
@@ -233,9 +257,10 @@ RSpec.describe "StoriesShow" do
       path = article.path
       relation = instance_double(ActiveRecord::Relation)
       allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
-      excluded_columns = %w[semantic_embedding reading_list_document]
+      excluded_columns = %w[body_markdown semantic_embedding reading_list_document]
       selected_columns = Article.column_names - excluded_columns
-      allow(relation).to receive(:select).with(selected_columns).and_return(relation)
+      allow(relation).to receive(:select).with(*selected_columns, StoriesController::LONG_MARKDOWN_PROJECTION)
+        .and_return(relation)
       allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
       get path
 
