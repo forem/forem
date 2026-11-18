@@ -123,6 +123,24 @@ RSpec.describe "Api::V1::OrganizationArticleReactions" do
       expect(response.parsed_body.map { |r| r["user"]["user_id"] }).to eq([kept.user_id])
     end
 
+    it "skips reactions whose user is deleted after the reactions are loaded" do
+      kept = create(:reaction, reactable: article)
+      orphaned = create(:reaction, reactable: article)
+      deleted = false
+      delete_user = lambda do |*, payload|
+        next if deleted || payload[:sql].exclude?('ORDER BY "reactions"."created_at" DESC')
+
+        deleted = true
+        orphaned.user.destroy!
+      end
+
+      ActiveSupport::Notifications.subscribed(delete_user, "sql.active_record") { get path, headers: headers }
+
+      expect(deleted).to be(true)
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.map { |r| r["user"]["user_id"] }).to eq([kept.user_id])
+    end
+
     it "filters by article_id and returns nothing for articles outside the organization" do
       other_article = create(:article, organization: organization)
       create(:reaction, reactable: article)

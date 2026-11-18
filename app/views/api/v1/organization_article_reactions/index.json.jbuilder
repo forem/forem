@@ -1,4 +1,4 @@
-json.array! @reactions do |reaction|
+json.array! @reactions.select(&:user) do |reaction|
   json.article_id reaction.reactable_id
   json.extract! reaction, :category, :created_at
 
