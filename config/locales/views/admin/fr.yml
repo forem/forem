@@ -505,6 +505,7 @@ fr:
           "Resource Admin: Event": "Resource Admin: Event"
           "Resource Admin: Survey": "Resource Admin: Survey"
           "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: OrganizationPageManagement": "Resource Admin: OrganizationPageManagement"
           "Resource Admin: Podcast": "Resource Admin: Podcast"
           "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
           "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"

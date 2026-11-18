@@ -37,6 +37,8 @@ module Constants
       "Resource Admin: Event" => { name: "single_resource_admin", resource_type: "Event" },
       "Resource Admin: Survey" => { name: "single_resource_admin", resource_type: "Survey" },
       "Resource Admin: Organization" => { name: "single_resource_admin", resource_type: "Organization" },
+      "Resource Admin: OrganizationPageManagement" => { name: "single_resource_admin",
+                                                        resource_type: "OrganizationPageManagement" },
       "Resource Admin: Podcast" => { name: "single_resource_admin", resource_type: "Podcast" },
       "Resource Admin: NavigationLink" => { name: "single_resource_admin", resource_type: "NavigationLink" },
       "Resource Admin: RequestRedirect" => { name: "single_resource_admin", resource_type: "RequestRedirect" },
