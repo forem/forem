@@ -3727,7 +3727,7 @@
             "schema": {
               "type": "integer"
             },
-            "description": "Only reactions on this article. Articles outside the organization return no results."
+            "description": "Only reactions on this article; must be a positive integer, otherwise 422. Articles outside the organization return no results."
           },
           {
             "name": "since",
@@ -3737,7 +3737,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "Only reactions created at or after this ISO 8601 timestamp."
+            "description": "Only reactions created at or after this RFC 3339 timestamp, which must include a UTC offset (for example 2026-11-18T00:00:00Z)."
           },
           {
             "name": "page",
@@ -3830,7 +3830,7 @@
             "description": "Organization not found"
           },
           "422": {
-            "description": "Invalid since timestamp"
+            "description": "Invalid since timestamp or article_id"
           }
         }
       }

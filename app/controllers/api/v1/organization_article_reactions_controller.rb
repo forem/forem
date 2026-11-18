@@ -4,21 +4,25 @@ module Api
       before_action :authenticate_with_api_key_or_current_user!
       after_action :verify_authorized
 
+      SINCE_FORMAT = /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-](?:0\d|1[0-4]):[0-5]\d)\z/
+
       def index
-        response.headers["Cache-Control"] = "no-store"
+        response.headers["Cache-Control"] = "private, no-store"
         response.headers["Surrogate-Control"] = "no-store"
         organization = Organization.find(params[:organization_id])
         authorize organization, :article_reactions?
 
         filters = params.permit(:page, :per_page, :article_id)
         articles = organization.articles.published.from_subforem
-        articles = articles.where(id: filters[:article_id]) if filters[:article_id].present?
+        if filters.key?(:article_id)
+          return render_invalid(:invalid_article_id) unless filters[:article_id].to_s.match?(/\A[1-9]\d*\z/)
+
+          articles = articles.where(id: filters[:article_id])
+        end
         reactions = Reaction.public_category.only_articles.where(reactable_id: articles.select(:id))
-        if params[:since].present?
+        if params.key?(:since)
           since = parse_since
-          unless since
-            return error_unprocessable_entity(I18n.t("api.v1.organization_article_reactions_controller.invalid_since"))
-          end
+          return render_invalid(:invalid_since) unless since
 
           reactions = reactions.where(created_at: since..)
         end
@@ -32,9 +36,16 @@ module Api
 
       private
 
+      def render_invalid(key)
+        error_unprocessable_entity(I18n.t(key, scope: "api.v1.organization_article_reactions_controller"))
+      end
+
       def parse_since
-        Date.iso8601(params[:since].to_s)
-        Time.zone.iso8601(params[:since].to_s)
+        value = params[:since]
+        return unless value.is_a?(String) && value.match?(SINCE_FORMAT)
+
+        Date.iso8601(value)
+        Time.zone.iso8601(value)
       rescue ArgumentError
         nil
       end

@@ -80,7 +80,7 @@ RSpec.describe "Api::V1::OrganizationArticleReactions" do
                                            }
                                          }])
       expect(response.parsed_body.first["user"].keys).not_to include("email")
-      expect(response.headers["Cache-Control"]).to eq("no-store")
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
       expect(response.headers["Surrogate-Control"]).to eq("no-store")
     end
 
@@ -154,6 +154,11 @@ RSpec.describe "Api::V1::OrganizationArticleReactions" do
       get path, params: { article_id: outside.id }, headers: headers
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body).to eq([])
+
+      ["", "0", "abc", "#{other_article.id}abc", "-1", "1.5"].each do |article_id|
+        get path, params: { article_id: article_id }, headers: headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
 
     it "filters by since and rejects invalid timestamps" do
@@ -164,10 +169,25 @@ RSpec.describe "Api::V1::OrganizationArticleReactions" do
       get path, params: { since: 1.day.ago.iso8601 }, headers: headers
       expect(response.parsed_body.map { |r| r["user"]["user_id"] }).to eq([recent.user_id])
 
-      ["yesterday", "2026-13-45T00:00:00Z", "2026-02-30T00:00:00Z", "2026-02-31"].each do |since|
+      ["", " ", "yesterday", "2026-01-01", "2026-01-01T00:00:00", "2026-01-01T00:00:00+00:99",
+       "2026-01-01T00:00:00+25:00", "2026-13-45T00:00:00Z", "2026-02-30T00:00:00Z", "2026-02-31"].each do |since|
         get path, params: { since: since }, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.headers["Cache-Control"]).to eq("private, no-store")
       end
+    end
+
+    it "applies the offset of a non-UTC since timestamp" do
+      cutoff = 1.day.ago.change(usec: 0)
+      before_cutoff = create(:reaction, reactable: article)
+      before_cutoff.update_columns(created_at: cutoff - 1.hour)
+      after_cutoff = create(:reaction, reactable: article)
+      after_cutoff.update_columns(created_at: cutoff + 1.hour)
+
+      get path, params: { since: cutoff.in_time_zone("Asia/Kolkata").iso8601 }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.map { |r| r["user"]["user_id"] }).to eq([after_cutoff.user_id])
     end
 
     it "ignores non-scalar page, per_page, and article_id values" do

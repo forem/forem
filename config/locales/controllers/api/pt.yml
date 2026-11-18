@@ -30,4 +30,5 @@ pt:
         invalid_aspect_ratio: "'aspect_ratio' deve ser um dos seguintes: %{valid}"
         generation_unavailable: A geração de imagens por IA não está disponível neste Forem
       organization_article_reactions_controller:
-        invalid_since: "'since' deve ser um carimbo de data/hora ISO 8601"
+        invalid_article_id: "'article_id' deve ser um número inteiro positivo"
+        invalid_since: "'since' deve ser um carimbo de data/hora RFC 3339 com deslocamento UTC"

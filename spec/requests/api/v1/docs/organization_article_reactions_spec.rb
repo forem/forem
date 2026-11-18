@@ -28,9 +28,11 @@ RSpec.describe "Api::V1::Docs::OrganizationArticleReactions" do
       produces "application/json"
       parameter name: :organization_id, in: :path, required: true, schema: { type: :integer }
       parameter name: :article_id, in: :query, required: false, schema: { type: :integer },
-                description: "Only reactions on this article. Articles outside the organization return no results."
+                description: "Only reactions on this article; must be a positive integer, otherwise 422. " \
+                             "Articles outside the organization return no results."
       parameter name: :since, in: :query, required: false, schema: { type: :string, format: :"date-time" },
-                description: "Only reactions created at or after this ISO 8601 timestamp."
+                description: "Only reactions created at or after this RFC 3339 timestamp, " \
+                             "which must include a UTC offset (for example 2026-11-18T00:00:00Z)."
       parameter name: :page, in: :query, required: false,
                 schema: { type: :integer, minimum: 1, maximum: 1000, default: 1 }
       parameter name: :per_page, in: :query, required: false,
@@ -70,7 +72,7 @@ RSpec.describe "Api::V1::Docs::OrganizationArticleReactions" do
         run_test!
       end
 
-      response "422", "Invalid since timestamp" do
+      response "422", "Invalid since timestamp or article_id" do
         let(:since) { "yesterday" }
         run_test!
       end
