@@ -1,0 +1,68 @@
+.dockerignore
+  h_f968154a99632d 3-4
+.env.kamal.example
+  h_f968154a99632d 1-76
+.gitignore
+  h_f968154a99632d 48-52
+.kamal/hooks/pre-deploy
+  h_f968154a99632d 1-49
+.kamal/secrets
+  h_f968154a99632d 1-8
+.kamal/secrets-common
+  h_f968154a99632d 1-41
+Gemfile
+  h_f968154a99632d 144
+Gemfile.lock
+  h_f968154a99632d 513,1223
+README.md
+  h_f968154a99632d 89,91,93,97-99,101,103,105-108,110,112-115,117,119-121,123-133
+app/lib/middlewares/health_check.rb
+  h_f968154a99632d 1-29
+app/services/agent_sessions/s3_storage.rb
+  h_f968154a99632d 82,88-90
+config/database.yml
+  h_f968154a99632d 97-98
+config/deploy.cluster.yml
+  h_f968154a99632d 1-31
+config/deploy.edge.yml
+  h_f968154a99632d 1-19
+config/deploy.managed.yml
+  h_f968154a99632d 1-13
+config/deploy.staging.yml
+  h_f968154a99632d 1-14
+config/deploy.yml
+  h_f968154a99632d 1-70,72,75-86,92-95,98-100,103-116,118-130,132-141,144-145,147-149,152,156-160,162-179,181-187,190-192,194-214,216,218-226,228-230,233-235,238-239,243,245-248,250-262
+config/environments/production.rb
+  h_f968154a99632d 16,64-66,69-77
+config/initializers/carrierwave.rb
+  h_f968154a99632d 29-30,48,52,59-65
+config/initializers/middlewares.rb
+  h_f968154a99632d 1,10
+config/routes.rb
+  h_f968154a99632d 36
+docs/README.md
+  h_f968154a99632d 12
+docs/kamal-deployment.md
+  h_f968154a99632d 1,3,7,9-65,69-75,78-86,90-106,108-120,123-138,141-196,199-224,226-228,230,232-245,247,249-250,252,254,256-269,273-277,281,283,286-287,289-290,292-294,296-297,299-301,303-304,306-329
+scripts/entrypoint.sh
+  h_f968154a99632d 13-14,18-19,23-56,80-84
+spec/initializers/carrierwave_spec.rb
+  h_f968154a99632d 37-46,64-90
+spec/lib/middlewares/health_check_spec.rb
+  h_f968154a99632d 1-51
+spec/requests/health_check_up_spec.rb
+  h_f968154a99632d 1-27
+spec/services/agent_sessions/s3_storage_spec.rb
+  h_f968154a99632d 230-253
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e4391548d486b0f58f9ca7fd6a28267887c136eb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
