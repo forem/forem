@@ -1,0 +1,56 @@
+app/controllers/admin/event_pages_controller.rb
+  h_f968154a99632d 32,48,76-77,80-85,121-132
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 8-10,12,15,18,131-149
+app/controllers/events_controller.rb
+  h_f968154a99632d 59-61,71,73,94-95,98-99,103-115,144-145,148-151
+app/javascript/packs/__tests__/orgPageEditor.test.jsx
+  h_f968154a99632d 1-82
+app/javascript/packs/orgPageEditor.jsx
+  h_f968154a99632d 39-40,47
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 237-254,256-258,260,262-272,276,278,285-286,289-290
+app/models/event.rb
+  h_f968154a99632d 33-35,40-41,44,231-249,257-276,278-282,284
+app/models/page.rb
+  h_f968154a99632d 33,138,151-157,227,252-259,261,265,267-279
+app/views/events/_event_tabs.html.erb
+  h_f968154a99632d 18,26,41,51
+config/locales/models/en.yml
+  h_f968154a99632d 84-85,126-127
+config/locales/models/fr.yml
+  h_f968154a99632d 83-84,125-126
+config/locales/models/pt.yml
+  h_f968154a99632d 83-84,125-126
+config/routes.rb
+  h_f968154a99632d 219-221
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 434-437
+spec/models/event_spec.rb
+  h_f968154a99632d 445-469
+spec/models/page_spec.rb
+  h_f968154a99632d 448,451,456-464,475,477
+spec/requests/admin/event_pages_spec.rb
+  h_f968154a99632d 149-174
+spec/requests/api/v1/docs/pages_spec.rb
+  h_f968154a99632d 28
+spec/requests/api/v1/pages_spec.rb
+  h_f968154a99632d 117-176
+spec/requests/events_spec.rb
+  h_f968154a99632d 290-291,299-303,308-313,322-325,333-336,340-341,345-372,458-470
+spec/requests/organization_embeds_spec.rb
+  h_f968154a99632d 370-372
+swagger/v1/api_v1.json
+  h_f968154a99632d 4081
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2177f6413ae7327d5f017e2278f4c29896750ab2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
