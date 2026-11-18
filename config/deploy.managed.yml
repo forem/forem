@@ -1,0 +1,13 @@
+# Managed Services Destination (`bundle exec kamal setup -d managed` / `bundle exec kamal deploy -d managed`)
+#
+# Use when PostgreSQL (with pgvector) and Redis/Valkey are hosted externally
+# (e.g., DigitalOcean Managed PostgreSQL + Valkey, AWS RDS + ElastiCache, GCP Cloud SQL + Memorystore).
+#
+# Base config/deploy.yml automatically disables local postgres/redis accessories,
+# switches REDIS_* URLs to `.kamal/secrets-common`, and disables local `forem_uploads`
+# volume (override with KAMAL_LOCAL_UPLOADS=true if keeping disk uploads on 1 node).
+
+env:
+  clear:
+    AUTO_PREPARE_DB: <%= ENV.fetch("AUTO_PREPARE_DB", "true").to_s.inspect %>
+    RAILS_ASSUME_SSL: <%= ENV.fetch("RAILS_ASSUME_SSL", "true").to_s.inspect %>

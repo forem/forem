@@ -227,6 +227,30 @@ RSpec.describe AgentSessions::S3Storage do
     end
   end
 
+  describe ".credentials" do
+    it "includes optional S3-compatible endpoint and path_style when configured" do
+      fog_storage = double("Fog::Storage") # rubocop:disable RSpec/VerifiedDoubles
+      allow(Fog::Storage).to receive(:new).and_return(fog_storage)
+      stub_aws_config
+      allow(ApplicationConfig).to receive(:[]).with("AWS_ENDPOINT").and_return("https://nyc3.digitaloceanspaces.com")
+      allow(ApplicationConfig).to receive(:[]).with("AWS_PATH_STYLE").and_return("true")
+      allow(fog_storage).to receive(:put_object_url).and_return("https://cdn.example.com/put")
+
+      reset_storage
+      described_class.presigned_put_url("agent_sessions/1/test.jsonl", content_length: 128)
+
+      expect(Fog::Storage).to have_received(:new).with(
+        provider: "AWS",
+        aws_access_key_id: "test-id",
+        aws_secret_access_key: "test-secret",
+        region: "us-east-1",
+        endpoint: "https://nyc3.digitaloceanspaces.com",
+        path_style: true,
+      )
+      reset_storage
+    end
+  end
+
   private
 
   def stub_aws_config
