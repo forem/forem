@@ -275,13 +275,32 @@ class Event < ApplicationRecord
   def purge_event_edge_cache
     return unless destroyed? || previous_changes.except("updated_at").any?
 
-    fallback_paths = ["/events/#{event_name_slug}/#{event_variation_slug}"]
+    EdgeCache::PurgeByKeyWorker.perform_async(record_key, event_edge_cache_fallback_paths)
+  end
+
+  def event_edge_cache_fallback_paths
+    current_base = "/events/#{event_name_slug}/#{event_variation_slug}"
+    paths = [current_base]
     if previous_changes.key?("event_name_slug") || previous_changes.key?("event_variation_slug")
       old_name = previous_changes.dig("event_name_slug", 0) || event_name_slug
       old_var = previous_changes.dig("event_variation_slug", 0) || event_variation_slug
-      fallback_paths << "/events/#{old_name}/#{old_var}"
+      paths << "/events/#{old_name}/#{old_var}"
     end
-    EdgeCache::PurgeByKeyWorker.perform_async(record_key, fallback_paths.uniq)
+    append_owned_page_fallback_paths(paths, current_base) unless destroyed?
+    paths.uniq
+  end
+
+  def append_owned_page_fallback_paths(paths, current_base)
+    pages.pluck(:slug, :template).each do |page_slug, template|
+      suffix = page_slug.to_s.split("/").last
+      next if suffix.blank?
+
+      paths << if template == Page::EMBED_HTML_TEMPLATE
+                 "#{current_base}/embed/#{suffix}?mode=embed"
+               else
+                 "#{current_base}/p/#{suffix}"
+               end
+    end
   end
 
   def evaluate_markdown

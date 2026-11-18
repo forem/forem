@@ -172,6 +172,42 @@ RSpec.describe "Admin::EventPages" do
       expect(second.reload.showcase?).to be(false)
     end
 
+    it "rebuilds ordinary page slugs against a concurrently renamed event and skips locking unchanged-slug updates" do
+      stale_event = Event.find(event.id)
+      allow(Event).to receive(:find).and_return(stale_event)
+      allow(stale_event).to receive(:reload).and_wrap_original do |method, **kwargs|
+        Event.where(id: event.id).update_all(event_name_slug: "renamed-conf")
+        method.call(**kwargs)
+      end
+
+      post admin_event_pages_path(event), params: {
+        page: { title: "Schedule", slug_suffix: "schedule", body_markdown: "## Schedule" }
+      }
+
+      expect(response).to redirect_to(admin_event_pages_path(event))
+      expect(stale_event).to have_received(:reload).with(lock: "FOR SHARE")
+      created = event.reload.pages.find_by!(title: "Schedule")
+      expect(created.slug).to eq("events/renamed-conf/#{event.event_variation_slug}/schedule")
+
+      allow(stale_event).to receive(:reload).and_call_original
+      patch admin_event_page_path(event, created), params: {
+        page: { title: "Updated Schedule", slug_suffix: "schedule", body_markdown: "## Updated" }
+      }
+      expect(response).to redirect_to(admin_event_pages_path(event))
+      expect(stale_event).to have_received(:reload).with(lock: "FOR SHARE").once
+    end
+
+    it "redirects with an alert instead of raising when unsetting showcase fails validation" do
+      showcase = create(:page, event: event, slug: event.page_slug_for("readme"), title: "Showcase", showcase: true)
+      showcase.update_column(:title, "")
+
+      patch toggle_showcase_admin_event_page_path(event, showcase)
+
+      expect(response).to redirect_to(admin_event_pages_path(event))
+      expect(flash[:alert]).to be_present
+      expect(showcase.reload.showcase?).to be(true)
+    end
+
     it "reorders non-showcase markdown pages" do
       first = create(:page, event: event, slug: event.page_slug_for("first"), title: "First", position: 1)
       second = create(:page, event: event, slug: event.page_slug_for("second"), title: "Second", position: 2)

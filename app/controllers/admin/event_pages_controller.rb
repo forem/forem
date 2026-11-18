@@ -74,8 +74,11 @@ module Admin
         flash[:alert] = I18n.t("views.admin.event_pages.showcase_embed_forbidden")
       elsif @page.showcase?
         @page.assign_attributes(showcase: false)
-        save_event_page!
-        flash[:success] = I18n.t("views.admin.event_pages.showcase_unset")
+        if save_event_page
+          flash[:success] = I18n.t("views.admin.event_pages.showcase_unset")
+        else
+          flash[:alert] = @page.errors.full_messages.to_sentence
+        end
       else
         @page.assign_attributes(showcase: true, show_in_navigation: true)
         if save_event_page
@@ -119,15 +122,34 @@ module Admin
     end
 
     def save_event_page
-      return @page.save unless @page.showcase? || @page.showcase_changed?
-
-      @event.with_lock { @page.save }
+      if @page.showcase? || @page.showcase_changed?
+        @event.with_lock do
+          sync_page_slug_with_committed_event
+          @page.save
+        end
+      elsif @page.new_record? || @page.slug_changed?
+        Page.transaction do
+          @event.reload(lock: "FOR SHARE")
+          sync_page_slug_with_committed_event
+          @page.save
+        end
+      else
+        @page.save
+      end
     end
 
-    def save_event_page!
-      return @page.save! unless @page.showcase? || @page.showcase_changed?
+    def sync_page_slug_with_committed_event
+      return if @page.slug.blank?
 
-      @event.with_lock { @page.save! }
+      suffix = @page.slug.split("/").last
+      return if suffix.blank?
+
+      @page.slug = if @page.embed_html?
+                     @event.embed_page_slug_for(suffix)
+                   else
+                     @event.page_slug_for(suffix)
+                   end
+      @page.association(:event).target = @event
     end
 
     def creating_embed_page?

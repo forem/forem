@@ -453,19 +453,34 @@ RSpec.describe Event do
       expect(owned.reload.slug).to eq("events/summit-src/v1/faq")
     end
 
-    it "enqueues edge cache purge for the event record key when updated or destroyed" do
+    it "enqueues edge cache purge with owned page and embed fallback paths when updated or destroyed" do
       event = create(:event, published: true, event_name_slug: "purge-evt", event_variation_slug: "2026")
+      create(:page, event: event, slug: event.page_slug_for("agenda"), title: "Agenda")
+      create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("widget"),
+        title: "Widget",
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Widget</div>",
+      )
       allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_async)
 
       event.update!(published: false)
       expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
-        event.record_key, ["/events/purge-evt/2026"]
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt/2026",
+          "/events/purge-evt/2026/p/agenda",
+          "/events/purge-evt/2026/embed/widget?mode=embed",
+        ),
       )
 
       event.destroy!
       expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
         event.record_key, ["/events/purge-evt/2026"]
-      ).twice
+      )
     end
   end
 end
