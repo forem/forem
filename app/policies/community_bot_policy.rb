@@ -15,6 +15,15 @@ class CommunityBotPolicy < ApplicationPolicy
     has_mod_permission?
   end
 
+  def update?
+    has_mod_permission?
+  end
+
+  # Scheduled automations toggle a bot's automation on and off: same permission as editing it.
+  def toggle_enabled?
+    update?
+  end
+
   def destroy?
     has_mod_permission?
   end
