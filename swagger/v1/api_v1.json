@@ -3058,7 +3058,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`).",
+        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`, `meetup`, `conference`).",
         "operationId": "getEvents",
         "parameters": [
           {
@@ -3072,7 +3072,9 @@
                 "live_stream",
                 "takeover",
                 "other",
-                "challenge"
+                "challenge",
+                "meetup",
+                "conference"
               ]
             }
           }
@@ -4178,7 +4180,8 @@
                       "nav_bar_included",
                       "json",
                       "css",
-                      "txt"
+                      "txt",
+                      "embed_html"
                     ],
                     "default": "contained",
                     "description": "Controls what kind of layout the page is rendered in"
@@ -5530,7 +5533,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n- Pass `name` to look up one tag by its exact name, for example to find its ID.\n  The lookup also finds tags that are not supported.\n\nIt supports pagination, each page will contain 10 tags by default.",
+        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors and tag selection screens in settings.\n- Supports global navigation and explore lists.\n- Pass `name` to look up one tag by its exact name, for example to find its ID.\n  The lookup also finds tags that are not supported.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
           {
@@ -7760,7 +7763,8 @@
               "nav_bar_included",
               "json",
               "css",
-              "txt"
+              "txt",
+              "embed_html"
             ],
             "default": "contained",
             "description": "Controls what kind of layout the page is rendered in"
@@ -9355,7 +9359,9 @@
               "live_stream",
               "takeover",
               "other",
-              "challenge"
+              "challenge",
+              "meetup",
+              "conference"
             ]
           },
           "start_time": {
@@ -9488,7 +9494,9 @@
                   "live_stream",
                   "takeover",
                   "other",
-                  "challenge"
+                  "challenge",
+                  "meetup",
+                  "conference"
                 ]
               },
               "organization_id": {

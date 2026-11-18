@@ -15,6 +15,8 @@ RSpec.describe Event do
         takeover: 1,
         other: 2,
         challenge: 3,
+        meetup: 4,
+        conference: 5,
       )
     end
 
@@ -367,6 +369,16 @@ RSpec.describe Event do
     it "defaults to CHALLENGE for challenge" do
       event = build(:event, type_of: :challenge)
       expect(event.format_pill_label).to eq("CHALLENGE")
+    end
+
+    it "defaults to MEETUP for meetup" do
+      event = build(:event, type_of: :meetup)
+      expect(event.format_pill_label).to eq("MEETUP")
+    end
+
+    it "defaults to CONFERENCE for conference" do
+      event = build(:event, type_of: :conference)
+      expect(event.format_pill_label).to eq("CONFERENCE")
     end
   end
 

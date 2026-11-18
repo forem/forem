@@ -335,41 +335,89 @@
       margin-top: auto;
       padding-top: var(--su-2);
     }
+  }
 
-    .event-pill {
-      display: inline-block;
-      font-size: var(--fs-xs);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
+  .events-landing-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-2);
 
-      &--digital {
-        background: #eef2ff;
-        color: #4338ca;
+    .events-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--su-2) var(--su-3);
+      border-radius: var(--radius);
+      font-size: var(--fs-s);
+      font-weight: var(--fw-medium);
+      text-decoration: none;
+      color: var(--base-70);
+      background: var(--base-0);
+      border: 1px solid var(--base-20);
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+      &:hover {
+        background: var(--base-5);
+        color: var(--base-100);
       }
 
-      &--in-person {
-        background: #ecfdf5;
-        color: #047857;
-      }
+      &--active {
+        background: var(--accent-brand);
+        border-color: var(--accent-brand);
+        color: var(--base-0);
+        font-weight: var(--fw-bold);
 
-      &--challenge {
-        background: #fef3c7;
-        color: #b45309;
-      }
-
-      &--takeover {
-        background: #f3e8ff;
-        color: #6b21a8;
-      }
-
-      &--default {
-        background: var(--base-10);
-        color: var(--base-80);
+        &:hover {
+          background: var(--accent-brand);
+          color: var(--base-0);
+        }
       }
     }
+  }
+}
+
+.event-pill {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+
+  &--digital {
+    background: #eef2ff;
+    color: #4338ca;
+  }
+
+  &--in-person {
+    background: #ecfdf5;
+    color: #047857;
+  }
+
+  &--challenge {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  &--takeover {
+    background: #f3e8ff;
+    color: #6b21a8;
+  }
+
+  &--meetup {
+    background: #ccfbf1;
+    color: #0f766e;
+  }
+
+  &--conference {
+    background: #ede9fe;
+    color: #5b21b6;
+  }
+
+  &--default {
+    background: var(--base-10);
+    color: var(--base-80);
   }
 }
 
@@ -454,6 +502,16 @@
     &--takeover {
       background: var(--accent-success-a10);
       color: var(--accent-success);
+    }
+
+    &--meetup {
+      background: rgba(13, 148, 136, 0.12);
+      color: #0f766e;
+    }
+
+    &--conference {
+      background: rgba(124, 58, 237, 0.12);
+      color: #6d28d9;
     }
 
     &--other {

@@ -66,10 +66,18 @@ fr:
             upcoming_takeovers: "Takeovers à venir"
             live_takeovers: "Takeovers en direct"
             live_and_upcoming_takeovers: "Takeovers en direct et à venir"
+            upcoming_meetups: "Meetups à venir"
+            live_meetups: "Meetups en direct"
+            live_and_upcoming_meetups: "Meetups en direct et à venir"
+            upcoming_conferences: "Conférences à venir"
+            live_conferences: "Conférences en direct"
+            live_and_upcoming_conferences: "Conférences en direct et à venir"
           types:
             challenge: "Défi"
             live_stream: "Livestream"
             takeover: "Takeover"
+            meetup: "Meetup"
+            conference: "Conférence"
             other: "Événement"
           live_badge: "EN DIRECT"
         listings:

@@ -911,7 +911,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               event_variation_slug: { type: :string },
               description: { type: :string, nullable: true },
               full_details: { type: :string, nullable: true, description: "Full text dump of all event details, intended for agent and API consumption." },
-              type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+              type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
               start_time: { type: :string, format: "date-time" },
               end_time: { type: :string, format: "date-time" },
               published: { type: :boolean },
@@ -946,7 +946,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   published: { type: :boolean, default: false },
                   start_time: { type: :string, format: "date-time" },
                   end_time: { type: :string, format: "date-time" },
-                  type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+                  type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
                   organization_id: { type: :integer, nullable: true },
                   tag_list: { type: :string, nullable: true },
                   data: { type: :object, nullable: true }

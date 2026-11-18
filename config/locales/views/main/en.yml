@@ -68,10 +68,18 @@ en:
             upcoming_takeovers: "Upcoming Takeovers"
             live_takeovers: "Live Takeovers"
             live_and_upcoming_takeovers: "Live and Upcoming Takeovers"
+            upcoming_meetups: "Upcoming Meetups"
+            live_meetups: "Live Meetups"
+            live_and_upcoming_meetups: "Live and Upcoming Meetups"
+            upcoming_conferences: "Upcoming Conferences"
+            live_conferences: "Live Conferences"
+            live_and_upcoming_conferences: "Live and Upcoming Conferences"
           types:
             challenge: "Challenge"
             live_stream: "Live Stream"
             takeover: "Takeover"
+            meetup: "Meetup"
+            conference: "Conference"
             other: "Event"
           live_badge: "LIVE"
         listings:

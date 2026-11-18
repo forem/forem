@@ -128,6 +128,8 @@
   &--live_stream { background: var(--accent-brand); }
   &--takeover    { background: var(--accent-success, #2bb673); }
   &--challenge   { background: var(--accent-warning, #f5a623); }
+  &--meetup      { background: #0d9488; }
+  &--conference  { background: #7c3aed; }
   &--other       { background: var(--base-30); }
 }
 
