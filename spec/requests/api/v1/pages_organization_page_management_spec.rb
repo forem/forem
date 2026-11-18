@@ -122,20 +122,28 @@ RSpec.describe "Api::V1::Pages with Resource Admin: OrganizationPageManagement" 
   end
 
   describe "losing access with the same API key" do
-    it "is refused once the role is removed" do
+    it "is refused once the role is removed", :aggregate_failures do
+      request_headers = headers
+      put api_page_path(org_page.id), params: { body_markdown: "Before removal" }.to_json, headers: request_headers
+      expect(response).to have_http_status(:ok)
+
       manager.remove_role(:single_resource_admin, OrganizationPageManagement)
-      put api_page_path(org_page.id), params: { body_markdown: "Changed" }.to_json, headers: headers
+      put api_page_path(org_page.id), params: { body_markdown: "Changed" }.to_json, headers: request_headers
 
       expect(response).to have_http_status(:unauthorized)
-      expect(org_page.reload.body_markdown).not_to eq("Changed")
+      expect(org_page.reload.body_markdown).to eq("Before removal")
     end
 
-    it "is refused once org_readme is turned off for the organization" do
+    it "is refused once org_readme is turned off for the organization", :aggregate_failures do
+      request_headers = headers
+      put api_page_path(org_page.id), params: { body_markdown: "Before disable" }.to_json, headers: request_headers
+      expect(response).to have_http_status(:ok)
+
       FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization])
-      put api_page_path(org_page.id), params: { body_markdown: "Changed" }.to_json, headers: headers
+      put api_page_path(org_page.id), params: { body_markdown: "Changed" }.to_json, headers: request_headers
 
       expect(response).to have_http_status(:unauthorized)
-      expect(org_page.reload.body_markdown).not_to eq("Changed")
+      expect(org_page.reload.body_markdown).to eq("Before disable")
     end
   end
 

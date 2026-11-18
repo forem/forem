@@ -251,8 +251,8 @@ new_email = user_params[:email].to_s.strip.presence
       response = ::Users::RemoveRole.call(
         user: @user,
         role: role.name,
-        resource_type: params[:resource_type],
-        resource_id: params[:resource_id],
+        resource_type: role.resource_type,
+        resource_id: role.resource_id,
       )
 
       if response.success
@@ -261,8 +261,8 @@ new_email = user_params[:email].to_s.strip.presence
                             "controller" => params[:controller],
                             "target_user_id" => @user.id,
                             "role" => role.name,
-                            "resource_type" => params[:resource_type],
-                            "resource_id" => params[:resource_id]
+                            "resource_type" => role.resource_type,
+                            "resource_id" => role.resource_id
                           })
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
