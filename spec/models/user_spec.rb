@@ -439,6 +439,56 @@ RSpec.describe User do
           .with(anything, "user_suspended", anything, anything, anything)
       end
     end
+
+    describe "Core trust role events" do
+      let(:user) { create(:user) }
+
+      before { enable_sync(actor: user) }
+
+      def roles_updated_with(roles)
+        have_received(:perform_async)
+          .with(anything, "user_roles_updated", [user.id], hash_including("dev_roles" => roles), anything)
+      end
+
+      it "emits the whole set of trust roles when one is added" do
+        user.add_role(:trusted)
+        user.add_role(:base_subscriber)
+
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[trusted])
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[base_subscriber trusted])
+      end
+
+      it "emits when a trust role is removed" do
+        user.add_role(:community_leader_level_1)
+        user.remove_role(:community_leader_level_1)
+
+        expect(Trackable::DispatchWorker).to roles_updated_with([])
+      end
+
+      it "emits once for a tag moderator of several tags, when the first is added" do
+        user.add_role(:tag_moderator, create(:tag))
+        user.add_role(:tag_moderator, create(:tag))
+
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[tag_moderator]).once
+      end
+
+      it "stamps each reading with when it was taken" do
+        user.add_role(:base_subscriber)
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, hash_including("dev_roles_read_at" => String), anything)
+      end
+
+      it "does not emit for a role the user already has or one Core does not count" do
+        user.add_role(:base_subscriber)
+        user.add_role(:base_subscriber)
+        user.add_role(:warned)
+        user.remove_role(:super_moderator)
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything).once
+      end
+    end
   end
 
   describe "delegations" do
