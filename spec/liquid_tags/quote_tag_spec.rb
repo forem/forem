@@ -143,4 +143,17 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
       expect(result).to include("Amazing product")
     end
   end
+
+  describe "body sanitization" do
+    it "strips unpermitted HTML from the quote body" do
+      template = '{% quote author="Jane" %}<p>Great!</p><script>alert(1)</script>' \
+                 '<img src="x" onerror="alert(1)"><a href="javascript:alert(1)">bad</a>{% endquote %}'
+      result = parse(template).render
+
+      expect(result).to include("<p>Great!</p>")
+      expect(result).not_to include("<script")
+      expect(result).not_to include("onerror")
+      expect(result).not_to include("javascript:")
+    end
+  end
 end
