@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :image_convert_to_png_checked
+  LATEST_NATIVE_SYMBOL = :postprocess_rendered_html
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -839,6 +839,67 @@ module ForemNative
       return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
 
       Native.extract_mentioned_usernames(html)
+    end
+
+    # Scrubs unsafe `href`/`src` URIs and adds `target="_blank"` + `rel="noopener noreferrer"`
+    # to outbound `a[href^="http"]` links outside `app_domain` on canonical HTML fragments,
+    # matching `MarkdownProcessor::Parser#add_target_blank_to_outbound_links`.
+    def add_target_blank_to_outbound_links(html, app_domain)
+      return unless Native.respond_to?(:add_target_blank_to_outbound_links)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless app_domain.is_a?(String)
+
+      Native.add_target_blank_to_outbound_links(html, app_domain.to_s)
+    end
+
+    # Removes `<br>` elements directly nested inside `<ul>`, `<ol>`, or `<li>` on canonical
+    # HTML fragments.
+    def remove_nested_linebreak_in_list_fragment(html)
+      return unless Native.respond_to?(:remove_nested_linebreak_in_list_fragment)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.remove_nested_linebreak_in_list_fragment(html)
+    end
+
+    # Enforces GIF-like attributes on `<video>` elements on canonical HTML fragments, matching
+    # `Html::Parser#enforce_gif_like_videos`.
+    def enforce_gif_like_videos(html)
+      return unless Native.respond_to?(:enforce_gif_like_videos)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.enforce_gif_like_videos(html)
+    end
+
+    # Inserts `action_html` into `div.highlight__panel` elements on canonical HTML fragments,
+    # matching `Html::Parser#add_fullscreen_button_to_panel`.
+    def add_fullscreen_button_to_panel(html, action_html)
+      return unless Native.respond_to?(:add_fullscreen_button_to_panel)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless action_html.instance_of?(String) && action_html.encoding == Encoding::UTF_8
+
+      Native.add_fullscreen_button_to_panel(html, action_html)
+    end
+
+    # Single-FFI HTML post-processing pipeline combining outbound link tagging, list `<br>`
+    # cleanup, image link wrapping, `<video>` normalization, fused codeblock enhancements,
+    # table wrapping, empty `<p>` pruning, colon-emoji replacement, raw-tag unescaping,
+    # `@mention` linking, and optional `Nokogiri::HTML` `body.inner_html` newline normalization.
+    def postprocess_rendered_html(html, app_domain:, fullscreen_action_html: "", existing_usernames: [],
+                                  base_url: "", run_target_blank: true, normalize_document: true)
+      return unless Native.respond_to?(:postprocess_rendered_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless app_domain.is_a?(String) && fullscreen_action_html.is_a?(String)
+      return unless existing_usernames.is_a?(Array) && base_url.is_a?(String)
+
+      Native.postprocess_rendered_html(
+        html,
+        app_domain.to_s,
+        fullscreen_action_html.to_s,
+        existing_usernames,
+        base_url.to_s,
+        run_target_blank ? true : false,
+        normalize_document ? true : false,
+      )
     end
 
     # Renders the day links of the `calendar/_calendar_widget` month grid in one pass, matching

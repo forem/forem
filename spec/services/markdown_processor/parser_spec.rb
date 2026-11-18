@@ -1098,5 +1098,79 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(img_output).not_to include("onerror")
       expect(span_output).not_to include("onclick")
     end
+
+    it "post-processes canonical rendered articles without Nokogiri DOM parsing when no images or alerts are present",
+       :aggregate_failures do
+      markdown = <<~MARKDOWN
+        Hello :joy: [GitHub](https://github.com/forem)
+
+        ```ruby
+        puts "hi"
+        ```
+      MARKDOWN
+
+      # Warm the fullscreen action SVG cache once before observing finalize_html DOM/XML parses.
+      generate_and_parse_markdown("```ruby\n1\n```")
+      output = generate_and_parse_markdown(markdown)
+      expect(output).to include("😂", 'target="_blank"', "js-code-highlight", "js-fullscreen-code-action")
+
+      canonical_html = <<~HTML
+        <p>Hello :joy: <a href="https://github.com/forem">GitHub</a></p>
+        <div class="highlight"><pre class="highlight ruby"><code>puts "hi"
+        </code></pre></div>
+      HTML
+
+      allow(Nokogiri).to receive(:HTML).and_call_original
+      allow(Nokogiri::HTML).to receive(:parse).and_call_original
+      allow(Nokogiri::HTML).to receive(:fragment).and_call_original
+      allow(Nokogiri::HTML4::Document).to receive(:parse).and_call_original
+      allow(Nokogiri::HTML4::DocumentFragment).to receive(:parse).and_call_original
+      allow(Nokogiri::XML::Document).to receive(:parse).and_call_original
+
+      finalized = described_class.new(markdown).__send__(
+        :finalize_html,
+        canonical_html,
+        { width: 800, synchronous_detail_detection: false },
+      )
+
+      expect(Nokogiri).not_to have_received(:HTML)
+      expect(Nokogiri::HTML).not_to have_received(:parse)
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(Nokogiri::HTML4::Document).not_to have_received(:parse)
+      expect(Nokogiri::HTML4::DocumentFragment).not_to have_received(:parse)
+      expect(Nokogiri::XML::Document).not_to have_received(:parse)
+      expect(finalized).to include("😂", 'target="_blank"', "js-code-highlight", "js-fullscreen-code-action")
+    end
+
+    it "prefixes and probes images only once when native postprocessing declines", :aggregate_failures do
+      image_url = "https://dummyimage.com/100x100"
+      allow(FastImage).to receive(:size).and_return([100, 100])
+      allow(Images::Optimizer).to receive(:call).and_return(image_url)
+
+      html = "<ul><li><br></li></ul>\n<p><img src=\"#{image_url}\" alt=\"img\"></p>\n"
+      output = described_class.new("").__send__(
+        :finalize_html,
+        html,
+        { width: 800, synchronous_detail_detection: true },
+      )
+
+      expect(FastImage).to have_received(:size).once
+      expect(Images::Optimizer).to have_received(:call).once
+      expect(output).not_to include("<br>")
+      expect(output).to include("article-body-image-wrapper", 'loading="lazy"')
+    end
+
+    it "resolves mentions formed after list linebreak removal", :aggregate_failures do
+      user = create(:user, username: "alice")
+      html = "<ul>\n<li>@ali<br>ce</li>\n</ul>\n"
+      output = described_class.new("").__send__(
+        :finalize_html,
+        html,
+        { width: 800, synchronous_detail_detection: false },
+      )
+
+      expect(output).not_to include("<br>")
+      expect(output).to include("<a class=\"mentioned-user\"", "/#{user.username}\">@#{user.username}</a>")
+    end
   end
 end
