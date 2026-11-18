@@ -34,18 +34,21 @@ class SafeHttp
 
   # @param url [String] the URL to fetch
   # @param max_redirects [Integer] how many redirects to follow before giving up
+  # @param validate_url [#call, nil] optional predicate checked against each URL before fetching
   # @param options [Hash] passed through to HTTParty.get (follow_redirects is always false)
   # @yield [fragment] streamed body fragments, as with HTTParty.get; fragments of
   #   redirect responses are also yielded, so check fragment.code if that matters
   # @return [HTTParty::Response] the final, non-redirect response
   # @raise [BlockedUrlError] when a URL is not http(s) or resolves to a non-public address
   # @raise [TooManyRedirectsError] when more than max_redirects redirects are encountered
-  def self.get(url, max_redirects: MAX_REDIRECTS, **options, &block)
+  def self.get(url, max_redirects: MAX_REDIRECTS, validate_url: nil, **options, &block)
     current_url = url.to_s
     # Cookies set by redirect responses in this chain, keyed by the host that set them.
     cookie_jars = {}
 
     (max_redirects + 1).times do
+      raise BlockedUrlError, "Blocked URL: #{current_url}" if validate_url && !validate_url.call(current_url)
+
       uri, address = validate!(current_url)
 
       response = HTTParty.get(current_url, **request_options(options, address, cookie_jars[uri.hostname]), &block)

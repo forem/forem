@@ -85,6 +85,17 @@ RSpec.describe SafeHttp, type: :service do
     expect(a_request(:get, internal_url)).not_to have_been_made
   end
 
+  it "checks each redirect hop against validate_url before requesting it" do
+    other_url = "https://other.example/feed"
+    stub_request(:get, public_url).to_return(status: 302, headers: { "Location" => other_url })
+    stub_request(:get, other_url)
+
+    expect do
+      described_class.get(public_url, validate_url: ->(url) { URI.parse(url).host == "feeds.example" })
+    end.to raise_error(described_class::BlockedUrlError)
+    expect(a_request(:get, other_url)).not_to have_been_made
+  end
+
   it "blocks non-HTTP schemes" do
     expect { described_class.get("ftp://feeds.example/rss") }.to raise_error(described_class::BlockedUrlError)
   end

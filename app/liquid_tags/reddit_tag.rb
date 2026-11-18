@@ -3,7 +3,7 @@ class RedditTag < LiquidTagBase
 
   PARTIAL = "liquids/reddit".freeze
   ALLOWED_HOSTS = %w[reddit.com www.reddit.com].freeze
-  REGISTRY_REGEXP = %r{\Ahttps://(?:www\.)?reddit\.com(?:/|\z)}i
+  REGISTRY_REGEXP = %r{\Ahttps://(?:www\.)?reddit\.com(?::443)?/}i
   HTTP_TIMEOUT_SECONDS = 15
 
   def initialize(_tag_name, url, _parse_context)
@@ -33,23 +33,44 @@ class RedditTag < LiquidTagBase
 
   def parse_url
     validate_url
+    request_url = json_request_url
+    raise StandardError, invalid_reddit_link_message unless valid_url?(request_url)
 
     # Requests to Reddit require a custom `User-Agent` header to prevent 429 errors
     response = SafeHttp.get(
-      "#{@url}.json",
+      request_url,
       timeout: HTTP_TIMEOUT_SECONDS,
+      validate_url: method(:valid_url?),
       headers: { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" },
     )
 
-    last_host = response.try(:request)&.last_uri&.host&.downcase
-    raise StandardError, invalid_reddit_link_message if last_host.present? && ALLOWED_HOSTS.exclude?(last_host)
+    parsed = response.respond_to?(:parsed_response) ? response.parsed_response : response
+    data = extract_post_payload(parsed)
+    raise StandardError, invalid_reddit_link_message unless data
 
+    build_reddit_content(data)
+  rescue SafeHttp::Error, HTTParty::Error, JSON::ParserError, SocketError, Timeout::Error
+    raise StandardError, invalid_reddit_link_message
+  end
+
+  def json_request_url
+    uri = URI.parse(@url)
+    uri.path = "#{uri.path}.json" unless uri.path.end_with?(".json")
+    uri.to_s
+  end
+
+  def extract_post_payload(parsed)
     # The JSON response is an array with two items.
     # The first one is the post itself, the second one are the comments
-    parsed = response.respond_to?(:parsed_response) ? response.parsed_response : response
-    data = parsed.dig(0, "data", "children", 0, "data") if parsed.is_a?(Array)
-    raise StandardError, invalid_reddit_link_message unless data.is_a?(Hash) && data["created_utc"].is_a?(Numeric)
+    return unless parsed.is_a?(Array) && parsed[0].is_a?(Hash)
 
+    listing_data = parsed[0]["data"]
+    children = listing_data["children"] if listing_data.is_a?(Hash)
+    child_data = children[0]["data"] if children.is_a?(Array) && children[0].is_a?(Hash)
+    child_data if child_data.is_a?(Hash) && child_data["created_utc"].is_a?(Numeric)
+  end
+
+  def build_reddit_content(data)
     {
       author: data["author"],
       title: data["title"],
@@ -61,8 +82,6 @@ class RedditTag < LiquidTagBase
       selftext: parse_markdown_content(data["selftext"].to_s),
       selftext_html: data["selftext_html"]
     }
-  rescue SafeHttp::Error, HTTParty::Error, SocketError, Timeout::Error
-    raise StandardError, invalid_reddit_link_message
   end
 
   def parse_markdown_content(content)
@@ -73,25 +92,28 @@ class RedditTag < LiquidTagBase
   end
 
   def validate_url
-    return true if valid_url?(@url) && @url.match?(REGISTRY_REGEXP)
+    return true if valid_url?(@url)
 
     raise StandardError, invalid_reddit_link_message
   end
 
   def valid_url?(url)
-    return false if url.blank? || url.match?(/\s/)
+    return false if url.blank? || url.match?(/\s/) || !url.match?(REGISTRY_REGEXP)
 
     uri = URI.parse(url)
     addressable = Addressable::URI.parse(url)
 
-    [uri, addressable].all? do |parsed|
-      parsed.scheme&.downcase == "https" &&
-        parsed.userinfo.blank? &&
-        (parsed.port.nil? || parsed.port == 443) &&
-        ALLOWED_HOSTS.include?(parsed.host&.downcase)
-    end
+    valid_parsed_uri?(uri) && valid_parsed_uri?(addressable)
   rescue URI::InvalidURIError, Addressable::URI::InvalidURIError
     false
+  end
+
+  def valid_parsed_uri?(parsed)
+    parsed.scheme&.downcase == "https" &&
+      parsed.userinfo.blank? &&
+      (parsed.port.nil? || parsed.port == 443) &&
+      ALLOWED_HOSTS.include?(parsed.host&.downcase) &&
+      parsed.path.start_with?("/")
   end
 
   def invalid_reddit_link_message
