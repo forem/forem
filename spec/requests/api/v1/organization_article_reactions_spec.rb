@@ -164,9 +164,22 @@ RSpec.describe "Api::V1::OrganizationArticleReactions" do
       get path, params: { since: 1.day.ago.iso8601 }, headers: headers
       expect(response.parsed_body.map { |r| r["user"]["user_id"] }).to eq([recent.user_id])
 
-      ["yesterday", "2026-13-45T00:00:00Z"].each do |since|
+      ["yesterday", "2026-13-45T00:00:00Z", "2026-02-30T00:00:00Z", "2026-02-31"].each do |since|
         get path, params: { since: since }, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    it "ignores non-scalar page, per_page, and article_id values" do
+      other_article = create(:article, organization: organization)
+      create(:reaction, reactable: article)
+      create(:reaction, reactable: other_article)
+
+      queries = ["page[]=2", "per_page[]=1", "article_id[]=#{other_article.id}", "article_id[x]=#{other_article.id}"]
+      queries.each do |query|
+        get "#{path}?#{query}", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(2)
       end
     end
 
