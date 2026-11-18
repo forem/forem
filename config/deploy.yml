@@ -163,6 +163,9 @@ builder:
 <% if ENV["KAMAL_REMOTE_BUILDER"].present? %>
   remote: <%= ENV["KAMAL_REMOTE_BUILDER"] %>
 <% end %>
+<% if ENV["KAMAL_BUILDER_LOCAL"].present? %>
+  local: <%= ENV["KAMAL_BUILDER_LOCAL"] == "true" %>
+<% end %>
 <% if ENV["KAMAL_BUILDER_CONTEXT"].present? %>
   context: <%= ENV["KAMAL_BUILDER_CONTEXT"] %>
 <% end %>

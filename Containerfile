@@ -107,7 +107,8 @@ RUN mkdir -p "${BUNDLE_APP_CONFIG}" && \
 COPY --chown=${APP_UID}:${APP_GID} . "${APP_HOME}"
 COPY --from=rust-builder --chown=${APP_UID}:${APP_GID} /opt/apps/forem/gems/forem_native/target/release/libforem_native.so "${APP_HOME}"/gems/forem_native/lib/forem_native/forem_native.so
 
-RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
+RUN mkdir -p "${APP_HOME}"/public/assets "${APP_HOME}"/public/images "${APP_HOME}"/public/packs \
+    "${APP_HOME}"/public/podcasts "${APP_HOME}"/public/uploads "${APP_HOME}"/tmp/pids
 
 # While it's relatively rare for bare metal builds to hit the default
 # timeout, QEMU-based ones (as is the case with Docker BuildX for
