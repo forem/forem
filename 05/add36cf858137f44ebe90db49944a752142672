@@ -1,0 +1,30 @@
+app/controllers/liquid_embeds_controller.rb
+  h_f968154a99632d 2-4,12-14,19-42
+app/liquid_tags/card_tag.rb
+  h_f968154a99632d 2,5,10
+app/liquid_tags/concerns/liquid_tag_helpers.rb
+  h_f968154a99632d 48-51
+app/liquid_tags/offer_tag.rb
+  h_f968154a99632d 16
+app/liquid_tags/quote_tag.rb
+  h_f968154a99632d 23
+spec/liquid_tags/card_tag_spec.rb
+  h_f968154a99632d 24-34
+spec/liquid_tags/offer_tag_spec.rb
+  h_f968154a99632d 51-60
+spec/liquid_tags/quote_tag_spec.rb
+  h_f968154a99632d 146-158
+spec/requests/liquid_embeds_spec.rb
+  h_f968154a99632d 27-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "05add36cf858137f44ebe90db49944a752142672",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
