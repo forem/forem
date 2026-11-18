@@ -49,10 +49,10 @@ RSpec.describe LocalRedis::WebEnvironment do
 
     it "takes effect on Ruby 3.3 startup when WEB_RUBY_GC_HEAP_INIT_SLOTS is applied" do
       overrides = described_class.build("WEB_RUBY_GC_HEAP_INIT_SLOTS" => "500000")
-      default_out, status1 = Open3.capture2(RbConfig.ruby, "-e", "puts GC.stat_heap(0, :heap_allocatable_pages)")
-      tuned_out, status2 = Open3.capture2(
-        overrides, RbConfig.ruby, "-e", "puts GC.stat_heap(0, :heap_allocatable_pages)"
-      )
+      # These VM probes use only built-ins; skip inherited Bundler startup.
+      command = [RbConfig.ruby, "--disable=gems,rubyopt", "-e", "puts GC.stat_heap(0, :heap_allocatable_pages)"]
+      default_out, status1 = Open3.capture2(*command)
+      tuned_out, status2 = Open3.capture2(overrides, *command)
 
       expect(status1).to be_success
       expect(status2).to be_success
