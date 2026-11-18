@@ -29,7 +29,7 @@ module Admin
       end
       return render :new, status: :unprocessable_entity if @page.errors.any?
 
-      if @page.save
+      if save_event_page
         flash[:success] = I18n.t("views.admin.event_pages.created")
         redirect_to admin_event_pages_path(@event)
       else
@@ -45,7 +45,7 @@ module Admin
       end
       return render :edit, status: :unprocessable_entity if @page.errors.any?
 
-      if @page.save
+      if save_event_page
         Pages::BustCacheWorker.perform_async(@page.slug, nil, nil, @event.id)
         flash[:success] = I18n.t("views.admin.event_pages.updated")
         redirect_to admin_event_pages_path(@event)
@@ -73,11 +73,16 @@ module Admin
       if @page.embed_html?
         flash[:alert] = I18n.t("views.admin.event_pages.showcase_embed_forbidden")
       elsif @page.showcase?
-        @page.update!(showcase: false)
+        @page.assign_attributes(showcase: false)
+        save_event_page!
         flash[:success] = I18n.t("views.admin.event_pages.showcase_unset")
       else
-        @page.update!(showcase: true, show_in_navigation: true)
-        flash[:success] = I18n.t("views.admin.event_pages.showcase_set")
+        @page.assign_attributes(showcase: true, show_in_navigation: true)
+        if save_event_page
+          flash[:success] = I18n.t("views.admin.event_pages.showcase_set")
+        else
+          flash[:alert] = @page.errors.full_messages.to_sentence
+        end
       end
 
       redirect_to admin_event_pages_path(@event)
@@ -111,6 +116,18 @@ module Admin
 
     def set_page
       @page = @event.pages.find(params[:id])
+    end
+
+    def save_event_page
+      return @page.save unless @page.showcase? || @page.showcase_changed?
+
+      @event.with_lock { @page.save }
+    end
+
+    def save_event_page!
+      return @page.save! unless @page.showcase? || @page.showcase_changed?
+
+      @event.with_lock { @page.save! }
     end
 
     def creating_embed_page?

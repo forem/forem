@@ -287,8 +287,8 @@ RSpec.describe "Events" do
       it "renders custom pages as tabs past the first Overview view without altering the default view" do
         schedule = create(:page, event: conf_event, slug: conf_event.page_slug_for("schedule"),
                                  title: "Schedule", body_markdown: "## Day 1 Schedule", position: 1)
-        hidden = create(:page, event: conf_event, slug: conf_event.page_slug_for("hidden"),
-                               title: "Hidden Notes", body_markdown: "Internal agenda", show_in_navigation: false)
+        create(:page, event: conf_event, slug: conf_event.page_slug_for("hidden"),
+                      title: "Hidden Notes", body_markdown: "Internal agenda", show_in_navigation: false)
         create(:page, event: conf_event, slug: conf_event.embed_page_slug_for("widget"),
                       title: "Interactive Widget", template: Page::EMBED_HTML_TEMPLATE,
                       body_markdown: nil, body_html: "<p>Interactive Widget</p>")
@@ -296,12 +296,21 @@ RSpec.describe "Events" do
         get event_path(conf_event.event_name_slug, conf_event.event_variation_slug)
         expect(response).to have_http_status(:success)
         expect(response.body).to include("event-tab-nav", "Overview", "Schedule", "Conference summary")
-        tab_nav_text = Nokogiri::HTML(response.body).at_css("#event-tab-nav").text
-        expect(tab_nav_text).not_to include("Hidden Notes", "Interactive Widget")
+        expect(response.body).to include('aria-current="page"')
+        expect(response.body).not_to include("aria-current=&quot;page&quot;")
+        expect(Nokogiri::HTML(response.body).at_css("#event-tab-nav").text).not_to include(
+          "Hidden Notes", "Interactive Widget"
+        )
 
         get event_custom_page_path(conf_event.event_name_slug, conf_event.event_variation_slug, "schedule")
         expect(response).to have_http_status(:success)
         expect(response.body).to include("Day 1 Schedule", schedule.title, conf_event.title)
+        expect(response.body).not_to include("aria-current=&quot;page&quot;")
+      end
+
+      it "serves hidden non-navigation event pages directly at their custom path" do
+        create(:page, event: conf_event, slug: conf_event.page_slug_for("hidden"),
+                      title: "Hidden Notes", body_markdown: "Internal agenda", show_in_navigation: false)
 
         get event_custom_page_path(conf_event.event_name_slug, conf_event.event_variation_slug, "hidden")
         expect(response).to have_http_status(:success)
@@ -310,10 +319,10 @@ RSpec.describe "Events" do
 
       it "works across live_stream, challenge, and conference templates when Showcase is selected" do
         [
-          [stream_event, "Live Stream", "Stream Event"],
-          [challenge_event, "Challenge Details", "Challenge Event"],
-          [conf_event, "Event Details", "Conf Event"],
-        ].each do |evt, expected_native_tab, _|
+          [stream_event, "Live Stream", "player-container-post-#{stream_event.id}"],
+          [challenge_event, "Challenge Details", "Challenge Status:"],
+          [conf_event, "Event Details", I18n.t("views.events.gathering.register_heading")],
+        ].each do |evt, expected_native_tab, expected_native_marker|
           create(:page, event: evt, slug: evt.page_slug_for("readme"), title: "Event Showcase",
                         body_markdown: "## Welcome Showcase for #{evt.title}", showcase: true)
           create(:page, event: evt, slug: evt.page_slug_for("faq"), title: "FAQ",
@@ -321,12 +330,44 @@ RSpec.describe "Events" do
 
           get event_path(evt.event_name_slug, evt.event_variation_slug)
           expect(response).to have_http_status(:success)
-          expect(response.body).to include("Welcome Showcase for #{evt.title}", "Event Showcase", "FAQ", expected_native_tab)
+          expect(response.body).to include(
+            "Welcome Showcase for #{evt.title}", "Event Showcase", "FAQ", expected_native_tab
+          )
+          expect(response.body).not_to include(expected_native_marker)
 
           get event_path(evt.event_name_slug, evt.event_variation_slug, mode: "overview")
           expect(response).to have_http_status(:success)
-          expect(response.body).to include(evt.title, expected_native_tab)
+          expect(response.body).to include(evt.title, expected_native_tab, expected_native_marker)
+          expect(response.body).not_to include("Welcome Showcase for #{evt.title}")
         end
+      end
+
+      it "omits feature-flag-inaccessible pages from event tabs and showcase landing" do
+        public_showcase = create(
+          :page, event: conf_event, slug: conf_event.page_slug_for("readme"),
+                 title: "Gated Showcase", body_markdown: "Showcase body", showcase: true
+        )
+        gated_tab = create(
+          :page, event: conf_event, slug: conf_event.page_slug_for("vip"),
+                 title: "VIP Track", body_markdown: "VIP only", position: 1
+        )
+        create(
+          :page, event: conf_event, slug: conf_event.page_slug_for("faq"),
+                 title: "Open FAQ", body_markdown: "Public FAQ", position: 2
+        )
+
+        FeatureFlag.add(public_showcase.feature_flag_name)
+        FeatureFlag.add(gated_tab.feature_flag_name)
+
+        get event_path(conf_event.event_name_slug, conf_event.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Conference summary", "Open FAQ")
+        expect(response.body).not_to include("Showcase body")
+        tab_nav_text = Nokogiri::HTML(response.body).at_css("#event-tab-nav").text
+        expect(tab_nav_text).not_to include("Gated Showcase", "VIP Track")
+      ensure
+        FeatureFlag.remove(public_showcase.feature_flag_name) if public_showcase
+        FeatureFlag.remove(gated_tab.feature_flag_name) if gated_tab
       end
 
       it "supports embedded view mode, hides embed_html from /p/ and PagesController, and enforces draft access" do
@@ -413,6 +454,19 @@ RSpec.describe "Events" do
 
           expect(response).to have_http_status(:success)
           expect(response.body).to include("This is the fallback midnight event page")
+        end
+
+        it "blocks fallback pages belonging to an unpublished event for non-admins" do
+          draft_owner = create(:event, published: false, event_name_slug: "draft-fb", event_variation_slug: "2026")
+          fallback_page.update_columns(event_id: draft_owner.id, slug: "events/hidden-slug/2026")
+
+          expect do
+            get "/events/hidden-slug/2026"
+          end.to raise_error(ActionController::RoutingError, "Not Found")
+
+          login_as(create(:user, :super_admin))
+          get "/events/hidden-slug/2026"
+          expect(response).to have_http_status(:success)
         end
       end
     end

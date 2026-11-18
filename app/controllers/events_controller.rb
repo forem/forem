@@ -56,7 +56,9 @@ class EventsController < ApplicationController
   private
 
   def load_event_pages
-    @event_pages = @event.ordered_pages.to_a
+    @event_pages = @event.ordered_pages.select do |page|
+      FeatureFlag.accessible?(page.feature_flag_name, current_user)
+    end
     @showcase_page = @event_pages.detect(&:showcase?)
     @event_nav_pages = @event_pages.select { |page| page.show_in_navigation? && page != @showcase_page }
   end
@@ -66,18 +68,9 @@ class EventsController < ApplicationController
     return false unless @event_page
 
     set_surrogate_key_header @event.record_key, "show-page-#{@event_page.slug}"
-    return true if redirect_to_event_page_target?
+    return true if redirect_to_page_target?(@event_page)
 
-    case @event_page.template
-    when "txt"
-      render plain: @event_page.processed_html, content_type: "text/plain"
-    when "json"
-      render json: @event_page.body_json
-    when "css"
-      render plain: @event_page.body_css, content_type: "text/css"
-    else
-      render "page"
-    end
+    render_page_content(@event_page, "page")
     true
   end
 
@@ -98,13 +91,26 @@ class EventsController < ApplicationController
     @showcase_page
   end
 
-  def redirect_to_event_page_target?
-    return false if @event_page.redirect_to_url.blank?
+  def redirect_to_page_target?(page)
+    return false if page.redirect_to_url.blank?
 
     redirect_options = { status: :moved_permanently }
-    redirect_options[:allow_other_host] = true if @event_page.redirect_to_url.start_with?("http://", "https://")
-    redirect_to @event_page.redirect_to_url, **redirect_options
+    redirect_options[:allow_other_host] = true if page.redirect_to_url.start_with?("http://", "https://")
+    redirect_to page.redirect_to_url, **redirect_options
     true
+  end
+
+  def render_page_content(page, default_view)
+    case page.template
+    when "txt"
+      render plain: page.processed_html, content_type: "text/plain"
+    when "json"
+      render json: page.body_json
+    when "css"
+      render plain: page.body_css, content_type: "text/css"
+    else
+      render default_view
+    end
   end
 
   def load_event_articles
@@ -135,24 +141,13 @@ class EventsController < ApplicationController
 
     raise ActiveRecord::RecordNotFound unless @page && FeatureFlag.accessible?(@page.feature_flag_name, current_user)
 
+    if @page.event.present? && !(@page.event.published? || current_user&.any_admin?)
+      raise ActionController::RoutingError, "Not Found"
+    end
+
     set_surrogate_key_header "show-page-#{@page.slug}"
+    return if redirect_to_page_target?(@page)
 
-    if @page.redirect_to_url.present?
-      redirect_options = { status: :moved_permanently }
-      redirect_options[:allow_other_host] = true if @page.redirect_to_url.start_with?("http://", "https://")
-      redirect_to @page.redirect_to_url, **redirect_options
-      return
-    end
-
-    case @page.template
-    when "txt"
-      render plain: @page.processed_html, content_type: "text/plain"
-    when "json"
-      render json: @page.body_json
-    when "css"
-      render plain: @page.body_css, content_type: "text/css"
-    else
-      render "pages/show"
-    end
+    render_page_content(@page, "pages/show")
   end
 end

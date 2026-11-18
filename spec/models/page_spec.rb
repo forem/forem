@@ -445,13 +445,23 @@ RSpec.describe Page do
       first_showcase = create(:page, event: event, slug: event.page_slug_for("welcome"), showcase: true)
       second_page = create(:page, event: event, slug: event.page_slug_for("agenda"), showcase: false)
 
+      allow(Event).to receive(:where).and_call_original
       second_page.update!(showcase: true)
 
+      expect(Event).to have_received(:where).with(id: event.id).at_least(:once)
       expect(first_showcase.reload.showcase?).to be(false)
       expect(second_page.reload.showcase?).to be(true)
     end
 
-    it "validates event embed_html slug format and resolves canonical Page#path" do
+    it "validates event non-embed and embed_html slug formats" do
+      invalid_non_embed = build(:page, event: event, slug: "schedule")
+      expect(invalid_non_embed).not_to be_valid
+      expect(invalid_non_embed.errors[:slug]).to be_present
+
+      multi_segment_non_embed = build(:page, event: event, slug: "#{event.page_slug_prefix}/nested/schedule")
+      expect(multi_segment_non_embed).not_to be_valid
+      expect(multi_segment_non_embed.errors[:slug]).to be_present
+
       invalid_embed = build(
         :page,
         event: event,
@@ -462,7 +472,9 @@ RSpec.describe Page do
       )
       expect(invalid_embed).not_to be_valid
       expect(invalid_embed.errors[:slug]).to be_present
+    end
 
+    it "resolves canonical Page#path for event embed, showcase, and custom pages" do
       valid_embed = create(
         :page,
         event: event,

@@ -15,7 +15,7 @@
     <a href="<%= root_path %>"
        data-instant-keep-scroll="true"
        class="crayons-tabs__item <%= 'crayons-tabs__item--current' if showcase_active %>"
-       <%= 'aria-current="page"' if showcase_active %>
+       <% if showcase_active %>aria-current="page"<% end %>
        data-text="<%= showcase_title %>">
       <%= showcase_title %>
     </a>
@@ -23,7 +23,7 @@
     <a href="<%= native_path %>"
        data-instant-keep-scroll="true"
        class="crayons-tabs__item <%= 'crayons-tabs__item--current' if native_active %>"
-       <%= 'aria-current="page"' if native_active %>
+       <% if native_active %>aria-current="page"<% end %>
        data-text="<%= native_label %>">
       <%= native_label %>
     </a>
@@ -38,7 +38,7 @@
     <a href="<%= tab_path %>"
        data-instant-keep-scroll="true"
        class="crayons-tabs__item <%= 'crayons-tabs__item--current' if is_current %>"
-       <%= 'aria-current="page"' if is_current %>
+       <% if is_current %>aria-current="page"<% end %>
        data-text="<%= page.title %>">
       <%= page.title %>
     </a>
@@ -48,7 +48,7 @@
     <a href="<%= native_path %>"
        data-instant-keep-scroll="true"
        class="crayons-tabs__item event-tab-overview <%= 'crayons-tabs__item--current' if native_active %>"
-       <%= 'aria-current="page"' if native_active %>
+       <% if native_active %>aria-current="page"<% end %>
        data-text="<%= native_label %>"
        style="margin-left: auto;">
       <%= native_label %>

@@ -25,7 +25,7 @@ RSpec.describe "api/v1/pages" do
 
         ### Pages Overview:
         - Pages are custom static or dynamic views hosted on the Forem instance.
-        - Publicly visible unless restricted.
+        - Publicly visible unless restricted; pages belonging to unpublished events require page or event admin authentication.
         - Helpful for building custom menus, rendering site policies, or embedding custom forms.
         DESCRIBE
 

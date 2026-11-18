@@ -367,7 +367,9 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
           headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("<div>Event Schedule Widget</div>")
-      expect(response.headers["Content-Security-Policy"]).to include("sandbox #{OrganizationEmbedsController::SANDBOX_DIRECTIVE}")
+      expect(response.headers["Content-Security-Policy"]).to include(
+        "sandbox #{OrganizationEmbedsController::SANDBOX_DIRECTIVE}",
+      )
 
       get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
           params: { mode: "embed" },

@@ -30,6 +30,7 @@ class Page < ApplicationRecord
 
   validates :show_in_navigation, inclusion: { in: [true, false] }
   validate :validate_show_in_navigation
+  validate :validate_event_page_slug
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
@@ -134,10 +135,7 @@ class Page < ApplicationRecord
 
   def validate_show_in_navigation
     return unless show_in_navigation == false
-    return unless will_save_change_to_show_in_navigation? ||
-                  will_save_change_to_organization_id? ||
-                  will_save_change_to_event_id? ||
-                  will_save_change_to_showcase?
+    return unless relevant_navigation_change?
 
     # Checked only when the flag or owner/showcase changes, so a page whose
     # organization was deleted (pages are nullified without validation) or that was promoted
@@ -148,6 +146,13 @@ class Page < ApplicationRecord
       # The header always renders the Showcase tab, so a stored flag has no effect on it.
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
     end
+  end
+
+  def relevant_navigation_change?
+    will_save_change_to_show_in_navigation? ||
+      will_save_change_to_organization_id? ||
+      will_save_change_to_event_id? ||
+      will_save_change_to_showcase?
   end
 
   def showcase_or_first_page?
@@ -219,6 +224,7 @@ class Page < ApplicationRecord
   end
 
   def ensure_single_event_showcase
+    Event.where(id: event_id).lock.pick(:id)
     Page.where(event_id: event_id, showcase: true).where.not(id: id).update_all(showcase: false)
   end
 
@@ -243,14 +249,34 @@ class Page < ApplicationRecord
       return
     end
 
-    if body_html.present? && body_html.bytesize > MAX_EMBED_HTML_BYTES
+    validate_embed_html_body
+    validate_embed_html_slug
+  end
+
+  def validate_embed_html_body
+    return if body_html.blank?
+
+    if body_html.bytesize > MAX_EMBED_HTML_BYTES
       errors.add(:body_html, I18n.t("models.page.embed_html_too_large", max_kb: MAX_EMBED_HTML_BYTES / 1.kilobyte))
-    elsif body_html.present? && body_html_changed?
+    elsif body_html_changed?
       complexity = Pages::EmbedHtmlWrapper.validate_complexity(body_html)
       errors.add(:body_html, I18n.t("models.page.embed_html_too_complex")) unless complexity == :ok
     end
+  end
 
-    validate_embed_html_slug
+  def validate_event_page_slug
+    return if embed_html? || event.blank?
+
+    expected_prefix = event.page_slug_for("")
+    prefix_matches = persisted_slug_unchanged? || slug.to_s.start_with?(expected_prefix)
+    valid_format = slug.present? && slug.match?(%r{\Aevents/[a-z0-9\-]+/[a-z0-9\-]+/[a-z0-9\-]+\z})
+    return if valid_format && prefix_matches
+
+    errors.add(:slug, I18n.t("models.page.event_page_invalid_slug", prefix: expected_prefix))
+  end
+
+  def persisted_slug_unchanged?
+    !new_record? && !slug_changed? && !event_id_changed?
   end
 
   def validate_embed_html_slug

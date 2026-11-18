@@ -30,13 +30,18 @@ class Event < ApplicationRecord
   validates :bg_color_hex,
             format: { with: /\A#[0-9a-fA-F]{6}\z/, message: "must be a valid 6-digit hex color (e.g. #3B49DF)" },
             allow_blank: true
+  validate :validate_owned_page_slug_sync,
+           on: :update,
+           if: -> { event_name_slug_changed? || event_variation_slug_changed? }
 
   before_validation :set_default_bg_color_hex
   before_save :format_stream_urls
   before_save :evaluate_markdown, if: :body_markdown_changed?
-  after_update :sync_owned_page_slugs, if: -> { saved_change_to_event_name_slug? || saved_change_to_event_variation_slug? }
+  after_update :sync_owned_page_slugs,
+               if: -> { saved_change_to_event_name_slug? || saved_change_to_event_variation_slug? }
   after_commit :ensure_broadcast_billboards_and_workers, on: %i[create update]
   after_commit :bust_upcoming_events_cache, on: %i[create update destroy]
+  after_commit :purge_event_edge_cache, on: %i[update destroy]
 
   scope :published, -> { where(published: true) }
   scope :elevated, -> { where(elevated: true) }
@@ -223,6 +228,25 @@ class Event < ApplicationRecord
 
   private
 
+  def validate_owned_page_slug_sync
+    return if errors[:event_name_slug].any? || errors[:event_variation_slug].any?
+
+    old_name = event_name_slug_was || event_name_slug
+    old_var = event_variation_slug_was || event_variation_slug
+    old_prefix = "events/#{old_name}/#{old_var}/"
+    new_prefix = "#{page_slug_prefix}/"
+    return if old_prefix == new_prefix
+
+    owned_pages_with_slug_prefix(old_prefix).find_each do |owned_page|
+      owned_page.association(:event).target = self
+      owned_page.slug = "#{new_prefix}#{owned_page.slug.delete_prefix(old_prefix)}"
+      next if owned_page.valid?
+
+      errors.add(:base, owned_page.errors.full_messages.to_sentence)
+      break
+    end
+  end
+
   def sync_owned_page_slugs
     old_name = saved_change_to_event_name_slug&.first || event_name_slug
     old_var = saved_change_to_event_variation_slug&.first || event_variation_slug
@@ -230,11 +254,34 @@ class Event < ApplicationRecord
     new_prefix = "#{page_slug_prefix}/"
     return if old_prefix == new_prefix
 
-    pages.find_each do |owned_page|
-      next unless owned_page.slug.to_s.start_with?(old_prefix)
+    owned_pages_with_slug_prefix(old_prefix).find_each do |owned_page|
+      owned_page.association(:event).target = self
+      new_slug = "#{new_prefix}#{owned_page.slug.delete_prefix(old_prefix)}"
+      next if owned_page.update(slug: new_slug)
 
-      owned_page.update!(slug: "#{new_prefix}#{owned_page.slug.delete_prefix(old_prefix)}")
+      errors.add(:base, owned_page.errors.full_messages.to_sentence)
+      raise ActiveRecord::Rollback
     end
+  rescue ActiveRecord::RecordNotUnique
+    errors.add(:base, I18n.t("models.event.owned_page_slug_taken"))
+    raise ActiveRecord::Rollback
+  end
+
+  def owned_pages_with_slug_prefix(prefix)
+    escaped_prefix = ActiveRecord::Base.sanitize_sql_like(prefix)
+    pages.where("slug LIKE ?", "#{escaped_prefix}%")
+  end
+
+  def purge_event_edge_cache
+    return unless destroyed? || previous_changes.except("updated_at").any?
+
+    fallback_paths = ["/events/#{event_name_slug}/#{event_variation_slug}"]
+    if previous_changes.key?("event_name_slug") || previous_changes.key?("event_variation_slug")
+      old_name = previous_changes.dig("event_name_slug", 0) || event_name_slug
+      old_var = previous_changes.dig("event_variation_slug", 0) || event_variation_slug
+      fallback_paths << "/events/#{old_name}/#{old_var}"
+    end
+    EdgeCache::PurgeByKeyWorker.perform_async(record_key, fallback_paths.uniq)
   end
 
   def evaluate_markdown

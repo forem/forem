@@ -442,5 +442,30 @@ RSpec.describe Event do
 
       expect { event.destroy! }.to change(Page, :count).by(-3)
     end
+
+    it "fails event validation instead of raising RecordInvalid on owned page slug collision" do
+      event = create(:event, event_name_slug: "summit-src", event_variation_slug: "v1")
+      owned = create(:page, event: event, slug: event.page_slug_for("faq"))
+      create(:page, slug: "events/summit-dst/v1/faq")
+
+      expect(event.update(event_name_slug: "summit-dst")).to be(false)
+      expect(event.errors[:base]).to be_present
+      expect(owned.reload.slug).to eq("events/summit-src/v1/faq")
+    end
+
+    it "enqueues edge cache purge for the event record key when updated or destroyed" do
+      event = create(:event, published: true, event_name_slug: "purge-evt", event_variation_slug: "2026")
+      allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_async)
+
+      event.update!(published: false)
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key, ["/events/purge-evt/2026"]
+      )
+
+      event.destroy!
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key, ["/events/purge-evt/2026"]
+      ).twice
+    end
   end
 end

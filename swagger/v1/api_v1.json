@@ -4078,7 +4078,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Retrieve details for all Page objects in the system.\n\n        ### Pages Overview:\n        - Pages are custom static or dynamic views hosted on the Forem instance.\n        - Publicly visible unless restricted.\n        - Helpful for building custom menus, rendering site policies, or embedding custom forms.",
+        "description": "Retrieve details for all Page objects in the system.\n\n        ### Pages Overview:\n        - Pages are custom static or dynamic views hosted on the Forem instance.\n        - Publicly visible unless restricted; pages belonging to unpublished events require page or event admin authentication.\n        - Helpful for building custom menus, rendering site policies, or embedding custom forms.",
         "parameters": [
           {
             "name": "organization_id",

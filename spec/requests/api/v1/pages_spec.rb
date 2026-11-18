@@ -114,6 +114,66 @@ RSpec.describe "Api::V1::Pages" do
       expect(response.parsed_body.pluck("slug")).to eq(["events/api-conf/2026/readme"])
     end
 
+    it "rejects non-embed event pages with invalid slug prefix or multiple suffix segments" do
+      event = create(:event, event_name_slug: "api-conf-slug", event_variation_slug: "2026")
+
+      post api_pages_path,
+           params: post_params.merge(event_id: event.id, slug: "schedule").to_json,
+           headers: auth_header
+      expect(response).to have_http_status(:unprocessable_entity)
+
+      post api_pages_path,
+           params: post_params.merge(event_id: event.id, slug: "events/api-conf-slug/2026/a/b").to_json,
+           headers: auth_header
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "hides draft event pages from unauthenticated and non-admin callers" do
+      draft_event = create(:event, :unpublished, event_name_slug: "secret-api-evt", event_variation_slug: "2026")
+      draft_page = create(
+        :page,
+        event: draft_event,
+        slug: draft_event.page_slug_for("notes"),
+        title: "Secret Draft Notes",
+        body_markdown: "Top secret draft body",
+      )
+
+      get api_pages_path, params: { event_id: draft_event.id }, headers: v1_headers
+      expect(response.parsed_body).to eq([])
+
+      get api_pages_path, headers: v1_headers
+      expect(response.parsed_body.pluck("id")).not_to include(draft_page.id)
+
+      get api_page_path(draft_page), headers: v1_headers
+      expect(response).to have_http_status(:not_found)
+
+      regular_headers = v1_headers.merge("api-key" => create(:api_secret).secret)
+      get api_pages_path, params: { event_id: draft_event.id }, headers: regular_headers
+      expect(response.parsed_body).to eq([])
+
+      get api_page_path(draft_page), headers: regular_headers
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "allows admins to read draft event pages via index and show" do
+      draft_event = create(:event, :unpublished, event_name_slug: "admin-api-evt", event_variation_slug: "2026")
+      draft_page = create(
+        :page,
+        event: draft_event,
+        slug: draft_event.page_slug_for("notes"),
+        title: "Admin Draft Notes",
+        body_markdown: "Draft body",
+      )
+
+      get api_pages_path, params: { event_id: draft_event.id }, headers: auth_header
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).to eq([draft_page.id])
+
+      get api_page_path(draft_page), headers: auth_header
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["id"]).to eq(draft_page.id)
+    end
+
     it "rejects hiding a site page through the API" do
       put api_page_path(page), params: { show_in_navigation: false }.to_json, headers: auth_header
 

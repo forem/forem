@@ -36,13 +36,15 @@ function loadEditor() {
     window.csrfToken = csrfToken;
 
     const { defaultValue, textareaName, previewUrl, placeholder } = container.dataset;
+    const fallbackTextarea = container.querySelector('textarea');
+    const initialValue = fallbackTextarea ? fallbackTextarea.value : defaultValue;
 
     // Remove the server-rendered fallback textarea before mounting Preact
     container.innerHTML = '';
 
     render(
       <OrgPageEditor
-        defaultValue={defaultValue || ''}
+        defaultValue={initialValue || ''}
         textAreaName={textareaName}
         previewUrl={previewUrl}
         placeholder={placeholder}

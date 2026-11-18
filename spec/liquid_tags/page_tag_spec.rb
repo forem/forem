@@ -431,6 +431,10 @@ RSpec.describe PageTag, type: :liquid_tag do
       expect(faq_html).to include("src=\"#{URL.url('/events/ruby-meetup/nov/p/faq?mode=embed')}\"")
       expect(faq_html).not_to include("sandbox=")
 
+      upper_faq_html = MarkdownProcessor::Parser.new("{% page /events/RUBY-MEETUP/NOV/p/faq %}").finalize
+      expect(upper_faq_html).to include("src=\"#{URL.url('/events/ruby-meetup/nov/p/faq?mode=embed')}\"")
+      expect(upper_faq_html).not_to include("RUBY-MEETUP")
+
       embed_html = MarkdownProcessor::Parser.new("{% embed /events/ruby-meetup/nov/embed/poll %}").finalize
       expect(embed_html).to include("src=\"#{URL.url('/events/ruby-meetup/nov/embed/poll?mode=embed')}\"")
       expect(embed_html).to include("sandbox=\"#{PageTag::IFRAME_SANDBOX}\"")

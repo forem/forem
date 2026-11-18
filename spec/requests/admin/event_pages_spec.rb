@@ -146,6 +146,32 @@ RSpec.describe "Admin::EventPages" do
       expect(page_two.reload.showcase?).to be(false)
     end
 
+    it "serializes showcase selection via the parent event lock on create, update, and toggle" do
+      first = create(:page, event: event, slug: event.page_slug_for("first"), title: "First", showcase: true)
+      second = create(:page, event: event, slug: event.page_slug_for("second"), title: "Second")
+      third_params = {
+        page: { title: "Third", slug_suffix: "third", body_markdown: "## Third", showcase: "1" }
+      }
+
+      allow(Event).to receive(:find).and_return(event)
+      allow(event).to receive(:with_lock).and_call_original
+
+      post admin_event_pages_path(event), params: third_params
+      expect(response).to redirect_to(admin_event_pages_path(event))
+
+      patch admin_event_page_path(event, second), params: {
+        page: { title: "Second Updated", slug_suffix: "second", body_markdown: "## Two", showcase: "1" }
+      }
+      expect(response).to redirect_to(admin_event_pages_path(event))
+
+      patch toggle_showcase_admin_event_page_path(event, first)
+      expect(response).to redirect_to(admin_event_pages_path(event))
+
+      expect(event).to have_received(:with_lock).exactly(3).times
+      expect(first.reload.showcase?).to be(true)
+      expect(second.reload.showcase?).to be(false)
+    end
+
     it "reorders non-showcase markdown pages" do
       first = create(:page, event: event, slug: event.page_slug_for("first"), title: "First", position: 1)
       second = create(:page, event: event, slug: event.page_slug_for("second"), title: "Second", position: 2)

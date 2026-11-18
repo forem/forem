@@ -5,16 +5,17 @@ module Api
       before_action :set_page, only: %i[show update destroy]
 
       def index
+        scope = Page.non_embed_html
+        scope = visible_pages_scope(scope) unless can_view_draft_event_pages?
+
         @pages = if params[:organization_id].present?
-                   Page.non_embed_html
-                     .where(organization_id: params[:organization_id])
+                   scope.where(organization_id: params[:organization_id])
                      .order(:position, :created_at, :id)
                  elsif params[:event_id].present?
-                   Page.non_embed_html
-                     .where(event_id: params[:event_id])
+                   scope.where(event_id: params[:event_id])
                      .order(:position, :created_at, :id)
                  else
-                   Page.non_embed_html
+                   scope
                  end
         render json: @pages
       end
@@ -127,6 +128,25 @@ module Api
       def set_page
         @page = Page.find(params[:id])
         raise ActiveRecord::RecordNotFound if @page.is_a?(Page) && @page.embed_html?
+        return unless action_name == "show" && @page.event_id.present?
+        return if @page.event&.published? || can_view_draft_event_pages?
+
+        raise ActiveRecord::RecordNotFound
+      end
+
+      def visible_pages_scope(scope)
+        scope.where(
+          "pages.event_id IS NULL OR EXISTS (" \
+          "SELECT 1 FROM events WHERE events.id = pages.event_id AND events.published = ?)",
+          true,
+        )
+      end
+
+      def can_view_draft_event_pages?
+        user = authenticated_user
+        return false unless user
+
+        user.administrative_access_to?(resource: Page) || user.administrative_access_to?(resource: Event)
       end
 
       def page_admin?
