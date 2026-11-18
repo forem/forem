@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_18_181000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1393,6 +1393,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_181000) do
     t.text "body_markdown"
     t.datetime "created_at", precision: nil, null: false
     t.string "description"
+    t.bigint "event_id"
     t.boolean "is_top_level_path", default: false
     t.boolean "landing_page", default: false, null: false
     t.bigint "organization_id"
@@ -1401,6 +1402,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_181000) do
     t.text "processed_html"
     t.string "redirect_to_url"
     t.boolean "show_in_navigation", default: true, null: false
+    t.boolean "showcase", default: false, null: false
     t.string "slug"
     t.string "social_image"
     t.bigint "subforem_id"
@@ -1409,6 +1411,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_181000) do
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["event_id"], name: "index_pages_on_event_id"
+    t.index ["event_id"], name: "index_pages_on_event_id_showcase_unique", unique: true, where: "((event_id IS NOT NULL) AND (showcase = true))"
     t.index ["organization_id"], name: "index_pages_on_organization_id"
     t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
@@ -2380,6 +2384,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_181000) do
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "pages", "events", on_delete: :cascade
   add_foreign_key "pages", "organizations", on_delete: :nullify
   add_foreign_key "pages", "users", on_delete: :cascade
   add_foreign_key "podcast_episode_appearances", "podcast_episodes"

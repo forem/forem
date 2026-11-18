@@ -269,6 +269,95 @@ RSpec.describe "Events" do
       end
     end
 
+    context "when an event has owned pages and optional showcase" do
+      let!(:stream_event) do
+        create(:event, published: true, type_of: :live_stream, title: "Stream Event",
+                       event_name_slug: "stream-evt", event_variation_slug: "2026")
+      end
+      let!(:challenge_event) do
+        create(:event, published: true, type_of: :challenge, title: "Challenge Event",
+                       event_name_slug: "challenge-evt", event_variation_slug: "2026")
+      end
+      let!(:conf_event) do
+        create(:event, published: true, type_of: :conference, title: "Conf Event",
+                       event_name_slug: "conf-evt", event_variation_slug: "2026",
+                       description: "Conference summary")
+      end
+
+      it "renders custom pages as tabs past the first Overview view without altering the default view" do
+        schedule = create(:page, event: conf_event, slug: conf_event.page_slug_for("schedule"),
+                                 title: "Schedule", body_markdown: "## Day 1 Schedule", position: 1)
+        hidden = create(:page, event: conf_event, slug: conf_event.page_slug_for("hidden"),
+                               title: "Hidden Notes", body_markdown: "Internal agenda", show_in_navigation: false)
+        create(:page, event: conf_event, slug: conf_event.embed_page_slug_for("widget"),
+                      title: "Interactive Widget", template: Page::EMBED_HTML_TEMPLATE,
+                      body_markdown: nil, body_html: "<p>Interactive Widget</p>")
+
+        get event_path(conf_event.event_name_slug, conf_event.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("event-tab-nav", "Overview", "Schedule", "Conference summary")
+        tab_nav_text = Nokogiri::HTML(response.body).at_css("#event-tab-nav").text
+        expect(tab_nav_text).not_to include("Hidden Notes", "Interactive Widget")
+
+        get event_custom_page_path(conf_event.event_name_slug, conf_event.event_variation_slug, "schedule")
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Day 1 Schedule", schedule.title, conf_event.title)
+
+        get event_custom_page_path(conf_event.event_name_slug, conf_event.event_variation_slug, "hidden")
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Internal agenda")
+      end
+
+      it "works across live_stream, challenge, and conference templates when Showcase is selected" do
+        [
+          [stream_event, "Live Stream", "Stream Event"],
+          [challenge_event, "Challenge Details", "Challenge Event"],
+          [conf_event, "Event Details", "Conf Event"],
+        ].each do |evt, expected_native_tab, _|
+          create(:page, event: evt, slug: evt.page_slug_for("readme"), title: "Event Showcase",
+                        body_markdown: "## Welcome Showcase for #{evt.title}", showcase: true)
+          create(:page, event: evt, slug: evt.page_slug_for("faq"), title: "FAQ",
+                        body_markdown: "## Event FAQ", position: 1)
+
+          get event_path(evt.event_name_slug, evt.event_variation_slug)
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include("Welcome Showcase for #{evt.title}", "Event Showcase", "FAQ", expected_native_tab)
+
+          get event_path(evt.event_name_slug, evt.event_variation_slug, mode: "overview")
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(evt.title, expected_native_tab)
+        end
+      end
+
+      it "supports embedded view mode, hides embed_html from /p/ and PagesController, and enforces draft access" do
+        create(:page, event: conf_event, slug: conf_event.page_slug_for("guide"),
+                      title: "Guide", body_markdown: "Embedded guide body")
+        create(:page, event: conf_event, slug: conf_event.embed_page_slug_for("widget"),
+                      title: "Widget", template: Page::EMBED_HTML_TEMPLATE,
+                      body_markdown: nil, body_html: "<p>Widget</p>")
+
+        get event_custom_page_path(conf_event.event_name_slug, conf_event.event_variation_slug, "guide"),
+            params: { mode: "embed" }
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Embedded guide body")
+        expect(response.body).not_to include("event-tab-nav")
+
+        expect do
+          get event_custom_page_path(conf_event.event_name_slug, conf_event.event_variation_slug, "widget")
+        end.to raise_error(ActiveRecord::RecordNotFound)
+
+        expect do
+          get "/#{conf_event.page_slug_for('guide')}"
+        end.to raise_error(ActiveRecord::RecordNotFound)
+
+        draft_evt = create(:event, published: false, event_name_slug: "secret-evt", event_variation_slug: "2026")
+        create(:page, event: draft_evt, slug: draft_evt.page_slug_for("notes"), title: "Notes", body_markdown: "Secret")
+        expect do
+          get event_custom_page_path(draft_evt.event_name_slug, draft_evt.event_variation_slug, "notes")
+        end.to raise_error(ActionController::RoutingError, "Not Found")
+      end
+    end
+
     context "when requesting a draft event" do
       context "as a logged out user" do
         it "raises a 404 RoutingError as if it does not exist" do

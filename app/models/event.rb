@@ -11,6 +11,7 @@ class Event < ApplicationRecord
   has_many :event_signups, dependent: :destroy
   has_many :signed_up_users, through: :event_signups, source: :user
   has_many :emails, dependent: :nullify
+  has_many :pages, inverse_of: :event, dependent: :destroy
 
   enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3, meetup: 4, conference: 5 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
@@ -33,6 +34,7 @@ class Event < ApplicationRecord
   before_validation :set_default_bg_color_hex
   before_save :format_stream_urls
   before_save :evaluate_markdown, if: :body_markdown_changed?
+  after_update :sync_owned_page_slugs, if: -> { saved_change_to_event_name_slug? || saved_change_to_event_variation_slug? }
   after_commit :ensure_broadcast_billboards_and_workers, on: %i[create update]
   after_commit :bust_upcoming_events_cache, on: %i[create update destroy]
 
@@ -191,7 +193,49 @@ class Event < ApplicationRecord
     }
   end
 
+  def ordered_pages
+    pages.non_embed_html.order(:position, :created_at, :id)
+  end
+
+  def ordered_embed_pages
+    pages.embed_html.order(:created_at, :id)
+  end
+
+  def showcase_page
+    pages.non_embed_html.find_by(showcase: true)
+  end
+
+  def navigation_pages
+    ordered_pages.where(show_in_navigation: true)
+  end
+
+  def page_slug_prefix
+    "events/#{event_name_slug}/#{event_variation_slug}"
+  end
+
+  def page_slug_for(suffix)
+    "#{page_slug_prefix}/#{suffix}"
+  end
+
+  def embed_page_slug_for(suffix)
+    "#{page_slug_prefix}/embed/#{suffix}"
+  end
+
   private
+
+  def sync_owned_page_slugs
+    old_name = saved_change_to_event_name_slug&.first || event_name_slug
+    old_var = saved_change_to_event_variation_slug&.first || event_variation_slug
+    old_prefix = "events/#{old_name}/#{old_var}/"
+    new_prefix = "#{page_slug_prefix}/"
+    return if old_prefix == new_prefix
+
+    pages.find_each do |owned_page|
+      next unless owned_page.slug.to_s.start_with?(old_prefix)
+
+      owned_page.update!(slug: "#{new_prefix}#{owned_page.slug.delete_prefix(old_prefix)}")
+    end
+  end
 
   def evaluate_markdown
     if body_markdown.blank?

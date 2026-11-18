@@ -51,3 +51,13 @@ en:
         register_description: Let organizers know you're interested and receive event reminders.
         visit_website: Visit Event Website
         register_external: Register for Event
+      pages:
+        breadcrumbs:
+          challenges: Challenges
+        tabs:
+          nav_label: Event navigation
+          overview: Overview
+          live_stream: Live Stream
+          challenge_details: Challenge Details
+          event_details: Event Details
+          showcase: Showcase

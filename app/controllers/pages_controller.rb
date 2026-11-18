@@ -181,6 +181,7 @@ class PagesController < ApplicationController
 
   def not_found_conditions
     not_found if @page.embed_html?
+    not_found if @page.event_id.present?
     not_found unless FeatureFlag.accessible?(@page.feature_flag_name, current_user)
     not_found if params[:format] == "txt" && @page.template != "txt"
   end

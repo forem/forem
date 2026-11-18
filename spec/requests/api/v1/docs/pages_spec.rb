@@ -34,6 +34,9 @@ RSpec.describe "api/v1/pages" do
         parameter name: :organization_id, in: :query, required: false,
                   description: "Filter pages belonging to a specific organization ID, ordered by position.",
                   schema: { type: :integer, format: :int64 }
+        parameter name: :event_id, in: :query, required: false,
+                  description: "Filter pages belonging to a specific event ID, ordered by position.",
+                  schema: { type: :integer, format: :int64 }
 
         response(200, "successful") do
           schema type: :array,
@@ -59,7 +62,9 @@ RSpec.describe "api/v1/pages" do
         - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.
         - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.
         - **organization_id**: Optional ID of the organization this page belongs to.
-        - **position**: Optional display order position for organization pages.
+        - **event_id**: Optional ID of the event this page belongs to.
+        - **showcase**: Optional boolean to designate this page as the Showcase/README landing view for its event.
+        - **position**: Optional display order position for organization or event pages.
         - **show_in_navigation**: Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API.
         DESCRIBE
 
@@ -80,6 +85,10 @@ RSpec.describe "api/v1/pages" do
                                            description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
                       organization_id: { type: :integer, format: :int64,
                                          description: "The ID of the organization the page belongs to" },
+                      event_id: { type: :integer, format: :int64,
+                                  description: "The ID of the event the page belongs to" },
+                      showcase: { type: :boolean, default: false,
+                                  description: "Whether the page is selected as the Showcase/README landing view for its event" },
                       position: { type: :integer, format: :int32,
                                   description: "Display order position for organization pages" },
                       show_in_navigation: { type: :boolean, default: true,

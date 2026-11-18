@@ -342,4 +342,44 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(embed_page.reload.template).to eq("embed_html")
     end
   end
+
+  describe "event-owned sandboxed embed_html pages" do
+    let!(:published_event) do
+      create(:event, published: true, event_name_slug: "dev-conf", event_variation_slug: "2026")
+    end
+    let!(:event_embed) do
+      create(
+        :page,
+        event: published_event,
+        title: "Event Schedule Widget",
+        description: "Interactive schedule",
+        slug: published_event.embed_page_slug_for("schedule"),
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Event Schedule Widget</div>",
+      )
+    end
+
+    it "serves published event embeds inside the sandboxed controller and rejects direct or draft access",
+       :aggregate_failures do
+      get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<div>Event Schedule Widget</div>")
+      expect(response.headers["Content-Security-Policy"]).to include("sandbox #{OrganizationEmbedsController::SANDBOX_DIRECTIVE}")
+
+      get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "document" }
+      expect(response).to have_http_status(:forbidden)
+
+      published_event.update!(published: false)
+      get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+      expect(response).to have_http_status(:not_found)
+      expect(event_embed.reload.embed_html?).to be(true)
+    end
+  end
 end

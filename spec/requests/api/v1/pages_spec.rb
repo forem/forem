@@ -94,6 +94,26 @@ RSpec.describe "Api::V1::Pages" do
       expect(custom_page.reload.show_in_navigation?).to be(true)
     end
 
+    it "allows site admins to filter, create, and set showcase on event pages" do
+      event = create(:event, event_name_slug: "api-conf", event_variation_slug: "2026")
+
+      post api_pages_path,
+           params: post_params.merge(
+             event_id: event.id,
+             slug: event.page_slug_for("readme"),
+             showcase: true,
+           ).to_json,
+           headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["event_id"]).to eq(event.id)
+      expect(response.parsed_body["showcase"]).to be(true)
+
+      get api_pages_path, params: { event_id: event.id }, headers: v1_headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("slug")).to eq(["events/api-conf/2026/readme"])
+    end
+
     it "rejects hiding a site page through the API" do
       put api_page_path(page), params: { show_in_navigation: false }.to_json, headers: auth_header
 
@@ -246,7 +266,7 @@ RSpec.describe "Api::V1::Pages" do
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
                      page_template_id template_data redirect_to_url
-                     organization_id position show_in_navigation])
+                     organization_id event_id showcase position show_in_navigation])
   end
 
   it "filters pages by organization_id ordered by position" do
@@ -269,7 +289,7 @@ RSpec.describe "Api::V1::Pages" do
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
                      page_template_id template_data redirect_to_url
-                     organization_id position show_in_navigation])
+                     organization_id event_id showcase position show_in_navigation])
   end
 
   context "when authenticated as an organization admin" do

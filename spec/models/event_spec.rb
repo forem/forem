@@ -413,4 +413,34 @@ RSpec.describe Event do
       expect(event.reload.processed_html).to be_nil
     end
   end
+
+  describe "owned pages" do
+    it "orders markdown pages, embed pages, showcase, and syncs page slugs on rename" do
+      event = create(:event, event_name_slug: "summit", event_variation_slug: "v1")
+      second = create(:page, event: event, slug: event.page_slug_for("second"), position: 2)
+      first = create(:page, event: event, slug: event.page_slug_for("first"), position: 1, show_in_navigation: false)
+      embed = create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("schedule"),
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Schedule</div>",
+      )
+
+      expect(event.ordered_pages).to eq([first, second])
+      expect(event.navigation_pages).to eq([second])
+      expect(event.ordered_embed_pages).to eq([embed])
+      expect(event.showcase_page).to be_nil
+
+      first.update!(showcase: true, show_in_navigation: true)
+      expect(event.showcase_page).to eq(first)
+
+      event.update!(event_name_slug: "summit-new", event_variation_slug: "2026")
+      expect(first.reload.slug).to eq("events/summit-new/2026/first")
+      expect(embed.reload.slug).to eq("events/summit-new/2026/embed/schedule")
+
+      expect { event.destroy! }.to change(Page, :count).by(-3)
+    end
+  end
 end

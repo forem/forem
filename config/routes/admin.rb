@@ -171,6 +171,15 @@ namespace :admin do
         patch :end_broadcast
         get :fork
       end
+      resources :pages, controller: "event_pages", except: [:show] do
+        member do
+          patch :reorder
+          patch :toggle_showcase
+        end
+        collection do
+          post :preview
+        end
+      end
     end
   end
 

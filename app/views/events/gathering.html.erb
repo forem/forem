@@ -15,7 +15,6 @@
   type_landing_path = @event.meetup? ? meetups_path : conferences_path
   banner_image = @event.cover_image.presence&.url || @event.data&.dig("banner_image_url")
   now = Time.current
-  signed_up = current_user.present? && current_user.event_signups.exists?(event: @event)
   external_url = safe_event_url(@event.data&.dig("registration_url") || @event.data&.dig("website_url"))
   external_cta_label = @event.data&.dig("registration_url").present? ? t("views.events.gathering.register_external") : t("views.events.gathering.visit_website")
   host = @event.organization || @event.user
@@ -33,6 +32,8 @@
       <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
     </div>
   <% end %>
+
+  <%= render "event_tabs" %>
 
   <div class="flex flex-col m:flex-row gap-6">
     <main class="flex-1 min-w-0" id="main-content">
@@ -92,29 +93,7 @@
         <div class="crayons-card p-4 mb-6 text-center">
           <h3 class="font-bold mb-2"><%= t("views.events.gathering.register_heading") %></h3>
           <p class="fs-s color-base-70 mb-4"><%= t("views.events.gathering.register_description") %></p>
-          <button data-event-signup-button="true"
-                  data-event-name-slug="<%= @event.event_name_slug %>"
-                  data-event-variation-slug="<%= @event.event_variation_slug %>"
-                  data-signup-confirm-message="<%= @event.signup_confirm_message %>"
-                  data-signed-up-class="crayons-btn--outlined"
-                  data-unsigned-up-class="crayons-btn--primary"
-                  class="crayons-btn event-signup-btn w-100 text-center justify-center <%= signed_up ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
-                  data-signed-up="<%= signed_up ? 'true' : 'false' %>">
-            <template data-signed-up-html>
-              <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-              <%= @event.signup_button_text(signed_up: true) %>
-            </template>
-            <template data-unsigned-up-html>
-              <%= @event.signup_button_text(signed_up: false) %>
-            </template>
-
-            <% if signed_up %>
-              <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-              <%= @event.signup_button_text(signed_up: true) %>
-            <% else %>
-              <%= @event.signup_button_text(signed_up: false) %>
-            <% end %>
-          </button>
+          <%= render "signup_button", event: @event, extra_classes: "w-100 text-center justify-center" %>
         </div>
       <% end %>
 

@@ -668,6 +668,31 @@ pt:
             day_before: "1 dia antes"
             hour_before: "1 hora antes"
             none: "Nenhuma"
+      event_pages:
+        heading: Páginas do Evento
+        manage_pages: Gerenciar Páginas
+        pages_button: Páginas
+        back_to_event: Voltar ao evento
+        new_page: Criar nova página
+        your_pages: Suas Páginas
+        order_help: Use as setas para definir a ordem das abas personalizadas do evento. Se uma página Showcase for selecionada, ela permanece fixada primeiro.
+        showcase: Showcase
+        set_showcase: Definir como Showcase
+        unset_showcase: Remover Showcase
+        showcase_checkbox: Usar como página Showcase / README do evento
+        showcase_hint: Se marcado, esta página se torna a visualização inicial padrão do evento, e a visualização padrão permanece acessível como uma aba.
+        show_in_navigation: Exibir nas abas de navegação do evento
+        navigation_hint: Páginas ocultas permanecem acessíveis pela URL direta.
+        no_pages: Nenhuma página criada para este evento ainda.
+        embed_section_description: Crie widgets HTML isolados e incorporações interativas para este evento, utilizáveis em qualquer página do evento ou artigo usando a tag Liquid embed.
+        markdown_placeholder: "Use Markdown e tags Liquid para compor a página do evento."
+        created: Página do evento criada com sucesso.
+        updated: Página do evento atualizada com sucesso.
+        deleted: Página do evento excluída com sucesso.
+        reordered: Ordem das páginas atualizada.
+        showcase_set: Página definida como Showcase do evento.
+        showcase_unset: Status Showcase removido da página.
+        showcase_embed_forbidden: Páginas HTML incorporadas não podem ser definidas como página Showcase.
       billboard_placement_area_configs:
         index:
           visibility: Visibilidade

@@ -418,4 +418,65 @@ RSpec.describe Page do
       end
     end
   end
+
+  describe "event-owned pages and showcase" do
+    let(:event) { create(:event, event_name_slug: "ruby-conf", event_variation_slug: "2026") }
+
+    it "rejects assigning multiple owners to a page" do
+      org = create(:organization)
+      page = build(:page, organization: org, event: event, slug: event.page_slug_for("about"))
+
+      expect(page).not_to be_valid
+      expect(page.errors[:base]).to include(I18n.t("models.page.multiple_owners_not_allowed"))
+    end
+
+    it "allows non-showcase event pages to be hidden from tabs, but requires showcase pages to stay visible" do
+      hidden = create(:page, event: event, slug: event.page_slug_for("secret"), show_in_navigation: false)
+      expect(hidden).to be_valid
+
+      hidden.showcase = true
+      expect(hidden).not_to be_valid
+      expect(hidden.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+    end
+
+    it "requires showcase to belong to a non-embed event page and keeps at most one showcase per event" do
+      expect(build(:page, showcase: true)).not_to be_valid
+
+      first_showcase = create(:page, event: event, slug: event.page_slug_for("welcome"), showcase: true)
+      second_page = create(:page, event: event, slug: event.page_slug_for("agenda"), showcase: false)
+
+      second_page.update!(showcase: true)
+
+      expect(first_showcase.reload.showcase?).to be(false)
+      expect(second_page.reload.showcase?).to be(true)
+    end
+
+    it "validates event embed_html slug format and resolves canonical Page#path" do
+      invalid_embed = build(
+        :page,
+        event: event,
+        template: Page::EMBED_HTML_TEMPLATE,
+        slug: "wrong-prefix/embed/widget",
+        body_markdown: nil,
+        body_html: "<p>Widget</p>",
+      )
+      expect(invalid_embed).not_to be_valid
+      expect(invalid_embed.errors[:slug]).to be_present
+
+      valid_embed = create(
+        :page,
+        event: event,
+        template: Page::EMBED_HTML_TEMPLATE,
+        slug: event.embed_page_slug_for("widget"),
+        body_markdown: nil,
+        body_html: "<p>Widget</p>",
+      )
+      showcase_page = create(:page, event: event, slug: event.page_slug_for("readme"), showcase: true)
+      custom_page = create(:page, event: event, slug: event.page_slug_for("speakers"))
+
+      expect(valid_embed.path).to eq("/events/ruby-conf/2026/embed/widget")
+      expect(showcase_page.path).to eq("/events/ruby-conf/2026")
+      expect(custom_page.path).to eq("/events/ruby-conf/2026/p/speakers")
+    end
+  end
 end

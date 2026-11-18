@@ -121,6 +121,8 @@ pt:
       embed_html_too_complex: excede os limites seguros de profundidade de aninhamento ou contagem de elementos HTML.
       embed_html_too_large: não pode exceder %{max_kb} KB.
       multiple_owners_not_allowed: A página não pode pertencer simultaneamente a uma organização e a um usuário.
+      showcase_event_only: só pode ser ativado para páginas pertencentes a um evento.
+      showcase_embed_not_allowed: não pode ser ativado para páginas embed_html.
       slug_blank: não pode ficar em branco
       user_embed_pages_limit_reached: Você atingiu o máximo de %{max} páginas incorporadas.
       user_page_must_be_embed_html: deve ser embed_html para páginas pertencentes a usuários.

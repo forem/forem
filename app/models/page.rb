@@ -16,11 +16,13 @@ class Page < ApplicationRecord
   belongs_to :page_template, optional: true
   belongs_to :organization, optional: true
   belongs_to :user, optional: true
+  belongs_to :event, optional: true, inverse_of: :pages
 
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :validate_owner_constraints
+  validate :validate_showcase_constraints
   validate :validate_embed_html_constraints
   validate :body_present
   validate :validate_template_data
@@ -34,6 +36,8 @@ class Page < ApplicationRecord
   before_validation :normalize_embed_html_attributes
   before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
+  before_save :ensure_single_event_showcase,
+              if: -> { event_id.present? && showcase? && (new_record? || showcase_changed? || event_id_changed?) }
   before_create :enforce_user_embed_page_limit_with_lock, if: -> { user_id.present? && embed_html? }
 
   after_commit :ensure_uniqueness_of_landinge_page
@@ -44,6 +48,7 @@ class Page < ApplicationRecord
 
   scope :embed_html, -> { where(template: EMBED_HTML_TEMPLATE) }
   scope :non_embed_html, -> { where.not(template: EMBED_HTML_TEMPLATE) }
+  scope :showcase, -> { where(showcase: true) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if Subforem.disabled_by_env?
@@ -85,6 +90,14 @@ class Page < ApplicationRecord
   end
 
   def path
+    if has_attribute?(:event_id) && event_id.present? && event.present?
+      suffix = slug.to_s.split("/").last
+      return "/events/#{event.event_name_slug}/#{event.event_variation_slug}/embed/#{suffix}" if embed_html?
+      return "/events/#{event.event_name_slug}/#{event.event_variation_slug}" if showcase?
+
+      return "/events/#{event.event_name_slug}/#{event.event_variation_slug}/p/#{suffix}"
+    end
+
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
   end
 
@@ -96,7 +109,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id position show_in_navigation])
+                         organization_id event_id showcase position show_in_navigation])
   end
 
   def uses_page_template?
@@ -121,14 +134,17 @@ class Page < ApplicationRecord
 
   def validate_show_in_navigation
     return unless show_in_navigation == false
-    return unless will_save_change_to_show_in_navigation? || will_save_change_to_organization_id?
+    return unless will_save_change_to_show_in_navigation? ||
+                  will_save_change_to_organization_id? ||
+                  will_save_change_to_event_id? ||
+                  will_save_change_to_showcase?
 
-    # Checked only when the flag or the page's organization changes, so a page whose
+    # Checked only when the flag or owner/showcase changes, so a page whose
     # organization was deleted (pages are nullified without validation) or that was promoted
     # to Showcase while hidden still saves.
-    if organization_id.blank?
+    if organization_id.blank? && event_id.blank?
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
-    elsif showcase_or_first_page?
+    elsif (organization_id.present? && showcase_or_first_page?) || (event_id.present? && showcase?)
       # The header always renders the Showcase tab, so a stored flag has no effect on it.
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
     end
@@ -144,6 +160,7 @@ class Page < ApplicationRecord
 
     self.is_top_level_path = false
     self.landing_page = false
+    self.showcase = false
     self.redirect_to_url = nil
     self.page_template_id = nil
   end
@@ -153,7 +170,7 @@ class Page < ApplicationRecord
       self.body_markdown = nil
       self.processed_html = body_html
     elsif body_markdown.present?
-      renderer = ContentRenderer.new(body_markdown, source: organization)
+      renderer = ContentRenderer.new(body_markdown, source: organization || event&.organization, user: event&.user)
       self.processed_html = renderer.process(link_attributes: link_attributes_for_org).processed_html
     else
       self.processed_html = body_html
@@ -174,7 +191,7 @@ class Page < ApplicationRecord
   end
 
   def validate_owner_constraints
-    if organization_id.present? && user_id.present?
+    if [organization_id, user_id, event_id].count(&:present?) > 1
       errors.add(:base, I18n.t("models.page.multiple_owners_not_allowed"))
       return
     end
@@ -189,6 +206,20 @@ class Page < ApplicationRecord
     return unless new_record? && user.pages.embed_html.count >= MAX_USER_EMBED_PAGES
 
     errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+  end
+
+  def validate_showcase_constraints
+    return unless showcase?
+
+    if event_id.blank?
+      errors.add(:showcase, I18n.t("models.page.showcase_event_only"))
+    elsif embed_html?
+      errors.add(:showcase, I18n.t("models.page.showcase_embed_not_allowed"))
+    end
+  end
+
+  def ensure_single_event_showcase
+    Page.where(event_id: event_id, showcase: true).where.not(id: id).update_all(showcase: false)
   end
 
   def enforce_user_embed_page_limit_with_lock
@@ -207,7 +238,7 @@ class Page < ApplicationRecord
 
     return unless embed_html?
 
-    if organization.blank? && user.blank?
+    if organization.blank? && user.blank? && event.blank?
       errors.add(:organization, I18n.t("models.page.embed_html_requires_organization"))
       return
     end
@@ -228,9 +259,14 @@ class Page < ApplicationRecord
       return
     end
 
-    owner_slug = organization&.slug || user&.username
-    valid_format = slug.match?(%r{\A[a-z0-9_\-]+/embed/[a-z0-9\-]+\z})
-    expected_prefix = "#{owner_slug}/embed/"
+    if event.present?
+      valid_format = slug.match?(%r{\Aevents/[a-z0-9\-]+/[a-z0-9\-]+/embed/[a-z0-9\-]+\z})
+      expected_prefix = event.embed_page_slug_for("")
+    else
+      owner_slug = organization&.slug || user&.username
+      valid_format = slug.match?(%r{\A[a-z0-9_\-]+/embed/[a-z0-9\-]+\z})
+      expected_prefix = "#{owner_slug}/embed/"
+    end
     prefix_matches = !new_record? && !slug_changed? ? true : slug.start_with?(expected_prefix)
     return if valid_format && prefix_matches
 
@@ -279,20 +315,23 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    enqueue_page_cache_bust(slug, organization_id, user_id)
+    enqueue_page_cache_bust(slug, organization_id, user_id, event_id)
 
     previous_slug = saved_change_to_slug&.first
     return if previous_slug.blank? || previous_slug == slug
 
     previous_org_id = saved_change_to_organization_id ? saved_change_to_organization_id.first : organization_id
     previous_user_id = saved_change_to_user_id ? saved_change_to_user_id.first : user_id
-    enqueue_page_cache_bust(previous_slug, previous_org_id, previous_user_id)
+    previous_event_id = saved_change_to_event_id ? saved_change_to_event_id.first : event_id
+    enqueue_page_cache_bust(previous_slug, previous_org_id, previous_user_id, previous_event_id)
   end
 
-  def enqueue_page_cache_bust(target_slug, target_organization_id, target_user_id = nil)
+  def enqueue_page_cache_bust(target_slug, target_organization_id, target_user_id = nil, target_event_id = nil)
     # Keep the historical single-arg and two-arg forms so the
     # until_executing unique-job lock digest stays stable and jobs coalesce.
-    if target_user_id
+    if target_event_id
+      Pages::BustCacheWorker.perform_async(target_slug, target_organization_id, target_user_id, target_event_id)
+    elsif target_user_id
       Pages::BustCacheWorker.perform_async(target_slug, target_organization_id, target_user_id)
     elsif target_organization_id
       Pages::BustCacheWorker.perform_async(target_slug, target_organization_id)
