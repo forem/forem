@@ -24,5 +24,45 @@ RSpec.describe "LiquidEmbeds", vcr: { cassette_name: "twitter_client_status_exte
       get path
       expect(response.body).to include('<base target="_parent">')
     end
+
+    it "renders a youtube embed" do
+      get liquid_embed_path("youtube", args: "dQw4w9WgXcQ")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("https://www.youtube.com/embed/dQw4w9WgXcQ")
+    end
+
+    it "renders a unified embed tag" do
+      get liquid_embed_path("embed", args: "https://youtu.be/dQw4w9WgXcQ")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("https://www.youtube.com/embed/dQw4w9WgXcQ")
+    end
+
+    it "rejects block tags when args contain closing tag delimiters" do
+      expect do
+        get liquid_embed_path("card", args: "%}<script>alert(1)</script>{% endcard")
+      end.to raise_error(ActionController::RoutingError)
+
+      expect do
+        get liquid_embed_path("quote", args: 'author="x" %}<img src=x onerror=alert(1)>{% endquote')
+      end.to raise_error(ActionController::RoutingError)
+
+      expect do
+        get liquid_embed_path("offer", args: "%}<script>alert(1)</script>{% endoffer")
+      end.to raise_error(ActionController::RoutingError)
+    end
+
+    it "rejects built-in Liquid tags and unexpected tag delimiters in args" do
+      expect do
+        get liquid_embed_path("raw", args: "%}<script>alert(1)</script>{% endraw")
+      end.to raise_error(ActionController::RoutingError)
+
+      expect do
+        get liquid_embed_path("tweet", args: "1018911886862057472 %}<script>alert(1)</script>{% endtweet")
+      end.to raise_error(ActionController::RoutingError)
+
+      expect do
+        get liquid_embed_path("tweet %}<script>alert(1)</script>{%", args: "")
+      end.to raise_error(ActionController::RoutingError)
+    end
   end
 end
