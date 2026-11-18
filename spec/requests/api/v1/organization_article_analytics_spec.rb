@@ -139,11 +139,11 @@ RSpec.describe "Api::V1::OrganizationArticleAnalytics" do
     expect(response).to have_http_status(:unauthorized)
   end
 
-  it "omits the daily series when no date range is given" do
+  it "omits the daily series when start and end are not given" do
     create(:organization_membership, organization: organization, user: user)
     create(:article, organization: organization)
 
-    get path, params: { start: "", end: "" }, headers: headers
+    get path, headers: headers
 
     expect(response).to have_http_status(:ok)
     expect(response.parsed_body.first).not_to have_key("daily")
@@ -213,6 +213,9 @@ RSpec.describe "Api::V1::OrganizationArticleAnalytics" do
     {
       { start: "2026-03-01" } => "Date parameters 'start' and 'end' must be provided together",
       { end: "2026-03-01" } => "Date parameters 'start' and 'end' must be provided together",
+      { start: "" } => "Date parameters 'start' and 'end' must be provided together",
+      { start: "", end: "" } => invalid_format,
+      { start: " ", end: " " } => invalid_format,
       { start: "2026-3-1", end: "2026-03-02" } => invalid_format,
       { start: "2026-03-01", end: "2026-02-30" } => invalid_format,
       { start: "yesterday", end: "today" } => invalid_format,

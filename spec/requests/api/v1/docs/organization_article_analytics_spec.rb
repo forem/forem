@@ -28,7 +28,9 @@ RSpec.describe "Api::V1::Docs::OrganizationArticleAnalytics" do
                   "series to each article with page views, comments and reactions by category, including " \
                   "reading list saves (counts only). reactions.total includes saves, as in the historical " \
                   "analytics endpoint. Days without activity are returned with zero counts. Daily values come " \
-                  "from eventual rollups, so recent days may still be revised. " \
+                  "from eventual rollups, so recent days may still be revised. An article whose rollup has not " \
+                  "been built yet returns zeros for every day even if it had activity, and its past days can " \
+                  "change once the rollup is first populated. " \
                   "Independent posts that mention the organization are excluded. Responses are never cached."
       produces "application/json"
       parameter name: :organization_id, in: :path, required: true, schema: { type: :integer }
@@ -95,6 +97,12 @@ RSpec.describe "Api::V1::Docs::OrganizationArticleAnalytics" do
         let(:start) { "2026-03-02" }
         let(:end) { "2026-03-01" }
 
+        schema type: :object,
+               required: %w[error status],
+               properties: {
+                 error: { type: :string },
+                 status: { type: :integer, example: 422 }
+               }
         run_test!
       end
 

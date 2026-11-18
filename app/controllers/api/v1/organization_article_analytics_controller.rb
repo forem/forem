@@ -30,7 +30,7 @@ module Api
 
         if dates
           activities = ArticleActivity.where(article_id: articles.map(&:id))
-            .select(:article_id, :daily_page_views, :daily_reactions, :daily_comments)
+            .daily_counters_between(dates.first, dates.last)
             .index_by(&:article_id)
         end
 
@@ -66,8 +66,8 @@ module Api
       end
 
       def daily_dates
-        return if params[:start].blank? && params[:end].blank?
-        return [nil, daily_error(:start_and_end_required)] if params[:start].blank? || params[:end].blank?
+        return unless params.key?(:start) || params.key?(:end)
+        return [nil, daily_error(:start_and_end_required)] unless params.key?(:start) && params.key?(:end)
 
         start_date = parse_daily_date(params[:start])
         end_date = parse_daily_date(params[:end])
