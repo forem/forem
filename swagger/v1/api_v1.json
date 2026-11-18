@@ -3703,6 +3703,138 @@
         }
       }
     },
+    "/api/organizations/{organization_id}/article_reactions": {
+      "get": {
+        "summary": "List reactions on an organization's articles",
+        "tags": [
+          "organizations"
+        ],
+        "operationId": "getOrganizationArticleReactions",
+        "description": "Requires the org_article_reactions organization feature and organization admin access. Lists public reactions on the organization's published articles in the current subforem, newest first (created_at, then id). Reading list saves and privileged moderation reactions are never included. Results reflect current reactions, not an event log: removed reactions and reactions from deleted users disappear. Page size is capped at 100 and page depth at 1000. Responses are never cached.",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only reactions on this article. Articles outside the organization return no results."
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only reactions created at or after this ISO 8601 timestamp."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article reactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "article_id",
+                      "category",
+                      "created_at",
+                      "user"
+                    ],
+                    "properties": {
+                      "article_id": {
+                        "type": "integer"
+                      },
+                      "category": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "user": {
+                        "type": "object",
+                        "required": [
+                          "user_id",
+                          "username",
+                          "name",
+                          "github_username",
+                          "twitter_username"
+                        ],
+                        "properties": {
+                          "user_id": {
+                            "type": "integer"
+                          },
+                          "username": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "github_username": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "twitter_username": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Organization admin access or feature access required"
+          },
+          "404": {
+            "description": "Organization not found"
+          },
+          "422": {
+            "description": "Invalid since timestamp"
+          }
+        }
+      }
+    },
     "/api/organizations/{username}": {
       "get": {
         "summary": "An organization (by username)",

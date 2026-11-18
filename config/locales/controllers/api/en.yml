@@ -29,3 +29,5 @@ en:
         prompt_too_long: The 'prompt' must be %{max} characters or fewer
         invalid_aspect_ratio: "'aspect_ratio' must be one of: %{valid}"
         generation_unavailable: AI image generation is not available on this Forem
+      organization_article_reactions_controller:
+        invalid_since: "'since' must be an ISO 8601 timestamp"
