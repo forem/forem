@@ -16,6 +16,9 @@ x-backend: &backend
   <<: *app
   stdin_open: true
   tty: true
+  # postgres and redis run with host networking, so the backend services must too:
+  # on the default bridge network "localhost" in DATABASE_URL/REDIS_URL is the container itself.
+  network_mode: host
   volumes:
     - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
     - bundle:/usr/local/bundle
@@ -28,7 +31,7 @@ x-backend: &backend
     - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
     <<: *env
-    CHROME_URL: http://chrome:3333
+    CHROME_URL: http://localhost:3333   # chrome publishes 3333; service names do not resolve on the host network
     REDIS_URL: redis://localhost:6379/
     DATABASE_URL: postgres://postgres:postgres@localhost:5432
     DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432
@@ -55,7 +58,7 @@ services:
       REDIS_URL: redis://localhost:6379/
       DATABASE_URL: postgres://postgres:postgres@localhost:5432
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432
-      CHROME_URL: http://chrome:3333
+      CHROME_URL: http://localhost:3333   # host network: use chrome's published port
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
       - bundle:/usr/local/bundle
