@@ -158,6 +158,14 @@ RSpec.describe "Api::V1::Pages with Resource Admin: OrganizationPageManagement" 
       expect(response.parsed_body["processed_html"]).to include("Org Preview")
     end
 
+    it "refuses a preview for an organization without org_readme" do
+      post preview_api_pages_path,
+           params: { organization_id: other_organization.id, body_markdown: "## Org Preview" }.to_json,
+           headers: headers
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
     it "refuses a preview without an organization" do
       post preview_api_pages_path, params: { body_html: "<p>raw</p>" }.to_json, headers: headers
 
@@ -176,6 +184,13 @@ RSpec.describe "Api::V1::Pages with Resource Admin: OrganizationPageManagement" 
       expect(AuditLog.last.data).to eq("action" => "api_page_update", "page_id" => org_page.id,
                                        "via" => "org_pages_resource_admin",
                                        "organization_id" => organization.id)
+    end
+
+    it "does not mark a write by an organization admin who also holds the role" do
+      create(:organization_membership, user: manager, organization: organization, type_of_user: "admin")
+      put api_page_path(org_page.id), params: { body_markdown: "Audited" }.to_json, headers: headers
+
+      expect(AuditLog.last.data).to eq("action" => "api_page_update", "page_id" => org_page.id)
     end
   end
 
