@@ -1,0 +1,18 @@
+config/initializers/sidekiq.rb
+  h_f968154a99632d 10,56-59,61-62
+lib/sidekiq/boot_memory_trimmer.rb
+  h_f968154a99632d 1-31
+spec/lib/sidekiq/boot_memory_trimmer_spec.rb
+  h_f968154a99632d 1-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb6bd7dc7c2dda941cfa6901f0b6c47e45894bbd",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+spec/services/email_digest_article_collector_spec.rb
+  da569e40d229db1b 138-139,292-440
+app/services/email_digest_article_collector.rb
+  da569e40d229db1b 8-9,20-23,26,43-174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "9a478309f403141f2be8642329499a7b58adcd38",
+  "prompts": {
+    "da569e40d229db1b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8b29e602-a905-4aea-a521-dc67a36af566",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 8,
+      "accepted_lines": 290,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/706aaccd21ff720a84df05ad1d45b09b1422df5c0f7d39d3ca753db7f008c618"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 34-62,73-79,91-93,96,128-163,179,181-183,186-190,194-198
+.github/workflows/create-cache.yml
+  h_f968154a99632d 19-27,38-44,56-58,61
+bin/knapsack_pro_rspec
+  h_f968154a99632d 12
+spec/lib/ci_knapsack_pro_skip_shallow_fetch_spec.rb
+  h_f968154a99632d 1-14
+spec/support/ci/schema_railtie.rb
+  h_f968154a99632d 1-6,53-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7831b92eae0eebf2bdd2d2bc704e86ab476c4c7a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

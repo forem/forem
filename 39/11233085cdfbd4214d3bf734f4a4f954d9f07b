@@ -1,0 +1,32 @@
+.slugignore
+  h_f968154a99632d 32
+app/assets/config/manifest.js
+  h_f968154a99632d 5-13,21
+bin/e2e
+  h_f968154a99632d 25-26
+config/initializers/assets.rb
+  h_f968154a99632d 3-5,8-11,26,31-35
+esbuild.config.mjs
+  h_f968154a99632d 13
+lib/tasks/assets.rake
+  h_f968154a99632d 22
+package.json
+  h_f968154a99632d 26,31-41,170
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 35-65,82,84-87,91-122,127-131
+spec/tasks/assets_spec.rb
+  h_f968154a99632d 16-17,24,30
+yarn.lock
+  h_f968154a99632d 7804-7810
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3911233085cdfbd4214d3bf734f4a4f954d9f07b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

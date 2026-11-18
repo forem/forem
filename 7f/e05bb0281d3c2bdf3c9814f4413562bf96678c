@@ -1,0 +1,28 @@
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  s_f831849363d5ae::t_d5e646657afd77 50-101,106-114,500-501,503-506
+  s_f831849363d5ae::t_5226fb6c2b5413 102-105
+  s_f831849363d5ae::t_9c5a1a57a94397 319-321,328,507
+docs/local_redis_cache.md
+  s_f831849363d5ae::t_9c5a1a57a94397 120-124,163-169
+lib/active_support/cache/local_redis_cache_store.rb
+  s_f831849363d5ae::t_5226fb6c2b5413 30,63-70,80,93-96,100-104,107-110,131-132,154-168,207
+  s_f831849363d5ae::t_9c5a1a57a94397 61-62
+  s_f831849363d5ae::t_bc4f0bee682027 97-99,105
+  s_f831849363d5ae::t_34e0cdba74457e 106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7fe05bb0281d3c2bdf3c9814f4413562bf96678c",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+spec/requests/admin/organizations_spec.rb
+  s_c71c0a1928eacb::t_c2d8ea4d120b32 112-131
+  s_c71c0a1928eacb::t_42fcffc9b8cd47 132-133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5e6f981052d4a0a11cab4b9cc63ca3e17ca1d618",
+  "prompts": {},
+  "sessions": {
+    "s_c71c0a1928eacb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ecded55-3d69-4874-a91d-1377cce9274a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

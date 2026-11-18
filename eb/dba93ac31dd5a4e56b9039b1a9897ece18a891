@@ -1,0 +1,38 @@
+app/lib/server_warmup.rb
+  h_f968154a99632d 63-72,89-92,96-97,108-109,145-180,218-219,221-229,232,240,291-309,320-322,367,376-435,497-506,508-509
+app/models/settings/general.rb
+  h_f968154a99632d 25
+app/services/users/create_mascot_account.rb
+  h_f968154a99632d 5,20-24,27-31
+config/application.rb
+  h_f968154a99632d 137-139
+config/database.yml
+  h_f968154a99632d 25
+lib/tasks/assets.rake
+  h_f968154a99632d 19-21
+lib/tasks/cache.rake
+  h_f968154a99632d 4-13
+lib/tasks/release_migrate.rake
+  h_f968154a99632d 4-10,12
+spec/lib/server_warmup_spec.rb
+  h_f968154a99632d 100-185,232-297,325-332,430,432-433,440-441,479,482,490,498
+spec/services/users/create_mascot_account_spec.rb
+  h_f968154a99632d 4,6-20
+spec/tasks/assets_spec.rb
+  h_f968154a99632d 1-30
+spec/tasks/cache_spec.rb
+  h_f968154a99632d 1-36
+spec/tasks/release_migrate_spec.rb
+  h_f968154a99632d 1-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ebdba93ac31dd5a4e56b9039b1a9897ece18a891",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

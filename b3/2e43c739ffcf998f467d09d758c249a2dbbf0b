@@ -1,0 +1,63 @@
+config/locales/controllers/pt.yml
+  s_f831849363d5ae::t_83358be41f5888 88
+spec/services/ai/article_image_generator_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 7-8,16-19,22-25,27-29,32-40,44-45,48,54-55
+app/javascript/article-form/components/__tests__/ArticleCoverImage.test.jsx
+  s_f831849363d5ae::t_83358be41f5888 330-376
+app/controllers/api/v1/images_controller.rb
+  s_f831849363d5ae::t_83358be41f5888 55-57,59-60
+app/services/ai/article_image_generator.rb
+  s_f831849363d5ae::t_83358be41f5888 11-23,31-32,49-51,58-59,62-63,65
+spec/requests/api/v1/docs/images_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 22-24
+spec/system/search/user_searches_users_spec.rb
+  s_f831849363d5ae::t_268ffebdfd0a7e 33
+  s_f831849363d5ae::t_83358be41f5888 34
+app/controllers/ai_image_generations_controller.rb
+  s_f831849363d5ae::t_83358be41f5888 24,26,29,32,35
+app/controllers/stories_controller.rb
+  s_f831849363d5ae::t_83358be41f5888 19,73-75
+spec/requests/ai_image_generations_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 148,169,202,230-237
+  s_f831849363d5ae::t_b80e9b30888ec0 238-239
+spec/services/ai/image_generator_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 75,127,146,157,163,174-175,181,216,260,272,302,314,344,361-543,595,632
+app/views/users/_badges_area.html.erb
+  s_f831849363d5ae::t_83358be41f5888 10-11
+app/services/ai/image_generator.rb
+  s_f831849363d5ae::t_83358be41f5888 9-14,34,37-45,48-57,72-81,85-90,94,97,121,125-126,132-133,140,145,156,165-166,168-175,177-179,182-219,252-255,263-268,306-307,309-311,321-322,325-326,328,331-332,335,340,346,351,365-367,372,385,392-393,397,421
+config/locales/controllers/en.yml
+  s_f831849363d5ae::t_83358be41f5888 88
+.env_sample
+  s_f831849363d5ae::t_83358be41f5888 239-243
+spec/requests/stories_show_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 48-61,240-245
+spec/requests/api/v1/images_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 100-101,105,164,171-179,190
+app/javascript/article-form/actions.js
+  s_f831849363d5ae::t_83358be41f5888 152-162,166-169,187-197,206,213-214
+app/javascript/article-form/components/ArticleCoverImage.jsx
+  s_f831849363d5ae::t_83358be41f5888 213,267-275,590,601
+config/locales/controllers/fr.yml
+  s_f831849363d5ae::t_83358be41f5888 88
+spec/requests/user/user_profile_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 116-137
+app/services/ai/function_registry.rb
+  s_f831849363d5ae::t_83358be41f5888 139-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b32e43c739ffcf998f467d09d758c249a2dbbf0b",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

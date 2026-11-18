@@ -1,0 +1,24 @@
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 3-4,97-102,118-121
+app/services/instrumentation.rb
+  h_f968154a99632d 2-4,7-20
+app/services/markdown_processor/parser.rb
+  h_f968154a99632d 3-4,34-38,40-43,45-48,50-54,56-58,60-69
+config/initializers/sentry.rb
+  h_f968154a99632d 21-83,92-96
+spec/initializers/sentry_spec.rb
+  h_f968154a99632d 1-118
+spec/services/instrumentation_spec.rb
+  h_f968154a99632d 1-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "23e0a086c9be6d2e0e6549cdad61b5f07fda1aec",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

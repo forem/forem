@@ -1,0 +1,18 @@
+app/models/feed_config.rb
+  h_f968154a99632d 2
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 535,550
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3f400e701cb08e2a06ffdec6202e1d1157785ca7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+app/liquid_tags/vimeo_tag.rb
+  h_f968154a99632d 32
+config/locales/liquid_tags/en.yml
+  h_f968154a99632d 207-208
+config/locales/liquid_tags/fr.yml
+  h_f968154a99632d 207-208
+config/locales/liquid_tags/pt.yml
+  h_f968154a99632d 207-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4de30eae34f586ac9537fb534e4b955fa9b72c40",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

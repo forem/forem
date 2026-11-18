@@ -1,0 +1,24 @@
+app/models/feed_config.rb
+  h_f968154a99632d 184-186,188-190,192,206-240,332,365-366,385,406,448,601
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 6-8,70-85,87,109-131
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 14,165,173,176,179-186,190,199-217
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 831-868,1002-1028
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 723-782
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 517-559
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "28714fe1d2c3d2341af44f7a73956095992b01bd",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

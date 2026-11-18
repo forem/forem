@@ -1,0 +1,16 @@
+app/services/notifications/notifiable_action/send.rb
+  h_f968154a99632d 39-48,50-52,54,57
+spec/services/notifications/notifiable_action/send_spec.rb
+  h_f968154a99632d 112,115-126,130-198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d517b366da0020f5cc08914fabab3e3e76cd3f93",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

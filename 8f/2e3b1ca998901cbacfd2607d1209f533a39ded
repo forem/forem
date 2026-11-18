@@ -1,0 +1,26 @@
+app/policies/user_policy.rb
+  h_f968154a99632d 2-3,82-92
+app/views/admin/users/show/profile/actions/_delete.html.erb
+  h_f968154a99632d 2-3,5-7,16-27
+config/locales/views/admin/en.yml
+  h_f968154a99632d 164-166
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 164-166
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 16-18,20-23
+spec/policies/user_policy_spec.rb
+  h_f968154a99632d 45-70,76-87,94
+spec/requests/admin/users_manage_spec.rb
+  h_f968154a99632d 408,411-413,420-465
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8f2e3b1ca998901cbacfd2607d1209f533a39ded",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

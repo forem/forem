@@ -1,0 +1,34 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 178
+app/models/feed_config.rb
+  h_f968154a99632d 39-41,51-55,162-167,253-259,292-297
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 28,51-55,57-58
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 169,279-286
+app/views/admin/feed_configs/_form.html.erb
+  h_f968154a99632d 149-153
+db/migrate/20261028190000_add_feed_lookback_hours_to_feed_configs.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,848
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 563-586,621-640
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 15-16,159,162-170
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 91-109
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 572-596
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "38ebef918edfbad3e408fa69bffe6c6a742453cc",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

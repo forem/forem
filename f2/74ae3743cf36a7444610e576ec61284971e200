@@ -1,0 +1,16 @@
+.dockerignore
+  h_f968154a99632d 62-70
+Containerfile
+  h_f968154a99632d 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f274ae3743cf36a7444610e576ec61284971e200",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+app/controllers/articles_controller.rb
+  h_a5e25bc086eb00 9
+spec/requests/dashboard_spec.rb
+  h_a5e25bc086eb00 271,281-286
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5bccaf1345e4078bbd0e05028d23a10758eb4288",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

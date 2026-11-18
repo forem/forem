@@ -1,0 +1,21 @@
+spec/services/spam/handler_spec.rb
+  s_51ba84eed8ea03::t_1c9a6e38d75817 358-363
+app/services/spam/handler.rb
+  s_51ba84eed8ea03::t_7459949738b962 236-238,241-243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1268cf4138355d46fcb241e0c3e59acc68610186",
+  "prompts": {},
+  "sessions": {
+    "s_51ba84eed8ea03": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96def48d-85a8-4d0d-b638-a9e54e6b4826",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

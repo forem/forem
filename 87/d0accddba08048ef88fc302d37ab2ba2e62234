@@ -1,0 +1,18 @@
+app/controllers/stories/tagged_articles_controller.rb
+  h_f968154a99632d 30,77,84-86
+app/views/stories/tagged_articles/_sidebar_additional.html.erb
+  h_f968154a99632d 6-16
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 236-248,255-263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "87d0accddba08048ef88fc302d37ab2ba2e62234",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

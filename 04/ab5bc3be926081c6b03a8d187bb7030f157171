@@ -1,0 +1,24 @@
+app/javascript/onboarding/components/ProfileForm/ProfileImage.jsx
+  h_a5e25bc086eb00 69
+app/javascript/onboarding/components/__tests__/ProfileImage.test.jsx
+  h_a5e25bc086eb00 10-16,18-20,143-193
+app/javascript/onboarding/components/actions.js
+  h_a5e25bc086eb00 32-35,38-42,53-62
+config/locales/en.yml
+  h_a5e25bc086eb00 35
+config/locales/fr.yml
+  h_a5e25bc086eb00 35
+config/locales/pt.yml
+  h_a5e25bc086eb00 35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "04ab5bc3be926081c6b03a8d187bb7030f157171",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+app/lib/server_warmup.rb
+  h_f968154a99632d 1-464
+config/initializers/flipper.rb
+  h_f968154a99632d 2-5,8-11,14
+config/puma.rb
+  h_f968154a99632d 27-38,54-57,61-69
+spec/initializers/flipper_spec.rb
+  h_f968154a99632d 1-35
+spec/lib/server_warmup_spec.rb
+  h_f968154a99632d 1-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "40dc9a9aad6eb16eaf9606673ff0cbdc2fc21ca7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

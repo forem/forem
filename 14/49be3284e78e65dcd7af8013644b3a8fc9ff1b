@@ -1,0 +1,16 @@
+app/assets/stylesheets/views/article-form.scss
+  h_f968154a99632d 325-370
+app/javascript/article-form/components/AiDisclosureModal.jsx
+  h_f968154a99632d 101-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1449be3284e78e65dcd7af8013644b3a8fc9ff1b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

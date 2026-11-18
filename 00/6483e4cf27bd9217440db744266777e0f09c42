@@ -1,0 +1,14 @@
+db/migrate/20260915160000_add_footer_override_to_emails.rb
+  h_f968154a99632d 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "006483e4cf27bd9217440db744266777e0f09c42",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

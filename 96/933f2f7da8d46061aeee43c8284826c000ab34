@@ -1,0 +1,22 @@
+app/mailers/devise_mailer.rb
+  s_0cd64231ee5515::t_723f7508c6e1f6 96-98
+  s_0cd64231ee5515::t_dc14676475cb97 73-80
+spec/mailers/devise_mailer_spec.rb
+  s_0cd64231ee5515::t_2c7a0dd5d70efd 344-374
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "96933f2f7da8d46061aeee43c8284826c000ab34",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

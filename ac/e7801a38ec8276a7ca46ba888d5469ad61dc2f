@@ -1,0 +1,34 @@
+app/controllers/poll_skips_controller.rb
+  h_f968154a99632d 24-32
+app/controllers/poll_text_responses_controller.rb
+  h_f968154a99632d 14-27
+app/controllers/poll_votes_controller.rb
+  h_f968154a99632d 4,21-22,30,46,53-107
+app/controllers/surveys_controller.rb
+  h_f968154a99632d 38-40,43-51
+app/liquid_tags/survey_tag.rb
+  h_f968154a99632d 64-66,82-83,95,98,119,121-122,147-151,155-158,236,245,247,255-261,302-305,316-320,323,328-334,336-338,343,372,374-378,387-390,414-418
+app/models/survey.rb
+  h_f968154a99632d 31-37,39-40
+spec/models/survey_spec.rb
+  h_f968154a99632d 87-101
+spec/requests/poll_skips_spec.rb
+  h_f968154a99632d 29-41
+spec/requests/poll_text_responses_controller_spec.rb
+  h_f968154a99632d 55-72
+spec/requests/poll_votes_controller_spec.rb
+  h_f968154a99632d 71-162,187-211,251-262
+spec/requests/surveys_controller_spec.rb
+  h_f968154a99632d 113-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ace7801a38ec8276a7ca46ba888d5469ad61dc2f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

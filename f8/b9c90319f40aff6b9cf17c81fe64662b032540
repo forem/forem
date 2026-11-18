@@ -1,0 +1,21 @@
+spec/services/homepage/fetch_articles_spec.rb
+  s_1e049bdc81f15e::t_1d875951408455 14-15
+spec/system/search/display_articles_search_spec.rb
+  s_1e049bdc81f15e::t_c882a5a13a5e71 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f8b9c90319f40aff6b9cf17c81fe64662b032540",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

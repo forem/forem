@@ -1,0 +1,22 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 125,129,134-135,138
+bin/knapsack_pro_rspec
+  h_f968154a99632d 2-5,11-12,14-16
+spec/models/survey_spec.rb
+  h_f968154a99632d 255,257-265,270-275
+spec/support/ci/schema_railtie.rb
+  h_f968154a99632d 1-16
+spec/workers/emails/survey_daily_email_worker_spec.rb
+  h_f968154a99632d 151,157,161-163,173,175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c85ce43906dafa5daeff1e599e0c35960e703cd3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

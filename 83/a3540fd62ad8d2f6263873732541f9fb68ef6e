@@ -1,0 +1,62 @@
+config/routes/admin.rb
+  0b7024d90e1e090a 184
+config/locales/controllers/admin/fr.yml
+  0b7024d90e1e090a 190-192
+spec/requests/admin/tools_spec.rb
+  0b7024d90e1e090a 50-66
+app/services/data_fixes/verify_tag_counts.rb
+  0b7024d90e1e090a 1-24
+config/locales/views/admin/en.yml
+  0b7024d90e1e090a 8-13
+config/locales/controllers/admin/en.yml
+  0b7024d90e1e090a 190-192
+app/controllers/admin/tools_controller.rb
+  0b7024d90e1e090a 62-81
+config/locales/views/admin/pt.yml
+  0b7024d90e1e090a 8-13
+config/locales/controllers/admin/pt.yml
+  0b7024d90e1e090a 151-153
+spec/services/data_fixes/fix_tag_counts_spec.rb
+  0b7024d90e1e090a 1-38
+app/services/data_fixes/registry.rb
+  0b7024d90e1e090a 7-10,15-16
+spec/services/data_fixes/verify_tag_counts_spec.rb
+  0b7024d90e1e090a 1-35
+config/locales/views/admin/fr.yml
+  0b7024d90e1e090a 24-29
+spec/services/data_fixes/registry_spec.rb
+  0b7024d90e1e090a 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "83a3540fd62ad8d2f6263873732541f9fb68ef6e",
+  "prompts": {
+    "0b7024d90e1e090a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "411ca823-242d-4b62-a2bb-4cbd7ed4c58e",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 211,
+      "total_deletions": 10,
+      "accepted_lines": 193,
+      "overriden_lines": 0
+    },
+    "d3a3c723dc97b952": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "38094813-f615-4c36-bae5-37a44c004db2",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 96,
+      "total_deletions": 1,
+      "accepted_lines": 95,
+      "overriden_lines": 0
+    }
+  }
+}

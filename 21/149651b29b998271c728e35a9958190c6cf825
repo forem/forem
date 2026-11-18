@@ -1,0 +1,14 @@
+app/views/layouts/application.html.erb
+  h_f968154a99632d 183,185-195,198-199,201-204,209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "21149651b29b998271c728e35a9958190c6cf825",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

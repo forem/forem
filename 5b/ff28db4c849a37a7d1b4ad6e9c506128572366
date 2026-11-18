@@ -1,0 +1,51 @@
+app/controllers/admin/emails_controller.rb
+  h_f968154a99632d 79-82
+app/mailers/custom_mailer.rb
+  h_f968154a99632d 38-40,69-70,72-88,90-100
+app/models/email.rb
+  h_f968154a99632d 15-23
+app/views/admin/emails/_form.html.erb
+  h_f968154a99632d 48-50,53-54,56-59,62,64-65,74,78,81,88-89,130,132-145
+app/views/admin/emails/show.html.erb
+  h_f968154a99632d 21,23,27,30-33,35-36
+app/views/layouts/mailer.html.erb
+  h_f968154a99632d 23-24
+app/workers/emails/batch_custom_send_worker.rb
+  h_f968154a99632d 44-45,59-61
+db/migrate/20260915160000_add_footer_override_to_emails.rb
+  h_f968154a99632d 1-8
+db/schema.rb
+  h_f968154a99632d 13,745,749
+spec/factories/emails.rb
+  h_f968154a99632d 6-15
+spec/mailers/custom_mailer_spec.rb
+  h_f968154a99632d 275-318,332
+spec/models/email_spec.rb
+  h_f968154a99632d 227-304
+spec/requests/admin/emails_spec.rb
+  h_f968154a99632d 31-32,77-93,111-125,153-165,191-203
+  s_466a0b955e0e8c::t_3b5aaa30769afd 224-234
+spec/workers/emails/batch_custom_send_worker_spec.rb
+  h_f968154a99632d 240-256
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5bff28db4c849a37a7d1b4ad6e9c506128572366",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_466a0b955e0e8c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0273f7e6-6eef-4b6e-9c27-0ec6228e6bab",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

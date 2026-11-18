@@ -1,0 +1,26 @@
+app/views/collections/show.html.erb
+  s_ea8a5ecd58971e::t_3eba8b289cd694 20
+app/controllers/collections_controller.rb
+  s_ea8a5ecd58971e::t_3eba8b289cd694 2-3,12-15
+spec/requests/collections_spec.rb
+  s_ea8a5ecd58971e::t_bb791b4a15efc4 31-32,36-37
+  s_ea8a5ecd58971e::t_12369306751b5e 19-21,28-30,33-35,38-51
+  s_ea8a5ecd58971e::t_fb25bef4ac0bea 22-25
+  s_ea8a5ecd58971e::t_b6fe7865ca303b 26-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1b51a1b9394ebd5a08b01573734bab110085a298",
+  "prompts": {},
+  "sessions": {
+    "s_ea8a5ecd58971e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c05d16dd-b100-4c3c-9bb1-7b2bd663dd03",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

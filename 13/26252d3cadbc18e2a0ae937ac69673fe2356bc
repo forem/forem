@@ -1,0 +1,58 @@
+app/controllers/ai_image_generations_controller.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 24,26,29,32,35
+spec/requests/ai_image_generations_spec.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 148,169,202,230,233-237
+  s_8b0c4c86e7f979::t_86f4d5a190883d 231-232
+  s_8b0c4c86e7f979::t_1114dba76667eb 238-239
+spec/services/ai/image_generator_spec.rb
+  s_8b0c4c86e7f979::t_719eabde118862 495-505
+  s_8b0c4c86e7f979::t_de25fb389be5df 75,127,146,157,163,181,216,260,272,302,314,344,361-494,506-518,570,607
+  s_8b0c4c86e7f979::t_86f4d5a190883d 174-175
+config/locales/controllers/fr.yml
+  s_8b0c4c86e7f979::t_de25fb389be5df 88
+spec/requests/api/v1/docs/images_spec.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 22-24
+app/javascript/article-form/components/__tests__/ArticleCoverImage.test.jsx
+  s_8b0c4c86e7f979::t_de25fb389be5df 330-376
+app/services/ai/function_registry.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 139-140
+spec/services/ai/article_image_generator_spec.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 7-8,16-19,22-25,27-29,32-40,44-45,48,54-55
+app/services/ai/image_generator.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 9-14,34,37-41,44-50,68-77,81-86,90,93,117,121,128-129,136,141,152,161-162,164-171,173-175,178-215,248-251,259-264,302-303,305-307,317-318,321-322,324,327-328,331,336,342,347,361-363,368,381,388-389
+  s_8b0c4c86e7f979::t_719eabde118862 51-52,393,417
+  s_8b0c4c86e7f979::t_978a28d18c835b 122
+  s_8b0c4c86e7f979::t_9b171b486194da 53
+app/services/ai/article_image_generator.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 11-23,31-32,49-51,58-59,62-63,65
+config/locales/controllers/pt.yml
+  s_8b0c4c86e7f979::t_de25fb389be5df 88
+spec/requests/api/v1/images_spec.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 100-101,105,164,171-179,190
+.env_sample
+  s_8b0c4c86e7f979::t_de25fb389be5df 239-243
+app/javascript/article-form/actions.js
+  s_8b0c4c86e7f979::t_de25fb389be5df 152-162,166-169,187-197,206,213-214
+config/locales/controllers/en.yml
+  s_8b0c4c86e7f979::t_de25fb389be5df 88
+app/controllers/api/v1/images_controller.rb
+  s_8b0c4c86e7f979::t_de25fb389be5df 55-57,59-60
+app/javascript/article-form/components/ArticleCoverImage.jsx
+  s_8b0c4c86e7f979::t_de25fb389be5df 213,267-275,590,601
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1326252d3cadbc18e2a0ae937ac69673fe2356bc",
+  "prompts": {},
+  "sessions": {
+    "s_8b0c4c86e7f979": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f32b8bc9-2315-4d5a-924a-0bffd0cee926",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+.cursorrules
+  h_f968154a99632d 33-36
+.github/copilot-instructions.md
+  h_f968154a99632d 33-36
+.windsurfrules
+  h_f968154a99632d 33-36
+AGENTS.md
+  h_f968154a99632d 33-36
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 17-19,22
+app/controllers/concerns/edge_cache_safety_check.rb
+  h_f968154a99632d 9-11
+app/controllers/concerns/session_current_user.rb
+  h_f968154a99632d 5-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "68f9411f6a945a911a6f831c5d011b8187cdc7b1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

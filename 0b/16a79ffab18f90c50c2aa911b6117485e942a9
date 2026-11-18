@@ -1,0 +1,14 @@
+app/javascript/utilities/__tests__/applyColorMode.test.js
+  h_a5e25bc086eb00 29,117-133,137-139,147-149,158-160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b16a79ffab18f90c50c2aa911b6117485e942a9",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

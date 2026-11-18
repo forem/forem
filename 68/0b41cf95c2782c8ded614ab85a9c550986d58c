@@ -1,0 +1,25 @@
+spec/requests/csrf_token_spec.rb
+  9978dec6f187a69b 1-57
+app/controllers/application_controller.rb
+  9978dec6f187a69b 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "680b41cf95c2782c8ded614ab85a9c550986d58c",
+  "prompts": {
+    "9978dec6f187a69b": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "d57ee930-8d69-480e-a2e7-481438075e06",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 74,
+      "total_deletions": 16,
+      "accepted_lines": 58,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,0 +1,36 @@
+app/controllers/feeds/xml_imports_controller.rb
+  h_a5e25bc086eb00 4,7-8,16,18-19
+app/models/feeds/source.rb
+  h_a5e25bc086eb00 45,51-53,69-71
+app/services/feeds/check_item_previously_imported.rb
+  h_a5e25bc086eb00 15-18
+app/services/feeds/import_from_xml.rb
+  h_a5e25bc086eb00 4,11,17-33,37-60,64-71,73-75,77-102,106,109-114,117-121,123-124,127-130,132-156
+app/services/feeds/validate_url.rb
+  h_a5e25bc086eb00 3-15,28-29,34,36,38,40,50-52
+app/views/dashboards/feed_imports.html.erb
+  h_a5e25bc086eb00 11-13,286-289,291
+config/locales/controllers/en.yml
+  h_a5e25bc086eb00 54-59,64-66
+config/locales/controllers/fr.yml
+  h_a5e25bc086eb00 54-59,64-66
+config/locales/controllers/pt.yml
+  h_a5e25bc086eb00 54-59,64-66
+spec/requests/feeds/xml_imports_spec.rb
+  h_a5e25bc086eb00 6-24,28,33-37,39-44,46-50,52-55,57,59-60,62-65,67,69,72-75,77-80,82,84-87,90-91,93-99,101-103
+spec/services/feeds/import_from_xml_spec.rb
+  h_a5e25bc086eb00 6-22,25-56,58-68,74,80,83-96,99-101,103-106,109-110,112-116,119-146,150-151,154-158,161-164,167-178,180-181,183-188,190,193-274,277,279,281,284-287
+spec/services/feeds/validate_url_spec.rb
+  h_a5e25bc086eb00 6,16,20-24,26-30,32-33,35-60,62-66,68-86,89-106,108-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "324f43f1b2908932a6c2cbe88c59b606b852f1df",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+Containerfile.base
+  s_9793075150d2b7::t_ea07d5c225323e 5
+.nvmrc
+  s_9793075150d2b7::t_d37e068b7b78db 1
+package.json
+  s_9793075150d2b7::t_5615f752dc68e3 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f56cdb570e7a5b374b074687a115a74f5f643b38",
+  "prompts": {},
+  "sessions": {
+    "s_9793075150d2b7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1c88fa00-92ec-46c0-a402-7cc68e752f23",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

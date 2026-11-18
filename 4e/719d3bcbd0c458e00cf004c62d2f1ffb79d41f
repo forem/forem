@@ -1,0 +1,34 @@
+app/assets/images/agent-antigravity-cli.svg
+  s_265a50a81dda0e::t_22f04a0e8a4e62 1-11
+app/models/agent_session.rb
+  s_265a50a81dda0e::t_22f04a0e8a4e62 2,17,93-100
+  s_265a50a81dda0e::t_441b289a74c4e1 101-102
+spec/lib/data_update_scripts/backfill_agent_session_message_indices_spec.rb
+  s_265a50a81dda0e::t_ca1507719c8d34 1-21
+app/helpers/agent_sessions_helper.rb
+  s_265a50a81dda0e::t_22f04a0e8a4e62 3
+swagger/v1/api_v1.json
+  s_265a50a81dda0e::t_22f04a0e8a4e62 86
+spec/models/agent_session_spec.rb
+  s_265a50a81dda0e::t_ca1507719c8d34 48-54
+app/assets/stylesheets/ltags/AgentSessionTag.scss
+  s_265a50a81dda0e::t_22f04a0e8a4e62 43
+lib/data_update_scripts/20260930120000_backfill_agent_session_message_indices.rb
+  s_265a50a81dda0e::t_ca1507719c8d34 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4e719d3bcbd0c458e00cf004c62d2f1ffb79d41f",
+  "prompts": {},
+  "sessions": {
+    "s_265a50a81dda0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "17b18ed3-f413-40ae-aca3-f6e330097a5b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

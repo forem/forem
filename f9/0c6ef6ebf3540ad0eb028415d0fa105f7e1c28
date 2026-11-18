@@ -1,0 +1,51 @@
+config/initializers/ahoy_email.rb
+  s_0cd64231ee5515::t_78c1d4921634b8 137
+  s_0cd64231ee5515::t_c0d29e46d56c56 96-122,125-136,138-148
+  s_0cd64231ee5515::t_db2b49a9730884 123-124
+db/schema.rb
+  s_0cd64231ee5515::t_5bfcd942350390 54,71
+  s_0cd64231ee5515::t_d2614758bcbace 13
+db/migrate/20260715180000_add_cio_delivery_id_to_ahoy_messages.rb
+  s_0cd64231ee5515::t_02345365307945 1-5
+spec/requests/incoming_webhooks/customerio/customerio_events_spec.rb
+  s_0cd64231ee5515::t_2191f260101aaf 16-19,21,36,64-65
+  s_0cd64231ee5515::t_80d3dce45f55c8 1-6,9-10,12,14-15,22-35,37-63,66-87
+  s_0cd64231ee5515::t_e55961f502cd2c 7-8,11,13,20
+app/workers/customerio/record_email_click_worker.rb
+  s_0cd64231ee5515::t_27abff520c689f 1-30
+.env_sample
+  s_0cd64231ee5515::t_687c7a8fda3e39 175-179
+spec/services/delivery_methods/customer_io_spec.rb
+  s_0cd64231ee5515::t_b2356627f72fd2 79-102,104-105,107-108
+  s_0cd64231ee5515::t_b571fbb32cb0fa 103,106
+app/services/delivery_methods/customer_io.rb
+  s_0cd64231ee5515::t_659459457a38aa 13-19,30-32,37-44
+  s_0cd64231ee5515::t_9a46862c02e383 45
+app/controllers/incoming_webhooks/customerio_events_controller.rb
+  s_0cd64231ee5515::t_09c58a154e3629 1-48
+config/routes.rb
+  s_0cd64231ee5515::t_10c2925c74611b 178
+db/migrate/20260715180500_add_index_on_cio_delivery_id_to_ahoy_messages.rb
+  s_0cd64231ee5515::t_252bbad80c10b9 1-9
+spec/mailers/concerns/deliverable_spec.rb
+  s_0cd64231ee5515::t_8bc8b8912e5851 25-32
+  s_0cd64231ee5515::t_86c6bc8ac6291f 117-129
+spec/workers/customerio/record_email_click_worker_spec.rb
+  s_0cd64231ee5515::t_6bc82f4063435a 1-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "f90c6ef6ebf3540ad0eb028415d0fa105f7e1c28",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

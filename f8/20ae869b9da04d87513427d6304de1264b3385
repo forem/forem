@@ -1,0 +1,25 @@
+app/controllers/concerns/api/badge_achievements_controller.rb
+  s_3b1f55226e1016::t_6ee13435bb6cb5 20-21
+db/schema.rb
+  s_3b1f55226e1016::t_9b616ed4ea2de6 13,301
+spec/swagger_helper.rb
+  s_3b1f55226e1016::t_1127968ed3f63f 815-819
+db/migrate/20260821120000_add_metadata_to_badge_achievements.rb
+  s_3b1f55226e1016::t_15c3e2ab8a8f16 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "f820ae869b9da04d87513427d6304de1264b3385",
+  "prompts": {},
+  "sessions": {
+    "s_3b1f55226e1016": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e6482fd-6169-479b-a2ef-66e8fb7a292c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

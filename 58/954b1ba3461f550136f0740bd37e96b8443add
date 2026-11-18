@@ -1,0 +1,19 @@
+spec/requests/admin/emails_spec.rb
+  s_466a0b955e0e8c::t_3b5aaa30769afd 224-234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "58954b1ba3461f550136f0740bd37e96b8443add",
+  "prompts": {},
+  "sessions": {
+    "s_466a0b955e0e8c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0273f7e6-6eef-4b6e-9c27-0ec6228e6bab",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

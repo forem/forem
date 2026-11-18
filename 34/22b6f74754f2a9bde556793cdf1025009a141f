@@ -1,0 +1,18 @@
+app/assets/javascripts/initializers/initializeCommentsPage.js.erb
+  h_f968154a99632d 455-481,490-521
+app/assets/stylesheets/views/comments.scss
+  h_f968154a99632d 98-99,107-109,114,151-152,156-159,187-190,196-199,205-209,221-228,232-234,236,239-297,315-318,326-327
+spec/system/user_visits_a_comments_page_spec.rb
+  h_f968154a99632d 42-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3422b6f74754f2a9bde556793cdf1025009a141f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

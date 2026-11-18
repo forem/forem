@@ -1,0 +1,42 @@
+app/views/users/_account_providers_emails.html.erb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 11-24
+spec/services/authentication/authenticator_spec.rb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 996-1056
+app/views/users/_additional_authentication.html.erb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 1-20,22-28
+spec/models/identity_spec.rb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 215-266
+spec/requests/user/user_settings_spec.rb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 209-257
+config/locales/views/settings/fr.yml
+  s_ccc774f7c6a6f9::t_43a799d5034df4 9,14-15
+config/locales/views/settings/pt.yml
+  s_ccc774f7c6a6f9::t_43a799d5034df4 8-15
+app/models/identity.rb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 5-7,46-50,54-71
+  s_ccc774f7c6a6f9::t_a55e8c94fc8d82 51-52
+app/services/authentication/authenticator.rb
+  s_ccc774f7c6a6f9::t_dcb6b559341435 118-119
+  s_ccc774f7c6a6f9::t_43a799d5034df4 40-43,116-117,120-134
+  s_ccc774f7c6a6f9::t_749c156589b864 39
+app/views/admin/users/show/_profile.html.erb
+  s_ccc774f7c6a6f9::t_43a799d5034df4 40,42-43
+config/locales/views/settings/en.yml
+  s_ccc774f7c6a6f9::t_43a799d5034df4 9,14-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "a160fa21c9255b7b62b136fc3da7da3841cc4402",
+  "prompts": {},
+  "sessions": {
+    "s_ccc774f7c6a6f9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b589ed8-f2ba-45ae-b490-4338ce662be5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

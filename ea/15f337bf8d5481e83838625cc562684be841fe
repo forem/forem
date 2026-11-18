@@ -1,0 +1,271 @@
+app/lib/throttled_call.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 11
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  s_f831849363d5ae::t_ec6b80aec30fab 16,30,130,133,251,254,264,278,290
+  s_f831849363d5ae::t_93c1d237a69f8a 370,415
+  s_f831849363d5ae::t_230c69e3d52f6c 317-318,322-327,329-357,369,384-385,389,411,420
+  s_f831849363d5ae::t_03c05fa3f4d260 1-3,5-8,11-15,17-29,31-49,115-129,131-132,134-137,161-171,236-244,246-250,252-253,255-263,265-277,279-289,291-315,512
+  s_f831849363d5ae::t_67ca2eaacdcf2d 393-408
+  s_f831849363d5ae::t_cb8802d4319ed6 9-10
+  s_f831849363d5ae::t_c48a23ab472ee5 245
+  s_f831849363d5ae::t_d77ad094ca5047 316,358-368,371-383,386-388,390-392,409-410,412-414,416-419
+  s_f831849363d5ae::t_4e822cbf9fef68 443,445-462,464-471,474-492,511
+  s_f831849363d5ae::t_ac803d43d14c71 442,444,463
+  s_f831849363d5ae::t_fed09dba3dbb0c 421,472-473,493-499,502,508-510
+  s_f831849363d5ae::t_c6365e99c39fcc 422-436
+  s_6bdb1cf245afbe::t_cad57def605156 437-441
+  s_6bdb1cf245afbe::t_5ff7357ce215c5 178,190
+  s_6bdb1cf245afbe::t_24f4220d81b475 4,172-177,179-189,191-210
+  s_6bdb1cf245afbe::t_6ee9820f5674c5 211
+  s_f831849363d5ae::t_f4b12fe929c077 212-235
+  s_f831849363d5ae::t_b5b406f8afe4e1 138-160
+  s_f831849363d5ae::t_d5e646657afd77 50-101,106-114,500-501,503-506
+  s_f831849363d5ae::t_5226fb6c2b5413 102-105
+  s_f831849363d5ae::t_9c5a1a57a94397 319-321,328,507
+bin/redis-local-server
+  s_f831849363d5ae::t_747178b776c7ba 1-4,13,15
+  s_f831849363d5ae::t_2b3078aff43ca2 9-12,14
+  s_f831849363d5ae::t_42ab22d132697b 5-8
+config/initializers/rack_attack.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 22
+  s_f831849363d5ae::t_b85114f0ac6ae7 1-5
+Gemfile
+  s_f831849363d5ae::t_1f642da027d824 97
+lib/local_redis/web.rb
+  s_f831849363d5ae::t_cb8802d4319ed6 7-8,10-11,56
+  s_f831849363d5ae::t_747178b776c7ba 1-6,9,12-21,24,26-36,45-55,57-86
+  s_6bdb1cf245afbe::t_3439285789cb64 22-23,25,39-44
+  s_f831849363d5ae::t_308fa13704679c 37-38
+spec/lib/active_support/cache/local_redis_cache_store_authorization_spec.rb
+  s_f831849363d5ae::t_a60a13a0e2e1c8 1-47,50-88,100
+  s_f831849363d5ae::t_38ca1966536d61 48-49
+  s_f831849363d5ae::t_c6365e99c39fcc 89-99
+bin/redis-local-sync
+  s_f831849363d5ae::t_747178b776c7ba 1-7
+.github/workflows/ci.yml
+  s_f831849363d5ae::t_a81de8e18023a1 183-186
+spec/support/local_redis_servers.rb
+  s_f831849363d5ae::t_1b01f8837cedec 1-4,15-27,29-32,37,39-53
+  s_f831849363d5ae::t_71d7aad152231d 28,33-36,38
+  s_f831849363d5ae::t_cb8802d4319ed6 5-14
+bin/web
+  s_f831849363d5ae::t_747178b776c7ba 1-2,5-8
+  s_6bdb1cf245afbe::t_17b327aaeadce7 3-4
+app/policies/authorizer.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 186
+docs/local_redis_cache.md
+  s_f831849363d5ae::t_b1e6f1ba10b4c1 145,194-196
+  s_f831849363d5ae::t_05412531857a3c 1-8,15-30,35-51,53-56,64-77,94-105,116-117,120-121,131-134,136-141,148-150,164,188-190,193,197-204,209-212,219,221-233,235-239
+  s_f831849363d5ae::t_0a2a95d748cb6a 9-10,13-14,142-144,146-147,191-192,215-218,234,240-266,273-278
+  s_f831849363d5ae::t_0797752af092b5 205
+  s_f831849363d5ae::t_42ab22d132697b 11-12,31-34,267-271
+  s_6bdb1cf245afbe::t_e93df014e09296 272
+  s_6bdb1cf245afbe::t_30b6efeeaf7c2b 57-59
+  s_6bdb1cf245afbe::t_13c1cbe3cacfe4 151-163
+  s_6bdb1cf245afbe::t_3da16e751bf2a0 106-115,127-130,135,213-214,220
+  s_f831849363d5ae::t_b5b406f8afe4e1 52,78-88,91-93,118-119
+  s_f831849363d5ae::t_693763d45c4785 89-90
+  s_f831849363d5ae::t_9c5a1a57a94397 122-126,165-171
+  s_f831849363d5ae::t_8bb7872fdbced4 172-176,181-185
+  s_f831849363d5ae::t_2753ca2552f904 60-63,206-208
+  s_f831849363d5ae::t_3a0cb00bf71208 177-180,186-187
+app/controllers/users_controller.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 110,349
+lib/active_support/cache/local_redis_cache_store.rb
+  s_f831849363d5ae::t_18ab208b27dd51 191
+  s_f831849363d5ae::t_67ca2eaacdcf2d 13-14,20-21
+  s_f831849363d5ae::t_347b83a990a0d5 44-55,115-116,211-212
+  s_f831849363d5ae::t_c17b3c638096c3 138-141
+  s_f831849363d5ae::t_c0c50f5bb6916e 1,3-12,15,19,32,42-43,56-58,60,71-75,78-79,81-92,111-112,117,119,122-124,126-130,134,143-144,148,178,180-185,188-190,192-206,208-210,213-222
+  s_f831849363d5ae::t_2b3078aff43ca2 2
+  s_f831849363d5ae::t_93c1d237a69f8a 22-23
+  s_f831849363d5ae::t_62420eee2f51ca 26-28,120,146-147,174-177
+  s_f831849363d5ae::t_15b758a1347697 24-25,31,33-41,59,76-77
+  s_f831849363d5ae::t_c48a23ab472ee5 135,142
+  s_f831849363d5ae::t_b799b19f9843b7 125,133,136-137
+  s_6bdb1cf245afbe::t_22382055208c92 17
+  s_6bdb1cf245afbe::t_67d12bbd50a98c 114,121,149-153,169-172
+  s_6bdb1cf245afbe::t_afa1f1988d59c6 16,18
+  s_6bdb1cf245afbe::t_c5f5cda15cedd0 173
+  s_6bdb1cf245afbe::t_14653b5d5fdbfc 113,118,145
+  s_6bdb1cf245afbe::t_8578886278d767 186-187
+  s_f831849363d5ae::t_b5b406f8afe4e1 29,179
+  s_f831849363d5ae::t_5226fb6c2b5413 30,63-70,80,93-96,100-104,107-110,131-132,154-168,207
+  s_f831849363d5ae::t_9c5a1a57a94397 61-62
+  s_f831849363d5ae::t_bc4f0bee682027 97-99,105
+  s_f831849363d5ae::t_34e0cdba74457e 106
+spec/policies/authorizer_spec.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 77
+spec/lib/local_redis/web_launcher_spec.rb
+  s_f831849363d5ae::t_0dee86c7ed8e93 8
+  s_f831849363d5ae::t_34b2eec7097496 1-7,9-65,86-87
+  s_f831849363d5ae::t_c6365e99c39fcc 73-86
+  s_6bdb1cf245afbe::t_f13e5f260ecdb3 66-71
+spec/lib/local_redis/sync_spec.rb
+  s_f831849363d5ae::t_ec6b80aec30fab 18,24,45,136,139
+  s_f831849363d5ae::t_03c05fa3f4d260 1-2,4-8,11-17,19-23,25-44,46-47,93-132,135,137-138,140-148,153,157-158
+  s_f831849363d5ae::t_62420eee2f51ca 133
+  s_f831849363d5ae::t_54ead1a0e9ae6b 134
+  s_f831849363d5ae::t_cb8802d4319ed6 9-10
+  s_f831849363d5ae::t_4e822cbf9fef68 149-152,154-156
+  s_6bdb1cf245afbe::t_24f4220d81b475 3,61-85,87-90
+  s_6bdb1cf245afbe::t_95eaef50b03900 86,91-92
+  s_f831849363d5ae::t_8bb7872fdbced4 48,50-52,54-56,58-60
+  s_f831849363d5ae::t_515e4c9d67dfa9 49,53,57
+lib/local_redis/sync.rb
+  s_f831849363d5ae::t_62420eee2f51ca 64
+  s_f831849363d5ae::t_c0c50f5bb6916e 1,3-6,8-10,14,16-22,24-30,40,43-51,63,73-76
+  s_f831849363d5ae::t_3715ad5f78ac1a 53-54,56-57,59-62,65-72
+  s_f831849363d5ae::t_3124b0b2f6a57e 2,7,23,31-39,41-42,52,55,58
+  s_f831849363d5ae::t_15b758a1347697 11-13,15
+Containerfile
+  s_f831849363d5ae::t_747178b776c7ba 142-145
+  s_6bdb1cf245afbe::t_2b52a9d863c158 164
+app/services/ai/type_safe/client.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 58
+spec/requests/user/user_destroy_spec.rb
+  s_f831849363d5ae::t_0797752af092b5 95,136
+  s_f831849363d5ae::t_0dee86c7ed8e93 125-126
+spec/lib/local_redis/web_spec.rb
+  s_f831849363d5ae::t_077ceb63b82b19 8,14-16,35-38,48,50-51,74-75
+  s_f831849363d5ae::t_05412531857a3c 1-7,9-13,17-34,39-47,49,52-55,70-73,76-79,92
+  s_6bdb1cf245afbe::t_3439285789cb64 56-69
+  s_f831849363d5ae::t_515e4c9d67dfa9 82
+  s_f831849363d5ae::t_fc2ba600e1d40a 83,89-90
+  s_f831849363d5ae::t_308fa13704679c 80-81,84-88,91
+Procfile
+  s_f831849363d5ae::t_747178b776c7ba 2
+lib/local_redis/cache.rb
+  s_f831849363d5ae::t_15b758a1347697 5,98-99,105-106,119-120,122-123,125,169
+  s_f831849363d5ae::t_c0c50f5bb6916e 1-4,8-13,15-16,25-26,29,33-36,39,50-51,53-54,56,61-62,65,69,71-76,79-88,121,126,128-130,132,137-138,141-142,145,147-151,153,155-163,165-168,170-178,188-190
+  s_f831849363d5ae::t_c5ead471e64991 78
+  s_f831849363d5ae::t_62420eee2f51ca 152
+  s_f831849363d5ae::t_cb8802d4319ed6 68,77
+  s_f831849363d5ae::t_42ab22d132697b 100-109
+  s_6bdb1cf245afbe::t_7cdc2958cf2aab 110-114,116
+  s_6bdb1cf245afbe::t_8060355f413fd6 6,14,19-21,23-24,27-28,30-32,37-38,40-49,52,55,57-60,63-64,66-67,70,118,124,131,133-136,139-140,143-144,146,154,164,179-187
+  s_f831849363d5ae::t_b5b406f8afe4e1 17-18,89-95
+  s_f831849363d5ae::t_b9990c748854cf 96-97
+  s_f831849363d5ae::t_fc2ba600e1d40a 7,127
+config/environments/production.rb
+  s_f831849363d5ae::t_747178b776c7ba 82,89
+  s_f831849363d5ae::t_1f642da027d824 83-88
+  s_f831849363d5ae::t_308fa13704679c 80-81
+Aptfile
+  s_f831849363d5ae::t_747178b776c7ba 1-2
+Gemfile.lock
+  s_f831849363d5ae::t_be049738084ad3 833-834,1267
+lib/local_redis/rack_attack_proxy.rb
+  s_f831849363d5ae::t_7fe23de29e410a 1-12
+spec/initializers/sentry_spec.rb
+  s_f831849363d5ae::t_cf4e5b45576217 7-9,49-51
+  s_f831849363d5ae::t_ae211ac054e7a4 52-53
+spec/system/search/user_searches_users_spec.rb
+  s_f831849363d5ae::t_30c237d6103f6d 6-7
+  s_f831849363d5ae::t_268ffebdfd0a7e 33
+  s_f831849363d5ae::t_83358be41f5888 34
+app/controllers/feedback_messages_controller.rb
+  s_f831849363d5ae::t_42ab22d132697b 24
+  s_6bdb1cf245afbe::t_226aa3d4daef8b 25
+app/services/googlebot_verifier.rb
+  s_f831849363d5ae::t_42ab22d132697b 19
+spec/requests/feedback_messages_spec.rb
+  s_f831849363d5ae::t_280306ffdfd7a1 178
+spec/lib/local_redis/metrics_spec.rb
+  s_6bdb1cf245afbe::t_5db412da56986b 3
+  s_6bdb1cf245afbe::t_afa1f1988d59c6 15,19,47,53,72,74,77,95-96
+  s_6bdb1cf245afbe::t_02c178d109238e 81-82,84-93,97-104
+  s_6bdb1cf245afbe::t_22382055208c92 94
+  s_6bdb1cf245afbe::t_f477127bdade63 8-9,78-80
+  s_6bdb1cf245afbe::t_74bb32c377f301 1-2,4-7,10-14,16-18,20-46,48-52,54-71,73,75-76,83,105-107
+lib/local_redis/metrics.rb
+  s_6bdb1cf245afbe::t_b8c7f0e48283d8 28-31,39,46,48-49,56,62-65,67-70,72
+  s_6bdb1cf245afbe::t_d61081c335f5ae 1-8,10-12,16-26,37,40-45,47,50-55,57-61,66,71,73-76
+  s_6bdb1cf245afbe::t_f477127bdade63 9,13
+  s_6bdb1cf245afbe::t_afa1f1988d59c6 14-15,27,32-36,38
+config/initializers/local_redis_cache.rb
+  s_6bdb1cf245afbe::t_b1d8b1a86ede13 1-2,4
+  s_f831849363d5ae::t_308fa13704679c 3
+config/locales/controllers/pt.yml
+  s_f831849363d5ae::t_83358be41f5888 88
+spec/services/ai/article_image_generator_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 7-8,16-19,22-25,27-29,32-40,44-45,48,54-55
+app/javascript/article-form/components/__tests__/ArticleCoverImage.test.jsx
+  s_f831849363d5ae::t_83358be41f5888 330-376
+app/controllers/api/v1/images_controller.rb
+  s_f831849363d5ae::t_83358be41f5888 55-57,59-60
+app/services/ai/article_image_generator.rb
+  s_f831849363d5ae::t_83358be41f5888 11-23,31-32,49-51,58-59,62-63,65
+spec/requests/api/v1/docs/images_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 22-24
+app/controllers/ai_image_generations_controller.rb
+  s_f831849363d5ae::t_83358be41f5888 24,26,29,32,35
+app/controllers/stories_controller.rb
+  s_f831849363d5ae::t_83358be41f5888 75-76
+spec/requests/ai_image_generations_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 148,169,202,230-237
+  s_f831849363d5ae::t_b80e9b30888ec0 238-239
+spec/services/ai/image_generator_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 75,127,146,157,163,174-175,181,216,260,272,302,314,344,361-543,595,632
+app/views/users/_badges_area.html.erb
+  s_f831849363d5ae::t_83358be41f5888 10-11
+app/services/ai/image_generator.rb
+  s_f831849363d5ae::t_83358be41f5888 9-14,34,37-45,48-57,72-81,85-90,94,97,121,125-126,132-133,140,145,156,165-166,168-175,177-179,182-219,252-255,263-268,306-307,309-311,321-322,325-326,328,331-332,335,340,346,351,365-367,372,385,392-393,397,421
+config/locales/controllers/en.yml
+  s_f831849363d5ae::t_83358be41f5888 88
+.env_sample
+  s_f831849363d5ae::t_83358be41f5888 245-249
+  s_f831849363d5ae::t_b5b406f8afe4e1 220-225
+spec/requests/stories_show_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 49-58,64-65,244-246,249-250
+spec/requests/api/v1/images_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 100-101,105,164,171-179,190
+app/javascript/article-form/actions.js
+  s_f831849363d5ae::t_83358be41f5888 152-162,166-169,187-197,206,213-214
+app/javascript/article-form/components/ArticleCoverImage.jsx
+  s_f831849363d5ae::t_83358be41f5888 213,267-275,590,601
+config/locales/controllers/fr.yml
+  s_f831849363d5ae::t_83358be41f5888 88
+spec/requests/user/user_profile_spec.rb
+  s_f831849363d5ae::t_83358be41f5888 116-137
+app/services/ai/function_registry.rb
+  s_f831849363d5ae::t_83358be41f5888 139-140
+spec/lib/local_redis/cache_spec.rb
+  s_f831849363d5ae::t_b5b406f8afe4e1 1-25
+lib/local_redis/runtime.rb
+  s_f831849363d5ae::t_308fa13704679c 1-7
+lib/local_redis/connection.rb
+  s_f831849363d5ae::t_fc2ba600e1d40a 1,3-48
+  s_f831849363d5ae::t_8b396fa1930a96 2
+spec/lib/local_redis/connection_spec.rb
+  s_f831849363d5ae::t_b2b8fc0f20c57c 3
+  s_f831849363d5ae::t_515e4c9d67dfa9 6,8
+  s_f831849363d5ae::t_8b396fa1930a96 1-2,4-5,7,9-10,40-74
+  s_f831849363d5ae::t_3a0cb00bf71208 11-39
+spec/lib/local_redis/runtime_spec.rb
+  s_f831849363d5ae::t_308fa13704679c 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ea15f337bf8d5481e83838625cc562684be841fe",
+  "prompts": {},
+  "sessions": {
+    "s_6bdb1cf245afbe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73cacafc-e50a-40eb-9030-295370cd818b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

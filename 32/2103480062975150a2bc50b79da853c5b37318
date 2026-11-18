@@ -1,0 +1,48 @@
+app/workers/emails/reengagement_prune_worker.rb
+  s_14fb3b87418d89::t_7f5e4d7860d0d3 9,12,15-16,18-20,27
+db/migrate/20260713150001_add_reengagement_timestamps_to_notification_settings.rb
+  s_14fb3b87418d89::t_4194fe06aaea8c 1-6
+db/schema.rb
+  s_14fb3b87418d89::t_5953023e2b300f 13,2094-2095
+spec/requests/email_subscriptions_spec.rb
+  s_14fb3b87418d89::t_9a069397856a1e 55
+  s_14fb3b87418d89::t_7746567055f234 61,63,68,70,74-77,81-83
+app/workers/emails/batch_custom_send_worker.rb
+  s_14fb3b87418d89::t_e5eb33071591b0 9,49
+lib/tasks/temporary/reengagement.rake
+  s_14fb3b87418d89::t_cae2df57435750 20,32,34
+  s_14fb3b87418d89::t_38eec276c857ff 1-13,15-19,21-29,31,33,36-44
+  s_14fb3b87418d89::t_0473312e66dd9d 14,30,35
+app/mailers/custom_mailer.rb
+  s_14fb3b87418d89::t_4d473e6778bb0b 13-17,21
+spec/workers/emails/reengagement_prune_worker_spec.rb
+  s_14fb3b87418d89::t_be63e27da7af8d 7,11,13-17,20,22-26,29,32-35,38-46,54,57-59
+app/controllers/email_subscriptions_controller.rb
+  s_14fb3b87418d89::t_f2e6206f270b3a 27
+  s_14fb3b87418d89::t_66f8b9632ce93c 28-30
+app/views/email_subscriptions/invalid_token.html.erb
+  s_14fb3b87418d89::t_e5eb33071591b0 3-5
+spec/mailers/application_mailer_spec.rb
+  s_14fb3b87418d89::t_75c16f153d1ee9 8
+app/mailers/application_mailer.rb
+  s_14fb3b87418d89::t_25385bf6e474bb 37
+spec/mailers/custom_mailer_spec.rb
+  s_14fb3b87418d89::t_1cd04cc1b637c1 41-49
+  s_14fb3b87418d89::t_e5eb33071591b0 111-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "322103480062975150a2bc50b79da853c5b37318",
+  "prompts": {},
+  "sessions": {
+    "s_14fb3b87418d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "248ae081-42f9-4561-80cf-a05803a765b5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

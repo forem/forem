@@ -1,0 +1,33 @@
+spec/requests/api/v1/analytics_spec.rb
+  f0eae6a24f98aab0 92,97,106,113,121-122,125
+app/javascript/analytics/dashboard.js
+  f0eae6a24f98aab0 662-664
+app/controllers/concerns/api/analytics_controller.rb
+  f0eae6a24f98aab0 61,68-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "d13bc9b6414362e317aef43d5f40a981249c69b8",
+  "prompts": {
+    "f0eae6a24f98aab0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje",
+      "messages": [],
+      "total_additions": 19,
+      "total_deletions": 14,
+      "accepted_lines": 3948,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/467dde3c04dda6b1a1754b7456ba6e45dfa0fad02a3bca0f984e02d8c6ac212c"
+    }
+  },
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

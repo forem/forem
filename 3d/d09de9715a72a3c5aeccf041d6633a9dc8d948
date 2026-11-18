@@ -1,0 +1,19 @@
+docs/superpowers/specs/2026-08-15-digest-customerio-track-events-design.md
+  s_7d090fe663c96a::t_58be06a7550caa 447-452,455-461
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3dd09de9715a72a3c5aeccf041d6633a9dc8d948",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

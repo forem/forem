@@ -1,0 +1,18 @@
+config/initializers/honeycomb.rb
+  h_f968154a99632d 50-56
+spec/initializers/honeycomb_spec.rb
+  h_f968154a99632d 5,15,59-78
+spec/lib/sidekiq/honeycomb_middleware_spec.rb
+  h_f968154a99632d 23-24,37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e3b4b2ef5a709ab558e73c8d4b3bf4ec6ea49ea1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

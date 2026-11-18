@@ -1,0 +1,32 @@
+app/javascript/articles/Feed.jsx
+  h_f968154a99632d 11,153,156,159
+app/javascript/articles/__tests__/Feed.test.jsx
+  h_f968154a99632d 300-413
+app/javascript/packs/__tests__/billboard.test.js
+  h_f968154a99632d 1,147-167
+app/javascript/packs/billboard.js
+  h_f968154a99632d 244-261,265
+app/javascript/packs/homePage.jsx
+  h_f968154a99632d 105-106,108,113-125,129,133,137-140,146-178,187-192,194-198
+app/javascript/packs/homePageFeed.jsx
+  h_f968154a99632d 68,73,212
+app/services/events/billboards/live_stream.rb
+  h_f968154a99632d 110-112,303-305,455-458
+app/views/articles/_feed_nav.html.erb
+  h_f968154a99632d 174-193,195-197,204-205,230-232,277
+app/views/events/show.html.erb
+  h_f968154a99632d 194-196
+spec/services/events/billboards/live_stream_spec.rb
+  h_f968154a99632d 32-40,56-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a365a760b219a03d0063b6930b92344d59642c1e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

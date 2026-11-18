@@ -1,0 +1,46 @@
+app/models/user.rb
+  s_8555593953b4c3::t_c8e48271469636 1240-1243
+spec/models/user_spec.rb
+  s_8555593953b4c3::t_0d37274c261daf 1273-1295
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 401
+app/controllers/application_controller.rb
+  h_f968154a99632d 302-303
+app/controllers/passwords_controller.rb
+  h_f968154a99632d 7-17,24-63
+app/controllers/registrations_controller.rb
+  h_f968154a99632d 7,90-104
+app/controllers/users_controller.rb
+  h_f968154a99632d 252-254
+app/views/devise/passwords/new.html.erb
+  h_f968154a99632d 30-34,39-46
+config/routes.rb
+  h_f968154a99632d 17,530
+spec/controllers/concerns/omniauth_redirect_spec.rb
+  h_f968154a99632d 11-15,45-52
+spec/requests/passwords_spec.rb
+  h_f968154a99632d 1-206
+spec/requests/user/user_changes_password_spec.rb
+  h_f968154a99632d 46,57-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "689fe0a485a45b1e30ebb726184424db7f129794",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_8555593953b4c3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "42ed0541-5c6e-4416-9bfc-395e343e5c8f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

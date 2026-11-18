@@ -1,0 +1,25 @@
+Containerfile
+  s_6bdb1cf245afbe::t_2b52a9d863c158 164
+bin/web
+  s_6bdb1cf245afbe::t_17b327aaeadce7 3-4
+docs/local_redis_cache.md
+  s_6bdb1cf245afbe::t_30b6efeeaf7c2b 56-58
+spec/lib/local_redis/web_launcher_spec.rb
+  s_6bdb1cf245afbe::t_f13e5f260ecdb3 66-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3870c0220aa22d516f586af358807289808bd07d",
+  "prompts": {},
+  "sessions": {
+    "s_6bdb1cf245afbe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73cacafc-e50a-40eb-9030-295370cd818b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+spec/support/request_store_reset.rb
+  h_f968154a99632d 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "137b1c46914c896305c288db416e16b06e33b03f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

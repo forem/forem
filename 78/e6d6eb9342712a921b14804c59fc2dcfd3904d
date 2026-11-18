@@ -1,0 +1,22 @@
+app/mailers/concerns/deliverable.rb
+  h_f968154a99632d 151,159
+app/models/user.rb
+  h_f968154a99632d 186-187
+app/services/delivery_methods/customer_io.rb
+  h_f968154a99632d 23-25,27
+spec/models/user_spec.rb
+  h_f968154a99632d 661-669
+spec/services/delivery_methods/customer_io_spec.rb
+  h_f968154a99632d 151,166-199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "78e6d6eb9342712a921b14804c59fc2dcfd3904d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
