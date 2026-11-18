@@ -37,6 +37,8 @@ module Constants
       "Resource Admin: Event" => { name: "single_resource_admin", resource_type: "Event" },
       "Resource Admin: Survey" => { name: "single_resource_admin", resource_type: "Survey" },
       "Resource Admin: Organization" => { name: "single_resource_admin", resource_type: "Organization" },
+      "Resource Admin: OrganizationPageManagement" => { name: "single_resource_admin",
+                                                        resource_type: "OrganizationPageManagement" },
       "Resource Admin: Podcast" => { name: "single_resource_admin", resource_type: "Podcast" },
       "Resource Admin: NavigationLink" => { name: "single_resource_admin", resource_type: "NavigationLink" },
       "Resource Admin: RequestRedirect" => { name: "single_resource_admin", resource_type: "RequestRedirect" },
@@ -47,6 +49,8 @@ module Constants
     }.freeze
 
     SPECIAL_ROLES = SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.keys.freeze
+
+    SUPER_ADMIN_ONLY_RESOURCE_TYPES = %w[OrganizationPageManagement].freeze
 
     ALL_ROLES_LABELS_TO_WHERE_CLAUSE =
       SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.merge(BASE_ROLES_LABELS_TO_WHERE_CLAUSE).freeze

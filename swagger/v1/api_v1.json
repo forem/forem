@@ -4110,7 +4110,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.\n        - **show_in_navigation**: Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API.",
+        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled). Holders of the `Resource Admin: OrganizationPageManagement` role can also create pages of any organization with the organization pages feature enabled, without being a member; those writes add `via` and `organization_id` to the audit log entry.  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.\n        - **show_in_navigation**: Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API.",
         "parameters": [
 
         ],
@@ -4233,7 +4233,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Update an existing page's details by ID. `show_in_navigation` controls organization tabs only. Hidden pages remain public at their URL and through the API. Only non-Showcase organization pages can set it to false. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
+        "description": "Update an existing page's details by ID. `show_in_navigation` controls organization tabs only. Hidden pages remain public at their URL and through the API. Only non-Showcase organization pages can set it to false. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization. Holders of the `Resource Admin: OrganizationPageManagement` role can also update pages of any organization with the organization pages feature enabled, without being a member; those writes add `via` and `organization_id` to the audit log entry.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -4323,7 +4323,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.",
+        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it. Requires site administrative privileges, or, for the supplied `organization_id` when the organization pages feature is enabled, organization admin privileges or the `Resource Admin: OrganizationPageManagement` role.",
         "operationId": "previewPage",
         "parameters": [
 

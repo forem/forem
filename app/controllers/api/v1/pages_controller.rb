@@ -65,7 +65,7 @@ module Api
       end
 
       def destroy
-        authorize_org_admin!(@page.organization) unless page_admin?
+        authorize_org_admin!(@page.organization, allow_page_management: false) unless page_admin?
 
         if @page.destroy
           log_page_write("api_page_destroy")
@@ -99,7 +99,12 @@ module Api
       private
 
       def log_page_write(action)
-        Audit::Logger.log(:admin_api, @user, { "action" => action, "page_id" => @page.id })
+        via = if @via_page_management
+                { "via" => "org_pages_resource_admin", "organization_id" => @page.organization_id }
+              else
+                {}
+              end
+        Audit::Logger.log(:admin_api, @user, { "action" => action, "page_id" => @page.id, **via })
       end
 
       def extract_preview_page_hash
@@ -124,12 +129,17 @@ module Api
         @user.administrative_access_to?(resource: Page)
       end
 
-      def authorize_org_admin!(organization)
-        return if organization.present? &&
-          @user.org_admin?(organization) &&
-          FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
+      def authorize_org_admin!(organization, allow_page_management: true)
+        unless organization.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
+          raise Pundit::NotAuthorizedError
+        end
+        return if @user.org_admin?(organization)
 
-        raise Pundit::NotAuthorizedError
+        unless allow_page_management && @user.single_resource_admin_for?(OrganizationPageManagement)
+          raise Pundit::NotAuthorizedError
+        end
+
+        @via_page_management = true
       end
 
       def build_org_page
