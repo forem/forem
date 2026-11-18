@@ -22,6 +22,26 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
 
   before do
     allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
+    # SafeHttp resolves each feed host before fetching; treat the recorded feed
+    # hosts as public so these examples don't depend on live DNS.
+    allow(Addrinfo).to receive(:getaddrinfo)
+      .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+  end
+
+  describe "feed sources on non-public addresses" do
+    it "records a failure without requesting the feed" do
+      internal_url = "http://10.0.0.5/feed.xml"
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with("10.0.0.5", nil, nil, :STREAM)
+        .and_call_original
+      stub_request(:get, internal_url)
+      source = create_feed_source(internal_url)
+
+      described_class.call(users_scope: User.where(id: source.user_id))
+
+      expect(a_request(:get, internal_url)).not_to have_been_made
+      expect(Feeds::ImportLog.where(feed_source: source, status: :failed)).to exist
+    end
   end
 
   describe ".call" do

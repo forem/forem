@@ -108,7 +108,68 @@ module ArticlesHelper
     keys_by_article_id.transform_values { |key| descriptions[key] }
   end
 
+  # Builds the /api/v0/articles index payload directly as Hashes so Jbuilder avoids
+  # hundreds of ActionView partial lookups and DSL allocations per page.
+  def api_articles_index_payload(articles)
+    return [] if articles.blank?
+
+    flare_tags = FlareTag.tags_by_article_id(articles)
+    articles.map { |article| api_article_index_entry(article, flare_tags[article.id]) }
+  end
+
   private
+
+  def api_article_index_entry(article, flare_tag)
+    article_url = article.url
+    reactions = article.public_reactions_count
+    canonical = article.canonical_url.present? ? article.canonical_url.to_s.strip : article_url
+
+    entry = {
+      "type_of" => "article", "id" => article.id, "title" => article.title,
+      "description" => article.description, "readable_publish_date" => article.readable_publish_date,
+      "slug" => article.slug, "path" => article.path, "url" => article_url,
+      "comments_count" => article.comments_count, "public_reactions_count" => reactions,
+      "collection_id" => article.collection_id, "published_timestamp" => article.published_timestamp,
+      "language" => article.language, "subforem_id" => article.subforem_id,
+      "ai_disclosure_level" => article.ai_disclosure_level,
+      "ai_disclosure_label" => article.ai_disclosure_label,
+      "positive_reactions_count" => reactions,
+      "cover_image" => article.main_image.present? ? cloud_cover_url(article.main_image) : nil,
+      "social_image" => article_social_image_url(article), "canonical_url" => canonical,
+      "created_at" => utc_iso_timestamp(article.created_at),
+      "edited_at" => utc_iso_timestamp(article.edited_at),
+      "crossposted_at" => utc_iso_timestamp(article.crossposted_at),
+      "published_at" => utc_iso_timestamp(article.published_at),
+      "last_comment_at" => utc_iso_timestamp(article.last_comment_at),
+      "reading_time_minutes" => article.reading_time,
+      "tag_list" => article.cached_tag_list_array, "tags" => article.cached_tag_list,
+      "user" => api_article_user_hash(article.user)
+    }
+    if (org = article.organization)
+      entry["organization"] = {
+        "name" => org.name, "username" => org.username, "slug" => org.slug,
+        "profile_image" => org.profile_image_url_for(length: 640),
+        "profile_image_90" => org.profile_image_url_for(length: 90)
+      }
+    end
+    if flare_tag
+      entry["flare_tag"] = {
+        "name" => flare_tag.name, "bg_color_hex" => flare_tag.bg_color_hex,
+        "text_color_hex" => flare_tag.text_color_hex
+      }
+    end
+    entry
+  end
+
+  def api_article_user_hash(user)
+    {
+      "name" => user.name, "username" => user.username,
+      "twitter_username" => user.twitter_username, "github_username" => user.github_username,
+      "user_id" => user.id, "website_url" => user.processed_website_url,
+      "profile_image" => user.profile_image_url_for(length: 640),
+      "profile_image_90" => user.profile_image_url_for(length: 90)
+    }
+  end
 
   def comments_include_youtube?(article)
     # Comment trees already loaded for this render hold every comment the page shows, so check them in memory

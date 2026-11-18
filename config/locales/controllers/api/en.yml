@@ -20,6 +20,8 @@ en:
         redis_not_connected: Redis NOT connected!
       listings_controller:
         no_credit: Not enough available credits
+      mobile_auth_controller:
+        email_not_verified: Email address is not verified
     v1:
       images_controller:
         image_required: An 'image' file is required (multipart/form-data)

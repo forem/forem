@@ -101,6 +101,15 @@ RSpec.describe PageTag, type: :liquid_tag do
       frameless_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator 450 frameless %}").finalize
       expect(frameless_html).to include("style=\"#{PageTag::FRAMELESS_STYLE}\"")
       expect(frameless_html).to include('height="450px"')
+      expect(frameless_html).to include('data-sandboxed-embed="true"')
+
+      auto_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator auto %}").finalize
+      expect(auto_html).to include("height=\"#{PageTag::DEFAULT_HEIGHT}\"")
+      expect(auto_html).to include('data-auto-height="true"')
+
+      hinted_auto_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator 572 auto %}").finalize
+      expect(hinted_auto_html).to include('height="572px"')
+      expect(hinted_auto_html).to include('data-auto-height="true"')
 
       article_html = MarkdownProcessor::Parser.new("{% embed /sandbox-org/embed/calculator %}").finalize
       feed_html = ActionController::Base.helpers.sanitize(article_html, scrubber: FeedMarkdownScrubber.new)
@@ -327,7 +336,10 @@ RSpec.describe PageTag, type: :liquid_tag do
 
       expect(user_article_html).to include("ltag__page--article")
       expect(user_article_html).to include("js-page-embed")
+      expect(user_article_html).to include("js-sandboxed-embed")
+      expect(user_article_html).to include('data-sandboxed-embed="true"')
       expect(user_article_html).to include("ltag__page-footer")
+      expect(user_article_html).to include("js-reload-page-action")
       expect(user_article_html).to include("js-fullscreen-page-action")
       expect(user_article_html).to include("Interactive Card")
       expect(user_article_html).to include("Bar Owner")

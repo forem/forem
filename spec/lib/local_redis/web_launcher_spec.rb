@@ -12,6 +12,9 @@ RSpec.describe LocalRedis::Web do
   let(:socket) { File.join(servers.directory, "launcher.sock") }
   let(:local_url) { "unix://#{socket}" }
   let(:process_state) { {} }
+  # bin/web and the bundle stubs below only need the standard library.
+  # Keep RUBYOPT in the environment for override assertions, but skip loading it.
+  let(:web_command) { [RbConfig.ruby, "--disable=gems,rubyopt", "bin/web"] }
 
   after do
     if process_state[:pid]
@@ -57,16 +60,16 @@ RSpec.describe LocalRedis::Web do
 
   it "executes the original Puma command when local caching is disabled" do
     shim = File.join(servers.directory, "bundle")
-    File.write(shim, "#!#{RbConfig.ruby}\nrequire 'json'\nputs JSON.generate(ARGV)\nexit 23\n")
+    File.write(shim, "#!#{RbConfig.ruby} --disable=gems,rubyopt\nrequire 'json'\nputs JSON.generate(ARGV)\nexit 23\n")
     File.chmod(0o700, shim)
     env = { "LOCAL_REDIS_URL" => "", "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}" }
-    stdout, _stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/web")
+    stdout, _stderr, status = Open3.capture3(env, *web_command)
     expect(JSON.parse(stdout)).to eq(["exec", "puma", "-C", "config/puma.rb"])
     expect(status.exitstatus).to eq(23)
 
     container_command = File.read("Containerfile")[/^CMD (\[.*\])$/, 1]
     args = JSON.parse(container_command).drop_while { |arg| arg != "bin/web" }.drop(1)
-    stdout, _stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/web", *args)
+    stdout, _stderr, status = Open3.capture3(env, *web_command, *args)
     expect(JSON.parse(stdout)).to eq(%w[exec rails server -b 0.0.0.0 -p 3000])
     expect(status.exitstatus).to eq(23)
   end
@@ -75,7 +78,7 @@ RSpec.describe LocalRedis::Web do
     shim = File.join(servers.directory, "bundle")
     File.write(
       shim,
-      "#!#{RbConfig.ruby}\nrequire 'json'\n" \
+      "#!#{RbConfig.ruby} --disable=gems,rubyopt\nrequire 'json'\n" \
       "payload = { 'argv' => ARGV, 'malloc_limit' => ENV['RUBY_GC_MALLOC_LIMIT'], 'rubyopt' => ENV['RUBYOPT'] }\n" \
       "puts JSON.generate(payload)\nexit 0\n",
     )
@@ -87,7 +90,7 @@ RSpec.describe LocalRedis::Web do
       "WEB_YJIT_EXEC_MEM_SIZE" => "256",
       "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}"
     }
-    stdout, _stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/web")
+    stdout, _stderr, status = Open3.capture3(env, *web_command)
     payload = JSON.parse(stdout)
     expect(status).to be_success
     expect(payload["argv"]).to eq(["exec", "puma", "-C", "config/puma.rb"])

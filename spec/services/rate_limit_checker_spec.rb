@@ -338,5 +338,28 @@ RSpec.describe RateLimitChecker, type: :service do
       expect(checker.recent_mention_count).to eq(0)
       expect(checker.reserve_mentions!(new_mentions_count: 2)).to include(delta: 2, count: 2)
     end
+
+    it "counts recent persisted mentions across comments and articles with UNION ALL and excludes the target" do
+      new_user = create(:user, created_at: 30.minutes.ago, badge_achievements_count: 0)
+      mentioned_a = create(:user)
+      mentioned_b = create(:user)
+      mentioned_c = create(:user)
+      article = create(:published_article, user: new_user)
+      unpublished = create(:article, user: new_user, published: false)
+      comment = create(:comment, user: new_user, commentable: article)
+      other_comment = create(:comment, commentable: article)
+
+      create(:mention, user: mentioned_a, mentionable: article, created_at: 10.minutes.ago)
+      create(:mention, user: mentioned_b, mentionable: comment, created_at: 10.minutes.ago)
+      create(:mention, user: mentioned_c, mentionable: comment, created_at: 2.hours.ago)
+      create(:mention, user: mentioned_c, mentionable: unpublished, created_at: 10.minutes.ago)
+      create(:mention, user: mentioned_c, mentionable: other_comment, created_at: 10.minutes.ago)
+
+      checker = described_class.new(new_user)
+
+      expect(checker.recent_mention_count).to eq(2)
+      expect(checker.recent_mention_count(exclude_notifiable: article)).to eq(1)
+      expect(checker.recent_mention_count(exclude_notifiable: comment)).to eq(1)
+    end
   end
 end

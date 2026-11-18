@@ -177,9 +177,15 @@ class BillboardsController < ApplicationController
     ].compact
   end
 
-  # Delivery renders processed HTML; Markdown source is only needed when editing.
+  # Keep rendering fields and the inputs used by the weighted-selection CTEs.
+  # Targeting predicates can filter columns without returning them to Ruby.
   def renderable_billboards
-    Billboard.select(Billboard.column_names - %w[body_markdown minimized_body_markdown])
+    Billboard.select(
+      :id, :organization_id, :placement_area, :processed_html, :minimized_processed_html,
+      :impressions_count, :success_rate, :priority, :weight, :preferred_article_ids,
+      :template, :custom_display_label, :type_of, :special_behavior, :dismissal_sku,
+      :page_id, :browser_context, :color, :content_updated_at
+    )
   end
 
   # A fully cached response is shared by every signed-in visitor in a location, so it must never

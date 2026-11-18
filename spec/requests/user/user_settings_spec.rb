@@ -9,6 +9,13 @@ RSpec.describe "UserSettings" do
         get "/settings"
         expect(response).to redirect_to("/enter")
       end
+
+      it "ignores malformed X-Forwarded-Host headers when redirecting" do
+        get "/settings", headers: { "X-Forwarded-Host" => "/efx" }
+
+        expect(response).to redirect_to("/enter")
+        expect(response.location).to eq("http://www.example.com/enter")
+      end
     end
 
     context "when signed-in" do

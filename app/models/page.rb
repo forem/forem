@@ -214,6 +214,9 @@ class Page < ApplicationRecord
 
     if body_html.present? && body_html.bytesize > MAX_EMBED_HTML_BYTES
       errors.add(:body_html, I18n.t("models.page.embed_html_too_large", max_kb: MAX_EMBED_HTML_BYTES / 1.kilobyte))
+    elsif body_html.present? && body_html_changed?
+      complexity = Pages::EmbedHtmlWrapper.validate_complexity(body_html)
+      errors.add(:body_html, I18n.t("models.page.embed_html_too_complex")) unless complexity == :ok
     end
 
     validate_embed_html_slug
