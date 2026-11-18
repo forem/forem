@@ -2,6 +2,8 @@ module Admin
   class PermissionsController < Admin::ApplicationController
     layout "admin"
 
+    SUPER_ADMIN_ONLY_RESOURCES = %w[OrganizationPageManagement].freeze
+
     def index
       role_ids = admin_role_ids
       @users = if role_ids.empty?
@@ -21,6 +23,7 @@ module Admin
       role_parts = params[:role_name].to_s.split("|")
       role_name = role_parts[0]
       resource_type = role_parts[1]
+      return refuse_super_admin_only unless assignable?(role_name, resource_type)
 
       if user && %w[admin super_admin tech_admin single_resource_admin].include?(role_name)
         if resource_type.present? && role_name == "single_resource_admin"
@@ -46,6 +49,7 @@ module Admin
       role_parts = params[:role_name].to_s.split("|")
       role_name = role_parts[0]
       resource_type = role_parts[1]
+      return refuse_super_admin_only unless assignable?(role_name, resource_type)
 
       if user && %w[admin super_admin tech_admin single_resource_admin].include?(role_name)
         if resource_type.present? && role_name == "single_resource_admin"
@@ -67,6 +71,17 @@ module Admin
     end
 
     private
+
+    def assignable?(role_name, resource_type)
+      return true unless role_name == "single_resource_admin" && SUPER_ADMIN_ONLY_RESOURCES.include?(resource_type)
+
+      current_user.super_admin?
+    end
+
+    def refuse_super_admin_only
+      flash[:error] = "Only super admins can grant or revoke #{params[:role_name]}"
+      redirect_to admin_permissions_path, status: :see_other
+    end
 
     def admin_role_ids
       Role.where(name: %w[admin super_admin], resource_type: nil, resource_id: nil)

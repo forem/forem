@@ -121,6 +121,24 @@ RSpec.describe "Api::V1::Pages with Resource Admin: OrganizationPageManagement" 
     end
   end
 
+  describe "losing access with the same API key" do
+    it "is refused once the role is removed" do
+      manager.remove_role(:single_resource_admin, OrganizationPageManagement)
+      put api_page_path(org_page.id), params: { body_markdown: "Changed" }.to_json, headers: headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(org_page.reload.body_markdown).not_to eq("Changed")
+    end
+
+    it "is refused once org_readme is turned off for the organization" do
+      FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization])
+      put api_page_path(org_page.id), params: { body_markdown: "Changed" }.to_json, headers: headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(org_page.reload.body_markdown).not_to eq("Changed")
+    end
+  end
+
   describe "DELETE /api/pages/:id" do
     it "refuses to delete an organization page" do
       delete api_page_path(org_page.id), headers: headers

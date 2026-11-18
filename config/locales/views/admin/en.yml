@@ -335,6 +335,7 @@ en:
               resource_admin_event: Event Admin
               resource_admin_survey: Survey Admin
               resource_admin_organization: Organization Admin
+              resource_admin_organization_page_management: Organization Page Management Admin
               resource_admin_podcast: Podcast Admin
               resource_admin_navigation_link: Navigation Link Admin
               resource_admin_request_redirect: Request Redirect Admin

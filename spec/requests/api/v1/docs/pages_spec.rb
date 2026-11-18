@@ -49,7 +49,7 @@ RSpec.describe "api/v1/pages" do
       post("pages") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.
+        Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled). Holders of the `Resource Admin: OrganizationPageManagement` role can also create pages of any organization with the organization pages feature enabled, without being a member; those writes add `via` and `organization_id` to the audit log entry.  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.
 
         ### Body Parameter Guidelines:
         - **title**: Heading displayed at the top of the page.
@@ -160,7 +160,7 @@ RSpec.describe "api/v1/pages" do
       put("update details for a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Update an existing page's details by ID. `show_in_navigation` controls organization tabs only. Hidden pages remain public at their URL and through the API. Only non-Showcase organization pages can set it to false. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.
+        Update an existing page's details by ID. `show_in_navigation` controls organization tabs only. Hidden pages remain public at their URL and through the API. Only non-Showcase organization pages can set it to false. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization. Holders of the `Resource Admin: OrganizationPageManagement` role can also update pages of any organization with the organization pages feature enabled, without being a member; those writes add `via` and `organization_id` to the audit log entry.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.
         DESCRIBE
 
         produces "application/json"
@@ -263,7 +263,7 @@ RSpec.describe "api/v1/pages" do
       post("preview a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.
+        Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it. Requires site administrative privileges, or, for the supplied `organization_id` when the organization pages feature is enabled, organization admin privileges or the `Resource Admin: OrganizationPageManagement` role.
         DESCRIBE
         operationId "previewPage"
         produces "application/json"

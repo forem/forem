@@ -167,4 +167,55 @@ RSpec.describe "/admin/permissions" do
       expect(flash[:success]).to be_present
     end
   end
+
+  describe "the OrganizationPageManagement resource admin role" do
+    let(:target_user) { create(:user) }
+    let(:role_name) { "single_resource_admin|OrganizationPageManagement" }
+
+    def page_management_role(user)
+      user.reload.roles.where(name: "single_resource_admin", resource_type: "OrganizationPageManagement")
+    end
+
+    context "when signed in as an admin who is not a super admin" do
+      before { sign_in create(:user, :admin) }
+
+      it "refuses to grant it" do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+
+        expect(response).to redirect_to(admin_permissions_path)
+        expect(page_management_role(target_user)).not_to exist
+        expect(flash[:error]).to be_present
+      end
+
+      it "refuses to revoke it" do
+        target_user.add_role(:single_resource_admin, OrganizationPageManagement)
+        delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: role_name }
+
+        expect(page_management_role(target_user)).to exist
+        expect(flash[:error]).to be_present
+      end
+    end
+
+    context "when signed in as a Permission resource admin" do
+      before { sign_in create(:user, :single_resource_admin, resource: Permission) }
+
+      it "refuses to grant it" do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+
+        expect(page_management_role(target_user)).not_to exist
+      end
+    end
+
+    context "when signed in as a super admin" do
+      before { sign_in create(:user, :super_admin) }
+
+      it "grants and revokes it" do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+        expect(page_management_role(target_user)).to exist
+
+        delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: role_name }
+        expect(page_management_role(target_user)).not_to exist
+      end
+    end
+  end
 end
