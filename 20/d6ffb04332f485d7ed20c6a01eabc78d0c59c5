@@ -1,0 +1,22 @@
+config/deploy.edge.yml
+  h_f968154a99632d 19-20
+config/deploy.yml
+  h_f968154a99632d 17,185
+config/environments/production.rb
+  h_f968154a99632d 69,73,77
+docs/kamal-deployment.md
+  h_f968154a99632d 145,330-353
+spec/requests/health_check_up_spec.rb
+  h_f968154a99632d 27-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "20d6ffb04332f485d7ed20c6a01eabc78d0c59c5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
