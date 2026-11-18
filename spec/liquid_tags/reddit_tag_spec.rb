@@ -1,6 +1,15 @@
 require "rails_helper"
 
 RSpec.describe RedditTag, type: :liquid_tag do
+  before do
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    %w[reddit.com www.reddit.com].each do |host|
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with(host, nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+    end
+  end
+
   context "when it is an image post" do
     describe "#render" do
       let(:image_post) do
@@ -90,6 +99,79 @@ RSpec.describe RedditTag, type: :liquid_tag do
         expect(reddit_liquid.render).to include("ltag__reddit")
         expect(reddit_liquid.render).to include(response["author"])
       end
+
+      it "supports apex reddit.com URLs" do
+        apex_url = "https://reddit.com/r/IAmA/comments/afvl2w/im_scott_from_scotts_cheap_flights_my_profession"
+        reddit_liquid = generate_reddit_liquid(apex_url)
+        expect(reddit_liquid.render).to include("ltag__reddit")
+        expect(reddit_liquid.render).to include(response["author"])
+      end
+    end
+  end
+
+  describe "URL and response validation" do
+    def parse_reddit_liquid(url)
+      Liquid::Template.register_tag("reddit", described_class)
+      Liquid::Template.parse("{% reddit #{url} %}")
+    end
+
+    [
+      "https://reddit.com.example.com/r/aww/comments/123",
+      "https://reddit.com@127.0.0.1/r/aww/comments/123",
+      "https://reddit.com:8080/r/aww/comments/123",
+      "http://www.reddit.com/r/aww/comments/123",
+      "https://www.reddit.com/r/aww unexpected_arg",
+      "https://www.reddit.com?q=test",
+      "not a url",
+    ].each do |invalid_url|
+      it "rejects #{invalid_url} without making an HTTP request" do
+        allow(SafeHttp).to receive(:get)
+
+        expect { parse_reddit_liquid(invalid_url) }
+          .to raise_error(StandardError, I18n.t("liquid_tags.reddit_tag.invalid_reddit_link", url: invalid_url))
+        expect(SafeHttp).not_to have_received(:get)
+      end
+    end
+
+    it "rejects redirects to unroutable addresses without fetching the redirect target" do
+      reddit_url = "https://www.reddit.com/r/aww/comments/ag3s4b/example"
+      internal_target = "http://10.0.0.5/status.json"
+      stub_request(:get, "#{reddit_url}.json").to_return(status: 302, headers: { "Location" => internal_target })
+      stub_request(:get, internal_target)
+
+      expect { parse_reddit_liquid(reddit_url) }
+        .to raise_error(StandardError, I18n.t("liquid_tags.reddit_tag.invalid_reddit_link", url: reddit_url))
+      expect(a_request(:get, internal_target)).not_to have_been_made
+    end
+
+    it "rejects redirects to off-domain hosts" do
+      reddit_url = "https://www.reddit.com/r/aww/comments/ag3s4b/example"
+      external_target = "https://other.example/post.json"
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with("other.example", nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.20")])
+
+      stub_request(:get, "#{reddit_url}.json").to_return(status: 302, headers: { "Location" => external_target })
+      stub_request(:get, external_target).to_return(
+        status: 200,
+        headers: { "Content-Type" => "application/json" },
+        body: [{ "data" => { "children" => [{ "data" => { "created_utc" => 1_547_470_871 } }] } }].to_json,
+      )
+
+      expect { parse_reddit_liquid(reddit_url) }
+        .to raise_error(StandardError, I18n.t("liquid_tags.reddit_tag.invalid_reddit_link", url: reddit_url))
+    end
+
+    it "raises an invalid link error when the response JSON structure is unexpected" do
+      reddit_url = "https://www.reddit.com/r/aww/comments/missing"
+      stub_request(:get, "#{reddit_url}.json").to_return(
+        status: 404,
+        headers: { "Content-Type" => "application/json" },
+        body: { "message" => "Not Found", "error" => 404 }.to_json,
+      )
+
+      expect { parse_reddit_liquid(reddit_url) }
+        .to raise_error(StandardError, I18n.t("liquid_tags.reddit_tag.invalid_reddit_link", url: reddit_url))
     end
   end
 end

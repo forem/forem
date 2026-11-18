@@ -124,6 +124,11 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     end
 
     it "does not alter the processed HTML using RedditTag", vcr: { cassette_name: "reddit_liquid_tag" } do
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with("www.reddit.com", nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+
       url = "https://www.reddit.com/r/IAmA/comments/afvl2w/im_scott_from_scotts_cheap_flights_my_profession"
       article.update(body_markdown: "{% reddit #{url} %}")
 

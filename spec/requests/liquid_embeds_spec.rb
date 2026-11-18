@@ -64,5 +64,19 @@ RSpec.describe "LiquidEmbeds", vcr: { cassette_name: "twitter_client_status_exte
         get liquid_embed_path("tweet %}<script>alert(1)</script>{%", args: "")
       end.to raise_error(ActionController::RoutingError)
     end
+
+    it "renders 404 for non-Reddit hosts passed to the reddit embed" do
+      stub_request(:get, "https://reddit.com.example.com/r/aww/comments/123.json")
+
+      expect do
+        get liquid_embed_path("reddit", args: "https://reddit.com.example.com/r/aww/comments/123")
+      end.to raise_error(ActionController::RoutingError)
+
+      expect do
+        get liquid_embed_path("reddit", args: "https://reddit.com@127.0.0.1/r/aww/comments/123")
+      end.to raise_error(ActionController::RoutingError)
+
+      expect(a_request(:get, "https://reddit.com.example.com/r/aww/comments/123.json")).not_to have_been_made
+    end
   end
 end

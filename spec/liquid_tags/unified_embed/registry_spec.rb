@@ -280,6 +280,8 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns RedditTag for a reddit url" do
       expect(described_class.find_liquid_tag_for(link: "https://www.reddit.com/r/Cricket/comments/qrkwol/match_thread_2nd_semifinal_australia_vs_pakistan/"))
         .to eq(RedditTag)
+      expect(described_class.find_liquid_tag_for(link: "https://reddit.com.example.com/r/Cricket/comments/123"))
+        .to eq(OpenGraphTag)
     end
 
     it "returns ReplitTag for a valid replit url", :aggregate_failures do
