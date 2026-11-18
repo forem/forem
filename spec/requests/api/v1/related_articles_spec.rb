@@ -184,4 +184,53 @@ RSpec.describe "Api::V1::RelatedArticles" do
     expect(Article.connection.select_value("SHOW hnsw.iterative_scan")).to eq("off")
     expect(Article.connection.select_value("SHOW hnsw.ef_search")).to eq("40")
   end
+
+  it "defaults to newest first and reports a relevance score", :aggregate_failures do
+    strong = create(:article, title: "TimescaleDB internals")
+    recent = create(:article, title: "A passing TimescaleDB mention")
+    strong.update_columns(published_at: 3.days.ago,
+                          body_markdown: "TimescaleDB, TimescaleDB and more TimescaleDB.")
+
+    get "/api/related_articles", params: { organization_id: organization.id, q: "TimescaleDB" },
+                                 headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.pluck("id")).to eq([recent.id, strong.id])
+    expect(response.parsed_body.first["discovery_rank"]).to be > 0
+  end
+
+  it "puts the stronger match first when asked to sort by relevance" do
+    recent = create(:article, title: "A passing TimescaleDB mention")
+    strong = create(:article, title: "TimescaleDB internals")
+    strong.update_columns(published_at: 3.days.ago,
+                          body_markdown: "TimescaleDB, TimescaleDB and more TimescaleDB.")
+    recent.update_columns(body_markdown: "Mostly about other things entirely.")
+
+    get "/api/related_articles",
+        params: { organization_id: organization.id, q: "TimescaleDB", sort: "relevance" },
+        headers: headers
+
+    expect(response.parsed_body.pluck("id")).to eq([strong.id, recent.id])
+  end
+
+  it "rejects an unknown sort" do
+    get "/api/related_articles",
+        params: { organization_id: organization.id, q: "database", sort: "sideways" }, headers: headers
+
+    expect(response).to have_http_status(:unprocessable_entity)
+  end
+
+  it "reports the fused score in hybrid mode", :aggregate_failures do
+    query_vector = [1.0] + Array.new(767, 0.0)
+    embedding = instance_double(Ai::Embedding, call: query_vector)
+    allow(Ai::Embedding).to receive(:new).and_return(embedding)
+    article = create(:article, title: "Database vectors", score: 100)
+    article.update_column(:semantic_embedding, query_vector)
+
+    get "/api/related_articles",
+        params: { organization_id: organization.id, q: "database", mode: "hybrid" }, headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.first["discovery_rank"]).to be > 0
+  end
 end
