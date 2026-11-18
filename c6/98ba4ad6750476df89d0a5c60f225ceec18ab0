@@ -1,0 +1,28 @@
+app/controllers/admin/permissions_controller.rb
+  h_f968154a99632d 5,23,28-40,42,44,46,52-68,70-71
+app/controllers/admin/users_controller.rb
+  h_f968154a99632d 254-255,264-265
+app/lib/constants/role.rb
+  h_f968154a99632d 53-54
+app/policies/role_policy.rb
+  h_f968154a99632d 6-7,10-16
+spec/policies/role_policy_spec.rb
+  h_f968154a99632d 11-14,42-53
+spec/requests/admin/permissions_spec.rb
+  h_f968154a99632d 174,183,189-194,197,200-217,219,226,228,230,233-242,248,254-259
+spec/requests/admin/users_manage_spec.rb
+  h_f968154a99632d 311-328
+spec/requests/api/v1/pages_organization_page_management_spec.rb
+  h_f968154a99632d 125-129,131,134,137-141,143,146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c698ba4ad6750476df89d0a5c60f225ceec18ab0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
