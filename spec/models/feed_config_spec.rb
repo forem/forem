@@ -1024,6 +1024,10 @@ RSpec.describe FeedConfig, type: :model do
     let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
+    # Both SQL builders embed Time.current at one-second precision. Freeze time so a
+    # second boundary between the two calls cannot make identical SQL compare unequal.
+    around { |example| Timecop.freeze { example.run } }
+
     it "includes semantic embedding calculation when activity store has a vector" do
       user_activity = create(:user_activity, user: user)
       # Simulating a pgvector array using standard ruby array to test the sql string generation
