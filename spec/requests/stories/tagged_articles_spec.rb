@@ -2,12 +2,8 @@ require "rails_helper"
 
 # rubocop:disable RSpec/NestedGroups
 RSpec.describe "Stories::TaggedArticlesIndex" do
-  %i[enable disable].each do |method|
-    context "when :optimize_article_tag_query is #{method}d" do
-      before do
-        FeatureFlag.public_send method, :optimize_article_tag_query
-      end
-
+  describe "tag index pages" do
+    context "with tag, article, and organization fixtures" do
       describe "GET /tag/:tag" do
         let(:user) { create(:user) }
         let(:tag) { create(:tag) }
