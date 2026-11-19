@@ -435,7 +435,7 @@ module Spam
 
       begin
         URI.parse(href[1]).host
-      rescue URI::InvalidURIError
+      rescue URI::Error
         nil
       end
     end

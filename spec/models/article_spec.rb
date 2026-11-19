@@ -4941,4 +4941,43 @@ RSpec.describe Article do
       expect(described_class.search_articles("??? ::: '''")).to be_empty
     end
   end
+
+  describe "#hidden_billboard_locations" do
+    it "defaults to an empty array and reports all post billboard locations as visible", :aggregate_failures do
+      article = build(:article)
+
+      expect(article.hidden_billboard_locations).to eq([])
+      Billboard::POST_PLACEMENTS.each do |placement|
+        expect(article.billboard_location_hidden?(placement)).to be(false)
+      end
+    end
+
+    it "normalizes blanks, duplicates, symbols, and canonicalizes placement ordering", :aggregate_failures do
+      article = build(:article)
+      article.hidden_billboard_locations = ["", :post_sidebar, "post_fixed_bottom", "post_sidebar", " "]
+
+      expect(article.hidden_billboard_locations).to eq(%w[post_fixed_bottom post_sidebar])
+      expect(article.billboard_location_hidden?(:post_fixed_bottom)).to be(true)
+      expect(article.billboard_location_hidden?("post_sidebar")).to be(true)
+      expect(article.billboard_location_hidden?(:post_comments)).to be(false)
+
+      article.hidden_billboard_locations = nil
+      expect(article.hidden_billboard_locations).to eq([])
+    end
+
+    it "validates that hidden locations are known post placement areas", :aggregate_failures do
+      article = build(:article, hidden_billboard_locations: %w[post_fixed_bottom sidebar_left bogus_area])
+      expect(article).not_to be_valid
+      expect(article.errors[:hidden_billboard_locations].join).to include("sidebar_left, bogus_area")
+
+      article.hidden_billboard_locations = "post_fixed_bottom"
+      expect(article).not_to be_valid
+      expect(article.errors[:hidden_billboard_locations]).to include(
+        I18n.t("models.article.invalid_hidden_billboard_locations"),
+      )
+
+      article.hidden_billboard_locations = Billboard::POST_PLACEMENTS
+      expect(article).to be_valid
+    end
+  end
 end

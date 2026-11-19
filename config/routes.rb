@@ -134,6 +134,7 @@ Rails.application.routes.draw do
         end
 
         resources :organizations, only: %i[index create update destroy]
+        get "/organizations/:organization_id/article_analytics", to: "organization_article_analytics#index"
         get "/organizations/:organization_id/article_reactions", to: "organization_article_reactions#index"
 
         scope("/users/:id") do

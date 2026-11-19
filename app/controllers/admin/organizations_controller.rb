@@ -4,7 +4,7 @@ module Admin
     PER_PAGE_MAX = 50
     INDEX_COLUMNS = %i[id name twitter_username github_username url created_at].freeze
     ORG_FEATURES = %w[org_readme org_lead_forms org_dofollow_links org_verification
-                      org_related_articles].freeze
+                      org_related_articles org_article_analytics].freeze
 
     CREDIT_ACTIONS = {
       add: :add_to,

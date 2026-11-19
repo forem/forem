@@ -148,6 +148,7 @@ fr:
       article:
         approved: Approuvée
         email_digest_eligible: Éligible pour Digest
+        hide_billboard_locations: Masquer les emplacements de bannières
         author_id: Identifiant de l'auteur
         comments: commentaires
         contains_video: Contient une vidéo

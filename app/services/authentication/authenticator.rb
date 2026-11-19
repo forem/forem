@@ -67,12 +67,13 @@ module Authentication
         user = proper_user(identity)
         verify_expected_user!(user)
 
+        first_user = Settings::General.waiting_on_first_user
         user = if user.nil?
                  find_or_create_user!
                else
                  update_user(user)
                end
-        user.set_initial_roles!
+        user.set_initial_roles!(first_user: first_user)
 
         identity.user = user if identity.user_id.blank?
         new_identity = identity.new_record?

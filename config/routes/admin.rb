@@ -29,6 +29,7 @@ namespace :admin do
     collection do
       post :grant
       delete :revoke
+      patch :sub_permissions
     end
   end
   resources :reactions, only: %i[update]
