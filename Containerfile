@@ -1,7 +1,11 @@
+ARG RUBY_VERSION=3.3.14
+ARG RUBY_PATCHLEVEL=208
+ARG RUBY_SHA256=e24ef6d97095a9c42bf8259a2de33a25aac8d92bb48fefdbdc81724b87784854
+
 FROM rust:1.85-bullseye AS ruby-build
 
-ARG RUBY_VERSION=3.3.14
-ARG RUBY_SHA256=e24ef6d97095a9c42bf8259a2de33a25aac8d92bb48fefdbdc81724b87784854
+ARG RUBY_VERSION
+ARG RUBY_SHA256
 
 RUN find /etc/apt -type f \( -name "sources.list" -o -name "*.list" -o -name "*.sources" \) \
       -exec sed -i "s|http://[a-z.]*debian.org/debian-security|http://snapshot.debian.org/archive/debian-security/20260831T000000Z|g" {} + \
@@ -12,33 +16,59 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       bison \
       build-essential \
       curl \
-      libdb-dev \
+      dpkg-dev \
       libffi-dev \
-      libgdbm-dev \
-      libncurses-dev \
-      libreadline-dev \
+      libgmp-dev \
       libssl-dev \
       libyaml-dev \
       pkg-config \
+      xz-utils \
       zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp/ruby
 RUN curl -fsSLO "https://cache.ruby-lang.org/pub/ruby/3.3/ruby-${RUBY_VERSION}.tar.xz" \
-    && echo "${RUBY_SHA256}  ruby-${RUBY_VERSION}.tar.xz" | sha256sum -c - \
+    && echo "${RUBY_SHA256} *ruby-${RUBY_VERSION}.tar.xz" | sha256sum --check --strict - \
     && tar -xJf "ruby-${RUBY_VERSION}.tar.xz" --strip-components=1 \
-    && ./configure --prefix=/usr/local --enable-shared --enable-yjit --disable-install-doc \
+    && { echo '#define ENABLE_PATH_CHECK 0'; echo; cat file.c; } > file.c.new \
+    && mv file.c.new file.c \
+    && gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
+    && ./configure \
+         --build="$gnuArch" \
+         --prefix=/usr/local \
+         --enable-shared \
+         --enable-yjit \
+         --with-gmp \
+         --disable-install-doc \
     && make -j"$(nproc)" \
-    && make install DESTDIR=/ruby-install \
-    && mkdir -p /usr/local \
-    && cp -a /ruby-install/usr/local/. /usr/local/ \
-    && ruby -v | grep -F "ruby ${RUBY_VERSION}"
+    && make install DESTDIR=/ruby-install
 
 FROM ghcr.io/forem/ruby:3.3.0@sha256:9cda49a45931e9253d58f7d561221e43bd0d47676b8e75f55862ce1e9997ab5c AS base
 
-RUN rm -f /usr/local/lib/libruby.so.3.3.0
+ARG RUBY_VERSION
+ARG RUBY_PATCHLEVEL
+ARG RUBY_SHA256
+
+ENV RUBY_VERSION="${RUBY_VERSION}" \
+    RUBY_DOWNLOAD_URL="https://cache.ruby-lang.org/pub/ruby/3.3/ruby-${RUBY_VERSION}.tar.xz" \
+    RUBY_DOWNLOAD_SHA256="${RUBY_SHA256}"
+
+# Remove the old Ruby 3.3.0 installation before overlaying 3.3.14 so no stale
+# stdlib files, headers, or older default/bundled gemspecs remain behind.
+RUN rm -rf \
+      /usr/local/lib/ruby \
+      /usr/local/include/ruby-3.3.0 \
+      /usr/local/lib/libruby* \
+      /usr/local/lib/pkgconfig/ruby-*.pc \
+      /usr/local/share/ri
 COPY --from=ruby-build /ruby-install/usr/local/ /usr/local/
-RUN ruby -v | grep -F 'ruby 3.3.14'
+RUN ldconfig \
+    && ruby --yjit -e 'abort("unexpected ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}") unless RUBY_VERSION == ENV.fetch("RUBY_VERSION") && RUBY_PATCHLEVEL == ENV.fetch("RUBY_PATCHLEVEL").to_i' \
+    && ruby --yjit -e 'abort("YJIT not enabled") unless RubyVM::YJIT.enabled?' \
+    && ruby -e '%w[openssl psych zlib fiddle json digest strscan stringio etc pathname socket ripper io/console].each { |lib| require lib }' \
+    && ldd "/usr/local/lib/libruby.so.${RUBY_VERSION}" | grep -Fq 'libgmp' \
+    && missing="$(find /usr/local/bin/ruby /usr/local/lib/libruby.so* /usr/local/lib/ruby -type f \( -name '*.so' -o -name '*.so.*' -o -name 'ruby' \) -exec ldd {} + 2>/dev/null | grep -F 'not found' || true)" \
+    && if [ -n "$missing" ]; then echo "Missing shared libraries:" >&2; echo "$missing" >&2; exit 1; fi
 
 # HOTFIX: Remove broken nodesource list from base image to unblock apt update
 RUN rm -f /etc/apt/sources.list.d/nodesource.list
