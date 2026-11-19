@@ -290,6 +290,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user).to be_creator
         expect(user).to be_super_admin
         expect(user).to be_trusted
+        expect(Settings::General.mascot_user_id).to eq(User.mascot_account.id)
       end
 
       it "does not grant creator roles from a stale setting value once another signup claimed them",

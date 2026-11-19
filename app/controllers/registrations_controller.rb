@@ -52,9 +52,9 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
-  # Users::ClaimFirstUser has already set waiting_on_first_user to false.
+  # Users::ClaimFirstUser has already set waiting_on_first_user to false and
+  # created the mascot account.
   def prepare_new_forem_instance
-    Users::CreateMascotAccount.call
     Discover::RegisterWorker.perform_async # Register Forem instance on https://discover.forem.com
   end
 

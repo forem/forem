@@ -13,10 +13,13 @@ module Users
   #   * a stored `true` row means the instance is explicitly waiting;
   #   * no row means the grant goes to the earliest user only.
   #
-  # The roles and the stored `false` are written in the same transaction, so a
-  # signup that rolls back does not consume the grant.  The lock is held until
-  # the outermost transaction commits, so a second claimant sees the first
-  # claimant's committed `false`.
+  # The roles, the stored `false` and the mascot account are written in the
+  # same transaction, so a signup that rolls back (or a mascot creation that
+  # fails) does not consume the grant.  The lock is held until the outermost
+  # transaction commits, so a second claimant sees the first claimant's
+  # committed `false`.  The settings cache is cleared again if the outermost
+  # transaction rolls back, so a read of the uncommitted values cannot outlive
+  # the rollback.
   class ClaimFirstUser
     LOCK_KEY = Zlib.crc32("forem:users:claim_first_user")
     SETTING = "waiting_on_first_user".freeze
@@ -41,6 +44,7 @@ module Users
         user.add_role(:super_admin)
         user.add_role(:trusted)
         mark_claimed!
+        create_mascot_account
         true
       end
     end
@@ -61,6 +65,16 @@ module Users
       setting_rows.each { |row| row.update!(value: false) }
       Settings::General.waiting_on_first_user = false
       Settings::General.clear_cache
+      # Settings::Base clears its cache after commit only.  Callbacks on this
+      # nested transaction move to the parent, so this runs if any enclosing
+      # transaction (e.g. the OAuth signup) rolls back.
+      ActiveRecord::Base.current_transaction.after_rollback { Settings::General.clear_cache }
+    end
+
+    def create_mascot_account
+      return if Settings::General.mascot_user_id.present?
+
+      Users::CreateMascotAccount.call
     end
 
     def setting_rows

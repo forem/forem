@@ -79,6 +79,47 @@ RSpec.describe Users::ClaimFirstUser, type: :service do
     expect(described_class.call(user)).to be true
   end
 
+  it "creates the mascot account only for the claiming user", :aggregate_failures do
+    first = create(:user)
+    expect(described_class.call(first)).to be true
+    mascot_id = Settings::General.mascot_user_id
+    expect(User.find(mascot_id)).to eq(User.mascot_account)
+
+    second = create(:user)
+    expect { described_class.call(second) }.not_to change(User, :count)
+    expect(Settings::General.mascot_user_id).to eq(mascot_id)
+  end
+
+  it "does not consume the claim when the mascot account cannot be created", :aggregate_failures do
+    user = create(:user)
+    allow(Users::CreateMascotAccount).to receive(:call).and_raise(ActiveRecord::RecordInvalid)
+
+    expect { described_class.call(user) }.to raise_error(ActiveRecord::RecordInvalid)
+
+    expect_no_first_user_roles(User.find(user.id))
+    expect(stored_setting_rows).not_to exist
+  end
+
+  it "does not keep cached claim settings after the surrounding transaction rolls back", :aggregate_failures do
+    allow(Settings::General).to receive(:waiting_on_first_user).and_call_original
+    Settings::General.unscoped.create!(var: "waiting_on_first_user", value: true)
+    user = create(:user)
+
+    ActiveRecord::Base.transaction(requires_new: true) do
+      described_class.call(user)
+      # A read inside the transaction caches the uncommitted values.
+      expect(Settings::General.waiting_on_first_user).to be false
+      expect(Settings::General.mascot_user_id).to be_present
+      raise ActiveRecord::Rollback
+    end
+
+    expect(Settings::General.waiting_on_first_user).to be true
+    expect(Settings::General.mascot_user_id).to be_nil
+
+    expect(described_class.call(User.find(user.id))).to be true
+    expect_first_user_roles(User.find(user.id))
+  end
+
   it "serializes claimants with a transaction-level advisory lock" do
     allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
     described_class.call(create(:user))
