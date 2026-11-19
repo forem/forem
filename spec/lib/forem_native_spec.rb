@@ -4067,11 +4067,25 @@ RSpec.describe ForemNative do
         mentions_service = Mentions::CreateAll.new(notifiable_stub)
         base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{Settings::General.app_domain}"
 
+        user_relation = Class.new do
+          def initialize(values)
+            @values = values
+          end
+
+          def pluck(_column)
+            @values
+          end
+        end
+
         rng = Random.new(424_242)
         1_000.times do |iteration|
           fragment = Array.new(rng.rand(1..6)) { blocks_pool.sample(random: rng) }.join("\n")
           existing_users = user_pool.sample(rng.rand(0..5), random: rng)
           allow(User).to receive(:find_by) { |args| existing_users.include?(args[:username]) ? :user : nil }
+          allow(User).to receive(:where) do |args|
+            matched = Array(args[:username]).select { |username| existing_users.include?(username) }
+            user_relation.new(matched)
+          end
 
           # Individual primitives parity
           expect(described_class.add_control_class_to_codeblock(fragment))
@@ -4133,6 +4147,150 @@ RSpec.describe ForemNative do
           end
 
           expect(native_chain).to eq(legacy_parser.html), "pipeline chain iter #{iteration}"
+        end
+      end
+    end
+
+    describe ".postprocess_rendered_html (MarkdownProcessor::Parser & Html::Parser pipeline)" do
+      it "matches legacy outbound link, list, video, fullscreen, and fused pipelines across " \
+         "1,000 randomized documents", :aggregate_failures do
+        app_domain = Settings::General.app_domain
+        base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{app_domain}"
+        md_parser = MarkdownProcessor::Parser.new("")
+        html_parser = Html::Parser.new("")
+        action_html = html_parser.fullscreen_action_html
+
+        # Out-of-domain samples return nil from ForemNative and fall back cleanly to legacy_*
+        out_of_domain_samples = [
+          '<p><a href="javascript:alert(1)">bad</a></p>',
+          '<p><a href="data:text/html,hi">bad</a></p>',
+          "<VIDEO src='a.mp4'></VIDEO>",
+          "<div class='highlight__panel'>x</div>",
+          "<ul><li><br></li></ul>",
+          "<p>a</p><p>b</p>\n",
+        ]
+        out_of_domain_samples.each do |sample|
+          expect(described_class.postprocess_rendered_html(sample, app_domain: app_domain,
+                                                                   fullscreen_action_html: action_html,
+                                                                   existing_usernames: [],
+                                                                   base_url: base_url)).to be_nil
+        end
+        expect(
+          described_class.add_target_blank_to_outbound_links(
+            '<p><a href="javascript:alert(1)">bad</a></p>',
+            app_domain,
+          ),
+        ).to be_nil
+        expect(described_class.enforce_gif_like_videos("<VIDEO src='a.mp4'></VIDEO>")).to be_nil
+        expect(described_class.add_fullscreen_button_to_panel("<div class='highlight__panel'>x</div>",
+                                                              action_html)).to be_nil
+
+        many_tokens = Array.new(64) { |idx| "tok#{idx}" }
+        rel_html = "<p><a href=\"https://example.com\" rel=\"#{many_tokens.join(' ')} tok0 noopener\">ext</a></p>"
+        expect(described_class.add_target_blank_to_outbound_links(rel_html, app_domain))
+          .to eq(md_parser.__send__(:legacy_add_target_blank_to_outbound_links, rel_html, app_domain))
+
+        # Legacy fallback equivalence on out-of-domain inputs
+        js_link = '<p><a href="javascript:alert(1)">bad</a></p>'
+        expect(md_parser.__send__(:add_target_blank_to_outbound_links, js_link))
+          .to eq(md_parser.__send__(:legacy_add_target_blank_to_outbound_links, js_link, app_domain))
+
+        upper_video = "<VIDEO src='a.mp4'></VIDEO>"
+        expect(Html::Parser.new(upper_video).enforce_gif_like_videos.html)
+          .to eq(Html::Parser.new(upper_video).__send__(:legacy_enforce_gif_like_videos))
+
+        single_quote_panel = "<div class='highlight__panel'>x</div>"
+        expect(Html::Parser.new(single_quote_panel).add_fullscreen_button_to_panel.html)
+          .to eq(Html::Parser.new(single_quote_panel).__send__(:legacy_add_fullscreen_button_to_panel, action_html))
+
+        blocks_pool = [
+          "<p>Plain text :joy: with @alice and @bob_2, email test@example.com</p>",
+          '<p><a href="https://github.com/forem">GitHub</a> and ' \
+          '<a href="https://example.com" rel="nofollow">Ext</a></p>',
+          "<p><a href=\"https://#{app_domain}/post?a=1&amp;b=2\">Internal</a> and <a href=\"/t/ruby\">Rel</a></p>",
+          "<ul>\n<li>Item 1<br>continued</li>\n<li>Item 2</li>\n</ul>",
+          '<p><video src="https://example.com/clip.mp4"></video></p>',
+          '<p><video src="https://example.com/clip2.mp4" controls="controls" preload="auto"></video></p>',
+          '<p><img src="https://example.com/pic.png" alt="pic"></p>',
+          %(<div class="highlight"><pre class="highlight ruby"><code>puts ":smile:" # @alice\n</code></pre></div>),
+          '<div class="highlight"><pre class="highlight liquid"><code>' \
+          '<span class="p">{</span><span class="o">----%</span>' \
+          '<span class="w"> </span><span class="nt">raw</span><span class="w"> </span>' \
+          '<span class="o">%----</span><span class="p">}</span>' \
+          '</code></pre></div>',
+          "<table>\n<thead>\n<tr>\n<th>Col</th>\n</tr>\n</thead>\n" \
+          "<tbody>\n<tr>\n<td>@charlie</td>\n</tr>\n</tbody>\n</table>",
+          "<p></p>",
+          "<p>Trailing UTF-8 🚀 日本語</p>",
+        ]
+
+        user_pool = %w[alice bob_2 charlie dave]
+        user_relation = Class.new do
+          def initialize(values)
+            @values = values
+          end
+
+          def pluck(_column)
+            @values
+          end
+        end
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          fragment = "#{Array.new(rng.rand(1..5)) { blocks_pool.sample(random: rng) }.join("\n")}\n"
+          existing_users = user_pool.sample(rng.rand(0..4), random: rng)
+          allow(User).to receive(:find_by) { |args| existing_users.include?(args[:username]) ? :user : nil }
+          allow(User).to receive(:where) do |args|
+            matched = Array(args[:username]).select { |username| existing_users.include?(username) }
+            user_relation.new(matched)
+          end
+
+          # Tier 1 primitives parity
+          expect(described_class.add_target_blank_to_outbound_links(fragment, app_domain))
+            .to eq(md_parser.__send__(:legacy_add_target_blank_to_outbound_links, fragment, app_domain)),
+                "add_target_blank_to_outbound_links iter #{iteration}"
+
+          expect(described_class.enforce_gif_like_videos(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_enforce_gif_like_videos)),
+                "enforce_gif_like_videos iter #{iteration}"
+
+          with_panel = described_class.add_control_panel_to_codeblock(fragment)
+          expect(described_class.add_fullscreen_button_to_panel(with_panel, action_html))
+            .to eq(Html::Parser.new(with_panel.dup).__send__(:legacy_add_fullscreen_button_to_panel, action_html)),
+                "add_fullscreen_button_to_panel iter #{iteration}"
+
+          # Tier 2 fused postprocess_rendered_html parity vs full legacy chain
+          legacy_out = md_parser.__send__(:legacy_add_target_blank_to_outbound_links, fragment, app_domain)
+          lp = Html::Parser.new(legacy_out)
+          lp.remove_nested_linebreak_in_list
+          lp.__send__(:html=, Nokogiri::HTML.fragment(lp.html).to_html)
+          lp.__send__(:html=, lp.__send__(:legacy_wrap_all_images_in_links))
+          lp.__send__(:html=, lp.__send__(:legacy_enforce_gif_like_videos))
+          lp.__send__(:html=, lp.__send__(:legacy_add_control_class_to_codeblock))
+          lp.__send__(:html=, lp.__send__(:legacy_add_control_panel_to_codeblock))
+          lp.__send__(:html=, lp.__send__(:legacy_add_fullscreen_button_to_panel, action_html))
+          lp.__send__(:html=, lp.__send__(:legacy_wrap_all_tables))
+          lp.__send__(:html=, lp.__send__(:legacy_remove_empty_paragraphs))
+          lp.__send__(:html=, lp.__send__(:legacy_escape_colon_emojis_in_codeblock))
+          lp.__send__(:html=, lp.__send__(:legacy_unescape_raw_tag_in_codeblocks)) if lp.html.present?
+          lp.__send__(:html=, lp.__send__(:legacy_wrap_mentions_with_links)) if lp.html.present?
+
+          native_out = described_class.postprocess_rendered_html(
+            fragment,
+            app_domain: app_domain,
+            fullscreen_action_html: action_html,
+            existing_usernames: existing_users,
+            base_url: base_url,
+            run_target_blank: true,
+            normalize_document: true,
+          )
+
+          # When all paragraphs were empty, Rust intentionally returns nil to defer to Nokogiri.
+          if native_out.nil?
+            expect(Html::Parser.new(fragment).remove_empty_paragraphs.html.strip).to eq("")
+          else
+            expect(native_out).to eq(lp.html), "postprocess_rendered_html iter #{iteration}"
+          end
         end
       end
     end
