@@ -277,6 +277,21 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.github_username).to eq(info.nickname)
       end
 
+      # On a fresh production database the setting is never stored, so it falls
+      # back to `!User.exists?`, which turns false once the first user is saved.
+      it "grants creator roles to the first user when the setting falls back to its default",
+         :aggregate_failures do
+        allow(Settings::General).to receive(:waiting_on_first_user).and_call_original
+        expect(Settings::General.where(var: "waiting_on_first_user")).not_to exist
+        expect(User).not_to exist
+
+        user = service.call
+
+        expect(user).to be_creator
+        expect(user).to be_super_admin
+        expect(user).to be_trusted
+      end
+
       %w[LoGiN signup].each do |nickname|
         it "registers a GitHub user with the reserved nickname #{nickname}" do
           auth_payload.info.nickname = nickname

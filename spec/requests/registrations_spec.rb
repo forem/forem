@@ -526,6 +526,29 @@ RSpec.describe "Registrations" do
         expect { post "/users" }.not_to raise_error
       end
 
+      # A fresh production database never stores this setting (db/seeds.rb
+      # returns early in production), so its value comes from the default,
+      # `!User.exists?`, which turns false as soon as the first user is saved.
+      it "grants creator roles when the setting falls back to its default", :aggregate_failures do
+        allow(Settings::General).to receive(:waiting_on_first_user).and_call_original
+        expect(Settings::General.where(var: "waiting_on_first_user")).not_to exist
+        expect(User).not_to exist
+
+        post "/users", params:
+          { user: { name: "first user",
+                    username: "first_user",
+                    email: "first@example.com",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+
+        first_user = User.find_by(email: "first@example.com")
+        expect(first_user).to be_creator
+        expect(first_user).to be_super_admin
+        expect(first_user).to be_trusted
+        expect(response).to redirect_to(new_admin_creator_setting_path)
+        expect(Settings::General.waiting_on_first_user).to be false
+      end
+
       it "creates creator and mascot users, grants roles, logs in, redirects, and enqueues Discover::RegisterWorker",
          :aggregate_failures do
         expect(Settings::General.mascot_user_id).to be_nil

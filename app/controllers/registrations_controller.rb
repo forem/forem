@@ -29,10 +29,11 @@ class RegistrationsController < Devise::RegistrationsController
       return redirect_to new_user_registration_path(state: "email_signup")
     end
 
+    first_user = Settings::General.waiting_on_first_user
     build_devise_resource
 
     if resource.persisted?
-      resource.set_initial_roles!
+      resource.set_initial_roles!(first_user: first_user)
 
       if resource.creator?
         prepare_new_forem_instance

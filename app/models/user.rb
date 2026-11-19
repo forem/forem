@@ -405,12 +405,14 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
-  def set_initial_roles!
+  # Read `first_user` before saving the new user: on a fresh database the
+  # setting falls back to `!User.exists?`, which is false once this user exists.
+  def set_initial_roles!(first_user: Settings::General.waiting_on_first_user)
     # Avoid overwriting roles for users who already exist but are e.g. logging in
     # through a new identity provider
     return unless valid? && previously_new_record?
 
-    if Settings::General.waiting_on_first_user
+    if first_user
       add_role(:creator)
       add_role(:super_admin)
       add_role(:trusted)
