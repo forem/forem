@@ -5263,6 +5263,334 @@ fn subforem_social_image_png(
     Ok(ruby.str_from_slice(&png))
 }
 
+fn ahoy_signature(
+    ruby: &Ruby,
+    secret_token: RString,
+    token: RString,
+    campaign: RString,
+    url: RString,
+) -> Option<RString> {
+    let sig_bytes = {
+        // SAFETY: Pure Rust stack HMAC-SHA256; no Ruby VM calls while borrowing slices.
+        let secret = unsafe { secret_token.as_slice() };
+        let tok = unsafe { token.as_slice() };
+        let camp = unsafe { campaign.as_slice() };
+        let u = unsafe { url.as_slice() };
+        forem_core::ahoy_link::ahoy_signature_bytes(secret, tok, camp, u)
+    };
+    let sig_str = std::str::from_utf8(&sig_bytes).ok()?;
+    Some(ruby.str_new(sig_str))
+}
+
+fn ahoy_decorate_url(
+    ruby: &Ruby,
+    href: RString,
+    app_domain: RString,
+    token: RString,
+    campaign: Option<RString>,
+    secret_token: RString,
+    external_base_url: Option<RString>,
+) -> Value {
+    if !href.is_utf8_compatible_encoding()
+        || !app_domain.is_utf8_compatible_encoding()
+        || !token.is_utf8_compatible_encoding()
+        || campaign
+            .as_ref()
+            .is_some_and(|c| !c.is_utf8_compatible_encoding())
+        || external_base_url
+            .as_ref()
+            .is_some_and(|u| !u.is_utf8_compatible_encoding())
+    {
+        return ruby.qnil().as_value();
+    }
+
+    let outcome = {
+        // SAFETY: Pure Rust slice processing; all borrows end before returning to Ruby.
+        let Ok(href_str) = std::str::from_utf8(unsafe { href.as_slice() }) else {
+            return ruby.qnil().as_value();
+        };
+        let Ok(domain_str) = std::str::from_utf8(unsafe { app_domain.as_slice() }) else {
+            return ruby.qnil().as_value();
+        };
+        let Ok(token_str) = std::str::from_utf8(unsafe { token.as_slice() }) else {
+            return ruby.qnil().as_value();
+        };
+        let camp_str = match campaign.as_ref() {
+            Some(c) => match std::str::from_utf8(unsafe { c.as_slice() }) {
+                Ok(s) => Some(s),
+                Err(_) => return ruby.qnil().as_value(),
+            },
+            None => None,
+        };
+        let secret_bytes = unsafe { secret_token.as_slice() };
+        let ext_str = match external_base_url.as_ref() {
+            Some(u) => match std::str::from_utf8(unsafe { u.as_slice() }) {
+                Ok(s) => Some(s),
+                Err(_) => return ruby.qnil().as_value(),
+            },
+            None => None,
+        };
+        forem_core::ahoy_link::ahoy_decorate_url(
+            href_str,
+            domain_str,
+            token_str,
+            camp_str,
+            secret_bytes,
+            ext_str,
+        )
+    };
+
+    match outcome {
+        forem_core::ahoy_link::UrlOutcome::Decorated(s) => ruby.str_new(&s).as_value(),
+        forem_core::ahoy_link::UrlOutcome::Unchanged => ruby.qfalse().as_value(),
+        forem_core::ahoy_link::UrlOutcome::DeferToRuby => ruby.qnil().as_value(),
+    }
+}
+
+fn ahoy_decorate_html(
+    ruby: &Ruby,
+    html: RString,
+    app_domain: RString,
+    token: RString,
+    campaign: Option<RString>,
+    secret_token: RString,
+    external_base_url: Option<RString>,
+) -> Option<RString> {
+    if !html.is_utf8_compatible_encoding()
+        || !app_domain.is_utf8_compatible_encoding()
+        || !token.is_utf8_compatible_encoding()
+        || campaign
+            .as_ref()
+            .is_some_and(|c| !c.is_utf8_compatible_encoding())
+        || external_base_url
+            .as_ref()
+            .is_some_and(|u| !u.is_utf8_compatible_encoding())
+    {
+        return None;
+    }
+
+    let rewritten: Option<String> = {
+        // SAFETY: Pure Rust slice processing; all borrows end before allocating any Ruby String.
+        let html_str = std::str::from_utf8(unsafe { html.as_slice() }).ok()?;
+        let domain_str = std::str::from_utf8(unsafe { app_domain.as_slice() }).ok()?;
+        let token_str = std::str::from_utf8(unsafe { token.as_slice() }).ok()?;
+        let camp_str = match campaign.as_ref() {
+            Some(c) => Some(std::str::from_utf8(unsafe { c.as_slice() }).ok()?),
+            None => None,
+        };
+        let secret_bytes = unsafe { secret_token.as_slice() };
+        let ext_str = match external_base_url.as_ref() {
+            Some(u) => Some(std::str::from_utf8(unsafe { u.as_slice() }).ok()?),
+            None => None,
+        };
+        match forem_core::ahoy_link::ahoy_decorate_html(
+            html_str,
+            domain_str,
+            token_str,
+            camp_str,
+            secret_bytes,
+            ext_str,
+        )? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(s) => Some(s),
+        }
+    };
+
+    match rewritten {
+        Some(s) => Some(ruby.str_new(&s)),
+        None => Some(html),
+    }
+}
+
+struct AhoyPayloadCtx<'a> {
+    app_domain: &'a str,
+    token: &'a str,
+    campaign: Option<&'a str>,
+    secret_token: &'a [u8],
+    external_base_url: Option<&'a str>,
+    hash_class_raw: rb_sys::VALUE,
+    array_class_raw: rb_sys::VALUE,
+    string_class_raw: rb_sys::VALUE,
+    id_compare_by_identity: magnus::value::Id,
+}
+
+fn decorate_payload_value(
+    ruby: &Ruby,
+    val: Value,
+    ctx: &AhoyPayloadCtx<'_>,
+    depth: usize,
+) -> Option<Value> {
+    if depth > 32 {
+        return None;
+    }
+    let class_raw = val.class().as_raw();
+    if class_raw == ctx.string_class_raw {
+        let rstr = RString::from_value(val)?;
+        if !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        enum StrAction {
+            KeepOriginal,
+            Replace(String),
+        }
+        let action = {
+            // SAFETY: Pure Rust slice borrow ends before any Ruby allocation.
+            let s = std::str::from_utf8(unsafe { rstr.as_slice() }).ok()?;
+            if s.contains("<a") {
+                match forem_core::ahoy_link::ahoy_decorate_html(
+                    s,
+                    ctx.app_domain,
+                    ctx.token,
+                    ctx.campaign,
+                    ctx.secret_token,
+                    ctx.external_base_url,
+                )? {
+                    Cow::Borrowed(_) => StrAction::KeepOriginal,
+                    Cow::Owned(owned) => StrAction::Replace(owned),
+                }
+            } else {
+                match forem_core::ahoy_link::ahoy_decorate_url(
+                    s,
+                    ctx.app_domain,
+                    ctx.token,
+                    ctx.campaign,
+                    ctx.secret_token,
+                    ctx.external_base_url,
+                ) {
+                    forem_core::ahoy_link::UrlOutcome::Decorated(owned) => {
+                        StrAction::Replace(owned)
+                    }
+                    forem_core::ahoy_link::UrlOutcome::Unchanged => StrAction::KeepOriginal,
+                    forem_core::ahoy_link::UrlOutcome::DeferToRuby => return None,
+                }
+            }
+        };
+        return match action {
+            StrAction::KeepOriginal => Some(val),
+            StrAction::Replace(owned) => Some(ruby.str_new(&owned).as_value()),
+        };
+    }
+
+    if class_raw == ctx.hash_class_raw {
+        let hash = RHash::from_value(val)?;
+        // Defer identity-compared hashes to Ruby so `Hash#transform_values` preserves
+        // `compare_by_identity` and distinct same-content keys.
+        if hash
+            .funcall::<_, _, bool>(ctx.id_compare_by_identity, ())
+            .ok()?
+        {
+            return None;
+        }
+        // Snapshot (key, value) pairs into a Ruby-managed Array so Ruby's GC scans and
+        // updates every pending handle across recursive allocations / `GC.compact`.
+        let len = hash.len();
+        let pairs = ruby.ary_new_capa(len * 2);
+        hash.foreach(|k: Value, v: Value| {
+            pairs.push(k)?;
+            pairs.push(v)?;
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+        let out = ruby.hash_new_capa(len);
+        let pair_count = pairs.len() / 2;
+        for idx in 0..pair_count {
+            let v: Value = pairs.entry((idx * 2 + 1) as isize).ok()?;
+            let decorated_v = decorate_payload_value(ruby, v, ctx, depth + 1)?;
+            // Re-read `k` from the GC-managed container after the allocating call.
+            let k: Value = pairs.entry((idx * 2) as isize).ok()?;
+            out.aset(k, decorated_v).ok()?;
+        }
+        return Some(out.as_value());
+    }
+
+    if class_raw == ctx.array_class_raw {
+        let ary = RArray::from_value(val)?;
+        let len = ary.len();
+        let out = ruby.ary_new_capa(len);
+        for idx in 0..len {
+            // Read each element from the live Ruby Array at point of use so `GC.compact`
+            // never leaves stale handles on the Rust heap.
+            let item: Value = ary.entry(idx as isize).ok()?;
+            let decorated_item = decorate_payload_value(ruby, item, ctx, depth + 1)?;
+            out.push(decorated_item).ok()?;
+        }
+        return Some(out.as_value());
+    }
+
+    // Defer Hash/Array/String subclasses to Ruby so subclass return types (e.g. HashWithIndifferentAccess)
+    // and custom behaviors are preserved 100%.
+    if RHash::from_value(val).is_some()
+        || RArray::from_value(val).is_some()
+        || RString::from_value(val).is_some()
+    {
+        return None;
+    }
+
+    Some(val)
+}
+
+fn ahoy_decorate_payload(
+    ruby: &Ruby,
+    payload: Value,
+    app_domain: RString,
+    token: RString,
+    campaign: Option<RString>,
+    secret_token: RString,
+    external_base_url: Option<RString>,
+) -> Option<Value> {
+    if !app_domain.is_utf8_compatible_encoding()
+        || !token.is_utf8_compatible_encoding()
+        || campaign
+            .as_ref()
+            .is_some_and(|c| !c.is_utf8_compatible_encoding())
+        || external_base_url
+            .as_ref()
+            .is_some_and(|u| !u.is_utf8_compatible_encoding())
+    {
+        return None;
+    }
+
+    // Copy small config strings into Rust memory up front so zero RString borrows
+    // exist during recursive Ruby Hash/Array traversal.
+    let domain_owned = std::str::from_utf8(unsafe { app_domain.as_slice() })
+        .ok()?
+        .to_owned();
+    let token_owned = std::str::from_utf8(unsafe { token.as_slice() })
+        .ok()?
+        .to_owned();
+    let campaign_owned = match campaign.as_ref() {
+        Some(c) => Some(
+            std::str::from_utf8(unsafe { c.as_slice() })
+                .ok()?
+                .to_owned(),
+        ),
+        None => None,
+    };
+    let secret_owned = unsafe { secret_token.as_slice() }.to_vec();
+    let ext_owned = match external_base_url.as_ref() {
+        Some(u) => Some(
+            std::str::from_utf8(unsafe { u.as_slice() })
+                .ok()?
+                .to_owned(),
+        ),
+        None => None,
+    };
+
+    let ctx = AhoyPayloadCtx {
+        app_domain: &domain_owned,
+        token: &token_owned,
+        campaign: campaign_owned.as_deref(),
+        secret_token: &secret_owned,
+        external_base_url: ext_owned.as_deref(),
+        hash_class_raw: ruby.class_hash().as_raw(),
+        array_class_raw: ruby.class_array().as_raw(),
+        string_class_raw: ruby.class_string().as_raw(),
+        id_compare_by_identity: ruby.intern("compare_by_identity?"),
+    };
+
+    decorate_payload_value(ruby, payload, &ctx, 0)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -5759,5 +6087,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "subforem_social_image_png",
         function!(subforem_social_image_png, 4),
     )?;
+    native_mod.define_singleton_method("ahoy_signature", function!(ahoy_signature, 4))?;
+    native_mod.define_singleton_method("ahoy_decorate_url", function!(ahoy_decorate_url, 6))?;
+    native_mod.define_singleton_method("ahoy_decorate_html", function!(ahoy_decorate_html, 6))?;
+    native_mod
+        .define_singleton_method("ahoy_decorate_payload", function!(ahoy_decorate_payload, 6))?;
     Ok(())
 }

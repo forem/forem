@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :aggregate_transcript_redactions
+  LATEST_NATIVE_SYMBOL = :ahoy_decorate_payload
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -1763,6 +1763,53 @@ module ForemNative
         custom_background ? true : false,
         font_path&.to_s,
       )
+    end
+
+    # Computes `AhoyEmail::Utils.signature(token:, campaign:, url:)` on the stack with zero
+    # intermediate Base64 or OpenSSL allocations.
+    def ahoy_signature(secret_token, token, campaign, url)
+      return unless Native.respond_to?(:ahoy_signature)
+      return unless secret_token.is_a?(String) && !secret_token.empty?
+
+      Native.ahoy_signature(secret_token, token.to_s, campaign.to_s, url.to_s)
+    end
+
+    # Classifies and rewrites a single URL for Ahoy email click tracking.
+    # Returns the decorated String, `false` when guaranteed unchanged/skipped, or `nil` when
+    # the input falls outside the strict fast-path domain and should defer to Ruby.
+    def ahoy_decorate_url(href, app_domain, token, campaign, secret_token, external_base_url = nil)
+      return unless Native.respond_to?(:ahoy_decorate_url)
+      return unless href.instance_of?(String) && app_domain.is_a?(String) &&
+        token.is_a?(String) && secret_token.is_a?(String) && !secret_token.empty?
+      return unless campaign.nil? || campaign.is_a?(String)
+      return unless external_base_url.nil? || external_base_url.is_a?(String)
+
+      Native.ahoy_decorate_url(href, app_domain, token, campaign, secret_token, external_base_url)
+    end
+
+    # Single-pass streaming `<a href>` rewriter for email HTML fragments, honoring
+    # `data-skip-click` and `&amp;` unescaping without constructing a Nokogiri DOM.
+    # Returns `nil` when the fragment falls outside the fast-path domain.
+    def ahoy_decorate_html(html, app_domain, token, campaign, secret_token, external_base_url = nil)
+      return unless Native.respond_to?(:ahoy_decorate_html)
+      return unless html.instance_of?(String) && app_domain.is_a?(String) &&
+        token.is_a?(String) && secret_token.is_a?(String) && !secret_token.empty?
+      return unless campaign.nil? || campaign.is_a?(String)
+      return unless external_base_url.nil? || external_base_url.is_a?(String)
+
+      Native.ahoy_decorate_html(html, app_domain, token, campaign, secret_token, external_base_url)
+    end
+
+    # Single-FFI-crossing recursive decorator for Customer.io `message_data` Hash/Array/String
+    # payloads. Returns untouched Ruby Strings by reference and `nil` on out-of-domain values.
+    def ahoy_decorate_payload(payload, app_domain, token, campaign, secret_token, external_base_url = nil)
+      return unless Native.respond_to?(:ahoy_decorate_payload)
+      return unless app_domain.is_a?(String) && token.is_a?(String) &&
+        secret_token.is_a?(String) && !secret_token.empty?
+      return unless campaign.nil? || campaign.is_a?(String)
+      return unless external_base_url.nil? || external_base_url.is_a?(String)
+
+      Native.ahoy_decorate_payload(payload, app_domain, token, campaign, secret_token, external_base_url)
     end
 
     private
