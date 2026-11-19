@@ -137,6 +137,16 @@ RSpec.describe "/admin/permissions" do
       expect(flash[:success]).to be_present
     end
 
+    it "writes an internal audit log entry" do
+      allow(Audit::Logger).to receive(:log)
+      post grant_admin_permissions_path, params: { username: target_user.username, role_name: "admin" }
+
+      expect(Audit::Logger).to have_received(:log).with(
+        :internal, super_admin, hash_including("action" => "grant_role", "target_user_id" => target_user.id,
+                                               "role_name" => "admin", "resource_type" => nil)
+      )
+    end
+
     it "strips @ from username and grants the role" do
       post grant_admin_permissions_path, params: { username: "@#{target_user.username}", role_name: "admin" }
       expect(target_user.reload.roles.pluck(:name)).to include("admin")
@@ -240,6 +250,18 @@ RSpec.describe "/admin/permissions" do
       expect(flash[:success]).to be_present
     end
 
+    it "writes an internal audit log entry" do
+      target_user.add_role(:single_resource_admin, Event)
+      allow(Audit::Logger).to receive(:log)
+      delete revoke_admin_permissions_path,
+             params: { user_id: target_user.id, role_name: "single_resource_admin|Event" }
+
+      expect(Audit::Logger).to have_received(:log).with(
+        :internal, super_admin, hash_including("action" => "revoke_role", "target_user_id" => target_user.id,
+                                               "role_name" => "single_resource_admin", "resource_type" => "Event")
+      )
+    end
+
     it "fails gracefully with invalid role" do
       delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: "invalid_role" }
       expect(response).to redirect_to(admin_permissions_path)
@@ -253,6 +275,51 @@ RSpec.describe "/admin/permissions" do
       expect(response).to redirect_to(admin_permissions_path)
       expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).not_to exist
       expect(flash[:success]).to be_present
+    end
+  end
+
+  describe "global admin roles" do
+    let(:target_user) { create(:user) }
+
+    context "when signed in as an admin who is not a super admin" do
+      before { sign_in create(:user, :admin) }
+
+      it "refuses to grant them", :aggregate_failures do
+        %w[admin super_admin tech_admin].each do |role_name|
+          post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to be_present
+          expect(target_user.reload.roles.pluck(:name)).not_to include(role_name)
+        end
+      end
+
+      it "refuses to revoke them", :aggregate_failures do
+        target_user.add_role(:admin)
+
+        delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: "admin" }
+
+        expect(response).to redirect_to(admin_permissions_path)
+        expect(flash[:error]).to be_present
+        expect(target_user.reload.roles.pluck(:name)).to include("admin")
+      end
+
+      it "still grants a single resource admin role" do
+        post grant_admin_permissions_path,
+             params: { username: target_user.username, role_name: "single_resource_admin|Event" }
+
+        expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).to exist
+      end
+    end
+
+    context "when signed in as a Permission resource admin" do
+      before { sign_in create(:user, :single_resource_admin, resource: Permission) }
+
+      it "refuses to grant them" do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: "super_admin" }
+
+        expect(target_user.reload.roles.pluck(:name)).not_to include("super_admin")
+      end
     end
   end
 
