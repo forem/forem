@@ -75,10 +75,14 @@ class OrganizationEmbedsController < ActionController::Metal
   end
 
   def resolve_embed_page
-    owner_slug = params[:org_slug].to_s.downcase
     suffix = params[:slug_suffix].to_s.downcase
     return [nil, nil] unless suffix.match?(SLUG_SUFFIX_REGEXP)
 
+    if params[:event_name_slug].present? && params[:event_variation_slug].present?
+      return resolve_event_embed_page(suffix)
+    end
+
+    owner_slug = params[:org_slug].to_s.downcase
     owner = resolve_embed_owner(owner_slug)
     return [nil, nil] unless owner && owner_embed_allowed?(owner)
 
@@ -86,6 +90,19 @@ class OrganizationEmbedsController < ActionController::Metal
     return [nil, nil] unless page && FeatureFlag.accessible?(page.feature_flag_name)
 
     [owner, page]
+  end
+
+  def resolve_event_embed_page(suffix)
+    event = Event.published.find_by(
+      event_name_slug: params[:event_name_slug].to_s.downcase,
+      event_variation_slug: params[:event_variation_slug].to_s.downcase,
+    )
+    return [nil, nil] unless event
+
+    page = event.pages.embed_html.find_by(slug: event.embed_page_slug_for(suffix))
+    return [nil, nil] unless page && FeatureFlag.accessible?(page.feature_flag_name)
+
+    [event, page]
   end
 
   def resolve_embed_owner(slug)

@@ -1,0 +1,69 @@
+<% canonical_path = @event_type == "meetup" ? meetups_path : conferences_path %>
+<% content_for :title, t("views.events.landings.#{@event_type}.meta.title") %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(canonical_path) %>" />
+  <meta name="description" content="<%= t("views.events.landings.#{@event_type}.meta.description") %>">
+  <meta property="og:title" content="<%= t("views.events.landings.#{@event_type}.meta.title") %>" />
+  <meta property="og:description" content="<%= t("views.events.landings.#{@event_type}.meta.description") %>" />
+  <meta property="og:url" content="<%= app_url(canonical_path) %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--header-inside events-landing">
+  <header class="crayons-page-header flex items-start justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="crayons-title m-0"><%= t("views.events.landings.#{@event_type}.heading") %></h1>
+      <p class="color-base-70 mt-2 mb-0"><%= t("views.events.landings.#{@event_type}.subtitle") %></p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <%= link_to calendar_path(type_of: @event_type), class: "crayons-btn crayons-btn--secondary flex items-center gap-2" do %>
+        <svg class="c-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span><%= t("views.events.view_on_calendar") %></span>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="mb-6">
+    <%= render "landing_nav", active: @event_type.to_sym %>
+  </div>
+
+  <section aria-labelledby="upcoming-section-heading">
+    <h2 id="upcoming-section-heading" class="crayons-subtitle-1 mb-4">
+      <%= t("views.events.landings.#{@event_type}.upcoming_heading") %>
+    </h2>
+
+    <% if @events.any? %>
+      <div class="events-grid">
+        <%= render partial: "event_card", collection: @events, as: :event %>
+      </div>
+    <% else %>
+      <div class="p-8 align-center crayons-card text-center">
+        <p class="color-base-60 mb-4"><%= t("views.events.landings.#{@event_type}.no_upcoming") %></p>
+        <div class="flex justify-center flex-wrap gap-2">
+          <%= link_to t("views.events.landings.#{@event_type}.view_all_events"), events_path, class: "crayons-btn crayons-btn--secondary" %>
+          <%= link_to t("views.events.view_on_calendar"), calendar_path, class: "crayons-btn crayons-btn--outlined" %>
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+  <% if @past_events.any? %>
+    <section class="mt-8" aria-labelledby="past-section-heading">
+      <h2 id="past-section-heading" class="crayons-subtitle-1 mb-4">
+        <%= t("views.events.landings.#{@event_type}.past_heading") %>
+      </h2>
+      <div class="events-grid">
+        <%= render partial: "event_card", collection: @past_events, as: :event %>
+      </div>
+    </section>
+  <% end %>
+</main>

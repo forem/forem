@@ -37,6 +37,7 @@ pt:
               resource_admin_flag_appeal: "Flag Appeal Admin"
               resource_admin_survey: "Survey Admin"
               resource_admin_organization: "Organization Admin"
+              resource_admin_organization_page_management: "Organization Page Management Admin"
               resource_admin_podcast: "Podcast Admin"
               resource_admin_navigation_link: "Navigation Link Admin"
               resource_admin_request_redirect: "Request Redirect Admin"
@@ -52,6 +53,7 @@ pt:
           "Resource Admin: FlagAppeal": "Resource Admin: FlagAppeal"
           "Resource Admin: Survey": "Resource Admin: Survey"
           "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: OrganizationPageManagement": "Resource Admin: OrganizationPageManagement"
           "Resource Admin: Podcast": "Resource Admin: Podcast"
           "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
           "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"
@@ -666,6 +668,26 @@ pt:
             day_before: "1 dia antes"
             hour_before: "1 hora antes"
             none: "Nenhuma"
+      event_pages:
+        heading: Páginas do Evento
+        manage_pages: Gerenciar Páginas
+        pages_button: Páginas
+        back_to_event: Voltar ao evento
+        new_page: Criar nova página
+        new_showcase: Criar Showcase / README
+        your_pages: Suas Páginas
+        order_help: Use as setas para definir a ordem das abas personalizadas do evento. Se existir uma página Showcase / README, ela permanece fixada primeiro.
+        showcase: Showcase
+        showcase_slug_help: A página Showcase / README usa o slug readme e é exibida como a visualização inicial padrão deste evento, enquanto a visualização padrão permanece acessível como uma aba.
+        show_in_navigation: Exibir nas abas de navegação do evento
+        navigation_hint: Páginas ocultas permanecem acessíveis pela URL direta.
+        no_pages: Nenhuma página criada para este evento ainda.
+        embed_section_description: Crie widgets HTML isolados e incorporações interativas para este evento, utilizáveis em qualquer página do evento ou artigo usando a tag Liquid embed.
+        markdown_placeholder: "Use Markdown e tags Liquid para compor a página do evento."
+        created: Página do evento criada com sucesso.
+        updated: Página do evento atualizada com sucesso.
+        deleted: Página do evento excluída com sucesso.
+        reordered: Ordem das páginas atualizada.
       billboard_placement_area_configs:
         index:
           visibility: Visibilidade

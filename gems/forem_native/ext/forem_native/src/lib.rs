@@ -1924,6 +1924,123 @@ fn wrap_mentions_with_links(
     Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+fn add_target_blank_to_outbound_links(
+    ruby: &Ruby,
+    html: RString,
+    app_domain: RString,
+) -> Option<RString> {
+    if !app_domain.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Borrow `html` and `app_domain` without calling into Ruby; drop borrows before
+    // allocating any Ruby String.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let domain = unsafe { app_domain.test_as_str() }?;
+        match forem_core::html::add_target_blank_to_outbound_links(text, domain)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn remove_nested_linebreak_in_list_fragment(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::remove_nested_linebreak_in_list_fragment(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn enforce_gif_like_videos(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::enforce_gif_like_videos(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn add_fullscreen_button_to_panel(
+    ruby: &Ruby,
+    html: RString,
+    action_html: RString,
+) -> Option<RString> {
+    if !action_html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy borrows confined to pure Rust before Ruby allocation.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let action = unsafe { action_html.test_as_str() }?;
+        match forem_core::html::add_fullscreen_button_to_panel(text, action)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn postprocess_rendered_html(
+    ruby: &Ruby,
+    html: RString,
+    app_domain: RString,
+    fullscreen_action_html: RString,
+    existing_usernames: RArray,
+    base_url: RString,
+    run_target_blank: bool,
+    normalize_document: bool,
+) -> Option<RString> {
+    if !app_domain.is_utf8_compatible_encoding()
+        || !fullscreen_action_html.is_utf8_compatible_encoding()
+        || !base_url.is_utf8_compatible_encoding()
+    {
+        return None;
+    }
+    // SAFETY: Copy owned username Strings and borrow `RString` slices only during pure-Rust
+    // computation before allocating the returned Ruby String.
+    let usernames_vec: Vec<String> = {
+        let slice = unsafe { existing_usernames.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_ascii_lowercase());
+        }
+        out
+    };
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let domain = unsafe { app_domain.test_as_str() }?;
+        let action = unsafe { fullscreen_action_html.test_as_str() }?;
+        let url_str = unsafe { base_url.test_as_str() }?;
+        match forem_core::html::postprocess_rendered_html(
+            text,
+            domain,
+            action,
+            &usernames_vec,
+            url_str,
+            run_target_blank,
+            normalize_document,
+        )? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
 #[allow(clippy::too_many_arguments)]
 fn calendar_grid_days_html(
     grid_start_jd: Integer,
@@ -2710,10 +2827,7 @@ fn extract_strict_i64_field(ruby: &Ruby, val: Value) -> Result<Option<i64>, bool
         let parsed = unsafe { forem_core::metal::parse_strict_integer_i64(rstr.as_slice()) };
         return parsed.map(Some).ok_or(false);
     }
-    if Float::from_value(val).is_some() {
-        return Err(false);
-    }
-    Err(true)
+    Err(Float::from_value(val).is_none())
 }
 
 fn extract_name_bytes(ruby: &Ruby, val: Value, allow_symbol: bool) -> Result<Option<Vec<u8>>, ()> {
@@ -5130,6 +5244,26 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "extract_mentioned_usernames",
         function!(extract_mentioned_usernames, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "add_target_blank_to_outbound_links",
+        function!(add_target_blank_to_outbound_links, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "remove_nested_linebreak_in_list_fragment",
+        function!(remove_nested_linebreak_in_list_fragment, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "enforce_gif_like_videos",
+        function!(enforce_gif_like_videos, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "add_fullscreen_button_to_panel",
+        function!(add_fullscreen_button_to_panel, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "postprocess_rendered_html",
+        function!(postprocess_rendered_html, 7),
     )?;
     native_mod.define_singleton_method(
         "calendar_grid_days_html",

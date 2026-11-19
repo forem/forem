@@ -308,6 +308,24 @@ RSpec.describe "Admin::Users" do
       expect(user.tag_moderator?(tag: tag)).to be false
       expect(user.tag_moderator?(tag: tag2)).to be true
     end
+
+    it "prevents non-super-admins from removing OrganizationPageManagement even via parameter tampering",
+       :aggregate_failures do
+      protected_role = user.add_role(:single_resource_admin, OrganizationPageManagement)
+      comment_role = user.add_role(:single_resource_admin, Comment)
+      sign_in create(:user, :admin)
+
+      expect do
+        delete admin_user_path(user.id),
+               params: { user_id: user.id, role_id: protected_role.id, resource_type: "OrganizationPageManagement" }
+      end.to raise_error(Pundit::NotAuthorizedError)
+
+      delete admin_user_path(user.id),
+             params: { user_id: user.id, role_id: comment_role.id, resource_type: "OrganizationPageManagement" }
+
+      expect(user.reload.single_resource_admin_for?(OrganizationPageManagement)).to be true
+      expect(user.single_resource_admin_for?(Comment)).to be false
+    end
   end
 
   context "when adding tag moderator role" do

@@ -40,6 +40,7 @@ class ReservedWords
     comment
     comments
     computer
+    conferences
     connect
     contact
     crayons
@@ -135,6 +136,7 @@ class ReservedWords
     magazine
     me
     medium
+    meetups
     mega
     megabyte
     members

@@ -130,7 +130,12 @@ class ApplicationController < ActionController::Base
   #
   # @raise [ActiveRecord::RecordNotFound] when called
   def not_found
-    if request.env["forem.custom_domain_org"].present?
+    if (org = request.env["forem.custom_domain_org"]).present?
+      # These redirects inherit the action's edge-cache headers. Tag them with the org key, which
+      # EdgeCache::BustArticle purges whenever an org article changes, so a redirect cached while a
+      # post was a draft (or before it existed) doesn't outlive its publication.
+      set_surrogate_key_header(org.record_key)
+
       redirect_rule = RequestRedirect.find_by(
         request_domain: request.host&.downcase,
         original_url: request.fullpath

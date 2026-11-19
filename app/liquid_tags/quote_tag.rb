@@ -20,7 +20,7 @@ class QuoteTag < Liquid::Block
   end
 
   def render(context)
-    content = super
+    content = sanitize_block_content(super)
     html = ApplicationController.render(
       partial: PARTIAL,
       locals: {

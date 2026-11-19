@@ -94,6 +94,110 @@ RSpec.describe "Api::V1::Pages" do
       expect(custom_page.reload.show_in_navigation?).to be(true)
     end
 
+    it "allows site admins to filter and create event pages including optional readme showcase" do
+      event = create(:event, event_name_slug: "api-conf", event_variation_slug: "2026")
+
+      post api_pages_path,
+           params: post_params.merge(
+             event_id: event.id,
+             slug: event.page_slug_for("readme"),
+             position: 0,
+           ).to_json,
+           headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["event_id"]).to eq(event.id)
+      expect(event.main_page&.slug).to eq("events/api-conf/2026/readme")
+
+      get api_pages_path, params: { event_id: event.id }, headers: v1_headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("slug")).to eq(["events/api-conf/2026/readme"])
+    end
+
+    it "rejects non-embed event pages with invalid slug prefix or multiple suffix segments" do
+      event = create(:event, event_name_slug: "api-conf-slug", event_variation_slug: "2026")
+
+      post api_pages_path,
+           params: post_params.merge(event_id: event.id, slug: "schedule").to_json,
+           headers: auth_header
+      expect(response).to have_http_status(:unprocessable_entity)
+
+      post api_pages_path,
+           params: post_params.merge(event_id: event.id, slug: "events/api-conf-slug/2026/a/b").to_json,
+           headers: auth_header
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "hides draft event pages from unauthenticated and non-admin callers" do
+      draft_event = create(:event, :unpublished, event_name_slug: "secret-api-evt", event_variation_slug: "2026")
+      draft_page = create(
+        :page,
+        event: draft_event,
+        slug: draft_event.page_slug_for("notes"),
+        title: "Secret Draft Notes",
+        body_markdown: "Top secret draft body",
+      )
+
+      get api_pages_path, params: { event_id: draft_event.id }, headers: v1_headers
+      expect(response.parsed_body).to eq([])
+
+      get api_pages_path, headers: v1_headers
+      expect(response.parsed_body.pluck("id")).not_to include(draft_page.id)
+
+      get api_page_path(draft_page), headers: v1_headers
+      expect(response).to have_http_status(:not_found)
+
+      regular_headers = v1_headers.merge("api-key" => create(:api_secret).secret)
+      get api_pages_path, params: { event_id: draft_event.id }, headers: regular_headers
+      expect(response.parsed_body).to eq([])
+
+      get api_page_path(draft_page), headers: regular_headers
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "allows admins to read draft event pages via index and show without caching" do
+      draft_event = create(:event, :unpublished, event_name_slug: "admin-api-evt", event_variation_slug: "2026")
+      draft_page = create(
+        :page,
+        event: draft_event,
+        slug: draft_event.page_slug_for("notes"),
+        title: "Admin Draft Notes",
+        body_markdown: "Draft body",
+      )
+
+      get api_pages_path, params: { event_id: draft_event.id }, headers: auth_header
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).to eq([draft_page.id])
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+
+      get api_page_path(draft_page), headers: auth_header
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["id"]).to eq(draft_page.id)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+    end
+
+    it "keeps event embed_html pages hidden from GET /api/pages and GET /api/pages/:id" do
+      event = create(:event, event_name_slug: "embed-api-evt", event_variation_slug: "2026")
+      event_embed = create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("widget"),
+        title: "Event Widget",
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Widget</div>",
+      )
+
+      get api_pages_path, params: { event_id: event.id }, headers: auth_header
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).not_to include(event_embed.id)
+
+      get api_page_path(event_embed), headers: auth_header
+      expect(response).to have_http_status(:not_found)
+    end
+
     it "rejects hiding a site page through the API" do
       put api_page_path(page), params: { show_in_navigation: false }.to_json, headers: auth_header
 
@@ -246,7 +350,7 @@ RSpec.describe "Api::V1::Pages" do
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
                      page_template_id template_data redirect_to_url
-                     organization_id position show_in_navigation])
+                     organization_id event_id position show_in_navigation])
   end
 
   it "filters pages by organization_id ordered by position" do
@@ -269,7 +373,7 @@ RSpec.describe "Api::V1::Pages" do
                      landing_page body_html body_json body_markdown
                      processed_html social_image template subforem_id
                      page_template_id template_data redirect_to_url
-                     organization_id position show_in_navigation])
+                     organization_id event_id position show_in_navigation])
   end
 
   context "when authenticated as an organization admin" do

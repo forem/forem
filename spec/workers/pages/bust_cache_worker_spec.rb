@@ -44,5 +44,12 @@ RSpec.describe Pages::BustCacheWorker, type: :worker do
       worker.perform(page_slug, nil, User.maximum(:id).to_i + 1)
       expect(EdgeCache::BustPage).to have_received(:call).with(page_slug, organization: nil, user: nil)
     end
+
+    it "passes the event to the cache buster when an event id is given" do
+      event = create(:event)
+      allow(EdgeCache::BustPage).to receive(:call)
+      worker.perform(page_slug, nil, nil, event.id)
+      expect(EdgeCache::BustPage).to have_received(:call).with(page_slug, organization: nil, event: event)
+    end
   end
 end

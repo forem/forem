@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -530,6 +530,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
     t.index ["favorited_by_user_id"], name: "index_comments_on_favorited_by_user_id"
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
     t.index ["id"], name: "index_comments_negative_public_reactions_count", where: "(public_reactions_count < 0)"
+    t.index ["public_reactions_count", "user_id"], name: "index_comments_on_public_reactions_count_for_beloved", where: "(public_reactions_count >= 25)"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["semantic_embedding"], name: "index_comments_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["user_id"], name: "index_comments_on_user_id"
@@ -1392,6 +1393,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
     t.text "body_markdown"
     t.datetime "created_at", precision: nil, null: false
     t.string "description"
+    t.bigint "event_id"
     t.boolean "is_top_level_path", default: false
     t.boolean "landing_page", default: false, null: false
     t.bigint "organization_id"
@@ -1408,6 +1410,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["event_id"], name: "index_pages_on_event_id"
     t.index ["organization_id"], name: "index_pages_on_organization_id"
     t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true
@@ -2379,6 +2382,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_18_135100) do
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "pages", "events", on_delete: :cascade
   add_foreign_key "pages", "organizations", on_delete: :nullify
   add_foreign_key "pages", "users", on_delete: :cascade
   add_foreign_key "podcast_episode_appearances", "podcast_episodes"

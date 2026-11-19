@@ -1,0 +1,88 @@
+<%
+  is_showcase_view = @event_page == @showcase_page
+  page_title = is_showcase_view ? @event.title : "#{@event_page.title} — #{@event.title}"
+  page_description = @event_page.description.presence || @event.description
+  canonical_target = is_showcase_view ? event_path(@event.event_name_slug, @event.event_variation_slug) : event_custom_page_path(@event.event_name_slug, @event.event_variation_slug, event_page_suffix(@event_page))
+  social_image = @event_page.social_image_url.presence || @event.social_image_url
+  banner_image = @event.cover_image.presence&.url || @event.data&.dig("banner_image_url")
+  now = Time.current
+%>
+<% content_for :title, page_title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(canonical_target) %>" />
+  <meta name="description" content="<%= page_description %>">
+  <meta property="og:title" content="<%= page_title %>" />
+  <meta property="og:description" content="<%= page_description %>" />
+  <meta property="og:url" content="<%= app_url(canonical_target) %>" />
+  <meta property="og:type" content="event" />
+  <meta property="og:image" content="<%= social_image %>" />
+  <meta name="twitter:image:src" content="<%= social_image %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
+
+<% if embedded_view? %>
+  <main id="main-content" class="crayons-layout crayons-layout--limited-l py-4">
+    <div class="crayons-card p-6 crayons-article__body text-styles event-page-body">
+      <%= @event_page.processed_html.html_safe %>
+    </div>
+  </main>
+<% else %>
+  <div class="crayons-layout event-show-layout container grid-cols-1">
+    <% if !@event.published? %>
+      <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
+        <strong>This event is not published!</strong> Only admins can see this page.
+        <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+      </div>
+    <% end %>
+
+    <% if banner_image.present? %>
+      <div class="crayons-card mb-6 overflow-hidden">
+        <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
+      </div>
+    <% end %>
+
+    <div class="crayons-card p-6 mb-4">
+      <nav aria-label="Breadcrumbs" class="mb-3 fs-s color-base-60">
+        <% event_breadcrumb_links(@event).each do |label, path| %>
+          <a href="<%= path %>" class="c-link c-link--branded font-bold"><%= label %></a> &gt;
+        <% end %>
+        <span><%= @event.title %></span>
+      </nav>
+
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 class="crayons-title text-3xl font-extrabold m-0"><%= @event.title %></h1>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <span class="event-pill <%= event_pill_class(@event) %>"><%= @event.format_pill_label %></span>
+            <% if @event.start_time > now %>
+              <span class="inline-block shrink-0 px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40);"><%= t("views.events.gathering.upcoming") %></span>
+            <% elsif @event.end_time >= now %>
+              <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error);"><%= t("views.events.gathering.live") %></span>
+            <% else %>
+              <span class="inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40);"><%= t("views.events.gathering.ended") %></span>
+            <% end %>
+            <span class="fs-s color-base-60"><%= event_datetime_range(@event) %></span>
+            <% if @event.data&.dig("location").present? || @event.meetup? || @event.conference? %>
+              <span class="fs-s color-base-40" aria-hidden="true">&bull;</span>
+              <span class="fs-s color-base-60"><%= @event.location_display %></span>
+            <% end %>
+          </div>
+        </div>
+
+        <% if @event.end_time > now %>
+          <div class="event-signup-container">
+            <%= render "signup_button", event: @event %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%= render "event_tabs" %>
+
+    <main id="main-content">
+      <div class="crayons-card p-6 crayons-article__body text-styles event-page-body">
+        <%= @event_page.processed_html.html_safe %>
+      </div>
+    </main>
+  </div>
+<% end %>

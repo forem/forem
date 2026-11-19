@@ -1,0 +1,31 @@
+# Multi-Server Cluster Destination (`bundle exec kamal setup -d cluster` / `bundle exec kamal deploy -d cluster`)
+#
+# Use when scaling across multiple web nodes (`KAMAL_WEB_HOSTS="10.0.0.10,10.0.0.11"`),
+# dedicated Sidekiq job nodes (`KAMAL_JOB_HOSTS="10.0.0.20"`), a Load Balancer / CDN,
+# external Managed PostgreSQL + Redis, and S3 / DO Spaces / R2 object storage.
+#
+# Run migrations once before deploying across the web fleet:
+#   bundle exec kamal migrate -d cluster
+#   bundle exec kamal deploy -d cluster
+
+boot:
+  limit: <%= ENV.fetch("KAMAL_BOOT_LIMIT", "50%").to_s.inspect %>
+  wait: <%= ENV.fetch("KAMAL_BOOT_WAIT", "5").to_i %>
+
+proxy:
+<% if ENV["KAMAL_CUSTOM_SSL_CERT"] == "true" %>
+  ssl:
+    certificate_pem: CERTIFICATE_PEM
+    private_key_pem: PRIVATE_KEY_PEM
+<% else %>
+  # Multi-host Let's Encrypt is disallowed by Kamal; terminate TLS at your LB/CDN or use KAMAL_CUSTOM_SSL_CERT=true.
+  ssl: false
+<% end %>
+  forward_headers: true
+
+env:
+  clear:
+    AUTO_PREPARE_DB: <%= ENV.fetch("AUTO_PREPARE_DB", "false").to_s.inspect %>
+    LOG_LEVEL: <%= ENV.fetch("LOG_LEVEL", "error").to_s.inspect %>
+    RAILS_ASSUME_SSL: <%= ENV.fetch("RAILS_ASSUME_SSL", "true").to_s.inspect %>
+    FORCE_SSL_IN_RAILS: <%= ENV.fetch("FORCE_SSL_IN_RAILS", "true").to_s.inspect %>

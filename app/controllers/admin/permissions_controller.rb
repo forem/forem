@@ -2,6 +2,8 @@ module Admin
   class PermissionsController < Admin::ApplicationController
     layout "admin"
 
+    SUPER_ADMIN_ONLY_RESOURCES = Constants::Role::SUPER_ADMIN_ONLY_RESOURCE_TYPES
+
     def index
       role_ids = admin_role_ids
       @users = if role_ids.empty?
@@ -18,55 +20,63 @@ module Admin
 
     def grant
       user = User.find_by(username: params[:username].to_s.delete("@").strip)
-      role_parts = params[:role_name].to_s.split("|")
-      role_name = role_parts[0]
-      resource_type = role_parts[1]
-
-      if user && %w[admin super_admin tech_admin single_resource_admin].include?(role_name)
-        if resource_type.present? && role_name == "single_resource_admin"
-          begin
-            resource_class = resource_type.constantize
-            user.add_role(role_name, resource_class)
-          rescue NameError
-            user.add_role(role_name)
-          end
-        else
-          user.add_role(role_name)
-        end
-        flash[:success] = "Granted #{params[:role_name]} to #{user.username}"
-      else
-        flash[:error] = "Invalid user or role"
-      end
-
-      redirect_to admin_permissions_path, status: :see_other
+      mutate_role(user: user, mutation: :add_role, success_verb: "Granted", preposition: "to")
     end
 
     def revoke
       user = User.find_by(id: params[:user_id])
-      role_parts = params[:role_name].to_s.split("|")
-      role_name = role_parts[0]
-      resource_type = role_parts[1]
+      mutate_role(user: user, mutation: :remove_role, success_verb: "Revoked", preposition: "from")
+    end
 
-      if user && %w[admin super_admin tech_admin single_resource_admin].include?(role_name)
-        if resource_type.present? && role_name == "single_resource_admin"
-          begin
-            resource_class = resource_type.constantize
-            user.remove_role(role_name, resource_class)
-          rescue NameError
-            user.remove_role(role_name)
-          end
+    private
+
+    def mutate_role(user:, mutation:, success_verb:, preposition:)
+      role_name, resource_type = params[:role_name].to_s.split("|", 2)
+      resource_class = resolve_resource_class(resource_type)
+      return refuse_super_admin_only unless assignable?(role_name, resource_type, resource_class)
+
+      if user && valid_role_target?(role_name, resource_class)
+        if role_name == "single_resource_admin"
+          user.public_send(mutation, role_name, resource_class)
         else
-          user.remove_role(role_name)
+          user.public_send(mutation, role_name)
         end
-        flash[:success] = "Revoked #{params[:role_name]} from #{user.username}"
+        flash[:success] = "#{success_verb} #{params[:role_name]} #{preposition} #{user.username}"
       else
-        flash[:error] = "Invalid user or role"
+        flash[:error] = "Invalid user or role" # rubocop:disable Rails/I18nLocaleTexts
       end
 
       redirect_to admin_permissions_path, status: :see_other
     end
 
-    private
+    def resolve_resource_class(resource_type)
+      return if resource_type.blank?
+
+      constant = resource_type.strip.safe_constantize
+      constant if constant.is_a?(Class)
+    end
+
+    def valid_role_target?(role_name, resource_class)
+      return false unless %w[admin super_admin tech_admin single_resource_admin].include?(role_name)
+      return true unless role_name == "single_resource_admin"
+
+      resource_class.present? && Rolify.resource_types.include?(resource_class.name)
+    end
+
+    def assignable?(role_name, resource_type, resource_class)
+      return true unless role_name == "single_resource_admin"
+      return current_user.super_admin? if resource_type.blank?
+
+      resolved_name = resource_class&.name || resource_type.to_s.strip.delete_prefix("::")
+      return true unless SUPER_ADMIN_ONLY_RESOURCES.include?(resolved_name)
+
+      current_user.super_admin?
+    end
+
+    def refuse_super_admin_only
+      flash[:error] = "Only super admins can grant or revoke #{params[:role_name]}"
+      redirect_to admin_permissions_path, status: :see_other
+    end
 
     def admin_role_ids
       Role.where(name: %w[admin super_admin], resource_type: nil, resource_id: nil)

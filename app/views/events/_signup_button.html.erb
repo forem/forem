@@ -1,0 +1,24 @@
+<% signed_up = current_user.present? && current_user.event_signups.exists?(event: event) %>
+<button data-event-signup-button="true"
+        data-event-name-slug="<%= event.event_name_slug %>"
+        data-event-variation-slug="<%= event.event_variation_slug %>"
+        data-signup-confirm-message="<%= event.signup_confirm_message %>"
+        data-signed-up-class="crayons-btn--outlined"
+        data-unsigned-up-class="crayons-btn--primary"
+        class="crayons-btn event-signup-btn <%= local_assigns[:extra_classes] %> <%= signed_up ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+        data-signed-up="<%= signed_up ? 'true' : 'false' %>">
+  <template data-signed-up-html>
+    <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <%= event.signup_button_text(signed_up: true) %>
+  </template>
+  <template data-unsigned-up-html>
+    <%= event.signup_button_text(signed_up: false) %>
+  </template>
+
+  <% if signed_up %>
+    <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <%= event.signup_button_text(signed_up: true) %>
+  <% else %>
+    <%= event.signup_button_text(signed_up: false) %>
+  <% end %>
+</button>

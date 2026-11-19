@@ -167,4 +167,97 @@ RSpec.describe "/admin/permissions" do
       expect(flash[:success]).to be_present
     end
   end
+
+  describe "the OrganizationPageManagement resource admin role" do
+    let(:target_user) { create(:user) }
+    let(:role_name) { "single_resource_admin|OrganizationPageManagement" }
+    let(:noncanonical_role_name) { "single_resource_admin|::OrganizationPageManagement" }
+
+    def page_management_role(user)
+      user.reload.roles.where(name: "single_resource_admin", resource_type: "OrganizationPageManagement")
+    end
+
+    context "when signed in as an admin who is not a super admin" do
+      before { sign_in create(:user, :admin) }
+
+      it "refuses to grant it", :aggregate_failures do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+
+        expect(response).to redirect_to(admin_permissions_path)
+        expect(page_management_role(target_user)).not_to exist
+        expect(flash[:error]).to be_present
+
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: noncanonical_role_name }
+
+        expect(response).to redirect_to(admin_permissions_path)
+        expect(page_management_role(target_user)).not_to exist
+        expect(flash[:error]).to be_present
+      end
+
+      it "refuses to revoke it, including via noncanonical or unscoped names", :aggregate_failures do
+        target_user.add_role(:single_resource_admin, OrganizationPageManagement)
+
+        [role_name, noncanonical_role_name, "single_resource_admin", "single_resource_admin|",
+         "single_resource_admin|NonExistentResource"].each do |attempt|
+          delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: attempt }
+
+          expect(page_management_role(target_user)).to exist
+          expect(flash[:error]).to be_present
+        end
+      end
+
+      it "still revokes unrelated resource admin roles without touching OrganizationPageManagement",
+         :aggregate_failures do
+        target_user.add_role(:single_resource_admin, OrganizationPageManagement)
+        target_user.add_role(:single_resource_admin, Event)
+
+        delete revoke_admin_permissions_path,
+               params: { user_id: target_user.id, role_name: "single_resource_admin|Event" }
+
+        expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).not_to exist
+        expect(page_management_role(target_user)).to exist
+        expect(flash[:success]).to be_present
+      end
+    end
+
+    context "when signed in as a Permission resource admin" do
+      before { sign_in create(:user, :single_resource_admin, resource: Permission) }
+
+      it "refuses to grant it, including via noncanonical spelling", :aggregate_failures do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+        expect(page_management_role(target_user)).not_to exist
+
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: noncanonical_role_name }
+        expect(page_management_role(target_user)).not_to exist
+      end
+
+      it "refuses to revoke it via unscoped or noncanonical names", :aggregate_failures do
+        target_user.add_role(:single_resource_admin, OrganizationPageManagement)
+
+        [role_name, noncanonical_role_name, "single_resource_admin"].each do |attempt|
+          delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: attempt }
+          expect(page_management_role(target_user)).to exist
+          expect(flash[:error]).to be_present
+        end
+      end
+    end
+
+    context "when signed in as a super admin" do
+      before { sign_in create(:user, :super_admin) }
+
+      it "grants and revokes it", :aggregate_failures do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+        expect(page_management_role(target_user)).to exist
+
+        delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: role_name }
+        expect(page_management_role(target_user)).not_to exist
+
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: noncanonical_role_name }
+        expect(page_management_role(target_user)).to exist
+
+        delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: noncanonical_role_name }
+        expect(page_management_role(target_user)).not_to exist
+      end
+    end
+  end
 end

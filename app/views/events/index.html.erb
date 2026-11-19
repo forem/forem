@@ -12,11 +12,11 @@
 <% end %>
 
 <main id="main-content" class="crayons-layout crayons-layout--header-inside events-landing">
-  <header class="crayons-page-header flex items-center justify-between flex-wrap gap-3 mb-6">
+  <header class="crayons-page-header flex items-center justify-between flex-wrap gap-3 mb-4">
     <h1 class="events-year-header m-0"><%= Time.current.year %></h1>
 
     <div class="flex items-center gap-2">
-      <%= link_to calendar_path, class: "crayons-btn crayons-btn--secondary flex items-center gap-2" do %>
+      <%= link_to calendar_path(type_of: @active_type_of), class: "crayons-btn crayons-btn--secondary flex items-center gap-2" do %>
         <svg class="c-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -27,64 +27,14 @@
       <% end %>
     </div>
   </header>
-  
+
+  <div class="mb-6">
+    <%= render "landing_nav", active: @active_type_of&.to_sym || :all %>
+  </div>
+
   <% if @events.any? %>
     <div class="events-grid">
-      <% @events.each do |event| %>
-        <% link_target = (event.delegate_to_page? && event.page.present?) ? event.page.path : event_path(event.event_name_slug, event.event_variation_slug) %>
-        <a href="<%= link_target %>" class="event-card">
-          <div class="event-card-banner" <% unless event.cover_image.present? %>style="background: <%= event.gradient_background_css %>;"<% end %>>
-            <% if event.cover_image.present? %>
-              <img src="<%= event.cover_image.url %>" alt="<%= event.title %> Cover" loading="lazy" />
-            <% end %>
-          </div>
-
-          <div class="event-card-body">
-            <div>
-              <h2 class="event-card-title mb-3">
-                <%= event.title %>
-              </h2>
-
-              <div class="event-card-meta">
-                <div class="meta-item">
-                  <svg class="c-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  <span><%= event.formatted_date_range %></span>
-                </div>
-
-                <div class="meta-item">
-                  <svg class="c-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                  <span><%= event.location_display %></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="event-card-footer">
-              <% pill_label = event.format_pill_label %>
-              <% pill_class = case pill_label.downcase
-                              when "digital", "live stream"
-                                "event-pill--digital"
-                              when "in-person", "in person"
-                                "event-pill--in-person"
-                              when "challenge"
-                                "event-pill--challenge"
-                              when "takeover"
-                                "event-pill--takeover"
-                              else
-                                "event-pill--default"
-                              end %>
-              <span class="event-pill <%= pill_class %>"><%= pill_label %></span>
-            </div>
-          </div>
-        </a>
-      <% end %>
+      <%= render partial: "event_card", collection: @events, as: :event %>
     </div>
   <% else %>
     <div class="p-9 align-center crayons-card">

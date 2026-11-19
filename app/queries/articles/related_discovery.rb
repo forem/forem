@@ -3,13 +3,14 @@ module Articles
     CANDIDATES_PER_SOURCE = 100
     HNSW_MAX_SCAN_TUPLES = 5_000
     MAX_COSINE_DISTANCE = 0.4
-    attr_reader :effective_mode, :matches
+    attr_reader :effective_mode, :matches, :fused_scores
 
     def initialize(params)
       @params = params
       @query = RelatedQuery.new(params)
       @effective_mode = params.fetch(:mode, "keyword")
       @matches = {}
+      @fused_scores = {}
     end
 
     def call
@@ -26,7 +27,9 @@ module Articles
         return keywords
       end
 
-      keyword_ids = keywords.except(:limit, :offset).limit(CANDIDATES_PER_SOURCE).ids
+      # Reciprocal rank fusion assumes each input is ranked by relevance, so the keyword
+      # candidates are ranked that way here whatever `sort` the caller asked for.
+      keyword_ids = @query.ranked_relation.limit(CANDIDATES_PER_SOURCE).ids
       quoted = Article.connection.quote("[#{vector.join(',')}]")
       distance = "articles.semantic_embedding <=> #{quoted}::vector"
       semantic_ids = semantic_shortlist(distance)
@@ -37,9 +40,17 @@ module Articles
           (@matches[id] ||= []) << source
         end
       end
+      @fused_scores = scores
       ids = scores.keys.sort_by { |id| [-scores[id], -id] }
         .slice((@query.page - 1) * @query.per_page, @query.per_page) || []
       @query.filtered_scope.where(id: ids).in_order_of(:id, ids)
+    end
+
+    # One relevance number whatever the mode: the fused score in hybrid, the ts_rank
+    # score otherwise.  Comparable within a response, not across responses.
+    def relevance_for(article)
+      value = effective_mode == "hybrid" ? fused_scores[article.id] : article.try(:discovery_rank)
+      value&.to_f&.round(6)
     end
 
     private
