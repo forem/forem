@@ -10,7 +10,6 @@ on:
     paths:
       - 'Containerfile.base'
       - '.ruby-version-next'
-      - '.github/workflows/build-base-ruby-image.yml'
   pull_request:
     branches:
       - 'main'
