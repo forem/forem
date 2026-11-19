@@ -2,8 +2,14 @@
 # Read .ruby-version and .nvmrc; current mise no longer does this by default.
 idiomatic_version_file_enable_tools = ["ruby", "node"]
 
+# Pin the asdf plugins: current mise defaults postgres and redis to Conda, which has no builds of these versions.
+# The alias keeps the tool names, so installs stay at installs/postgres/<version> and the plugin's default
+# PGDATA (and any pgvector build) still points at an existing local cluster.
+[tool_alias]
+postgres = "asdf:smashedtoatoms/asdf-postgres"
+redis = "asdf:smashedtoatoms/asdf-redis"
+
 [tools]
 yarn = "1"
-# Name the asdf plugins: current mise defaults postgres and redis to Conda, which has no builds of these versions.
-"asdf:smashedtoatoms/asdf-postgres" = "13.12"
-"asdf:smashedtoatoms/asdf-redis" = "6.0.9"
+postgres = "13.12"
+redis = "6.0.9"
