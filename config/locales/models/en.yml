@@ -126,6 +126,7 @@ en:
       event_page_invalid_slug: must use the event page path format (%{prefix}<slug>).
       multiple_owners_not_allowed: Page can belong to only one owner (organization, user, or event).
       slug_blank: can't be blank
+      organization_embed_pages_limit_reached: This organization has reached the maximum of %{max} embedded pages.
       user_embed_pages_limit_reached: You have reached the maximum of %{max} embedded pages.
       user_page_must_be_embed_html: must be embed_html for user-owned pages.
       redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).

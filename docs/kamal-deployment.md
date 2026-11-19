@@ -11,7 +11,13 @@ Out of the box, [config/deploy.yml](../config/deploy.yml) is tuned so a **single
 ### Prerequisites
 
 1. **Target server**: A fresh Ubuntu 22.04/24.04 or Debian VPS/bare-metal machine (4 GB+ RAM recommended, or 2 GB RAM + 2–4 GB swap) with SSH key access (`root` or a sudo/docker user).
+   - The server needs GNU coreutils `cp`.  Kamal's asset bridging (`asset_path`) runs `cp -rnT`, which copies nothing on BusyBox (Alpine, Wolfi) and still exits 0.  The deploy then succeeds, but every page returns 500 (`couldn't find file 'ahoy.js/dist/ahoy.js'`).  On those systems, run `apk add coreutils` first.
 2. **Local workstation**: Docker (with Buildx) and Ruby/Bundler (`bundle install`) so you can run `bundle exec kamal`.
+   - `bundle install` needs the exact Ruby in `.ruby-version`, plus headers for native gems such as `pg`.  If you only want to deploy, install Kamal on its own instead and run `kamal` wherever this guide says `bundle exec kamal`:
+     ```bash
+     gem install --no-document kamal -v 2.12.0   # any Ruby >= 3.1
+     ```
+   - Clone with `git clone --depth 1`.  `.git/` is part of the build context (the entrypoint reads the build SHA from it), so a full clone sends about 2 GB of context on every build; a shallow clone sends about 370 MB.
 3. **DNS**: Point an `A` record for your domain (e.g., `community.example.com`) to your server's public IPv4 address.
    - *No domain yet?* Either use a wildcard DNS helper like `<ip-with-dashes>.sslip.io` for instant Let's Encrypt HTTPS, or deploy with `-d staging` for plain HTTP over the raw IP.
 
@@ -20,7 +26,7 @@ Out of the box, [config/deploy.yml](../config/deploy.yml) is tuned so a **single
 1. **Create your local environment file** (gitignored):
 
    ```bash
-   cp .env.kamal.example .env.kamal
+   (umask 077 && cp .env.kamal.example .env.kamal)
    ```
 
 2. **Set the 4 required variables** in `.env.kamal`:
@@ -34,7 +40,7 @@ Out of the box, [config/deploy.yml](../config/deploy.yml) is tuned so a **single
 
    > **Tip**: You do **not** need to construct `DATABASE_URL` manually for the built-in `postgres` accessory — [.kamal/secrets-common](../.kamal/secrets-common) builds it automatically from `POSTGRES_PASSWORD` (safely URL-encoded).
 
-3. **Load your environment and validate the Kamal config**:
+3. **Load your environment and validate the Kamal config**.  Kamal reads the exported variables, not the file, so run the `source` line again after any edit to `.env.kamal`:
 
    ```bash
    set -a && source .env.kamal && set +a
@@ -167,7 +173,7 @@ bundle exec kamal setup -d staging
 
 ### Registry Options
 
-- **Built-in Local Registry (default)**: `KAMAL_REGISTRY_SERVER` defaults to `localhost:5555`. Kamal spins up `registry:3` locally on `127.0.0.1:5555`, pushes your image, and forwards the registry port over SSH to every server. **No external registry credentials required.**
+- **Built-in Local Registry (default)**: `KAMAL_REGISTRY_SERVER` defaults to `localhost:5555`. Kamal spins up `registry:3` locally on `127.0.0.1:5555`, pushes your image, and forwards the registry port over SSH to every server. **No external registry credentials required.**  The forward is an SSH *remote* forward (`ssh -R`).  If your SSH path refuses it (some bastions and gateways, or `AllowTcpForwarding local`), `kamal setup` stops with `Failed to establish port forward`; use an external registry instead.
 - **DigitalOcean Container Registry (DOCR)**:
   ```bash
   export KAMAL_REGISTRY_SERVER="registry.digitalocean.com"
@@ -189,6 +195,8 @@ bundle exec kamal setup -d staging
 
 - `KAMAL_ARCH` defaults to `amd64`.
 - For ARM servers (e.g., Hetzner CAX, AWS Graviton, ARM VPS), set `export KAMAL_ARCH="arm64"`.
+- **Where the image is built**: Kamal's `builder.local` defaults to `true`, so `KAMAL_REMOTE_BUILDER` is used only when your workstation's architecture differs from `KAMAL_ARCH`.  From an `amd64` workstation the image is built locally and pushed over your uplink.  Set `KAMAL_BUILDER_LOCAL="false"` to always build on `KAMAL_REMOTE_BUILDER`.
+- **Remote builder with an external registry**: Kamal does not run `docker login` on your workstation when it uses a remote builder, but Buildx still pushes with your workstation's credentials.  Run `docker login <registry>` locally before `kamal setup`, or the push fails with `401 Unauthorized` after the whole build.
 - **Deploying from an Apple Silicon Mac to an `amd64` server**: Local QEMU cross-compilation of Rust (`forem_native`) + Node/Ruby native gems is slow. You can point Kamal at any `amd64` Linux build box (or a temporary build droplet) via SSH:
   ```bash
   export KAMAL_REMOTE_BUILDER="ssh://root@your-amd64-builder-ip"

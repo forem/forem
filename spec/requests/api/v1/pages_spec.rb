@@ -155,7 +155,7 @@ RSpec.describe "Api::V1::Pages" do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "allows admins to read draft event pages via index and show" do
+    it "allows admins to read draft event pages via index and show without caching" do
       draft_event = create(:event, :unpublished, event_name_slug: "admin-api-evt", event_variation_slug: "2026")
       draft_page = create(
         :page,
@@ -168,10 +168,34 @@ RSpec.describe "Api::V1::Pages" do
       get api_pages_path, params: { event_id: draft_event.id }, headers: auth_header
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.pluck("id")).to eq([draft_page.id])
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
 
       get api_page_path(draft_page), headers: auth_header
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body["id"]).to eq(draft_page.id)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+    end
+
+    it "keeps event embed_html pages hidden from GET /api/pages and GET /api/pages/:id" do
+      event = create(:event, event_name_slug: "embed-api-evt", event_variation_slug: "2026")
+      event_embed = create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("widget"),
+        title: "Event Widget",
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Widget</div>",
+      )
+
+      get api_pages_path, params: { event_id: event.id }, headers: auth_header
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).not_to include(event_embed.id)
+
+      get api_page_path(event_embed), headers: auth_header
+      expect(response).to have_http_status(:not_found)
     end
 
     it "rejects hiding a site page through the API" do

@@ -481,9 +481,27 @@ RSpec.describe Event do
         ),
       )
 
+      event.update!(event_name_slug: "purge-evt-v2")
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt-v2/2026",
+          "/events/purge-evt-v2/2026/p/agenda",
+          "/events/purge-evt-v2/2026/embed/widget?mode=embed",
+          "/events/purge-evt/2026",
+          "/events/purge-evt/2026/p/agenda",
+          "/events/purge-evt/2026/embed/widget?mode=embed",
+        ),
+      )
+
       event.destroy!
       expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
-        event.record_key, ["/events/purge-evt/2026"]
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt-v2/2026",
+          "/events/purge-evt-v2/2026/p/agenda",
+          "/events/purge-evt-v2/2026/embed/widget?mode=embed",
+        ),
       )
     end
   end

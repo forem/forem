@@ -39,6 +39,7 @@ class Event < ApplicationRecord
   before_save :evaluate_markdown, if: :body_markdown_changed?
   after_update :sync_owned_page_slugs,
                if: -> { saved_change_to_event_name_slug? || saved_change_to_event_variation_slug? }
+  before_destroy :capture_owned_page_fallback_paths, prepend: true
   after_commit :ensure_broadcast_billboards_and_workers, on: %i[create update]
   after_commit :bust_upcoming_events_cache, on: %i[create update destroy]
   after_commit :purge_event_edge_cache, on: %i[update destroy]
@@ -277,6 +278,12 @@ class Event < ApplicationRecord
     pages.where("slug LIKE ?", "#{escaped_prefix}%")
   end
 
+  def capture_owned_page_fallback_paths
+    @destroyed_owned_page_fallback_paths = owned_page_fallback_paths_for(
+      "/events/#{event_name_slug}/#{event_variation_slug}",
+    )
+  end
+
   def purge_event_edge_cache
     return unless destroyed? || previous_changes.except("updated_at").any?
 
@@ -286,25 +293,38 @@ class Event < ApplicationRecord
   def event_edge_cache_fallback_paths
     current_base = "/events/#{event_name_slug}/#{event_variation_slug}"
     paths = [current_base]
-    if previous_changes.key?("event_name_slug") || previous_changes.key?("event_variation_slug")
-      old_name = previous_changes.dig("event_name_slug", 0) || event_name_slug
-      old_var = previous_changes.dig("event_variation_slug", 0) || event_variation_slug
-      paths << "/events/#{old_name}/#{old_var}"
+    old_base = previous_event_base_path
+    paths << old_base if old_base
+
+    if destroyed?
+      paths.concat(Array(@destroyed_owned_page_fallback_paths))
+    else
+      owned_pages_snapshot = pages.pluck(:slug, :template)
+      paths.concat(owned_page_fallback_paths_for(current_base, owned_pages_snapshot))
+      paths.concat(owned_page_fallback_paths_for(old_base, owned_pages_snapshot)) if old_base
     end
-    append_owned_page_fallback_paths(paths, current_base) unless destroyed?
+
     paths.uniq
   end
 
-  def append_owned_page_fallback_paths(paths, current_base)
-    pages.pluck(:slug, :template).each do |page_slug, template|
+  def previous_event_base_path
+    return unless previous_changes.key?("event_name_slug") || previous_changes.key?("event_variation_slug")
+
+    old_name = previous_changes.dig("event_name_slug", 0) || event_name_slug
+    old_var = previous_changes.dig("event_variation_slug", 0) || event_variation_slug
+    "/events/#{old_name}/#{old_var}"
+  end
+
+  def owned_page_fallback_paths_for(base_path, rows = pages.pluck(:slug, :template))
+    rows.filter_map do |page_slug, template|
       suffix = page_slug.to_s.split("/").last
       next if suffix.blank?
 
-      paths << if template == Page::EMBED_HTML_TEMPLATE
-                 "#{current_base}/embed/#{suffix}?mode=embed"
-               else
-                 "#{current_base}/p/#{suffix}"
-               end
+      if template == Page::EMBED_HTML_TEMPLATE
+        "#{base_path}/embed/#{suffix}?mode=embed"
+      else
+        "#{base_path}/p/#{suffix}"
+      end
     end
   end
 

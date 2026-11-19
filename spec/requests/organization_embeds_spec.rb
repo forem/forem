@@ -321,7 +321,8 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(response.body).not_to include("ROI Calculator")
     end
 
-    it "excludes embed_html pages from public API v1 pages index, show, and update", :aggregate_failures do
+    it "hides embed_html pages from the public API v1 pages index and show, but not from org admins",
+       :aggregate_failures do
       v1_headers = { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
 
       get api_pages_path, params: { organization_id: organization.id }, headers: v1_headers
@@ -336,10 +337,10 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       api_secret = create(:api_secret, user: org_admin)
 
       put api_page_path(embed_page.id),
-          params: { title: "Attempted Mutation" }.to_json,
+          params: { title: "Updated through the API" }.to_json,
           headers: v1_headers.merge("api-key" => api_secret.secret)
-      expect(response).to have_http_status(:not_found)
-      expect(embed_page.reload.template).to eq("embed_html")
+      expect(response).to have_http_status(:ok)
+      expect(embed_page.reload).to have_attributes(title: "Updated through the API", template: "embed_html")
     end
   end
 

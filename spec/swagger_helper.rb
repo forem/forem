@@ -333,6 +333,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)",
                                nullable: true },
               body_json: { type: :string, description: "For JSON pages, the JSON body", nullable: true },
+              body_html: { type: :string, nullable: true,
+                           description: "Raw HTML. For embed_html organization pages, the sandboxed HTML document" },
               is_top_level_path: { type: :boolean,
                                    description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
               social_image: { type: :object, nullable: true },

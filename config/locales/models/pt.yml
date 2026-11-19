@@ -125,6 +125,7 @@ pt:
       event_page_invalid_slug: deve usar o formato de caminho da página do evento (%{prefix}<slug>).
       multiple_owners_not_allowed: A página pode pertencer apenas a um proprietário (organização, usuário ou evento).
       slug_blank: não pode ficar em branco
+      organization_embed_pages_limit_reached: Esta organização atingiu o máximo de %{max} páginas incorporadas.
       user_embed_pages_limit_reached: Você atingiu o máximo de %{max} páginas incorporadas.
       user_page_must_be_embed_html: deve ser embed_html para páginas pertencentes a usuários.
       redirect_to_url_invalid: deve ser uma URL completa (começando com http:// ou https://) ou um caminho do aplicativo (começando com /).

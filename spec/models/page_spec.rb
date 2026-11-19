@@ -103,6 +103,39 @@ RSpec.describe Page do
     end
   end
 
+  describe "organization embed page cap" do
+    let(:organization) { create(:organization) }
+
+    def build_org_embed(suffix)
+      build(:page, organization: organization, template: "embed_html", body_markdown: nil,
+                   body_html: "<p>#{suffix}</p>", slug: "#{organization.slug}/embed/#{suffix}")
+    end
+
+    before do
+      stub_const("Page::MAX_ORGANIZATION_EMBED_PAGES", 1)
+      build_org_embed("first").save!
+    end
+
+    it "rejects another embed page once the organization reaches the cap", :aggregate_failures do
+      page = build_org_embed("second")
+
+      expect(page).not_to be_valid
+      expect(page.errors[:base]).to include(I18n.t("models.page.organization_embed_pages_limit_reached", max: 1))
+    end
+
+    it "rechecks the cap under a lock when validations are skipped", :aggregate_failures do
+      page = build_org_embed("second")
+
+      expect(page.save(validate: false)).to be(false)
+      expect(page.errors[:base]).to include(I18n.t("models.page.organization_embed_pages_limit_reached", max: 1))
+    end
+
+    it "still allows Markdown pages and edits to existing embed pages", :aggregate_failures do
+      expect(build(:page, organization: organization, slug: "#{organization.slug}/about")).to be_valid
+      expect(organization.pages.embed_html.first.update(body_html: "<p>edited</p>")).to be(true)
+    end
+  end
+
   describe ".from_subforem" do
     let!(:page_subforem_1) { create(:page, subforem_id: 1) }
     let!(:page_subforem_2) { create(:page, subforem_id: 2) }
