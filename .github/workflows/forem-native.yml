@@ -34,6 +34,7 @@ on:
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
       - "app/queries/billboards/filtered_ads_query.rb"
+      - "app/services/agent_session_parsers/redaction_metadata.rb"
       - "app/services/agent_session_renderers/markdown_renderer.rb"
       - "app/services/articles/detect_code_block_languages.rb"
       - "app/services/articles/feeds/custom.rb"
@@ -55,6 +56,7 @@ on:
       - "spec/models/feed_config_spec.rb"
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
       - "spec/requests/billboards_spec.rb"
+      - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
       - "spec/services/articles/detect_code_block_languages_spec.rb"
       - "spec/services/articles/feeds/custom_spec.rb"
@@ -172,5 +174,6 @@ jobs:
             raise "Unexpected image_resize_to_fill!" unless resized_fmt == "png" && ForemNative.image_inspect(resized_png)[:width] == 64
             svg_png = ForemNative.image_convert_to_png("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><defs><symbol id=\"s\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" fill=\"#3b49df\"/></symbol></defs><use href=\"#s\" width=\"24\" height=\"24\"/></svg>", reject_blank: true)
             raise "Unexpected image_convert_to_png!" unless ForemNative.image_inspect(svg_png)[:width] == 24
+            raise "Unexpected aggregate_transcript_redactions!" unless ForemNative.aggregate_transcript_redactions([{ "metadata" => { "redactions" => [{ "name" => "Home", "count" => 2 }] } }]) == { "Home" => 2 }
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
