@@ -1,0 +1,60 @@
+app/controllers/admin/articles_controller.rb
+  h_f968154a99632d 26
+app/helpers/billboard_helper.rb
+  h_f968154a99632d 9-14
+app/helpers/comments_helper.rb
+  h_f968154a99632d 365-366,392
+app/javascript/packs/__tests__/billboard.test.js
+  h_f968154a99632d 112-138
+app/javascript/packs/billboard.js
+  h_f968154a99632d 112-113
+app/models/article.rb
+  h_f968154a99632d 338,1313-1331,1868-1882,2027-2035
+app/models/billboard.rb
+  h_f968154a99632d 61-68,71,367-371,389
+app/views/admin/articles/_article_item.html.erb
+  h_f968154a99632d 251-272
+app/views/articles/_sticky_nav.html.erb
+  h_f968154a99632d 59-70
+app/views/articles/show.html.erb
+  h_f968154a99632d 273-284,291-302,370-372
+app/views/comments/_comment.html.erb
+  h_f968154a99632d 3
+config/locales/models/en.yml
+  h_f968154a99632d 20-21
+config/locales/models/fr.yml
+  h_f968154a99632d 20-21
+config/locales/models/pt.yml
+  h_f968154a99632d 20-21
+config/locales/views/moderations/en.yml
+  h_f968154a99632d 152
+config/locales/views/moderations/fr.yml
+  h_f968154a99632d 151
+config/locales/views/moderations/pt.yml
+  h_f968154a99632d 152
+db/migrate/20261119120300_add_hidden_billboard_locations_to_articles.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,184
+spec/models/article_spec.rb
+  h_f968154a99632d 4944-4982
+spec/requests/admin/articles_spec.rb
+  h_f968154a99632d 143-188
+spec/requests/articles/articles_show_spec.rb
+  h_f968154a99632d 400-437
+spec/requests/articles/articles_update_spec.rb
+  h_f968154a99632d 40-51
+spec/requests/org_custom_domain_spec.rb
+  h_f968154a99632d 122-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb09d344ff8fd9455f10aa181420046eb256d843",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
