@@ -156,7 +156,7 @@ class Page < ApplicationRecord
     will_save_change_to_show_in_navigation? ||
       will_save_change_to_organization_id? ||
       will_save_change_to_event_id? ||
-      will_save_change_to_slug?
+      (event_id.present? && will_save_change_to_slug?)
   end
 
   def showcase_or_first_page?

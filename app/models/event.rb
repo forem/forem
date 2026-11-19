@@ -293,12 +293,12 @@ class Event < ApplicationRecord
   def event_edge_cache_fallback_paths
     current_base = "/events/#{event_name_slug}/#{event_variation_slug}"
     paths = [current_base]
-    old_base = previous_event_base_path
-    paths << old_base if old_base
 
     if destroyed?
       paths.concat(Array(@destroyed_owned_page_fallback_paths))
     else
+      old_base = previous_event_base_path
+      paths << old_base if old_base
       owned_pages_snapshot = pages.pluck(:slug, :template)
       paths.concat(owned_page_fallback_paths_for(current_base, owned_pages_snapshot))
       paths.concat(owned_page_fallback_paths_for(old_base, owned_pages_snapshot)) if old_base
