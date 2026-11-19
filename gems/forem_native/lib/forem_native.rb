@@ -7,7 +7,7 @@ require_relative "forem_native/builder"
 # In production, CI, and local development, it loads either the platform-compiled
 # shared library (`forem_native/forem_native.{so,bundle}` from `Containerfile` /
 # `rake forem_native:compile`) or the committed precompiled platform binary
-# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
+# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
   LATEST_NATIVE_SYMBOL = :aggregate_transcript_redactions

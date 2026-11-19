@@ -32,8 +32,9 @@ Inside `gems/forem_native/`, the Cargo workspace is strictly divided into two cr
 2. **Heroku / Render Native / Railway Buildpacks & GitHub Actions CI (`x86_64-linux`)**:
    - Because `magnus` + `rb-sys` resolves CRuby C-API symbols dynamically from the host `ruby` process at `dlopen` time (linking only against system `libc`), a single stripped `gems/forem_native/lib/forem_native/x86_64-linux/forem_native.so` (~313 KB) is committed in the repository and verified on every PR by `.github/workflows/forem-native.yml`.
    - Standard Heroku `heroku/ruby` dynos, PaaS buildpacks, and all 30 parallel CI RSpec nodes load `x86_64-linux/forem_native.so` immediately on boot with **zero buildpack changes and zero compile time**.
-3. **Local Development (`arm64-darwin`, `x86_64-darwin`, `x86_64-linux`)**:
+3. **Local Development (`arm64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`)**:
    - Precompiled `arm64-darwin/forem_native.bundle` (`313 KB`), `x86_64-darwin/forem_native.bundle` (`299 KB`), and `x86_64-linux/forem_native.so` (`311 KB`) binaries are committed directly to the repository (with `RUBY_PLATFORM` version suffixes like `arm64-darwin23` normalized automatically to `arm64-darwin`).
+   - The Linux binaries (`x86_64-linux`, and `aarch64-linux` for Docker and devcontainers on Apple Silicon) must load in the development base image, Debian bullseye with glibc 2.31.  Build them with `scripts/build_forem_native_linux.sh` (it uses the `Containerfile` `rust-builder` stage), not on a newer host such as an `ubuntu-24.04` runner: a binary linked there needs glibc 2.35+ and fails to load in Docker, devcontainers and Codespaces.  `scripts/check_forem_native_loads.sh` and the `dev-image-load` CI job check this.
    - Developers cloning the repo on macOS (Apple Silicon or Intel) or Linux do **not** need Rust or `cargo` installed to boot Rails or run tests—it loads the precompiled binary in `<1ms`. Only contributors actively editing `.rs` files inside `gems/forem_native/` (or exotic platforms where `ForemNative.load_native!` auto-compiles via `cargo`) ever invoke the Rust compiler.
 
 ---
@@ -68,7 +69,7 @@ end
 
 - **When a Rust function handles 100% of inputs** (e.g., `MarkdownProcessor::ReadingTime.calculate`), call `ForemNative.<method>` directly and delete the old runtime Ruby code from `app/`.
 - **When a Rust function intentionally handles a strict common-case domain and returns `nil` for quirky/out-of-domain inputs** (e.g., `ForemNative.color_brightness` returning `nil` for malformed hex strings or `NaN`/`Infinity` multipliers so Ruby's rescue/formatting quirks apply), keep the legacy edge-case handler as a private method in the host Ruby class (`ForemNative.color_brightness(...) || legacy_brightness(...)`) so constants/regexes remain in one place rather than duplicating them inside `gems/forem_native`.
-- **Update all committed precompiled binaries** (`x86_64-linux/forem_native.so`, `arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`) whenever adding a new native symbol so every platform exports the full `ForemNative::Native` API without needing `respond_to?` guards.
+- **Update all committed precompiled binaries** (`x86_64-linux/forem_native.so` and `aarch64-linux/forem_native.so` via `scripts/build_forem_native_linux.sh amd64 arm64`, `arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`) whenever adding a new native symbol so every platform exports the full `ForemNative::Native` API without needing `respond_to?` guards.
 
 ### Step 4: Differential Equivalence & Edge-Case Verification
 Every ported function **must** include an RSpec suite (`spec/lib/forem_native_spec.rb`) verifying:
