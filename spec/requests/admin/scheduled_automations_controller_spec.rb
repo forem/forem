@@ -212,6 +212,23 @@ RSpec.describe Admin::ScheduledAutomationsController do
         expect(automation.reload.additional_instructions).to eq("Different instructions")
         expect(automation.next_run_at).to eq(original_next_run_at)
       end
+
+      it "does not postpone an overdue run when the form resubmits the unchanged schedule as strings" do
+        overdue_next_run_at = 5.minutes.ago.change(usec: 0)
+        automation.update_column(:next_run_at, overdue_next_run_at)
+
+        patch admin_subforem_community_bot_scheduled_automation_path(subforem, bot, automation),
+              params: {
+                scheduled_automation: {
+                  frequency: "daily",
+                  frequency_config: { hour: "9", minute: "0" },
+                  additional_instructions: "Different instructions"
+                }
+              }
+
+        expect(automation.reload.additional_instructions).to eq("Different instructions")
+        expect(automation.next_run_at).to eq(overdue_next_run_at)
+      end
     end
 
     context "with invalid parameters" do

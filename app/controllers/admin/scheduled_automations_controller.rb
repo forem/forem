@@ -39,13 +39,12 @@ module Admin
     end
 
     def update
-      @automation.assign_attributes(automation_params)
-      # Recalculate the next run only when the schedule itself changed. Comparing raw params
-      # treated a missing :frequency as a change, so every edit reset next_run_at.
-      schedule_changed = @automation.frequency_changed? || @automation.frequency_config_changed?
-
-      if @automation.save
-        @automation.update!(next_run_at: @automation.calculate_next_run_time) if schedule_changed
+      if @automation.update(automation_params)
+        # Recalculate the next run only when the saved schedule changed. Checking after save
+        # compares normalized values, so the form's string params ("0" vs 0) are not a change.
+        if @automation.saved_change_to_frequency? || @automation.saved_change_to_frequency_config?
+          @automation.update!(next_run_at: @automation.calculate_next_run_time)
+        end
 
         flash[:success] = "Scheduled automation updated successfully!"
         redirect_to admin_subforem_community_bot_scheduled_automations_path(@subforem, @bot)
