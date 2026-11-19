@@ -228,6 +228,19 @@ module Articles
       end
     end
 
+    # Force a re-render of the given records, bypassing feed-specific skip and backoff checks.
+    # Used when an embed template changes and stored processed_html must be regenerated.
+    def refresh_records(record_type, ids)
+      return if ids.blank?
+      process_records_for_type(
+        record_type,
+        ids.index_with { [] },
+        article_id: nil,
+        membership_changed: true,
+        engagement_only: false,
+      )
+    end
+
     private
 
     def consume_engagement_marker(article_id)
