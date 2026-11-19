@@ -212,12 +212,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     gnupg2 \
     curl \
     less \
-    git
+    git \
+    libyaml-dev
 
 ARG PG_MAJOR
 RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgres-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] https://apt-archive.postgresql.org/pub/repos/apt/" \
-    $(lsb_release -cs)-pgdg main $PG_MAJOR | tee /etc/apt/sources.list.d/postgres.list > /dev/null
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/" \
+    $(. /etc/os-release && echo "$VERSION_CODENAME")-pgdg main $PG_MAJOR | tee /etc/apt/sources.list.d/postgres.list > /dev/null
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   --mount=type=cache,target=/var/lib/apt,sharing=locked \
   --mount=type=tmpfs,target=/var/log \
