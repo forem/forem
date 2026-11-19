@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Rebuild the committed Linux forem_native binaries on the development base image
-# (Debian bullseye, glibc 2.31), so they load in the Docker, devcontainer and
-# Codespaces paths as well as on newer systems.  Uses the Containerfile's
-# rust-builder stage, which is what production builds from.
+# Rebuild the committed Linux forem_native binaries on the pinned development base
+# image (currently Debian bookworm, glibc 2.36), so they load in the Docker,
+# devcontainer and Codespaces paths as well as on newer systems.  Uses the
+# Containerfile's rust-builder stage, which is what production builds from.
 #
 #   scripts/build_forem_native_linux.sh            # this machine's architecture
 #   scripts/build_forem_native_linux.sh amd64 arm64
