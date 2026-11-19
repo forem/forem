@@ -7,12 +7,21 @@ module Api
       def index
         return render_organization_embed_pages if params[:kind] == "embed"
 
+        scope = Page.non_embed_html
+        if can_view_draft_event_pages?
+          prevent_caching
+        else
+          scope = visible_pages_scope(scope)
+        end
+
         @pages = if params[:organization_id].present?
-                   Page.non_embed_html
-                     .where(organization_id: params[:organization_id])
+                   scope.where(organization_id: params[:organization_id])
+                     .order(:position, :created_at, :id)
+                 elsif params[:event_id].present?
+                   scope.where(event_id: params[:event_id])
                      .order(:position, :created_at, :id)
                  else
-                   Page.non_embed_html
+                   scope
                  end
         render json: @pages
       end
@@ -189,12 +198,35 @@ module Api
 
       def set_page
         @page = Page.find(params[:id])
-        return unless @page.is_a?(Page) && @page.embed_html?
+        if @page.is_a?(Page) && @page.embed_html?
+          @user ||= authenticated_user
+          raise ActiveRecord::RecordNotFound unless org_embed_page_reader?(@page.organization)
 
-        @user ||= authenticated_user
-        raise ActiveRecord::RecordNotFound unless org_embed_page_reader?(@page.organization)
+          prevent_caching
+          return
+        end
+
+        return unless action_name == "show" && @page.event_id.present?
+        return if @page.event&.published?
+
+        raise ActiveRecord::RecordNotFound unless can_view_draft_event_pages?
 
         prevent_caching
+      end
+
+      def visible_pages_scope(scope)
+        scope.where(
+          "pages.event_id IS NULL OR EXISTS (" \
+          "SELECT 1 FROM events WHERE events.id = pages.event_id AND events.published = ?)",
+          true,
+        )
+      end
+
+      def can_view_draft_event_pages?
+        user = authenticated_user
+        return false unless user
+
+        user.administrative_access_to?(resource: Page) || user.administrative_access_to?(resource: Event)
       end
 
       def org_embed_page_reader?(organization)
@@ -330,7 +362,7 @@ module Api
         end
         params.permit(*%i[title slug description is_top_level_path subforem_id
                           body_json body_markdown body_html body_css remote_social_image_url
-                          template redirect_to_url organization_id position show_in_navigation])
+                          template redirect_to_url organization_id event_id position show_in_navigation])
       end
     end
   end

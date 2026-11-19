@@ -769,6 +769,26 @@ en:
             day_before: "1 Day Before"
             hour_before: "1 Hour Before"
             none: "None"
+      event_pages:
+        heading: Event Pages
+        manage_pages: Manage Pages
+        pages_button: Pages
+        back_to_event: Back to event
+        new_page: Create new page
+        new_showcase: Create Showcase / README
+        your_pages: Your Pages
+        order_help: Use the arrows to set the order of custom event tabs. If a Showcase / README page exists, it stays pinned first.
+        showcase: Showcase
+        showcase_slug_help: The Showcase / README page uses the readme slug and renders as the default landing view for this event, while the standard event view remains accessible as a tab.
+        show_in_navigation: Show in event navigation tabs
+        navigation_hint: Hidden pages remain accessible at their direct URL.
+        no_pages: No pages created for this event yet.
+        embed_section_description: Create sandboxed HTML widgets and interactive embeds scoped to this event. They can be embedded into any event page or article using the Liquid embed tag.
+        markdown_placeholder: "Use Markdown and Liquid tags to compose your event page.\n\nExample:\n## Schedule\n\n- 10:00 AM — Opening Keynote\n\n{% embed https://example.com/events/my-event/2026/embed/schedule %}"
+        created: Event page created successfully.
+        updated: Event page updated successfully.
+        deleted: Event page deleted successfully.
+        reordered: Event page order updated.
       billboard_placement_area_configs:
         index:
           visibility: Visibility

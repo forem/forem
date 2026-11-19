@@ -97,6 +97,14 @@ class PageTag < LiquidTagBase
         owner_avatar_url: owner.profile_image_90,
         canonical_url: target[:sandboxed] ? nil : target[:base_url]
       }
+    when Event
+      {
+        owner_type: "event",
+        owner_name: owner.title,
+        owner_path: Rails.application.routes.url_helpers.event_path(owner.event_name_slug, owner.event_variation_slug),
+        owner_avatar_url: owner.organization&.profile_image_90 || owner.user&.profile_image_90 || site_logo_url,
+        canonical_url: target[:sandboxed] ? nil : target[:base_url]
+      }
     else
       {
         owner_type: "site",
@@ -226,18 +234,85 @@ class PageTag < LiquidTagBase
   private_class_method :resolve_static_page
 
   def self.resolve_prefixed_page(segments, normalized_path, subforem_id)
-    if segments.size == 2 && segments[0] == "page"
-      page = find_scoped_page(segments[1], subforem_id)
-      return unless embeddable_standalone_page?(page)
-
-      { path: page.path, title: page.title, page: page, sandboxed: false }
-    elsif segments.size == 3 && segments[1] == "p"
-      resolve_organization_page(segments[0], segments[2], normalized_path)
-    elsif segments.size == 3 && segments[1] == "embed"
-      resolve_owner_embed_page(segments[0], segments[2])
+    case segments.size
+    when 2
+      resolve_standalone_prefixed_page(segments[1], subforem_id) if segments[0] == "page"
+    when 3
+      resolve_owner_prefixed_page(segments, normalized_path)
+    when 5
+      resolve_event_prefixed_page(segments)
     end
   end
   private_class_method :resolve_prefixed_page
+
+  def self.resolve_standalone_prefixed_page(slug, subforem_id)
+    page = find_scoped_page(slug, subforem_id)
+    return unless embeddable_standalone_page?(page)
+
+    { path: page.path, title: page.title, page: page, sandboxed: false }
+  end
+  private_class_method :resolve_standalone_prefixed_page
+
+  def self.resolve_owner_prefixed_page(segments, normalized_path)
+    case segments[1]
+    when "p"
+      resolve_organization_page(segments[0], segments[2], normalized_path)
+    when "embed"
+      resolve_owner_embed_page(segments[0], segments[2])
+    end
+  end
+  private_class_method :resolve_owner_prefixed_page
+
+  def self.resolve_event_prefixed_page(segments)
+    return unless segments[0] == "events"
+
+    case segments[3]
+    when "p"
+      resolve_event_page(segments[1], segments[2], segments[4])
+    when "embed"
+      resolve_event_embed_page(segments[1], segments[2], segments[4])
+    end
+  end
+  private_class_method :resolve_event_prefixed_page
+
+  def self.resolve_event_page(event_name_slug, event_variation_slug, page_suffix)
+    event = Event.published.find_by(
+      event_name_slug: event_name_slug.to_s.downcase,
+      event_variation_slug: event_variation_slug.to_s.downcase,
+    )
+    return unless event
+
+    normalized_suffix = page_suffix.to_s.downcase
+    event_page = event.pages.non_embed_html.find_by(slug: event.page_slug_for(normalized_suffix))
+    return unless event_page && embeddable_record?(event_page)
+
+    canonical_path = "/events/#{event.event_name_slug}/#{event.event_variation_slug}/p/#{normalized_suffix}"
+    { path: canonical_path, title: event_page.title, page: event_page, owner: event, sandboxed: false }
+  end
+  private_class_method :resolve_event_page
+
+  def self.resolve_event_embed_page(event_name_slug, event_variation_slug, page_suffix)
+    normalized_suffix = page_suffix.to_s.downcase
+    return unless normalized_suffix.match?(OrganizationEmbedsController::SLUG_SUFFIX_REGEXP)
+
+    event = Event.published.find_by(
+      event_name_slug: event_name_slug.to_s.downcase,
+      event_variation_slug: event_variation_slug.to_s.downcase,
+    )
+    return unless event
+
+    embed_page = event.pages.embed_html.find_by(slug: event.embed_page_slug_for(normalized_suffix))
+    return unless embed_page && embeddable_html_record?(embed_page)
+
+    {
+      path: "/events/#{event.event_name_slug}/#{event.event_variation_slug}/embed/#{normalized_suffix}",
+      title: embed_page.title,
+      page: embed_page,
+      owner: event,
+      sandboxed: true
+    }
+  end
+  private_class_method :resolve_event_embed_page
 
   def self.resolve_organization_page(org_slug, page_suffix, normalized_path)
     org = Organization.find_by(slug: org_slug)
@@ -366,7 +441,7 @@ class PageTag < LiquidTagBase
   private_class_method :find_scoped_page
 
   def self.embeddable_standalone_page?(page)
-    page.present? && page.organization_id.nil? && page.user_id.nil? && embeddable_record?(page)
+    page.present? && page.organization_id.nil? && page.user_id.nil? && page.event_id.nil? && embeddable_record?(page)
   end
   private_class_method :embeddable_standalone_page?
 
@@ -391,7 +466,8 @@ class PageTag < LiquidTagBase
   private_class_method :shadowed_two_segment?
 
   def self.build_page_url(path, page:, origin_base:)
-    if page&.organization_id.nil? && page&.user_id.nil? && page&.subforem_id.present? && !Subforem.disabled_by_env?
+    if page&.organization_id.nil? && page&.user_id.nil? && page&.event_id.nil? &&
+       page&.subforem_id.present? && !Subforem.disabled_by_env?
       domain = Subforem.cached_id_to_domain_hash[page.subforem_id]
       URL.url(path, domain)
     elsif origin_base.present?

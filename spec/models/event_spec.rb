@@ -413,4 +413,96 @@ RSpec.describe Event do
       expect(event.reload.processed_html).to be_nil
     end
   end
+
+  describe "owned pages" do
+    it "orders markdown pages, embed pages, showcase, and syncs page slugs on rename" do
+      event = create(:event, event_name_slug: "summit", event_variation_slug: "v1")
+      second = create(:page, event: event, slug: event.page_slug_for("second"), position: 2)
+      first = create(:page, event: event, slug: event.page_slug_for("first"), position: 1, show_in_navigation: false)
+      embed = create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("schedule"),
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Schedule</div>",
+      )
+
+      expect(event.ordered_pages).to eq([first, second])
+      expect(event.navigation_pages).to eq([second])
+      expect(event.ordered_embed_pages).to eq([embed])
+      expect(event.main_page).to be_nil
+      expect(event.readme_page?).to be(false)
+
+      readme = create(:page, event: event, slug: event.page_slug_for("readme"), position: 0)
+      expect(event.main_page).to eq(readme)
+      expect(event.showcase_page).to eq(readme)
+      expect(event.readme_page?).to be(true)
+
+      event.update!(event_name_slug: "summit-new", event_variation_slug: "2026")
+      expect(readme.reload.slug).to eq("events/summit-new/2026/readme")
+      expect(first.reload.slug).to eq("events/summit-new/2026/first")
+      expect(embed.reload.slug).to eq("events/summit-new/2026/embed/schedule")
+
+      expect { event.destroy! }.to change(Page, :count).by(-4)
+    end
+
+    it "fails event validation instead of raising RecordInvalid on owned page slug collision" do
+      event = create(:event, event_name_slug: "summit-src", event_variation_slug: "v1")
+      owned = create(:page, event: event, slug: event.page_slug_for("faq"))
+      create(:page, slug: "events/summit-dst/v1/faq")
+
+      expect(event.update(event_name_slug: "summit-dst")).to be(false)
+      expect(event.errors[:base]).to be_present
+      expect(owned.reload.slug).to eq("events/summit-src/v1/faq")
+    end
+
+    it "enqueues edge cache purge with owned page and embed fallback paths when updated or destroyed" do
+      event = create(:event, published: true, event_name_slug: "purge-evt", event_variation_slug: "2026")
+      create(:page, event: event, slug: event.page_slug_for("agenda"), title: "Agenda")
+      create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("widget"),
+        title: "Widget",
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Widget</div>",
+      )
+      allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_async)
+
+      event.update!(published: false)
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt/2026",
+          "/events/purge-evt/2026/p/agenda",
+          "/events/purge-evt/2026/embed/widget?mode=embed",
+        ),
+      )
+
+      event.update!(event_name_slug: "purge-evt-v2")
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt-v2/2026",
+          "/events/purge-evt-v2/2026/p/agenda",
+          "/events/purge-evt-v2/2026/embed/widget?mode=embed",
+          "/events/purge-evt/2026",
+          "/events/purge-evt/2026/p/agenda",
+          "/events/purge-evt/2026/embed/widget?mode=embed",
+        ),
+      )
+
+      event.destroy!
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt-v2/2026",
+          "/events/purge-evt-v2/2026/p/agenda",
+          "/events/purge-evt-v2/2026/embed/widget?mode=embed",
+        ),
+      )
+    end
+  end
 end

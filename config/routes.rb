@@ -215,6 +215,10 @@ Rails.application.routes.draw do
     get "/conferences", to: "events#conferences", as: :conferences
     get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/p/:page_suffix", to: "events#show", as: :event_custom_page
+    get "events/:event_name_slug/:event_variation_slug/embed/:slug_suffix",
+        to: "organization_embeds#show",
+        as: :event_embed_page
     get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status",
                                                                        as: :event_signup_status
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup

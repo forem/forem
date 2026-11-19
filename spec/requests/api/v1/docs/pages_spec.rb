@@ -25,7 +25,7 @@ RSpec.describe "api/v1/pages" do
 
         ### Pages Overview:
         - Pages are custom static or dynamic views hosted on the Forem instance.
-        - Publicly visible unless restricted.
+        - Publicly visible unless restricted; pages belonging to unpublished events require page or event admin authentication.
         - Helpful for building custom menus, rendering site policies, or embedding custom forms.
         - Embed-only HTML pages (`template: "embed_html"`) are never included in this listing.
 
@@ -37,6 +37,9 @@ RSpec.describe "api/v1/pages" do
 
         parameter name: :organization_id, in: :query, required: false,
                   description: "Filter pages belonging to a specific organization ID, ordered by position.",
+                  schema: { type: :integer, format: :int64 }
+        parameter name: :event_id, in: :query, required: false,
+                  description: "Filter pages belonging to a specific event ID, ordered by position.",
                   schema: { type: :integer, format: :int64 }
         parameter name: :kind, in: :query, required: false,
                   description: "Set to `embed` with `organization_id` to list the organization's embed-only HTML pages. Requires authorization.",
@@ -68,14 +71,15 @@ RSpec.describe "api/v1/pages" do
 
         ### Body Parameter Guidelines:
         - **title**: Heading displayed at the top of the page.
-        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).
+        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`). For event pages, scoped under `events/{event_name_slug}/{event_variation_slug}/{suffix}` (with `.../readme` acting as the optional Showcase/README landing view).
         - **body_markdown**: Content written in Markdown format.
         - **body_json**: Optional JSON payload for API-consumed/structured data pages.
         - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.
         - **template**: Layout styling options (`contained` or custom layouts). Organization Markdown pages always use `full_within_layout`; send `embed_html` to create an organization embed page (see below).
         - **organization_id**: Optional ID of the organization this page belongs to.
-        - **position**: Optional display order position for organization pages.
-        - **show_in_navigation**: Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API.
+        - **event_id**: Optional ID of the event this page belongs to.
+        - **position**: Optional display order position for organization or event pages.
+        - **show_in_navigation**: Whether the page appears in organization or event tabs. Defaults to true. Only non-Showcase organization or event pages can set false. Hidden pages remain public at their URL and through the API.
 
         ### Organization embed pages:
         Send `template: "embed_html"` with `organization_id` to create an embed-only HTML page, served only inside sandboxed iframes through `{% embed %}`. The same callers who manage the organization's pages can create one, and site page admins must supply `organization_id` too.
@@ -104,6 +108,8 @@ RSpec.describe "api/v1/pages" do
                                            description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
                       organization_id: { type: :integer, format: :int64,
                                          description: "The ID of the organization the page belongs to" },
+                      event_id: { type: :integer, format: :int64,
+                                  description: "The ID of the event the page belongs to" },
                       position: { type: :integer, format: :int32,
                                   description: "Display order position for organization pages" },
                       show_in_navigation: { type: :boolean, default: true,

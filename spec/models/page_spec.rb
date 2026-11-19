@@ -451,4 +451,84 @@ RSpec.describe Page do
       end
     end
   end
+
+  describe "event-owned pages and showcase" do
+    let(:event) { create(:event, event_name_slug: "ruby-conf", event_variation_slug: "2026") }
+
+    it "rejects assigning multiple owners to a page" do
+      org = create(:organization)
+      page = build(:page, organization: org, event: event, slug: event.page_slug_for("about"))
+
+      expect(page).not_to be_valid
+      expect(page.errors[:base]).to include(I18n.t("models.page.multiple_owners_not_allowed"))
+    end
+
+    it "allows non-showcase event pages to be hidden from tabs, but requires readme showcase pages to stay visible" do
+      hidden = create(:page, event: event, slug: event.page_slug_for("secret"), show_in_navigation: false)
+      expect(hidden).to be_valid
+
+      hidden.slug = event.page_slug_for("readme")
+      expect(hidden).not_to be_valid
+      expect(hidden.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+
+      hidden_showcase = build(:page, event: event, slug: event.page_slug_for("readme"), show_in_navigation: false)
+      expect(hidden_showcase).not_to be_valid
+      expect(hidden_showcase.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+    end
+
+    it "identifies readme event pages as event_showcase? and excludes embed_html pages" do
+      readme = create(:page, event: event, slug: event.page_slug_for("readme"))
+      custom = create(:page, event: event, slug: event.page_slug_for("agenda"))
+      embed = create(
+        :page,
+        event: event,
+        template: Page::EMBED_HTML_TEMPLATE,
+        slug: event.embed_page_slug_for("readme"),
+        body_markdown: nil,
+        body_html: "<p>Embed</p>",
+      )
+
+      expect(readme.event_showcase?).to be(true)
+      expect(custom.event_showcase?).to be(false)
+      expect(embed.event_showcase?).to be(false)
+    end
+
+    it "validates event non-embed and embed_html slug formats" do
+      invalid_non_embed = build(:page, event: event, slug: "schedule")
+      expect(invalid_non_embed).not_to be_valid
+      expect(invalid_non_embed.errors[:slug]).to be_present
+
+      multi_segment_non_embed = build(:page, event: event, slug: "#{event.page_slug_prefix}/nested/schedule")
+      expect(multi_segment_non_embed).not_to be_valid
+      expect(multi_segment_non_embed.errors[:slug]).to be_present
+
+      invalid_embed = build(
+        :page,
+        event: event,
+        template: Page::EMBED_HTML_TEMPLATE,
+        slug: "wrong-prefix/embed/widget",
+        body_markdown: nil,
+        body_html: "<p>Widget</p>",
+      )
+      expect(invalid_embed).not_to be_valid
+      expect(invalid_embed.errors[:slug]).to be_present
+    end
+
+    it "resolves canonical Page#path for event embed, showcase, and custom pages" do
+      valid_embed = create(
+        :page,
+        event: event,
+        template: Page::EMBED_HTML_TEMPLATE,
+        slug: event.embed_page_slug_for("widget"),
+        body_markdown: nil,
+        body_html: "<p>Widget</p>",
+      )
+      showcase_page = create(:page, event: event, slug: event.page_slug_for("readme"))
+      custom_page = create(:page, event: event, slug: event.page_slug_for("speakers"))
+
+      expect(valid_embed.path).to eq("/events/ruby-conf/2026/embed/widget")
+      expect(showcase_page.path).to eq("/events/ruby-conf/2026")
+      expect(custom_page.path).to eq("/events/ruby-conf/2026/p/speakers")
+    end
+  end
 end

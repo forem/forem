@@ -80,6 +80,8 @@ fr:
       too_many:
         one: Vous pouvez inviter jusqu'à %{count} co-auteur.
         other: Vous pouvez inviter jusqu'à %{count} co-auteurs.
+    event:
+      owned_page_slug_taken: Entre en conflit avec un slug de page existant
     feedback_message:
       reported: "(vous) avez déjà signalé cette URL."
     github_issue:
@@ -120,7 +122,8 @@ fr:
       embed_html_template_immutable: ne peut pas être converti vers ou depuis embed_html.
       embed_html_too_complex: dépasse les limites de profondeur d'imbrication ou de nombre d'éléments HTML sécurisées.
       embed_html_too_large: ne peut pas dépasser %{max_kb} Ko.
-      multiple_owners_not_allowed: La page ne peut pas appartenir à la fois à une organisation et à un utilisateur.
+      event_page_invalid_slug: doit utiliser le format de chemin de page d'événement (%{prefix}<slug>).
+      multiple_owners_not_allowed: La page ne peut appartenir qu'à un seul propriétaire (organisation, utilisateur ou événement).
       slug_blank: ne peut pas être vide
       organization_embed_pages_limit_reached: Cette organisation a atteint le maximum de %{max} pages intégrées.
       user_embed_pages_limit_reached: Vous avez atteint le maximum de %{max} pages intégrées.

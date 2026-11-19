@@ -8,7 +8,12 @@ const PLACEHOLDER = `Use Markdown and Liquid tags to customize your org page.\n\
 
 const HEADER_HEIGHT = 56;
 
-export const OrgPageEditor = ({ defaultValue, textAreaName, previewUrl }) => {
+export const OrgPageEditor = ({
+  defaultValue,
+  textAreaName,
+  previewUrl,
+  placeholder,
+}) => {
   const [previewShowing, setPreviewShowing] = useState(false);
   const [previewHTML, setPreviewHTML] = useState('');
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -137,7 +142,7 @@ export const OrgPageEditor = ({ defaultValue, textAreaName, previewUrl }) => {
           onChange={handleChange}
           textAreaId={TEXTAREA_ID}
           textAreaName={textAreaName}
-          placeholder={PLACEHOLDER}
+          placeholder={placeholder || PLACEHOLDER}
           ariaLabel="Page content"
           version="v2"
         />

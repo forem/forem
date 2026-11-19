@@ -44,6 +44,10 @@
           <span class="crayons-tag crayons-tag--monochrome fs-xs ml-2" title="Belongs to a user">
             User: @<%= page.user.username %>
           </span>
+        <% elsif page.event.present? %>
+          <span class="crayons-tag crayons-tag--monochrome fs-xs ml-2" title="Belongs to an event">
+            Event: <%= page.event.title %>
+          </span>
         <% end %>
       </div>
       <div class="ml-auto flex gap-2">

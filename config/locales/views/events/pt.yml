@@ -51,3 +51,13 @@ pt:
         register_description: Avise os organizadores que você tem interesse e receba lembretes do evento.
         visit_website: Visitar o site do evento
         register_external: Inscrever-se no evento
+      pages:
+        breadcrumbs:
+          challenges: Desafios
+        tabs:
+          nav_label: Navegação do evento
+          overview: Visão geral
+          live_stream: Transmissão ao vivo
+          challenge_details: Detalhes do desafio
+          event_details: Detalhes do evento
+          showcase: Showcase
