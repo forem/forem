@@ -149,6 +149,7 @@ pt:
       article:
         approved: Approved
         email_digest_eligible: Digest Eligible
+        hide_billboard_locations: Ocultar locais de banners
         author_id: Author ID
         comments: comments
         contains_video: Contains video

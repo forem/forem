@@ -362,7 +362,8 @@ module CommentsHelper
                     ""
                   end
 
-    billboard_url = if @current_comment_index.present? && !@shown_billboard
+    skip_mid_comments_billboard = @shown_billboard || @article&.billboard_location_hidden?(:post_comments_mid)
+    billboard_url = if @current_comment_index.present? && !skip_mid_comments_billboard
                       billboard_async_path(:post_comments_mid, article: @article).to_s
                     else
                       ""
@@ -388,7 +389,7 @@ module CommentsHelper
       is_view_root ? true : false,
       Time.current.year,
       @current_comment_index&.to_i,
-      @shown_billboard ? true : false,
+      skip_mid_comments_billboard ? true : false,
     )
 
     result = ForemNative.render_comment_tree(static_ctx, view_buf, authors_buf, nodes_buf, tree.size)

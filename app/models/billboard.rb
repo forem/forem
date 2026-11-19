@@ -58,17 +58,17 @@ class Billboard < ApplicationRecord
   EMBEDDED_PLACEMENTS = %w[external_feed].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  POST_PLACEMENTS = %w[post_fixed_bottom
+                       post_body_bottom
+                       post_body_bottom_secondary
+                       post_sidebar
+                       post_sidebar_secondary
+                       post_comments
+                       post_comments_secondary
+                       post_comments_mid].freeze
   # Placement areas that pages load in the context of the article or page they're on
   # (see BillboardHelper#billboard_async_path)
-  CONTEXTUAL_PLACEMENTS = %w[page_fixed_bottom
-                             post_fixed_bottom
-                             post_body_bottom
-                             post_body_bottom_secondary
-                             post_sidebar
-                             post_sidebar_secondary
-                             post_comments
-                             post_comments_secondary
-                             post_comments_mid].freeze
+  CONTEXTUAL_PLACEMENTS = (["page_fixed_bottom"] + POST_PLACEMENTS).freeze
   HOME_PAGE_PLACEMENTS = %w[feed_first
                             feed_second
                             feed_third
@@ -364,6 +364,11 @@ class Billboard < ApplicationRecord
     selected_number.to_i
   end
 
+  def self.human_readable_placement_area(area)
+    index = ALLOWED_PLACEMENT_AREAS.find_index(area.to_s)
+    index ? ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[index] : area.to_s
+  end
+
   def processed_html_final
     # This is a final non-database-driven step to adjust processed html
     # It is sort of a hack to avoid having to reprocess all articles
@@ -381,7 +386,7 @@ class Billboard < ApplicationRecord
   end
 
   def human_readable_placement_area
-    ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[ALLOWED_PLACEMENT_AREAS.find_index(placement_area)]
+    self.class.human_readable_placement_area(placement_area)
   end
 
   def validate_tag

@@ -17,6 +17,8 @@ pt:
       invalid_date: deve ser inserido no formato DD/MM/AAAA com data atual ou passada
       series_unpermitted: deve ser uma série que você tem permissão para postar
       invalid_coauthor: devem ser IDs de usuário válidos
+      invalid_hidden_billboard_locations: deve ser uma lista de locais de banners de postagem válidos
+      invalid_hidden_billboard_locations_list: 'contém locais de banners inválidos: %{locations}'
       same_author: não deve ser o mesmo usuário que o autor
       must_not_have_spaces: não deve ter espaços
       published: Publicado

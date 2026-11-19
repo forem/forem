@@ -335,6 +335,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_belong_to_organization,
            unless: -> { co_author_ids.blank? || organization_id.blank? }
+  validate :validate_hidden_billboard_locations, if: :will_save_change_to_hidden_billboard_locations?
 
   before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
@@ -1309,6 +1310,25 @@ class Article < ApplicationRecord
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
+  def hidden_billboard_locations=(value)
+    if value.nil?
+      super([])
+    elsif value.is_a?(Array)
+      cleaned = value.filter_map { |loc| loc.to_s.strip.presence }.uniq
+      known, unknown = cleaned.partition { |loc| Billboard::POST_PLACEMENTS.include?(loc) }
+      super((Billboard::POST_PLACEMENTS & known) + unknown)
+    else
+      super
+    end
+  end
+
+  def billboard_location_hidden?(placement_area)
+    return false unless has_attribute?(:hidden_billboard_locations)
+
+    locations = hidden_billboard_locations
+    locations.is_a?(Array) && locations.include?(placement_area.to_s)
+  end
+
   def plain_html
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.search(".highlight__panel").each(&:remove)
@@ -1845,6 +1865,21 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
   end
 
+  def validate_hidden_billboard_locations
+    unless hidden_billboard_locations.is_a?(Array)
+      errors.add(:hidden_billboard_locations, I18n.t("models.article.invalid_hidden_billboard_locations"))
+      return
+    end
+
+    invalid_locations = hidden_billboard_locations - Billboard::POST_PLACEMENTS
+    return if invalid_locations.empty?
+
+    errors.add(
+      :hidden_billboard_locations,
+      I18n.t("models.article.invalid_hidden_billboard_locations_list", locations: invalid_locations.join(", ")),
+    )
+  end
+
   # Validates per-article and hourly @-mention rate limits based on the author's trust tier.
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
@@ -1989,8 +2024,15 @@ class Article < ApplicationRecord
   end
 
   def bust_cache(destroying: false)
-    purge
-    async_bust(destroying: destroying)
+    if !destroying && saved_change_to_hidden_billboard_locations?
+      ActiveRecord.after_all_transactions_commit do
+        purge
+        async_bust(destroying: destroying)
+      end
+    else
+      purge
+      async_bust(destroying: destroying)
+    end
     touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
