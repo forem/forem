@@ -6,11 +6,13 @@ use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use magnus::{
+    encoding::EncodingCapable,
     function, method,
     prelude::*,
     r_hash::ForEach,
-    value::{Qfalse, Qtrue},
-    Error, Float, Integer, RArray, RHash, RString, RStruct, Ruby, Symbol, Value,
+    rb_sys::{protect, AsRawId, AsRawValue, FromRawValue},
+    value::{Qfalse, Qtrue, QUNDEF},
+    Error, Fixnum, Float, Integer, RArray, RHash, RString, RStruct, Ruby, Symbol, Value,
 };
 
 static RNG_COUNTER: AtomicU64 = AtomicU64::new(1);
@@ -1757,6 +1759,243 @@ fn scrub_agent_session_messages(ruby: &Ruby, messages: RArray) -> Option<RArray>
     Some(result_ary)
 }
 
+#[derive(Clone, Copy)]
+struct RedactionLookupCtx {
+    metadata_key: rb_sys::VALUE,
+    redactions_key: rb_sys::VALUE,
+    name_key: rb_sys::VALUE,
+    pattern_key: rb_sys::VALUE,
+    count_key: rb_sys::VALUE,
+    match_key: rb_sys::VALUE,
+    c_hash: rb_sys::VALUE,
+    c_array: rb_sys::VALUE,
+    c_string: rb_sys::VALUE,
+    utf8_enc: magnus::encoding::Index,
+    id_default: rb_sys::ID,
+    id_default_proc: rb_sys::ID,
+    id_compare_by_identity: rb_sys::ID,
+    qnil: rb_sys::VALUE,
+    qfalse: rb_sys::VALUE,
+    qtrue: rb_sys::VALUE,
+    qundef: rb_sys::VALUE,
+}
+
+#[inline]
+unsafe fn check_plain_hash_missing(hash_raw: rb_sys::VALUE, ctx: &RedactionLookupCtx) -> bool {
+    if rb_sys::rb_funcallv(hash_raw, ctx.id_default, 0, std::ptr::null()) != ctx.qnil {
+        return false;
+    }
+    if rb_sys::rb_funcallv(hash_raw, ctx.id_default_proc, 0, std::ptr::null()) != ctx.qnil {
+        return false;
+    }
+    if rb_sys::rb_hash_size_num(hash_raw) > 0 {
+        let cbi = rb_sys::rb_funcallv(hash_raw, ctx.id_compare_by_identity, 0, std::ptr::null());
+        if cbi != ctx.qfalse && cbi != ctx.qnil {
+            return false;
+        }
+    }
+    true
+}
+
+// A lookup without running defaults. A missing key on an unusual Hash must
+// defer so Ruby can apply Hash#dig and Hash#[] exactly as before.
+#[inline]
+unsafe fn redaction_field_raw(
+    hash_raw: rb_sys::VALUE,
+    key_raw: rb_sys::VALUE,
+    plain_checked: &mut bool,
+    ctx: &RedactionLookupCtx,
+) -> Option<rb_sys::VALUE> {
+    // SAFETY: rb_hash_lookup2 accepts Qundef as its missing value, and we never return it to Ruby.
+    let value = rb_sys::rb_hash_lookup2(hash_raw, key_raw, ctx.qundef);
+    if value != ctx.qundef {
+        return Some(value);
+    }
+
+    if !*plain_checked {
+        if !check_plain_hash_missing(hash_raw, ctx) {
+            return None;
+        }
+        *plain_checked = true;
+    }
+    Some(ctx.qnil)
+}
+
+#[inline]
+unsafe fn redaction_field_with_alias_raw(
+    hash_raw: rb_sys::VALUE,
+    key_raw: rb_sys::VALUE,
+    alias_key_raw: rb_sys::VALUE,
+    plain_checked: &mut bool,
+    ctx: &RedactionLookupCtx,
+) -> Option<rb_sys::VALUE> {
+    let value = redaction_field_raw(hash_raw, key_raw, plain_checked, ctx)?;
+    if value != ctx.qnil && value != ctx.qfalse {
+        Some(value)
+    } else {
+        redaction_field_raw(hash_raw, alias_key_raw, plain_checked, ctx)
+    }
+}
+
+unsafe fn aggregate_transcript_redactions_inner(
+    messages_raw: rb_sys::VALUE,
+    messages_len: usize,
+    ctx: &RedactionLookupCtx,
+    counts: &mut forem_core::redaction_metadata::RedactionCounts,
+) -> bool {
+    for i in 0..messages_len {
+        let msg_raw = rb_sys::rb_ary_entry(messages_raw, i as std::os::raw::c_long);
+        if Value::from_raw(msg_raw).class().as_raw() != ctx.c_hash {
+            return false;
+        }
+        let mut msg_plain_checked = false;
+        let Some(meta_raw) =
+            redaction_field_raw(msg_raw, ctx.metadata_key, &mut msg_plain_checked, ctx)
+        else {
+            return false;
+        };
+        if meta_raw == ctx.qnil {
+            continue;
+        }
+        if Value::from_raw(meta_raw).class().as_raw() != ctx.c_hash {
+            return false;
+        }
+        let mut meta_plain_checked = false;
+        let Some(reds_raw) =
+            redaction_field_raw(meta_raw, ctx.redactions_key, &mut meta_plain_checked, ctx)
+        else {
+            return false;
+        };
+        if reds_raw == ctx.qnil {
+            continue;
+        }
+        let reds_val = Value::from_raw(reds_raw);
+        if reds_val.class().as_raw() != ctx.c_array {
+            return false;
+        }
+        let Some(reds_ary) = RArray::from_value(reds_val) else {
+            return false;
+        };
+        let reds_len = reds_ary.len();
+        for j in 0..reds_len {
+            let red_raw = rb_sys::rb_ary_entry(reds_raw, j as std::os::raw::c_long);
+            if Value::from_raw(red_raw).class().as_raw() != ctx.c_hash {
+                return false;
+            }
+            let mut red_plain_checked = false;
+            let Some(name_raw) = redaction_field_with_alias_raw(
+                red_raw,
+                ctx.name_key,
+                ctx.pattern_key,
+                &mut red_plain_checked,
+                ctx,
+            ) else {
+                return false;
+            };
+            let Some(count_raw) = redaction_field_with_alias_raw(
+                red_raw,
+                ctx.count_key,
+                ctx.match_key,
+                &mut red_plain_checked,
+                ctx,
+            ) else {
+                return false;
+            };
+            let count_val = Value::from_raw(count_raw);
+            let count = if let Some(fix) = Fixnum::from_value(count_val) {
+                fix.to_i64()
+            } else if let Some(int) = Integer::from_value(count_val) {
+                let Ok(v) = int.to_i64() else {
+                    return false;
+                };
+                v
+            } else {
+                return false;
+            };
+            let name_val = Value::from_raw(name_raw);
+            if name_val.class().as_raw() != ctx.c_string {
+                return false;
+            }
+            let Some(name_rstr) = RString::from_value(name_val) else {
+                return false;
+            };
+            if name_rstr.enc_get() != ctx.utf8_enc {
+                return false;
+            }
+            // The borrowed name is consumed by the pure Rust accumulator before the next lookup.
+            let Some(name_str) = json_str(&name_rstr) else {
+                return false;
+            };
+            if counts.add(name_str, count).is_none() {
+                return false;
+            }
+        }
+    }
+    true
+}
+
+fn aggregate_transcript_redactions(ruby: &Ruby, messages: RArray) -> Option<RHash> {
+    if !is_instance_of(messages.as_value(), ruby.class_array()) {
+        return None;
+    }
+
+    let keys = [
+        ruby.str_new("metadata"),
+        ruby.str_new("redactions"),
+        ruby.str_new("name"),
+        ruby.str_new("pattern_name"),
+        ruby.str_new("count"),
+        ruby.str_new("match_count"),
+    ];
+    let ctx = RedactionLookupCtx {
+        metadata_key: keys[0].as_raw(),
+        redactions_key: keys[1].as_raw(),
+        name_key: keys[2].as_raw(),
+        pattern_key: keys[3].as_raw(),
+        count_key: keys[4].as_raw(),
+        match_key: keys[5].as_raw(),
+        c_hash: ruby.class_hash().as_raw(),
+        c_array: ruby.class_array().as_raw(),
+        c_string: ruby.class_string().as_raw(),
+        utf8_enc: ruby.utf8_encindex(),
+        id_default: ruby.intern("default").as_raw(),
+        id_default_proc: ruby.intern("default_proc").as_raw(),
+        id_compare_by_identity: ruby.intern("compare_by_identity?").as_raw(),
+        qnil: ruby.qnil().as_raw(),
+        qfalse: ruby.qfalse().as_raw(),
+        qtrue: ruby.qtrue().as_raw(),
+        // SAFETY: QUNDEF is only passed as the rb_hash_lookup2 sentinel and never returned to Ruby.
+        qundef: unsafe { QUNDEF.as_value().as_raw() },
+    };
+
+    let mut counts = forem_core::redaction_metadata::RedactionCounts::default();
+    let messages_raw = messages.as_raw();
+    let messages_len = messages.len();
+
+    // SAFETY: All local state inside `protect` is `Copy`; `counts` is owned outside `protect`
+    // and is only mutated during pure-Rust `counts.add` calls that cannot raise/longjmp.
+    let ok = protect(|| unsafe {
+        if aggregate_transcript_redactions_inner(messages_raw, messages_len, &ctx, &mut counts) {
+            ctx.qtrue
+        } else {
+            ctx.qfalse
+        }
+    });
+    // Keep Ruby key strings and `messages` rooted on the C stack across the protected loop.
+    std::hint::black_box(&keys);
+    std::hint::black_box(messages);
+
+    if ok.ok()? != ctx.qtrue {
+        return None;
+    }
+
+    let result = ruby.hash_new_capa(counts.len());
+    for (name, count) in counts.into_insertion_order() {
+        result.aset(ruby.str_new(&name), count).ok()?;
+    }
+    Some(result)
+}
+
 fn add_control_class_to_codeblock(ruby: &Ruby, html: RString) -> Option<RString> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
     // borrow ends before we allocate any Ruby objects.
@@ -1924,6 +2163,123 @@ fn wrap_mentions_with_links(
     Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+fn add_target_blank_to_outbound_links(
+    ruby: &Ruby,
+    html: RString,
+    app_domain: RString,
+) -> Option<RString> {
+    if !app_domain.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Borrow `html` and `app_domain` without calling into Ruby; drop borrows before
+    // allocating any Ruby String.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let domain = unsafe { app_domain.test_as_str() }?;
+        match forem_core::html::add_target_blank_to_outbound_links(text, domain)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn remove_nested_linebreak_in_list_fragment(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::remove_nested_linebreak_in_list_fragment(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn enforce_gif_like_videos(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::enforce_gif_like_videos(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn add_fullscreen_button_to_panel(
+    ruby: &Ruby,
+    html: RString,
+    action_html: RString,
+) -> Option<RString> {
+    if !action_html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy borrows confined to pure Rust before Ruby allocation.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let action = unsafe { action_html.test_as_str() }?;
+        match forem_core::html::add_fullscreen_button_to_panel(text, action)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn postprocess_rendered_html(
+    ruby: &Ruby,
+    html: RString,
+    app_domain: RString,
+    fullscreen_action_html: RString,
+    existing_usernames: RArray,
+    base_url: RString,
+    run_target_blank: bool,
+    normalize_document: bool,
+) -> Option<RString> {
+    if !app_domain.is_utf8_compatible_encoding()
+        || !fullscreen_action_html.is_utf8_compatible_encoding()
+        || !base_url.is_utf8_compatible_encoding()
+    {
+        return None;
+    }
+    // SAFETY: Copy owned username Strings and borrow `RString` slices only during pure-Rust
+    // computation before allocating the returned Ruby String.
+    let usernames_vec: Vec<String> = {
+        let slice = unsafe { existing_usernames.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_ascii_lowercase());
+        }
+        out
+    };
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let domain = unsafe { app_domain.test_as_str() }?;
+        let action = unsafe { fullscreen_action_html.test_as_str() }?;
+        let url_str = unsafe { base_url.test_as_str() }?;
+        match forem_core::html::postprocess_rendered_html(
+            text,
+            domain,
+            action,
+            &usernames_vec,
+            url_str,
+            run_target_blank,
+            normalize_document,
+        )? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
 #[allow(clippy::too_many_arguments)]
 fn calendar_grid_days_html(
     grid_start_jd: Integer,
@@ -2003,9 +2359,9 @@ fn json_str(value: &RString) -> Option<&str> {
     std::str::from_utf8(unsafe { value.as_slice() }).ok()
 }
 
-// `rb_equal` short-circuits on identity, and `Class#==` is the C-level identity check.
+// Exact class identity check (`rb_class_of(value) == class`), rejecting subclasses and singleton classes.
 fn is_instance_of(value: Value, class: magnus::RClass) -> bool {
-    value.class().equal(class).unwrap_or(false)
+    value.class().as_raw() == class.as_raw()
 }
 
 /// Writes a supported Ruby hash key into `w`, rejecting non-string keys when `string_keys_only` is true.
@@ -2710,10 +3066,7 @@ fn extract_strict_i64_field(ruby: &Ruby, val: Value) -> Result<Option<i64>, bool
         let parsed = unsafe { forem_core::metal::parse_strict_integer_i64(rstr.as_slice()) };
         return parsed.map(Some).ok_or(false);
     }
-    if Float::from_value(val).is_some() {
-        return Err(false);
-    }
-    Err(true)
+    Err(Float::from_value(val).is_none())
 }
 
 fn extract_name_bytes(ruby: &Ruby, val: Value, allow_symbol: bool) -> Result<Option<Vec<u8>>, ()> {
@@ -5087,6 +5440,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(scrub_agent_session_messages, 1),
     )?;
     native_mod.define_singleton_method(
+        "aggregate_transcript_redactions",
+        function!(aggregate_transcript_redactions, 1),
+    )?;
+    native_mod.define_singleton_method(
         "add_control_class_to_codeblock",
         function!(add_control_class_to_codeblock, 1),
     )?;
@@ -5130,6 +5487,26 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "extract_mentioned_usernames",
         function!(extract_mentioned_usernames, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "add_target_blank_to_outbound_links",
+        function!(add_target_blank_to_outbound_links, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "remove_nested_linebreak_in_list_fragment",
+        function!(remove_nested_linebreak_in_list_fragment, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "enforce_gif_like_videos",
+        function!(enforce_gif_like_videos, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "add_fullscreen_button_to_panel",
+        function!(add_fullscreen_button_to_panel, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "postprocess_rendered_html",
+        function!(postprocess_rendered_html, 7),
     )?;
     native_mod.define_singleton_method(
         "calendar_grid_days_html",

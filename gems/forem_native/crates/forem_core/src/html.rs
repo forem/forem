@@ -56,6 +56,7 @@ enum Tag {
     // Inline / HTML5 containers
     A,
     Svg,
+    Video,
     Html5Container,
     Inline,
 }
@@ -96,6 +97,7 @@ impl Tag {
             b"title" => Some(Self::Title),
             b"a" => Some(Self::A),
             b"svg" => Some(Self::Svg),
+            b"video" => Some(Self::Video),
             b"article" | b"aside" | b"del" | b"details" | b"figure" | b"footer" | b"header"
             | b"ins" | b"main" | b"nav" | b"section" => Some(Self::Html5Container),
             b"abbr" | b"add" | b"b" | b"big" | b"circle" | b"cite" | b"defs" | b"dfn"
@@ -103,7 +105,7 @@ impl Tag {
             | b"line" | b"mark" | b"path" | b"polygon" | b"polyline" | b"q" | b"rect" | b"rp"
             | b"rt" | b"ruby" | b"s" | b"samp" | b"small" | b"source" | b"span" | b"stop"
             | b"strike" | b"strong" | b"sub" | b"summary" | b"sup" | b"time" | b"tt" | b"u"
-            | b"use" | b"var" | b"video" => Some(Self::Inline),
+            | b"use" | b"var" => Some(Self::Inline),
             _ => None,
         }
     }
@@ -182,6 +184,7 @@ impl Tag {
                 | Self::Code
                 | Self::A
                 | Self::Svg
+                | Self::Video
                 | Self::Html5Container
                 | Self::Inline
         )
@@ -286,6 +289,7 @@ fn is_valid_child(parent: Option<Tag>, child: Tag, stack: &[Frame], in_code: boo
             | Tag::Dt
             | Tag::A
             | Tag::Code
+            | Tag::Video
             | Tag::Inline,
         ) => child.is_phrasing_child(),
         Some(Tag::Br | Tag::Img | Tag::Hr | Tag::Col) => false,
@@ -2052,6 +2056,1169 @@ pub fn extract_mentioned_usernames(html: &str) -> Option<Vec<String>> {
     Some(usernames)
 }
 
+#[derive(Clone, Copy, Debug)]
+struct AttrSpan {
+    name_start: usize,
+    name_end: usize,
+    val_start: usize,
+    val_end: usize,
+}
+
+/// Parses attribute `(name, value)` byte ranges from an already-validated canonical opening tag.
+fn parse_canonical_tag_attrs(
+    bytes: &[u8],
+    name_end: usize,
+    tag_end: usize,
+) -> ([AttrSpan; 16], usize) {
+    let mut attrs = [AttrSpan {
+        name_start: 0,
+        name_end: 0,
+        val_start: 0,
+        val_end: 0,
+    }; 16];
+    let mut count = 0usize;
+    let mut pos = name_end;
+
+    while pos + 1 < tag_end && bytes[pos] == b' ' {
+        pos += 1;
+        let attr_start = pos;
+        while pos < tag_end && bytes[pos] != b'=' {
+            pos += 1;
+        }
+        let attr_end = pos;
+        // Skip `="`
+        pos += 2;
+        let val_start = pos;
+        while pos < tag_end && bytes[pos] != b'"' {
+            pos += 1;
+        }
+        let val_end = pos;
+        pos += 1;
+        if count < attrs.len() {
+            attrs[count] = AttrSpan {
+                name_start: attr_start,
+                name_end: attr_end,
+                val_start,
+                val_end,
+            };
+            count += 1;
+        }
+    }
+
+    (attrs, count)
+}
+
+#[inline]
+fn is_safe_uri_attr_value(val: &[u8]) -> bool {
+    // `parse_opening_tag` already ensures `0x21..=0x7E` and only `&amp;`/`&lt;`/`&gt;`.
+    // Reject `&lt;` / `&gt;` conservatively and permit known-safe URI prefixes or relative
+    // paths with no `:` or `&`.
+    let has_lt_gt_entity = val.windows(4).any(|w| w == b"&lt;" || w == b"&gt;");
+    if has_lt_gt_entity {
+        return false;
+    }
+
+    if val.starts_with(b"http://")
+        || val.starts_with(b"https://")
+        || val.starts_with(b"//")
+        || val.starts_with(b"/")
+        || val.starts_with(b"#")
+        || val.starts_with(b"mailto:")
+        || val.starts_with(b"tel:")
+        || val.starts_with(b"ftp://")
+    {
+        return true;
+    }
+
+    !val.contains(&b':') && !val.contains(&b'&')
+}
+
+/// Validates that all `href` and `src` attributes on a canonical opening tag pass
+/// `Loofah::HTML5::Scrub.scrub_uri_attribute` without modification.
+fn all_uri_attrs_safe(bytes: &[u8], name_end: usize, tag_end: usize) -> bool {
+    let (attrs, count) = parse_canonical_tag_attrs(bytes, name_end, tag_end);
+    for span in &attrs[..count] {
+        let name = &bytes[span.name_start..span.name_end];
+        if (name == b"href" || name == b"src")
+            && !is_safe_uri_attr_value(&bytes[span.val_start..span.val_end])
+        {
+            return false;
+        }
+    }
+    true
+}
+
+/// Validates that `html` is canonical `libxml2` HTML4 markup. When `check_root_block_spacing`
+/// is true, also enforces root-level block spacing rules matching `Nokogiri::HTML` `body.inner_html`.
+fn is_canonical_html(html: &str, check_root_block_spacing: bool) -> bool {
+    if html.is_empty() {
+        return true;
+    }
+    if html.starts_with('\u{FEFF}') {
+        return false;
+    }
+    let bytes = html.as_bytes();
+    if check_root_block_spacing && bytes[0] != b'<' {
+        return false;
+    }
+
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut root_prev_child_was_block_elem = false;
+    let mut root_had_non_ws = false;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let Some((name_start, name_end, close_end)) = parse_closing_tag_name(bytes, i)
+                else {
+                    return false;
+                };
+                if depth == 0 {
+                    return false;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return false;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                i = close_end;
+            } else {
+                let Some(parsed) = parse_opening_tag(bytes, i) else {
+                    return false;
+                };
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return false;
+                }
+                if depth == 0 {
+                    if check_root_block_spacing {
+                        if root_prev_child_was_block_elem
+                            || (root_had_non_ws && parsed.tag.is_libxml_non_inline())
+                        {
+                            return false;
+                        }
+                        root_prev_child_was_block_elem = parsed.tag.is_libxml_non_inline();
+                        root_had_non_ws = true;
+                    }
+                } else if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return false;
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return false;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_end = bytes[i..]
+                .iter()
+                .position(|&b| b == b'<')
+                .map_or(bytes.len(), |rel| i + rel);
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[i..text_end], parent_tag) {
+                return false;
+            }
+            if depth == 0 {
+                if check_root_block_spacing {
+                    root_prev_child_was_block_elem = false;
+                    root_had_non_ws = false;
+                }
+            } else {
+                record_text_on_parent(&mut stack, depth);
+            }
+            i = text_end;
+        }
+    }
+
+    depth == 0
+}
+
+fn build_merged_rel(existing: &str) -> String {
+    let mut seen = std::collections::HashSet::with_capacity(4);
+    let mut tokens: Vec<&str> = Vec::with_capacity(4);
+    for tok in existing.split_ascii_whitespace() {
+        if seen.insert(tok) {
+            tokens.push(tok);
+        }
+    }
+    if seen.insert("noopener") {
+        tokens.push("noopener");
+    }
+    if seen.insert("noreferrer") {
+        tokens.push("noreferrer");
+    }
+    tokens.join(" ")
+}
+
+/// Scrubs unsafe `href`/`src` URIs and adds `target="_blank"` + `rel="noopener noreferrer"`
+/// to outbound `a[href^="http"]` links whose `href` does not include `app_domain` on canonical
+/// `Nokogiri::HTML.fragment(html).to_html` inputs, matching `MarkdownProcessor::Parser#add_target_blank_to_outbound_links`.
+pub fn add_target_blank_to_outbound_links<'a>(
+    html: &'a str,
+    app_domain: &str,
+) -> Option<Cow<'a, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}')
+        || app_domain.is_empty()
+        || app_domain
+            .bytes()
+            .any(|b| b < 0x20 || matches!(b, b'<' | b'>' | b'"' | b'&'))
+    {
+        return None;
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                if !all_uri_attrs_safe(bytes, parsed.name_end, parsed.tag_end) {
+                    return None;
+                }
+
+                if parsed.tag == Tag::A {
+                    let (attrs, count) =
+                        parse_canonical_tag_attrs(bytes, parsed.name_end, parsed.tag_end);
+                    let mut href_span: Option<AttrSpan> = None;
+                    let mut target_span: Option<AttrSpan> = None;
+                    let mut rel_span: Option<AttrSpan> = None;
+                    for span in &attrs[..count] {
+                        match &bytes[span.name_start..span.name_end] {
+                            b"href" => href_span = Some(*span),
+                            b"target" => target_span = Some(*span),
+                            b"rel" => rel_span = Some(*span),
+                            _ => {}
+                        }
+                    }
+
+                    if let Some(href) = href_span {
+                        let href_str = &html[href.val_start..href.val_end];
+                        if href_str.starts_with("http") {
+                            let decoded_href = decode_canonical_entities(href_str);
+                            if !decoded_href.contains(app_domain) {
+                                let target_ok = target_span
+                                    .is_some_and(|t| &html[t.val_start..t.val_end] == "_blank");
+                                let new_rel = match rel_span {
+                                    Some(r) => {
+                                        let rel_str = &html[r.val_start..r.val_end];
+                                        if rel_str.contains('&') {
+                                            return None;
+                                        }
+                                        let merged = build_merged_rel(rel_str);
+                                        if merged == rel_str {
+                                            None
+                                        } else {
+                                            Some(merged)
+                                        }
+                                    }
+                                    None => Some("noopener noreferrer".to_string()),
+                                };
+
+                                if !target_ok || new_rel.is_some() {
+                                    let buf = out.get_or_insert_with(|| {
+                                        String::with_capacity(html.len() + 128)
+                                    });
+                                    buf.push_str(&html[last_copied..i]);
+                                    buf.push_str("<a");
+                                    for span in &attrs[..count] {
+                                        let name = &bytes[span.name_start..span.name_end];
+                                        if name == b"target" {
+                                            buf.push_str(" target=\"_blank\"");
+                                        } else if name == b"rel" {
+                                            if let Some(ref rel_val) = new_rel {
+                                                buf.push_str(" rel=\"");
+                                                buf.push_str(rel_val);
+                                                buf.push('"');
+                                            } else {
+                                                buf.push(' ');
+                                                buf.push_str(&html[span.name_start..span.val_end]);
+                                                buf.push('"');
+                                            }
+                                        } else {
+                                            buf.push(' ');
+                                            buf.push_str(&html[span.name_start..span.val_end]);
+                                            buf.push('"');
+                                        }
+                                    }
+                                    if target_span.is_none() {
+                                        buf.push_str(" target=\"_blank\"");
+                                    }
+                                    if rel_span.is_none() {
+                                        buf.push_str(" rel=\"noopener noreferrer\"");
+                                    }
+                                    buf.push('>');
+                                    last_copied = parsed.tag_end;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_end = bytes[i..]
+                .iter()
+                .position(|&b| b == b'<')
+                .map_or(bytes.len(), |rel| i + rel);
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[i..text_end], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+            i = text_end;
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut s) => {
+            s.push_str(&html[last_copied..]);
+            Some(Cow::Owned(s))
+        }
+    }
+}
+
+/// Removes `<br>` elements whose immediate parent is `ul`, `ol`, or `li` on canonical
+/// `Nokogiri::HTML.fragment(html).to_html` inputs, returning `Cow::Borrowed` when none exist.
+pub fn remove_nested_linebreak_in_list_fragment(html: &str) -> Option<Cow<'_, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') {
+        return None;
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Li && frame.flag && frame.child_count == 0 {
+                    // Removing the sole `<br>` leaves an empty `<li>` which libxml2 omits `</li>` for.
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+
+                if parsed.tag == Tag::Br && matches!(parent_tag, Some(Tag::Ul | Tag::Ol | Tag::Li))
+                {
+                    if depth == 0 || stack[depth - 1].prev_child_was_block_elem {
+                        return None;
+                    }
+                    stack[depth - 1].flag = true;
+                    let buf = out.get_or_insert_with(|| String::with_capacity(html.len()));
+                    buf.push_str(&html[last_copied..i]);
+                    last_copied = parsed.tag_end;
+                    i = parsed.tag_end;
+                    continue;
+                }
+
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_end = bytes[i..]
+                .iter()
+                .position(|&b| b == b'<')
+                .map_or(bytes.len(), |rel| i + rel);
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[i..text_end], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+            i = text_end;
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut s) => {
+            s.push_str(&html[last_copied..]);
+            Some(Cow::Owned(s))
+        }
+    }
+}
+
+/// Enforces GIF-like attributes (`data-gif-video="true"`, `autoplay`, `loop`, `muted`,
+/// `playsinline`, `preload`) on `<video>` elements on canonical `Nokogiri::HTML.fragment(html).to_html`
+/// inputs, matching `Html::Parser#enforce_gif_like_videos`.
+pub fn enforce_gif_like_videos(html: &str) -> Option<Cow<'_, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') {
+        return None;
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                if parsed.tag == Tag::Video {
+                    let (attrs, count) =
+                        parse_canonical_tag_attrs(bytes, parsed.name_end, parsed.tag_end);
+                    let mut has_data_gif = false;
+                    let mut data_gif_is_true = false;
+                    let mut has_autoplay = false;
+                    let mut has_loop = false;
+                    let mut has_muted = false;
+                    let mut has_playsinline = false;
+                    let mut has_preload = false;
+                    for span in &attrs[..count] {
+                        match &bytes[span.name_start..span.name_end] {
+                            b"data-gif-video" => {
+                                has_data_gif = true;
+                                data_gif_is_true = &bytes[span.val_start..span.val_end] == b"true";
+                            }
+                            b"autoplay" => has_autoplay = true,
+                            b"loop" => has_loop = true,
+                            b"muted" => has_muted = true,
+                            b"playsinline" => has_playsinline = true,
+                            b"preload" => has_preload = true,
+                            _ => {}
+                        }
+                    }
+
+                    if !(data_gif_is_true
+                        && has_autoplay
+                        && has_loop
+                        && has_muted
+                        && has_playsinline
+                        && has_preload)
+                    {
+                        let buf =
+                            out.get_or_insert_with(|| String::with_capacity(html.len() + 128));
+                        buf.push_str(&html[last_copied..i]);
+                        buf.push_str("<video");
+                        for span in &attrs[..count] {
+                            let name = &bytes[span.name_start..span.name_end];
+                            if name == b"data-gif-video" {
+                                buf.push_str(" data-gif-video=\"true\"");
+                            } else {
+                                buf.push(' ');
+                                buf.push_str(&html[span.name_start..span.val_end]);
+                                buf.push('"');
+                            }
+                        }
+                        if !has_data_gif {
+                            buf.push_str(" data-gif-video=\"true\"");
+                        }
+                        if !has_autoplay {
+                            buf.push_str(" autoplay=\"autoplay\"");
+                        }
+                        if !has_loop {
+                            buf.push_str(" loop=\"loop\"");
+                        }
+                        if !has_muted {
+                            buf.push_str(" muted=\"muted\"");
+                        }
+                        if !has_playsinline {
+                            buf.push_str(" playsinline=\"playsinline\"");
+                        }
+                        if !has_preload {
+                            buf.push_str(" preload=\"metadata\"");
+                        }
+                        buf.push('>');
+                        last_copied = parsed.tag_end;
+                    }
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_end = bytes[i..]
+                .iter()
+                .position(|&b| b == b'<')
+                .map_or(bytes.len(), |rel| i + rel);
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[i..text_end], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+            i = text_end;
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut s) => {
+            s.push_str(&html[last_copied..]);
+            Some(Cow::Owned(s))
+        }
+    }
+}
+
+#[inline]
+fn is_valid_fullscreen_action_html(action_html: &str) -> bool {
+    action_html.starts_with('<')
+        && action_html.ends_with('\n')
+        && is_canonical_html(action_html, false)
+}
+
+/// Inserts `action_html` into every `div.highlight__panel` element on canonical
+/// `Nokogiri::HTML.fragment(html).to_html` inputs, matching `Html::Parser#add_fullscreen_button_to_panel`.
+pub fn add_fullscreen_button_to_panel<'a>(
+    html: &'a str,
+    action_html: &str,
+) -> Option<Cow<'a, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') || !is_valid_fullscreen_action_html(action_html) {
+        return None;
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                if frame.flag {
+                    let buf = out.get_or_insert_with(|| {
+                        String::with_capacity(html.len() + action_html.len() + 32)
+                    });
+                    match frame.child_count {
+                        0 => {
+                            buf.push_str(&html[last_copied..frame.open_tag_end]);
+                            buf.push('\n');
+                            buf.push_str(action_html);
+                            last_copied = i;
+                        }
+                        1 if frame.first_child_is_text => {
+                            buf.push_str(&html[last_copied..i]);
+                            buf.push_str(action_html);
+                            last_copied = i;
+                        }
+                        1 => {
+                            buf.push_str(&html[last_copied..frame.open_tag_end]);
+                            buf.push('\n');
+                            buf.push_str(&html[frame.open_tag_end..i]);
+                            if frame.first_child_was_block_elem {
+                                buf.push('\n');
+                            }
+                            buf.push_str(action_html);
+                            last_copied = i;
+                        }
+                        _ => return None,
+                    }
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                let mut is_panel_div = false;
+                if parsed.tag == Tag::Div {
+                    if let Some((cs, ce)) = parsed.class_range {
+                        if has_class_token(&html[cs..ce], "highlight__panel") {
+                            if stack[..depth].iter().any(|f| f.flag) {
+                                return None;
+                            }
+                            is_panel_div = true;
+                        }
+                    }
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: is_panel_div,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_end = bytes[i..]
+                .iter()
+                .position(|&b| b == b'<')
+                .map_or(bytes.len(), |rel| i + rel);
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[i..text_end], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+            i = text_end;
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut s) => {
+            s.push_str(&html[last_copied..]);
+            Some(Cow::Owned(s))
+        }
+    }
+}
+
+/// Fuses `add_control_class_to_codeblock`, `add_control_panel_to_codeblock`, and
+/// `add_fullscreen_button_to_panel` into a single pass when no `highlight__panel` already exists.
+fn apply_codeblock_enhancements<'a>(
+    html: &'a str,
+    fullscreen_action_html: &str,
+) -> Option<Cow<'a, str>> {
+    const PANEL_OPEN: &str = "<div class=\"highlight__panel js-actions-panel\">\n";
+    const PANEL_CLOSE: &str = "</div>";
+
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') || !is_valid_fullscreen_action_html(fullscreen_action_html) {
+        return None;
+    }
+    if html.contains("highlight__panel") {
+        let step1 = add_control_class_to_codeblock(html)?;
+        let step2 = add_control_panel_to_codeblock(step1.as_ref())?;
+        return match add_fullscreen_button_to_panel(step2.as_ref(), fullscreen_action_html)? {
+            Cow::Borrowed(_) => match step2 {
+                Cow::Borrowed(_) => Some(step1),
+                Cow::Owned(s) => Some(Cow::Owned(s)),
+            },
+            Cow::Owned(s) => Some(Cow::Owned(s)),
+        };
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                if frame.flag {
+                    let buf = out.get_or_insert_with(|| {
+                        String::with_capacity(html.len() + fullscreen_action_html.len() + 128)
+                    });
+                    match frame.child_count {
+                        0 => {
+                            buf.push_str(&html[last_copied..i]);
+                            buf.push_str(PANEL_OPEN);
+                            buf.push_str(fullscreen_action_html);
+                            buf.push_str(PANEL_CLOSE);
+                            last_copied = i;
+                        }
+                        1 if frame.first_child_is_text => {
+                            buf.push_str(&html[last_copied..i]);
+                            buf.push_str(PANEL_OPEN);
+                            buf.push_str(fullscreen_action_html);
+                            buf.push_str(PANEL_CLOSE);
+                            buf.push('\n');
+                            last_copied = i;
+                        }
+                        1 => {
+                            buf.push_str(&html[last_copied..frame.open_tag_end]);
+                            buf.push('\n');
+                            buf.push_str(&html[frame.open_tag_end..i]);
+                            if frame.first_child_was_block_elem {
+                                buf.push('\n');
+                            }
+                            buf.push_str(PANEL_OPEN);
+                            buf.push_str(fullscreen_action_html);
+                            buf.push_str(PANEL_CLOSE);
+                            buf.push('\n');
+                            last_copied = i;
+                        }
+                        _ if frame.last_child_is_text && i > 0 && bytes[i - 1] == b'\n' => {
+                            buf.push_str(&html[last_copied..i]);
+                            buf.push_str(PANEL_OPEN);
+                            buf.push_str(fullscreen_action_html);
+                            buf.push_str(PANEL_CLOSE);
+                            buf.push('\n');
+                            last_copied = i;
+                        }
+                        _ => return None,
+                    }
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                let mut is_highlight_div = false;
+                if parsed.tag == Tag::Div {
+                    if let Some((cs, ce)) = parsed.class_range {
+                        let class_str = &html[cs..ce];
+                        if has_class_token(class_str, "highlight") {
+                            if stack[..depth].iter().any(|f| f.flag) {
+                                return None;
+                            }
+                            if !is_canonical_class_whitespace(class_str) {
+                                return None;
+                            }
+                            is_highlight_div = true;
+                            if !has_class_token(class_str, "js-code-highlight") {
+                                let buf = out.get_or_insert_with(|| {
+                                    String::with_capacity(
+                                        html.len() + fullscreen_action_html.len() + 128,
+                                    )
+                                });
+                                buf.push_str(&html[last_copied..ce]);
+                                buf.push_str(" js-code-highlight");
+                                last_copied = ce;
+                            }
+                        }
+                    }
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: is_highlight_div,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_end = bytes[i..]
+                .iter()
+                .position(|&b| b == b'<')
+                .map_or(bytes.len(), |rel| i + rel);
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[i..text_end], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+            i = text_end;
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut s) => {
+            s.push_str(&html[last_copied..]);
+            Some(Cow::Owned(s))
+        }
+    }
+}
+
+/// Tier 2 single-FFI HTML post-processing pipeline combining outbound link tagging/scrubbing,
+/// list `<br>` removal, image link wrapping, GIF-like `<video>` normalization, fused codeblock
+/// control class/panel/fullscreen-button insertion, table wrapping, empty `<p>` pruning,
+/// colon-emoji replacement, split `{----% raw %----}` unescaping, `@mention` linking, and
+/// optional `Nokogiri::HTML` `body.inner_html` newline normalization.
+pub fn postprocess_rendered_html<'a>(
+    html: &'a str,
+    app_domain: &str,
+    fullscreen_action_html: &str,
+    existing_usernames: &[String],
+    base_url: &str,
+    run_target_blank: bool,
+    normalize_document: bool,
+) -> Option<Cow<'a, str>> {
+    if html.is_empty() || html.bytes().all(|b| b.is_ascii_whitespace()) {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') {
+        return None;
+    }
+    if !existing_usernames.is_empty() && !is_valid_base_url(base_url) {
+        return None;
+    }
+
+    if !html.as_bytes().contains(&b'<') {
+        if !normalize_document || !is_valid_bare_text_for_document(html) {
+            return None;
+        }
+        let mut cur = format!("<p>{html}</p>");
+        if cur.as_bytes().contains(&b':') {
+            cur = crate::emoji::escape_colon_emojis_in_codeblock(&cur)?.into_owned();
+        }
+        if cur.contains("----") {
+            cur = unescape_raw_tag_in_codeblocks(&cur)?.into_owned();
+        }
+        if !existing_usernames.is_empty() && cur.as_bytes().contains(&b'@') {
+            cur = wrap_mentions_with_links(&cur, existing_usernames, base_url)?.into_owned();
+        }
+        cur.push('\n');
+        return Some(Cow::Owned(cur));
+    }
+
+    let mut cur: Cow<'a, str> = if run_target_blank {
+        add_target_blank_to_outbound_links(html, app_domain)?
+    } else {
+        if !is_canonical_html(html, normalize_document) {
+            return None;
+        }
+        Cow::Borrowed(html)
+    };
+
+    if normalize_document && run_target_blank && !is_canonical_html(cur.as_ref(), true) {
+        return None;
+    }
+
+    if cur.contains("<br") {
+        if let Cow::Owned(s) = remove_nested_linebreak_in_list_fragment(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if cur.contains("<img") {
+        if let Cow::Owned(s) = wrap_all_images_in_links(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if cur.contains("<video") {
+        if let Cow::Owned(s) = enforce_gif_like_videos(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if cur.contains("highlight") {
+        if fullscreen_action_html.is_empty() {
+            return None;
+        }
+        if let Cow::Owned(s) = apply_codeblock_enhancements(cur.as_ref(), fullscreen_action_html)? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if cur.contains("<table") {
+        if let Cow::Owned(s) = wrap_all_tables(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if cur.contains("<p") {
+        if let Cow::Owned(s) = remove_empty_paragraphs(cur.as_ref())? {
+            let trimmed = s.trim_start_matches(|c: char| c.is_ascii_whitespace());
+            if trimmed.is_empty() || !trimmed.starts_with('<') {
+                return None;
+            }
+            cur = if trimmed.len() == s.len() {
+                Cow::Owned(s)
+            } else {
+                Cow::Owned(trimmed.to_string())
+            };
+        }
+    }
+    if cur.as_bytes().contains(&b':') {
+        if let Cow::Owned(s) = crate::emoji::escape_colon_emojis_in_codeblock(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if cur.contains("----") {
+        if let Cow::Owned(s) = unescape_raw_tag_in_codeblocks(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
+    if !existing_usernames.is_empty() && cur.as_bytes().contains(&b'@') {
+        if let Cow::Owned(s) = wrap_mentions_with_links(cur.as_ref(), existing_usernames, base_url)?
+        {
+            cur = Cow::Owned(s);
+        }
+    }
+
+    if normalize_document {
+        let mut owned = cur.into_owned();
+        owned.push('\n');
+        return Some(Cow::Owned(owned));
+    }
+
+    Some(cur)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2167,5 +3334,94 @@ mod tests {
             extract_mentioned_usernames(with_ltag),
             Some(vec!["alice".to_string()])
         );
+    }
+
+    #[test]
+    fn adds_target_blank_and_rel_to_outbound_links() {
+        let html = "<p><a href=\"https://github.com\">gh</a> <a href=\"https://forem.test/post\">internal</a> <a href=\"https://example.com\" rel=\"nofollow\">ext</a></p>";
+        assert_eq!(
+            add_target_blank_to_outbound_links(html, "forem.test").as_deref(),
+            Some("<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">gh</a> <a href=\"https://forem.test/post\">internal</a> <a href=\"https://example.com\" rel=\"nofollow noopener noreferrer\" target=\"_blank\">ext</a></p>")
+        );
+
+        let already_ok = "<p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">gh</a></p>";
+        assert!(matches!(
+            add_target_blank_to_outbound_links(already_ok, "forem.test"),
+            Some(Cow::Borrowed(_))
+        ));
+
+        assert_eq!(
+            add_target_blank_to_outbound_links(
+                "<p><a href=\"javascript:alert(1)\">x</a></p>",
+                "forem.test"
+            ),
+            None
+        );
+
+        let many_tokens: Vec<String> = (0..64).map(|idx| format!("tok{idx}")).collect();
+        let rel_input = format!("{} tok0 noopener", many_tokens.join(" "));
+        let rel_html =
+            format!("<p><a href=\"https://example.com\" rel=\"{rel_input}\">ext</a></p>");
+        let expected_rel = format!("{} noopener noreferrer", many_tokens.join(" "));
+        assert_eq!(
+            add_target_blank_to_outbound_links(&rel_html, "forem.test").as_deref(),
+            Some(
+                format!(
+                    "<p><a href=\"https://example.com\" rel=\"{expected_rel}\" target=\"_blank\">ext</a></p>"
+                )
+                .as_str()
+            )
+        );
+    }
+
+    #[test]
+    fn removes_nested_linebreak_in_list_and_enforces_gif_videos() {
+        let list = "<ul>\n<li>a<br>b</li>\n</ul>";
+        assert_eq!(
+            remove_nested_linebreak_in_list_fragment(list).as_deref(),
+            Some("<ul>\n<li>ab</li>\n</ul>")
+        );
+        assert_eq!(
+            remove_nested_linebreak_in_list_fragment("<ul>\n<li><br></li>\n</ul>"),
+            None
+        );
+
+        let video = "<p><video src=\"a.mp4\"></video></p>";
+        assert_eq!(
+            enforce_gif_like_videos(video).as_deref(),
+            Some("<p><video src=\"a.mp4\" data-gif-video=\"true\" autoplay=\"autoplay\" loop=\"loop\" muted=\"muted\" playsinline=\"playsinline\" preload=\"metadata\"></video></p>")
+        );
+    }
+
+    #[test]
+    fn adds_fullscreen_button_and_runs_fused_postprocess_pipeline() {
+        let action = "<div class=\"highlight__panel-action js-fullscreen-code-action\">\n  <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20px\" height=\"20px\" viewbox=\"0 0 24 24\"><title>Enter</title>\n    <path d=\"M0 0\"></path>\n</svg>\n</div>\n";
+        let panel = "<div class=\"highlight__panel js-actions-panel\"></div>";
+        assert_eq!(
+            add_fullscreen_button_to_panel(panel, action).as_deref(),
+            Some(
+                format!("<div class=\"highlight__panel js-actions-panel\">\n{action}</div>")
+                    .as_str()
+            )
+        );
+
+        let article = "<p>Hi @alice :joy: <a href=\"https://github.com\">gh</a></p>\n<div class=\"highlight\"><pre class=\"highlight ruby\"><code>puts 1\n</code></pre></div>\n<p></p>\n";
+        let result = postprocess_rendered_html(
+            article,
+            "forem.test",
+            action,
+            &["alice".to_string()],
+            "http://forem.test",
+            true,
+            true,
+        )
+        .unwrap();
+        assert!(result.contains("target=\"_blank\" rel=\"noopener noreferrer\""));
+        assert!(result.contains("href=\"http://forem.test/alice\""));
+        assert!(result.contains("😂"));
+        assert!(result.contains("js-code-highlight"));
+        assert!(result.contains("js-fullscreen-code-action"));
+        assert!(!result.contains("<p></p>"));
+        assert!(result.ends_with("\n\n"));
     }
 }

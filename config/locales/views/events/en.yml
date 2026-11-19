@@ -10,3 +10,67 @@ en:
         description: Discover upcoming virtual events, challenges, streams, and hackathons.
       view_on_calendar: View on Calendar
       no_events: No upcoming events scheduled right now. Check back soon!
+      nav:
+        all_events: All Events
+        meetups: Meetups
+        conferences: Conferences
+      landings:
+        meetup:
+          meta:
+            title: Meetups
+            description: Discover upcoming and past developer meetups in the community.
+          heading: Meetups
+          subtitle: Connect with fellow developers in person and online at community meetups.
+          upcoming_heading: Upcoming Meetups
+          past_heading: Past Meetups
+          no_upcoming: No upcoming meetups scheduled right now. Check back soon!
+          view_all_events: View all events
+        conference:
+          meta:
+            title: Conferences
+            description: Explore upcoming and past developer conferences, summits, and community gatherings.
+          heading: Conferences
+          subtitle: Explore developer conferences, summits, and multi-day community gatherings.
+          upcoming_heading: Upcoming Conferences
+          past_heading: Past Conferences
+          no_upcoming: No upcoming conferences scheduled right now. Check back soon!
+          view_all_events: View all events
+      gathering:
+        events: Events
+        meetups: Meetups
+        conferences: Conferences
+        live: LIVE
+        upcoming: UPCOMING
+        ended: ENDED
+        details: Event Details
+        dates: Dates
+        location: Location
+        format: Format
+        host: Host
+        register_heading: Interested in attending?
+        register_description: Let organizers know you're interested and receive event reminders.
+        visit_website: Visit Event Website
+        register_external: Register for Event
+      pages:
+        breadcrumbs:
+          challenges: Challenges
+        tabs:
+          nav_label: Event navigation
+          overview: Overview
+          live_stream: Live Stream
+          challenge_details: Challenge Details
+          event_details: Event Details
+          showcase: Showcase
+      event_articles:
+        heading: "Posts from %{event_title}"
+        badge: Event Feed
+        subtitle: Updates and articles published specifically for this event.
+        article_pill: Article
+        time_ago: "%{time} ago"
+        min_read: "%{count} min read"
+        reactions_aria:
+          one: "1 reaction"
+          other: "%{count} reactions"
+        comments_aria:
+          one: "1 comment"
+          other: "%{count} comments"

@@ -48,6 +48,16 @@ RSpec.describe "Offer liquid tag", type: :liquid_tag do
       result = parse('{% offer %}<strong>Bold offer</strong>{% endoffer %}').render
       expect(result).to include("<strong>Bold offer</strong>")
     end
+
+    it "sanitizes unpermitted HTML from the offer body" do
+      template = '{% offer %}<strong>Safe</strong><script>alert(1)</script>' \
+                 '<img src="x" onerror="alert(1)"><a href="javascript:alert(1)">bad</a>{% endoffer %}'
+      result = parse(template).render
+      expect(result).to include("<strong>Safe</strong>")
+      expect(result).not_to include("<script")
+      expect(result).not_to include("onerror")
+      expect(result).not_to include("javascript:")
+    end
   end
 
   describe "validation" do

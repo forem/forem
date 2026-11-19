@@ -1,5 +1,5 @@
-ARG RUBY_VERSION=3.3.0
-ARG DEBIAN_VERSION=bullseye
+ARG RUBY_VERSION=3.3.14
+ARG DEBIAN_VERSION=bookworm
 FROM public.ecr.aws/docker/library/ruby:${RUBY_VERSION}-slim-${DEBIAN_VERSION} AS ruby-upstream
 
 ARG NODE_MAJOR=22
@@ -7,7 +7,6 @@ ARG YARN_VERSION=1
 RUN apt update && \
     apt install -y \
         curl \
-        software-properties-common \
         gnupg2 \
         && \
     mkdir -p /etc/apt/keyrings && \

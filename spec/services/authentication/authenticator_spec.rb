@@ -277,6 +277,47 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.github_username).to eq(info.nickname)
       end
 
+      # On a fresh production database the setting is never stored, so it falls
+      # back to `!User.exists?`, which turns false once the first user is saved.
+      it "grants creator roles to the first user when the setting falls back to its default",
+         :aggregate_failures do
+        allow(Settings::General).to receive(:waiting_on_first_user).and_call_original
+        expect(Settings::General.where(var: "waiting_on_first_user")).not_to exist
+        expect(User).not_to exist
+
+        user = service.call
+
+        expect(user).to be_creator
+        expect(user).to be_super_admin
+        expect(user).to be_trusted
+        expect(Settings::General.mascot_user_id).to eq(User.mascot_account.id)
+      end
+
+      it "does not grant creator roles from a stale setting value once another signup claimed them",
+         :aggregate_failures do
+        create(:user)
+        Settings::General.unscoped.create!(var: "waiting_on_first_user", value: false)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
+
+        user = service.call
+
+        expect(user).not_to be_creator
+        expect(user).not_to be_super_admin
+        expect(user).not_to be_trusted
+      end
+
+      %w[LoGiN signup].each do |nickname|
+        it "registers a GitHub user with the reserved nickname #{nickname}" do
+          auth_payload.info.nickname = nickname
+
+          user = service.call
+
+          expect(user).to be_persisted
+          expect(user.username).to match(/\A#{nickname.downcase}_\d+\z/)
+          expect(user.github_username).to eq(nickname)
+        end
+      end
+
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
 

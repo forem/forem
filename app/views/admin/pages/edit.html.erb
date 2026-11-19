@@ -4,6 +4,11 @@
   <div class="crayons-notice crayons-notice--danger mb-6">
     <strong class="fw-bold">Warning:</strong> This page belongs to the organization <strong><%= @page.organization.name %></strong> and is not a site-wide page!
   </div>
+<% elsif @page.event_id.present? %>
+  <div class="crayons-notice crayons-notice--danger mb-6">
+    <strong class="fw-bold">Warning:</strong> This page belongs to the event <strong><%= @page.event.title %></strong> and is not a site-wide page!
+    <%= link_to "Manage Event Pages", admin_event_pages_path(@page.event), class: "c-link c-link--branded ml-2" %>
+  </div>
 <% end %>
 
 <%= render "form" %>

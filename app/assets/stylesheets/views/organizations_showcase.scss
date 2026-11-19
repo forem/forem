@@ -3,7 +3,8 @@
 // ==========================================================================
 $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-embed *)';
 
-.org-header-cover ~ #index-container .crayons-article__body {
+.org-header-cover ~ #index-container .crayons-article__body,
+.event-show-layout .event-page-body {
   font-family: var(--ff-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif);
   color: var(--body-color);
   font-size: 1rem;

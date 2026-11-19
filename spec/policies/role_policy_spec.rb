@@ -8,6 +8,10 @@ describe RolePolicy do
   let(:role_super_admin) { build(:role, name: "super_admin") }
   let(:role_community_leader_l1) { build(:role, name: "community_leader_level_1") }
   let(:role_community_leader_l2) { build(:role, name: "community_leader_level_2") }
+  let(:role_event_admin) { build(:role, name: "single_resource_admin", resource_type: "Event") }
+  let(:role_org_page_mgmt) do
+    build(:role, name: "single_resource_admin", resource_type: "OrganizationPageManagement")
+  end
   let(:super_admin_user) { build(:user, :super_admin) }
   let(:admin_user) { build(:user, :admin) }
 
@@ -34,6 +38,18 @@ describe RolePolicy do
 
     it "allows access if user is super_admin and role is community_leader_level_2" do
       expect(role).to permit(super_admin_user, role_community_leader_l2)
+    end
+
+    it "allows access if user is admin and role is an ordinary single_resource_admin" do
+      expect(role).to permit(admin_user, role_event_admin)
+    end
+
+    it "denies access if user is admin and role is OrganizationPageManagement" do
+      expect(role).not_to permit(admin_user, role_org_page_mgmt)
+    end
+
+    it "allows access if user is super_admin and role is OrganizationPageManagement" do
+      expect(role).to permit(super_admin_user, role_org_page_mgmt)
     end
   end
 end

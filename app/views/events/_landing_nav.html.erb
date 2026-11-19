@@ -1,0 +1,14 @@
+<nav class="events-landing-nav" aria-label="<%= t("views.events.nav.all_events") %>">
+  <%= link_to t("views.events.nav.all_events"),
+              events_path,
+              class: "events-nav-pill #{'events-nav-pill--active' if active == :all}",
+              "aria-current": ("page" if active == :all) %>
+  <%= link_to t("views.events.nav.meetups"),
+              meetups_path,
+              class: "events-nav-pill #{'events-nav-pill--active' if active == :meetup}",
+              "aria-current": ("page" if active == :meetup) %>
+  <%= link_to t("views.events.nav.conferences"),
+              conferences_path,
+              class: "events-nav-pill #{'events-nav-pill--active' if active == :conference}",
+              "aria-current": ("page" if active == :conference) %>
+</nav>

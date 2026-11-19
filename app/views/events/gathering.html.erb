@@ -1,0 +1,149 @@
+<% content_for :title, @event.title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta name="description" content="<%= @event.description %>">
+  <meta property="og:title" content="<%= @event.title %>" />
+  <meta property="og:description" content="<%= @event.description %>">
+  <meta property="og:url" content="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta property="og:type" content="event" />
+  <meta property="og:image" content="<%= @event.social_image_url %>" />
+  <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
+<%
+  type_key = @event.meetup? ? "meetups" : "conferences"
+  type_landing_path = @event.meetup? ? meetups_path : conferences_path
+  banner_image = @event.cover_image.presence&.url || @event.data&.dig("banner_image_url")
+  now = Time.current
+  external_url = safe_event_url(@event.data&.dig("registration_url") || @event.data&.dig("website_url"))
+  external_cta_label = @event.data&.dig("registration_url").present? ? t("views.events.gathering.register_external") : t("views.events.gathering.visit_website")
+  host = @event.organization || @event.user
+%>
+<div class="crayons-layout event-show-layout container grid-cols-1">
+  <% if !@event.published? %>
+    <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
+      <strong>This event is not published!</strong> Only admins can see this page.
+      <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+    </div>
+  <% end %>
+
+  <% if banner_image.present? %>
+    <div class="crayons-card mb-6 overflow-hidden">
+      <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
+    </div>
+  <% end %>
+
+  <%= render "event_tabs" %>
+
+  <div class="flex flex-col m:flex-row gap-6">
+    <main class="flex-1 min-w-0" id="main-content">
+      <article class="crayons-card p-6 mb-6">
+        <header class="mb-5">
+          <nav aria-label="Breadcrumbs" class="mb-4 fs-s color-base-60">
+            <a href="<%= events_path %>" class="c-link c-link--branded font-bold"><%= t("views.events.gathering.events") %></a>
+            &gt;
+            <a href="<%= type_landing_path %>" class="c-link c-link--branded font-bold"><%= t("views.events.gathering.#{type_key}") %></a>
+            &gt;
+            <%= @event.title %>
+          </nav>
+
+          <div class="flex justify-between items-start flex-wrap gap-4">
+            <h1 class="crayons-title text-3xl font-extrabold"><%= @event.title %></h1>
+
+            <% if @primary_tag %>
+              <div data-tag-id="<%= @primary_tag.id %>" data-tag-name="<%= @primary_tag.name %>" id="tag-<%= @primary_tag.id %>" class="js-tag-card">
+                <div id="tag-buttons-<%= @primary_tag.id %>">
+                  <button class="c-btn c-btn--primary js-follow-tag-button">
+                    <%= t("views.tags.follow") %>
+                  </button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="event-pill <%= event_pill_class(@event) %>"><%= @event.format_pill_label %></span>
+            <% if @event.start_time > now %>
+              <span class="inline-block shrink-0 px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40);"><%= t("views.events.gathering.upcoming") %></span>
+            <% elsif @event.end_time >= now %>
+              <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error);"><%= t("views.events.gathering.live") %></span>
+            <% else %>
+              <span class="inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40);"><%= t("views.events.gathering.ended") %></span>
+            <% end %>
+            <span class="fs-s color-base-60"><%= event_datetime_range(@event) %></span>
+            <span class="fs-s color-base-40" aria-hidden="true">&bull;</span>
+            <span class="fs-s color-base-60"><%= @event.location_display %></span>
+          </div>
+        </header>
+
+        <% if @event.primary_stream_url.present? %>
+          <div class="mb-6">
+            <%= render "stream_player", event: @event %>
+          </div>
+        <% end %>
+
+        <div class="crayons-article__body text-styles text-lg">
+          <%= @event.body_html %>
+        </div>
+      </article>
+    </main>
+
+    <aside class="w-100 m:w-25 shrink-0">
+      <% if @event.end_time > now %>
+        <div class="crayons-card p-4 mb-6 text-center">
+          <h3 class="font-bold mb-2"><%= t("views.events.gathering.register_heading") %></h3>
+          <p class="fs-s color-base-70 mb-4"><%= t("views.events.gathering.register_description") %></p>
+          <%= render "signup_button", event: @event, extra_classes: "w-100 text-center justify-center" %>
+        </div>
+      <% end %>
+
+      <div class="crayons-card p-4 mb-6">
+        <h3 class="font-bold mb-4"><%= t("views.events.gathering.details") %></h3>
+        <ul class="space-y-3 fs-s color-base-80">
+          <li>
+            <div class="font-bold"><%= t("views.events.gathering.dates") %></div>
+            <div><%= event_datetime_range(@event) %></div>
+          </li>
+          <li>
+            <div class="font-bold"><%= t("views.events.gathering.location") %></div>
+            <div><%= @event.location_display %></div>
+          </li>
+          <li>
+            <div class="font-bold"><%= t("views.events.gathering.format") %></div>
+            <div><%= @event.format_pill_label %></div>
+          </li>
+          <% if host.present? %>
+            <li>
+              <div class="font-bold mb-2"><%= t("views.events.gathering.host") %></div>
+              <% if @event.organization %>
+                <a href="<%= organization_path(@event.organization) %>" class="c-link c-link--branded font-medium">
+                  <%= @event.organization.name %>
+                </a>
+              <% elsif @event.user %>
+                <a href="<%= user_path(@event.user) %>" class="c-link c-link--branded font-medium">
+                  <%= @event.user.name %>
+                </a>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+
+        <% if external_url.present? %>
+          <div class="mt-4 pt-4 border-t">
+            <a href="<%= external_url %>" target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--outlined w-100 text-center justify-center">
+              <%= external_cta_label %>
+            </a>
+          </div>
+        <% end %>
+      </div>
+    </aside>
+  </div>
+
+  <%= render "event_articles", articles: @event_articles, event: @event, previews: @event_article_previews %>
+
+  <%= render "community_articles", articles: @articles, tag_name: @tag_name %>
+</div>
+
+<% if @primary_tag %>
+  <%= javascript_include_tag "tagFollows", defer: true %>
+<% end %>

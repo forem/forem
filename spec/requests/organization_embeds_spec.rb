@@ -321,7 +321,8 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       expect(response.body).not_to include("ROI Calculator")
     end
 
-    it "excludes embed_html pages from public API v1 pages index, show, and update", :aggregate_failures do
+    it "hides embed_html pages from the public API v1 pages index and show, but not from org admins",
+       :aggregate_failures do
       v1_headers = { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
 
       get api_pages_path, params: { organization_id: organization.id }, headers: v1_headers
@@ -336,10 +337,52 @@ RSpec.describe "Organization Sandboxed HTML Embeds" do
       api_secret = create(:api_secret, user: org_admin)
 
       put api_page_path(embed_page.id),
-          params: { title: "Attempted Mutation" }.to_json,
+          params: { title: "Updated through the API" }.to_json,
           headers: v1_headers.merge("api-key" => api_secret.secret)
+      expect(response).to have_http_status(:ok)
+      expect(embed_page.reload).to have_attributes(title: "Updated through the API", template: "embed_html")
+    end
+  end
+
+  describe "event-owned sandboxed embed_html pages" do
+    let!(:published_event) do
+      create(:event, published: true, event_name_slug: "dev-conf", event_variation_slug: "2026")
+    end
+    let!(:event_embed) do
+      create(
+        :page,
+        event: published_event,
+        title: "Event Schedule Widget",
+        description: "Interactive schedule",
+        slug: published_event.embed_page_slug_for("schedule"),
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Event Schedule Widget</div>",
+      )
+    end
+
+    it "serves published event embeds inside the sandboxed controller and rejects direct or draft access",
+       :aggregate_failures do
+      get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<div>Event Schedule Widget</div>")
+      expect(response.headers["Content-Security-Policy"]).to include(
+        "sandbox #{OrganizationEmbedsController::SANDBOX_DIRECTIVE}",
+      )
+
+      get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "document" }
+      expect(response).to have_http_status(:forbidden)
+
+      published_event.update!(published: false)
+      get event_embed_page_path(published_event.event_name_slug, published_event.event_variation_slug, "schedule"),
+          params: { mode: "embed" },
+          headers: { "Sec-Fetch-Dest" => "iframe" }
       expect(response).to have_http_status(:not_found)
-      expect(embed_page.reload.template).to eq("embed_html")
+      expect(event_embed.reload.embed_html?).to be(true)
     end
   end
 end

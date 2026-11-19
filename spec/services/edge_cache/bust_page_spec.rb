@@ -65,4 +65,25 @@ RSpec.describe EdgeCache::BustPage, type: :service do
         .once
     end
   end
+
+  context "when an event is given" do
+    let(:event) { create(:event, event_name_slug: "summit", event_variation_slug: "2026") }
+    let(:slug) { event.page_slug_for("schedule") }
+
+    it "purges page and event surrogate keys alongside event page fallback paths" do
+      described_class.call(slug, event: event)
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call)
+        .with(
+          ["show-page-#{slug}", event.record_key],
+          fallback_paths: [
+            *paths,
+            "/events/summit/2026",
+            "/events/summit/2026/p/schedule",
+            "/events/summit/2026/embed/schedule?mode=embed",
+          ],
+        )
+        .once
+    end
+  end
 end

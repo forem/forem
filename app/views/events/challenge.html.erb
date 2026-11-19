@@ -19,6 +19,8 @@
     </div>
   <% end %>
 
+  <%= render "event_tabs" %>
+
   <div class="flex flex-col m:flex-row gap-6">
     <!-- Main Content Left Column -->
     <main class="flex-1 min-w-0" id="main-content">
@@ -222,6 +224,8 @@
       <% end %>
     </aside>
   </div>
+
+  <%= render "event_articles", articles: @event_articles, event: @event, previews: @event_article_previews %>
 </div>
 
 <%= javascript_include_tag "tagFollows", defer: true %>

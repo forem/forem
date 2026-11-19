@@ -140,6 +140,52 @@ RSpec.describe "/admin/content_manager/articles" do
       sign_in super_admin
     end
 
+    it "lets an admin hide and restore billboard locations and purges the article after commit", :aggregate_failures do
+      path = admin_article_path(article.id)
+      checkbox_selector = 'input[type="checkbox"][name="article[hidden_billboard_locations][]"]'
+
+      get path
+      doc = Nokogiri::HTML(response.body)
+      checkboxes = doc.css(checkbox_selector)
+      expect(checkboxes.map { |cb| cb.attr("value") }).to eq(Billboard::POST_PLACEMENTS)
+      expect(checkboxes.all? { |cb| cb.attr("checked").nil? }).to be(true)
+
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+
+      Article.transaction(requires_new: true) do
+        patch path, params: { article: { hidden_billboard_locations: ["", "post_sidebar", "post_fixed_bottom"] } }
+        expect(EdgeCache::PurgeByKey).not_to have_received(:call).with(article.record_key)
+      end
+      expect(response).to redirect_to(path)
+      expect(article.reload.hidden_billboard_locations).to eq(%w[post_fixed_bottom post_sidebar])
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(article.record_key).once
+
+      get path
+      checked_values = Nokogiri::HTML(response.body).css("#{checkbox_selector}[checked]").map { |cb| cb.attr("value") }
+      expect(checked_values).to eq(%w[post_fixed_bottom post_sidebar])
+
+      # Updating another field without sending hidden_billboard_locations preserves the setting
+      patch path, params: { article: { featured: true } }
+      expect(response).to redirect_to(path)
+      expect(article.reload.hidden_billboard_locations).to eq(%w[post_fixed_bottom post_sidebar])
+
+      # Unchecking all checkboxes sends only the hidden empty value and clears the array
+      patch path, params: { article: { hidden_billboard_locations: [""] } }
+      expect(response).to redirect_to(path)
+      expect(article.reload.hidden_billboard_locations).to eq([])
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(article.record_key).at_least(:twice)
+    end
+
+    it "rejects unknown billboard locations", :aggregate_failures do
+      path = admin_article_path(article.id)
+
+      patch path, params: { article: { hidden_billboard_locations: ["", "sidebar_left"] } }
+
+      expect(response).to redirect_to(path)
+      expect(flash[:danger]).to include("sidebar_left")
+      expect(article.reload.hidden_billboard_locations).to eq([])
+    end
+
     it "allows an Admin to add a co-author or multiple co-authors to an individual article", :aggregate_failures do
       expect do
         article.update_columns(co_author_ids: [1])
