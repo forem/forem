@@ -1,4 +1,44 @@
-FROM ghcr.io/forem/ruby:3.3.0@sha256:9cda49a45931e9253d58f7d561221e43bd0d47676b8e75f55862ce1e9997ab5c as base
+FROM rust:1.85-bullseye AS ruby-build
+
+ARG RUBY_VERSION=3.3.14
+ARG RUBY_SHA256=e24ef6d97095a9c42bf8259a2de33a25aac8d92bb48fefdbdc81724b87784854
+
+RUN find /etc/apt -type f \( -name "sources.list" -o -name "*.list" -o -name "*.sources" \) \
+      -exec sed -i "s|http://[a-z.]*debian.org/debian-security|http://snapshot.debian.org/archive/debian-security/20260831T000000Z|g" {} + \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99snapshot
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      autoconf \
+      bison \
+      build-essential \
+      curl \
+      libdb-dev \
+      libffi-dev \
+      libgdbm-dev \
+      libncurses-dev \
+      libreadline-dev \
+      libssl-dev \
+      libyaml-dev \
+      pkg-config \
+      zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp/ruby
+RUN curl -fsSLO "https://cache.ruby-lang.org/pub/ruby/3.3/ruby-${RUBY_VERSION}.tar.xz" \
+    && echo "${RUBY_SHA256}  ruby-${RUBY_VERSION}.tar.xz" | sha256sum -c - \
+    && tar -xJf "ruby-${RUBY_VERSION}.tar.xz" --strip-components=1 \
+    && ./configure --prefix=/usr/local --enable-shared --enable-yjit --disable-install-doc \
+    && make -j"$(nproc)" \
+    && make install DESTDIR=/ruby-install \
+    && mkdir -p /usr/local \
+    && cp -a /ruby-install/usr/local/. /usr/local/ \
+    && ruby -v | grep -F "ruby ${RUBY_VERSION}"
+
+FROM ghcr.io/forem/ruby:3.3.0@sha256:9cda49a45931e9253d58f7d561221e43bd0d47676b8e75f55862ce1e9997ab5c AS base
+
+RUN rm -f /usr/local/lib/libruby.so.3.3.0
+COPY --from=ruby-build /ruby-install/usr/local/ /usr/local/
+RUN ruby -v | grep -F 'ruby 3.3.14'
 
 # HOTFIX: Remove broken nodesource list from base image to unblock apt update
 RUN rm -f /etc/apt/sources.list.d/nodesource.list

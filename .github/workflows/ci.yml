@@ -118,10 +118,15 @@ jobs:
         if: steps.bundlercache-lookup.outputs.cache-hit != 'true'
         run: git sparse-checkout disable
       - name: Setup Ruby
+        id: setup-ruby
         uses: ruby/setup-ruby@v1
+        continue-on-error: true
         if: steps.assetscache-lookup.outputs.cache-hit != 'true' || steps.bundlercache-lookup.outputs.cache-hit != 'true'
         with:
           bundler-cache: true
+      - name: Build Ruby from verified source and install gems if setup-ruby fails
+        if: steps.setup-ruby.outcome == 'failure'
+        run: $GITHUB_WORKSPACE/scripts/setup_ruby_from_source.sh bundler-cache
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -195,9 +200,14 @@ jobs:
           key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v4-
       - name: Setup Ruby
+        id: setup-ruby
         uses: ruby/setup-ruby@v1
+        continue-on-error: true
         with:
           bundler-cache: true
+      - name: Build Ruby from verified source and install gems if setup-ruby fails
+        if: steps.setup-ruby.outcome == 'failure'
+        run: $GITHUB_WORKSPACE/scripts/setup_ruby_from_source.sh bundler-cache
 
       - name: Wait for services
         run: |

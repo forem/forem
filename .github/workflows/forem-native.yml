@@ -88,9 +88,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Setup Ruby and verify committed precompiled binary loads immediately
+        id: setup-ruby
         uses: ruby/setup-ruby@v1
+        continue-on-error: true
         with:
-          ruby-version: "3.3.0"
+          ruby-version: "3.3.14"
+      - name: Build Ruby from verified source if setup-ruby fails
+        if: steps.setup-ruby.outcome == 'failure'
+        run: $GITHUB_WORKSPACE/scripts/setup_ruby_from_source.sh ruby-only
       - name: Cache Cargo registry and target
         uses: actions/cache@v5
         with:
