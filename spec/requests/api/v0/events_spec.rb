@@ -44,6 +44,8 @@ RSpec.describe "Api::V0::Events" do
       let!(:challenge_event) { create(:event, published: true, type_of: :challenge) }
       let!(:draft_challenge_event) { create(:event, published: false, type_of: :challenge) }
       let!(:stream_event) { create(:event, published: true, type_of: :live_stream) }
+      let!(:meetup_event) { create(:event, published: true, type_of: :meetup) }
+      let!(:conference_event) { create(:event, published: true, type_of: :conference) }
 
       it "returns only events matching the requested type_of when unauthenticated" do
         get "/api/events", params: { type_of: "challenge" }
@@ -51,6 +53,16 @@ RSpec.describe "Api::V0::Events" do
 
         json = response.parsed_body
         expect(json.pluck("id")).to contain_exactly(challenge_event.id)
+      end
+
+      it "filters by meetup and conference type_of" do
+        get "/api/events", params: { type_of: "meetup" }
+        expect(response).to have_http_status(:success)
+        expect(response.parsed_body.pluck("id")).to contain_exactly(meetup_event.id)
+
+        get "/api/events", params: { type_of: "conference" }
+        expect(response).to have_http_status(:success)
+        expect(response.parsed_body.pluck("id")).to contain_exactly(conference_event.id)
       end
 
       it "returns only events matching the requested type_of for basic users" do
@@ -198,6 +210,16 @@ RSpec.describe "Api::V0::Events" do
       expect(event.reload.title).to eq("Updated Stream Title")
       expect(event.full_details).to eq("Updated comprehensive agenda and FAQ dump")
       expect(response.parsed_body["full_details"]).to eq("Updated comprehensive agenda and FAQ dump")
+    end
+
+    it "allows administrators to toggle allow_articles" do
+      patch "/api/events/#{event.id}",
+            params: { event: { allow_articles: true } }.to_json,
+            headers: admin_headers
+
+      expect(response).to have_http_status(:success)
+      expect(event.reload.allow_articles).to be(true)
+      expect(response.parsed_body["allow_articles"]).to be(true)
     end
   end
 end

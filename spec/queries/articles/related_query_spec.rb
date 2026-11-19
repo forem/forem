@@ -80,4 +80,51 @@ RSpec.describe Articles::RelatedQuery, type: :query do
     expect { described_class.call({ q: "!!!" }) }
       .to raise_error(described_class::InvalidRequest)
   end
+
+  it "defaults to newest first" do
+    older = create(:article, title: "TimescaleDB TimescaleDB TimescaleDB deep dive")
+    newer = create(:article, title: "A passing TimescaleDB mention")
+    older.update_columns(published_at: 3.days.ago)
+
+    expect(described_class.call({ q: "TimescaleDB" }).ids).to eq([newer.id, older.id])
+  end
+
+  it "puts the stronger match first when sorting by relevance" do
+    passing = create(:article, title: "A passing TimescaleDB mention")
+    strong = create(:article, title: "TimescaleDB internals")
+    # update_columns skips the title-from-front-matter callback; the tsvector trigger
+    # still runs, so reading_list_document reflects the new body.
+    passing.update_columns(published_at: 1.hour.ago,
+                           body_markdown: "Mostly about other things entirely.")
+    strong.update_columns(published_at: 3.days.ago,
+                          body_markdown: "TimescaleDB, TimescaleDB and more TimescaleDB.")
+
+    ids = described_class.call({ q: "TimescaleDB", sort: "relevance" }).ids
+
+    expect(ids.first).to eq(strong.id)
+  end
+
+  it "exposes a relevance score on each row" do
+    create(:article, title: "TimescaleDB internals")
+
+    row = described_class.call({ q: "TimescaleDB", sort: "relevance" }).first
+
+    expect(row.discovery_rank.to_f).to be > 0
+  end
+
+  it "rejects an unknown sort" do
+    expect { described_class.call({ q: "TimescaleDB", sort: "sideways" }) }
+      .to raise_error(described_class::InvalidRequest, /recent or relevance/)
+  end
+
+  it "pages deterministically when sorting by relevance" do
+    3.times { |n| create(:article, title: "TimescaleDB number #{n}") }
+
+    params = { q: "TimescaleDB", sort: "relevance", per_page: 2 }
+    first_page = described_class.call(params).ids
+    second_page = described_class.call(params.merge(page: 2)).ids
+
+    expect(first_page.size).to eq(2)
+    expect(first_page & second_page).to be_empty
+  end
 end

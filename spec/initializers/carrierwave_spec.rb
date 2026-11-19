@@ -34,6 +34,16 @@ describe CarrierWaveInitializer do # rubocop:disable RSpec/FilePath, RSpec/SpecF
       expect(CarrierWave::Uploader::Base.fog_attributes).to eq({})
       expect(CarrierWave::Uploader::Base.fog_credentials).to eq({})
     end
+
+    it "uses APP_PROTOCOL when setting asset_host in production" do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("staging.example.com")
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+
+      described_class.local_storage_config
+      expect(CarrierWave::Uploader::Base.asset_host).to eq("http://staging.example.com")
+    end
   end
 
   describe ".standard_production_config" do
@@ -50,6 +60,33 @@ describe CarrierWaveInitializer do # rubocop:disable RSpec/FilePath, RSpec/SpecF
       expect(CarrierWave::Uploader::Base.fog_credentials[:connection_options]).to eq(
         described_class::FOG_CONNECTION_OPTIONS,
       )
+    end
+
+    it "omits custom endpoint and path_style when unconfigured" do
+      described_class.standard_production_config
+
+      expect(CarrierWave::Uploader::Base.fog_credentials).not_to have_key(:endpoint)
+      expect(CarrierWave::Uploader::Base.fog_credentials).not_to have_key(:path_style)
+    end
+
+    it "configures custom S3-compatible endpoint, path_style, and asset_host when provided" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("AWS_ID").and_return("spaces-key")
+      allow(ApplicationConfig).to receive(:[]).with("AWS_SECRET").and_return("spaces-secret")
+      allow(ApplicationConfig).to receive(:[]).with("AWS_UPLOAD_REGION").and_return("nyc3")
+      allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return("forem-spaces")
+      allow(ApplicationConfig).to receive(:[]).with("AWS_ENDPOINT").and_return("https://nyc3.digitaloceanspaces.com")
+      allow(ApplicationConfig).to receive(:[]).with("AWS_PATH_STYLE").and_return("true")
+      allow(ApplicationConfig).to receive(:[]).with("CARRIERWAVE_ASSET_HOST")
+        .and_return("https://forem-spaces.nyc3.cdn.digitaloceanspaces.com")
+
+      described_class.standard_production_config
+
+      expect(CarrierWave::Uploader::Base.asset_host)
+        .to eq("https://forem-spaces.nyc3.cdn.digitaloceanspaces.com")
+      expect(CarrierWave::Uploader::Base.fog_credentials[:endpoint])
+        .to eq("https://nyc3.digitaloceanspaces.com")
+      expect(CarrierWave::Uploader::Base.fog_credentials[:path_style]).to be(true)
     end
   end
 

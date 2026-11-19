@@ -56,8 +56,16 @@
   <% end %>
 </div>
 
-<div class="crayons-article-sticky grid gap-4 break-word bb-shuffle-group js-bb-shuffle-group">
-  <div class="grid gap-4 sidebar-bb" data-async-url="<%= billboard_async_path(:post_sidebar, article: @article) %>"></div>
-  <div class="grid gap-4 sidebar-bb" data-async-url="<%= billboard_async_path(:post_sidebar_secondary, article: @article) %>"></div>
-</div>
+<% show_post_sidebar = !@article.billboard_location_hidden?(:post_sidebar) %>
+<% show_post_sidebar_secondary = !@article.billboard_location_hidden?(:post_sidebar_secondary) %>
+<% if show_post_sidebar || show_post_sidebar_secondary %>
+  <div class="crayons-article-sticky grid gap-4 break-word bb-shuffle-group js-bb-shuffle-group">
+    <% if show_post_sidebar %>
+      <div class="grid gap-4 sidebar-bb" data-async-url="<%= billboard_async_path(:post_sidebar, article: @article) %>"></div>
+    <% end %>
+    <% if show_post_sidebar_secondary %>
+      <div class="grid gap-4 sidebar-bb" data-async-url="<%= billboard_async_path(:post_sidebar_secondary, article: @article) %>"></div>
+    <% end %>
+  </div>
+<% end %>
 

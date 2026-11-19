@@ -333,12 +333,18 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)",
                                nullable: true },
               body_json: { type: :string, description: "For JSON pages, the JSON body", nullable: true },
+              body_html: { type: :string, nullable: true,
+                           description: "Raw HTML. For embed_html organization pages, the sandboxed HTML document" },
               is_top_level_path: { type: :boolean,
                                    description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
               social_image: { type: :object, nullable: true },
               organization_id: {
                 type: :integer, format: :int64, nullable: true,
                 description: "The ID of the organization the page belongs to, if any"
+              },
+              event_id: {
+                type: :integer, format: :int64, nullable: true,
+                description: "The ID of the event the page belongs to, if any"
               },
               position: {
                 type: :integer, format: :int32,
@@ -911,10 +917,11 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               event_variation_slug: { type: :string },
               description: { type: :string, nullable: true },
               full_details: { type: :string, nullable: true, description: "Full text dump of all event details, intended for agent and API consumption." },
-              type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+              type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
               start_time: { type: :string, format: "date-time" },
               end_time: { type: :string, format: "date-time" },
               published: { type: :boolean },
+              allow_articles: { type: :boolean },
               primary_stream_url: { type: :string, nullable: true },
               bg_color_hex: { type: :string, nullable: true },
               broadcast_config: { type: :string, enum: %w[no_broadcast tagged_broadcast global_broadcast] },
@@ -944,9 +951,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   full_details: { type: :string, nullable: true, description: "Full text dump of all event details." },
                   primary_stream_url: { type: :string, nullable: true },
                   published: { type: :boolean, default: false },
+                  allow_articles: { type: :boolean, default: false },
                   start_time: { type: :string, format: "date-time" },
                   end_time: { type: :string, format: "date-time" },
-                  type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+                  type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
                   organization_id: { type: :integer, nullable: true },
                   tag_list: { type: :string, nullable: true },
                   data: { type: :object, nullable: true }

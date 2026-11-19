@@ -10,3 +10,67 @@ fr:
         description: Découvrez les événements virtuels, défis, streams et hackathons à venir.
       view_on_calendar: Voir sur le calendrier
       no_events: Aucun événement à venir n'est programmé pour le moment. Revenez bientôt !
+      nav:
+        all_events: Tous les événements
+        meetups: Meetups
+        conferences: Conférences
+      landings:
+        meetup:
+          meta:
+            title: Meetups
+            description: Découvrez les meetups de développeurs à venir et passés dans la communauté.
+          heading: Meetups
+          subtitle: Retrouvez d'autres développeurs en personne et en ligne lors des meetups communautaires.
+          upcoming_heading: Meetups à venir
+          past_heading: Meetups passés
+          no_upcoming: Aucun meetup à venir n'est programmé pour le moment. Revenez bientôt !
+          view_all_events: Voir tous les événements
+        conference:
+          meta:
+            title: Conférences
+            description: Découvrez les conférences de développeurs, sommets et rassemblements communautaires à venir et passés.
+          heading: Conférences
+          subtitle: Découvrez les conférences de développeurs, sommets et rassemblements communautaires sur plusieurs jours.
+          upcoming_heading: Conférences à venir
+          past_heading: Conférences passées
+          no_upcoming: Aucune conférence à venir n'est programmée pour le moment. Revenez bientôt !
+          view_all_events: Voir tous les événements
+      gathering:
+        events: Événements
+        meetups: Meetups
+        conferences: Conférences
+        live: EN DIRECT
+        upcoming: À VENIR
+        ended: TERMINÉ
+        details: Détails de l'événement
+        dates: Dates
+        location: Lieu
+        format: Format
+        host: Organisateur
+        register_heading: Intéressé par cet événement ?
+        register_description: Faites savoir aux organisateurs que vous êtes intéressé et recevez des rappels.
+        visit_website: Visiter le site de l'événement
+        register_external: S'inscrire à l'événement
+      pages:
+        breadcrumbs:
+          challenges: Défis
+        tabs:
+          nav_label: Navigation de l'événement
+          overview: Aperçu
+          live_stream: Diffusion en direct
+          challenge_details: Détails du défi
+          event_details: Détails de l'événement
+          showcase: Vitrine
+      event_articles:
+        heading: "Publications de %{event_title}"
+        badge: Fil de l'événement
+        subtitle: Mises à jour et articles publiés spécifiquement pour cet événement.
+        article_pill: Article
+        time_ago: "il y a %{time}"
+        min_read: "%{count} min de lecture"
+        reactions_aria:
+          one: "1 réaction"
+          other: "%{count} réactions"
+        comments_aria:
+          one: "1 commentaire"
+          other: "%{count} commentaires"

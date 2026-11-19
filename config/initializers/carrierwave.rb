@@ -26,7 +26,8 @@ module CarrierWaveInitializer
       config.enable_processing = !Rails.env.test? # disabled for test
       config.move_to_store = Rails.env.test?
       config.asset_host = if Rails.env.production?
-                            "https://#{ApplicationConfig['APP_DOMAIN']}"
+                            protocol = ApplicationConfig["APP_PROTOCOL"].presence || "https://"
+                            "#{protocol}#{ApplicationConfig['APP_DOMAIN']}"
                           end
       config.fog_directory = nil
       config.fog_attributes = {}
@@ -44,17 +45,24 @@ module CarrierWaveInitializer
       config.cache_storage = :file
       config.enable_processing = !Rails.env.test?
       config.move_to_store = false
-      config.asset_host = nil
+      config.asset_host = ApplicationConfig["CARRIERWAVE_ASSET_HOST"].presence
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
       config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
       config.fog_public = true
-      config.fog_credentials = {
+      credentials = {
         provider: "AWS",
         aws_access_key_id: ApplicationConfig["AWS_ID"],
         aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
         region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"],
         connection_options: FOG_CONNECTION_OPTIONS
       }
+      if (endpoint = ApplicationConfig["AWS_ENDPOINT"].presence)
+        credentials[:endpoint] = endpoint
+      end
+      if ApplicationConfig["AWS_PATH_STYLE"] == "true"
+        credentials[:path_style] = true
+      end
+      config.fog_credentials = credentials
     end
   end
 

@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     post "email_clicks", to: "email_clicks#create"
   end
 
+  get "/up", to: "rails/health#show", as: :rails_health_check
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
   get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
@@ -133,6 +134,7 @@ Rails.application.routes.draw do
         end
 
         resources :organizations, only: %i[index create update destroy]
+        get "/organizations/:organization_id/article_analytics", to: "organization_article_analytics#index"
 
         scope("/users/:id") do
           constraints(role: /suspend|suspended|limited|spam|trusted|base_subscriber/) do
@@ -210,8 +212,14 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/meetups", to: "events#meetups", as: :meetups
+    get "/conferences", to: "events#conferences", as: :conferences
     get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/p/:page_suffix", to: "events#show", as: :event_custom_page
+    get "events/:event_name_slug/:event_variation_slug/embed/:slug_suffix",
+        to: "organization_embeds#show",
+        as: :event_embed_page
     get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status",
                                                                        as: :event_signup_status
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup

@@ -29,6 +29,7 @@ namespace :admin do
     collection do
       post :grant
       delete :revoke
+      patch :sub_permissions
     end
   end
   resources :reactions, only: %i[update]
@@ -170,6 +171,14 @@ namespace :admin do
       member do
         patch :end_broadcast
         get :fork
+      end
+      resources :pages, controller: "event_pages", except: [:show] do
+        member do
+          patch :reorder
+        end
+        collection do
+          post :preview
+        end
       end
     end
   end

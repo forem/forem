@@ -13,7 +13,7 @@ Rails.application.configure do
   end
 
   # Configure secret_key_base directly from environment variable to support Rails 7.2 and 8.0
-  config.secret_key_base = ENV["SECRET_KEY_BASE"]
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", nil)
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -61,8 +61,21 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
+  # Assume SSL is already terminated by an upstream reverse proxy (e.g., kamal-proxy, Cloudflare, or ALB).
+  config.assume_ssl = ENV["RAILS_ASSUME_SSL"] == "true"
+
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = ENV["FORCE_SSL_IN_RAILS"] == "true"
+  health_probe_request = ->(request) { (request.get? || request.head?) && request.path == "/up" }
+  config.ssl_options = {
+    hsts: { subdomains: true },
+    redirect: {
+      exclude: health_probe_request
+    }
+  }
+  config.host_authorization = {
+    exclude: health_probe_request
+  }
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.

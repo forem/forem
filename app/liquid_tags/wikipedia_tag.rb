@@ -73,7 +73,7 @@ class WikipediaTag < LiquidTagBase
     return if response.code == 200
 
     raise StandardError,
-          I18n.t("liquid_tags.wikipedia_tag.article_not_found", input: input, detail: (response["detail"]))
+          I18n.t("liquid_tags.wikipedia_tag.article_not_found", input: input, response_detail: response["detail"])
   end
 
   def get_section_contents(response, anchor, input)

@@ -1,0 +1,184 @@
+<% resource_type = role[:resource_type]
+   stored_config = role[:stored_config]
+   restricted = role[:restricted]
+   current_config = restricted ? SubPermissions::Config.new(stored_config, resource_type: resource_type) : nil
+   clauses = SubPermissions.clauses_for(resource_type)
+   allowed_clauses = restricted ? clauses.select { |clause| current_config.allows?(clause) } : clauses
+   baseline_hint = SubPermissions.baseline_hint(resource_type) %>
+
+<details class="admin-subperm-card <%= "admin-subperm-card--restricted" if restricted %>"
+         data-testid="sub-permissions-<%= resource_type %>"
+         data-controller="sub-permissions-editor"
+         data-sub-permissions-editor-summary-none-value="<%= t("views.admin.permissions.sub_permissions.summary_none", total: clauses.size) %>"
+         data-sub-permissions-editor-summary-count-value="<%= t("views.admin.permissions.sub_permissions.summary_count") %>"
+         data-sub-permissions-editor-full-access-summary-value="<%= t("views.admin.permissions.sub_permissions.full_access_hint", resource: resource_type) %>">
+  <summary class="admin-subperm-card__summary">
+    <div class="admin-subperm-card__summary-main">
+      <span class="admin-subperm-card__resource-label">
+        <%= resource_type %> <%= t("lib.sub_permissions.admin.summary") %>:
+      </span>
+
+      <% if restricted %>
+        <span class="admin-subperm-card__status-badge admin-subperm-card__status-badge--restricted">
+          <%= crayons_icon_tag(:lock, aria_hidden: true, width: 12, height: 12) %>
+          <%= t("lib.sub_permissions.admin.restricted") %>
+        </span>
+
+        <span class="admin-subperm-card__chips">
+          <% if allowed_clauses.any? %>
+            <% allowed_clauses.each do |clause| %>
+              <span class="admin-subperm-card__chip">
+                <%= crayons_icon_tag(:checkmark, aria_hidden: true, width: 12, height: 12) %>
+                <%= SubPermissions.clause_label(resource_type, clause).upcase_first %>
+              </span>
+            <% end %>
+          <% else %>
+            <span class="admin-subperm-card__chip admin-subperm-card__chip--muted">
+              <%= t("views.admin.permissions.sub_permissions.drafts_only") %>
+            </span>
+          <% end %>
+        </span>
+      <% else %>
+        <span class="admin-subperm-card__status-badge admin-subperm-card__status-badge--full">
+          <%= t("lib.sub_permissions.admin.full_access") %>
+        </span>
+      <% end %>
+
+      <% if global_override.present? %>
+        <span class="admin-subperm-card__override-note">
+          <%= t("views.admin.permissions.table.overridden_notice", global_role: global_override) %>
+        </span>
+      <% end %>
+    </div>
+
+    <span class="admin-subperm-card__toggle-label">
+      <span><%= restricted ? t("views.admin.permissions.sub_permissions.edit") : t("views.admin.permissions.sub_permissions.configure") %></span>
+      <%= crayons_icon_tag(:"chevron-down", aria_hidden: true, class: "admin-subperm-card__chevron") %>
+    </span>
+  </summary>
+
+  <div class="admin-subperm-card__body">
+    <%= form_with url: sub_permissions_admin_permissions_path,
+                  method: :patch,
+                  local: true,
+                  data: { sub_permissions_editor_target: "form" } do |f| %>
+      <%= permissions_return_filter_fields(search: @search, role_filter: @role_filter, resource_filter: @resource_filter) %>
+      <%= f.hidden_field :user_id, value: user.id %>
+      <%= f.hidden_field :role_name, value: role[:value] %>
+
+      <fieldset class="admin-perm-modes">
+        <legend class="admin-perm-modes__legend"><%= t("views.admin.permissions.sub_permissions.access_mode_legend") %></legend>
+
+        <label class="admin-perm-mode-card <%= "is-selected" unless restricted %>"
+               data-sub-permissions-editor-target="modeCard"
+               data-restricted="0">
+          <%= f.radio_button :restricted, "0",
+                             checked: !restricted,
+                             id: "restricted_#{user.id}_#{resource_type}_0",
+                             class: "crayons-radio",
+                             data: {
+                               sub_permissions_editor_target: "modeRadio",
+                               action: "change->sub-permissions-editor#syncMode"
+                             } %>
+          <span class="admin-perm-mode-card__body">
+            <span class="admin-perm-mode-card__title"><%= t("lib.sub_permissions.admin.full_access") %></span>
+            <span class="admin-perm-mode-card__desc"><%= t("views.admin.permissions.sub_permissions.full_access_hint", resource: resource_type) %></span>
+          </span>
+        </label>
+
+        <label class="admin-perm-mode-card admin-perm-mode-card--restricted <%= "is-selected" if restricted %>"
+               data-sub-permissions-editor-target="modeCard"
+               data-restricted="1">
+          <%= f.radio_button :restricted, "1",
+                             checked: restricted,
+                             id: "restricted_#{user.id}_#{resource_type}_1",
+                             class: "crayons-radio",
+                             data: {
+                               sub_permissions_editor_target: "modeRadio",
+                               action: "change->sub-permissions-editor#syncMode"
+                             } %>
+          <span class="admin-perm-mode-card__body">
+            <span class="admin-perm-mode-card__title"><%= t("lib.sub_permissions.admin.restricted") %></span>
+            <span class="admin-perm-mode-card__desc"><%= t("views.admin.permissions.sub_permissions.restricted_hint_short") %></span>
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="admin-perm-clauses <%= "is-disabled" unless restricted %>"
+           data-sub-permissions-editor-target="clausesSection"
+           aria-disabled="<%= !restricted %>">
+        <div class="admin-perm-clauses__header">
+          <span class="admin-perm-clauses__heading">
+            <%= t("views.admin.permissions.sub_permissions.capabilities_heading", resource: resource_type) %>
+          </span>
+          <div class="admin-perm-clauses__presets">
+            <button type="button"
+                    class="admin-perm-clauses__preset-btn"
+                    data-sub-permissions-editor-target="presetButton"
+                    data-action="click->sub-permissions-editor#selectNone">
+              <%= t("views.admin.permissions.grant.preset_none") %>
+            </button>
+            <button type="button"
+                    class="admin-perm-clauses__preset-btn"
+                    data-sub-permissions-editor-target="presetButton"
+                    data-action="click->sub-permissions-editor#selectAll">
+              <%= t("views.admin.permissions.grant.preset_all") %>
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-perm-clauses__list">
+          <% clauses.each do |clause| %>
+            <% clause_desc = SubPermissions.clause_description(resource_type, clause) %>
+            <label class="admin-perm-clause">
+              <%= check_box_tag "allow[]",
+                                clause,
+                                current_config&.allows?(clause),
+                                id: "allow_#{user.id}_#{resource_type}_#{clause}",
+                                class: "crayons-checkbox",
+                                data: {
+                                  sub_permissions_editor_target: "clauseCheckbox",
+                                  action: "change->sub-permissions-editor#updateSummary"
+                                } %>
+              <span class="admin-perm-clause__body">
+                <span class="admin-perm-clause__title"><%= SubPermissions.clause_label(resource_type, clause).upcase_first %></span>
+                <% if clause_desc.present? %>
+                  <span class="admin-perm-clause__desc"><%= clause_desc %></span>
+                <% end %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+
+        <div class="admin-perm-hint">
+          <% if baseline_hint.present? %>
+            <p><%= baseline_hint %></p>
+          <% end %>
+          <p><%= t("lib.sub_permissions.admin.restricted_hint") %></p>
+        </div>
+      </div>
+
+      <div class="admin-perm-editor-footer">
+        <span class="admin-perm-editor-footer__summary <%= "is-restricted" if restricted %>"
+              data-sub-permissions-editor-target="summary">
+          <% if !restricted %>
+            <%= t("views.admin.permissions.sub_permissions.full_access_hint", resource: resource_type) %>
+          <% elsif allowed_clauses.empty? %>
+            <%= t("views.admin.permissions.sub_permissions.summary_none", total: clauses.size) %>
+          <% else %>
+            <%= t("views.admin.permissions.sub_permissions.summary_count", count: allowed_clauses.size, total: clauses.size) %>
+          <% end %>
+        </span>
+
+        <div class="admin-perm-editor-footer__actions">
+          <button type="button"
+                  class="crayons-btn crayons-btn--s crayons-btn--ghost"
+                  data-action="click->sub-permissions-editor#cancel">
+            <%= t("views.admin.permissions.sub_permissions.cancel") %>
+          </button>
+          <%= f.submit t("lib.sub_permissions.admin.save"), class: "crayons-btn crayons-btn--s" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</details>

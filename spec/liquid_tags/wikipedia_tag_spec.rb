@@ -27,6 +27,22 @@ RSpec.describe WikipediaTag, type: :liquid_tag, vcr: true do
       end
     end
 
+    it "raises a readable error when the article is not found" do
+      not_found_response = Class.new do
+        def code
+          404
+        end
+
+        def [](key)
+          { "detail" => "Not found." }[key]
+        end
+      end.new
+      allow(HTTParty).to receive(:get).and_return(not_found_response)
+
+      expected_message = /Couldn't find the Wikipedia article - #{Regexp.escape(valid_url)}: Not found\./
+      expect { generate_new_liquid(valid_url) }.to raise_error(StandardError, expected_message)
+    end
+
     it "rejects invalid url" do
       expect do
         liquid = generate_new_liquid(invalid_url)

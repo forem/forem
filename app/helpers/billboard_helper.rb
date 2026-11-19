@@ -6,6 +6,12 @@ module BillboardHelper
     Billboard::ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE.zip(Billboard::ALLOWED_PLACEMENT_AREAS)
   end
 
+  def post_billboard_placement_area_options
+    Billboard::POST_PLACEMENTS.map do |area|
+      [Billboard.human_readable_placement_area(area), area]
+    end
+  end
+
   def automatic_audience_segments_options_array
     AudienceSegment.not_manual.pluck(:id, :type_of)
       .map { |(id, type)| [AudienceSegment.human_readable_description_for(type), id] }

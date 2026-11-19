@@ -1,4 +1,8 @@
 class OrganizationPolicy < ApplicationPolicy
+  def article_analytics?
+    analytics? && FeatureFlag.enabled?(:org_article_analytics, FeatureFlag::Actor[record])
+  end
+
   def create?
     !user.spam_or_suspended?
   end

@@ -3,6 +3,7 @@
     <h1 class="crayons-title">Event Configuration: <%= @event.title %></h1>
     <div class="flex gap-2">
       <%= link_to "Edit Event", edit_admin_event_path(@event), class: "c-btn c-btn--primary" %>
+      <%= link_to t("views.admin.event_pages.manage_pages"), admin_event_pages_path(@event), class: "c-btn c-btn--secondary" %>
       <%= link_to t("views.admin.events.fork_event"), new_admin_event_path(fork_from_id: @event.id), class: "c-btn c-btn--secondary" %>
       <%= link_to "Public View", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
     </div>
@@ -62,6 +63,15 @@
         <li><strong>Event Type:</strong> <%= @event.type_of.titleize %></li>
         <li><strong>Broadcast Config:</strong> <%= @event.broadcast_config.titleize %></li>
         <li>
+          <strong><%= t("views.admin.events.show.allow_articles") %>:</strong>
+          <% if @event.allow_articles? %>
+            <span class="c-indicator c-indicator--success"><%= t("views.admin.events.show.enabled") %></span>
+          <% else %>
+            <span class="c-indicator"><%= t("views.admin.events.show.disabled") %></span>
+          <% end %>
+          <span class="text-xs opacity-75">(<%= t("views.admin.events.show.tagged_articles_count", count: @event.articles.count) %>)</span>
+        </li>
+        <li>
           <strong>Start Time:</strong> 
           <span class="utc-time" data-iso="<%= @event.start_time.iso8601 %>"><%= @event.start_time %></span>
         </li>
@@ -95,6 +105,51 @@
       <p class="color-base-60 italic">No full details dump provided yet.</p>
     <% end %>
   </div>
+
+  <hr class="my-8" />
+
+  <% event_markdown_pages = @event.ordered_pages.to_a %>
+  <% event_embed_pages = @event.ordered_embed_pages.to_a %>
+  <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+    <h2 class="text-2xl font-bold m-0"><%= t("views.admin.event_pages.heading") %></h2>
+    <div class="flex gap-2 flex-wrap">
+      <%= link_to t("views.admin.event_pages.new_page"), new_admin_event_page_path(@event), class: "c-btn c-btn--secondary c-btn--sm" %>
+      <%= link_to t("views.organization_settings.pages.new_embed_page"), new_admin_event_page_path(@event, kind: "embed"), class: "c-btn c-btn--secondary c-btn--sm" %>
+      <%= link_to t("views.admin.event_pages.manage_pages"), admin_event_pages_path(@event), class: "c-btn c-btn--primary c-btn--sm" %>
+    </div>
+  </div>
+  <% if event_markdown_pages.any? || event_embed_pages.any? %>
+    <ul class="space-y-2 mb-6">
+      <% event_markdown_pages.each do |event_page| %>
+        <% suffix = event_page.slug.to_s.split("/").last %>
+        <li class="flex items-center justify-between gap-2 p-2 border rounded">
+          <div class="flex items-center gap-2 flex-wrap">
+            <strong><%= event_page.title %></strong>
+            <% if event_page.event_showcase? %>
+              <span class="c-indicator c-indicator--success"><%= t("views.admin.event_pages.showcase") %></span>
+            <% else %>
+              <code class="fs-xs">/p/<%= suffix %></code>
+            <% end %>
+            <% unless event_page.event_showcase? || event_page.show_in_navigation? %>
+              <span class="c-indicator"><%= t("views.organization_settings.pages.hidden_from_tabs") %></span>
+            <% end %>
+          </div>
+          <%= link_to t("views.organization_settings.pages.edit"), edit_admin_event_page_path(@event, event_page), class: "c-btn c-btn--secondary c-btn--sm" %>
+        </li>
+      <% end %>
+      <% event_embed_pages.each do |embed_page| %>
+        <li class="flex items-center justify-between gap-2 p-2 border rounded">
+          <div class="flex items-center gap-2 flex-wrap">
+            <strong><%= embed_page.title %></strong>
+            <span class="c-indicator"><%= t("views.organization_settings.pages.embed_only_badge") %></span>
+          </div>
+          <%= link_to t("views.organization_settings.pages.edit"), edit_admin_event_page_path(@event, embed_page), class: "c-btn c-btn--secondary c-btn--sm" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="color-base-60 italic mb-6"><%= t("views.admin.event_pages.no_pages") %></p>
+  <% end %>
 
   <hr class="my-8" />
 

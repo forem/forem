@@ -79,12 +79,15 @@ module AgentSessions
       end
 
       def credentials
-        {
+        creds = {
           provider: "AWS",
           aws_access_key_id: ApplicationConfig["AWS_ID"],
           aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
           region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
         }
+        creds[:endpoint] = ApplicationConfig["AWS_ENDPOINT"] if ApplicationConfig["AWS_ENDPOINT"].present?
+        creds[:path_style] = true if ApplicationConfig["AWS_PATH_STYLE"] == "true"
+        creds
       end
 
       def bucket
