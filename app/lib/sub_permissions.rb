@@ -34,6 +34,14 @@ module SubPermissions
     I18n.t("lib.sub_permissions.clauses.#{resource_type.to_s.underscore}.#{clause}")
   end
 
+  def self.clause_description(resource_type, clause)
+    I18n.t("lib.sub_permissions.clause_descriptions.#{resource_type.to_s.underscore}.#{clause}", default: "")
+  end
+
+  def self.baseline_hint(resource_type)
+    I18n.t("lib.sub_permissions.baseline_hints.#{resource_type.to_s.underscore}", default: "")
+  end
+
   def self.missing_message(resource, clauses)
     resource_type = resource_type_for(resource)
     I18n.t("lib.sub_permissions.errors.missing",

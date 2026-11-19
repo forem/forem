@@ -304,11 +304,19 @@ fr:
     sub_permissions:
       admin:
         full_access: Accès complet
+        granted_restricted: Accès administrateur %{resource} restreint accordé à %{username}
         restricted: Restreint
         restricted_hint: Un accès restreint ne permet que ce qui est coché ci-dessous. Les sous-permissions ajoutées plus tard sont décochées par défaut.
         save: Enregistrer les sous-permissions
         summary: Sous-permissions
         updated: Sous-permissions %{resource} mises à jour pour %{username}
+      baseline_hints:
+        billboard: Toujours autorisé même avec un accès restreint — créer et modifier des brouillons non approuvés, supprimer des brouillons non approuvés, et dépublier ou désapprouver des billboards en ligne.
+      clause_descriptions:
+        billboard:
+          approve: Marquer les billboards comme approuvés pour l'affichage.
+          modify_approved: Modifier les attributs ou supprimer des billboards déjà approuvés.
+          publish: Mettre en ligne les billboards afin qu'ils apparaissent aux membres.
       clauses:
         billboard:
           approve: approuver les billboards

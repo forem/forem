@@ -17,13 +17,22 @@ RSpec.describe SubPermissions do
       expect(grantable).to include(*described_class::CLAUSES.keys)
     end
 
-    it "registers lowercase snake_case clause names with a label in every locale", :aggregate_failures do
+    it "registers lowercase snake_case clause names with labels and descriptions in every locale",
+       :aggregate_failures do
       described_class::CLAUSES.each do |resource_type, clauses|
+        I18n.available_locales.each do |locale|
+          expect(I18n.exists?("lib.sub_permissions.baseline_hints.#{resource_type.underscore}", locale))
+            .to be(true), "#{locale} is missing baseline hint for #{resource_type}"
+        end
+
         clauses.each do |clause|
           expect(clause).to match(/\A[a-z][a-z_]*\z/)
           I18n.available_locales.each do |locale|
             expect(I18n.exists?("lib.sub_permissions.clauses.#{resource_type.underscore}.#{clause}", locale))
               .to be(true), "#{locale} is missing #{resource_type} #{clause}"
+            desc_key = "lib.sub_permissions.clause_descriptions.#{resource_type.underscore}.#{clause}"
+            expect(I18n.exists?(desc_key, locale))
+              .to be(true), "#{locale} is missing description for #{resource_type} #{clause}"
           end
         end
       end

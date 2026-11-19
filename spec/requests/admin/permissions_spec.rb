@@ -67,6 +67,32 @@ RSpec.describe "/admin/permissions" do
       # 1 role check for current_user authorization + 1 batch preload for all listed @users
       expect(role_queries.size).to be <= 2
     end
+
+    it "shows tech_admin users and supports searching and filtering by role and resource", :aggregate_failures do
+      tech_admin = create(:user, name: "Tech Person", username: "tech_operator")
+      tech_admin.add_role(:tech_admin)
+
+      restricted_bb = create(:user, :single_resource_admin, resource: Billboard, username: "bb_bot")
+      SubPermissions.update_grant(user: restricted_bb, resource_type: "Billboard",
+                                  sub_permissions: SubPermissions.build(allow: %w[publish]))
+
+      get admin_permissions_path
+      expect(response.body).to include("@tech_operator", "Tech Admin")
+      expect(response.body).to include("@bb_bot", "Billboard Admin (Restricted)")
+
+      get admin_permissions_path, params: { search: "@tech_operator" }
+      expect(response.body).to include("@tech_operator")
+      expect(response.body).not_to include("@#{admin_user.username}")
+
+      get admin_permissions_path, params: { role_filter: "restricted" }
+      expect(response.body).to include("@bb_bot")
+      expect(response.body).not_to include("@#{resource_admin.username}")
+      expect(response.body).not_to include("@#{admin_user.username}")
+
+      get admin_permissions_path, params: { role_filter: "single_resource_admin", resource_filter: "Article" }
+      expect(response.body).to include("@#{resource_admin.username}")
+      expect(response.body).not_to include("@bb_bot")
+    end
   end
 
   context "when the user is a single resource admin" do
@@ -134,6 +160,68 @@ RSpec.describe "/admin/permissions" do
       expect(response).to redirect_to(admin_permissions_path)
       expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).to exist
       expect(flash[:success]).to be_present
+    end
+
+    it "atomically grants a restricted Billboard admin role with selected sub-permissions", :aggregate_failures do
+      allow(Audit::Logger).to receive(:log)
+
+      post grant_admin_permissions_path,
+           params: {
+             username: target_user.username,
+             role_name: "single_resource_admin|Billboard",
+             restricted: "1",
+             allow: %w[publish]
+           }
+
+      expect(response).to redirect_to(admin_permissions_path)
+      expect(flash[:success]).to be_present
+      expect(target_user.reload.single_resource_admin_for?(Billboard)).to be(true)
+      expect(target_user.sub_permission?(resource: Billboard, clause: "publish")).to be(true)
+      expect(target_user.sub_permission?(resource: Billboard, clause: "approve")).to be(false)
+      expect(Audit::Logger).to have_received(:log).with(
+        :internal, anything, hash_including("action" => "update_sub_permissions", "target_user_id" => target_user.id)
+      )
+    end
+
+    it "atomically grants a draft-only restricted Billboard admin when no clauses are checked", :aggregate_failures do
+      post grant_admin_permissions_path,
+           params: {
+             username: target_user.username,
+             role_name: "single_resource_admin|Billboard",
+             restricted: "1"
+           }
+
+      expect(response).to redirect_to(admin_permissions_path)
+      expect(target_user.reload.single_resource_admin_for?(Billboard)).to be(true)
+      expect(target_user.sub_permission?(resource: Billboard, clause: "publish")).to be(false)
+      expect(target_user.sub_permission?(resource: Billboard, clause: "approve")).to be(false)
+      expect(target_user.sub_permission?(resource: Billboard, clause: "modify_approved")).to be(false)
+    end
+
+    it "does not grant the role when restricted sub-permissions contain an unknown clause", :aggregate_failures do
+      post grant_admin_permissions_path,
+           params: {
+             username: target_user.username,
+             role_name: "single_resource_admin|Billboard",
+             restricted: "1",
+             allow: %w[publish unknown_clause]
+           }
+
+      expect(response).to redirect_to(admin_permissions_path)
+      expect(flash[:error]).to include("unknown_clause")
+      expect(target_user.reload.single_resource_admin_for?(Billboard)).to be(false)
+    end
+
+    it "preserves active filter params on redirect when return filters are supplied" do
+      post grant_admin_permissions_path,
+           params: {
+             username: target_user.username,
+             role_name: "admin",
+             return_role_filter: "admin",
+             return_search: target_user.username
+           }
+
+      expect(response).to redirect_to(admin_permissions_path(role_filter: "admin", search: target_user.username))
     end
   end
 
