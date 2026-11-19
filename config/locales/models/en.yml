@@ -17,6 +17,8 @@ en:
       invalid_date: must be entered in DD/MM/YYYY format with current or past date
       series_unpermitted: must be one you have permission to post to
       invalid_coauthor: must be valid user IDs
+      invalid_hidden_billboard_locations: must be an array of valid post billboard locations
+      invalid_hidden_billboard_locations_list: 'contains invalid billboard locations: %{locations}'
       same_author: must not be the same user as the author
       must_not_have_spaces: must not have spaces
       published: Published

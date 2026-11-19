@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_19_120300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -181,6 +181,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
     t.float "feed_success_score", default: 0.0, null: false
+    t.jsonb "hidden_billboard_locations", default: [], null: false
     t.integer "hotness_score", default: 0
     t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"

@@ -1,6 +1,6 @@
 <% if comment && comment.user %>
   <% decorated_comment = comment.decorate %>
-  <% if @current_comment_index.to_i > 6 && !@shown_billboard && comment.depth.zero? %>
+  <% if @current_comment_index.to_i > 6 && !@shown_billboard && comment.depth.zero? && !@article&.billboard_location_hidden?(:post_comments_mid) %>
     <div class="js-billboard-container mid-comments-billboard-container pb-6" data-async-url="<%= billboard_async_path(:post_comments_mid, article: @article) %>"></div>
     <% @shown_billboard = true %>
   <% end %>

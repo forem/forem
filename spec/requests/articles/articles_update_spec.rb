@@ -37,6 +37,18 @@ RSpec.describe "ArticlesUpdate" do
     expect(article.reload.title).to eq(new_title)
   end
 
+  it "does not let an author hide billboard locations through the editor", :aggregate_failures do
+    params = {
+      title: "Updated title",
+      body_markdown: "Updated content",
+      hidden_billboard_locations: ["post_fixed_bottom"]
+    }
+    put "/articles/#{article.id}", params: { article: params }
+
+    expect(article.reload.title).to eq("Updated title")
+    expect(article.hidden_billboard_locations).to eq([])
+  end
+
   it "returns an unprocessable status with invalid params" do
     put "/articles/#{article.id}", params: {
       article: { title: "", body_markdown: "Hello World" },
