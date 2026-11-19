@@ -1,0 +1,57 @@
+<div class="admin-permissions-toolbar">
+  <nav class="admin-permissions-tabs" aria-label="<%= t("views.admin.permissions.title") %>">
+    <% permissions_filter_tabs(@role_counts).each do |tab| %>
+      <% active = @role_filter == tab[:key] && (@resource_filter.blank? || tab[:key] == "single_resource_admin") %>
+      <% tab_params = { role_filter: tab[:key].presence, search: @search.presence }.compact %>
+      <%= link_to admin_permissions_path(tab_params),
+                  class: [
+                    "admin-permissions-tab",
+                    ("admin-permissions-tab--restricted" if tab[:restricted]),
+                    ("is-active" if active),
+                  ].compact.join(" "),
+                  aria: (active ? { current: "page" } : {}) do %>
+        <% if tab[:restricted] %>
+          <%= crayons_icon_tag(:lock, aria_hidden: true, width: 14, height: 14) %>
+        <% end %>
+        <span><%= tab[:label] %></span>
+        <span class="admin-permissions-tab__count"><%= tab[:count] %></span>
+      <% end %>
+    <% end %>
+  </nav>
+
+  <div class="admin-permissions-search-bar">
+    <%= form_with url: admin_permissions_path, method: :get, local: true, class: "admin-permissions-search-bar__form" do |f| %>
+      <% if @role_filter.present? %>
+        <%= f.hidden_field :role_filter, value: @role_filter %>
+      <% end %>
+
+      <div class="admin-permissions-search-bar__input-wrap">
+        <%= crayons_icon_tag(:search, aria_hidden: true, class: "admin-permissions-search-bar__icon") %>
+        <%= f.search_field :search,
+                           value: @search,
+                           placeholder: t("views.admin.permissions.filters.search_placeholder"),
+                           aria: { label: t("views.admin.permissions.filters.search_label") },
+                           class: "crayons-textfield" %>
+      </div>
+
+      <% if @available_resource_types.any? && (@role_filter.blank? || @role_filter == SubPermissions::ROLE_NAME) %>
+        <%= f.select :resource_filter,
+                     options_for_select(@available_resource_types.map { |r| ["#{r} Admin", r] }, @resource_filter),
+                     { include_blank: t("views.admin.permissions.filters.all_resources") },
+                     aria: { label: t("views.admin.permissions.filters.resource_label") },
+                     class: "crayons-select admin-permissions-search-bar__resource-select" %>
+      <% end %>
+
+      <%= f.submit t("views.admin.permissions.filters.search_submit"), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+
+      <% if @filters_active %>
+        <%= link_to t("views.admin.permissions.filters.clear"), admin_permissions_path, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+      <% end %>
+    <% end %>
+
+    <span class="admin-permissions-search-bar__meta">
+      <%= t(@filters_active ? "views.admin.permissions.filters.showing_filtered" : "views.admin.permissions.filters.showing_count",
+            count: @users.total_count) %>
+    </span>
+  </div>
+</div>

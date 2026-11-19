@@ -44,6 +44,7 @@ class Article < ApplicationRecord
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+  belongs_to :event, optional: true
 
   belongs_to :organization, optional: true
   belongs_to :user
@@ -327,6 +328,7 @@ class Article < ApplicationRecord
   validate :restrict_type_based_on_role
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
+  validate :validate_event_assignment, if: :validating_event_assignment?
   validate :validate_tag
   validate :validate_video
   validate :user_mentions_in_markdown
@@ -335,6 +337,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_belong_to_organization,
            unless: -> { co_author_ids.blank? || organization_id.blank? }
+  validate :validate_hidden_billboard_locations, if: :will_save_change_to_hidden_billboard_locations?
 
   before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
@@ -406,6 +409,7 @@ class Article < ApplicationRecord
   after_update_commit :regenerate_summary_if_content_changed
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
+  after_commit :purge_previous_event_cache, on: :update, if: :saved_change_to_event_id?
 
   after_save :cleanup_memberships_if_unpublished,
              if: -> { saved_change_to_published? && published_before_last_save && !published? }
@@ -551,6 +555,20 @@ class Article < ApplicationRecord
 
   def favorited?
     favorited_by_user_id.present?
+  end
+
+  # Returns the associated event only when it is publicly visible as connected
+  # (published, allows articles, and has started). Admins may pre-tag an article
+  # before start_time, but it must not appear connected beforehand.
+  def visible_event(at = Time.current)
+    return if event_id.blank?
+    return unless event&.published? && event.articles_visible?(at)
+
+    event
+  end
+
+  def event_visible?(at = Time.current)
+    visible_event(at).present?
   end
 
   scope :from_subforem, lambda { |subforem_id = nil|
@@ -1309,6 +1327,25 @@ class Article < ApplicationRecord
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
+  def hidden_billboard_locations=(value)
+    if value.nil?
+      super([])
+    elsif value.is_a?(Array)
+      cleaned = value.filter_map { |loc| loc.to_s.strip.presence }.uniq
+      known, unknown = cleaned.partition { |loc| Billboard::POST_PLACEMENTS.include?(loc) }
+      super((Billboard::POST_PLACEMENTS & known) + unknown)
+    else
+      super
+    end
+  end
+
+  def billboard_location_hidden?(placement_area)
+    return false unless has_attribute?(:hidden_billboard_locations)
+
+    locations = hidden_billboard_locations
+    locations.is_a?(Array) && locations.include?(placement_area.to_s)
+  end
+
   def plain_html
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.search(".highlight__panel").each(&:remove)
@@ -1781,6 +1818,46 @@ class Article < ApplicationRecord
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
 
+  def validating_event_assignment?
+    has_event = event_id.present? || (association(:event).loaded? && event.present?)
+    has_event && (new_record? || will_save_change_to_event_id?)
+  end
+
+  def validate_event_assignment
+    if event.nil?
+      errors.add(:event_id, I18n.t("models.article.event_not_found"))
+      return
+    end
+
+    unless event.allow_articles?
+      errors.add(:event_id, I18n.t("models.article.event_articles_disabled"))
+      return
+    end
+
+    return if event.accepting_articles?(as_admin: acting_as_event_admin?)
+
+    errors.add(:event_id, I18n.t("models.article.event_not_accepting_articles"))
+  end
+
+  def acting_as_event_admin?
+    return true if admin_update
+
+    user.present? && (
+      user.administrative_access_to?(resource: Event) ||
+      (event.present? && user.administrative_access_to?(resource: event))
+    )
+  end
+
+  def purge_previous_event_cache
+    previous_event_id = saved_change_to_event_id.first
+    return if previous_event_id.blank?
+
+    previous_event = Event.select(:id, :event_name_slug, :event_variation_slug).find_by(id: previous_event_id)
+    return unless previous_event
+
+    EdgeCache::PurgeByKeyWorker.perform_async(previous_event.record_key, [previous_event.path])
+  end
+
   def validate_co_authors
     return if co_author_ids.exclude?(user_id)
 
@@ -1843,6 +1920,21 @@ class Article < ApplicationRecord
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
     errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
+  end
+
+  def validate_hidden_billboard_locations
+    unless hidden_billboard_locations.is_a?(Array)
+      errors.add(:hidden_billboard_locations, I18n.t("models.article.invalid_hidden_billboard_locations"))
+      return
+    end
+
+    invalid_locations = hidden_billboard_locations - Billboard::POST_PLACEMENTS
+    return if invalid_locations.empty?
+
+    errors.add(
+      :hidden_billboard_locations,
+      I18n.t("models.article.invalid_hidden_billboard_locations_list", locations: invalid_locations.join(", ")),
+    )
   end
 
   # Validates per-article and hourly @-mention rate limits based on the author's trust tier.
@@ -1989,8 +2081,15 @@ class Article < ApplicationRecord
   end
 
   def bust_cache(destroying: false)
-    purge
-    async_bust(destroying: destroying)
+    if !destroying && saved_change_to_hidden_billboard_locations?
+      ActiveRecord.after_all_transactions_commit do
+        purge
+        async_bust(destroying: destroying)
+      end
+    else
+      purge
+      async_bust(destroying: destroying)
+    end
     touch_actor_latest_article_updated_at(destroying: destroying)
   end
 

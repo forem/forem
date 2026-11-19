@@ -1,0 +1,74 @@
+en:
+  views:
+    admin:
+      permissions:
+        title: Admin Team Permissions
+        subtitle: Manage platform administrators, resource-scoped roles, and granular sub-permissions.
+        grant:
+          heading: Grant admin role
+          description: Assign a platform or resource-scoped admin role to any member.
+          username_label: Member username
+          username_placeholder: username
+          role_label: Role to grant
+          role_prompt: Select a role...
+          submit: Grant role
+          platform_group: Platform roles
+          resource_group: Resource admin roles
+          configurable_suffix: (supports sub-permissions)
+          sub_permissions_badge: Optional restriction
+          access_level_legend: Access level
+          full_access_description: Unrestricted access to all current and future capabilities for this resource.
+          restricted_description: Only allow explicitly selected actions below. Ideal for automated workflows and scoped collaborators.
+          allowed_capabilities: Allowed capabilities
+          preset_none: Draft-only (clear all)
+          preset_all: Select all
+          summary_full: "Will grant: Full unrestricted access"
+          summary_restricted_none: "Will grant: Restricted — baseline access only (0 elevated capabilities)"
+          summary_restricted_count: "Will grant: Restricted — %{count} of %{total} elevated capabilities allowed"
+        filters:
+          all: All team
+          super_admin: Super Admins
+          admin: Admins
+          tech_admin: Tech Admins
+          single_resource_admin: Resource Admins
+          restricted: Restricted
+          search_label: Search team members
+          search_placeholder: Search by @username or name...
+          search_submit: Search
+          resource_label: Resource
+          all_resources: All resources
+          clear: Clear filters
+          showing_count:
+            one: "1 team member"
+            other: "%{count} team members"
+          showing_filtered:
+            one: "1 matching team member"
+            other: "%{count} matching team members"
+        table:
+          member: Member
+          roles: Roles & permissions
+          actions: Actions
+          member_id: "ID #%{id}"
+          view_member: Manage member
+          add_role_trigger: Add role
+          add_role_prompt: Choose role...
+          add_role_submit: Add
+          revoke_label: "Revoke %{role} from @%{username}"
+          revoke_confirm: "Revoke %{role} from @%{username}?"
+          super_admin_only_tooltip: Only Super Admins can grant or revoke this role.
+          overridden_notice: "Full access applies via %{global_role} role."
+          empty_title: No team members found
+          empty_filtered: No admin team members match your current search or filter criteria.
+          empty_default: No admin team members have been assigned yet.
+        sub_permissions:
+          configure: Configure
+          edit: Edit permissions
+          cancel: Cancel
+          drafts_only: Baseline only (no elevated actions)
+          allowed_label: "Allowed:"
+          summary_none: "0 of %{total} elevated capabilities selected (baseline only)"
+          summary_count: "%{count} of %{total} elevated capabilities selected"
+          access_mode_legend: Access mode
+          full_access_hint: Grants all current and future %{resource} capabilities.
+          restricted_hint_short: Restricts this grant to only the capabilities checked below.
+          capabilities_heading: Permitted %{resource} capabilities

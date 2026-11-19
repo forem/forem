@@ -57,6 +57,10 @@ RSpec.describe "api/v1/billboards" do
         - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).
         - **target_geolocations**: Comma-separated ISO codes for country/region targeting.
         - **approved** & **published**: Set to `true` to activate billboard rotation instantly.
+
+        ### Restricted Billboard admins:
+        A Billboard admin whose grant has restricted sub-permissions gets a 403 naming what is missing when the
+        request would approve or publish a billboard without the `approve` or `publish` sub-permission.
         DESCRIBE
 
         produces "application/json"
@@ -90,6 +94,21 @@ RSpec.describe "api/v1/billboards" do
 
         response "401", "unauthorized" do
           let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "403", "missing sub-permissions" do
+          let(:restricted_secret) { create(:api_secret) }
+          let(:"api-key") { restricted_secret.secret }
+
+          before do
+            restricted_secret.user.add_role(:single_resource_admin, Billboard)
+            SubPermissions.update_grant(user: restricted_secret.user, resource_type: "Billboard",
+                                        sub_permissions: SubPermissions.build(allow: []))
+          end
+
           add_examples
 
           run_test!
@@ -162,6 +181,12 @@ RSpec.describe "api/v1/billboards" do
         ### Integration Guidance:
         - Allows changing placement area, geolocations, target segments, or text copy.
         - Updating an active billboard takes effect instantly in the layout delivery cache.
+
+        ### Restricted Billboard admins:
+        A Billboard admin whose grant has restricted sub-permissions gets a 403 naming what is missing when the
+        update would approve or publish the billboard, or change one that is already approved, without the
+        matching sub-permission (`approve`, `publish` or `modify_approved`). Unpublishing or unapproving a
+        billboard never needs a sub-permission.
         DESCRIBE
 
         produces "application/json"
@@ -189,6 +214,23 @@ RSpec.describe "api/v1/billboards" do
                   items: { "$ref": "#/components/schemas/Billboard" }
           let(:"api-key") { api_secret.secret }
           let(:id) { billboard.id }
+          add_examples
+
+          run_test!
+        end
+
+        response(403, "missing sub-permissions") do
+          let(:restricted_secret) { create(:api_secret) }
+          let(:"api-key") { restricted_secret.secret }
+
+          before do
+            restricted_secret.user.add_role(:single_resource_admin, Billboard)
+            SubPermissions.update_grant(user: restricted_secret.user, resource_type: "Billboard",
+                                        sub_permissions: SubPermissions.build(allow: []))
+          end
+
+          let(:id) { create(:billboard, approved: true, published: true).id }
+          let(:billboard) { { body_markdown: "Changed after approval" } }
           add_examples
 
           run_test!

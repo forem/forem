@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# This is intentionally separate from .devcontainer/onCreateCommand-init.sh
-# because $CODESPACE_NAME is not available at that point in time.
+# Runs once after the container is created.  $CODESPACE_NAME and $ONA_ENVIRONMENT_NAME
+# are available here, so environment-specific .env values are written now.
 
 echo HISTFILE="/usr/local/hist/.zsh_history" >> ~/.zshrc
 
