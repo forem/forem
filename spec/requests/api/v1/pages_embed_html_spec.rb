@@ -63,6 +63,7 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
       expect(response.parsed_body.pluck("id")).to eq([embed_page.id, other_embed.id])
       expect(response.parsed_body.first).to include("template" => "embed_html", "body_html" => "<p>widget</p>")
       expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
     end
 
     it "keeps embed pages out of the default organization listing" do
@@ -77,6 +78,7 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body).to include("id" => embed_page.id, "body_html" => "<p>widget</p>")
       expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
     end
   end
 
@@ -115,18 +117,22 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
       )
     end
 
-    it "sends Cache-Control: private, no-store on embed write responses", :aggregate_failures do
+    it "sends Cache-Control: private, no-store and Surrogate-Control: no-store on embed write responses",
+       :aggregate_failures do
       create_embed
       expect(response).to have_http_status(:ok)
       expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
 
       create_embed(embed_params.merge(slug: "other", body_html: ""))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
 
       update_embed({ body_html: "<p>fresh</p>" })
       expect(response).to have_http_status(:ok)
       expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
     end
 
     it "serves API-written HTML only through the sandboxed embed endpoint", :aggregate_failures do
@@ -195,6 +201,36 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+    end
+
+    it "handles missing, non-existent, and malformed organization_id or slug params without crashing",
+       :aggregate_failures do
+      get api_pages_path(kind: "embed"), headers: headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get api_pages_path(kind: "embed", organization_id: 999_999_999), headers: headers
+      expect(response).to have_http_status(:unauthorized)
+
+      get "/api/pages?kind=embed&organization_id[]=#{organization.id}&organization_id[]=#{other_organization.id}",
+          headers: headers
+      expect(response).to have_http_status(:unauthorized)
+
+      create_embed(embed_params.merge(organization_id: [organization.id]))
+      expect(response).to have_http_status(:unauthorized)
+
+      create_embed(embed_params.merge(slug: ["array-slug"]))
+      expect(response).to have_http_status(:unprocessable_entity)
+
+      update_embed({ organization_id: [organization.id], body_html: "<p>bad</p>" })
+      expect(response).to have_http_status(:unauthorized)
+
+      update_embed({ organization_id: "#{organization.id}abc", body_html: "<p>bad</p>" })
+      expect(response).to have_http_status(:unauthorized)
+
+      patch api_page_path(embed_page.id), params: { body_html: "<p>patched</p>" }.to_json, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(embed_page.reload.body_html).to eq("<p>patched</p>")
     end
 
     it "accepts a full namespaced slug and a slug_suffix", :aggregate_failures do
@@ -406,6 +442,22 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
+    it "validates organization_id on embed listings without crashing on non-scalar values", :aggregate_failures do
+      get api_pages_path(kind: "embed"), headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+
+      get "/api/pages?kind=embed&organization_id[]=#{organization.id}&organization_id[]=#{other_organization.id}",
+          headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+
+      get api_pages_path(kind: "embed", organization_id: 999_999_999), headers: headers
+      expect(response).to have_http_status(:not_found)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+    end
+
     it "does not switch templates in either direction", :aggregate_failures do
       update_embed({ template: "contained" })
       expect(response).to have_http_status(:unprocessable_entity)
@@ -423,6 +475,25 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
 
       expect(response).to have_http_status(:not_found)
     end
+  end
+
+  context "when authenticated as a non-admin organization member" do
+    let(:org_member) do
+      create(:user).tap do |user|
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+      end
+    end
+    let(:headers) { headers_for(org_member) }
+
+    it_behaves_like "hides embed pages", write_status: :not_found
+  end
+
+  context "when authenticated as a suspended organization admin" do
+    let(:headers) { headers_for(org_admin) }
+
+    before { org_admin.add_role(:suspended) }
+
+    it_behaves_like "hides embed pages", write_status: :unauthorized
   end
 
   context "when authenticated as an unrelated user" do

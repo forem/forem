@@ -27,7 +27,7 @@ module Api
         if page_admin?
           @page = Page.new(permitted_params)
         else
-          @organization = Organization.find_by(id: params[:organization_id])
+          @organization = find_organization_by_param
           authorize_org_admin!(@organization)
           build_org_page
           return render_validation_error if @page.errors.any?
@@ -53,7 +53,7 @@ module Api
 
         @organization = @page.organization
         authorize_org_admin!(@organization) unless page_admin?
-        if params[:organization_id].present? && params[:organization_id].to_i != @organization.id
+        if params[:organization_id].present? && !same_organization_id?(params[:organization_id], @organization.id)
           raise Pundit::NotAuthorizedError
         end
 
@@ -107,18 +107,24 @@ module Api
       private
 
       def render_organization_embed_pages
+        prevent_caching
         @user = authenticated_user
         raise Pundit::NotAuthorizedError unless @user
 
-        organization = Organization.find(params[:organization_id])
-        raise Pundit::NotAuthorizedError unless org_embed_page_reader?(organization)
+        org_id = scalar_organization_id
+        organization = Organization.find_by(id: org_id) if org_id
+        if page_admin?
+          raise ActionController::ParameterMissing, :organization_id unless org_id
+          raise ActiveRecord::RecordNotFound unless organization
+        else
+          raise Pundit::NotAuthorizedError unless org_embed_page_reader?(organization)
+        end
 
-        prevent_caching
         render json: organization.ordered_embed_pages
       end
 
       def create_organization_embed_page
-        @organization = Organization.find_by(id: params[:organization_id])
+        @organization = find_organization_by_param
         if page_admin?
           raise ActionController::ParameterMissing, :organization_id unless @organization
         else
@@ -140,6 +146,23 @@ module Api
       def prevent_caching
         unset_cache_control_headers
         response.headers["Cache-Control"] = "private, no-store"
+        response.headers["Surrogate-Control"] = "no-store"
+      end
+
+      def scalar_organization_id(raw_id = params[:organization_id])
+        return unless raw_id.is_a?(Integer) || (raw_id.is_a?(String) && raw_id.match?(/\A\d+\z/))
+
+        raw_id.to_i
+      end
+
+      def same_organization_id?(raw_id, organization_id)
+        parsed = scalar_organization_id(raw_id)
+        parsed.present? && parsed == organization_id
+      end
+
+      def find_organization_by_param(raw_id = params[:organization_id])
+        org_id = scalar_organization_id(raw_id)
+        Organization.find_by(id: org_id) if org_id
       end
 
       def log_page_write(action)
@@ -274,7 +297,10 @@ module Api
       end
 
       def extract_org_slug_suffix(org_prefix = "#{@organization.slug}/")
-        raw_slug = (params[:slug_suffix].presence || params[:slug]).to_s.strip.sub(%r{\A/+}, "")
+        raw_value = params[:slug_suffix].presence || params[:slug]
+        return "" unless raw_value.is_a?(String) || raw_value.is_a?(Integer)
+
+        raw_slug = raw_value.to_s.strip.sub(%r{\A/+}, "")
         if raw_slug.include?("/")
           return "" unless raw_slug.downcase.start_with?(org_prefix.downcase)
 
