@@ -1,0 +1,54 @@
+app/controllers/admin/event_pages_controller.rb
+  h_f968154a99632d 3-4,8,13,18-28,82,102-106,125-126,149-159,161-163,181-189,191-196,203-204,207-211
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 244
+app/controllers/concerns/owned_page_management.rb
+  h_f968154a99632d 1-82
+app/controllers/events_controller.rb
+  h_f968154a99632d 62
+app/controllers/organization_pages_controller.rb
+  h_f968154a99632d 3,70
+app/models/event.rb
+  h_f968154a99632d 209-215
+app/models/page.rb
+  h_f968154a99632d 5,90-93,98,114,146,156
+app/views/admin/event_pages/_form.html.erb
+  h_f968154a99632d 53,56-58,75-82,84-93,100-106,108
+app/views/admin/event_pages/index.html.erb
+  h_f968154a99632d 11-13,53,86-89
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 119,124
+config/locales/views/admin/en.yml
+  h_f968154a99632d 778,780,782
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 769,771,773
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 677,679,681
+db/migrate/20261119120000_add_event_id_to_pages.rb
+  h_f968154a99632d 1,3,10
+spec/models/event_spec.rb
+  h_f968154a99632d 434-435,437-440,443,447
+spec/models/page_spec.rb
+  h_f968154a99632d 433,437,441-444,446-456,458-460,493
+spec/requests/admin/event_pages_spec.rb
+  h_f968154a99632d 32,51,54,69-71,73,75,85-106,178-179,186
+spec/requests/api/v1/docs/pages_spec.rb
+  h_f968154a99632d 59,67
+spec/requests/api/v1/pages_spec.rb
+  h_f968154a99632d 97,104,110,329,352
+spec/requests/events_spec.rb
+  h_f968154a99632d 327,348
+swagger/v1/api_v1.json
+  h_f968154a99632d 4125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e50c96d36fcea1f1a0615ed242937606f089d262",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
