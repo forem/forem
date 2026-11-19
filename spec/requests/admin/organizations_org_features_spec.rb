@@ -218,6 +218,19 @@ RSpec.describe "/admin/content_manager/organizations org features" do
         .to include(I18n.t("views.admin.organizations.org_features.related_articles.enabled_notice"))
     end
 
+    it "shows the saved article analytics state after a toggle" do
+      as_stale_worker { get admin_organization_path(organization) }
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_article_analytics", enabled: "true" }
+
+      as_stale_worker { follow_redirect! }
+
+      expect(response.body).to include(I18n.t("views.admin.organizations.org_features.article_analytics.disable"))
+      expect(response.body)
+        .to include(I18n.t("views.admin.organizations.org_features.article_analytics.enabled_notice"))
+    end
+
     it "submits the opposite of the saved state on the next click" do
       as_stale_worker { get admin_organization_path(organization) }
 
