@@ -1,0 +1,25 @@
+scripts/check_forem_native_loads.sh
+  h_f968154a99632d 9-13
+  h_f968154a99632d 1-8,14-25
+scripts/build_forem_native_linux.sh
+  h_f968154a99632d 18-21,36
+  h_f968154a99632d 1-17,22-35,37-38
+.github/workflows/forem-native.yml
+  h_f968154a99632d 71,193,196-220
+  h_f968154a99632d 70,72,177-192,194-195
+docs/rust_native_extensions.md
+  h_f968154a99632d 35,37,72
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3e2cb41515d4405c6aab08a8142025c021c59dd6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
