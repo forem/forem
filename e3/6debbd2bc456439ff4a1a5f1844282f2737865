@@ -1,0 +1,24 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 37,59,177
+gems/forem_native/crates/forem_core/src/redaction_metadata.rs
+  h_f968154a99632d 29-38
+gems/forem_native/ext/forem_native/Cargo.toml
+  h_f968154a99632d 15
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 13-15,1762-1799,1802-1808,1810-1811,1815-1819,1821,1824-1833,1836-1932,1934,1942-1969,1971-1981,1983-1989,1992,2362,2364
+lib/tasks/forem_native.rake
+  h_f968154a99632d 92,1455-1546
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 70-84,91-102,105,108-109,116,121-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e36debbd2bc456439ff4a1a5f1844282f2737865",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
