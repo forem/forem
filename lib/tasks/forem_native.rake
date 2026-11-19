@@ -83,7 +83,12 @@ namespace :forem_native do
 
   desc "Run throughput (benchmark-ips) and allocation (memory_profiler) benchmarks for forem_native"
   task benchmark: %i[
-    environment benchmark_extractors benchmark_comment_tree benchmark_story_cards benchmark_image_ops
+    environment
+    benchmark_extractors
+    benchmark_comment_tree
+    benchmark_story_cards
+    benchmark_image_ops
+    benchmark_html_postprocess
   ] do
     require "benchmark/ips"
     require "memory_profiler"
@@ -1356,6 +1361,94 @@ namespace :forem_native do
     Benchmark.ips do |x|
       x.config(time: 1.5, warmup: 0.5)
       ops.each { |label, fn| x.report(label, &fn) }
+    end
+  end
+
+  desc "Benchmark fused rendered-HTML postprocessing (ForemNative.postprocess_rendered_html vs legacy DOM chain)"
+  task benchmark_html_postprocess: :environment do
+    unless ForemNative::Native.respond_to?(:postprocess_rendered_html)
+      raise "Missing postprocess_rendered_html; rebuild with `bundle exec rake forem_native:compile` first"
+    end
+
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    app_domain = Settings::General.app_domain
+    base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{app_domain}"
+    md_parser = MarkdownProcessor::Parser.new("")
+    action_html = Html::Parser.new("").fullscreen_action_html
+
+    sample_html = <<~HTML * 6
+      <p>Hello :joy: <a href="https://github.com/forem">GitHub</a> and <a href="https://#{app_domain}/home">Home</a></p>
+      <ul>
+      <li>First<br>line</li>
+      <li>Second</li>
+      </ul>
+      <p><video src="https://example.com/clip.mp4"></video></p>
+      <div class="highlight"><pre class="highlight ruby"><code>puts ":smile:"
+      <span class="p">{</span><span class="o">----%</span> <span class="nt">raw</span> <span class="o">%----</span><span class="p">}</span>
+      </code></pre></div>
+      <table>
+      <thead>
+      <tr>
+      <th>Col</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Cell</td>
+      </tr>
+      </tbody>
+      </table>
+      <p></p>
+    HTML
+
+    legacy_postprocess = lambda do
+      linked = md_parser.__send__(:legacy_add_target_blank_to_outbound_links, sample_html, app_domain)
+      lp = Html::Parser.new(linked)
+      lp.remove_nested_linebreak_in_list
+      lp.__send__(:html=, Nokogiri::HTML.fragment(lp.html).to_html)
+      lp.__send__(:html=, lp.__send__(:legacy_wrap_all_images_in_links))
+      lp.__send__(:html=, lp.__send__(:legacy_enforce_gif_like_videos))
+      lp.__send__(:html=, lp.__send__(:legacy_add_control_class_to_codeblock))
+      lp.__send__(:html=, lp.__send__(:legacy_add_control_panel_to_codeblock))
+      lp.__send__(:html=, lp.__send__(:legacy_add_fullscreen_button_to_panel, action_html))
+      lp.__send__(:html=, lp.__send__(:legacy_wrap_all_tables))
+      lp.__send__(:html=, lp.__send__(:legacy_remove_empty_paragraphs))
+      lp.__send__(:html=, lp.__send__(:legacy_escape_colon_emojis_in_codeblock))
+      lp.__send__(:html=, lp.__send__(:legacy_unescape_raw_tag_in_codeblocks)) if lp.html.present?
+      lp.html
+    end
+
+    native_postprocess = lambda do
+      ForemNative.postprocess_rendered_html(
+        sample_html,
+        app_domain: app_domain,
+        fullscreen_action_html: action_html,
+        existing_usernames: [],
+        base_url: base_url,
+        run_target_blank: true,
+        normalize_document: true,
+      )
+    end
+
+    legacy_out = legacy_postprocess.call
+    native_out = native_postprocess.call
+    raise "postprocess_rendered_html parity failure" unless native_out == legacy_out
+
+    puts "\n=== Rendered-HTML Post-Processing Pipeline (#{sample_html.bytesize} bytes) ==="
+    ruby_mem = MemoryProfiler.report { 10.times { legacy_postprocess.call } }
+    rust_mem = MemoryProfiler.report { 10.times { native_postprocess.call } }
+    puts "postprocess_rendered_html Ruby Legacy allocations (10 runs): " \
+         "#{ruby_mem.total_allocated} objects (#{ruby_mem.total_allocated_memsize} bytes)"
+    puts "postprocess_rendered_html Rust Magnus allocations (10 runs): " \
+         "#{rust_mem.total_allocated} objects (#{rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (Nokogiri DOM chain)") { legacy_postprocess.call }
+      x.report("Rust Magnus (ForemNative.postprocess_rendered_html)") { native_postprocess.call }
+      x.compare!
     end
   end
 end

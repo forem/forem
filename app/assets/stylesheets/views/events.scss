@@ -1,6 +1,22 @@
 .event-show-layout {
   padding-top: var(--su-4);
 
+  .event-header-tabs {
+    background: var(--base-0);
+    border-radius: var(--radius);
+    padding: 0 var(--su-2);
+    box-shadow: 0 0 0 1px var(--card-border, var(--base-20));
+    gap: var(--su-1);
+
+    .crayons-tabs__item {
+      white-space: nowrap;
+    }
+
+    .crayons-tabs__item--current {
+      font-weight: var(--fw-bold, 700);
+    }
+  }
+
   .event-header {
     display: flex;
     align-items: center;

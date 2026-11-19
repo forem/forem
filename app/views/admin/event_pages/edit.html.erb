@@ -1,0 +1,15 @@
+<% page_heading = @page.embed_html? ? t("views.organization_settings.pages.edit_embed_page") : t("views.organization_settings.pages.edit_page") %>
+<% content_for :h1, "#{@event.title} — #{page_heading}" %>
+
+<div class="crayons-layout crayons-layout--limited-l pt-4 pb-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="crayons-title m-0"><%= page_heading %></h1>
+    <%= link_to "&larr; #{t("views.organization_settings.pages.back_to_pages")}".html_safe, admin_event_pages_path(@event), class: "crayons-btn crayons-btn--secondary" %>
+  </div>
+
+  <% if @page.embed_html? %>
+    <%= render "embed_form", url: admin_event_page_path(@event, @page), method: :patch, is_new: false %>
+  <% else %>
+    <%= render "form", url: admin_event_page_path(@event, @page), method: :patch, is_new: false %>
+  <% end %>
+</div>

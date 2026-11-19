@@ -9,6 +9,7 @@ module Rack
   class Attack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
+    API_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/api/}
     API_SEARCH_PATH_REGEX = %r{
       \A(?:/locale/[^/]+)?/api/(?:v\d+/)?
       (?:(?:articles|users|concepts)/(?:semantic_)?search|related_articles)(?:\.json)?\z
@@ -57,12 +58,16 @@ module Rack
         end
       end
 
+      def api_write?
+        (put? || patch? || post? || delete?) && normalized_path.match?(API_PATH_REGEX)
+      end
+
       def magic_link_create?
-        post? && magic_link_path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
+        post? && normalized_path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
       end
 
       def magic_link_show?
-        magic_link_path.match?(MAGIC_LINK_SHOW_PATH_REGEX)
+        normalized_path.match?(MAGIC_LINK_SHOW_PATH_REGEX)
       end
 
       # Rails params, not Rack's: they differ on query/body conflicts and JSON
@@ -73,8 +78,8 @@ module Rack
 
       private
 
-      # The router collapses slashes before matching, so `//magic_links` still routes.
-      def magic_link_path
+      # The router collapses slashes before matching, so `//magic_links` and `//api/pages` still route.
+      def normalized_path
         ActionDispatch::Journey::Router::Utils.normalize_path(path)
       end
     end
@@ -140,8 +145,7 @@ module Rack
     end
 
     throttle("api_write_throttle", limit: 1, period: 1) do |request|
-      api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && (request.put? || request.post? || request.delete?)
+      if request.api_write?
         Honeycomb.add_field("user_api_key", request.env["HTTP_API_KEY"])
         unless admin_api_key?(request)
           request.track_and_return_ip
@@ -150,11 +154,8 @@ module Rack
     end
 
     throttle("api_write_key_throttle", limit: 1, period: 1) do |request|
-      api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && (request.put? || request.post? || request.delete?)
-        unless admin_api_key?(request)
-          request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
-        end
+      if request.api_write? && !admin_api_key?(request)
+        request.env["HTTP_API_KEY"].presence
       end
     end
 

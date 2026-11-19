@@ -418,5 +418,27 @@ RSpec.describe PageTag, type: :liquid_tag do
       FeatureFlag.disable(:user_embed_pages, FeatureFlag::Actor[embed_owner]) if embed_owner
       FeatureFlag.disable(:org_readme, FeatureFlag::Actor[org]) if org
     end
+
+    it "embeds published event custom pages and sandboxed embed_html pages", :aggregate_failures do
+      event = create(:event, published: true, title: "Ruby Meetup",
+                             event_name_slug: "ruby-meetup", event_variation_slug: "nov")
+      create(:page, event: event, slug: event.page_slug_for("faq"), title: "Meetup FAQ",
+                    template: "full_within_layout", body_markdown: "FAQ details")
+      create(:page, event: event, slug: event.embed_page_slug_for("poll"), title: "Live Poll",
+                    template: Page::EMBED_HTML_TEMPLATE, body_markdown: nil, body_html: "<div>Poll</div>")
+
+      faq_html = MarkdownProcessor::Parser.new("{% page /events/ruby-meetup/nov/p/faq %}").finalize
+      expect(faq_html).to include("src=\"#{URL.url('/events/ruby-meetup/nov/p/faq?mode=embed')}\"")
+      expect(faq_html).not_to include("sandbox=")
+
+      upper_faq_html = MarkdownProcessor::Parser.new("{% page /events/RUBY-MEETUP/NOV/p/faq %}").finalize
+      expect(upper_faq_html).to include("src=\"#{URL.url('/events/ruby-meetup/nov/p/faq?mode=embed')}\"")
+      expect(upper_faq_html).not_to include("RUBY-MEETUP")
+
+      embed_html = MarkdownProcessor::Parser.new("{% embed /events/ruby-meetup/nov/embed/poll %}").finalize
+      expect(embed_html).to include("src=\"#{URL.url('/events/ruby-meetup/nov/embed/poll?mode=embed')}\"")
+      expect(embed_html).to include("sandbox=\"#{PageTag::IFRAME_SANDBOX}\"")
+      expect(embed_html).to include("credentialless")
+    end
   end
 end

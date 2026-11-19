@@ -95,6 +95,39 @@ module EventsHelper
     nil
   end
 
+  def event_has_tabs?(showcase_page, nav_pages)
+    showcase_page.present? || nav_pages.present?
+  end
+
+  def event_native_tab_label(event, has_showcase:)
+    return t("views.events.pages.tabs.overview") unless has_showcase
+
+    case event.type_of
+    when "live_stream"
+      t("views.events.pages.tabs.live_stream")
+    when "challenge"
+      t("views.events.pages.tabs.challenge_details")
+    else
+      t("views.events.pages.tabs.event_details")
+    end
+  end
+
+  def event_breadcrumb_links(event)
+    links = [[t("views.events.gathering.events"), events_path]]
+    if event.challenge?
+      links << [t("views.events.pages.breadcrumbs.challenges"), "/challenge"]
+    elsif event.meetup?
+      links << [t("views.events.gathering.meetups"), meetups_path]
+    elsif event.conference?
+      links << [t("views.events.gathering.conferences"), conferences_path]
+    end
+    links
+  end
+
+  def event_page_suffix(page)
+    page.slug.to_s.split("/").last
+  end
+
   # "10 Mar 09:00 – 11:00" for a same-day event; "10 Mar 09:00 – 18 Mar 17:00"
   # for a multi-day event, so the card shows both the start and end.
   def event_datetime_range(event)
