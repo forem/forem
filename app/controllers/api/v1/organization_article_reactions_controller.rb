@@ -4,6 +4,9 @@ module Api
       before_action :authenticate_with_api_key_or_current_user!
       after_action :verify_authorized
 
+      DEFAULT_PER_PAGE = 30
+      MAX_PER_PAGE = 100
+      MAX_PAGE = 1000
       SINCE_FORMAT = /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-](?:0\d|1[0-4]):[0-5]\d)\z/
 
       def index
@@ -13,6 +16,10 @@ module Api
         authorize organization, :article_reactions?
 
         filters = params.permit(:page, :per_page, :article_id)
+        requested_page = filters[:page].to_i
+        page = requested_page.positive? ? requested_page : 1
+        requested_per_page = filters[:per_page].to_i
+        per_page = requested_per_page.positive? ? requested_per_page.clamp(1, MAX_PER_PAGE) : DEFAULT_PER_PAGE
         articles = organization.articles.published.from_subforem
         if filters.key?(:article_id)
           return render_invalid(:invalid_article_id) unless filters[:article_id].to_s.match?(/\A[1-9]\d*\z/)
@@ -27,10 +34,11 @@ module Api
           reactions = reactions.where(created_at: since..)
         end
 
+        return render json: [] if page > MAX_PAGE
+
         @reactions = reactions.select(:id, :reactable_id, :category, :created_at, :user_id)
           .preload(:user).order(created_at: :desc, id: :desc)
-          .page(filters[:page].to_i.clamp(1, 1000))
-          .per(filters.fetch(:per_page, 30).to_i.clamp(1, 100))
+          .page(page).per(per_page)
         render "api/v1/organization_article_reactions/index", formats: :json
       end
 

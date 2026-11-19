@@ -216,6 +216,31 @@ RSpec.describe "Api::V1::OrganizationArticleReactions" do
       expect(response.parsed_body.map { |r| r["user"]["user_id"] }).to eq([first.user_id])
     end
 
+    it "returns an empty page past the page limit instead of repeating the last page" do
+      create_list(:reaction, 2, reactable: article)
+
+      get path, params: { page: 1001 }, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq([])
+
+      get path, params: { page: 1001, since: "yesterday" }, headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+
+      stub_const("#{Api::V1::OrganizationArticleReactionsController}::MAX_PAGE", 1)
+      get path, params: { per_page: 1, page: 2 }, headers: headers
+      expect(response.parsed_body).to eq([])
+    end
+
+    it "uses the default page size for blank or non-positive per_page" do
+      stub_const("#{Api::V1::OrganizationArticleReactionsController}::DEFAULT_PER_PAGE", 2)
+      create_list(:reaction, 3, reactable: article)
+
+      ["", "0", "-5"].each do |per_page|
+        get path, params: { per_page: per_page }, headers: headers
+        expect(response.parsed_body.size).to eq(2)
+      end
+    end
+
     it "supports session authentication" do
       create(:reaction, reactable: article)
       sign_in user

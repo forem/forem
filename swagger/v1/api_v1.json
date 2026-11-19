@@ -3829,7 +3829,7 @@
           "organizations"
         ],
         "operationId": "getOrganizationArticleReactions",
-        "description": "Requires the org_article_reactions organization feature and organization admin access. Lists public reactions on the organization's published articles in the current subforem, newest first (created_at, then id). Reading list saves and privileged moderation reactions are never included. Results reflect current reactions, not an event log: removed reactions and reactions from deleted users disappear. Page size is capped at 100 and page depth at 1000. Responses are never cached.",
+        "description": "Requires the org_article_reactions organization feature and organization admin access. Lists public reactions on the organization's published articles in the current subforem, newest first (created_at, then id). Reading list saves and privileged moderation reactions are never included. Results reflect current reactions, not an event log: removed reactions and reactions from deleted users disappear. Page size is capped at 100 (blank or non-positive values use 30); pages past 1000 return an empty array. Responses are never cached.",
         "parameters": [
           {
             "name": "organization_id",

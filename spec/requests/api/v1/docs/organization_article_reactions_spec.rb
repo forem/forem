@@ -23,8 +23,8 @@ RSpec.describe "Api::V1::Docs::OrganizationArticleReactions" do
                   "Lists public reactions on the organization's published articles in the current subforem, " \
                   "newest first (created_at, then id). Reading list saves and privileged moderation reactions " \
                   "are never included. Results reflect current reactions, not an event log: removed reactions " \
-                  "and reactions from deleted users disappear. Page size is capped at 100 and page depth at 1000. " \
-                  "Responses are never cached."
+                  "and reactions from deleted users disappear. Page size is capped at 100 (blank or non-positive " \
+                  "values use 30); pages past 1000 return an empty array. Responses are never cached."
       produces "application/json"
       parameter name: :organization_id, in: :path, required: true, schema: { type: :integer }
       parameter name: :article_id, in: :query, required: false, schema: { type: :integer },
