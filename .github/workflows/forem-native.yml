@@ -67,6 +67,9 @@ on:
       - "spec/uploaders/**"
       - ".ruby-version"
       - ".github/workflows/forem-native.yml"
+      - "Containerfile"
+      - "scripts/build_forem_native_linux.sh"
+      - "scripts/check_forem_native_loads.sh"
   push:
     branches:
       - main
@@ -111,12 +114,6 @@ jobs:
         run: cargo test -p forem_core
       - name: Build release native library
         run: cargo build --release
-      - name: Upload x86_64-linux native binary artifact
-        if: matrix.os == 'ubuntu-24.04'
-        uses: actions/upload-artifact@v4
-        with:
-          name: forem-native-x86_64-linux
-          path: gems/forem_native/target/release/libforem_native.so
       - name: Upload macos native binary artifact
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
@@ -177,3 +174,47 @@ jobs:
             raise "Unexpected aggregate_transcript_redactions!" unless ForemNative.aggregate_transcript_redactions([{ "metadata" => { "redactions" => [{ "name" => "Home", "count" => 2 }] } }]) == { "Home" => 2 }
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
+
+  dev-image-load:
+    # The jobs above load the binary on ubuntu-24.04 (glibc 2.39).  Contributors on Docker,
+    # devcontainer and Codespaces run the pinned development base image (Debian bookworm,
+    # glibc 2.36), so check the committed binary loads there too, without cargo, on both architectures.
+    name: Committed binary loads in the dev image (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            os: ubuntu-24.04
+          - arch: arm64
+            os: ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Load forem_native in the development base image
+        run: scripts/check_forem_native_loads.sh ${{ matrix.arch }}
+
+  build-linux-binaries:
+    # Build dev-image-compatible Linux binaries via Containerfile's rust-builder stage so
+    # downloadable CI artifacts never link against ubuntu-24.04's newer glibc.
+    name: Build dev-image Linux binary (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            dir: x86_64-linux
+            os: ubuntu-24.04
+          - arch: arm64
+            dir: aarch64-linux
+            os: ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build forem_native for linux/${{ matrix.arch }}
+        run: scripts/build_forem_native_linux.sh ${{ matrix.arch }}
+      - name: Upload ${{ matrix.dir }} native binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: forem-native-${{ matrix.dir }}
+          path: gems/forem_native/lib/forem_native/${{ matrix.dir }}/forem_native.so
