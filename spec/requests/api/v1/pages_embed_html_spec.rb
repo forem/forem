@@ -115,6 +115,34 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
       )
     end
 
+    it "sends Cache-Control: private, no-store on embed write responses", :aggregate_failures do
+      create_embed
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+
+      create_embed(embed_params.merge(slug: "other", body_html: ""))
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+
+      update_embed({ body_html: "<p>fresh</p>" })
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
+    end
+
+    it "serves API-written HTML only through the sandboxed embed endpoint", :aggregate_failures do
+      create_embed
+      created = Page.find(response.parsed_body["id"])
+
+      get "/#{created.slug}", params: { mode: "embed" }, headers: { "Sec-Fetch-Dest" => "iframe" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<div id='contributors'>").or include('<div id="contributors">')
+      expect(response.body).to include('data-forem-wrapper-script="1"')
+      expect(response.headers["Content-Security-Policy"]).to include("sandbox")
+      expect(response.headers["Content-Security-Policy"]).not_to include("allow-same-origin")
+
+      expect { get "/page/#{created.slug}" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "keeps the slug when the update omits it" do
       update_embed({ body_html: "<p>fresh</p>" })
 
@@ -162,10 +190,11 @@ RSpec.describe "Api::V1::Pages for organization embed_html pages" do
     it_behaves_like "reads embed pages"
     it_behaves_like "writes embed pages"
 
-    it "destroys an embed page" do
+    it "destroys an embed page", :aggregate_failures do
       expect { delete api_page_path(embed_page.id), headers: headers }.to change(Page, :count).by(-1)
 
       expect(response).to have_http_status(:ok)
+      expect(response.headers["Cache-Control"]).to eq("private, no-store")
     end
 
     it "accepts a full namespaced slug and a slug_suffix", :aggregate_failures do

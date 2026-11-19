@@ -18,7 +18,6 @@ module Api
       end
 
       def show
-        prevent_caching if @page.embed_html?
         render json: @page
       end
 
@@ -126,6 +125,7 @@ module Api
           authorize_org_admin!(@organization)
         end
 
+        prevent_caching
         build_org_embed_page
         return render_validation_error if @page.errors.any?
 
@@ -170,6 +170,8 @@ module Api
 
         @user ||= authenticated_user
         raise ActiveRecord::RecordNotFound unless org_embed_page_reader?(@page.organization)
+
+        prevent_caching
       end
 
       def org_embed_page_reader?(organization)
