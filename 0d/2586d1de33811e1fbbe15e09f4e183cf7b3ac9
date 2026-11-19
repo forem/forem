@@ -1,0 +1,16 @@
+app/models/event.rb
+  h_f968154a99632d 300-301
+app/models/page.rb
+  h_f968154a99632d 159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0d2586d1de33811e1fbbe15e09f4e183cf7b3ac9",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
