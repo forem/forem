@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -335,6 +335,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.string "username"
     t.index ["banished_by_id"], name: "index_banished_users_on_banished_by_id"
     t.index ["username"], name: "index_banished_users_on_username", unique: true
+  end
+
+  create_table "billboard_campaigns", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.integer "max_clicks_count", default: 0, null: false
+    t.integer "max_impressions_count", default: 0, null: false
+    t.string "name", null: false
+    t.bigint "organization_id"
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_billboard_campaigns_on_organization_id"
   end
 
   create_table "billboard_placement_area_configs", force: :cascade do |t|
@@ -688,6 +699,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
     t.integer "audience_segment_id"
+    t.bigint "billboard_campaign_id"
     t.text "body_markdown"
     t.integer "browser_context", default: 0, null: false
     t.string "cached_tag_list"
@@ -708,6 +720,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.datetime "expires_at"
     t.integer "impressions_count", default: 0
     t.integer "include_subforem_ids", default: [], array: true
+    t.integer "max_clicks_count", default: 0, null: false
+    t.integer "max_impressions_count", default: 0, null: false
     t.text "minimized_body_markdown"
     t.text "minimized_processed_html"
     t.string "name"
@@ -731,6 +745,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.float "weight", default: 1.0, null: false
+    t.index ["billboard_campaign_id"], name: "index_display_ads_on_billboard_campaign_id"
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["event_id"], name: "index_display_ads_on_event_id"
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
@@ -2316,6 +2331,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify
   add_foreign_key "banished_users", "users", column: "banished_by_id", on_delete: :nullify
+  add_foreign_key "billboard_campaigns", "organizations", on_delete: :nullify
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
@@ -2339,6 +2355,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   add_foreign_key "discussion_locks", "users", column: "locking_user_id"
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
+  add_foreign_key "display_ads", "billboard_campaigns", on_delete: :nullify
   add_foreign_key "display_ads", "events"
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade

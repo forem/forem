@@ -7,6 +7,7 @@ class Billboard < ApplicationRecord
   belongs_to :audience_segment, optional: true
   belongs_to :page, optional: true
   belongs_to :event, optional: true
+  belongs_to :billboard_campaign, optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
@@ -104,6 +105,7 @@ class Billboard < ApplicationRecord
   validates :minimized_body_markdown, presence: true, if: :persistent?
   validates :organization, presence: true, if: :community?
   validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
+  validates :max_impressions_count, :max_clicks_count, numericality: { greater_than_or_equal_to: 0 }
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
@@ -113,7 +115,8 @@ class Billboard < ApplicationRecord
            :valid_manual_audience_segment,
            :validate_tag,
            :validate_geolocations,
-           :validate_expiration_approval
+           :validate_expiration_approval,
+           :validate_delivery_cap_approval
 
   before_validation :process_markdown
   before_save :update_exclude_article_ids
@@ -411,6 +414,23 @@ class Billboard < ApplicationRecord
     errors.add(:approved, "cannot be set to true if billboard has expired")
   end
 
+  def validate_delivery_cap_approval
+    return unless approved? && will_save_change_to_approved?
+    return unless over_cap? || billboard_campaign&.expired? || billboard_campaign&.over_cap?
+
+    errors.add(:approved, "cannot be set to true once the billboard or its campaign has ended or reached a cap")
+  end
+
+  def delivery_limit_reached?
+    (expires_at.present? && expires_at < Time.current) || over_cap? ||
+      billboard_campaign&.expired? || billboard_campaign&.over_cap?
+  end
+
+  def over_cap?
+    (max_impressions_count.positive? && impressions_count.to_i >= max_impressions_count) ||
+      (max_clicks_count.positive? && clicks_count.to_i >= max_clicks_count)
+  end
+
   def audience_segment_type
     @audience_segment_type ||= audience_segment&.type_of
   end
@@ -555,8 +575,9 @@ class Billboard < ApplicationRecord
     0 # Just to allow this to repond to .score for abuse reports
   end
 
-  def check_and_handle_expiration
-    return unless expires_at.present? && expires_at < Time.current && approved?
+  # Takes the billboard down once it, or its campaign, has expired or reached a delivery cap.
+  def check_and_handle_delivery_limits
+    return unless approved? && delivery_limit_reached?
 
     update_column(:approved, false)
     if current_markdown_has_liquid_tag?
