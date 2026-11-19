@@ -4,7 +4,7 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://github.com/forem/forem/actions/workflows/ci.yml"><img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a><a href="https://github.com/forem/forem/actions/workflows/cd.yml"><img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="Build Status"></a><img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity"><a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22"><img src="https://img.shields.io/github/issues/forem/forem/ready%20for%20dev" alt="GitHub issues ready for dev"></a><a href="https://gitpod.io/#https://github.com/forem/forem"><img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge"></a>
+  <a href="https://github.com/forem/forem/actions/workflows/ci.yml"><img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a><a href="https://github.com/forem/forem/actions/workflows/cd.yml"><img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="Build Status"></a><img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity"><a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22"><img src="https://img.shields.io/github/issues/forem/forem/ready%20for%20dev" alt="GitHub issues ready for dev"></a>
 </p>
 
 Welcome to the [Forem](https://forem.com) codebase, the platform that powers
@@ -72,8 +72,10 @@ A more complete overview of our stack is available in [our docs](https://develop
 
 ### Launching in a Cloud Dev Environment
 
-- **Ona** (formerly Gitpod): The project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
-- **Gitpod:** Navigate to [`https://gitpod.io/#https://github.com/{your_github_username}/forem`](https://gitpod.io/#https://github.com/{your_github_username}/forem).
+- **GitHub Codespaces:** From your fork, choose **Code → Codespaces → Create codespace**. The repository's devcontainer (`.devcontainer/`) starts PostgreSQL and Redis for you; run `bin/setup` once it opens, then `bin/startup`.
+- **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension and run `bin/setup`, then `bin/startup`, in its terminal. Without VS Code, run `npx @devcontainers/cli up --workspace-folder .` (it returns to your host shell), then `npx @devcontainers/cli exec --workspace-folder . bin/setup` and `npx @devcontainers/cli exec --workspace-folder . bin/startup`. The devcontainer uses host networking; on Docker Desktop (4.34 or newer) turn on **Settings → Resources → Network → Enable host networking**, or the app will not be reachable at `localhost:3000`. On Linux, PostgreSQL and Redis bind host ports 5432 and 6379, so stop any host PostgreSQL or Redis service on those ports first.
+
+Ona (formerly Gitpod) is closed to new signups, so it is no longer a recommended route for new contributors.
 
 ### Installation Documentation
 

@@ -183,7 +183,8 @@ fn parse_numeric_entity(after_hash: &[u8]) -> Option<(u32, usize)> {
     }
 }
 
-fn trim_ruby_strip(text: &str) -> &str {
+/// Borrows the slice left by Ruby's `String#strip`, including its handling of NUL.
+pub fn trim_ruby_strip(text: &str) -> &str {
     let bytes = text.as_bytes();
     let is_strip = |b: u8| matches!(b, 0 | b'\t'..=b'\r' | b' ');
     let start = bytes.iter().take_while(|&&b| is_strip(b)).count();

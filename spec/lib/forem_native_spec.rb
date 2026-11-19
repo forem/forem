@@ -10,6 +10,135 @@ RSpec.describe ForemNative do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
   end
 
+  describe ".aggregate_transcript_redactions" do
+    let(:metadata_builder) { AgentSessionParsers::RedactionMetadata }
+    let(:scrubber) { AgentSessionParsers::SensitiveDataScrubber }
+
+    def redaction_counts_from_ruby(messages)
+      Array(messages).each_with_object(Hash.new(0)) do |message, counts|
+        Array(message.dig("metadata", "redactions")).each do |redaction|
+          name = (redaction["name"] || redaction["pattern_name"]).to_s.strip
+          count = (redaction["count"] || redaction["match_count"]).to_i
+          counts[name] += count if name.present? && count.positive?
+        end
+      end
+    end
+
+    def redaction_report_from_ruby(counts)
+      counts.sort_by { |_, count| -count }.map { |name, count| { "name" => name, "count" => count } }
+    end
+
+    def message_with_redactions(*rows)
+      { "role" => "user", "metadata" => { "redactions" => rows } }
+    end
+
+    it "matches the Ruby aggregation and final report for 1,200 seeded transcripts" do
+      random = Random.new(424_242)
+      names = ["", "\0Key\r\n", "Key", "  😀 東京 ", "\u00a0\u3000", "&amp;", "a'b", "\tToken", "Other"]
+
+      1_200.times do
+        messages = Array.new(random.rand(0..18)) do
+          next [{}, { "metadata" => nil }, { "metadata" => {} }].sample(random: random) if random.rand(4).zero?
+
+          rows = Array.new(random.rand(0..6)) do
+            name = names.sample(random: random)
+            count = random.rand(-3..7)
+            if random.rand(2).zero?
+              { "name" => name, "count" => count, "match_count" => 100 }
+            else
+              { "name" => false, "pattern_name" => name, "match_count" => count }
+            end
+          end
+          message_with_redactions(*rows)
+        end
+        expected_counts = redaction_counts_from_ruby(messages)
+        expect(described_class.aggregate_transcript_redactions(messages).to_a).to eq(expected_counts.to_a)
+        expected_report = redaction_report_from_ruby(expected_counts)
+        expect(metadata_builder.from_messages(messages).to_json).to eq(expected_report.to_json)
+
+        server_redactions = Array.new(random.rand(0..3)) do
+          scrubber::Redaction.new(pattern_name: names.sample(random: random), match_count: random.rand(1..4))
+        end
+        result = scrubber::Result.new(scrubbed_data: { "messages" => messages }, redactions: server_redactions)
+        merged_counts = expected_report.each_with_object(Hash.new(0)) { |row, acc| acc[row["name"]] = row["count"] }
+        server_redactions.each { |row| merged_counts[row.pattern_name] += row.match_count }
+        expect(metadata_builder.for_scrub_result(result).to_json)
+          .to eq({ "redactions" => redaction_report_from_ruby(merged_counts) }.to_json)
+      end
+    end
+
+    it "handles zero-redaction messages, alias fallbacks, and truthy falsy-looking primary values" do
+      expect(described_class.aggregate_transcript_redactions([])).to eq({})
+      expect(described_class.aggregate_transcript_redactions([{ "role" => "user" }, {}.compare_by_identity])).to eq({})
+
+      messages = [
+        message_with_redactions(
+          { "pattern_name" => "Home", "match_count" => 2 },
+          { "name" => "", "pattern_name" => "Ignored", "count" => 3 },
+          { "name" => "ZeroCount", "count" => 0, "match_count" => 5 },
+        ),
+      ]
+      expect(described_class.aggregate_transcript_redactions(messages)).to eq({ "Home" => 2 })
+      expect(metadata_builder.from_messages(messages)).to eq([{ "name" => "Home", "count" => 2 }])
+    end
+
+    it "defers coercion, Ruby hash behavior, overflow and unusual string encodings to Ruby" do
+      row = { "name" => "Home", "count" => 1 }
+      custom_name = +"original"
+      def custom_name.strip
+        "override"
+      end
+      singleton_hash = message_with_redactions(row)
+      def singleton_hash.custom_helper
+        true
+      end
+      hash_subclass = Class.new(Hash)
+      default_proc_calls = 0
+      default_proc_hash = Hash.new do |_hash, _key|
+        default_proc_calls += 1
+        { "redactions" => [row] }
+      end
+      invalid_utf8 = (+"\xFF").force_encoding("UTF-8")
+
+      messages_sets = [
+        nil,
+        [default_proc_hash],
+        [Hash.new({ "redactions" => [row] })],
+        [{ "metadata" => { "redactions" => [row] }.compare_by_identity }],
+        [singleton_hash],
+        [hash_subclass.new.merge(message_with_redactions(row))],
+        Class.new(Array).new([message_with_redactions(row)]),
+        [message_with_redactions(row.merge("count" => "12 tokens"))],
+        [message_with_redactions(row.merge("count" => 1e-7))],
+        [message_with_redactions(row.merge("count" => 2**70))],
+        [message_with_redactions(row.merge("count" => (2**63) - 1), row)],
+        [message_with_redactions(row.merge("name" => "Home".b))],
+        [message_with_redactions(row.merge("name" => "Home".encode("US-ASCII")))],
+        [message_with_redactions(row.merge("name" => "café".encode("ISO-8859-1")))],
+        [message_with_redactions(row.merge("name" => custom_name))],
+      ]
+
+      expect(described_class.aggregate_transcript_redactions([default_proc_hash])).to be_nil
+      expect(default_proc_calls).to eq(0)
+      invalid_utf8_messages = [message_with_redactions(row.merge("name" => invalid_utf8))]
+      expect(described_class.aggregate_transcript_redactions(invalid_utf8_messages)).to be_nil
+
+      messages_sets.each do |messages|
+        expect(described_class.aggregate_transcript_redactions(messages)).to be_nil
+        expected_report = redaction_report_from_ruby(redaction_counts_from_ruby(messages))
+        expect(metadata_builder.from_messages(messages)).to eq(expected_report)
+        expect(metadata_builder.from_messages(messages).map { |entry| entry["name"].encoding })
+          .to eq(expected_report.map { |entry| entry["name"].encoding })
+      end
+    end
+
+    it "defers to Ruby for invalid nested metadata and preserves its error" do
+      messages = [{ "metadata" => [] }]
+      expect(described_class.aggregate_transcript_redactions(messages)).to be_nil
+      expect { metadata_builder.from_messages(messages) }.to raise_error(TypeError)
+    end
+  end
+
   describe ".json_encoded_size (normalized transcript validation)" do
     let(:validator) { AgentSessionParsers::NormalizedDataValidator }
 

@@ -182,6 +182,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_161300) do
     t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
     t.float "feed_success_score", default: 0.0, null: false
+    t.jsonb "hidden_billboard_locations", default: [], null: false
     t.integer "hotness_score", default: 0
     t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"

@@ -1262,6 +1262,18 @@ RSpec.describe User do
       expect(user).not_to be_limited
     end
 
+    it "does not add creator roles from a stale first_user value once the grant is claimed", :aggregate_failures do
+      first = create(:user)
+      first.set_initial_roles!(first_user: true)
+      second = create(:user)
+      second.set_initial_roles!(first_user: true)
+
+      expect(first).to be_super_admin
+      expect(second).not_to be_creator
+      expect(second).not_to be_super_admin
+      expect(second).not_to be_trusted
+    end
+
     it "does not add any roles if not waiting on first user" do
       user = create(:user)
       user.set_initial_roles!

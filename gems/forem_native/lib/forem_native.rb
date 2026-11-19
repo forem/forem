@@ -7,10 +7,10 @@ require_relative "forem_native/builder"
 # In production, CI, and local development, it loads either the platform-compiled
 # shared library (`forem_native/forem_native.{so,bundle}` from `Containerfile` /
 # `rake forem_native:compile`) or the committed precompiled platform binary
-# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
+# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :postprocess_rendered_html
+  LATEST_NATIVE_SYMBOL = :aggregate_transcript_redactions
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -755,6 +755,13 @@ module ForemNative
       return unless Native.respond_to?(:scrub_agent_session_messages) && messages.is_a?(Array)
 
       Native.scrub_agent_session_messages(messages)&.sort_by { |_, count| -count }
+    end
+
+    # Counts per-message redactions in first-seen order, or returns nil for Ruby coercion.
+    def aggregate_transcript_redactions(messages)
+      return unless Native.respond_to?(:aggregate_transcript_redactions) && messages.instance_of?(Array)
+
+      Native.aggregate_transcript_redactions(messages)
     end
 
     # Adds `"js-code-highlight"` to every `div.highlight` element on canonical HTML fragments,

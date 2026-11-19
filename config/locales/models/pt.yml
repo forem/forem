@@ -20,6 +20,8 @@ pt:
       event_articles_disabled: não permite artigos marcados
       event_not_accepting_articles: só pode ser marcado enquanto o evento estiver ao vivo
       invalid_coauthor: devem ser IDs de usuário válidos
+      invalid_hidden_billboard_locations: deve ser uma lista de locais de banners de postagem válidos
+      invalid_hidden_billboard_locations_list: 'contém locais de banners inválidos: %{locations}'
       same_author: não deve ser o mesmo usuário que o autor
       must_not_have_spaces: não deve ter espaços
       published: Publicado

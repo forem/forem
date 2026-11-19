@@ -20,6 +20,8 @@ en:
       event_articles_disabled: does not allow tagged articles
       event_not_accepting_articles: can only be tagged while the event is live
       invalid_coauthor: must be valid user IDs
+      invalid_hidden_billboard_locations: must be an array of valid post billboard locations
+      invalid_hidden_billboard_locations_list: 'contains invalid billboard locations: %{locations}'
       same_author: must not be the same user as the author
       must_not_have_spaces: must not have spaces
       published: Published
