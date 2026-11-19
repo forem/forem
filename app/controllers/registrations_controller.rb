@@ -30,11 +30,15 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     first_user = Settings::General.waiting_on_first_user
-    build_devise_resource
+    # Save the user and claim its initial roles in one transaction, as the
+    # OAuth path does, so a failed first-user claim (e.g. mascot creation)
+    # also rolls back the user and the signup can be retried.
+    User.transaction do
+      build_devise_resource
+      resource.set_initial_roles!(first_user: first_user) if resource.persisted?
+    end
 
     if resource.persisted?
-      resource.set_initial_roles!(first_user: first_user)
-
       if resource.creator?
         prepare_new_forem_instance
         sign_in(resource)
@@ -85,7 +89,8 @@ class RegistrationsController < Devise::RegistrationsController
     end
     check_allowed_email(resource) if resource.email.present?
     resource.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
-    resource.save if resource.email.present?
+    # A savepoint, so a unique violation does not abort the enclosing transaction.
+    User.transaction(requires_new: true) { resource.save } if resource.email.present?
   rescue ActiveRecord::RecordNotUnique
     User.uncached { resource.validate }
     resource.errors.add(:email, :taken) if resource.errors.empty?

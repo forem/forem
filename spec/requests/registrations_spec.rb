@@ -549,6 +549,30 @@ RSpec.describe "Registrations" do
         expect(Settings::General.waiting_on_first_user).to be false
       end
 
+      it "rolls back the first signup when mascot creation fails, so a retry gets creator roles",
+         :aggregate_failures do
+        allow(Settings::General).to receive(:waiting_on_first_user).and_call_original
+        params = { user: { name: "first user",
+                           username: "first_user",
+                           email: "first@example.com",
+                           password: "PaSSw0rd_yo000",
+                           password_confirmation: "PaSSw0rd_yo000" } }
+        allow(Users::CreateMascotAccount).to receive(:call).and_raise(ActiveRecord::RecordInvalid)
+
+        expect { post "/users", params: params }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(User).not_to exist
+        expect(Settings::General.where(var: "waiting_on_first_user")).not_to exist
+
+        allow(Users::CreateMascotAccount).to receive(:call).and_call_original
+        post "/users", params: params
+
+        first_user = User.find_by(email: "first@example.com")
+        expect(first_user).to be_creator
+        expect(first_user).to be_super_admin
+        expect(response).to redirect_to(new_admin_creator_setting_path)
+        expect(Settings::General.mascot_user_id).to eq(User.mascot_account.id)
+      end
+
       it "does not grant creator roles to a second signup after the first one claimed them", :aggregate_failures do
         create(:user)
         Settings::General.unscoped.create!(var: "waiting_on_first_user", value: false)
