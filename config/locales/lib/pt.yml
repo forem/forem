@@ -301,3 +301,32 @@ pt:
           bottom_of_body_content:
             description: Bottom of body content for pages
             placeholder: Bottom of body content for pages
+    sub_permissions:
+      admin:
+        full_access: Acesso completo
+        granted_restricted: Acesso restrito de administrador de %{resource} concedido a %{username}
+        restricted: Restrito
+        restricted_hint: Um acesso restrito só permite o que estiver marcado abaixo. Subpermissões adicionadas depois começam desmarcadas.
+        save: Salvar subpermissões
+        summary: Subpermissões
+        updated: Subpermissões de %{resource} atualizadas para %{username}
+      baseline_hints:
+        billboard: Sempre permitido mesmo quando restrito — criar e editar rascunhos não aprovados, excluir rascunhos não aprovados e despublicar ou desaprovar billboards ativos.
+      clause_descriptions:
+        billboard:
+          approve: Marcar billboards como aprovados para exibição.
+          modify_approved: Editar atributos ou excluir billboards que já foram aprovados.
+          publish: Colocar billboards no ar para que apareçam aos membros.
+      clauses:
+        billboard:
+          approve: aprovar billboards
+          modify_approved: alterar ou excluir billboards aprovados e billboards de eventos
+          publish: publicar billboards
+      errors:
+        malformed: As subpermissões de %{resource} não estão em um formato reconhecido.
+        missing: 'Seu acesso de administrador de %{resource} não inclui: %{clauses}.'
+        mode_required: Escolha Acesso completo ou Restrito.
+        no_grant: O usuário não tem acesso de administrador de %{resource} para restringir.
+        not_configurable: O acesso de administrador de %{resource} não tem subpermissões.
+        unknown_clauses: 'Subpermissões de %{resource} desconhecidas: %{clauses}.'
+        unsupported_version: As subpermissões de %{resource} usam uma versão não suportada.
