@@ -1,0 +1,18 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 71,193,196-220
+scripts/build_forem_native_linux.sh
+  h_f968154a99632d 18-21,36
+scripts/check_forem_native_loads.sh
+  h_f968154a99632d 9-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3883860335c6407ec37ab177c381ad3438498399",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
