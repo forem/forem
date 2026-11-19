@@ -15,6 +15,13 @@ class BillboardCampaign < ApplicationRecord
     expires_at.present? && expires_at < Time.current
   end
 
+  # A billboard is live here when it is approved or Event-owned, the same rule BillboardPolicy uses.
+  def governs_live_billboard?(except: nil)
+    live = billboards.where(approved: true).or(billboards.where.not(event_id: nil))
+    live = live.where.not(id: except.id) if except&.persisted?
+    live.exists?
+  end
+
   # Pass the billboard being saved to count its unsaved counts and membership exactly once.
   def over_cap?(billboard = nil)
     cap_reached?(max_impressions_count, :impressions_count, billboard) ||

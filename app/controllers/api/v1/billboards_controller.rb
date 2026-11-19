@@ -34,6 +34,7 @@ module Api
         missing = []
         @billboard.with_lock do
           @billboard.assign_attributes(permitted_params)
+          @billboard.lock_affected_campaigns!
           missing = BillboardPolicy.new(@user, @billboard).missing_sub_permissions(:save)
           @billboard.save! if missing.empty?
         end

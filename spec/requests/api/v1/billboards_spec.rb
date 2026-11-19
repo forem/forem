@@ -458,6 +458,31 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response).to have_http_status(:created)
       end
     end
+
+    context "with a campaign that has a live billboard" do
+      let(:campaign) { BillboardCampaign.create!(name: "Live", max_impressions_count: 1_000) }
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      before do
+        create(:billboard, approved: true, published: true, billboard_campaign: campaign)
+        draft.update_column(:impressions_count, 900)
+      end
+
+      it "refuses to attach a billboard to the campaign", :aggregate_failures do
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: campaign.id }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to be_nil
+      end
+
+      it "refuses to detach a billboard from the campaign", :aggregate_failures do
+        draft.update_column(:billboard_campaign_id, campaign.id)
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: nil }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to eq(campaign.id)
+      end
+    end
   end
 
   context "when the API key's user is an unrestricted Billboard admin" do

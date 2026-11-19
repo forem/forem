@@ -585,6 +585,13 @@ class Billboard < ApplicationRecord
     0 # Just to allow this to repond to .score for abuse reports
   end
 
+  # Locks the campaigns this save or destroy moves the billboard out of or into, so the campaign
+  # checks in BillboardPolicy can't race a sibling's approval. Call inside the billboard's row lock.
+  def lock_affected_campaigns!
+    ids = [billboard_campaign_id, attribute_in_database(:billboard_campaign_id)].compact.uniq
+    BillboardCampaign.where(id: ids).order(:id).lock.ids if ids.any?
+  end
+
   # Takes the billboard down once it, or its campaign, has expired or reached a delivery cap.
   def check_and_handle_delivery_limits
     return unless approved? && delivery_limit_reached?

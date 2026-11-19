@@ -4,15 +4,9 @@
 # one whose billboards are all unapproved, needs nothing beyond Billboard access.
 class BillboardCampaignPolicy < ApplicationPolicy
   def missing_sub_permissions(action)
-    return [] unless action == :save && record.persisted? && record.changed? && governs_approved_billboard?
+    return [] unless action == :save && record.persisted? && record.changed? && record.governs_live_billboard?
     return [] if user.sub_permission?(resource: Billboard, clause: "modify_approved")
 
     %w[modify_approved]
-  end
-
-  private
-
-  def governs_approved_billboard?
-    record.billboards.where(approved: true).or(record.billboards.where.not(event_id: nil)).exists?
   end
 end
