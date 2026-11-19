@@ -15,6 +15,24 @@ RSpec.describe Podcast do
         podcast.save
       end
     end
+
+    it "enqueues cache busts for both the new and previous slug when slug changes" do
+      existing = create(:podcast, slug: "oldpodslug")
+      allow(Podcasts::BustCacheWorker).to receive(:perform_async)
+
+      existing.update!(slug: "newpodslug")
+
+      expect(Podcasts::BustCacheWorker).to have_received(:perform_async).with("newpodslug")
+      expect(Podcasts::BustCacheWorker).to have_received(:perform_async).with("oldpodslug")
+    end
+
+    it "triggers cache busting on destroy" do
+      existing = create(:podcast, slug: "destroypod")
+
+      sidekiq_assert_enqueued_with(job: Podcasts::BustCacheWorker, args: ["destroypod"]) do
+        existing.destroy
+      end
+    end
   end
 
   describe "validations" do

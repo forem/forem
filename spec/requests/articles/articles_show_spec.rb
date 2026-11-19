@@ -67,6 +67,21 @@ RSpec.describe "ArticlesShow" do
       expect(response.body).to include('<meta name="author-trust" content="3">')
     end
 
+    [true, false].each do |with_main_image|
+      it "generates matching social image meta tags once with_main_image=#{with_main_image}" do
+        article = create(:article, user: user, published: true, with_main_image: with_main_image)
+        expected_url = ApplicationController.helpers.article_social_image_url(article)
+        allow(Articles::SocialImage).to receive(:new).and_call_original
+
+        get article.path
+
+        expect(response).to have_http_status(:ok)
+        expect(doc.css('meta[property="og:image"]').pluck("content")).to eq([expected_url])
+        expect(doc.css('meta[name="twitter:image:src"]').pluck("content")).to eq([expected_url])
+        expect(Articles::SocialImage).to have_received(:new).with(anything).once
+      end
+    end
+
     it "renders DiscussionForumPosting and Comment structured data when article has comments", :aggregate_failures do
       comment = create(:comment, commentable: article, user: user)
       article.update_columns(comments_count: 1, displayed_comments_count: 1)
@@ -379,6 +394,44 @@ RSpec.describe "ArticlesShow" do
         "/bb/post_body_bottom\"",
         "/bb/post_body_bottom_secondary\"",
       )
+    end
+  end
+
+  context "when hidden_billboard_locations are configured on an article" do
+    it "omits only the configured billboard locations, including fully cached and mid-comments placements",
+       :aggregate_failures do
+      article.update_column(:body_markdown, "a" * 901)
+      create_list(:comment, 8, commentable: article, user: user)
+      BillboardPlacementAreaConfig.create!(placement_area: "post_fixed_bottom", fully_cached: true)
+
+      get article.path
+      doc = Nokogiri::HTML(response.body)
+      Billboard::POST_PLACEMENTS.each do |area|
+        expect(doc.at_css("[data-async-url$=\"/#{area}\"]")).to be_present
+      end
+
+      hidden = %w[post_fixed_bottom post_body_bottom post_sidebar post_comments_secondary post_comments_mid]
+      article.update!(hidden_billboard_locations: hidden)
+
+      get article.path
+      expect(response).to have_http_status(:ok)
+      doc = Nokogiri::HTML(response.body)
+      hidden.each do |area|
+        expect(doc.at_css("[data-async-url$=\"/#{area}\"]")).to be_nil
+      end
+      (Billboard::POST_PLACEMENTS - hidden).each do |area|
+        expect(doc.at_css("[data-async-url$=\"/#{area}\"]")).to be_present
+      end
+
+      article.update!(hidden_billboard_locations: Billboard::POST_PLACEMENTS)
+
+      get article.path
+      expect(response).to have_http_status(:ok)
+      doc = Nokogiri::HTML(response.body)
+      Billboard::POST_PLACEMENTS.each do |area|
+        expect(doc.at_css("[data-async-url$=\"/#{area}\"]")).to be_nil
+      end
+      expect(doc.css(".js-bb-shuffle-group")).to be_empty
     end
   end
 

@@ -194,7 +194,11 @@ class Organization < ApplicationRecord
   end
 
   def ordered_pages
-    pages.order(:position, :created_at, :id)
+    pages.non_embed_html.order(:position, :created_at, :id)
+  end
+
+  def ordered_embed_pages
+    pages.embed_html.order(:created_at, :id)
   end
 
   def main_page

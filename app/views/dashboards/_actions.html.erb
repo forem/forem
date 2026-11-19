@@ -123,6 +123,17 @@
         <span class="c-indicator"><%= @agent_sessions_count %></span>
       </a>
     </li>
+
+    <% if current_user&.can_manage_embed_pages? %>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "embed_pages" %>"
+        href="<%= dashboard_embed_pages_path %>"
+        <%= @action == "embed_pages" ? ' aria-current="page"'.html_safe : "" %>>
+        <%= t("views.dashboard.actions.embed_pages") %>
+        <span class="c-indicator"><%= @embed_pages_count %></span>
+      </a>
+    </li>
+    <% end %>
   </ul>
 
   <% if !current_user.actively_spam_or_suspended? && policy(:video).new? %>

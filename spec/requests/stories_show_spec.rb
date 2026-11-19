@@ -8,28 +8,35 @@ RSpec.describe "StoriesShow" do
   let(:org)  { create(:organization) }
   let(:article) { create(:article, user: user) }
 
-  describe "GET /:username/:slug (articles)" do
-    it "renders proper title" do
-      get article.path
-      expect(response.body).to include CGI.escapeHTML(article.title)
-    end
+  def create(name, *traits, **options)
+    return super(:user, *traits, profile_image: nil, **options) if name == :user
 
-    it "renders the Mastodon share link via Share2Fedi" do
+    if name == :article
+      options[:user] ||= user unless options.key?(:user_id)
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    Array.new(amount) { create(name, *traits, **options) }
+  end
+
+  describe "GET /:username/:slug (articles)" do
+    it "renders proper title, Mastodon share link, and current-year vs past-year date classes", :aggregate_failures do
       get article.path
 
       share_url = "https://s2f.kytta.dev/?text=#{CGI.escape(URL.article(article))}"
-      expect(response.body).to include(share_url)
+      expect(response.body).to include(CGI.escapeHTML(article.title), share_url, "date-no-year")
+
+      article.update_column(:published_at, 1.year.ago)
+      get article.path
+      expect(response.body).not_to include("date-no-year")
     end
 
-    it "redirects to appropriate if article belongs to org and user visits user version" do
-      old_path = article.path
-      article.update(organization: org)
-      get old_path
-      expect(response.body).to redirect_to article.path
-      expect(response).to have_http_status(:moved_permanently)
-    end
-
-    it "sets surrogate keys on the org redirect without loading the article body by slug" do
+    it "redirects user-path requests for org articles with surrogate keys, narrow slug query, and ?i=i handling",
+       :aggregate_failures do
       old_path = article.path
       article.update(organization: org)
       slug_queries = []
@@ -39,10 +46,21 @@ RSpec.describe "StoriesShow" do
 
       ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get old_path }
 
+      expect(response).to have_http_status(:moved_permanently)
       expect(response).to redirect_to(article.path)
+      expect(response.body).not_to redirect_to("#{article.path}?i=i")
       expect(response.headers["Surrogate-Key"]).to include(article.record_key, org.record_key)
       expect(slug_queries).not_to be_empty
       expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
+
+      get "#{old_path}?i=i"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response.body).to redirect_to("#{article.path}?i=i")
+
+      get "#{old_path}?i=j"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response.body).to redirect_to(article.path)
+      expect(response.body).not_to redirect_to("#{article.path}?i=j")
     end
 
     it "renders the article with feed snapshots but without the embedding or search document" do
@@ -65,12 +83,28 @@ RSpec.describe "StoriesShow" do
       )
     end
 
-    it "preserves internal nav param (i=i) upon redirect" do
-      old_path = article.path
-      article.update(organization: org)
-      get "#{old_path}?i=i"
-      expect(response.body).to redirect_to "#{article.path}?i=i"
-      expect(response).to have_http_status(:moved_permanently)
+    [false, true].each do |custom_domain|
+      it "projects long_markdown without loading Markdown on #{custom_domain ? 'custom domains' : 'article paths'}",
+         :aggregate_failures do
+        organization = create(:organization, custom_domain: "blog.example.com") if custom_domain
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[organization]) if custom_domain
+        record = create(:article, user: user, organization: organization, published: true)
+
+        markdown_cases = [
+          nil, "", "a" * 900, "a" * 901, "word " * 200, " " * 950, "\u00A0" * 950, "#{' ' * 901}x"
+        ]
+        markdown_cases.each do |markdown|
+          record.update_column(:body_markdown, markdown)
+          get custom_domain ? "http://blog.example.com/#{record.slug}" : record.path
+
+          expect(response).to have_http_status(:ok)
+          loaded_article = controller.instance_variable_get(:@article).object
+          expected_long_markdown = markdown.present? && markdown.size > 900
+          expect(loaded_article.has_attribute?(:body_markdown)).to be(false)
+          expect(loaded_article[:long_markdown]).to eq(expected_long_markdown)
+          expect(response.body.include?("below-post-bb")).to eq(expected_long_markdown)
+        end
+      end
     end
 
     it "preserves the article JSON response with the narrower show projection" do
@@ -96,113 +130,46 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(CGI.escapeHTML(org.name), CGI.escapeHTML(user.name))
       expect(response.body).to include(article.processed_html_final)
-      expect(response.headers["Surrogate-Key"]).to include(article.record_key)
+      expect(response.headers["Surrogate-Key"].split).to include(article.record_key, org.record_key)
     end
 
-    it "does not have ?i=i on redirects which did not originally include it" do
-      old_path = article.path
-      article.update(organization: org)
-      get old_path
-      expect(response.body).not_to redirect_to "#{article.path}?i=i"
-      expect(response).to have_http_status(:moved_permanently)
-    end
+    it "renders title tag and search_optimized_title_preamble based on auth state", :aggregate_failures do
+      default_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
+      preamble_title = "<title>Hey this is a test: #{CGI.escapeHTML(article.title)} - #{community_name}</title>"
+      preamble_span = '<span class="fs-xl color-base-70 block">Hey this is a test</span>'
 
-    it "does not have ?i=i on redirects without that precise param" do
-      old_path = article.path
-      article.update(organization: org)
-      get "#{old_path}?i=j"
-      expect(response.body).to redirect_to article.path
-      expect(response.body).not_to redirect_to "#{article.path}?i=j"
-      expect(response.body).not_to redirect_to "#{article.path}?i=j"
-    end
+      get article.path
+      expect(response.body).to include(default_title)
+      expect(response.body).not_to include(preamble_span)
 
-    ## Title tag
-    it "renders signed-in title tag for signed-in user" do
       sign_in user
       get article.path
+      expect(response.body).to include(default_title)
 
-      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
-      expect(response.body).to include(title)
-    end
-
-    it "renders signed-out title tag for signed-out user" do
-      get article.path
-      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
-    end
-
-    # search_optimized_title_preamble
-
-    it "renders title tag with search_optimized_title_preamble if set and not signed in" do
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
+      get article.path
+      expect(response.body).to include(default_title)
+      expect(response.body).not_to include(preamble_span)
+
+      sign_out user
       get article.reload.path
-
-      expected_title = "<title>Hey this is a test: #{CGI.escapeHTML(article.title)} - #{community_name}</title>"
-      expect(response.body).to include(expected_title)
+      expect(response.body).to include(preamble_title, preamble_span)
     end
 
-    it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
-      sign_in user
-      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
-      get article.path
-
-      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
-      expect(response.body).to include(title)
-    end
-
-    it "does not render preamble with search_optimized_title_preamble not signed in but not set" do
-      get article.path
-      expect(response.body).to include("#{CGI.escapeHTML(article.title)} - #{community_name}</title>")
-    end
-
-    it "renders title preamble with search_optimized_title_preamble if set and not signed in" do
-      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
-      get article.reload.path
-      expect(response.body).to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
-    end
-
-    it "does not render preamble with search_optimized_title_preamble if set and signed in" do
-      sign_in user
-      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
-      get article.path
-      expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
-    end
-
-    it "does not render title tag with search_optimized_title_preamble not signed in but not set" do
-      get article.path
-      expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
-    end
-
-    it "renders proper wrapper content clases" do
-      get article.path
-      expect(response.body)
-        .to include(" #{article.decorate.cached_tag_list_array.map { |tag| "articletag-#{tag}" }.join(' ')}")
-      expect(response.body).to include(" articleuser-#{article.user_id}")
-    end
-
-    it "reads the article's tag colors in one cache batch" do
+    it "renders wrapper content classes and reads the article's tag colors in one cache batch", :aggregate_failures do
+      tagged_article = create(:article, user: user, with_tags: true)
       allow(Rails.cache).to receive(:fetch).and_call_original
       allow(Rails.cache).to receive(:fetch_multi).and_call_original
 
-      get article.path
+      get tagged_article.path
 
-      tags = article.decorate.cached_tag_list_array
+      tags = tagged_article.decorate.cached_tag_list_array
       tag_color_keys = tags.map { |tag| "view-helper-#{tag}/tag_colors" }
       expect(Rails.cache).to have_received(:fetch_multi).with(*tag_color_keys, expires_in: 5.hours).once
       expect(Rails.cache).not_to have_received(:fetch).with(a_string_ending_with("/tag_colors"), any_args)
       expect(response.body).to include(*tags.map { |tag| %(href="/t/#{tag}") })
-    end
-
-    ###
-
-    it "renders date-no-year if article published this year" do
-      get article.path
-      expect(response.body).to include "date-no-year"
-    end
-
-    it "renders date with year if article published last year" do
-      article.update_column(:published_at, 1.year.ago)
-      get article.path
-      expect(response.body).not_to include "date-no-year"
+      expect(response.body).to include(" #{tags.map { |tag| "articletag-#{tag}" }.join(' ')}")
+      expect(response.body).to include(" articleuser-#{tagged_article.user_id}")
     end
 
     it "renders second and third users if present" do
@@ -224,17 +191,8 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to include "title"
     end
 
-    it "redirects to appropriate page if user changes username" do
-      old_username = user.username
-      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
-                          old_old_username: user.old_username)
-      get "/#{old_username}/#{article.slug}"
-      user.reload
-      expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
-      expect(response).to have_http_status(:moved_permanently)
-    end
-
-    it "checks the renamed user's article with an existence query instead of loading the full row" do
+    it "redirects and checks the renamed user's article with an existence query instead of loading the full row",
+       :aggregate_failures do
       old_username = user.username
       user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
                           old_old_username: user.old_username)
@@ -247,6 +205,7 @@ RSpec.describe "StoriesShow" do
       end
 
       expect(response).to have_http_status(:moved_permanently)
+      expect(response.body).to redirect_to("/#{user.reload.username}/#{article.slug}")
       scoped_to_user = /FROM "articles" WHERE "articles"."user_id"/
       expect(queries).to include(a_string_matching(/SELECT 1 AS one #{scoped_to_user.source}/))
       expect(queries).not_to include(a_string_matching(/SELECT "articles"\.\* #{scoped_to_user.source}/))
@@ -298,44 +257,43 @@ RSpec.describe "StoriesShow" do
       path = article.path
       relation = instance_double(ActiveRecord::Relation)
       allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
-      excluded_columns = %w[semantic_embedding reading_list_document]
+      excluded_columns = %w[body_markdown semantic_embedding reading_list_document]
       selected_columns = Article.column_names - excluded_columns
-      allow(relation).to receive(:select).with(selected_columns).and_return(relation)
+      allow(relation).to receive(:select).with(*selected_columns, StoriesController::LONG_MARKDOWN_PROJECTION)
+        .and_return(relation)
       allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
       get path
 
       expect(response).to have_http_status(:bad_request)
     end
 
-    it "has noindex if article has low score" do
-      article = create(:article, score: -5)
+    it "renders noindex for low-score articles and omits it for high or commented intermediate scores",
+       :aggregate_failures do
+      article.update_column(:score, -5)
       get article.path
       expect(response.body).to include("noindex")
-    end
 
-    it "does not have noindex if article has high score" do
-      article = create(:article, score: 6)
+      article.update_column(:score, 6)
+      get article.path
+      expect(response.body).not_to include("noindex")
+
+      article.update_column(:score, 3)
+      user.update_column(:comments_count, 1)
       get article.path
       expect(response.body).not_to include("noindex")
     end
 
-    it "does not have noindex if article w/ intermediate score w/ 1 comment" do
-      article = create(:article, score: 3)
-      article.user.update_column(:comments_count, 1)
-      get article.path
-      expect(response.body).not_to include("noindex")
-    end
+    it "renders og:image with main image if present ahead of social", :aggregate_failures do
+      main_image = "https://example.com/main.jpg"
+      social_image = "https://example.com/image.jpg"
+      article.update_columns(main_image: main_image, social_image: social_image)
 
-    it "renders og:image with main image if present ahead of social" do
-      article = create(:article, with_main_image: true, social_image: "https://example.com/image.jpg")
       get article.path
-      expect(response.body).to include(%(property="og:image" content="#{article.main_image}"))
-    end
+      expect(response.body).to include(%(property="og:image" content="#{main_image}"))
 
-    it "renders og:image with social if present and main image not so much" do
-      article = create(:article, with_main_image: false, social_image: "https://example.com/image.jpg")
+      article.update_column(:main_image, nil)
       get article.path
-      expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
+      expect(response.body).to include(%(property="og:image" content="#{social_image}"))
     end
 
     it "marks the pinned article as pinned while looking up the pinned article once" do
@@ -393,8 +351,9 @@ RSpec.describe "StoriesShow" do
     end
 
     it "loads the series articles with a single query when rendering the series switcher" do
-      collection = create(:collection, :with_articles, user: user, amount: 6)
-      series_article = collection.articles.first
+      collection = create(:collection, user: user)
+      series_articles = create_list(:article, 6, user: user, with_collection: collection)
+      series_article = series_articles.first
 
       collection_queries = []
       callback = lambda do |*, payload|
@@ -410,7 +369,7 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("series-switcher")
       expect(response.body).to include("6 Part Series")
-      collection.articles.each { |a| expect(response.body).to include(a.path) }
+      series_articles.each { |a| expect(response.body).to include(a.path) }
       expect(collection_queries.size).to eq(1)
     end
 
@@ -450,8 +409,8 @@ RSpec.describe "StoriesShow" do
       end
 
       it "redirects if article has no subforem_id and RequestStore has a non-default subforem_id" do
-        allow(Subforem).to receive(:cached_id_by_domain).with("www.example.com").and_return(create(:subforem,
-                                                                                                   domain: "other.com").id)
+        other_subforem_id = create(:subforem, domain: "other.com").id
+        allow(Subforem).to receive(:cached_id_by_domain).with("www.example.com").and_return(other_subforem_id)
 
         article.update_column(:subforem_id, nil)
         get article.path
@@ -475,19 +434,12 @@ RSpec.describe "StoriesShow" do
     let(:admin_user) { create(:user, :admin) }
 
     context "when user is not signed in" do
-      it "raises 404 for unpublished article without preview param" do
+      it "raises 404 without a valid preview param and renders uncached with a valid preview param",
+         :aggregate_failures do
         expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "raises 404 for unpublished article with invalid preview param" do
         expect { get "#{unpublished_article.path}?preview=invalid" }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "raises 404 for scheduled article without preview param" do
         expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
 
-      it "allows viewing unpublished article with valid preview param without edge caching headers" do
         get "#{unpublished_article.path}?preview=#{unpublished_article.password}"
         expect(response).to have_http_status(:ok)
         expect(response.headers["Surrogate-Control"]).to be_nil
@@ -498,15 +450,9 @@ RSpec.describe "StoriesShow" do
     context "when user is signed in without edit permissions" do
       before { sign_in other_user }
 
-      it "raises 404 for unpublished article without preview param" do
+      it "raises 404 for unpublished and scheduled articles without a valid preview param", :aggregate_failures do
         expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "raises 404 for unpublished article with invalid preview param" do
         expect { get "#{unpublished_article.path}?preview=invalid" }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "raises 404 for scheduled article without preview param" do
         expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -514,29 +460,24 @@ RSpec.describe "StoriesShow" do
     context "when user is signed in as the author" do
       before { sign_in user }
 
-      it "redirects unpublished article without preview param to the preview URL with 302 Found" do
+      it "redirects unpublished and scheduled articles to the preview URL while preserving query params",
+         :aggregate_failures do
         get unpublished_article.path
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
         expect(response.headers["Surrogate-Control"]).to be_nil
         expect(response.headers["Cache-Control"]).to include("private")
-      end
 
-      it "redirects unpublished article with invalid preview param to the correct preview URL" do
         get "#{unpublished_article.path}?preview=wrong_token"
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
         expect(response.headers["Surrogate-Control"]).to be_nil
         expect(response.headers["Cache-Control"]).to include("private")
-      end
 
-      it "preserves additional query parameters on redirect" do
         get "#{unpublished_article.path}?i=i"
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to("#{unpublished_article.path}?i=i&preview=#{unpublished_article.password}")
-      end
 
-      it "redirects scheduled article without preview param to the preview URL" do
         get scheduled_article.path
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to("#{scheduled_article.path}?preview=#{scheduled_article.password}")

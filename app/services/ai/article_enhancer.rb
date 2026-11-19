@@ -117,7 +117,7 @@ module Ai
     end
 
     def jev?(function_key)
-      @injected_client.nil? && selection(function_key).jev?
+      @injected_client.nil? && selection(function_key).decision?
     end
 
     def gemini_client(function_key)
@@ -126,8 +126,8 @@ module Ai
     end
 
     def jev_client(function_key)
-      Ai::TypeSafe::Client.new(model: selection(function_key).model, wrapper: self, affected_content: @article,
-                               affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      selection(function_key).decision_client(wrapper: self, affected_content: @article,
+                                              affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
     # --- Jev (TypeSafe System One) ---

@@ -19,7 +19,6 @@ describe ProfileImageUploader, type: :uploader do
   let!(:uploader) { described_class.new(user, mounted_as) }
 
   before do
-    described_class.include CarrierWave::MiniMagick # needed for processing
     described_class.enable_processing = true
   end
 

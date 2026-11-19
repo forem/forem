@@ -1,7 +1,13 @@
-module Images
-  TEMPLATE_PATH = "app/assets/images/social_template.png".freeze
+require "open-uri"
 
+module Images
   class GenerateSubforemImages
+    TEMPLATE_PATH = "app/assets/images/social_template.png".freeze
+    DEFAULT_FONT_PATH = Rails.root.join("app/assets/fonts/NotoSans-Bold.ttf").to_s.freeze
+    MAX_SOURCE_BYTES = 25.megabytes
+    OPEN_TIMEOUT_SECONDS = 5
+    READ_TIMEOUT_SECONDS = 15
+
     def self.call(subforem_id, image_url, background_url = nil)
       new(subforem_id, image_url, background_url).call
     end
@@ -11,6 +17,7 @@ module Images
       @image_url = image_url
       @background_url = background_url
       @subforem = Subforem.find(subforem_id)
+      @source_bytes_cache = {}
     end
 
     def call
@@ -54,64 +61,78 @@ module Images
     end
 
     def resize_image(source_url, width, height)
-      # Download the source image
-      source_image = MiniMagick::Image.open(source_url)
-
-      # Resize the image
-      source_image.resize "#{width}x#{height}"
-
-      # Upload the resized image
-      upload_image(source_image)
+      source_bytes = fetch_image_bytes(source_url)
+      png_bytes = ForemNative.subforem_resize_png(
+        source_bytes,
+        width,
+        height,
+        font_path: DEFAULT_FONT_PATH,
+      )
+      upload_image(png_bytes)
     end
 
     def create_social_image
-      # Use background URL if provided, otherwise use the existing social template
-      if @background_url.present?
-        background = MiniMagick::Image.open(@background_url)
-        # Crop the background to exactly 1000x500, centered
-        background.combine_options do |c|
-          c.resize "1000x500^" # Resize to cover the area (may be larger)
-          c.gravity "Center"     # Center the image
-          c.extent "1000x500"    # Crop to exact dimensions
-        end
-      else
-        background = MiniMagick::Image.open(TEMPLATE_PATH)
-      end
-
-      # Download and resize the source image to 300x300
-      source_image = MiniMagick::Image.open(@image_url)
-      source_image.resize "300x300"
-
-      # Calculate position to center the image (1000-300)/2 = 350, (500-300)/2 = 100
-      x_position = 350
-      y_position = 100
-
-      # Composite the source image onto the background
-      result = background.composite(source_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{x_position}+#{y_position}"
-      end
-
-      # Upload the result
-      upload_image(result)
+      custom_background = @background_url.present?
+      background_bytes = fetch_image_bytes(custom_background ? @background_url : TEMPLATE_PATH)
+      logo_bytes = fetch_image_bytes(@image_url)
+      png_bytes = ForemNative.subforem_social_image_png(
+        logo_bytes,
+        background_bytes,
+        custom_background: custom_background,
+        font_path: DEFAULT_FONT_PATH,
+      )
+      upload_image(png_bytes)
     end
 
-    def upload_image(image)
-      # Create a temporary file
-      tempfile = Tempfile.new(["subforem_image", ".png"])
-      image.write tempfile.path
+    def fetch_image_bytes(source)
+      @source_bytes_cache[source] ||= read_image_bytes(source)
+    end
 
-      # Upload using ArticleImageUploader
-      image_uploader = ArticleImageUploader.new.tap do |uploader|
-        uploader.store!(tempfile)
+    def read_image_bytes(source)
+      str = source.to_s
+      if str.match?(%r{\Ahttps?://}i)
+        URI.parse(str).open(
+          "rb",
+          open_timeout: OPEN_TIMEOUT_SECONDS,
+          read_timeout: READ_TIMEOUT_SECONDS,
+          content_length_proc: lambda { |content_length|
+            if content_length && content_length > MAX_SOURCE_BYTES
+              raise ArgumentError, "Image exceeds maximum allowed size (#{MAX_SOURCE_BYTES} bytes)"
+            end
+          },
+        ) { |io| read_bounded_stream(io) }
+      else
+        if File.size(str) > MAX_SOURCE_BYTES
+          raise ArgumentError, "Image exceeds maximum allowed size (#{MAX_SOURCE_BYTES} bytes)"
+        end
+
+        File.binread(str)
+      end
+    end
+
+    def read_bounded_stream(io)
+      data = io.read(MAX_SOURCE_BYTES + 1)
+      return "".b if data.nil?
+
+      if data.bytesize > MAX_SOURCE_BYTES
+        raise ArgumentError, "Image exceeds maximum allowed size (#{MAX_SOURCE_BYTES} bytes)"
       end
 
-      # Clean up the tempfile
-      tempfile.close
-      tempfile.unlink
+      data.b
+    end
 
-      # Return the uploaded URL
-      image_uploader.url
+    def upload_image(png_bytes)
+      tempfile = Tempfile.new(["subforem_image", ".png"])
+      begin
+        File.binwrite(tempfile.path, png_bytes)
+        image_uploader = ArticleImageUploader.new.tap do |uploader|
+          uploader.store!(tempfile)
+        end
+        image_uploader.url
+      ensure
+        tempfile.close
+        tempfile.unlink
+      end
     end
   end
 end

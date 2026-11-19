@@ -1,17 +1,4 @@
-FROM ghcr.io/forem/ruby:3.3.0@sha256:9cda49a45931e9253d58f7d561221e43bd0d47676b8e75f55862ce1e9997ab5c as base
-
-# HOTFIX: Remove broken nodesource list from base image to unblock apt update
-RUN rm -f /etc/apt/sources.list.d/nodesource.list
-
-# HOTFIX: bullseye LTS ended 2026-08-31 and the bullseye-security pool is
-# being purged from deb.debian.org / security.debian.org (their CDN edges 404
-# on .deb files the index still lists) while archive.debian.org has not
-# picked the suite up yet. snapshot.debian.org keeps every package forever, so
-# pin the security source to a snapshot from the last LTS day until the base
-# image moves to a supported Debian release.
-RUN find /etc/apt -type f \( -name "sources.list" -o -name "*.list" -o -name "*.sources" \) \
-      -exec sed -i "s|http://[a-z.]*debian.org/debian-security|http://snapshot.debian.org/archive/debian-security/20260831T000000Z|g" {} + \
-    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99snapshot
+FROM ghcr.io/forem/ruby:3.3.14@sha256:e28bebcb1c3215cf5e243b2164d1c9a19e2a2431ef0fe78c4832c9965e2d0a71 AS base
 
 FROM rust:1.85-bullseye as rust-toolchain
 
@@ -51,6 +38,7 @@ RUN apt update && \
         build-essential \
         libcurl4-openssl-dev \
         libffi-dev \
+        libyaml-dev \
         libxml2-dev \
         libxslt-dev \
         libpcre3-dev \
@@ -72,7 +60,7 @@ ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
     LD_PRELOAD=libjemalloc.so.2
 RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}" && \
     groupadd -g "${APP_GID}" "${APP_USER}" && \
-    adduser --uid "${APP_UID}" --gid "${APP_GID}" --home "${APP_HOME}" "${APP_USER}"
+    adduser --disabled-password --gecos '' --uid "${APP_UID}" --gid "${APP_GID}" --home "${APP_HOME}" "${APP_USER}"
 
 ENV DOCKERIZE_VERSION=v0.7.0
 RUN curl -fsSLO https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VERSION}"/dockerize-linux-${TARGETARCH}-"${DOCKERIZE_VERSION}".tar.gz \
@@ -107,7 +95,8 @@ RUN mkdir -p "${BUNDLE_APP_CONFIG}" && \
 COPY --chown=${APP_UID}:${APP_GID} . "${APP_HOME}"
 COPY --from=rust-builder --chown=${APP_UID}:${APP_GID} /opt/apps/forem/gems/forem_native/target/release/libforem_native.so "${APP_HOME}"/gems/forem_native/lib/forem_native/forem_native.so
 
-RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
+RUN mkdir -p "${APP_HOME}"/public/assets "${APP_HOME}"/public/images "${APP_HOME}"/public/packs \
+    "${APP_HOME}"/public/podcasts "${APP_HOME}"/public/uploads "${APP_HOME}"/tmp/pids
 
 # While it's relatively rare for bare metal builds to hit the default
 # timeout, QEMU-based ones (as is the case with Docker BuildX for
@@ -150,14 +139,12 @@ ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
     LD_PRELOAD=libjemalloc.so.2
 RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}" && \
     groupadd -g "${APP_GID}" "${APP_USER}" && \
-    adduser --uid "${APP_UID}" --gid "${APP_GID}" --home "${APP_HOME}" "${APP_USER}"
+    adduser --disabled-password --gecos '' --uid "${APP_UID}" --gid "${APP_GID}" --home "${APP_HOME}" "${APP_USER}"
 
 COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
 
 USER "${APP_USER}"
 WORKDIR "${APP_HOME}"
-
-VOLUME "${APP_HOME}"/public/
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
@@ -225,12 +212,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     gnupg2 \
     curl \
     less \
-    git
+    git \
+    libyaml-dev
 
 ARG PG_MAJOR
 RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgres-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] https://apt-archive.postgresql.org/pub/repos/apt/" \
-    $(lsb_release -cs)-pgdg main $PG_MAJOR | tee /etc/apt/sources.list.d/postgres.list > /dev/null
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/" \
+    $(. /etc/os-release && echo "$VERSION_CODENAME")-pgdg main $PG_MAJOR | tee /etc/apt/sources.list.d/postgres.list > /dev/null
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   --mount=type=cache,target=/var/lib/apt,sharing=locked \
   --mount=type=tmpfs,target=/var/log \

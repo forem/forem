@@ -3,13 +3,28 @@ module EventsHelper
     "live_stream" => "calendar__accent--live_stream",
     "takeover" => "calendar__accent--takeover",
     "other" => "calendar__accent--other",
-    "challenge" => "calendar__accent--challenge"
+    "challenge" => "calendar__accent--challenge",
+    "meetup" => "calendar__accent--meetup",
+    "conference" => "calendar__accent--conference"
+  }.freeze
+
+  EVENT_PILL_CLASSES = {
+    "digital" => "event-pill--digital",
+    "live stream" => "event-pill--digital",
+    "in-person" => "event-pill--in-person",
+    "in person" => "event-pill--in-person",
+    "challenge" => "event-pill--challenge",
+    "takeover" => "event-pill--takeover",
+    "meetup" => "event-pill--meetup",
+    "conference" => "event-pill--conference"
   }.freeze
 
   SIDEBAR_CATEGORY_BY_TYPE = {
     "challenge" => :challenges,
     "live_stream" => :livestreams,
-    "takeover" => :takeovers
+    "takeover" => :takeovers,
+    "meetup" => :meetups,
+    "conference" => :conferences
   }.freeze
 
   SIDEBAR_HEADING_I18N_KEYS = {
@@ -22,6 +37,12 @@ module EventsHelper
     %i[upcoming takeovers] => "views.main.side.events.headings.upcoming_takeovers",
     %i[live takeovers] => "views.main.side.events.headings.live_takeovers",
     %i[live_and_upcoming takeovers] => "views.main.side.events.headings.live_and_upcoming_takeovers",
+    %i[upcoming meetups] => "views.main.side.events.headings.upcoming_meetups",
+    %i[live meetups] => "views.main.side.events.headings.live_meetups",
+    %i[live_and_upcoming meetups] => "views.main.side.events.headings.live_and_upcoming_meetups",
+    %i[upcoming conferences] => "views.main.side.events.headings.upcoming_conferences",
+    %i[live conferences] => "views.main.side.events.headings.live_conferences",
+    %i[live_and_upcoming conferences] => "views.main.side.events.headings.live_and_upcoming_conferences",
     %i[upcoming events] => "views.main.side.events.headings.upcoming_events",
     %i[live events] => "views.main.side.events.headings.live_events",
     %i[live_and_upcoming events] => "views.main.side.events.headings.live_and_upcoming_events"
@@ -31,6 +52,8 @@ module EventsHelper
     "challenge" => "views.main.side.events.types.challenge",
     "live_stream" => "views.main.side.events.types.live_stream",
     "takeover" => "views.main.side.events.types.takeover",
+    "meetup" => "views.main.side.events.types.meetup",
+    "conference" => "views.main.side.events.types.conference",
     "other" => "views.main.side.events.types.other"
   }.freeze
 
@@ -57,6 +80,52 @@ module EventsHelper
 
   def event_type_accent_class(event)
     EVENT_TYPE_ACCENTS.fetch(event.type_of.to_s, "calendar__accent--other")
+  end
+
+  def event_pill_class(event)
+    EVENT_PILL_CLASSES.fetch(event.format_pill_label.downcase, "event-pill--default")
+  end
+
+  def safe_event_url(url)
+    value = url.to_s.strip
+    return if value.blank?
+    return value if value.start_with?("http://", "https://")
+    return value if value.start_with?("/") && !value.start_with?("//")
+
+    nil
+  end
+
+  def event_has_tabs?(showcase_page, nav_pages)
+    showcase_page.present? || nav_pages.present?
+  end
+
+  def event_native_tab_label(event, has_showcase:)
+    return t("views.events.pages.tabs.overview") unless has_showcase
+
+    case event.type_of
+    when "live_stream"
+      t("views.events.pages.tabs.live_stream")
+    when "challenge"
+      t("views.events.pages.tabs.challenge_details")
+    else
+      t("views.events.pages.tabs.event_details")
+    end
+  end
+
+  def event_breadcrumb_links(event)
+    links = [[t("views.events.gathering.events"), events_path]]
+    if event.challenge?
+      links << [t("views.events.pages.breadcrumbs.challenges"), "/challenge"]
+    elsif event.meetup?
+      links << [t("views.events.gathering.meetups"), meetups_path]
+    elsif event.conference?
+      links << [t("views.events.gathering.conferences"), conferences_path]
+    end
+    links
+  end
+
+  def event_page_suffix(page)
+    page.slug.to_s.split("/").last
   end
 
   # "10 Mar 09:00 – 11:00" for a same-day event; "10 Mar 09:00 – 18 Mar 17:00"

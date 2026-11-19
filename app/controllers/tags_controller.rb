@@ -18,6 +18,7 @@ class TagsController < ApplicationController
     skip_authorization
     @tags_index = true
     @tags = params[:q].present? ? tags.search_by_name(params[:q]) : tags.order(hotness_score: :desc)
+    set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
 
   def bulk

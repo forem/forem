@@ -5,6 +5,22 @@ RSpec.describe FeedEvent do
   let(:comment_multiplier)  { FeedEvent::COMMENT_SCORE_MULTIPLIER }
   let(:valid_categories)    { %w[impression click reaction comment extended_pageview] }
 
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    return Array.new(amount) { create(name, *traits, **options) } if %i[user article].include?(name)
+
+    super
+  end
+
   describe "validations" do
     it { is_expected.to belong_to(:article).optional }
     it { is_expected.to validate_numericality_of(:article_id).only_integer }
@@ -17,12 +33,16 @@ RSpec.describe FeedEvent do
 
   describe ".record_journey_for" do
     subject(:record_journey) { described_class.record_journey_for(user, article: article, category: category) }
-    let(:article)  { create(:article) }
+
+    let(:article)  { create(:article, user: user) }
     let(:user)     { create(:user) }
     let(:category) { :reaction }
 
     context "when the user's last click was on the specified article" do
-      let!(:click) { create(:feed_event, user: user, article: article, category: :click, article_position: 2, context_type: "home") }
+      let!(:click) do
+        create(:feed_event, user: user, article: article, category: :click, article_position: 2, context_type: "home")
+      end
+
       it "creates a new feed event with attributes copied from the click" do
         expect { record_journey }.to change(described_class, :count).by(1)
         last_event = user.feed_events.last
@@ -43,7 +63,8 @@ RSpec.describe FeedEvent do
 
     context "when the last click is not on the specified article" do
       let!(:click)       { create(:feed_event, user: user, article: article, category: :click) }
-      let!(:other_click) { create(:feed_event, user: user, category: :click) }
+      let!(:other_click) { create(:feed_event, user: user, article: create(:article, user: user), category: :click) }
+
       it "does not create a new feed event" do
         expect { record_journey }.not_to change(described_class, :count)
         expect(user.feed_events).to contain_exactly(click, other_click)
@@ -51,7 +72,8 @@ RSpec.describe FeedEvent do
     end
 
     context "when the user has never clicked the specified article" do
-      let!(:other_click) { create(:feed_event, user: user, category: :click) }
+      let!(:other_click) { create(:feed_event, user: user, article: create(:article, user: user), category: :click) }
+
       it "does not create a new feed event or look up the latest click" do
         article
         queries = []
@@ -66,6 +88,7 @@ RSpec.describe FeedEvent do
     context "when the interaction type is not one of reaction, comment, or extended_pageview" do
       let(:category) { :impression }
       let!(:click)   { create(:feed_event, user: user, article: article, category: :click) }
+
       it "does not create a new feed event" do
         expect { record_journey }.not_to change(described_class, :count)
         expect(user.feed_events).to contain_exactly(click)
@@ -75,6 +98,7 @@ RSpec.describe FeedEvent do
 
   describe "after_create_commit .record_field_test_event" do
     let(:goal) { AbExperiment::GoalConversionHandler::USER_CREATES_EMAIL_FEED_EVENT_GOAL }
+
     before do
       allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       # Current behavior: if experiments are present the worker is enqueued regardless of event type, user, or context.
@@ -83,15 +107,19 @@ RSpec.describe FeedEvent do
 
     context "when experiments config is nil" do
       before { allow(FieldTest).to receive(:config).and_return({ "experiments" => nil }) }
+
       it "does not record a field test event" do
-        create(:feed_event, user: create(:user), category: "click", context_type: "email")
+        user = create(:user)
+        create(:feed_event, user: user, article: create(:article, user: user), category: "click", context_type: "email")
         expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
       end
     end
   end
 
   describe "after_save .update_article_counters_and_scores" do
-    let(:article) { create(:article, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0) }
+    let(:article) do
+      create(:article, user: user1, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0)
+    end
     let(:user1)   { create(:user) }
     let(:user2)   { create(:user) }
 
@@ -109,7 +137,7 @@ RSpec.describe FeedEvent do
         create(:feed_event, category: "impression", article: article, user: user2, article_position: 1)
 
         article.reload
-        # Calculation: (click (1) + reaction (reaction_multiplier) + comment (comment_multiplier)) divided by 2 distinct impression users.
+        # (click (1) + reaction (reaction_multiplier) + comment (comment_multiplier)) / 2 distinct impression users.
         expected_score = (1 + reaction_multiplier + comment_multiplier).to_f / 2.0
         expect(article.feed_success_score).to eq(expected_score)
         expect(article.feed_impressions_count).to eq(2)
@@ -150,19 +178,20 @@ RSpec.describe FeedEvent do
     context "when article_id is nil" do
       it "does not call update_single_article_counters" do
         # Instead of saving (which would hit the not-null constraint), call the callback method directly
-        feed_event = build(:feed_event)
+        feed_event = build_stubbed(:feed_event, article: nil, user: nil)
         # Stub the article_id to simulate a nil value
         allow(feed_event).to receive(:article_id).and_return(nil)
-        expect(FeedEvent).not_to receive(:update_single_article_counters)
-        feed_event.send(:update_article_counters_and_scores)
+        allow(described_class).to receive(:update_single_article_counters)
+        feed_event.__send__(:update_article_counters_and_scores)
+        expect(described_class).not_to have_received(:update_single_article_counters)
       end
     end
 
     context "when only impression events occur" do
       it "updates only the impressions count" do
-        expect {
+        expect do
           create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
-        }.to change { article.reload.feed_impressions_count }.from(0).to(1)
+        end.to change { article.reload.feed_impressions_count }.from(0).to(1)
           .and not_change { article.reload.feed_success_score }
           .and not_change { article.reload.feed_clicks_count }
       end
@@ -181,11 +210,14 @@ RSpec.describe FeedEvent do
 
     context "when events from the same user occur multiple times" do
       it "counts duplicates for totals but uses distinct users for scoring" do
-        create_list(:feed_event, 2, category: "impression", article: article, user: user1, article_position: 1)
-        create_list(:feed_event, 4, category: "click", article: article, user: user1, article_position: 1)
-        create_list(:feed_event, 3, category: "reaction", article: article, user: user2, article_position: 1)
-        create_list(:feed_event, 2, category: "comment", article: article, user: user2, article_position: 1)
-        create_list(:feed_event, 3, category: "extended_pageview", article: article, user: user2, article_position: 1)
+        base = { article_id: article.id, article_position: 1, context_type: "home" }
+        described_class.insert_all(
+          Array.new(2) { base.merge(category: :impression, user_id: user1.id) } +
+          Array.new(4) { base.merge(category: :click, user_id: user1.id) } +
+          Array.new(3) { base.merge(category: :reaction, user_id: user2.id) } +
+          Array.new(2) { base.merge(category: :comment, user_id: user2.id) } +
+          Array.new(3) { base.merge(category: :extended_pageview, user_id: user2.id) },
+        )
         create(:feed_event, category: "impression", article: article, user: user2, article_position: 1)
 
         article.reload
@@ -199,10 +231,14 @@ RSpec.describe FeedEvent do
   end
 
   describe ".bulk_update_counters_by_article_id" do
-    let!(:article1) { create(:article, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0) }
-    let!(:article2) { create(:article, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0) }
-    let!(:user1)    { create(:user) }
-    let!(:user2)    { create(:user) }
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:article1) do
+      create(:article, user: user1, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0)
+    end
+    let(:article2) do
+      create(:article, user: user1, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0)
+    end
 
     before do
       allow(ThrottledCall).to receive(:perform).and_yield
@@ -210,19 +246,22 @@ RSpec.describe FeedEvent do
 
     context "when events exist for the articles" do
       before do
-        # Setup for article1
-        create(:feed_event, category: "impression", article: article1, user: user1, article_position: 1)
-        create(:feed_event, category: "impression", article: article1, user: user2, article_position: 1)
-        create(:feed_event, category: "impression", article: article1, user: user2, article_position: 1)
-        create(:feed_event, category: "click", article: article1, user: user1, article_position: 1)
-        create(:feed_event, category: "reaction", article: article1, user: user1, article_position: 1)
-        create(:feed_event, category: "comment", article: article1, user: user2, article_position: 1)
-        create(:feed_event, category: "extended_pageview", article: article1, user: user2, article_position: 1)
-
-        # Setup for article2
-        create(:feed_event, category: "impression", article: article2, user: user2, article_position: 1)
-        create(:feed_event, category: "click", article: article2, user: user1, article_position: 1)
-        create(:feed_event, category: "reaction", article: article2, user: user2, article_position: 1)
+        base1 = { article_id: article1.id, article_position: 1, context_type: "home" }
+        base2 = { article_id: article2.id, article_position: 1, context_type: "home" }
+        described_class.insert_all(
+          [
+            base1.merge(category: :impression, user_id: user1.id),
+            base1.merge(category: :impression, user_id: user2.id),
+            base1.merge(category: :impression, user_id: user2.id),
+            base1.merge(category: :click, user_id: user1.id),
+            base1.merge(category: :reaction, user_id: user1.id),
+            base1.merge(category: :comment, user_id: user2.id),
+            base1.merge(category: :extended_pageview, user_id: user2.id),
+            base2.merge(category: :impression, user_id: user2.id),
+            base2.merge(category: :click, user_id: user1.id),
+            base2.merge(category: :reaction, user_id: user2.id),
+          ],
+        )
       end
 
       it "updates counters and scores for multiple articles" do
@@ -245,9 +284,14 @@ RSpec.describe FeedEvent do
 
     context "when no impression events exist for the articles" do
       before do
-        create(:feed_event, category: "click", article: article2, user: user1, article_position: 1)
-        create(:feed_event, category: "reaction", article: article2, user: user2, article_position: 1)
-        create(:feed_event, category: "comment", article: article2, user: user2, article_position: 1)
+        base2 = { article_id: article2.id, article_position: 1, context_type: "home" }
+        described_class.insert_all(
+          [
+            base2.merge(category: :click, user_id: user1.id),
+            base2.merge(category: :reaction, user_id: user2.id),
+            base2.merge(category: :comment, user_id: user2.id),
+          ],
+        )
       end
 
       it "leaves counters as zero" do
@@ -324,7 +368,7 @@ RSpec.describe FeedEvent do
     let(:feed_config) { create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 0) }
     let(:user1)       { create(:user) }
     let(:user2)       { create(:user) }
-    let(:article)     { create(:article) }
+    let(:article)     { create(:article, user: user1) }
 
     before do
       allow(ThrottledCall).to receive(:perform).and_yield
@@ -406,26 +450,22 @@ RSpec.describe FeedEvent do
         create_event("extended_pageview", user2)
       end
 
-      it "calculates and updates the feed config counters with the 1.5x freshness boost" do
+      it "calculates and updates the feed config counters with the 1.5x freshness boost in a single query",
+         :aggregate_failures do
         # Distinct impression users: 2.
         # All articles were just published (< 12h old), so each receives 1.5x freshness multiplier.
         expected_score = ((1 + 1 + (reaction_multiplier * 2) + (comment_multiplier * 2)) * 1.5) / 2.0
 
-        described_class.update_single_feed_config_counters(feed_config.id)
-        feed_config.reload
-
-        expect(feed_config.feed_success_score).to be_within(0.0001).of(expected_score)
-        expect(feed_config.feed_impressions_count).to eq(2)
-      end
-
-      it "reads the feed config's feed events in a single aggregate query" do
         queries = []
         callback = ->(*, payload) { queries << payload[:sql] }
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
           described_class.update_single_feed_config_counters(feed_config.id)
         end
+        feed_config.reload
 
         expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+        expect(feed_config.feed_success_score).to be_within(0.0001).of(expected_score)
+        expect(feed_config.feed_impressions_count).to eq(2)
       end
     end
 
@@ -444,11 +484,12 @@ RSpec.describe FeedEvent do
     end
 
     context "when engagement events occur on articles of varying ages" do
-      let(:old_article) { create(:article, :past, past_published_at: 15.days.ago) }
-      let(:mid_article) { create(:article, :past, past_published_at: 2.days.ago) }
-      let(:new_article) { create(:article, :past, past_published_at: 2.hours.ago) }
+      let(:old_article) { create(:article, :past, user: user1, past_published_at: 15.days.ago) }
+      let(:mid_article) { create(:article, :past, user: user1, past_published_at: 2.days.ago) }
+      let(:new_article) { create(:article, :past, user: user1, past_published_at: 2.hours.ago) }
 
-      it "rewards newer articles up to 1.5x and decays older articles down to the 1.0x baseline" do
+      it "rewards newer articles up to 1.5x, decays older articles, and uses highest freshness per user",
+         :aggregate_failures do
         create(:feed_event, category: "impression", feed_config: feed_config, article: old_article, user: user1,
                             article_position: 1)
         click_old = create(:feed_event, category: "click", feed_config: feed_config, article: old_article,
@@ -471,11 +512,8 @@ RSpec.describe FeedEvent do
 
         expected_score = (1.0 * old_mult) + (reaction_multiplier * 2 * mid_mult) + (1.0 * new_mult)
         expect(feed_config.feed_success_score).to be_within(0.0001).of(expected_score)
-      end
 
-      it "uses the highest freshness multiplier per distinct user for non-click engagement categories" do
-        create(:feed_event, category: "impression", feed_config: feed_config, article: old_article, user: user1,
-                            article_position: 1)
+        described_class.where(feed_config_id: feed_config.id).where.not(category: :impression).delete_all
         create(:feed_event, category: "reaction", feed_config: feed_config, article: old_article, user: user1,
                             article_position: 1)
         create(:feed_event, category: "reaction", feed_config: feed_config, article: new_article, user: user1,
@@ -508,7 +546,6 @@ RSpec.describe FeedEvent do
 
     context "when an engagement event follows an impression within the throttle window", :throttled_call do
       it "updates the feed config score without being blocked by the impression throttle key" do
-        article = create(:article)
         create(
           :feed_event,
           category: "impression",
@@ -532,7 +569,6 @@ RSpec.describe FeedEvent do
       end
 
       it "continues updating impression counters on every batch until reaching LOW_IMPRESSION_COUNT, then throttles" do
-        article = create(:article)
         create(
           :feed_event,
           category: "impression",
@@ -596,7 +632,7 @@ RSpec.describe FeedEvent do
     end
 
     it "updates counters for unique feed_config_ids" do
-      article = create(:article)
+      article = create(:article, user: user1)
       described_class.insert_all(
         [
           {
@@ -627,7 +663,7 @@ RSpec.describe FeedEvent do
   end
 
   describe "after_save .create_feed_config_offshoot" do
-    let(:article)     { create(:article) }
+    let(:article)     { create(:article, user: user) }
     let(:user)        { create(:user) }
     let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT) }
 
@@ -635,17 +671,12 @@ RSpec.describe FeedEvent do
       allow(ThrottledCall).to receive(:perform).and_yield
     end
 
-    context "when feed_config is proven and category is reaction" do
-      it "calls create_slightly_modified_clone! on the feed_config" do
-        expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
+    context "when feed_config is proven and category is reaction or comment" do
+      it "calls create_slightly_modified_clone! on the feed_config", :aggregate_failures do
+        allow(feed_config).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
-      end
-    end
-
-    context "when feed_config is proven and category is comment" do
-      it "calls create_slightly_modified_clone! on the feed_config" do
-        expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "comment")
+        expect(feed_config).to have_received(:create_slightly_modified_clone!).twice
       end
     end
 
@@ -714,49 +745,36 @@ RSpec.describe FeedEvent do
       end
     end
 
-    context "when feed_config has fewer than LOW_IMPRESSION_COUNT impressions" do
-      let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT - 1) }
-
-      it "does not call create_slightly_modified_clone!" do
-        expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
-        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
-      end
-    end
-
     context "when multiple reactions occur within the throttle window", :throttled_call do
       it "throttles offshoot creation to at most one clone per window" do
         feed_config
 
-        expect {
+        expect do
           create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
           create(:feed_event, feed_config: feed_config, article: article, user: create(:user), category: "comment")
-        }.to change(FeedConfig, :count).by(1)
+        end.to change(FeedConfig, :count).by(1)
       end
     end
 
-    context "when feed_config is present and category is not reaction or comment" do
-      it "does not call create_slightly_modified_clone!" do
-        expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
-        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "click")
-      end
-    end
-
-    context "when feed_config is nil" do
-      it "does not call create_slightly_modified_clone!" do
-        expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
-        create(:feed_event, feed_config: nil, article: article, user: user, category: "reaction")
-      end
-    end
-
-    context "when feed_config is archived" do
-      let(:feed_config) do
-        create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT, archived: true)
-      end
-
-      it "does not call create_slightly_modified_clone!" do
+    context "when offshoot conditions are not met" do
+      it "does not clone when impressions are below threshold, category is click, feed_config is nil, or archived",
+         :aggregate_failures do
+        low_config = create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT - 1)
+        archived_config = create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT, archived: true)
+        allow(low_config).to receive(:create_slightly_modified_clone!)
         allow(feed_config).to receive(:create_slightly_modified_clone!)
-        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+        allow(archived_config).to receive(:create_slightly_modified_clone!)
+
+        expect do
+          create(:feed_event, feed_config: low_config, article: article, user: user, category: "reaction")
+          create(:feed_event, feed_config: feed_config, article: article, user: user, category: "click")
+          create(:feed_event, feed_config: nil, article: article, user: user, category: "reaction")
+          create(:feed_event, feed_config: archived_config, article: article, user: user, category: "reaction")
+        end.not_to change(FeedConfig, :count)
+
+        expect(low_config).not_to have_received(:create_slightly_modified_clone!)
         expect(feed_config).not_to have_received(:create_slightly_modified_clone!)
+        expect(archived_config).not_to have_received(:create_slightly_modified_clone!)
       end
     end
   end

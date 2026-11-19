@@ -14,7 +14,7 @@
                            elsif target_subforem_domain.present?
                              "#{URL.protocol}#{target_subforem_domain}"
                            end %>
-<script>
+<script data-no-instant>
   var userSignedIn = <%= user_signed_in? %>;
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     initAuth();

@@ -13,7 +13,7 @@ class OfferTag < Liquid::Block
   end
 
   def render(context)
-    content = super
+    content = sanitize_block_content(super)
     ApplicationController.render(
       partial: PARTIAL,
       locals: {

@@ -825,6 +825,12 @@ fn highlight_yaml_line(em: &mut TokenEmitter<'_>, mut rest: &str) {
                     i -= 1;
                 }
             }
+            if i == start {
+                let end = (i + utf8_char_len(bytes[i])).min(bytes.len());
+                em.push_text(&rest[start..end]);
+                i = end;
+                continue;
+            }
             let val = &rest[start..i];
             let cls = if matches!(
                 val,
@@ -1145,15 +1151,24 @@ fn highlight_markup_attrs(em: &mut TokenEmitter<'_>, attrs: &str) {
             } else {
                 i = bytes.len();
             }
+        } else if b == b'{' || b == b'}' {
+            em.push_isolated_token("p", &attrs[i..i + 1]);
+            i += 1;
         } else {
             let start = i;
             while i < bytes.len()
                 && !bytes[i].is_ascii_whitespace()
-                && !matches!(bytes[i], b'=' | b'"' | b'\'' | b'{')
+                && !matches!(bytes[i], b'=' | b'"' | b'\'' | b'{' | b'}')
             {
                 i += 1;
             }
-            em.push_token("na", &attrs[start..i]);
+            if i == start {
+                let end = (i + utf8_char_len(bytes[i])).min(bytes.len());
+                em.push_text(&attrs[start..end]);
+                i = end;
+            } else {
+                em.push_token("na", &attrs[start..i]);
+            }
         }
     }
 }
@@ -1410,23 +1425,33 @@ fn highlight_shell_code(em: &mut TokenEmitter<'_>, code: &str) {
                 _ => "s2",
             };
             em.push_token(cls, &code[start..i]);
-        } else if b == b'$'
-            && bytes.get(i + 1).is_some_and(|&c| {
-                is_ident_start(c)
-                    || c.is_ascii_digit()
-                    || matches!(c, b'{' | b'(' | b'@' | b'*' | b'?' | b'!' | b'#')
-            })
-        {
+        } else if b == b'$' {
             let start = i;
             i += 1;
-            if bytes.get(i) == Some(&b'{') {
-                i = scan_until_byte(bytes, i + 1, b'}');
-            } else if is_ident_start(bytes[i]) {
-                i = scan_ident(bytes, i);
-            } else {
-                i += 1;
+            match bytes.get(i).copied() {
+                Some(b'{') => {
+                    i = scan_until_byte(bytes, i + 1, b'}');
+                    em.push_token("nv", &code[start..i]);
+                }
+                Some(c) if is_ident_start(c) => {
+                    i = scan_ident(bytes, i);
+                    em.push_token("nv", &code[start..i]);
+                }
+                Some(c)
+                    if c.is_ascii_digit()
+                        || matches!(c, b'(' | b'@' | b'*' | b'?' | b'!' | b'#' | b'$' | b'-') =>
+                {
+                    i += 1;
+                    em.push_token("nv", &code[start..i]);
+                }
+                Some(q @ (b'"' | b'\'')) => {
+                    i = scan_quoted_string(bytes, i, q);
+                    em.push_token(if q == b'\'' { "s1" } else { "s2" }, &code[start..i]);
+                }
+                _ => {
+                    em.push_text("$");
+                }
             }
-            em.push_token("nv", &code[start..i]);
         } else if matches!(b, b'{' | b'}' | b'(' | b')' | b'[' | b']' | b';') {
             em.push_isolated_token("o", &code[i..i + 1]);
             i += 1;
@@ -1466,6 +1491,12 @@ fn highlight_shell_code(em: &mut TokenEmitter<'_>, code: &str) {
                     break;
                 }
                 i += 1;
+            }
+            if i == start {
+                let end = (i + utf8_char_len(bytes[i])).min(bytes.len());
+                em.push_text(&code[start..end]);
+                i = end;
+                continue;
             }
             let word = &code[start..i];
             if bytes.get(i) == Some(&b'=')
@@ -1544,6 +1575,12 @@ fn highlight_lisp(out: &mut String, code: &str) {
                 )
             {
                 i += 1;
+            }
+            if i == start {
+                let end = (i + utf8_char_len(bytes[i])).min(bytes.len());
+                em.push_text(&code[start..end]);
+                i = end;
+                continue;
             }
             let sym = &code[start..i];
             let cls = if matches!(
@@ -4304,6 +4341,138 @@ mod tests {
                         "Unsorted word list entry: {:?} >= {:?}",
                         w[0],
                         w[1]
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn shell_and_make_handle_bare_dollar_prompts_and_special_variables() {
+        let shell_code = concat!(
+            "$ npm install --save-dev\n",
+            "$ echo $ && echo $$ $- $? $! $# $@ $* $0\n",
+            "grep 'foo$' file.txt | awk '{print $1}'\n",
+            "msg=$\"localized\" raw=$'line\\nnext' trailing=$\n",
+        );
+        for lang in ["shell", "bash", "sh", "zsh", "console", "make"] {
+            let html = highlight_code_block(shell_code, Some(lang));
+            assert!(html.contains("npm install"), "missing body for {lang}");
+            assert!(
+                html.contains("<span class=\"nv\">$$</span>"),
+                "missing $$ var token for {lang}: {html}"
+            );
+            assert!(
+                html.contains("<span class=\"nv\">$-</span>"),
+                "missing $- var token for {lang}: {html}"
+            );
+            assert!(
+                html.contains("<span class=\"s2\">$\"localized\"</span>"),
+                "missing $\"...\" token for {lang}: {html}"
+            );
+            assert!(
+                html.contains("<span class=\"s1\">$'line\\nnext'</span>"),
+                "missing $'...' token for {lang}: {html}"
+            );
+        }
+
+        let makefile = "build:\n\t@echo $ && echo $$HOME $$\n";
+        let make_html = highlight_code_block(makefile, Some("make"));
+        assert!(make_html.contains("highlight make"));
+        assert!(make_html.contains("<span class=\"nl\">build</span>"));
+    }
+
+    #[test]
+    fn markup_and_ember_attrs_handle_single_brace_expressions_and_unclosed_braces() {
+        let markup = concat!(
+            "<div class={cls} data-x={a.b} {...props} empty={} mustache={{val}} unclosed={>\n",
+            "  <a href={url} title=\"<script>\">{label}</a>\n",
+            "</div>\n",
+        );
+        for lang in [
+            "html",
+            "xml",
+            "erb",
+            "liquid",
+            "vue",
+            "svelte",
+            "handlebars",
+        ] {
+            let html = highlight_code_block(markup, Some(lang));
+            assert!(
+                !html.contains("<script>"),
+                "unescaped <script> for lang={lang}: {html}"
+            );
+            assert!(html.contains("<span class=\"na\">class</span>"));
+            assert!(html.contains("<span class=\"p\">{</span>"));
+            assert!(html.contains("<span class=\"na\">cls</span>"));
+            assert!(html.contains("<span class=\"p\">}</span>"));
+        }
+
+        let gjs = "const cls = 'x';\n<template foo={cls} {...attrs}>\n  <Comp @item={cls} @pair={{cls}} />\n</template>\n";
+        for lang in ["gjs", "gts"] {
+            let html = highlight_code_block(gjs, Some(lang));
+            assert!(html.contains(&format!("highlight {lang}")));
+            assert!(html.contains("<span class=\"k\">template</span>"));
+            assert!(html.contains("<span class=\"na\">foo</span>"));
+        }
+    }
+
+    #[test]
+    fn all_lexer_families_terminate_and_escape_exhaustive_ascii_and_metachar_inputs() {
+        let mut rep_indices: Vec<(usize, LexerFamily)> = Vec::new();
+        for (idx, &fam) in LEXER_FAMILIES.iter().enumerate() {
+            if !rep_indices.iter().any(|&(_, seen)| seen == fam) {
+                rep_indices.push((idx, fam));
+            }
+        }
+        assert_eq!(rep_indices.len(), 34);
+
+        let mut out = String::with_capacity(256);
+
+        // 1. Every single ASCII byte in standalone, markup-attr, flow-collection, and $-prefixed forms
+        for byte in 0u8..=0x7F {
+            let ch = byte as char;
+            let samples = [
+                ch.to_string(),
+                format!("{ch}{ch}{ch}"),
+                format!("a{ch}b {ch} "),
+                format!("<div a={ch} {ch} b={{{ch}}}>x</div>"),
+                format!("[{ch}, {{{ch}}}] # {ch}\n"),
+                format!("${ch} ${{{ch}}} @{ch} :{ch}"),
+                format!("<template x={ch}>{ch}</template>"),
+            ];
+            for &(lexer_idx, fam) in &rep_indices {
+                for sample in &samples {
+                    out.clear();
+                    highlight_into(&mut out, sample, lexer_idx);
+                    assert!(
+                        !out.contains("<div"),
+                        "unescaped <div for {fam:?} on byte {byte:#04x}: {out}"
+                    );
+                }
+            }
+        }
+
+        // 2. Exhaustive pairs of lexer metacharacters + multi-byte UTF-8 interleavings
+        let metas: &[&str] = &[
+            "$", "{", "}", "<", ">", "/", "=", "\"", "'", "`", "#", ";", ":", "-", "*", "&", "|",
+            "\\", "%", "!", "@", "?", "[", "]", "(", ")", ",", ".", " ", "\t", "\n", "\r", "\x0c",
+            "日", "🚀",
+        ];
+        for &(lexer_idx, fam) in &rep_indices {
+            for &a in metas {
+                for &b in metas {
+                    let direct = format!("{a}{b}");
+                    out.clear();
+                    highlight_into(&mut out, &direct, lexer_idx);
+
+                    let in_tag = format!("<x {a}{b}>");
+                    out.clear();
+                    highlight_into(&mut out, &in_tag, lexer_idx);
+                    assert!(
+                        !out.contains("<x"),
+                        "unescaped <x for {fam:?} on {in_tag:?}: {out}"
                     );
                 }
             }

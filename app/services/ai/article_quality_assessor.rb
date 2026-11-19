@@ -34,7 +34,7 @@ module Ai
       @articles = articles
       @subforem_id = subforem_id
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self)
     end
@@ -46,7 +46,7 @@ module Ai
     def assess
       return { best: nil, worst: nil } if @articles.empty?
       return { best: @articles.first, worst: @articles.first } if @articles.length == 1
-      return assess_via_jev if @selection.jev?
+      return assess_via_jev if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -82,7 +82,7 @@ module Ai
     end
 
     def jev_client
-      @jev_client ||= Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self)
+      @jev_client ||= @selection.decision_client(wrapper: self)
     end
 
     def jev_state(article)

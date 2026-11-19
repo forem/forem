@@ -44,7 +44,12 @@ module Api
       @articles = ArticleApiIndexService.new(params).get
       @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
 
-      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
+      surrogate_keys = [Article.table_key, *@articles.map(&:record_key)]
+      if params[:tag].is_a?(String) && params[:top].present?
+        tag_name = params[:tag].downcase.strip
+        surrogate_keys << "api-articles-tag-#{tag_name}-top" if tag_name.match?(/\A[a-z0-9_-]+\z/)
+      end
+      set_surrogate_key_header(*surrogate_keys)
     end
 
     def show

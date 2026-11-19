@@ -17,7 +17,6 @@ describe LogoUploader, type: :uploader do
   let!(:uploader) { described_class.new }
 
   before do
-    described_class.include CarrierWave::MiniMagick # needed for processing
     described_class.enable_processing = true
   end
 
@@ -59,8 +58,8 @@ describe LogoUploader, type: :uploader do
   end
 
   describe "error handling" do
-    it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
-      allow(MiniMagick::Image).to receive(:new).and_raise(Timeout::Error)
+    it "raises a CarrierWave error if a timeout occurs during frame counting" do
+      allow(ForemNative).to receive(:image_frame_count).and_raise(Timeout::Error)
 
       expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
     end
@@ -94,9 +93,11 @@ describe LogoUploader, type: :uploader do
       expect(uploader.filename).to match(/\.jpg\z/)
     end
 
-    it "creates versions of the image with different sizes" do
+    it "creates versions of the image with different sizes and constrains height to <= 80px" do
       uploader.store!(image_jpg)
       expect(uploader.resized_logo.size).to be <= uploader.size
+      expect(uploader.resized_logo).to be_no_taller_than(80)
+      expect(uploader.resized_logo).to have_dimensions(107, 80)
     end
   end
 end

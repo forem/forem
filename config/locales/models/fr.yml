@@ -16,7 +16,12 @@ fr:
       is_too_long: est trop long.
       invalid_date: doit être saisie au format JJ/MM/AAAA avec la date actuelle ou passée
       series_unpermitted: Vous devez avoir la permission de poster sur
+      event_not_found: doit faire référence à un événement existant
+      event_articles_disabled: n'autorise pas les articles associés
+      event_not_accepting_articles: ne peut être associé que pendant le déroulement de l'événement
       invalid_coauthor: doivent être des identifiants d'utilisateur valides
+      invalid_hidden_billboard_locations: doit être une liste d'emplacements de bannières de publication valides
+      invalid_hidden_billboard_locations_list: 'contient des emplacements de bannières invalides : %{locations}'
       same_author: ne doit pas être le même utilisateur que l'auteur
       must_not_have_spaces: ne doit pas comporter d'espaces
       published: Publié
@@ -80,6 +85,8 @@ fr:
       too_many:
         one: Vous pouvez inviter jusqu'à %{count} co-auteur.
         other: Vous pouvez inviter jusqu'à %{count} co-auteurs.
+    event:
+      owned_page_slug_taken: Entre en conflit avec un slug de page existant
     feedback_message:
       reported: "(vous) avez déjà signalé cette URL."
     github_issue:
@@ -112,7 +119,20 @@ fr:
     lead_submission:
       already_submitted: Vous avez déjà soumis ce formulaire.
     page:
+      navigation_organization_only: "ne peut être désactivé que pour les pages d’une organisation"
+      navigation_showcase_required: "doit rester activé pour la page Showcase"
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
+      embed_html_invalid_slug: doit utiliser le format de chemin d'intégration (<owner>/embed/<slug>).
+      embed_html_requires_organization: doit appartenir à une organisation ou à un utilisateur pour les pages embed_html.
+      embed_html_template_immutable: ne peut pas être converti vers ou depuis embed_html.
+      embed_html_too_complex: dépasse les limites de profondeur d'imbrication ou de nombre d'éléments HTML sécurisées.
+      embed_html_too_large: ne peut pas dépasser %{max_kb} Ko.
+      event_page_invalid_slug: doit utiliser le format de chemin de page d'événement (%{prefix}<slug>).
+      multiple_owners_not_allowed: La page ne peut appartenir qu'à un seul propriétaire (organisation, utilisateur ou événement).
+      slug_blank: ne peut pas être vide
+      organization_embed_pages_limit_reached: Cette organisation a atteint le maximum de %{max} pages intégrées.
+      user_embed_pages_limit_reached: Vous avez atteint le maximum de %{max} pages intégrées.
+      user_page_must_be_embed_html: doit être embed_html pour les pages appartenant à un utilisateur.
       redirect_to_url_invalid: doit être une URL complète (commençant par http:// ou https://) ou un chemin d'application (commençant par /).
       redirect_to_url_invalid_path: n'est pas un chemin reconnu dans cette application.
     podcast_episode_appearance:

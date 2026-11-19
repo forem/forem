@@ -710,6 +710,48 @@ RSpec.describe User do
       expect(user.errors[:username].to_s).to include("reserved")
     end
 
+    %w[
+      auth forgot-password forgot_password log-in log-out log_in log_out login logout
+      oauth password passwords register registration reset-password reset_password
+      sign-in sign-out sign-up sign_in sign_out sign_up signin signout signup sso support
+    ].each do |username|
+      it "reserves the protected username #{username}" do
+        user = build(:user, username: username)
+
+        expect(user).not_to be_valid
+        expect(user.errors[:username]).to include("is reserved")
+      end
+    end
+
+    it "reserves protected usernames after case normalization" do
+      user = build(:user, username: "LoGiN")
+
+      expect(user).not_to be_valid
+      expect(user.errors[:username]).to include("is reserved")
+    end
+
+    it "rejects changing an existing username to a protected term" do
+      user = create(:user)
+
+      expect(user.update(username: "signup")).to be(false)
+      expect(user.errors[:username]).to include("is reserved")
+    end
+
+    it "allows unrelated updates for existing accounts with protected usernames" do
+      user = create(:user)
+      user.update_column(:username, "login")
+      user.reload
+
+      expect(user.update(name: "Updated Name")).to be(true)
+      expect(user.errors[:username]).to be_empty
+    end
+
+    it "allows usernames that only contain a protected term" do
+      user = build(:user, username: "login_helper")
+
+      expect(user).to be_valid
+    end
+
     it "takes organization slug into account" do
       create(:organization, slug: "lightalloy")
       user = build(:user, username: "lightalloy")
@@ -1218,6 +1260,18 @@ RSpec.describe User do
       expect(user).to be_super_admin
       expect(user).to be_trusted
       expect(user).not_to be_limited
+    end
+
+    it "does not add creator roles from a stale first_user value once the grant is claimed", :aggregate_failures do
+      first = create(:user)
+      first.set_initial_roles!(first_user: true)
+      second = create(:user)
+      second.set_initial_roles!(first_user: true)
+
+      expect(first).to be_super_admin
+      expect(second).not_to be_creator
+      expect(second).not_to be_super_admin
+      expect(second).not_to be_trusted
     end
 
     it "does not add any roles if not waiting on first user" do

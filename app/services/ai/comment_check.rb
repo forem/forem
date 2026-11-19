@@ -24,7 +24,7 @@ module Ai
     def initialize(comment)
       @comment = comment
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: comment,
                                 affected_user: comment.user)
@@ -35,7 +35,7 @@ module Ai
     #
     # @return [Boolean] true if the comment is likely spam, false otherwise.
     def spam?
-      return spam_via_jev? if @selection.jev?
+      return spam_via_jev? if @selection.decision?
 
       prompt = build_prompt
       response = @ai_client.call(prompt)
@@ -52,6 +52,14 @@ module Ai
     # The full prompt includes the parent post, which may be someone else's. Re-ask about the
     # comment alone, so a PROHIBITED_CONTENT block only reaches its author if the comment caused it.
     def spam_in_isolation?
+      if @selection.decision?
+        client = @selection.decision_client(wrapper: self, affected_content: @comment,
+                                            affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
+        state = { comment: @comment.body_markdown.to_s.truncate(4_000) }
+        result = client.evaluate(state: state, questions: { spam: noul("Is `comment` CLEARLY spam?") })
+        return result.noul(:spam) >= CLEAR
+      end
+
       parse_response(@ai_client.call(<<~PROMPT))
         Is the following comment CLEARLY spam? Answer only with YES or NO.
         ---
@@ -67,8 +75,8 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def spam_via_jev?
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @comment,
-                                        affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = @selection.decision_client(wrapper: self, affected_content: @comment,
+                                          affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
       spam_from_jev?(client.evaluate(state: jev_state, questions: jev_questions))
     end
 

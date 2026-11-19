@@ -39,7 +39,7 @@ module Ai
     def initialize(user, ai_client: nil)
       @user = user
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      @use_jev = ai_client.nil? && @selection.jev?
+      @use_jev = ai_client.nil? && @selection.decision?
       return if @use_jev
 
       @ai_client = ai_client || Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_user: user)
@@ -66,7 +66,7 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def label_via_jev
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @user)
+      client = @selection.decision_client(wrapper: self, affected_user: @user)
       label_from_jev(client.evaluate(state: jev_state, questions: jev_questions))
     end
 

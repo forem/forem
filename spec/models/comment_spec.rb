@@ -881,4 +881,25 @@ RSpec.describe Comment do
       expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "dependent article embed scheduling" do
+    before { allow(Articles::UpdateDependentEmbedsWorker).to receive(:schedule_for_engagement) }
+
+    it "schedules engagement updates on create and soft-delete, ignoring body edits" do
+      created_comment = create(:comment, commentable: article, user: user, body_markdown: "Initial comment")
+      created_comment.update!(body_markdown: "Edited comment body")
+      created_comment.update!(deleted: true)
+
+      expect(Articles::UpdateDependentEmbedsWorker)
+        .to have_received(:schedule_for_engagement).with(article.id).twice
+    end
+
+    it "schedules engagement updates on comment destroy" do
+      created_comment = create(:comment, commentable: article, user: user, body_markdown: "Doomed comment")
+      created_comment.destroy!
+
+      expect(Articles::UpdateDependentEmbedsWorker)
+        .to have_received(:schedule_for_engagement).with(article.id).twice
+    end
+  end
 end

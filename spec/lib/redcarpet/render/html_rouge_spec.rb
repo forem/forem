@@ -149,5 +149,15 @@ RSpec.describe Redcarpet::Render::HTMLRouge do
       )
       expect(renderer.block_code("puts 1", "RUBY")).to include('<pre class="highlight ruby"><code>')
     end
+
+    it "renders shell `$` prompts and single-brace HTML/template attributes without hanging", :aggregate_failures do
+      shell_output = markdown.render("```bash\n$ npm install\necho $ $$\n```")
+      expect(shell_output).to include('<pre class="highlight shell"><code>')
+      expect(shell_output).to include("npm install")
+
+      html_output = markdown.render("```html\n<div class={cls} {...props}>{body}</div>\n```")
+      expect(html_output).to include('<pre class="highlight html"><code>')
+      expect(html_output).to include('<span class="na">class</span>')
+    end
   end
 end

@@ -43,7 +43,7 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
       expect(result_env["HTTP_HOST"]).to eq("mlh.forem.wtf")
     end
 
-    it "takes the first host when HTTP_X_FORWARDED_HOST has comma-separated values" do
+    it "takes the first host when HTTP_X_FORWARDED_HOST has comma-separated values", :aggregate_failures do
       env = {
         "HTTP_HOST" => "practicaldev.herokuapp.com",
         "HTTP_X_FORWARDED_HOST" => "mlh.forem.wtf, practicaldev.herokuapp.com"
@@ -51,6 +51,8 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
       _status, result_env, _body = middleware.call(env)
 
       expect(result_env["HTTP_HOST"]).to eq("mlh.forem.wtf")
+      expect(result_env["HTTP_X_FORWARDED_HOST"]).to be_nil
+      expect(ActionDispatch::Request.new(result_env).host).to eq("mlh.forem.wtf")
     end
   end
 
@@ -80,7 +82,7 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
         stub_const("ENV", ENV.to_h.merge("TRUST_X_FORWARDED_HOST" => nil))
       end
 
-      it "does not override HTTP_HOST to prevent host spoofing" do
+      it "does not override HTTP_HOST to prevent host spoofing", :aggregate_failures do
         env = {
           "HTTP_HOST" => "practicaldev.herokuapp.com",
           "HTTP_X_FORWARDED_HOST" => "mlh.forem.wtf"
@@ -88,12 +90,29 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
         _status, result_env, _body = middleware.call(env)
 
         expect(result_env["HTTP_HOST"]).to eq("practicaldev.herokuapp.com")
+        expect(result_env["HTTP_X_FORWARDED_HOST"]).to be_nil
+        expect(ActionDispatch::Request.new(result_env).host).to eq("practicaldev.herokuapp.com")
+        expect(Rack::Request.new(result_env).host).to eq("practicaldev.herokuapp.com")
+      end
+
+      it "clears malformed HTTP_X_FORWARDED_HOST values", :aggregate_failures do
+        ["'\"efx", "/efx"].each do |malformed_host|
+          env = {
+            "HTTP_HOST" => "practicaldev.herokuapp.com",
+            "HTTP_X_FORWARDED_HOST" => malformed_host
+          }
+          _status, result_env, _body = middleware.call(env)
+
+          expect(result_env["HTTP_HOST"]).to eq("practicaldev.herokuapp.com")
+          expect(result_env["HTTP_X_FORWARDED_HOST"]).to be_nil
+          expect(ActionDispatch::Request.new(result_env).host).to eq("practicaldev.herokuapp.com")
+        end
       end
     end
   end
 
   context "when both HTTP_X_FOREM_ORIGINAL_HOST, HTTP_FASTLY_ORIG_HOST and HTTP_X_FORWARDED_HOST are present" do
-    it "prioritizes HTTP_X_FOREM_ORIGINAL_HOST" do
+    it "prioritizes HTTP_X_FOREM_ORIGINAL_HOST", :aggregate_failures do
       env = {
         "HTTP_HOST" => "practicaldev.herokuapp.com",
         "HTTP_X_FOREM_ORIGINAL_HOST" => "forem-original.com",
@@ -103,6 +122,8 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
       _status, result_env, _body = middleware.call(env)
 
       expect(result_env["HTTP_HOST"]).to eq("forem-original.com")
+      expect(result_env["HTTP_X_FORWARDED_HOST"]).to be_nil
+      expect(ActionDispatch::Request.new(result_env).host).to eq("forem-original.com")
     end
   end
 
@@ -129,14 +150,29 @@ RSpec.describe Middlewares::RestoreOriginalHost, type: :middleware do
       end
     end
 
-    it "rejects invalid hostnames (containing spaces, control characters, or invalid syntax)" do
-      ["invalid host", "host\nname", "host;name", "http://host.com"].each do |invalid_host|
+    it "rejects invalid hostnames (containing spaces, control characters, or invalid syntax)", :aggregate_failures do
+      ["invalid host", "host\nname", "host;name", "http://host.com", "'\"efx", "/efx"].each do |invalid_host|
         env = {
           "HTTP_HOST" => "practicaldev.herokuapp.com",
           "HTTP_FASTLY_ORIG_HOST" => invalid_host
         }
         _status, result_env, _body = middleware.call(env)
         expect(result_env["HTTP_HOST"]).to eq("practicaldev.herokuapp.com")
+      end
+    end
+
+    it "clears invalid HTTP_X_FORWARDED_HOST values even when trusted", :aggregate_failures do
+      allow(Rails.env).to receive(:production?).and_return(false)
+
+      ["'\"efx", "/efx", "invalid host"].each do |invalid_host|
+        env = {
+          "HTTP_HOST" => "practicaldev.herokuapp.com",
+          "HTTP_X_FORWARDED_HOST" => invalid_host
+        }
+        _status, result_env, _body = middleware.call(env)
+        expect(result_env["HTTP_HOST"]).to eq("practicaldev.herokuapp.com")
+        expect(result_env["HTTP_X_FORWARDED_HOST"]).to be_nil
+        expect(ActionDispatch::Request.new(result_env).host).to eq("practicaldev.herokuapp.com")
       end
     end
   end

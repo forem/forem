@@ -33,6 +33,8 @@ module Settings
     setting :mention_antispam_hourly_limit, type: :integer, default: 4
     setting :comment_creation, type: :integer, default: 9
     setting :email_recipient, type: :integer, default: 5
+    setting :embed_page_creation, type: :integer, default: 5
+    setting :embed_page_update, type: :integer, default: 15
     setting :feedback_message_creation, type: :integer, default: 5
     setting :flag_appeal_creation, type: :integer, default: 3
     setting :follow_count_daily, type: :integer, default: 500

@@ -17,7 +17,7 @@ RSpec.describe "Api::V1::Docs::Events" do
         description "Retrieve a list of events on the platform.
 
 ### Query Parameters:
-- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`)."
+- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`, `meetup`, `conference`)."
         operationId "getEvents"
         produces "application/json"
         parameter name: :type_of,
@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Docs::Events" do
                   description: "Filter events by type.",
                   schema: {
                     type: :string,
-                    enum: %w[live_stream takeover other challenge]
+                    enum: %w[live_stream takeover other challenge meetup conference]
                   }
 
         response "200", "A list of events" do

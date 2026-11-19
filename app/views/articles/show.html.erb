@@ -58,8 +58,9 @@
     <meta name="twitter:widgets:new-embed-design" content="on">
     <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <% if @article.published %>
-      <meta property="og:image" content="<%= article_social_image_url(@article) %>" />
-      <meta name="twitter:image:src" content="<%= article_social_image_url(@article) %>">
+      <% social_image_url = article_social_image_url(@article) %>
+      <meta property="og:image" content="<%= social_image_url %>" />
+      <meta name="twitter:image:src" content="<%= social_image_url %>">
     <% end %>
     <% if @article.skip_indexing? %>
       <meta name="robots" content="noindex">
@@ -234,10 +235,10 @@
 
           <div class="crayons-article__main <%= "pt-0" if @article.type_of == "status" %>">
             <% if @collection %>
-              <%= render "articles/collection",
-                        rendered_article: @article,
-                        collection: @collection,
-                        articles: @collection_articles %>
+              <%= series_navigation = render "articles/collection",
+                                             rendered_article: @article,
+                                             collection: @collection,
+                                             articles: @collection_articles %>
             <% end %>
             <% if @context_note %>
               <div class="crayons-article__context-note">
@@ -266,26 +267,39 @@
             </div>
 
             <% if @article.long_markdown? && @collection %>
-              <%= render "articles/collection",
-                        rendered_article: @article,
-                        collection: @collection,
-                        articles: @collection_articles %>
+              <%= series_navigation %>
             <% end %>
             <% if @article.long_markdown? %>
-              <div class="bb-shuffle-group js-bb-shuffle-group">
-                <div class="below-post-bb body-billboard-container" data-async-url="<%= billboard_async_path(:post_body_bottom, article: @article) %>"></div>
-                <div class="below-post-bb body-billboard-container" data-async-url="<%= billboard_async_path(:post_body_bottom_secondary, article: @article) %>"></div>
-              </div>
+              <% show_body_bottom = !@article.billboard_location_hidden?(:post_body_bottom) %>
+              <% show_body_bottom_secondary = !@article.billboard_location_hidden?(:post_body_bottom_secondary) %>
+              <% if show_body_bottom || show_body_bottom_secondary %>
+                <div class="bb-shuffle-group js-bb-shuffle-group">
+                  <% if show_body_bottom %>
+                    <div class="below-post-bb body-billboard-container" data-async-url="<%= billboard_async_path(:post_body_bottom, article: @article) %>"></div>
+                  <% end %>
+                  <% if show_body_bottom_secondary %>
+                    <div class="below-post-bb body-billboard-container" data-async-url="<%= billboard_async_path(:post_body_bottom_secondary, article: @article) %>"></div>
+                  <% end %>
+                </div>
+              <% end %>
             <% end %>
           </div>
           <%= render "articles/full_comment_area" %>
 
         </article>
 
-        <div class="pb-4 crayons-layout__comments-billboard bb-shuffle-group js-bb-shuffle-group">
-          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_comments, article: @article) %>"></div>
-          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_comments_secondary, article: @article) %>"></div>
-        </div>
+        <% show_post_comments = !@article.billboard_location_hidden?(:post_comments) %>
+        <% show_post_comments_secondary = !@article.billboard_location_hidden?(:post_comments_secondary) %>
+        <% if show_post_comments || show_post_comments_secondary %>
+          <div class="pb-4 crayons-layout__comments-billboard bb-shuffle-group js-bb-shuffle-group">
+            <% if show_post_comments %>
+              <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_comments, article: @article) %>"></div>
+            <% end %>
+            <% if show_post_comments_secondary %>
+              <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_comments_secondary, article: @article) %>"></div>
+            <% end %>
+          </div>
+        <% end %>
 
         <% if ApplicationConfig["SKIP_BOTTOM_CONTENT"] == "yes" %>
           <!-- Bottom content skipped via SKIP_BOTTOM_CONTENT config -->
@@ -353,7 +367,9 @@
       <%== EventTag.script %>
     <% end %>
   </script>
-  <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_fixed_bottom, article: @article) %>"></div>
+  <% unless @article.billboard_location_hidden?(:post_fixed_bottom) %>
+    <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_fixed_bottom, article: @article) %>"></div>
+  <% end %>
 
   <% if user_signed_in? %>
     <div id="quickie-wrapper" class="hidden">

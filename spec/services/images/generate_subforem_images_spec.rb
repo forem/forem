@@ -4,107 +4,96 @@ RSpec.describe Images::GenerateSubforemImages do
   let(:subforem) { create(:subforem) }
   let(:image_url) { "https://example.com/logo.png" }
   let(:background_url) { "https://example.com/background.png" }
+  let(:logo_bytes) { Rails.root.join("spec/fixtures/files/800x600.png").binread }
+  let(:background_bytes) { Rails.root.join("spec/fixtures/files/800x600.webp").binread }
   let(:service) { described_class.new(subforem.id, image_url) }
 
   describe ".call" do
     it "creates a new instance and calls it" do
-      expect(described_class).to receive(:new).with(subforem.id, image_url, nil).and_return(service)
-      expect(service).to receive(:call)
+      allow(described_class).to receive(:new).with(subforem.id, image_url, nil).and_return(service)
+      allow(service).to receive(:call)
+
       described_class.call(subforem.id, image_url)
+
+      expect(described_class).to have_received(:new).with(subforem.id, image_url, nil)
+      expect(service).to have_received(:call)
     end
 
     it "creates a new instance with background URL and calls it" do
-      expect(described_class).to receive(:new).with(subforem.id, image_url, background_url).and_return(service)
-      expect(service).to receive(:call)
+      allow(described_class).to receive(:new).with(subforem.id, image_url, background_url).and_return(service)
+      allow(service).to receive(:call)
+
       described_class.call(subforem.id, image_url, background_url)
+
+      expect(described_class).to have_received(:new).with(subforem.id, image_url, background_url)
+      expect(service).to have_received(:call)
     end
   end
 
   describe "#call" do
-    let(:mock_source_image) { double }
-    let(:mock_background_image) { double }
-    let(:mock_result_image) { double }
-    let(:mock_uploader) { double }
+    let(:mock_uploader) { instance_double(ArticleImageUploader, store!: nil, url: uploaded_url) }
     let(:uploaded_url) { "https://cdn.example.com/uploaded_image.png" }
 
     before do
-      # Stub web requests to prevent real HTTP calls
-      stub_request(:get, "https://cdn.example.com/uploaded_image.png").to_return(status: 200, body: "", headers: {})
-      stub_request(:get, "https://cdn.example.com/resized.png").to_return(status: 200, body: "", headers: {})
-      stub_request(:get, "https://cdn.example.com/social.png").to_return(status: 200, body: "", headers: {})
-      stub_request(:get, "https://cdn.example.com/uploaded.png").to_return(status: 200, body: "", headers: {})
-      stub_request(:get, "https://cdn.example.com/integration.png").to_return(status: 200, body: "", headers: {})
+      stub_request(:get, image_url).to_return(status: 200, body: logo_bytes)
+      stub_request(:get, background_url).to_return(status: 200, body: background_bytes)
+      stub_request(:get, uploaded_url).to_return(status: 200, body: "")
 
-      allow(MiniMagick::Image).to receive(:open).with(image_url).and_return(mock_source_image)
-      allow(MiniMagick::Image).to receive(:open).with(Images::TEMPLATE_PATH).and_return(mock_background_image)
-      allow(mock_source_image).to receive(:resize)
-      allow(mock_source_image).to receive(:write)
-      allow(mock_background_image).to receive(:composite).and_return(mock_result_image)
-      allow(mock_result_image).to receive(:write)
       allow(ArticleImageUploader).to receive(:new).and_return(mock_uploader)
-      allow(mock_uploader).to receive(:store!)
-      allow(mock_uploader).to receive(:url).and_return(uploaded_url)
       allow(Settings::General).to receive(:set_resized_logo)
       allow(Settings::General).to receive(:set_favicon_url)
       allow(Settings::General).to receive(:set_main_social_image)
       allow(Settings::General).to receive(:set_logo_png)
-      allow(Tempfile).to receive(:new).and_return(double(close: nil, unlink: nil, path: "/tmp/test.png"))
     end
 
     context "when all operations succeed" do
-      it "generates and saves all images successfully" do
+      it "generates and saves all images without spawning subprocesses and memoizes the HTTP download",
+         :aggregate_failures do
+        allow(Open3).to receive(:popen3).and_call_original
+        allow(ForemNative).to receive(:subforem_resize_png).and_call_original
+        allow(ForemNative).to receive(:subforem_social_image_png).and_call_original
+
         service.call
+
+        expect(Open3).not_to have_received(:popen3)
+        expect(WebMock).to have_requested(:get, image_url).once
+        expect(ForemNative).to have_received(:subforem_resize_png)
+          .with(logo_bytes, 100, 100, font_path: described_class::DEFAULT_FONT_PATH).twice
+        expect(ForemNative).to have_received(:subforem_resize_png)
+          .with(logo_bytes, 512, 512, font_path: described_class::DEFAULT_FONT_PATH).once
+        expect(ForemNative).to have_received(:subforem_social_image_png)
+          .with(
+            logo_bytes,
+            File.binread(described_class::TEMPLATE_PATH),
+            custom_background: false,
+            font_path: described_class::DEFAULT_FONT_PATH,
+          ).once
 
         expect(Settings::General).to have_received(:set_resized_logo).with(uploaded_url, subforem_id: subforem.id)
         expect(Settings::General).to have_received(:set_favicon_url).with(uploaded_url, subforem_id: subforem.id)
         expect(Settings::General).to have_received(:set_main_social_image).with(uploaded_url, subforem_id: subforem.id)
         expect(Settings::General).to have_received(:set_logo_png).with(uploaded_url, subforem_id: subforem.id)
       end
-
-      it "resizes the source image correctly for logo and favicon" do
-        service.call
-
-        expect(mock_source_image).to have_received(:resize).with("100x100").twice
-      end
-
-      it "resizes the source image correctly for logo png" do
-        service.call
-
-        expect(mock_source_image).to have_received(:resize).with("512x512")
-      end
-
-      it "creates the social image with correct dimensions and positioning" do
-        service.call
-
-        expect(MiniMagick::Image).to have_received(:open).with(Images::TEMPLATE_PATH)
-        expect(mock_source_image).to have_received(:resize).with("300x300")
-        expect(mock_background_image).to have_received(:composite).with(mock_source_image)
-      end
     end
 
     context "when background URL is provided" do
       let(:service_with_background) { described_class.new(subforem.id, image_url, background_url) }
-      let(:mock_custom_background) { double }
 
-      before do
-        allow(MiniMagick::Image).to receive(:open).with(background_url).and_return(mock_custom_background)
-        allow(mock_custom_background).to receive(:combine_options)
-        allow(mock_custom_background).to receive(:composite).and_return(mock_result_image)
-      end
+      it "uses the custom background URL and crops it to 1000x500 via ForemNative" do
+        allow(ForemNative).to receive(:subforem_social_image_png).and_call_original
+        allow(File).to receive(:binread).and_call_original
 
-      it "uses the custom background URL and crops it to exact dimensions" do
         service_with_background.call
 
-        expect(MiniMagick::Image).to have_received(:open).with(background_url)
-        expect(mock_custom_background).to have_received(:combine_options)
-        expect(mock_source_image).to have_received(:resize).with("300x300")
-        expect(mock_custom_background).to have_received(:composite).with(mock_source_image)
-      end
-
-      it "does not use the template when background URL is provided" do
-        service_with_background.call
-
-        expect(MiniMagick::Image).not_to have_received(:open).with(Images::TEMPLATE_PATH)
+        expect(WebMock).to have_requested(:get, background_url).once
+        expect(File).not_to have_received(:binread).with(described_class::TEMPLATE_PATH)
+        expect(ForemNative).to have_received(:subforem_social_image_png)
+          .with(
+            logo_bytes,
+            background_bytes,
+            custom_background: true,
+            font_path: described_class::DEFAULT_FONT_PATH,
+          )
       end
     end
 
@@ -165,7 +154,8 @@ RSpec.describe Images::GenerateSubforemImages do
       it "logs error and continues with other operations" do
         service.call
 
-        expect(Rails.logger).to have_received(:error).with("Failed to generate main social image: Social image save failed")
+        expect(Rails.logger).to have_received(:error)
+          .with("Failed to generate main social image: Social image save failed")
         expect(Settings::General).to have_received(:set_resized_logo).with(uploaded_url, subforem_id: subforem.id)
         expect(Settings::General).to have_received(:set_favicon_url).with(uploaded_url, subforem_id: subforem.id)
         expect(Settings::General).to have_received(:set_logo_png).with(uploaded_url, subforem_id: subforem.id)
@@ -174,7 +164,8 @@ RSpec.describe Images::GenerateSubforemImages do
 
     context "when image download fails" do
       before do
-        allow(MiniMagick::Image).to receive(:open).with(image_url).and_raise(StandardError, "Download failed")
+        allow(service).to receive(:read_image_bytes).with(image_url).and_raise(StandardError, "Download failed")
+        allow(service).to receive(:read_image_bytes).with(described_class::TEMPLATE_PATH).and_call_original
         allow(Rails.logger).to receive(:error)
       end
 
@@ -204,6 +195,35 @@ RSpec.describe Images::GenerateSubforemImages do
       end
     end
 
+    context "when remote image exceeds MAX_SOURCE_BYTES" do
+      it "rejects oversized Content-Length headers before buffering and logs the error", :aggregate_failures do
+        stub_request(:get, image_url).to_return(
+          status: 200,
+          headers: { "Content-Length" => (described_class::MAX_SOURCE_BYTES + 1).to_s },
+          body: "x",
+        )
+        allow(Rails.logger).to receive(:error)
+
+        service.call
+
+        expect(Rails.logger).to have_received(:error).with(
+          "Failed to generate resized logo: Image exceeds maximum allowed size " \
+          "(#{described_class::MAX_SOURCE_BYTES} bytes)",
+        )
+        expect(Settings::General).not_to have_received(:set_resized_logo)
+      end
+
+      it "rejects oversized chunked streams without Content-Length", :aggregate_failures do
+        oversized_stream = StringIO.new("a" * (described_class::MAX_SOURCE_BYTES + 1))
+        expect do
+          service.__send__(:read_bounded_stream, oversized_stream)
+        end.to raise_error(
+          ArgumentError,
+          "Image exceeds maximum allowed size (#{described_class::MAX_SOURCE_BYTES} bytes)",
+        )
+      end
+    end
+
     context "when subforem does not exist" do
       it "raises an error" do
         expect { described_class.new(999_999, image_url).call }.to raise_error(ActiveRecord::RecordNotFound)
@@ -211,179 +231,33 @@ RSpec.describe Images::GenerateSubforemImages do
     end
   end
 
-  describe "#resize_image" do
-    let(:mock_source_image) { double }
-    let(:mock_uploader) { double }
-    let(:uploaded_url) { "https://cdn.example.com/resized.png" }
-
-    before do
-      allow(MiniMagick::Image).to receive(:open).with(image_url).and_return(mock_source_image)
-      allow(mock_source_image).to receive(:resize)
-      allow(mock_source_image).to receive(:write)
-      allow(ArticleImageUploader).to receive(:new).and_return(mock_uploader)
-      allow(mock_uploader).to receive(:store!)
-      allow(mock_uploader).to receive(:url).and_return(uploaded_url)
-      allow(Tempfile).to receive(:new).and_return(double(close: nil, unlink: nil, path: "/tmp/test.png"))
-    end
-
-    it "resizes image to specified dimensions" do
-      result = service.send(:resize_image, image_url, 150, 200)
-
-      expect(mock_source_image).to have_received(:resize).with("150x200")
-      expect(result).to eq(uploaded_url)
-    end
-  end
-
-  describe "#create_social_image" do
-    let(:mock_source_image) { double }
-    let(:mock_background_image) { double }
-    let(:mock_result_image) { double }
-    let(:mock_uploader) { double }
-    let(:uploaded_url) { "https://cdn.example.com/social.png" }
-
-    before do
-      allow(MiniMagick::Image).to receive(:open).with(image_url).and_return(mock_source_image)
-      allow(MiniMagick::Image).to receive(:open).with(Images::TEMPLATE_PATH).and_return(mock_background_image)
-      allow(mock_source_image).to receive(:resize)
-      allow(mock_background_image).to receive(:composite).and_return(mock_result_image)
-      allow(mock_result_image).to receive(:write)
-      allow(ArticleImageUploader).to receive(:new).and_return(mock_uploader)
-      allow(mock_uploader).to receive(:store!)
-      allow(mock_uploader).to receive(:url).and_return(uploaded_url)
-      allow(Tempfile).to receive(:new).and_return(double(close: nil, unlink: nil, path: "/tmp/test.png"))
-    end
-
-    context "when no background URL is provided" do
-      it "uses the existing social template as background" do
-        service.send(:create_social_image)
-
-        expect(MiniMagick::Image).to have_received(:open).with(Images::TEMPLATE_PATH)
+  describe "end-to-end pixel dimensions" do
+    it "produces valid PNGs at exact expected aspect-fitted and cropped dimensions" do
+      stored_dimensions = []
+      uploader_double = instance_double(ArticleImageUploader, url: "https://cdn.example.com/out.png")
+      allow(uploader_double).to receive(:store!) do |tempfile|
+        info = ForemNative.image_inspect_file(tempfile.path)
+        stored_dimensions << [info[:format], info[:width], info[:height]]
       end
+      allow(ArticleImageUploader).to receive(:new).and_return(uploader_double)
+      allow(Settings::General).to receive(:set_resized_logo)
+      allow(Settings::General).to receive(:set_favicon_url)
+      allow(Settings::General).to receive(:set_main_social_image)
+      allow(Settings::General).to receive(:set_logo_png)
 
-      it "resizes source image to 300x300" do
-        service.send(:create_social_image)
+      stub_request(:get, image_url).to_return(status: 200, body: logo_bytes)
+      stub_request(:get, background_url).to_return(status: 200, body: background_bytes)
 
-        expect(mock_source_image).to have_received(:resize).with("300x300")
-      end
+      described_class.new(subforem.id, image_url, background_url).call
 
-      it "composites the source image onto the background" do
-        service.send(:create_social_image)
-
-        expect(mock_background_image).to have_received(:composite).with(mock_source_image)
-      end
-
-      it "returns the uploaded URL" do
-        result = service.send(:create_social_image)
-        expect(result).to eq(uploaded_url)
-      end
-    end
-
-    context "when background URL is provided" do
-      let(:service_with_background) { described_class.new(subforem.id, image_url, background_url) }
-      let(:mock_custom_background) { double }
-
-      before do
-        allow(MiniMagick::Image).to receive(:open).with(background_url).and_return(mock_custom_background)
-        allow(mock_custom_background).to receive(:combine_options)
-        allow(mock_custom_background).to receive(:composite).and_return(mock_result_image)
-      end
-
-      it "uses the custom background URL and crops it to exact dimensions" do
-        service_with_background.send(:create_social_image)
-
-        expect(MiniMagick::Image).to have_received(:open).with(background_url)
-        expect(mock_custom_background).to have_received(:combine_options) do |&block|
-          # Create a mock command builder to capture the options
-          command = double
-          allow(command).to receive(:resize)
-          allow(command).to receive(:gravity)
-          allow(command).to receive(:extent)
-
-          block.call(command)
-
-          # Verify the specific options were called
-          expect(command).to have_received(:resize).with("1000x500^")
-          expect(command).to have_received(:gravity).with("Center")
-          expect(command).to have_received(:extent).with("1000x500")
-        end
-      end
-
-      it "does not use the template when background URL is provided" do
-        service_with_background.send(:create_social_image)
-
-        expect(MiniMagick::Image).not_to have_received(:open).with(Images::TEMPLATE_PATH)
-      end
-    end
-  end
-
-  describe "#upload_image" do
-    let(:mock_image) { double }
-    let(:mock_uploader) { double }
-    let(:uploaded_url) { "https://cdn.example.com/uploaded.png" }
-    let(:mock_tempfile) { double }
-
-    before do
-      allow(mock_image).to receive(:write)
-      allow(ArticleImageUploader).to receive(:new).and_return(mock_uploader)
-      allow(mock_uploader).to receive(:store!)
-      allow(mock_uploader).to receive(:url).and_return(uploaded_url)
-      allow(Tempfile).to receive(:new).and_return(mock_tempfile)
-      allow(mock_tempfile).to receive(:close)
-      allow(mock_tempfile).to receive(:unlink)
-      allow(mock_tempfile).to receive(:path).and_return("/tmp/test.png")
-    end
-
-    it "writes image to tempfile and uploads it" do
-      result = service.send(:upload_image, mock_image)
-
-      expect(mock_image).to have_received(:write).with("/tmp/test.png")
-      expect(ArticleImageUploader).to have_received(:new)
-      expect(mock_uploader).to have_received(:store!).with(mock_tempfile)
-      expect(result).to eq(uploaded_url)
-    end
-
-    it "cleans up the tempfile" do
-      service.send(:upload_image, mock_image)
-
-      expect(mock_tempfile).to have_received(:close)
-      expect(mock_tempfile).to have_received(:unlink)
-    end
-  end
-
-  describe "integration with MiniMagick" do
-    let(:mock_source_image) { double }
-    let(:mock_background_image) { double }
-    let(:mock_result_image) { double }
-    let(:mock_uploader) { double }
-    let(:uploaded_url) { "https://cdn.example.com/integration.png" }
-
-    before do
-      # Stub web requests to prevent real HTTP calls
-      stub_request(:get, "https://cdn.example.com/integration.png").to_return(status: 200, body: "", headers: {})
-
-      allow(MiniMagick::Image).to receive(:open).with(image_url).and_return(mock_source_image)
-      allow(MiniMagick::Image).to receive(:open).with(Images::TEMPLATE_PATH).and_return(mock_background_image)
-      allow(mock_source_image).to receive(:resize)
-      allow(mock_source_image).to receive(:write)
-      allow(mock_background_image).to receive(:composite).and_return(mock_result_image)
-      allow(mock_result_image).to receive(:write)
-      allow(ArticleImageUploader).to receive(:new).and_return(mock_uploader)
-      allow(mock_uploader).to receive(:store!)
-      allow(mock_uploader).to receive(:url).and_return(uploaded_url)
-      allow(Tempfile).to receive(:new).and_return(double(close: nil, unlink: nil, path: "/tmp/test.png"))
-    end
-
-    it "properly chains MiniMagick operations for social image creation" do
-      service.call
-
-      # Verify the background creation
-      expect(MiniMagick::Image).to have_received(:open).with(Images::TEMPLATE_PATH)
-
-      # Verify the source image resizing
-      expect(mock_source_image).to have_received(:resize).with("300x300")
-
-      # Verify the compositing
-      expect(mock_background_image).to have_received(:composite).with(mock_source_image)
+      expect(stored_dimensions).to eq(
+        [
+          ["png", 100, 75],
+          ["png", 100, 75],
+          ["png", 1000, 500],
+          ["png", 512, 384],
+        ],
+      )
     end
   end
 end

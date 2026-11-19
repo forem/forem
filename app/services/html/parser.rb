@@ -21,6 +21,14 @@ module Html
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
     RAW_TAG = "{----% raw %----}".freeze
     END_RAW_TAG = "{----% endraw %----}".freeze
+    FULLSCREEN_ACTION_CACHE = Concurrent::Map.new
+
+    def self.resolve_existing_usernames(usernames)
+      return [] if usernames.empty?
+      return User.find_by(username: usernames.first) ? usernames : [] if usernames.size == 1
+
+      User.where(username: usernames).pluck(:username)
+    end
 
     attr_accessor :html
     private :html=
@@ -38,6 +46,8 @@ module Html
     end
 
     def prefix_all_images(width: 880, synchronous_detail_detection: false, quality: "auto")
+      return self if @html.blank? || (!@html.match?(/<img/i) && @html.exclude?("<!DOCTYPE"))
+
       # wrap with Cloudinary or allow if from giphy or githubusercontent.com
       doc = Nokogiri::HTML.fragment(@html)
 
@@ -98,31 +108,34 @@ module Html
     def add_fullscreen_button_to_panel
       return self if @html.blank? || !may_contain?("highlight__panel")
 
+      action_html = fullscreen_action_html
+      @html = ForemNative.add_fullscreen_button_to_panel(@html, action_html) ||
+        legacy_add_fullscreen_button_to_panel(action_html)
+
+      self
+    end
+
+    def fullscreen_action_html
       on_title = I18n.t("services.html.parser.enter_fullscreen_mode")
-      on_cls = "highlight-action crayons-icon highlight-action--fullscreen-on"
-      icon_fullscreen_on = inline_svg_tag(
-        "fullscreen-on.svg", class: on_cls, title: on_title, width: "20px", height: "20px"
-      )
       off_title = I18n.t("services.html.parser.exit_fullscreen_mode")
-      off_cls = "highlight-action crayons-icon highlight-action--fullscreen-off"
-      icon_fullscreen_off = inline_svg_tag(
-        "fullscreen-off.svg", class: off_cls, title: off_title, width: "20px", height: "20px"
-      )
-      doc = Nokogiri::HTML.fragment(@html)
-      doc.search("div.highlight__panel").each do |codeblock|
-        fullscreen_action = <<~HTML
+
+      FULLSCREEN_ACTION_CACHE.compute_if_absent([on_title, off_title]) do
+        on_cls = "highlight-action crayons-icon highlight-action--fullscreen-on"
+        icon_fullscreen_on = inline_svg_tag(
+          "fullscreen-on.svg", class: on_cls, title: on_title, width: "20px", height: "20px"
+        )
+        off_cls = "highlight-action crayons-icon highlight-action--fullscreen-off"
+        icon_fullscreen_off = inline_svg_tag(
+          "fullscreen-off.svg", class: off_cls, title: off_title, width: "20px", height: "20px"
+        )
+        raw_action = <<~HTML
           <div class="highlight__panel-action js-fullscreen-code-action">
               #{icon_fullscreen_on}
               #{icon_fullscreen_off}
           </div>
         HTML
-
-        codeblock.add_child(fullscreen_action)
+        Nokogiri::HTML.fragment(raw_action).to_html
       end
-
-      @html = doc.to_html
-
-      self
     end
 
     def wrap_all_tables
@@ -135,6 +148,8 @@ module Html
     end
 
     def transform_markdown_alerts
+      return self if @html.blank? || !@html.match?(/<blockquote/i) || !(@html.include?("[!") || @html.include?("&"))
+
       doc = Nokogiri::HTML.fragment(@html)
 
       doc.css("blockquote").each do |blockquote|
@@ -224,23 +239,8 @@ module Html
     def enforce_gif_like_videos
       return self if @html.blank? || !@html.match?(/<video/i)
 
-      doc = Nokogiri::HTML.fragment(@html)
-
-      doc.css("video").each do |video|
-        # Mark as gif-like for JS to attach behavior
-        video["data-gif-video"] = "true"
-        # Default attributes to mimic GIF behavior, unless explicitly overridden
-        video["autoplay"] = video["autoplay"] || "autoplay"
-        video["loop"] = video["loop"] || "loop"
-        video["muted"] = video["muted"] || "muted"
-        video["playsinline"] = video["playsinline"] || "playsinline"
-        # Remove controls by default unless explicitly present
-        video.remove_attribute("controls") unless video["controls"]
-        # Avoid preloading to save bandwidth if not provided
-        video["preload"] = video["preload"] || "metadata"
-      end
-
-      @html = doc.to_html
+      @html = ForemNative.enforce_gif_like_videos(@html) ||
+        legacy_enforce_gif_like_videos
 
       self
     end
@@ -373,11 +373,39 @@ module Html
       body ? body.inner_html : html_doc.to_html
     end
 
+    def legacy_add_fullscreen_button_to_panel(action_html)
+      doc = Nokogiri::HTML.fragment(@html)
+      doc.search("div.highlight__panel").each do |codeblock|
+        codeblock.add_child(action_html)
+      end
+      doc.to_html
+    end
+
+    def legacy_enforce_gif_like_videos
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.css("video").each do |video|
+        # Mark as gif-like for JS to attach behavior
+        video["data-gif-video"] = "true"
+        # Default attributes to mimic GIF behavior, unless explicitly overridden
+        video["autoplay"] = video["autoplay"] || "autoplay"
+        video["loop"] = video["loop"] || "loop"
+        video["muted"] = video["muted"] || "muted"
+        video["playsinline"] = video["playsinline"] || "playsinline"
+        # Remove controls by default unless explicitly present
+        video.remove_attribute("controls") unless video["controls"]
+        # Avoid preloading to save bandwidth if not provided
+        video["preload"] = video["preload"] || "metadata"
+      end
+
+      doc.to_html
+    end
+
     def native_wrap_mentions_with_links
       usernames = ForemNative.extract_mention_usernames(@html)
       return unless usernames
 
-      existing = usernames.select { |u| User.find_by(username: u) }
+      existing = self.class.resolve_existing_usernames(usernames)
       base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{Settings::General.app_domain}"
       ForemNative.wrap_mentions_with_links(@html, existing, base_url)
     end

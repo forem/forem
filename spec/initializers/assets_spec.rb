@@ -138,16 +138,20 @@ RSpec.describe "Assets initializer" do # rubocop:disable RSpec/DescribeClass
       expect(form_elements_barrel).not_to include("DateRangePicker")
     end
 
-    it "keeps base.js lean by loading honeybadgerClient, commentsPage, and eventSignupButtons on demand" do
+    it "keeps base.js lean by loading frontend error clients, commentsPage, and eventSignupButtons on demand",
+       :aggregate_failures do
       base_js_erb = Rails.root.join("app/assets/javascripts/base.js.erb").read
       application_layout = Rails.root.join("app/views/layouts/application.html.erb").read
 
       expect(base_js_erb).not_to include("@honeybadger-io/js/dist/browser/honeybadger.js")
+      expect(base_js_erb).not_to include("@sentry/browser")
       expect(base_js_erb).not_to include("//= require i18n")
       expect(Rails.root.join("app/assets/javascripts/initializers/initializeCommentsPage.js.erb").exist?).to be(false)
+      expect(Rails.root.join("app/javascript/packs/betterstackErrorsClient.js").exist?).to be(true)
       expect(Rails.root.join("app/javascript/packs/honeybadgerClient.js").exist?).to be(true)
       expect(Rails.root.join("app/javascript/packs/commentsPage.js").exist?).to be(true)
 
+      expect(application_layout).to include('meta name="betterstack-errors-script"')
       expect(application_layout).to include('meta name="honeybadger-script"')
       expect(application_layout).to include('meta name="comments-page-script"')
       expect(application_layout).to include('meta name="event-signup-buttons-script"')

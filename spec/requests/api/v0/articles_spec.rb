@@ -42,7 +42,8 @@ RSpec.describe "Api::V0::Articles" do
     end
 
     it "has correct keys in the response" do
-      article.update_columns(organization_id: organization.id)
+      article.update_columns(organization_id: organization.id, canonical_url: nil)
+      article.user.profile.update!(website_url: "https://example.com")
       get api_articles_path
 
       index_keys = %w[
@@ -54,6 +55,45 @@ RSpec.describe "Api::V0::Articles" do
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
+      expect(response.parsed_body.first).to include("type_of" => "article", "canonical_url" => article.url)
+      expect(response.parsed_body.first["user"]).to include(
+        "user_id" => article.user_id, "website_url" => "https://example.com",
+      )
+      expect(response.parsed_body.first["organization"]["slug"]).to eq(organization.slug)
+      index_item = response.parsed_body.first
+      create(:article) # search omits body_markdown only when it returns more than one article
+      get "/api/articles/search" # still rendered via the shared partials, so the payload must not drift from them
+      search_item = response.parsed_body.detect { |item| item["id"] == article.id }
+      expect(index_item.keys).to match_array(search_item.keys)
+      %w[user organization flare_tag].each { |key| expect(index_item[key].keys).to match_array(search_item[key].keys) }
+    end
+
+    it "returns all the relevant datetimes" do
+      article.update_columns(
+        edited_at: 1.minute.ago, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
+      )
+      get api_articles_path
+
+      expect(response.parsed_body.first).to include(
+        "created_at" => article.created_at.utc.iso8601,
+        "edited_at" => article.edited_at.utc.iso8601,
+        "crossposted_at" => article.crossposted_at.utc.iso8601,
+        "published_at" => article.published_at.utc.iso8601,
+        "last_comment_at" => article.last_comment_at.utc.iso8601,
+      )
+    end
+
+    it "omits absent organization and flare tag and preserves null timestamps" do
+      article.update_columns(
+        organization_id: nil, cached_tag_list: "", edited_at: nil, crossposted_at: nil, last_comment_at: nil,
+      )
+      get api_articles_path
+
+      expect(response.parsed_body.first).not_to have_key("organization")
+      expect(response.parsed_body.first).not_to have_key("flare_tag")
+      expect(response.parsed_body.first).to include(
+        "edited_at" => nil, "crossposted_at" => nil, "last_comment_at" => nil,
+      )
     end
 
     it "returns correct tag list" do
@@ -66,6 +106,29 @@ RSpec.describe "Api::V0::Articles" do
       get api_articles_path
 
       expect(response.parsed_body.first["tags"]).to be_a String
+    end
+
+    it "includes the tag top surrogate key when filtering by tag and top" do
+      tagged_article = create(:article, tags: "ruby", score: 10, published: true)
+      get api_articles_path, params: { tag: "ruby", top: 7 }
+
+      expect(response.headers["Surrogate-Key"].split).to include(
+        "articles",
+        tagged_article.record_key,
+        "api-articles-tag-ruby-top",
+      )
+    end
+
+    it "omits multi-tag or invalid tag params from the single-tag top Surrogate-Key", :aggregate_failures do
+      get api_articles_path, params: { tag: "ruby, rails", top: 7 }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).not_to include("rails-top")
+
+      get api_articles_path, params: { tag: "ruby\r\ninjected", top: 7 }
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.headers["Surrogate-Key"]).to be_nil
     end
 
     context "without params" do
@@ -296,7 +359,7 @@ RSpec.describe "Api::V0::Articles" do
         create(:article, published: true, tags: "node")
         get api_articles_path(tags_exclude: "  node  , java  ")
         expect(response).to have_http_status(:ok)
-        
+
         # The test database already has one other globally defined article from `before { article }`
         expect(response.parsed_body.size).to eq(1)
         expect(response.parsed_body.first["tags"]).not_to include("java", "node")
@@ -450,6 +513,7 @@ RSpec.describe "Api::V0::Articles" do
 
         get api_articles_path
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first).to include("cover_image" => nil)
       end
 
       it "respects API_PER_PAGE_MAX limit set in ENV variable" do

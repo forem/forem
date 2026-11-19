@@ -57,22 +57,23 @@ RSpec.describe "Follows #show" do
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  it "loads the followed-back candidate once with only cache-key columns and batches follows misses" do
+  it "loads the viewer and followed-back candidate in a single narrow users query and batches follows misses" do
+    target_id = user.id
     user_queries = []
     follow_queries = []
     callback = lambda do |*, payload|
       sql = payload[:sql]
-      user_queries << sql if sql.match?(/FROM "users" WHERE "users"."id" = /)
+      user_queries << sql if sql.match?(/FROM "users" WHERE "users"."id"/)
       follow_queries << sql if sql.include?('FROM "follows"')
     end
 
     ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-      get "/follows/#{user.id}", params: { followable_type: "User" }
+      get "/follows/#{target_id}", params: { followable_type: "User" }
     end
 
-    expect(user_queries).to include(a_string_starting_with('SELECT "users"."id", "users"."updated_at" FROM "users"'))
-    expect(user_queries).not_to include(a_string_starting_with('SELECT "users".* FROM "users"'))
-    expect(user_queries).not_to include(a_string_starting_with('SELECT "users"."id" FROM "users"'))
+    expect(user_queries.size).to eq(1)
+    expect(user_queries.first).to include('"users"."id"', '"users"."updated_at"')
+    expect(user_queries.first).not_to include('SELECT "users".*')
     expect(follow_queries.size).to eq(1)
   end
 

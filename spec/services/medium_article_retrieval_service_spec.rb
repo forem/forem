@@ -13,6 +13,26 @@ RSpec.describe MediumArticleRetrievalService, type: :service, vcr: {} do
     }
   end
 
+  before do
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    allow(Addrinfo).to receive(:getaddrinfo)
+      .with("medium.com", nil, nil, :STREAM)
+      .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+  end
+
+  context "when the medium url redirects to a private address" do
+    let(:medium_url) { "https://medium.com/@someone/a-post-123" }
+    let(:internal_url) { "http://169.254.0.1/" }
+
+    it "does not follow the redirect" do
+      stub_request(:get, medium_url).to_return(status: 302, headers: { "Location" => internal_url })
+      stub_request(:get, internal_url)
+
+      expect { described_class.call(medium_url) }.to raise_error(SafeHttp::BlockedUrlError)
+      expect(a_request(:get, internal_url)).not_to have_been_made
+    end
+  end
+
   context "when the medium url is valid" do
     let(:medium_url) { "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c" }
 

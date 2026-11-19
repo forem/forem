@@ -20,12 +20,12 @@
 
 <% if @pinned_article %>
   <% second_billboard_position -= 1 %>
-  <%= render partial: "articles/single_story", locals: { story: @pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id } %>
+  <%= render_story_card(@pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id) %>
 <% end %>
 
 <% if @featured_story.id && @pinned_article&.id != @featured_story.id %>
   <% second_billboard_position -= 1 %>
-  <%= render partial: "articles/single_story", locals: { story: @featured_story, featured: true, pinned: false } %>
+  <%= render_story_card(@featured_story, featured: true, pinned: false) %>
 <% end %>
 
 <div id="article-index-podcast-div"></div>
@@ -35,8 +35,11 @@
 
 <div class="substories" id="substories">
   <% if @stories.any? %>
+    <% pending_stories = [] %>
     <% @stories.each_with_index do |story, i| %>
       <% if !user_signed_in? && i == second_billboard_position %>
+        <%= render_story_cards(pending_stories, featured: false, pinned: false) if pending_stories.any? %>
+        <% pending_stories.clear %>
         <% @sidebar_billboard_second = Billboard.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
         <% if @sidebar_billboard_second %>
           <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
@@ -44,17 +47,20 @@
       <% end %>
 
       <% if !user_signed_in? && i == third_billboard_position %>
+        <%= render_story_cards(pending_stories, featured: false, pinned: false) if pending_stories.any? %>
+        <% pending_stories.clear %>
         <% @sidebar_billboard_third = Billboard.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
         <% if @sidebar_billboard_third %>
           <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
         <% end %>
       <% end %>
       <% if story.id != @featured_story.id && story.id != @pinned_article&.id %>
-        <%= render partial: "articles/single_story", locals: { story: story, featured: false, pinned: false } %>
+        <% pending_stories << story %>
       <% else %>
         <% third_billboard_position += 1 %>
       <% end %>
     <% end %>
+    <%= render_story_cards(pending_stories, featured: false, pinned: false) if pending_stories.any? %>
     <% if @stories.size > 1 %>
       <div class="placeholder-div"></div>
     <% end %>

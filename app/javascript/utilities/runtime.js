@@ -150,3 +150,83 @@ export const getOSKeyboardModifierKeyString = () =>
  * @returns {string} A string representing the locale as per the user's browser settings
  */
 export const getCurrentLocale = () => navigator.language;
+
+// Native mobile wrappers (Forem / DEV apps) and embedded desktop / IDE webviews
+// (Electron shells, VS Code, Cursor, Windsurf, Antigravity, Claude, Codex, Trae, Zed, Replit, Tauri, CEF, WebView2).
+const EMBEDDED_WRAPPER_USER_AGENT =
+  /Forem|DEV-Native|\b(?:Electron|Cursor|Windsurf|Antigravity|Claude|Codex|VSCode|Code|Trae|Zed|Replit(?:-Bonsai)?|Tauri|J?CEF|CefSharp|EdgWebView|WebView2)\/|;\s*wv\)/i;
+
+// Known standalone Chromium browsers reported in navigator.userAgentData.brands
+// (Arc and Vivaldi report "Google Chrome"; Brave, Edge, Opera, and Yandex report their own brands).
+const STANDALONE_CHROMIUM_BRAND =
+  /Google Chrome|Microsoft Edge|Brave|Opera|Vivaldi|Arc|DuckDuckGo|Whale|YaBrowser|Samsung Internet/i;
+
+/**
+ * Detects whether the page is running inside an embedded/wrapped mobile or
+ * desktop app browser context (e.g., Forem mobile apps, Electron webviews,
+ * Cursor, Windsurf, VS Code, Antigravity, Claude/Codex desktop previews,
+ * Windows WebView2, macOS/iOS WKWebView without Safari, or an iframe).
+ *
+ * @param {object} [env] Optional environment overrides for testing
+ * @returns {boolean}
+ */
+export const isEmbeddedBrowserContext = ({
+  userAgent = navigator.userAgent || '',
+  userAgentData = navigator.userAgentData,
+  win = typeof window !== 'undefined' ? window : undefined,
+} = {}) => {
+  if (EMBEDDED_WRAPPER_USER_AGENT.test(userAgent)) {
+    return true;
+  }
+
+  // macOS / iOS native WKWebView wrappers omit standalone Safari/browser tokens
+  if (
+    /(?:Macintosh|iPhone|iPad|iPod)/i.test(userAgent) &&
+    /AppleWebKit\//i.test(userAgent) &&
+    !/\b(?:Safari|CriOS|FxiOS|EdgiOS|OPiOS)\//i.test(userAgent)
+  ) {
+    return true;
+  }
+
+  const brands = Array.isArray(userAgentData?.brands)
+    ? userAgentData.brands
+    : null;
+  if (brands && brands.length > 0) {
+    if (
+      brands.some(({ brand }) =>
+        /Microsoft Edge WebView2|\bElectron\b/i.test(brand || ''),
+      )
+    ) {
+      return true;
+    }
+
+    // Unbranded Chromium on macOS or Windows (e.g., Electron or CEF/JCEF with a stripped UA).
+    // Linux is excluded because distro-packaged Chromium legitimately omits a vendor brand.
+    const platform = userAgentData?.platform || '';
+    const isMacOrWindows =
+      /^(?:macOS|Windows)$/i.test(platform) ||
+      /(?:Macintosh|Windows NT)/i.test(userAgent);
+    const hasChromiumBrand = brands.some(({ brand }) =>
+      /^Chromium$/i.test(brand || ''),
+    );
+    const hasStandaloneBrand = brands.some(({ brand }) =>
+      STANDALONE_CHROMIUM_BRAND.test(brand || ''),
+    );
+
+    if (isMacOrWindows && hasChromiumBrand && !hasStandaloneBrand) {
+      return true;
+    }
+  }
+
+  if (win) {
+    try {
+      if (win.self !== win.top) {
+        return true;
+      }
+    } catch {
+      return true;
+    }
+  }
+
+  return false;
+};

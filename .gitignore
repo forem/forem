@@ -45,6 +45,11 @@ yarn-debug.log*
 .env.test.local
 .env.development*
 .env
+.env.kamal
+.env.kamal.*
+!.env.kamal.example
+.kamal/secrets.local
+.kamal/secrets.*.local
 
 # Ignore storybook static site generation
 app/javascript/storybook-static/

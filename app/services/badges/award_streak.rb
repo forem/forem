@@ -12,8 +12,8 @@ module Badges
   # any run in the user's history, which is used to backfill past writers.
   class AwardStreak
     LONGEST_STREAK_WEEKS = 16
-
     MINIMUM_QUALITY = -25
+    BATCH_SIZE = 500
 
     # Communities have registered these badges under either slug, so look up
     # the descriptive one first and fall back to the original short one.

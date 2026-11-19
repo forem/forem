@@ -5,9 +5,11 @@ module Organizations
 
       organization = Organization.find_by(id: organization_id)
 
-      return unless organization
-
-      EdgeCache::BustOrganization.call(organization, slug)
+      if organization
+        EdgeCache::BustOrganization.call(organization, slug)
+      else
+        EdgeCache::PurgeByKey.call("organizations/#{organization_id}", fallback_paths: "/#{slug}")
+      end
     end
   end
 end

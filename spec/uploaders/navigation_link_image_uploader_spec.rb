@@ -9,16 +9,15 @@ RSpec.describe NavigationLinkImageUploader, type: :uploader do
   let(:image_png) { fixture_file_upload("800x600.png", "image/png") }
   let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
   let(:image_svg) { fixture_file_upload("300x100.svg", "image/svg+xml") }
-  
+
   let!(:uploader) { described_class.new(navigation_link, :image) }
 
   before do
-    described_class.include CarrierWave::MiniMagick
-    # Note: We keep processing disabled to avoid needing ImageMagick in CI
-    described_class.enable_processing = false
+    described_class.enable_processing = true
   end
 
   after do
+    described_class.enable_processing = false
     uploader.remove!
   end
 
@@ -64,7 +63,7 @@ RSpec.describe NavigationLinkImageUploader, type: :uploader do
 
   describe "file size limits" do
     it "has a maximum file size of 5MB" do
-      expect(uploader.size_range).to eq(1..5.megabytes)
+      expect(uploader.size_range).to eq(1..(5.megabytes))
     end
   end
 
@@ -74,4 +73,3 @@ RSpec.describe NavigationLinkImageUploader, type: :uploader do
     end
   end
 end
-

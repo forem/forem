@@ -3,9 +3,10 @@ require "rails_helper"
 RSpec.describe ReactionPolicy do
   subject { described_class.new(user, reaction) }
 
-  let(:comment) { create(:comment, commentable: create(:article)) }
-  let(:reaction) { create(:reaction, reactable: comment) }
-  let!(:user) { create(:user) }
+  # The policy reads the reactable type; persistence is covered by request/model specs.
+  let(:reactable) { Comment.new }
+  let(:reaction) { build_stubbed(:reaction, user: build_stubbed(:user), reactable: reactable) }
+  let(:user) { create(:user) }
 
   describe ".policy_query_for" do
     subject { described_class.policy_query_for(category: category) }
@@ -81,7 +82,7 @@ RSpec.describe ReactionPolicy do
 
     context "when user is a support admin and the reaction is not on a comment" do
       let(:user) { create(:user, :support_admin) }
-      let(:reaction) { create(:reaction, reactable: create(:article)) }
+      let(:reactable) { Article.new }
 
       it { is_expected.to forbid_actions(%i[admin_update admin_invalidate]) }
     end

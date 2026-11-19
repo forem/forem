@@ -66,6 +66,8 @@
     }
 
     .got-it-btn {
+      // Hidden outside of a modal, see the note on `.close` below.
+      display: none;
       align-self: flex-start;
       margin-top: auto;
 
@@ -76,7 +78,13 @@
     }
   }
 
+  // The "x" and "Got it" controls call `window.Forem.closeModal()`, so they
+  // only work inside the window modal (badges/_badge_detail is meant to be
+  // shown there). When badge details markup ends up in the page itself, e.g.
+  // an admin-authored page like /community-badges, they would show up above
+  // the footer as dead buttons, so they're only shown inside a modal.
   .close {
+    display: none;
     position: absolute;
     top: 0;
     right: 0;
@@ -86,5 +94,15 @@
     .close_icon {
       fill: var(--close-icon);
     }
+  }
+}
+
+.crayons-modal .badge_details {
+  .close {
+    display: block;
+  }
+
+  .badge_text_content .got-it-btn {
+    display: inline-block;
   }
 }

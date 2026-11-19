@@ -110,6 +110,9 @@ class Comment < ApplicationRecord
 
   after_commit :calculate_score, on: %i[create update]
   after_commit :enqueue_article_activity_update, on: :destroy, if: :commentable_is_article?
+  after_commit :enqueue_article_dependent_embeds_update,
+               on: %i[create update destroy],
+               if: :should_update_article_dependent_embeds?
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -324,6 +327,20 @@ class Comment < ApplicationRecord
 
   def commentable_is_article?
     commentable_type == "Article"
+  end
+
+  def should_update_article_dependent_embeds?
+    return false unless commentable_is_article? && commentable_id.present?
+
+    if destroyed? || previously_new_record?
+      !deleted?
+    else
+      saved_change_to_deleted?
+    end
+  end
+
+  def enqueue_article_dependent_embeds_update
+    Articles::UpdateDependentEmbedsWorker.schedule_for_engagement(commentable_id)
   end
 
   def enqueue_update_user_interest_embedding

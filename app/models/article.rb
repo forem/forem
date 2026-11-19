@@ -44,6 +44,7 @@ class Article < ApplicationRecord
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+  belongs_to :event, optional: true
 
   belongs_to :organization, optional: true
   belongs_to :user
@@ -80,6 +81,13 @@ class Article < ApplicationRecord
   TRACKABLE_UPDATE_KEYS = %w[
     title body_markdown cached_tag_list main_image description canonical_url
     edited_at collection_id subforem_id
+  ].freeze
+
+  EMBED_CARD_CHANGE_ATTRIBUTES = %w[
+    title user_id organization_id published cached_tag_list published_at main_image reading_time
+  ].freeze
+  EMBED_MEMBERSHIP_CHANGE_ATTRIBUTES = %w[
+    published organization_id cached_tag_list published_at
   ].freeze
 
   # Filter out anything that isn't a word, space, punctuation mark,
@@ -320,6 +328,7 @@ class Article < ApplicationRecord
   validate :restrict_type_based_on_role
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
+  validate :validate_event_assignment, if: :validating_event_assignment?
   validate :validate_tag
   validate :validate_video
   validate :user_mentions_in_markdown
@@ -328,6 +337,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_belong_to_organization,
            unless: -> { co_author_ids.blank? || organization_id.blank? }
+  validate :validate_hidden_billboard_locations, if: :will_save_change_to_hidden_billboard_locations?
 
   before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
@@ -394,11 +404,12 @@ class Article < ApplicationRecord
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
-  after_update_commit :update_dependent_embeds_if_key_info_changed
+  after_commit :update_dependent_embeds_if_needed, on: %i[create update destroy]
 
   after_update_commit :regenerate_summary_if_content_changed
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
+  after_commit :purge_previous_event_cache, on: :update, if: :saved_change_to_event_id?
 
   after_save :cleanup_memberships_if_unpublished,
              if: -> { saved_change_to_published? && published_before_last_save && !published? }
@@ -544,6 +555,20 @@ class Article < ApplicationRecord
 
   def favorited?
     favorited_by_user_id.present?
+  end
+
+  # Returns the associated event only when it is publicly visible as connected
+  # (published, allows articles, and has started). Admins may pre-tag an article
+  # before start_time, but it must not appear connected beforehand.
+  def visible_event(at = Time.current)
+    return if event_id.blank?
+    return unless event&.published? && event.articles_visible?(at)
+
+    event
+  end
+
+  def event_visible?(at = Time.current)
+    visible_event(at).present?
   end
 
   scope :from_subforem, lambda { |subforem_id = nil|
@@ -1216,7 +1241,8 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
-    score_changed_flag = score_changed? || self.comment_score != comment_score
+    article_score_changed = score_changed?
+    score_changed_flag = article_score_changed || self.comment_score != comment_score
 
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
@@ -1227,6 +1253,13 @@ class Article < ApplicationRecord
     trigger_freeform_context_note_generation
     trigger_summary_generation
     trigger_semantic_embedding_generation if score_changed_flag
+    return unless article_score_changed && published?
+
+    Articles::UpdateDependentEmbedsWorker.schedule_for_score_change(
+      id,
+      organization_id: organization_id,
+      cached_tag_list: cached_tag_list,
+    )
   end
 
   def eligible_for_semantic_embedding?
@@ -1294,6 +1327,25 @@ class Article < ApplicationRecord
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
+  def hidden_billboard_locations=(value)
+    if value.nil?
+      super([])
+    elsif value.is_a?(Array)
+      cleaned = value.filter_map { |loc| loc.to_s.strip.presence }.uniq
+      known, unknown = cleaned.partition { |loc| Billboard::POST_PLACEMENTS.include?(loc) }
+      super((Billboard::POST_PLACEMENTS & known) + unknown)
+    else
+      super
+    end
+  end
+
+  def billboard_location_hidden?(placement_area)
+    return false unless has_attribute?(:hidden_billboard_locations)
+
+    locations = hidden_billboard_locations
+    locations.is_a?(Array) && locations.include?(placement_area.to_s)
+  end
+
   def plain_html
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.search(".highlight__panel").each(&:remove)
@@ -1336,6 +1388,8 @@ class Article < ApplicationRecord
     return unless content_renderer
 
     result = content_renderer.process_article
+    return if LiquidEmbedReference.semantically_equal_html?(result.processed_html, processed_html)
+
     update_column(:processed_html, result.processed_html)
   rescue ContentRenderer::ContentParsingError => e
     Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
@@ -1764,6 +1818,46 @@ class Article < ApplicationRecord
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
 
+  def validating_event_assignment?
+    has_event = event_id.present? || (association(:event).loaded? && event.present?)
+    has_event && (new_record? || will_save_change_to_event_id?)
+  end
+
+  def validate_event_assignment
+    if event.nil?
+      errors.add(:event_id, I18n.t("models.article.event_not_found"))
+      return
+    end
+
+    unless event.allow_articles?
+      errors.add(:event_id, I18n.t("models.article.event_articles_disabled"))
+      return
+    end
+
+    return if event.accepting_articles?(as_admin: acting_as_event_admin?)
+
+    errors.add(:event_id, I18n.t("models.article.event_not_accepting_articles"))
+  end
+
+  def acting_as_event_admin?
+    return true if admin_update
+
+    user.present? && (
+      user.administrative_access_to?(resource: Event) ||
+      (event.present? && user.administrative_access_to?(resource: event))
+    )
+  end
+
+  def purge_previous_event_cache
+    previous_event_id = saved_change_to_event_id.first
+    return if previous_event_id.blank?
+
+    previous_event = Event.select(:id, :event_name_slug, :event_variation_slug).find_by(id: previous_event_id)
+    return unless previous_event
+
+    EdgeCache::PurgeByKeyWorker.perform_async(previous_event.record_key, [previous_event.path])
+  end
+
   def validate_co_authors
     return if co_author_ids.exclude?(user_id)
 
@@ -1826,6 +1920,21 @@ class Article < ApplicationRecord
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
     errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
+  end
+
+  def validate_hidden_billboard_locations
+    unless hidden_billboard_locations.is_a?(Array)
+      errors.add(:hidden_billboard_locations, I18n.t("models.article.invalid_hidden_billboard_locations"))
+      return
+    end
+
+    invalid_locations = hidden_billboard_locations - Billboard::POST_PLACEMENTS
+    return if invalid_locations.empty?
+
+    errors.add(
+      :hidden_billboard_locations,
+      I18n.t("models.article.invalid_hidden_billboard_locations_list", locations: invalid_locations.join(", ")),
+    )
   end
 
   # Validates per-article and hourly @-mention rate limits based on the author's trust tier.
@@ -1972,8 +2081,15 @@ class Article < ApplicationRecord
   end
 
   def bust_cache(destroying: false)
-    purge
-    async_bust
+    if !destroying && saved_change_to_hidden_billboard_locations?
+      ActiveRecord.after_all_transactions_commit do
+        purge
+        async_bust(destroying: destroying)
+      end
+    else
+      purge
+      async_bust(destroying: destroying)
+    end
     touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
@@ -2019,8 +2135,30 @@ class Article < ApplicationRecord
     ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
-  def async_bust
-    Articles::BustCacheWorker.perform_async(id)
+  def async_bust(destroying: false)
+    if destroying
+      enqueue_deleted_article_cache_bust
+    else
+      Articles::BustCacheWorker.perform_async(id)
+    end
+  end
+
+  def enqueue_deleted_article_cache_bust
+    delay = BustCacheBaseWorker::AFTER_COMMIT_DELAY
+    Articles::BustDeletedArticleCacheWorker.perform_in(
+      delay,
+      Articles::BustDeletedArticleCacheWorker.attributes_for(self),
+    )
+    return unless published && (in_home_page_hot_articles? || decorate.discussion?)
+
+    EdgeCache::PurgeByKeyWorker.perform_in(delay, *Users::DeleteArticles::HOME_PAGE_PURGE_ARGS)
+  end
+
+  def in_home_page_hot_articles?
+    self.class.published.order(hotness_score: :desc)
+      .limit(Users::DeleteArticles::HOME_PAGE_ARTICLES_COUNT)
+      .ids
+      .include?(id)
   end
 
   def touch_collection
@@ -2256,19 +2394,40 @@ class Article < ApplicationRecord
     normalized_body == normalized_expected
   end
 
-  def update_dependent_embeds_if_key_info_changed
-    return if destroyed?
-    
-    # We only care about fields that affect the visual liquid embed card
-    if saved_change_to_title? ||
-       saved_change_to_user_id? ||
-       saved_change_to_organization_id? ||
-       saved_change_to_published? ||
-       saved_change_to_cached_tag_list? ||
-       saved_change_to_published_at? ||
-       saved_change_to_main_image?
-      Articles::UpdateDependentEmbedsWorker.perform_async(id)
+  def update_dependent_embeds_if_needed
+    if destroyed? || previously_new_record?
+      return unless published?
+
+      Articles::UpdateDependentEmbedsWorker.schedule_for_article_change(
+        id,
+        organization_ids: [organization_id].compact,
+        tag_names: [cached_tag_list].compact_blank,
+        membership_changed: true,
+      )
+      return
     end
+
+    return unless article_embed_key_info_changed?
+    return unless published? || published_before_last_save
+
+    org_ids, tag_lists, membership_changed = build_article_embed_change_context
+    Articles::UpdateDependentEmbedsWorker.schedule_for_article_change(
+      id,
+      organization_ids: org_ids,
+      tag_names: tag_lists,
+      membership_changed: membership_changed,
+    )
+  end
+
+  def article_embed_key_info_changed?
+    saved_changes.keys.intersect?(EMBED_CARD_CHANGE_ATTRIBUTES)
+  end
+
+  def build_article_embed_change_context
+    org_ids = [organization_id_before_last_save, organization_id].compact.uniq
+    tag_lists = [cached_tag_list_before_last_save, cached_tag_list].compact_blank.uniq
+    membership_changed = saved_changes.keys.intersect?(EMBED_MEMBERSHIP_CHANGE_ATTRIBUTES)
+    [org_ids, tag_lists, membership_changed]
   end
 
   def notify_co_author_changes

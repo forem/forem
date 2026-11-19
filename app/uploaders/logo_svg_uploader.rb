@@ -33,21 +33,25 @@ class LogoSvgUploader < BaseUploader
   end
 
   def convert_to_png
-    temp_png_file = Tempfile.new ["output", ".png"]
+    png_bytes = ForemNative.image_convert_to_png(
+      File.binread(file.path),
+      font_path: DEFAULT_SVG_FONT_PATH,
+      reject_blank: true,
+    )
+    temp_png_file = Tempfile.new(["output", ".png"])
 
     begin
-      MiniMagick::Tool::Convert.new do |convert|
-        convert.background("none")
-        convert << file.path
-        convert << temp_png_file.path
-      end
+      temp_png_file.binmode
+      temp_png_file.write(png_bytes)
+      temp_png_file.flush
 
-      # https://github.com/minimagick/minimagick/issues/332
       file.instance_variable_set(:@file, temp_png_file)
       file.instance_variable_set(:@content_type, "image/png")
     ensure
       temp_png_file.close
     end
+  rescue ArgumentError
+    raise CarrierWave::ProcessingError, I18n.t(:"errors.messages.processing_error")
   end
 
   version :resized_logo do

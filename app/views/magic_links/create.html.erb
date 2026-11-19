@@ -29,26 +29,30 @@
       
       <%# Simple JS to construct the correct GET URL path %>
       <script>
-        const form = document.getElementById('code-entry-form');
-        const codeInput = document.getElementById('email-code');
-        // Store the base action URL (without the placeholder)
-        const baseUrl = form.action.replace('/show_placeholder', ''); 
+        (function() {
+          const form = document.getElementById('code-entry-form');
+          const codeInput = document.getElementById('email-code');
+          if (!form || !codeInput || form.dataset.initialized === 'true') return;
+          form.dataset.initialized = 'true';
+          // Store the base action URL (without the placeholder)
+          const baseUrl = form.action.replace('/show_placeholder', '');
 
-        form.addEventListener('submit', function(event) {
-          // Prevent the default form submission
-          event.preventDefault(); 
-          
-          const code = codeInput.value.trim();
-          if (code) {
-            // Construct the final URL: /magic_links/:code
-            const finalUrl = `${baseUrl}/${encodeURIComponent(code)}`;
-            // Redirect the browser to the 'show' action URL
-            window.location.href = finalUrl; 
-          } else {
-            // Optional: Add some user feedback if the code is empty
-            alert('Please enter the code from your email.'); 
-          }
-        });
+          form.addEventListener('submit', function(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            const code = codeInput.value.trim();
+            if (code) {
+              // Construct the final URL: /magic_links/:code
+              const finalUrl = `${baseUrl}/${encodeURIComponent(code)}`;
+              // Redirect the browser to the 'show' action URL
+              window.location.href = finalUrl;
+            } else {
+              // Optional: Add some user feedback if the code is empty
+              alert('Please enter the code from your email.');
+            }
+          });
+        })();
       </script>
 
     </div>

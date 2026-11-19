@@ -9,7 +9,7 @@ module Organizations
       return unless organization
       return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
 
-      organization.pages.find_each do |page|
+      organization.pages.non_embed_html.find_each do |page|
         begin
           page.recompile!
         rescue StandardError => e

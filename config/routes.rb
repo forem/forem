@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     post "email_clicks", to: "email_clicks#create"
   end
 
+  get "/up", to: "rails/health#show", as: :rails_health_check
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
   get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
@@ -83,6 +84,8 @@ Rails.application.routes.draw do
 
         get "/users/search", to: "users#search"
 
+        resources :related_articles, only: :index
+
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
@@ -131,6 +134,7 @@ Rails.application.routes.draw do
         end
 
         resources :organizations, only: %i[index create update destroy]
+        get "/organizations/:organization_id/article_analytics", to: "organization_article_analytics#index"
 
         scope("/users/:id") do
           constraints(role: /suspend|suspended|limited|spam|trusted|base_subscriber/) do
@@ -208,8 +212,14 @@ Rails.application.routes.draw do
       patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :events, only: %i[index]
+    get "/meetups", to: "events#meetups", as: :meetups
+    get "/conferences", to: "events#conferences", as: :conferences
     get "/calendar", to: "calendar#index"
     get "events/:event_name_slug/:event_variation_slug", to: "events#show", as: :event
+    get "events/:event_name_slug/:event_variation_slug/p/:page_suffix", to: "events#show", as: :event_custom_page
+    get "events/:event_name_slug/:event_variation_slug/embed/:slug_suffix",
+        to: "organization_embeds#show",
+        as: :event_embed_page
     get "events/:event_name_slug/:event_variation_slug/signup_status", to: "event_signups#status",
                                                                        as: :event_signup_status
     post "events/:event_name_slug/:event_variation_slug/signup", to: "event_signups#create", as: :event_signup
@@ -270,6 +280,12 @@ Rails.application.routes.draw do
     resources :notifications, only: [:index]
     resources :co_author_invitations, only: [] do
       get :candidates, on: :collection, defaults: { format: :json }
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
+    resources :organization_invitations, only: [] do
       member do
         patch :accept
         patch :decline
@@ -567,6 +583,13 @@ Rails.application.routes.draw do
     get "dashboard/hidden_tags", to: "dashboards#hidden_tags"
     get "dashboard/feed_imports", to: "dashboards#feed_imports"
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
+    scope "/dashboard", as: :dashboard do
+      resources :embed_pages, controller: "user_embed_pages", only: %i[index new create edit update destroy] do
+        collection do
+          post :preview
+        end
+      end
+    end
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",
                                      constraints: {
@@ -587,7 +610,17 @@ Rails.application.routes.draw do
       post "dev_tools/sign_in_as", to: "dev_tools#sign_in_as"
     end
 
+    article_subpaths = %w[
+      comments moderate admin mod actions_panel manage edit
+      delete_confirm discussion_lock_confirm discussion_unlock_confirm stats
+    ].freeze
+    embed_route_constraint = lambda do |req|
+      req.GET["mode"] == "embed" || article_subpaths.exclude?(req.path_parameters[:slug_suffix])
+    end
     get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"
+    get "/:org_slug/embed/:slug_suffix", to: "organization_embeds#show",
+                                         as: :organization_embed_page,
+                                         constraints: embed_route_constraint
 
     # serviceworkers
     get "/serviceworker", to: "service_worker#index"

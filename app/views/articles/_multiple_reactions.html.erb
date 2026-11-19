@@ -21,16 +21,7 @@
 
   <div class="reaction-drawer" aria-expanded="false">
     <div class="reaction-drawer__container">
-      <% ReactionCategory.for_view.each do |reaction_type| %>
-        <%= render partial: "articles/multireaction_button",
-                   locals: {
-                     category: reaction_type.slug.to_sym,
-                     description: reaction_type.name,
-                     image_path: "#{reaction_type.icon}.svg",
-                     image_active_path: "#{reaction_type.icon}.svg",
-                     aria_label: reaction_type.name
-                   } %>
-      <% end %>
+      <%= render partial: "articles/multireaction_button", collection: ReactionCategory.for_view, as: :reaction_type %>
     </div>
   </div>
 </div>

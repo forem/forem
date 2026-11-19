@@ -458,12 +458,13 @@ RSpec.describe Organization do
     context "when a new user is added to the organization" do
       let(:user) { create(:user, :without_profile, profile_image: nil) }
 
-      it "calls BustCachePathWorker after creating an organization membership" do
-        org_membership = OrganizationMembership.create(user: user, organization: organization, type_of_user: "admin")
+      it "enqueues EdgeCache::PurgeByKeyWorker with the organization record_key and path" do
+        allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_async)
 
-        allow(org_membership).to receive(:bust_cache)
-        org_membership.save
-        expect(org_membership).to have_received(:bust_cache)
+        OrganizationMembership.create!(user: user, organization: organization, type_of_user: "admin")
+
+        expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async)
+          .with(organization.record_key, organization.path.to_s)
       end
     end
   end

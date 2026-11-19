@@ -22,7 +22,7 @@ module Admin
       end
 
       def bust_agent_guidance_cache
-        EdgeCache::Bust.call("/llms.txt")
+        EdgeCache::PurgeByKey.call("llms_page", fallback_paths: "/llms.txt")
       end
 
       # Override this method if you need to call a custom class for upserting.

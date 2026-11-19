@@ -31,15 +31,19 @@
         </div>
         <% end %>
       <script>
-        const deleteAccountBtn = document.getElementById('delete__account__btn');
-        const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
-        const deleteAccountVerificationInput = document.getElementById('delete__account__verification__field');
-        function bothInputsVerified() {
-          return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAccountVerificationInput.value === "<%= t("views.settings.destroy.word") %>";
-        }
-        const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
-        deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
-        deleteAccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
+        (function() {
+          const deleteAccountBtn = document.getElementById('delete__account__btn');
+          const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
+          const deleteAccountVerificationInput = document.getElementById('delete__account__verification__field');
+          if (!deleteAccountBtn || !deleteAccountUsernameInput || !deleteAccountVerificationInput || deleteAccountBtn.dataset.initialized === 'true') return;
+          deleteAccountBtn.dataset.initialized = 'true';
+          function bothInputsVerified() {
+            return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAccountVerificationInput.value === "<%= t("views.settings.destroy.word") %>";
+          }
+          const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
+          deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
+          deleteAccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
+        })();
       </script>
       <p>
         <%= t("views.settings.destroy.ghost_html", ghost: link_to("@ghost", "/ghost"), click: contact_link(text: t("views.settings.destroy.click"), additional_info: { subject: "Request Account Deletion", body: @email_body })) %>

@@ -16,7 +16,12 @@ en:
       is_too_long: is too long.
       invalid_date: must be entered in DD/MM/YYYY format with current or past date
       series_unpermitted: must be one you have permission to post to
+      event_not_found: must reference an existing event
+      event_articles_disabled: does not allow tagged articles
+      event_not_accepting_articles: can only be tagged while the event is live
       invalid_coauthor: must be valid user IDs
+      invalid_hidden_billboard_locations: must be an array of valid post billboard locations
+      invalid_hidden_billboard_locations_list: 'contains invalid billboard locations: %{locations}'
       same_author: must not be the same user as the author
       must_not_have_spaces: must not have spaces
       published: Published
@@ -81,6 +86,8 @@ en:
       too_many:
         one: You can invite up to %{count} co-author.
         other: You can invite up to %{count} co-authors.
+    event:
+      owned_page_slug_taken: Conflicts with an existing page slug
     feedback_message:
       reported: '(you) previously reported this URL.'
     github_issue:
@@ -113,7 +120,20 @@ en:
     lead_submission:
       already_submitted: You have already submitted this form.
     page:
+      navigation_organization_only: "can only be turned off for organization pages"
+      navigation_showcase_required: "must stay on for the Showcase page"
       body_must_exist: must exist if body_html or body_json doesn't exist.
+      embed_html_invalid_slug: must use the embed path format (<owner>/embed/<slug>).
+      embed_html_requires_organization: must belong to an organization or user for embed_html pages.
+      embed_html_template_immutable: cannot be converted to or from embed_html.
+      embed_html_too_complex: exceeds safe HTML nesting depth or element count limits.
+      embed_html_too_large: cannot exceed %{max_kb} KB.
+      event_page_invalid_slug: must use the event page path format (%{prefix}<slug>).
+      multiple_owners_not_allowed: Page can belong to only one owner (organization, user, or event).
+      slug_blank: can't be blank
+      organization_embed_pages_limit_reached: This organization has reached the maximum of %{max} embedded pages.
+      user_embed_pages_limit_reached: You have reached the maximum of %{max} embedded pages.
+      user_page_must_be_embed_html: must be embed_html for user-owned pages.
       redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).
       redirect_to_url_invalid_path: is not a recognized path in this application.
     podcast_episode_appearance:

@@ -25,7 +25,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       E2E: true
 
@@ -37,14 +37,38 @@ jobs:
             /*
             !vendor/cache/*.gem
           sparse-checkout-cone-mode: false
-      - name: Prepare workspace and ImageMagick package
+      - name: Read build metadata
         id: prep
         run: |
           echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
           echo "lockfile_hash=$(sha256sum Gemfile.lock | awk '{print $1}')" >> "$GITHUB_OUTPUT"
           echo "os_version=$(. /etc/os-release && echo "$VERSION_ID")" >> "$GITHUB_OUTPUT"
+      - name: Cache APT packages for RSpec shards
+        uses: actions/cache@v5
+        with:
+          path: .ci-debs
+          key: ci-debs-ubuntu-${{ steps.prep.outputs.os_version }}-v2
+      - name: Prepare workspace and APT packages
+        run: |
           mkdir -p .ci-debs
-          (cd .ci-debs && apt-get download imagemagick-6.q16 2>/dev/null || true)
+          rm -f .ci-debs/imagemagick*
+          if ! compgen -G ".ci-debs/redis-server_*.deb" >/dev/null; then
+            if ! timeout 4 curl -fsSI http://azure.archive.ubuntu.com/ubuntu/dists/noble/InRelease >/dev/null 2>&1; then
+              printf '%s\n' \
+                'https://mirrors.edge.kernel.org/ubuntu/	priority:1' \
+                'https://mirrors.ocf.berkeley.edu/ubuntu/	priority:2' \
+                'https://mirrors.mit.edu/ubuntu/	priority:3' \
+                | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+              grep -rlE '(azure\.)?archive\.ubuntu\.com|security\.ubuntu\.com' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null \
+                | xargs -r sudo sed -i -E 's#https?://((azure\.)?archive|security)\.ubuntu\.com/ubuntu/?#https://mirrors.edge.kernel.org/ubuntu/#g'
+            fi
+            APT_OPTS=(-o Acquire::Retries=2 -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10)
+            (
+              cd .ci-debs
+              apt-get "${APT_OPTS[@]}" download redis-server redis-tools libjemalloc2 liblzf1 2>/dev/null \
+                || (sudo apt-get "${APT_OPTS[@]}" update && apt-get "${APT_OPTS[@]}" download redis-server redis-tools libjemalloc2 liblzf1)
+            ) || true
+          fi
           tar --exclude='./.git' \
               --exclude='./vendor/bundle' \
               --exclude='./vendor/cache/*.gem' \
@@ -111,7 +135,7 @@ jobs:
         if: steps.assetscache-lookup.outputs.cache-hit != 'true'
 
   rspec:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     timeout-minutes: 20
     env:
@@ -148,18 +172,15 @@ jobs:
         with:
           name: ci-workspace-${{ github.run_id }}
           path: /tmp
-      - name: Extract workspace and install ImageMagick
+      - name: Extract workspace and pre-downloaded APT packages
         run: |
           tar --use-compress-program=unzstd -xf /tmp/workspace.tar.zst -C "$GITHUB_WORKSPACE"
           rm -f /tmp/workspace.tar.zst
-          if compgen -G ".ci-debs/imagemagick-6.q16_*.deb" >/dev/null; then
-            sudo dpkg-deb -x .ci-debs/imagemagick-6.q16_*.deb /
-            for bin in /usr/bin/*-im6.q16; do
-              [ -e "$bin" ] || continue
-              base="${bin%-im6.q16}"
-              sudo ln -sf "$bin" "$base"
-              sudo ln -sf "$bin" "${base}-im6"
+          if compgen -G ".ci-debs/*.deb" >/dev/null; then
+            for deb in .ci-debs/*.deb; do
+              sudo dpkg-deb -x "$deb" /
             done
+            sudo ldconfig
           fi
           rm -rf .ci-debs
           cp .env_sample .env
@@ -180,12 +201,22 @@ jobs:
 
       - name: Wait for services
         run: |
+          ensure_ubuntu_mirrors() {
+            if ! timeout 4 curl -fsSI http://azure.archive.ubuntu.com/ubuntu/dists/noble/InRelease >/dev/null 2>&1; then
+              printf '%s\n' \
+                'https://mirrors.edge.kernel.org/ubuntu/	priority:1' \
+                'https://mirrors.ocf.berkeley.edu/ubuntu/	priority:2' \
+                'https://mirrors.mit.edu/ubuntu/	priority:3' \
+                | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+              grep -rlE '(azure\.)?archive\.ubuntu\.com|security\.ubuntu\.com' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null \
+                | xargs -r sudo sed -i -E 's#https?://((azure\.)?archive|security)\.ubuntu\.com/ubuntu/?#https://mirrors.edge.kernel.org/ubuntu/#g'
+            fi
+          }
+          APT_OPTS=(-o Acquire::Retries=2 -o Acquire::http::Timeout=10 -o Acquire::https::Timeout=10)
           # Local-cache integration specs start isolated Unix-socket servers.
-          if ! command -v redis-server >/dev/null 2>&1; then
-            sudo apt-get update && sudo apt-get install -y --no-install-recommends redis-server
-          fi
-          if ! identify -version >/dev/null 2>&1; then
-            sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)
+          if ! redis-server --version >/dev/null 2>&1; then
+            ensure_ubuntu_mirrors
+            sudo apt-get "${APT_OPTS[@]}" update && sudo apt-get "${APT_OPTS[@]}" install -y --no-install-recommends redis-server
           fi
 
           echo "Waiting for Postgres..."

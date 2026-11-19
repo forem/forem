@@ -248,6 +248,28 @@
           </label>
         </div>
       </div>
+      <% if local_assigns[:show_on_individual_article_only] %>
+        <fieldset class="crayons-field">
+          <legend class="crayons-field__label pl-0">
+            <%= t("views.moderations.article.hide_billboard_locations") %>
+          </legend>
+          <%= hidden_field_tag "article[hidden_billboard_locations][]", "", id: nil %>
+          <div class="grid grid-cols-1 m:grid-cols-2 gap-2 mt-2">
+            <% post_billboard_placement_area_options.each do |label, location| %>
+              <div class="crayons-field crayons-field--checkbox">
+                <%= check_box_tag "article[hidden_billboard_locations][]",
+                                  location,
+                                  article.billboard_location_hidden?(location),
+                                  id: "hidden_billboard_locations_#{article.id}_#{location}",
+                                  class: "crayons-checkbox" %>
+                <%= label_tag "hidden_billboard_locations_#{article.id}_#{location}",
+                              label,
+                              class: "crayons-field__label" %>
+              </div>
+            <% end %>
+          </div>
+        </fieldset>
+      <% end %>
       <div>
         <button class="c-btn c-btn--secondary"><%= t("views.moderations.article.save") %></button>
       </div>

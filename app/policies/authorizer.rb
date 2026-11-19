@@ -60,6 +60,19 @@ module Authorizer
       has_any_role?(*ANY_ADMIN_ROLES)
     end
 
+    # @see SubPermissions
+    def sub_permission?(resource:, clause:)
+      resource_type = SubPermissions.resource_type_for(resource)
+      unless SubPermissions.clauses_for(resource_type).include?(clause.to_s)
+        raise ArgumentError, "unknown #{resource_type} sub-permission: #{clause}"
+      end
+      return true if any_admin?
+
+      SubPermissions.grants_for(user: user, resource: resource).any? do |unrestricted, sub_permissions|
+        unrestricted || SubPermissions::Config.new(sub_permissions, resource_type: resource_type).allows?(clause)
+      end
+    end
+
     def auditable?
       trusted? || tag_moderator? || any_admin?
     end

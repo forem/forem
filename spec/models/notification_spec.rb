@@ -150,13 +150,13 @@ RSpec.describe Notification do
     context "when a user unfollows another user" do
       it "destroys the follow notification" do
         # first we follow the user
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NewFollowerWorker) do
           described_class.send_new_follower_notification(user_follows_user2)
         end
 
         # then we stop following them
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewFollowerWorker) do
             user_stops_following_user2 = user.stop_following(user2)
             described_class.send_new_follower_notification(user_stops_following_user2)
           end
@@ -243,7 +243,7 @@ RSpec.describe Notification do
         reaction = create(:reaction, reactable: comment, user: user)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.to change(comment.user.notifications, :count).by(1)
@@ -253,7 +253,7 @@ RSpec.describe Notification do
         reaction = create(:reaction, reactable: article, user: user2)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.to change(article.user.notifications, :count).by(1)
@@ -265,7 +265,7 @@ RSpec.describe Notification do
         user4.destroy
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.not_to change(article.user.notifications, :count)
@@ -301,7 +301,7 @@ RSpec.describe Notification do
         reaction = create(:reaction, user: user2, reactable: article, category: "like")
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.to change(user.notifications, :count).by(1)
@@ -309,7 +309,7 @@ RSpec.describe Notification do
         reaction.destroy!
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.to change(user.notifications, :count).by(-1)
@@ -356,7 +356,7 @@ RSpec.describe Notification do
         reaction = create(:reaction, reactable: article, user: user2, category: "like")
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.to change(article.notifications, :count).by(1)
@@ -367,7 +367,7 @@ RSpec.describe Notification do
         reaction = create(:reaction, reactable: article, user: user2, category: "vomit")
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NewReactionWorker) do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
         end.not_to change(article.notifications, :count)
@@ -393,7 +393,7 @@ RSpec.describe Notification do
         user3.follow(user)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             described_class.send_to_mentioned_users_and_followers(article) unless status_article?(article)
           end
         end.to change(user2.notifications, :count).from(0).to(1)
@@ -405,7 +405,7 @@ RSpec.describe Notification do
       it "does not send a notification to mentioned user if article is of type status" do
         article.update_column(:type_of, "status")
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             described_class.send_to_mentioned_users_and_followers(article) unless status_article?(article)
           end
         end.not_to change(user2.notifications, :count)
@@ -420,7 +420,7 @@ RSpec.describe Notification do
         user2.follow(user)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             described_class.send_to_followers(article, "Published") unless status_article?(article)
           end
         end.to change(user2.notifications, :count).by(1)
@@ -431,7 +431,7 @@ RSpec.describe Notification do
         user2.follow(user)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             described_class.send_to_followers(article, "Published") unless status_article?(article)
           end
         end.not_to change(user2.notifications, :count)
@@ -447,7 +447,7 @@ RSpec.describe Notification do
         user3.follow(organization)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             described_class.send_to_followers(org_article, "Published") unless status_article?(org_article)
           end
         end.to change(user2.notifications, :count).by(1)
@@ -460,7 +460,7 @@ RSpec.describe Notification do
         user3.follow(organization)
 
         expect do
-          sidekiq_perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             described_class.send_to_followers(org_article, "Published") unless status_article?(org_article)
           end
         end.to not_change(user2.notifications, :count)
@@ -473,7 +473,9 @@ RSpec.describe Notification do
     context "when there are article notifications to update" do
       before do
         user2.follow(user)
-        sidekiq_perform_enqueued_jobs { described_class.send_to_followers(article, "Published") }
+        sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
+          described_class.send_to_followers(article, "Published")
+        end
       end
 
       it "updates the notification with the new article title" do
@@ -482,7 +484,7 @@ RSpec.describe Notification do
         article.update(title: new_title, body_markdown: new_body_markdown)
         described_class.update_notifications(article, "Published")
 
-        sidekiq_perform_enqueued_jobs
+        sidekiq_perform_enqueued_jobs(only: Notifications::UpdateWorker)
 
         expected_notification_article_title = user2.notifications.last.json_data["article"]["title"]
         expect(expected_notification_article_title).to eq(new_title)
@@ -492,7 +494,7 @@ RSpec.describe Notification do
         article.update(organization_id: organization.id)
         described_class.update_notifications(article, "Published")
 
-        sidekiq_perform_enqueued_jobs
+        sidekiq_perform_enqueued_jobs(only: Notifications::UpdateWorker)
 
         expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
         expect(expected_notification_organization_id).to eq(organization.id)
@@ -500,13 +502,15 @@ RSpec.describe Notification do
 
       it "updates CoAuthor notifications with the new article title" do
         article.update(co_author_ids: [user3.id])
-        sidekiq_perform_enqueued_jobs { described_class.send_to_co_authors(article) }
+        sidekiq_perform_enqueued_jobs(only: Notifications::CoAuthorWorker) do
+          described_class.send_to_co_authors(article)
+        end
 
         new_title = "Brand New Co-Authored Title"
         new_body_markdown = article.body_markdown.gsub(article.title, new_title)
         article.update(title: new_title, body_markdown: new_body_markdown)
         described_class.update_notifications(article, %w[Published CoAuthor])
-        sidekiq_perform_enqueued_jobs
+        sidekiq_perform_enqueued_jobs(only: Notifications::UpdateWorker)
 
         co_author_notification = user3.notifications.find_by(action: "CoAuthor")
         expect(co_author_notification.json_data["article"]["title"]).to eq(new_title)
@@ -547,7 +551,7 @@ RSpec.describe Notification do
       create(:notification, user: mention.user, organization: nil, notifiable: mention)
 
       expect do
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::RemoveAllWorker) do
           described_class.remove_all(notifiable_ids: mention.id, notifiable_type: "Mention")
         end
       end.to change(user.notifications, :count).by(-1)

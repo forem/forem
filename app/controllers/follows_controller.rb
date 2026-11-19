@@ -15,23 +15,27 @@ class FollowsController < ApplicationController
     skip_authorization
     user_id = session_or_remembered_user_id(validate_salt: false)
     request.session_options[:skip] = true unless remembered_user_restored?
-    viewer = load_show_viewer(user_id)
+    render(plain: "not-logged-in") && return unless user_id
+
+    target_id = params[:id].to_i
+    is_user_type = params[:followable_type] == "User"
+    viewer, users_by_id = load_bulk_show_users(user_id, [target_id], is_user_type)
     render(plain: "not-logged-in") && return unless viewer
 
-    if viewer.id == params[:id].to_i && params[:followable_type] == "User"
+    if viewer.id == target_id && is_user_type
       render plain: "self"
       return
     end
 
-    unless params[:followable_type] == "User"
+    unless is_user_type
       render plain: Follows::CheckCached.call(viewer, params[:followable_type], params[:id])
       return
     end
 
     # Follows::CheckCached only needs the follower's id and updated_at (for its cache key).
-    # Load the target user once and batch both directional checks so cache misses don't
-    # re-query User.select(:id).find(...) for either user or run two follows queries.
-    followed_back_user = User.select(:id, :updated_at).find(params[:id])
+    # Reuse the target user loaded alongside the viewer and batch both directional checks
+    # so cache misses don't re-query User.select(:id).find(...) or run two follows queries.
+    followed_back_user = users_by_id[target_id] || User.select(:id, :updated_at).find(params[:id])
     checks = [[viewer, "User", followed_back_user.id], [followed_back_user, "User", viewer.id]]
     cached = Follows::CheckCached.read_multi(checks)
     cached = Follows::CheckCached.fill_user_misses(checks, cached, [viewer.id, followed_back_user.id])
@@ -165,13 +169,20 @@ class FollowsController < ApplicationController
     end
   end
 
+  # Batch-reads and fills cached forward (and User-to-User reverse) follow flags for +ids+.
   def compute_bulk_follow_flags(viewer, users_by_id, ids, is_user_type)
     followable_type = params[:followable_type]
-    checks = ids.flat_map do |id|
-      [[viewer, followable_type, id], [users_by_id[id], followable_type, viewer.id]]
-    end
+    checks = if is_user_type
+               ids.flat_map { |id| [[viewer, followable_type, id], [users_by_id[id], followable_type, viewer.id]] }
+             else
+               ids.map { |id| [viewer, followable_type, id] }
+             end
     cached = Follows::CheckCached.read_multi(checks)
-    cached = Follows::CheckCached.fill_user_misses(checks, cached, users_by_id.keys) if is_user_type
+    cached = if is_user_type
+               Follows::CheckCached.fill_user_misses(checks, cached, users_by_id.keys)
+             else
+               Follows::CheckCached.fill_followable_misses(viewer, followable_type, ids, cached)
+             end
 
     forward_flags = Array.new(ids.size, false)
     reverse_flags = is_user_type ? Array.new(ids.size, false) : []

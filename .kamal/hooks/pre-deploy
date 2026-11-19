@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pre-deploy safety checks for Forem Kamal deployments.
+# Skip with `KAMAL_SKIP_SECRET_CHECK=true` or `kamal deploy --skip-hooks`.
+
+if [[ "${KAMAL_COMMAND:-}" == "rollback" ]] || [[ "${KAMAL_SKIP_SECRET_CHECK:-false}" == "true" ]]; then
+  exit 0
+fi
+
+missing=()
+
+if [[ -z "${SECRET_KEY_BASE:-}" ]]; then
+  missing+=("SECRET_KEY_BASE (generate with: openssl rand -hex 64)")
+fi
+
+if [[ -z "${DATABASE_URL:-}" ]]; then
+  missing+=("DATABASE_URL (or set POSTGRES_PASSWORD when using the local postgres accessory)")
+fi
+
+dest="${KAMAL_DESTINATION:-}"
+use_accessories="${KAMAL_ACCESSORIES:-}"
+if [[ -z "${use_accessories}" ]]; then
+  if [[ "${dest}" == "managed" || "${dest}" == "cluster" ]]; then
+    use_accessories="false"
+  else
+    use_accessories="true"
+  fi
+fi
+
+if [[ "${use_accessories}" == "true" && -z "${POSTGRES_PASSWORD:-}" ]]; then
+  missing+=("POSTGRES_PASSWORD (required to initialize the local postgres accessory)")
+fi
+
+if [[ "${dest}" == "managed" || "${dest}" == "cluster" || "${KAMAL_EXTERNAL_REDIS:-false}" == "true" ]]; then
+  if [[ -z "${REDIS_URL:-}" ]]; then
+    missing+=("REDIS_URL (required when external/managed Redis is used)")
+  fi
+fi
+
+if [[ ${#missing[@]} -gt 0 ]]; then
+  echo "ERROR: Missing required Kamal deployment secrets:" >&2
+  for item in "${missing[@]}"; do
+    echo "  - ${item}" >&2
+  done
+  echo "" >&2
+  echo "Load your .env.kamal file (e.g. 'set -a && source .env.kamal && set +a') or configure .kamal/secrets." >&2
+  exit 1
+fi

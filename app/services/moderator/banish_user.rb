@@ -48,7 +48,7 @@ module Moderator
       end
       user.update_columns(name: new_name, username: new_username, old_username: user.username,
                           profile_updated_at: Time.current)
-      EdgeCache::Bust.call("/#{user.old_username}")
+      EdgeCache::BustUser.call(user)
     end
 
     def remove_profile_info

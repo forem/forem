@@ -74,10 +74,11 @@ RSpec.describe "AsyncInfo" do
   end
 
   describe "GET /async_info/navigation_links" do
-    it "returns html" do
+    it "returns html and sets the navigation_links surrogate key", :aggregate_failures do
       get "/async_info/navigation_links"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("<div")
+      expect(response.headers["Surrogate-Key"].split).to include("navigation_links")
     end
 
     it "includes the hamburger create account tracking element only when signed out", :aggregate_failures do

@@ -251,7 +251,7 @@ module Api
 
         page_start = (page - 1) * per_page
         page_end = page * per_page
-        use_jev_shortlist = page_start < JEV_SHORTLIST_SIZE && Ai::FunctionConfig.jev?(:semantic_search_reranking)
+        use_jev_shortlist = page_start < JEV_SHORTLIST_SIZE && Ai::FunctionConfig.decision?(:semantic_search_reranking)
         ids_to_hydrate = if use_jev_shortlist
                            sorted_ids.first([JEV_SHORTLIST_SIZE, page_end].max)
                          else

@@ -125,9 +125,11 @@ function maybeInitializeMediaPlayback() {
 queuedBillboardPlacementReveals.forEach(revealBillboardPlacement);
 
 if (document.location.pathname.startsWith('/dashboard')) {
-  import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
-    initializeDashboardSort();
-  });
+  import('./initializers/initializeDashboardSort').then(
+    ({ initializeDashboardSort }) => {
+      initializeDashboardSort();
+    },
+  );
 }
 
 maybeInitializeMediaPlayback();
@@ -135,11 +137,26 @@ maybeLoadEventSignupButtons();
 document.ready.then(() => {
   initializeSlides();
 });
+function updateSearchPlaceholder() {
+  const searchElement = document.getElementById('search-input');
+  if (!searchElement) {
+    return;
+  }
+  const articleContainer = document.getElementById('article-show-container');
+  if (articleContainer?.dataset?.articleId) {
+    searchElement.placeholder = 'Find related posts...';
+  } else {
+    searchElement.placeholder = 'Search...';
+  }
+}
+
 InstantClick.on('change', () => {
   if (document.location.pathname.startsWith('/dashboard')) {
-    import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
-      initializeDashboardSort();
-    });
+    import('./initializers/initializeDashboardSort').then(
+      ({ initializeDashboardSort }) => {
+        initializeDashboardSort();
+      },
+    );
   }
 
   maybeInitializeMediaPlayback();
@@ -151,14 +168,10 @@ InstantClick.on('change', () => {
     window.instgrm.Embeds.process();
   }
 
-  const searchElement = document.getElementById('search-input');
-  const articleContainer = document.getElementById('article-show-container');
-  if (searchElement && articleContainer?.dataset?.articleId) {
-    searchElement.placeholder = 'Find related posts...';
-  } else {
-    searchElement.placeholder = 'Search...';
-  }
+  updateSearchPlaceholder();
 });
+
+InstantClick.on('restore', updateSearchPlaceholder);
 
 // Initialize data-runtime context to the body data-attribute
 document.body.dataset.runtime = window.Forem.Runtime.currentContext();
@@ -175,7 +188,11 @@ function getPageEntries() {
  * Initializes the left hand side hamburger menu
  */
 function initializeNav() {
-  const { currentPage } = document.getElementById('page-content').dataset;
+  const pageContent = document.getElementById('page-content');
+  if (!pageContent) {
+    return;
+  }
+  const { currentPage } = pageContent.dataset;
   const menuTriggers = [
     ...document.querySelectorAll('.js-hamburger-trigger, .hamburger a'),
   ];
@@ -216,6 +233,9 @@ waitOnBaseData()
     InstantClick.on('change', () => {
       initializeNav();
     });
+    InstantClick.on('restore', () => {
+      initializeNav();
+    });
 
     if (Runtime.currentMedium() === 'ForemWebView') {
       // Dynamic import of the namespace
@@ -244,14 +264,16 @@ document.ready.then(() => {
   )[0];
   hamburgerTrigger.addEventListener('click', getNavigation);
 
-
   // Dynamically load Search.js on hover or keyboard focus of #search-input.
   const searchInput = document.querySelector('#search-input');
   const searchScriptMeta = document.querySelector('meta[name="search-script"]');
   if (searchInput && searchScriptMeta) {
     const ensureSearchScriptLoaded = () => {
       const scriptPath = searchScriptMeta.getAttribute('content');
-      if (scriptPath && !document.querySelector(`script[src="${scriptPath}"]`)) {
+      if (
+        scriptPath &&
+        !document.querySelector(`script[src="${scriptPath}"]`)
+      ) {
         const script = document.createElement('script');
         script.src = scriptPath;
         script.defer = true;

@@ -162,6 +162,14 @@ RSpec.describe Reaction do
       expect(described_class.public_category.where_values_hash["category"])
         .not_to include("readinglist")
     end
+
+    it "covers reactable category aggregations with a composite index" do
+      index = ActiveRecord::Base.connection.indexes(:reactions).detect do |idx|
+        idx.columns == %w[reactable_id reactable_type category] && idx.using == :btree && idx.valid? && idx.where.nil?
+      end
+
+      expect(index).to be_present
+    end
   end
 
   context "when callbacks are called after create" do

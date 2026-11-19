@@ -1,78 +1,266 @@
+<%
+  destination = ENV["KAMAL_DESTINATION"].to_s
+  service_name = ENV.fetch("KAMAL_SERVICE", "forem")
+
+  raw_web_hosts = ENV["KAMAL_WEB_HOSTS"].presence || ENV["KAMAL_WEB_IP"].presence || ENV["KAMAL_HOST"].presence || "192.168.0.1"
+  web_hosts = raw_web_hosts.split(",").map(&:strip).reject(&:empty?)
+
+  raw_job_hosts = ENV["KAMAL_JOB_HOSTS"].presence || ENV["KAMAL_JOB_IP"].presence || ENV["KAMAL_HOST"].presence || web_hosts.first
+  job_hosts = raw_job_hosts.split(",").map(&:strip).reject(&:empty?)
+
+  use_accessories = ENV.fetch("KAMAL_ACCESSORIES", %w[managed cluster].include?(destination) ? "false" : "true") == "true"
+  external_redis = !use_accessories || ENV["KAMAL_EXTERNAL_REDIS"] == "true"
+  local_uploads = ENV.fetch(
+    "KAMAL_LOCAL_UPLOADS",
+    (%w[managed cluster].include?(destination) || ENV["AWS_ID"].present? || ENV["FILE_STORAGE_LOCATION"] == "fog") ? "false" : "true"
+  ) == "true"
+  uploads_volume = [service_name, destination.presence, "uploads"].compact.join("_")
+
+  registry_server = ENV.fetch("KAMAL_REGISTRY_SERVER", "localhost:5555")
+  local_registry = registry_server.start_with?("localhost")
+
+  proxy_ssl = ENV.fetch("KAMAL_PROXY_SSL", %w[cluster edge staging].include?(destination) ? "false" : "true") == "true"
+  raw_proxy_hosts = ENV["KAMAL_PROXY_HOSTS"].presence || ENV["APP_DOMAIN"].presence
+
+  db_host = ENV["KAMAL_DB_IP"].presence || ENV["KAMAL_HOST"].presence || web_hosts.first
+  redis_host = ENV["KAMAL_REDIS_IP"].presence || ENV["KAMAL_HOST"].presence || web_hosts.first
+
+  optional_clear_vars = %w[
+    FILE_STORAGE_LOCATION
+    AWS_BUCKET_NAME
+    AWS_UPLOAD_REGION
+    AWS_DEFAULT_REGION
+    AWS_ENDPOINT
+    AWS_PATH_STYLE
+    CARRIERWAVE_ASSET_HOST
+    AWS_AGENT_SESSIONS_BUCKET_NAME
+    FASTLY_CDN_URL
+    FASTLY_SERVICE_ID
+    TRUST_X_FORWARDED_HOST
+    LOCAL_REDIS_URL
+    COMMUNITY_NAME
+    PG_SCHEMA_SEARCH_PATH
+    PG_PREPARED_STATEMENTS
+    RAILS_ADVISORY_LOCKS
+    SMTP_ADDRESS
+    SMTP_PORT
+    SMTP_AUTHENTICATION
+    SMTP_DOMAIN
+    DEFAULT_EMAIL
+    SIDEKIQ_MEMORY_KILLER_MAX_RSS
+    PUMA_WORKER_SHUTDOWN_TIMEOUT
+  ]
+
+  optional_secret_vars = %w[
+    AWS_ID
+    AWS_SECRET
+    SMTP_USER_NAME
+    SMTP_PASSWORD
+    SENDGRID_API_KEY
+    FASTLY_API_KEY
+    RAILS_MASTER_KEY
+    READ_ONLY_DATABASE_URL
+    GEMINI_API_KEY
+    OPENAI_API_KEY
+    HONEYBADGER_API_KEY
+    BETTERSTACK_SOURCE_TOKEN
+    BETTER_STACK_ERRORS_DSN
+  ]
+  extra_secrets = ENV.fetch("KAMAL_EXTRA_SECRETS", "").split(",").map(&:strip).reject(&:empty?)
+  active_optional_secrets = (optional_secret_vars.select { |k| ENV[k].present? } + extra_secrets).uniq
+%>
 # Name of your application. Used to uniquely configure containers.
-service: forem
+service: <%= service_name %>
 
 # Name of the container image.
-image: forem/forem
+# Defaults to `forem` for Kamal's built-in local registry (`localhost:5555/forem`).
+# Override with KAMAL_IMAGE (e.g. `myorg/forem`) when using GHCR, DOCR, ECR, or Docker Hub.
+image: <%= ENV.fetch("KAMAL_IMAGE", "forem") %>
+
+minimum_version: 2.12.0
+
+# Allow first-boot schema setup (`db:prepare` + `forem:setup`) + Puma preload headroom.
+deploy_timeout: <%= ENV.fetch("KAMAL_DEPLOY_TIMEOUT", "120").to_i %>
+drain_timeout: <%= ENV.fetch("KAMAL_DRAIN_TIMEOUT", "30").to_i %>
+# Match Puma's 25s worker_shutdown_timeout and Sidekiq's `-t 25` graceful drain.
+stop_timeout: <%= ENV.fetch("KAMAL_STOP_TIMEOUT", "30").to_i %>
+retain_containers: <%= ENV.fetch("KAMAL_RETAIN_CONTAINERS", "5").to_i %>
 
 # Deploy to these servers.
 servers:
   web:
     hosts:
-      - <%= ENV["KAMAL_WEB_IP"] || "192.168.0.1" %>
-    cmd: bundle exec puma -C config/puma.rb
+<% web_hosts.each do |host| %>
+      - <%= host %>
+<% end %>
+    cmd: bundle exec ruby bin/web
   job:
     hosts:
-      - <%= ENV["KAMAL_JOB_IP"] || "192.168.0.1" %>
+<% job_hosts.each do |host| %>
+      - <%= host %>
+<% end %>
     cmd: bundle exec sidekiq -t 25
 
-# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
-# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
+# SSH connection settings (override for non-root deploy users, custom ports, or jump hosts).
+ssh:
+  user: <%= ENV.fetch("KAMAL_SSH_USER", "root") %>
+  port: <%= ENV.fetch("KAMAL_SSH_PORT", "22").to_s.inspect %>
+<% if ENV["KAMAL_SSH_PROXY"].present? %>
+  proxy: <%= ENV["KAMAL_SSH_PROXY"] %>
+<% end %>
+<% if ENV["KAMAL_SSH_KEY"].present? %>
+  keys:
+    - <%= ENV["KAMAL_SSH_KEY"] %>
+<% end %>
+
+# Enable SSL auto certification via Let's Encrypt and zero-downtime request draining via kamal-proxy.
+# Multi-server / behind-LB destinations (`-d cluster`, `-d edge`, `-d staging`) override this automatically.
 proxy:
-  ssl: true
-  host: example.com # Replace with your domain name
+<% if ENV["KAMAL_CUSTOM_SSL_CERT"] == "true" %>
+  ssl:
+    certificate_pem: CERTIFICATE_PEM
+    private_key_pem: PRIVATE_KEY_PEM
+<% else %>
+  ssl: <%= proxy_ssl %>
+<% end %>
+<% if proxy_ssl || (raw_proxy_hosts.present? && ENV["KAMAL_PROXY_ANY_HOST"] != "true" && destination != "staging") %>
+  hosts:
+<% (raw_proxy_hosts || "example.com").split(",").map(&:strip).reject(&:empty?).each do |host| %>
+    - <%= host %>
+<% end %>
+<% end %>
   app_port: 3000
+  forward_headers: <%= ENV.fetch("KAMAL_PROXY_FORWARD_HEADERS", "true") == "true" %>
+  response_timeout: <%= ENV.fetch("KAMAL_PROXY_RESPONSE_TIMEOUT", "30").to_i %>
+  healthcheck:
+    path: /up
+    interval: 2
+    timeout: 5
+  buffering:
+    requests: true
+    responses: true
+    max_request_body: 40_000_000
 
 # Credentials for your image host.
+# Defaults to Kamal's zero-config local registry (`localhost:5555`) tunnelled over SSH.
+# Set KAMAL_REGISTRY_SERVER (e.g. ghcr.io, registry.digitalocean.com, docker.io) to use an external registry.
 registry:
-  server: ghcr.io
-  username: your_username # Replace with your GHCR username
-  # Always use an access token rather than real password (pulled from .kamal/secrets).
+  server: <%= registry_server %>
+<% unless local_registry %>
+  username: <%= ENV.fetch("KAMAL_REGISTRY_USERNAME", "forem") %>
   password:
     - KAMAL_REGISTRY_PASSWORD
+<% end %>
 
 # Configure builder setup.
 builder:
-  arch: amd64
-  # Our Dockerfile has a multi-stage build, target "production" to get the lean final image.
+  arch:
+<% ENV.fetch("KAMAL_ARCH", "amd64").split(",").map(&:strip).reject(&:empty?).each do |arch| %>
+    - <%= arch %>
+<% end %>
+  dockerfile: Containerfile
   target: production
+<% if ENV["KAMAL_REMOTE_BUILDER"].present? %>
+  remote: <%= ENV["KAMAL_REMOTE_BUILDER"] %>
+<% end %>
+<% if ENV["KAMAL_BUILDER_LOCAL"].present? %>
+  local: <%= ENV["KAMAL_BUILDER_LOCAL"] == "true" %>
+<% end %>
+<% if ENV["KAMAL_BUILDER_CONTEXT"].present? %>
+  context: <%= ENV["KAMAL_BUILDER_CONTEXT"] %>
+<% end %>
+<% if ENV["KAMAL_BUILDER_CACHE_TYPE"].present? %>
+  cache:
+    type: <%= ENV["KAMAL_BUILDER_CACHE_TYPE"] %>
+<% if ENV["KAMAL_BUILDER_CACHE_OPTIONS"].present? %>
+    options: <%= ENV["KAMAL_BUILDER_CACHE_OPTIONS"] %>
+<% end %>
+<% end %>
+  args:
+    VCS_REF: <%= ENV.fetch("KAMAL_VERSION") { `git rev-parse --short HEAD 2>/dev/null`.strip.presence || "unspecified" } %>
 
-# Inject ENV variables into containers (secrets come from .kamal/secrets).
-env:
-  clear:
-    PORT: 3000
-    RAILS_ENV: production
-    NODE_ENV: production
-    RAILS_SERVE_STATIC_FILES: "true"
-    REDIS_URL: redis://forem-redis:6379/1
-    REDIS_SIDEKIQ_URL: redis://forem-redis:6379/3
-    REDIS_SESSIONS_URL: redis://forem-redis:6379/4
-    REDIS_RPUSH_URL: redis://forem-redis:6379/5
-  secret:
-    - RAILS_MASTER_KEY
-    - DATABASE_URL
-
-# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
-# hitting 404 on in-flight requests. Combines all files from new and old
-# version inside the asset_path.
+# Bridge fingerprinted assets, like JS and CSS, between versions to avoid 404s during rolling deploys.
 asset_path: /opt/apps/forem/public/assets
 
-# Use accessory services (secrets come from .kamal/secrets).
+<% if local_uploads %>
+# Persist local CarrierWave uploads across deploys on single-server hosts (disable when using S3/DO Spaces/R2).
+volumes:
+  - <%= uploads_volume %>:/opt/apps/forem/public/uploads
+<% end %>
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets-common and .kamal/secrets).
+env:
+  clear:
+    PORT: "3000"
+    RAILS_ENV: "production"
+    NODE_ENV: "production"
+    RAILS_SERVE_STATIC_FILES: "true"
+    RAILS_LOG_TO_STDOUT: "true"
+    LOG_LEVEL: <%= ENV.fetch("LOG_LEVEL", destination == "cluster" ? "error" : "info").to_s.inspect %>
+    APP_DOMAIN: <%= ENV.fetch("APP_DOMAIN", "example.com").to_s.inspect %>
+    APP_PROTOCOL: <%= ENV.fetch("APP_PROTOCOL", destination == "staging" && !proxy_ssl ? "http://" : "https://").to_s.inspect %>
+    FORCE_SSL_IN_RAILS: <%= ENV.fetch("FORCE_SSL_IN_RAILS", destination == "staging" && !proxy_ssl ? "false" : "true").to_s.inspect %>
+    RAILS_ASSUME_SSL: <%= ENV.fetch("RAILS_ASSUME_SSL", destination == "staging" && !proxy_ssl ? "false" : "true").to_s.inspect %>
+    AUTO_PREPARE_DB: <%= ENV.fetch("AUTO_PREPARE_DB", destination == "cluster" ? "false" : "true").to_s.inspect %>
+    WEB_CONCURRENCY: <%= ENV.fetch("WEB_CONCURRENCY", "2").to_s.inspect %>
+    RAILS_MAX_THREADS: <%= ENV.fetch("RAILS_MAX_THREADS", "5").to_s.inspect %>
+    SIDEKIQ_CONCURRENCY: <%= ENV.fetch("SIDEKIQ_CONCURRENCY", "10").to_s.inspect %>
+<% unless external_redis %>
+    REDIS_URL: <%= "redis://#{service_name}-redis:6379/1".inspect %>
+    REDIS_SIDEKIQ_URL: <%= "redis://#{service_name}-redis:6379/3".inspect %>
+    REDIS_SESSIONS_URL: <%= "redis://#{service_name}-redis:6379/4".inspect %>
+    REDIS_RPUSH_URL: <%= "redis://#{service_name}-redis:6379/5".inspect %>
+<% end %>
+<% optional_clear_vars.each do |key| %>
+<% if ENV[key].present? %>
+    <%= key %>: <%= ENV[key].to_s.inspect %>
+<% end %>
+<% end %>
+  secret:
+    - SECRET_KEY_BASE
+    - DATABASE_URL
+<% if external_redis %>
+    - REDIS_URL
+    - REDIS_SIDEKIQ_URL
+    - REDIS_SESSIONS_URL
+    - REDIS_RPUSH_URL
+<% end %>
+<% active_optional_secrets.each do |key| %>
+    - <%= key %>
+<% end %>
+
+<% if use_accessories %>
+# Accessory services (bound to 127.0.0.1 by default so ports are never exposed to the public internet).
+# On a separate DB/Redis host in a private VPC, set KAMAL_DB_PORT="10.x.x.x:5432:5432" and KAMAL_REDIS_PORT="10.x.x.x:6379:6379".
 accessories:
   postgres:
-    image: pgvector/pgvector:pg13
-    host: <%= ENV["KAMAL_DB_IP"] || "192.168.0.1" %>
-    port: 5432
+    image: <%= ENV.fetch("KAMAL_POSTGRES_IMAGE", "pgvector/pgvector:pg16") %>
+    host: <%= db_host %>
+    port: <%= ENV.fetch("KAMAL_DB_PORT", "127.0.0.1:5432:5432").to_s.inspect %>
     env:
       clear:
-        POSTGRES_USER: postgres
-        POSTGRES_DB: forem_production
+        POSTGRES_USER: <%= ENV.fetch("POSTGRES_USER", "postgres").to_s.inspect %>
+        POSTGRES_DB: <%= ENV.fetch("POSTGRES_DB", "forem_production").to_s.inspect %>
       secret:
         - POSTGRES_PASSWORD
     directories:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
+      - data:/var/lib/postgresql/data
   redis:
-    image: redis:7.0-alpine
-    host: <%= ENV["KAMAL_REDIS_IP"] || "192.168.0.1" %>
-    port: 6379
+    image: <%= ENV.fetch("KAMAL_REDIS_IMAGE", "redis:7-alpine") %>
+    host: <%= redis_host %>
+    port: <%= ENV.fetch("KAMAL_REDIS_PORT", "127.0.0.1:6379:6379").to_s.inspect %>
+    cmd: redis-server --appendonly yes --maxmemory-policy noeviction
     directories:
-      - /data:/data
+      - data:/data
+<% end %>
+
+# Convenient day-2 operations aliases (e.g. `bundle exec kamal console`).
+aliases:
+  console: app exec -i --reuse "bin/rails console"
+  shell: app exec -i --reuse "bash"
+  logs: app logs -f
+  job-logs: app logs -r job -f
+  migrate: app exec --primary "bundle exec rails app_initializer:setup"
+  dbc: accessory exec postgres -i --reuse "psql -U postgres -d forem_production"
+  redis-cli: accessory exec redis -i --reuse "redis-cli"
+  health-token: app exec --primary --reuse "bundle exec rails forem:health_check_token"

@@ -101,6 +101,9 @@ en:
     account_switch_confirm: "Confirm switch"
     account_switch_cancel: "Cancel"
     account_switch_expired: "This sign-in attempt expired. Please try signing in again."
+  organization_invitations_controller:
+    accepted: You joined %{organization_name}.
+    declined: You declined the invitation to join %{organization_name}.
   organizations_controller:
     secret_updated: Your org secret was updated
     deletion_scheduled: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'

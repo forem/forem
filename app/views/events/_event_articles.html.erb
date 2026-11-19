@@ -1,0 +1,101 @@
+<% if articles.present? %>
+  <% previews = local_assigns[:previews] || {} %>
+  <section class="event-articles-section mt-8" aria-labelledby="event-articles-heading">
+    <div class="community-header event-articles-header mb-4">
+      <div class="flex items-center flex-wrap gap-2">
+        <h2 id="event-articles-heading" class="crayons-title m-0">
+          <%= t("views.events.event_articles.heading", event_title: event.title) %>
+        </h2>
+        <span class="event-articles-badge"><%= t("views.events.event_articles.badge") %></span>
+      </div>
+      <p class="event-articles-subtitle fs-s color-base-60 mt-1 mb-0">
+        <%= t("views.events.event_articles.subtitle") %>
+      </p>
+    </div>
+
+    <div id="event-articles-container" class="event-articles-feed crayons-card">
+      <% articles.each do |article| %>
+        <% is_status = article.status? %>
+        <% author = article.user %>
+        <% published_at = article.published_at %>
+        <% preview_html = is_status ? previews[article.id] : nil %>
+        <article class="event-feed-item <%= is_status ? 'event-feed-item--status' : 'event-feed-item--article' %>">
+          <a href="/<%= author.username %>" class="event-feed-item__avatar" aria-label="<%= author.name %>">
+            <img src="<%= author.profile_image_90 %>" alt="<%= author.name %>" loading="lazy">
+          </a>
+
+          <div class="event-feed-item__content">
+            <header class="event-feed-item__header">
+              <a href="/<%= author.username %>" class="event-feed-item__author-name">
+                <%= author.name %>
+              </a>
+              <a href="/<%= author.username %>" class="event-feed-item__author-handle">
+                @<%= author.username %>
+              </a>
+              <% if published_at.present? %>
+                <span class="event-feed-item__dot" aria-hidden="true">&middot;</span>
+                <a href="<%= article.path %>" class="event-feed-item__time">
+                  <time datetime="<%= published_at.iso8601 %>" title="<%= l(published_at, format: :long) %>">
+                    <% if published_at > 24.hours.ago %>
+                      <%= t("views.events.event_articles.time_ago", time: time_ago_in_words(published_at)) %>
+                    <% else %>
+                      <%= published_at.strftime("%b %-d") %>
+                    <% end %>
+                  </time>
+                </a>
+              <% end %>
+              <% unless is_status %>
+                <span class="event-feed-item__kind-pill"><%= t("views.events.event_articles.article_pill") %></span>
+              <% end %>
+            </header>
+
+            <% if is_status %>
+              <div class="event-feed-item__quickie-body">
+                <a href="<%= article.path %>" class="event-feed-item__quickie-link">
+                  <span class="article-title"><%= article.title_finalized_for_feed %></span>
+                </a>
+              </div>
+              <% if preview_html.present? %>
+                <div class="event-feed-item__preview text-styles">
+                  <%= preview_html.html_safe %>
+                </div>
+              <% end %>
+            <% else %>
+              <a href="<%= article.path %>" class="event-feed-item__article-link">
+                <h3 class="event-feed-item__article-title article-title"><%= article.title %></h3>
+              </a>
+              <% tags = article.decorate.cached_tag_list_array.take(3) %>
+              <% if tags.any? %>
+                <div class="event-feed-item__tags">
+                  <% tags.each do |tag| %>
+                    <span class="event-feed-item__tag">#<%= tag %></span>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+
+            <footer class="event-feed-item__footer">
+              <a href="<%= article.path %>" class="event-feed-item__stat" aria-label="<%= t("views.events.event_articles.reactions_aria", count: article.public_reactions_count) %>">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <span><%= article.public_reactions_count %></span>
+              </a>
+              <a href="<%= article.path %>#comments" class="event-feed-item__stat" aria-label="<%= t("views.events.event_articles.comments_aria", count: article.comments_count) %>">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span><%= article.comments_count %></span>
+              </a>
+              <% if !is_status && article.reading_time.to_i.positive? %>
+                <span class="event-feed-item__reading-time">
+                  <%= t("views.events.event_articles.min_read", count: article.reading_time) %>
+                </span>
+              <% end %>
+            </footer>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  </section>
+<% end %>

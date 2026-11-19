@@ -16,7 +16,12 @@ pt:
       is_too_long: é muito longo.
       invalid_date: deve ser inserido no formato DD/MM/AAAA com data atual ou passada
       series_unpermitted: deve ser uma série que você tem permissão para postar
+      event_not_found: deve referenciar um evento existente
+      event_articles_disabled: não permite artigos marcados
+      event_not_accepting_articles: só pode ser marcado enquanto o evento estiver ao vivo
       invalid_coauthor: devem ser IDs de usuário válidos
+      invalid_hidden_billboard_locations: deve ser uma lista de locais de banners de postagem válidos
+      invalid_hidden_billboard_locations_list: 'contém locais de banners inválidos: %{locations}'
       same_author: não deve ser o mesmo usuário que o autor
       must_not_have_spaces: não deve ter espaços
       published: Publicado
@@ -80,6 +85,8 @@ pt:
       too_many:
         one: Você pode convidar até %{count} coautor.
         other: Você pode convidar até %{count} coautores.
+    event:
+      owned_page_slug_taken: Conflita com um slug de página existente
     feedback_message:
       reported: '(você) reportou esta URL anteriormente.'
     github_issue:
@@ -112,7 +119,20 @@ pt:
     lead_submission:
       already_submitted: Você já enviou este formulário.
     page:
+      navigation_organization_only: "só pode ser desativado para páginas de organizações"
+      navigation_showcase_required: "deve permanecer ativado para a página Showcase"
       body_must_exist: deve existir se body_html ou body_json não existir.
+      embed_html_invalid_slug: deve usar o formato de caminho de incorporação (<owner>/embed/<slug>).
+      embed_html_requires_organization: deve pertencer a uma organização ou a um usuário para páginas embed_html.
+      embed_html_template_immutable: não pode ser convertido para ou a partir de embed_html.
+      embed_html_too_complex: excede os limites seguros de profundidade de aninhamento ou contagem de elementos HTML.
+      embed_html_too_large: não pode exceder %{max_kb} KB.
+      event_page_invalid_slug: deve usar o formato de caminho da página do evento (%{prefix}<slug>).
+      multiple_owners_not_allowed: A página pode pertencer apenas a um proprietário (organização, usuário ou evento).
+      slug_blank: não pode ficar em branco
+      organization_embed_pages_limit_reached: Esta organização atingiu o máximo de %{max} páginas incorporadas.
+      user_embed_pages_limit_reached: Você atingiu o máximo de %{max} páginas incorporadas.
+      user_page_must_be_embed_html: deve ser embed_html para páginas pertencentes a usuários.
       redirect_to_url_invalid: deve ser uma URL completa (começando com http:// ou https://) ou um caminho do aplicativo (começando com /).
       redirect_to_url_invalid_path: não é um caminho reconhecido nesta aplicação.
     podcast_episode_appearance:

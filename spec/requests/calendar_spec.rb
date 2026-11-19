@@ -70,6 +70,23 @@ RSpec.describe "Calendar" do
         expect(response.body).to include(takeover.title)
         expect(response.body).not_to include(stream.title)
       end
+
+      it "supports filtering by meetup and conference types" do
+        meetup = create(:event, title: "Meetup One", published: true, type_of: "meetup",
+                                start_time: Time.zone.today.beginning_of_month + 9.hours,
+                                end_time: Time.zone.today.beginning_of_month + 11.hours)
+        conference = create(:event, title: "Conf One", published: true, type_of: "conference",
+                                    start_time: Time.zone.today.beginning_of_month + 12.hours,
+                                    end_time: Time.zone.today.beginning_of_month + 14.hours)
+
+        get calendar_path(type_of: "meetup")
+        expect(response.body).to include(meetup.title, "calendar__accent--meetup")
+        expect(response.body).not_to include(conference.title, stream.title)
+
+        get calendar_path(type_of: "conference")
+        expect(response.body).to include(conference.title, "calendar__accent--conference")
+        expect(response.body).not_to include(meetup.title, stream.title)
+      end
     end
 
     context "with invalid params" do

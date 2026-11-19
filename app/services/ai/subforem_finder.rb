@@ -23,7 +23,7 @@ module Ai
     def initialize(article)
       @article = article
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return if @selection.jev?
+      return if @selection.decision?
 
       @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: article,
                                 affected_user: article.user)
@@ -71,7 +71,7 @@ module Ai
     # @return [Integer, nil] The ID of the best matching subforem, or nil if none suitable
     def find_best_match(available_subforems)
       return if available_subforems.empty?
-      return find_best_match_via_jev(available_subforems) if @selection.jev?
+      return find_best_match_via_jev(available_subforems) if @selection.decision?
 
       prompt = build_subforem_matching_prompt(available_subforems)
 
@@ -89,8 +89,8 @@ module Ai
     def find_best_match_via_jev(available_subforems)
       candidates = available_subforems.first(Ai::TypeSafe::Questions::MAX_CHOICE_OPTIONS - 1)
         .index_by { |subforem| "subforem_#{subforem.id}" }
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: article,
-                                        affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = @selection.decision_client(wrapper: self, affected_content: article,
+                                          affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: jev_state, questions: jev_questions(candidates))
 
       pick = result.choice(:best_home)

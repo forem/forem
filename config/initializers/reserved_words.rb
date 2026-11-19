@@ -22,6 +22,7 @@ class ReservedWords
     asset
     assets
     async_info
+    auth
     binary
     bit
     bits
@@ -39,6 +40,7 @@ class ReservedWords
     comment
     comments
     computer
+    conferences
     connect
     contact
     crayons
@@ -69,6 +71,8 @@ class ReservedWords
     followers
     following
     follows
+    forgot-password
+    forgot_password
     forloop
     fuck
     fun
@@ -120,12 +124,19 @@ class ReservedWords
     listings
     live
     live_articles
+    log-in
+    log-out
+    log_in
+    log_out
+    login
+    logout
     loop
     machinelearning
     mag
     magazine
     me
     medium
+    meetups
     mega
     megabyte
     members
@@ -140,6 +151,7 @@ class ReservedWords
     nightly
     notification_subscriptions
     notifications
+    oauth
     onboarding_checkbox_update
     onboarding_update
     one-of-us
@@ -156,6 +168,8 @@ class ReservedWords
     orlybooks
     orlygenerator
     oss
+    password
+    passwords
     pc
     phishing
     pod
@@ -174,10 +188,14 @@ class ReservedWords
     react
     reactjs
     readinglist
+    register
+    registration
     repo
     report-abuse
     reports
     repos
+    reset-password
+    reset_password
     retro
     rly
     rlygenerator
@@ -192,14 +210,25 @@ class ReservedWords
     sedaily
     settings
     shoutouts
+    sign-in
+    sign-out
+    sign-up
+    sign_in
+    sign_out
+    sign_up
+    signin
+    signout
     signout_confirm
+    signup
     social
     social_previews
     software
     sounds
+    sso
     start
     started
     startups
+    support
     swagnets
     tag
     tags

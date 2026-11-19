@@ -2,32 +2,42 @@ require "rails_helper"
 
 RSpec.describe EdgeCache::BustOrganization, type: :service do
   let(:organization) { create(:organization) }
-  let(:article) { create(:article, organization: organization) }
+  let!(:article) { create(:article, organization: organization) }
   let(:slug) { "slug" }
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   before do
-    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-    allow(cache_bust).to receive(:call)
     allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
-  it "busts the cache" do
+  it "purges the organization's surrogate key with lazy fallback paths", :aggregate_failures do
     described_class.call(organization, slug)
 
-    expect(cache_bust).to have_received(:call).with("/#{slug}").once
+    expect(EdgeCache::PurgeByKey).to have_received(:call).once do |keys, fallback_paths:|
+      expect(keys).to eq(["organizations/#{organization.id}"])
+      expect(fallback_paths).to respond_to(:call)
+      expect(fallback_paths.call).to contain_exactly("/#{slug}", article.path)
+    end
   end
 
-  it "purges the organization's surrogate key so its custom domain pages are refreshed" do
+  it "also purges a former owner's surrogate key when claiming a legacy slug", :aggregate_failures do
+    former_user = create(:user)
+    former_user.update_columns(old_username: slug)
+    organization.update_columns(old_slug: "previousorgslug")
+
     described_class.call(organization, slug)
 
-    expect(EdgeCache::PurgeByKey).to have_received(:call).with("organizations/#{organization.id}")
+    expect(EdgeCache::PurgeByKey).to have_received(:call).once do |keys, fallback_paths:|
+      expect(keys).to eq(["organizations/#{organization.id}", former_user.profile_identity_record_key])
+      expect(fallback_paths.call).to contain_exactly("/#{slug}", "/previousorgslug", article.path)
+    end
   end
 
-  it "logs an error" do
-    allow(cache_bust).to receive(:call).with("/5").once
-    allow(Rails.logger).to receive(:error)
+  it "handles non-ActiveRecord inputs gracefully" do
     described_class.call(4, 5)
-    expect(Rails.logger).to have_received(:error).once
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).once do |keys, fallback_paths:|
+      expect(keys).to eq([])
+      expect(fallback_paths.call).to eq(["/5"])
+    end
   end
 end

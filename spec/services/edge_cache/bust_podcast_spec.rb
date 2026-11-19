@@ -1,27 +1,30 @@
 require "rails_helper"
 
 RSpec.describe EdgeCache::BustPodcast, type: :service do
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:podcast_path) { "podcast_path" }
-  let(:paths) do
-    [
-      "/#{podcast_path}",
-    ]
-  end
 
   before do
-    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-
-    paths.each do |path|
-      allow(cache_bust).to receive(:call).with(path).once
-    end
+    allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
-  it "busts the cache" do
+  it "purges podcast and podcast index surrogate keys with fallback paths" do
     described_class.call(podcast_path)
 
-    paths.each do |path|
-      expect(cache_bust).to have_received(:call).with(path).once
-    end
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      ["podcasts/#{podcast_path}", "podcast_episodes_all"],
+      fallback_paths: ["/#{podcast_path}", "/pod"],
+    ).once
+  end
+
+  it "includes legacy redirect keys when a podcast claims a former organization slug" do
+    former_org = create(:organization)
+    former_org.update_columns(old_slug: podcast_path)
+
+    described_class.call(podcast_path)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      ["podcasts/#{podcast_path}", "podcast_episodes_all", former_org.record_key],
+      fallback_paths: ["/#{podcast_path}", "/pod"],
+    ).once
   end
 end

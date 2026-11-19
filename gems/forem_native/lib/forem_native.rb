@@ -7,37 +7,46 @@ require_relative "forem_native/builder"
 # In production, CI, and local development, it loads either the platform-compiled
 # shared library (`forem_native/forem_native.{so,bundle}` from `Containerfile` /
 # `rake forem_native:compile`) or the committed precompiled platform binary
-# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
+# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
+  LATEST_NATIVE_SYMBOL = :aggregate_transcript_redactions
+  PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
+  PROFILE_AVATAR_STYLE_KEYS = %i[
+    backdrop outfit arm head topper eyes accessory cheeks mouth
+  ].freeze
   @native_loaded = false
 
   class << self
     def load_native!
-      return true if @native_loaded && defined?(Native)
+      return true if @native_loaded && defined?(Native) && Native.respond_to?(LATEST_NATIVE_SYMBOL)
 
-      # 1. If a local `cargo build --release` has already produced an artifact in `target/release`
-      #    (and no precompiled or staged binary is present yet), stage it into `lib/forem_native/`.
-      if !Builder.precompiled_binary_exists? && File.exist?(Builder.cargo_artifact_path)
+      # 1. If a local `cargo build --release` has already produced an up-to-date artifact in
+      #    `target/release` (and no fresh staged/precompiled binary is present yet), stage it.
+      if ENV["FOREM_NATIVE_SKIP_BUILD"] != "1" &&
+          !Builder.fresh_binary_exists?(LATEST_NATIVE_SYMBOL) &&
+          Builder.binary_exports_symbol?(Builder.cargo_artifact_path, LATEST_NATIVE_SYMBOL)
         Builder.install_built_artifact!
       end
 
-      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary.
-      if require_candidate_binary
+      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary
+      #    that exports `LATEST_NATIVE_SYMBOL` (checked before `require` so a stale binary is
+      #    never cached in `$LOADED_FEATURES` / `dlopen` prior to auto-compilation).
+      if require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
-      # 3. If no binary is present on disk yet (e.g. an exotic platform),
-      #    compile the Rust workspace automatically via `cargo` and load it.
-      if Builder.compile! && require_candidate_binary
+      # 3. If no up-to-date binary is present on disk yet and `cargo` is available, compile the
+      #    Rust workspace automatically and load the freshly staged build.
+      if Builder.compile! && require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
       raise LoadError,
-            "Failed to load ForemNative Rust extension for #{RUBY_PLATFORM}. " \
-            "Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
+            "Failed to load up-to-date ForemNative Rust extension (requiring #{LATEST_NATIVE_SYMBOL}) " \
+            "for #{RUBY_PLATFORM}. Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
     end
 
     # Returns true when the compiled Rust `magnus` extension is loaded and active.
@@ -748,6 +757,13 @@ module ForemNative
       Native.scrub_agent_session_messages(messages)&.sort_by { |_, count| -count }
     end
 
+    # Counts per-message redactions in first-seen order, or returns nil for Ruby coercion.
+    def aggregate_transcript_redactions(messages)
+      return unless Native.respond_to?(:aggregate_transcript_redactions) && messages.instance_of?(Array)
+
+      Native.aggregate_transcript_redactions(messages)
+    end
+
     # Adds `"js-code-highlight"` to every `div.highlight` element on canonical HTML fragments,
     # matching `Html::Parser#add_control_class_to_codeblock`.
     def add_control_class_to_codeblock(html)
@@ -830,6 +846,67 @@ module ForemNative
       return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
 
       Native.extract_mentioned_usernames(html)
+    end
+
+    # Scrubs unsafe `href`/`src` URIs and adds `target="_blank"` + `rel="noopener noreferrer"`
+    # to outbound `a[href^="http"]` links outside `app_domain` on canonical HTML fragments,
+    # matching `MarkdownProcessor::Parser#add_target_blank_to_outbound_links`.
+    def add_target_blank_to_outbound_links(html, app_domain)
+      return unless Native.respond_to?(:add_target_blank_to_outbound_links)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless app_domain.is_a?(String)
+
+      Native.add_target_blank_to_outbound_links(html, app_domain.to_s)
+    end
+
+    # Removes `<br>` elements directly nested inside `<ul>`, `<ol>`, or `<li>` on canonical
+    # HTML fragments.
+    def remove_nested_linebreak_in_list_fragment(html)
+      return unless Native.respond_to?(:remove_nested_linebreak_in_list_fragment)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.remove_nested_linebreak_in_list_fragment(html)
+    end
+
+    # Enforces GIF-like attributes on `<video>` elements on canonical HTML fragments, matching
+    # `Html::Parser#enforce_gif_like_videos`.
+    def enforce_gif_like_videos(html)
+      return unless Native.respond_to?(:enforce_gif_like_videos)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.enforce_gif_like_videos(html)
+    end
+
+    # Inserts `action_html` into `div.highlight__panel` elements on canonical HTML fragments,
+    # matching `Html::Parser#add_fullscreen_button_to_panel`.
+    def add_fullscreen_button_to_panel(html, action_html)
+      return unless Native.respond_to?(:add_fullscreen_button_to_panel)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless action_html.instance_of?(String) && action_html.encoding == Encoding::UTF_8
+
+      Native.add_fullscreen_button_to_panel(html, action_html)
+    end
+
+    # Single-FFI HTML post-processing pipeline combining outbound link tagging, list `<br>`
+    # cleanup, image link wrapping, `<video>` normalization, fused codeblock enhancements,
+    # table wrapping, empty `<p>` pruning, colon-emoji replacement, raw-tag unescaping,
+    # `@mention` linking, and optional `Nokogiri::HTML` `body.inner_html` newline normalization.
+    def postprocess_rendered_html(html, app_domain:, fullscreen_action_html: "", existing_usernames: [],
+                                  base_url: "", run_target_blank: true, normalize_document: true)
+      return unless Native.respond_to?(:postprocess_rendered_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless app_domain.is_a?(String) && fullscreen_action_html.is_a?(String)
+      return unless existing_usernames.is_a?(Array) && base_url.is_a?(String)
+
+      Native.postprocess_rendered_html(
+        html,
+        app_domain.to_s,
+        fullscreen_action_html.to_s,
+        existing_usernames,
+        base_url.to_s,
+        run_target_blank ? true : false,
+        normalize_document ? true : false,
+      )
     end
 
     # Renders the day links of the `calendar/_calendar_widget` month grid in one pass, matching
@@ -1395,7 +1472,307 @@ module ForemNative
       Native.syntax_highlight_code_block(code_str, lang_str)
     end
 
+    # Decodes a PNG, JPEG, GIF (first frame), or WebP binary String into an in-memory
+    # `ForemNative::SocialCanvas`.
+    def social_image_decode(bytes)
+      Native.social_image_decode(bytes.to_s)
+    end
+
+    # Loads and caches a static mask image (such as `app/assets/images/rounded_mask.png`)
+    # in Rust memory, returning a fresh `ForemNative::SocialCanvas` clone.
+    def social_image_open_cached_mask(path)
+      Native.social_image_open_cached_mask(path.to_s)
+    end
+
+    # Opens a local file path, URI, or IO-like object and decodes it into an in-memory
+    # `ForemNative::SocialCanvas` (using the in-memory Rust cache for static mask paths).
+    def social_image_open(path_or_url)
+      return social_image_open_cached_mask(path_or_url) if path_or_url == "app/assets/images/rounded_mask.png"
+
+      bytes = if path_or_url.respond_to?(:open)
+                path_or_url.open(&:read)
+              elsif path_or_url.to_s.match?(%r{\A[A-Za-z][A-Za-z0-9+\-.]*://}) &&
+                  (uri = URI.parse(path_or_url.to_s)).respond_to?(:open)
+                uri.open(&:read)
+              else
+                File.binread(path_or_url.to_s)
+              end
+      social_image_decode(bytes)
+    end
+
+    # Draws the 400x209 ellipse mesh on `base_color`, applies `-blur 0x48`, and resizes to
+    # `1200x627!` with `-filter Gaussian`, returning a `ForemNative::SocialCanvas`.
+    def social_image_draw_background(base_color, blobs)
+      Native.social_image_draw_background(base_color.to_s, blobs)
+    end
+
+    # Draws the article browser-window frame onto `canvas` in place and returns `canvas`.
+    def social_image_draw_window(canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_window(target)
+      target
+    end
+
+    # Draws the profile browser-window frame with `brand_color` onto `canvas` in place and returns `canvas`.
+    def social_image_draw_profile_window(canvas, brand_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_profile_window(target, brand_color.to_s)
+      target
+    end
+
+    # Renders a `label:` or `caption:` text image in memory using the cached TrueType font at `font_path`.
+    def social_image_render_text(kind, text, font_path, pointsize, color, width: nil)
+      Native.social_image_render_text(
+        kind.to_s,
+        text.to_s,
+        font_path.to_s,
+        pointsize.to_f,
+        color.to_s,
+        width&.to_i,
+      )
+    end
+
+    # Resizes `logo_canvas` to `x30` and composites it onto the window title bar of `canvas`.
+    def social_image_add_logo(canvas, logo_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_logo(target, coerce_social_canvas(logo_canvas))
+      target
+    end
+
+    # Draws the opening quote mark in `accent_color` and composites `quote_canvas` onto `canvas`.
+    def social_image_add_quote(canvas, quote_canvas, font_path, accent_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_quote(
+        target,
+        coerce_social_canvas(quote_canvas),
+        font_path.to_s,
+        accent_color.to_s,
+      )
+      target
+    end
+
+    # Resizes `author_canvas` and `mask_canvas` to `64x64`, composites them onto `canvas`,
+    # and draws the 3px circular border.
+    def social_image_add_profile_image(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_image(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Resizes and `DstOut`-masks `author_canvas` to `112x112`, draws the white halo ring,
+    # composites the circular avatar, and draws the 3px black border onto `canvas`.
+    def social_image_add_profile_card_avatar(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_card_avatar(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Composites the profile name, `@handle`, and Follow button label onto `canvas`.
+    def social_image_add_profile_header(canvas, name_canvas, handle_canvas, follow_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_header(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(handle_canvas),
+        coerce_social_canvas(follow_canvas),
+      )
+      target
+    end
+
+    # Composites the profile bio onto `canvas`.
+    def social_image_add_profile_bio(canvas, bio_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_bio(target, coerce_social_canvas(bio_canvas))
+      target
+    end
+
+    # Composites the profile footer metadata line onto `canvas`.
+    def social_image_add_profile_meta(canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_meta(target, coerce_social_canvas(meta_canvas))
+      target
+    end
+
+    # Composites the article author name and metadata line onto `canvas`.
+    def social_image_add_byline(canvas, name_canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_byline(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(meta_canvas),
+      )
+      target
+    end
+
+    # Renders a nested comment tree (`CommentsHelper#nested_comments`) and its full partial
+    # hierarchy in a single native pass, returning `[html, current_comment_index, shown_billboard]`
+    # or `nil` when any input falls outside the native domain.
+    def render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+      return unless Native.respond_to?(:render_comment_tree)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && nodes_flat.is_a?(Array)
+      return unless root_count.is_a?(Integer) && root_count >= 0
+
+      Native.render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+    end
+
+    # Renders a `<a class="crayons-tag ...">` pill matching `ApplicationHelper#render_tag_link`
+    # byte-for-byte, or `nil` when any argument is a String subclass (`SafeBuffer`), non-UTF-8,
+    # an empty/`/`-containing route segment, or a malformed `#rrggbb` color hex.
+    def render_tag_link(tag_name, tag_route, bg_color_hex, filled: false, monochrome: false,
+                        classes: "", path_suffix: "")
+      return unless Native.respond_to?(:render_tag_link)
+      return unless tag_name.instance_of?(String) && tag_route.instance_of?(String) &&
+        bg_color_hex.instance_of?(String) && classes.instance_of?(String) && path_suffix.instance_of?(String)
+
+      Native.render_tag_link(
+        tag_name,
+        tag_route,
+        bg_color_hex,
+        filled ? true : false,
+        monochrome ? true : false,
+        classes,
+        path_suffix,
+      )
+    end
+
+    # Renders `1..=N` story cards matching `app/views/articles/_single_story.html.erb` into a
+    # single UTF-8 HTML buffer, or `nil` when any input falls outside the native domain.
+    def render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+      return unless Native.respond_to?(:render_story_cards)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && orgs_flat.is_a?(Array) && cards_flat.is_a?(Array)
+
+      Native.render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+    end
+
+    # Renders a deterministic `400x400` 8-bit RGB PNG mascot avatar from `traits`
+    # (`{ palette: { bg:, halo:, ... }, backdrop:, outfit:, arm:, head:, topper:, eyes:,
+    # accessory:, cheeks:, mouth: }`), replacing `MiniMagick::Tool::Convert` in
+    # `Images::ProfileImageGenerator`.
+    def render_profile_image_png(traits)
+      raise ArgumentError, "traits must be a Hash" unless traits.is_a?(Hash)
+
+      palette = traits[:palette] || traits["palette"]
+      raise ArgumentError, "traits[:palette] must be a Hash" unless palette.is_a?(Hash)
+
+      flat = PROFILE_AVATAR_PALETTE_KEYS.map do |key|
+        (palette.key?(key) ? palette[key] : palette[key.to_s]).to_s
+      end
+      PROFILE_AVATAR_STYLE_KEYS.each do |key|
+        flat << (traits.key?(key) ? traits[key] : traits[key.to_s]).to_s
+      end
+
+      Native.render_profile_image_png(flat)
+    end
+
+    # Inspects raw image bytes without full pixel decompression, returning
+    # `{ format: String, width: Integer, height: Integer, frame_count: Integer,
+    # exif_orientation: Integer }`. Raises `ArgumentError` on unrecognized or corrupt bytes.
+    def image_inspect(bytes)
+      fmt, width, height, frame_count, exif_orientation = Native.image_inspect(bytes.to_s)
+      {
+        format: fmt,
+        width: width,
+        height: height,
+        frame_count: frame_count,
+        exif_orientation: exif_orientation
+      }
+    end
+
+    # Inspects an image file at `path`, returning the `image_inspect` Hash.
+    def image_inspect_file(path)
+      image_inspect(File.binread(path.to_s))
+    end
+
+    # Counts animation frames / container pages in the image file at `path`.
+    def image_frame_count(path)
+      image_inspect_file(path)[:frame_count]
+    end
+
+    # Strips EXIF/XMP/IPTC/comment/trailing metadata (losslessly when EXIF orientation is `1`,
+    # or orienting pixels and re-encoding when EXIF orientation is `2..=8`) for images with
+    # `<= frame_strip_max` frames. Returns modified binary `String` or `nil` when unchanged.
+    def image_strip_and_auto_orient(bytes, frame_strip_max: 150)
+      Native.image_strip_and_auto_orient(bytes.to_s, frame_strip_max.to_i)
+    end
+
+    # Strips metadata and applies EXIF orientation in-place at `path` when modified.
+    # Returns `true` when the file was updated, or `false` when already clean / skipped.
+    def strip_and_auto_orient_file!(path, frame_strip_max: 150)
+      file_path = path.to_s
+      updated = image_strip_and_auto_orient(File.binread(file_path), frame_strip_max: frame_strip_max)
+      return false if updated.nil?
+
+      File.binwrite(file_path, updated)
+      true
+    end
+
+    # Resizes to cover `width x height` and crops according to `gravity` (`"Center"`, `"North"`,
+    # `"South"`, `"East"`, `"West"`, etc.), returning `[encoded_bytes, format_str]`.
+    def image_resize_to_fill(bytes, width, height, gravity = "Center", font_path: nil)
+      Native.image_resize_to_fill(
+        bytes.to_s,
+        width.to_i,
+        height.to_i,
+        gravity.to_s,
+        font_path&.to_s,
+      )
+    end
+
+    # Downscales proportionally so dimensions do not exceed `max_width x max_height` (never
+    # upscaling smaller images), returning `[encoded_bytes, format_str]`.
+    def image_resize_to_limit(bytes, max_width, max_height, font_path: nil)
+      Native.image_resize_to_limit(
+        bytes.to_s,
+        max_width&.to_i,
+        max_height&.to_i,
+        font_path&.to_s,
+      )
+    end
+
+    # Decodes any supported raster or SVG image and encodes it as an 8-bit PNG (preserving alpha).
+    # Pass `reject_blank: true` to raise `ArgumentError` if the decoded canvas has no visible pixels.
+    def image_convert_to_png(bytes, font_path: nil, reject_blank: false)
+      Native.image_convert_to_png_checked(
+        bytes.to_s,
+        font_path&.to_s,
+        reject_blank ? true : false,
+      )
+    end
+
+    # Resizes an image to fit within `width x height` and encodes as PNG (`Images::GenerateSubforemImages`).
+    def subforem_resize_png(bytes, width, height, font_path: nil)
+      Native.subforem_resize_png(bytes.to_s, width.to_i, height.to_i, font_path&.to_s)
+    end
+
+    # Composites `logo_bytes` (`300x300` fit at `+350+100`) over `background_bytes` (cropped to
+    # `1000x500` when `custom_background` is true) and encodes as PNG (`Images::GenerateSubforemImages`).
+    def subforem_social_image_png(logo_bytes, background_bytes, custom_background: false, font_path: nil)
+      Native.subforem_social_image_png(
+        logo_bytes.to_s,
+        background_bytes.to_s,
+        custom_background ? true : false,
+        font_path&.to_s,
+      )
+    end
+
     private
+
+    def coerce_social_canvas(image)
+      return image if defined?(SocialCanvas) && image.is_a?(SocialCanvas)
+      return social_image_decode(File.binread(image.path)) if image.respond_to?(:path) && image.path
+
+      social_image_decode(image.to_s)
+    end
 
     def coerce_optional_utf8_string(value)
       return if value.nil?
@@ -1413,18 +1790,35 @@ module ForemNative
       end
     end
 
-    def require_candidate_binary
-      candidates = ["forem_native/forem_native"] +
-        Builder.platform_candidates.map { |dir| "forem_native/#{dir}/forem_native" }
+    def candidate_binaries
+      [["forem_native/forem_native", Builder.extension_binary_path]] +
+        Builder.platform_candidates.map do |dir|
+          ["forem_native/#{dir}/forem_native", Builder.extension_binary_path(platform_dir: dir)]
+        end
+    end
 
-      candidates.each do |candidate|
-        require candidate
-        return true if defined?(ForemNative::Native)
+    def require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      candidate_binaries.each do |require_name, binary_path|
+        next unless File.file?(binary_path)
+        next if require_symbol && !Builder.binary_exports_symbol?(binary_path, require_symbol)
+
+        require require_name
+        return true if defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol))
       rescue LoadError
         next
       end
 
       false
+    end
+
+    def require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      staged_path = Builder.extension_binary_path
+      return false if require_symbol && !Builder.binary_exports_symbol?(staged_path, require_symbol)
+
+      require "forem_native/forem_native"
+      defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol)) ? true : false
+    rescue LoadError
+      require_candidate_binary(require_symbol: require_symbol)
     end
   end
 end

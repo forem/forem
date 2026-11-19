@@ -102,6 +102,20 @@ en:
     following_everyone: "You're following %{details} (everyone)"
     you_are_following: "You're following"
     and: "and"
+    embed_sandbox:
+      deferred_message: "Interactive widget deferred to keep page performance smooth."
+      load_widget: "Load widget"
+      throttled_message: "Widget was throttled by performance protection."
+      reload_widget: "Reload widget"
+      dismiss: "Dismiss"
+      stopped_responding: "This widget stopped responding and was paused to keep your browser smooth."
+      slow_responding: "This widget is taking too long to respond."
+      pause: "Pause"
+      paused: "Widget paused."
+      resume_widget: "Resume widget"
+      reload: "Reload"
+      navigation_blocked: "Navigation inside this embedded widget was blocked for your security."
+      preview_error: "Unable to render sandboxed preview right now."
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
@@ -268,6 +282,7 @@ en:
       odd: must be odd
       other_than: must be other than %{count}
       present: must be blank
+      processing_error: "Failed to manipulate, maybe it is not an image?"
       required: must exist
       taken: has already been taken
       too_long:

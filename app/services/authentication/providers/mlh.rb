@@ -5,7 +5,7 @@ module Authentication
       # "MLH" rather than "MyMLH": this is the name we show people in settings
       # copy, connect buttons and anywhere else `official_name` surfaces.
       OFFICIAL_NAME = "MLH".freeze
-      SETTINGS_URL = "https://my.mlh.io/oauth/applications".freeze
+      SETTINGS_URL = "https://www.mlh.com/account/profile".freeze
 
       def self.official_name
         OFFICIAL_NAME

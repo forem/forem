@@ -109,6 +109,33 @@ describe('billboard.js - internal navigation behavior', () => {
     expect(setupBillboardInteractivity).toHaveBeenCalled();
   });
 
+  it('ignores a persistent billboard response after its page is replaced', async () => {
+    document.body.innerHTML = `
+      <div id="page-content-inner" data-internal-nav="true">
+        <div class="js-billboard-container" data-async-url="/billboards/post_fixed_bottom"></div>
+      </div>
+    `;
+
+    let resolveFetch;
+    mockFetch.mockReturnValueOnce(new Promise((resolve) => {
+      resolveFetch = resolve;
+    }));
+
+    const loading = getBillboard();
+    document.body.innerHTML = '<div id="page-content-inner" data-internal-nav="true"></div>';
+    resolveFetch({
+      text: async () => `
+        <div class="js-billboard" data-special="persistent">
+          <template class="js-minimized-template">Minimized text</template>
+        </div>
+      `,
+    });
+    await loading;
+
+    expect(ensurePersistentMinimizedBillboardContainer).not.toHaveBeenCalled();
+    expect(executeBBScripts).not.toHaveBeenCalled();
+  });
+
   it('hides main container and does not show minimized when isInternalNav is true and billboard is NOT persistent', async () => {
     // Setup DOM
     document.body.innerHTML = `
@@ -143,6 +170,81 @@ describe('billboard.js - internal navigation behavior', () => {
 
     // Verify helper callbacks were not called for the minimized container
     expect(executeBBScripts).not.toHaveBeenCalledWith(mockContainer);
+  });
+
+  describe('embedded browser context suppression for post_fixed_bottom', () => {
+    let originalUserAgent;
+    let originalUserAgentData;
+
+    beforeEach(() => {
+      originalUserAgent = window.navigator.userAgent;
+      originalUserAgentData = window.navigator.userAgentData;
+    });
+
+    afterEach(() => {
+      Object.defineProperty(window.navigator, 'userAgent', {
+        value: originalUserAgent,
+        configurable: true,
+      });
+      Object.defineProperty(window.navigator, 'userAgentData', {
+        value: originalUserAgentData,
+        configurable: true,
+      });
+    });
+
+    it.each([
+      ['Forem mobile app', 'ForemWebView/1'],
+      [
+        'Cursor built-in browser',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Cursor/0.49.6 Chrome/132.0.0.0 Electron/34.3.4 Safari/537.36',
+      ],
+      [
+        'VS Code Integrated Browser',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.109.5 Chrome/134.0.0.0 Electron/35.1.2 Safari/537.36',
+      ],
+      [
+        'Antigravity webview',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Antigravity/2.0.0 Chrome/136.0.0.0 Electron/36.0.0 Safari/537.36',
+      ],
+      [
+        'Claude Desktop preview',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/1.2.0 Chrome/134.0.0.0 Electron/35.0.0 Safari/537.36',
+      ],
+      [
+        'Codex Desktop preview',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Codex/1.0.0 Chrome/135.0.0.0 Electron/35.1.0 Safari/537.36',
+      ],
+      [
+        'macOS native WKWebView wrapper',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)',
+      ],
+    ])(
+      'skips fetching post_fixed_bottom in %s while still loading other placements',
+      async (_label, ua) => {
+        Object.defineProperty(window.navigator, 'userAgent', {
+          value: ua,
+          configurable: true,
+        });
+
+        document.body.innerHTML = `
+          <div id="page-content-inner" data-internal-nav="false"></div>
+          <div class="js-billboard-container" data-async-url="/billboards/post_fixed_bottom"></div>
+          <div class="js-billboard-container" data-async-url="/billboards/post_sidebar"></div>
+        `;
+
+        mockFetch.mockResolvedValue({
+          text: () =>
+            Promise.resolve(
+              '<div class="js-billboard"><div class="content">Sidebar Ad</div></div>',
+            ),
+        });
+
+        await getBillboard();
+
+        expect(mockFetch).not.toHaveBeenCalledWith('/billboards/post_fixed_bottom');
+        expect(mockFetch).toHaveBeenCalledWith('/billboards/post_sidebar');
+      },
+    );
   });
 
   describe('cleanupStaleLiveStreamIntervals', () => {

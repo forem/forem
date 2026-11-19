@@ -11,10 +11,8 @@ class PodcastEpisodesController < ApplicationController
       .available
       .includes(:podcast).order(published_at: :desc).limit(6))
 
-    if params[:q].blank?
-      surrogate_keys = ["podcast_episodes_all"] + @podcast_episodes.map(&:record_key)
-      set_surrogate_key_header(surrogate_keys)
-    end
+    surrogate_keys = ["podcast_episodes_all"] + @podcast_episodes.map(&:record_key)
+    set_surrogate_key_header(surrogate_keys)
     render template: "podcast_episodes/index"
   end
 end

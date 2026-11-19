@@ -11,6 +11,7 @@ module Stories
       @tag = Tag.find_by(name: params[:tag].downcase) || not_found
 
       if @tag.alias_for.present?
+        set_surrogate_key_header @tag.record_key, tag_feed_surrogate_key
         redirect_permanently_to("/t/#{@tag.alias_for}")
         return
       end
@@ -22,13 +23,23 @@ module Stories
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
-      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
+      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key, tag_feed_surrogate_key
       set_cache_control_headers(86_400,
                                 stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
     end
 
     private
+
+    def tag_feed_surrogate_key
+      if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
+        "tag-#{@tag.name}-top-#{params[:timeframe]}"
+      elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+        "tag-#{@tag.name}-latest"
+      else
+        "tag-#{@tag.name}-home"
+      end
+    end
 
     def set_number_of_articles(tag:)
       @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
@@ -124,8 +135,18 @@ module Stories
         if @page == 1 && !user_signed_in?
           stories = stories.where("published_at > ?", 3.months.ago)
         end
-        stories.order(hotness_score: :desc).with_at_least_home_feed_minimum_score
+        stories.order(hotness_score: :desc).where(home_feed_eligibility_clause)
       end
+    end
+
+    # Same rows as Article.with_at_least_home_feed_minimum_score, but `score + 0` keeps
+    # PostgreSQL from turning the OR into a BitmapOr over the featured/favorited/score
+    # indexes (~500k rows) only to BitmapAnd it with the much smaller tags_array GIN bitmap.
+    def home_feed_eligibility_clause
+      [
+        "articles.featured = TRUE OR articles.favorited_by_user_id IS NOT NULL OR (articles.score + 0) >= ?",
+        Settings::UserExperience.home_feed_minimum_score,
+      ]
     end
   end
 end

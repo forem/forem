@@ -1,0 +1,130 @@
+<section class="crayons-card admin-permissions-grant-card">
+  <div class="admin-permissions-grant-card__header">
+    <h2 class="admin-permissions-grant-card__heading"><%= t("views.admin.permissions.grant.heading") %></h2>
+    <p class="admin-permissions-grant-card__description"><%= t("views.admin.permissions.grant.description") %></p>
+  </div>
+
+  <%= form_with url: grant_admin_permissions_path,
+                method: :post,
+                local: true,
+                data: {
+                  controller: "permissions-grant",
+                  permissions_grant_config_value: sub_permissions_config.to_json,
+                  permissions_grant_summary_full_value: t("views.admin.permissions.grant.summary_full"),
+                  permissions_grant_summary_restricted_none_value: t("views.admin.permissions.grant.summary_restricted_none"),
+                  permissions_grant_summary_restricted_count_value: t("views.admin.permissions.grant.summary_restricted_count")
+                } do |f| %>
+    <%= permissions_return_filter_fields(search: @search, role_filter: @role_filter, resource_filter: @resource_filter) %>
+
+    <div class="admin-permissions-grant-card__row">
+      <div class="crayons-field">
+        <%= f.label :username, t("views.admin.permissions.grant.username_label"), class: "crayons-field__label" %>
+        <div class="admin-perm-input-group">
+          <span class="admin-perm-input-group__prefix" aria-hidden="true">@</span>
+          <%= f.text_field :username,
+                           class: "crayons-textfield",
+                           placeholder: t("views.admin.permissions.grant.username_placeholder"),
+                           autocomplete: "off",
+                           required: true %>
+        </div>
+      </div>
+
+      <div class="crayons-field">
+        <%= f.label :role_name, t("views.admin.permissions.grant.role_label"), class: "crayons-field__label" %>
+        <%= f.select :role_name,
+                     grouped_options_for_select(role_options),
+                     { prompt: t("views.admin.permissions.grant.role_prompt") },
+                     class: "crayons-select",
+                     required: true,
+                     data: {
+                       permissions_grant_target: "roleSelect",
+                       action: "change->permissions-grant#handleRoleChange"
+                     } %>
+      </div>
+
+      <div>
+        <%= f.submit t("views.admin.permissions.grant.submit"), class: "crayons-btn admin-permissions-grant-card__submit" %>
+      </div>
+    </div>
+
+    <div class="admin-perm-grant-subpanel"
+         hidden
+         data-permissions-grant-target="panel"
+         data-testid="grant-sub-permissions-panel">
+      <div class="admin-perm-grant-subpanel__header">
+        <h3 class="admin-perm-grant-subpanel__title">
+          <%= crayons_icon_tag(:lock, aria_hidden: true, width: 16, height: 16) %>
+          <span data-permissions-grant-target="panelTitle"></span>
+        </h3>
+        <span class="c-indicator c-indicator--subtle"><%= t("views.admin.permissions.grant.sub_permissions_badge") %></span>
+      </div>
+
+      <fieldset class="admin-perm-modes">
+        <legend class="admin-perm-modes__legend"><%= t("views.admin.permissions.grant.access_level_legend") %></legend>
+
+        <label class="admin-perm-mode-card is-selected"
+               data-permissions-grant-target="modeCard"
+               data-restricted="0">
+          <%= radio_button_tag :restricted, "0", true,
+                               id: "grant_restricted_0",
+                               class: "crayons-radio",
+                               data: {
+                                 permissions_grant_target: "modeRadio",
+                                 action: "change->permissions-grant#syncMode"
+                               } %>
+          <span class="admin-perm-mode-card__body">
+            <span class="admin-perm-mode-card__title"><%= t("lib.sub_permissions.admin.full_access") %></span>
+            <span class="admin-perm-mode-card__desc"><%= t("views.admin.permissions.grant.full_access_description") %></span>
+          </span>
+        </label>
+
+        <label class="admin-perm-mode-card admin-perm-mode-card--restricted"
+               data-permissions-grant-target="modeCard"
+               data-restricted="1">
+          <%= radio_button_tag :restricted, "1", false,
+                               id: "grant_restricted_1",
+                               class: "crayons-radio",
+                               data: {
+                                 permissions_grant_target: "modeRadio",
+                                 action: "change->permissions-grant#syncMode"
+                               } %>
+          <span class="admin-perm-mode-card__body">
+            <span class="admin-perm-mode-card__title"><%= t("lib.sub_permissions.admin.restricted") %></span>
+            <span class="admin-perm-mode-card__desc"><%= t("views.admin.permissions.grant.restricted_description") %></span>
+          </span>
+        </label>
+      </fieldset>
+
+      <div class="admin-perm-clauses" hidden data-permissions-grant-target="clausesSection">
+        <div class="admin-perm-clauses__header">
+          <span class="admin-perm-clauses__heading"><%= t("views.admin.permissions.grant.allowed_capabilities") %></span>
+          <div class="admin-perm-clauses__presets">
+            <button type="button"
+                    class="admin-perm-clauses__preset-btn"
+                    data-action="click->permissions-grant#selectNone">
+              <%= t("views.admin.permissions.grant.preset_none") %>
+            </button>
+            <button type="button"
+                    class="admin-perm-clauses__preset-btn"
+                    data-action="click->permissions-grant#selectAll">
+              <%= t("views.admin.permissions.grant.preset_all") %>
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-perm-clauses__list" data-permissions-grant-target="clausesList"></div>
+
+        <div class="admin-perm-hint">
+          <p data-permissions-grant-target="baselineHint" hidden></p>
+          <p><%= t("lib.sub_permissions.admin.restricted_hint") %></p>
+        </div>
+      </div>
+
+      <div class="admin-perm-grant-subpanel__footer">
+        <span class="admin-perm-editor-footer__summary" data-permissions-grant-target="summary">
+          <%= t("views.admin.permissions.grant.summary_full") %>
+        </span>
+      </div>
+    </div>
+  <% end %>
+</section>

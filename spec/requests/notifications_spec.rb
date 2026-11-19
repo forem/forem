@@ -51,9 +51,37 @@ RSpec.describe "NotificationsIndex" do
 
         expect(response.body).to redirect_to(new_magic_link_path)
       end
+
+      it "ignores malformed X-Forwarded-Host headers when redirecting" do
+        get "/notifications", headers: { "X-Forwarded-Host" => "'\"efx" }
+
+        expect(response).to redirect_to(new_magic_link_path)
+        expect(response.location).to eq("http://www.example.com#{new_magic_link_path}")
+      end
     end
 
     context "when signed in" do
+      it "loads only organization navigation columns and preserves membership filtering", :aggregate_failures do
+        organizations = %w[admin member guest pending].map do |role|
+          org = create(:organization, name: "Navigation #{role}")
+          create(:organization_membership, user: user, organization: org, type_of_user: role)
+          org
+        end
+        sign_in user
+
+        get "/notifications"
+
+        navigation_organizations = controller.instance_variable_get(:@organizations)
+        expect(navigation_organizations.map(&:id)).to match_array(organizations.first(2).map(&:id))
+        navigation_organizations.each do |org|
+          expect(org.attributes.keys).to match_array(%w[id name])
+          expect(response.body).to include(CGI.escapeHTML(org.name))
+          expect(response.body).to include(notifications_filter_org_path(filter: :org, org_id: org.id))
+        end
+        menu = Nokogiri::HTML(response.body).at_css("#notifications-filter__select")
+        organizations.last(2).each { |org| expect(menu.text).not_to include(org.name) }
+      end
+
       it "assigns the ids of the user's latest reaction and comment", :aggregate_failures do
         article = create(:article)
         create(:reaction, user: user, reactable: article, category: "like")
@@ -394,7 +422,7 @@ RSpec.describe "NotificationsIndex" do
       before do
         moderator.add_role(:trusted)
         sign_in moderator
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::CreateRoundRobinModerationNotificationsWorker) do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
@@ -422,7 +450,7 @@ RSpec.describe "NotificationsIndex" do
       before do
         moderator.add_role(:trusted)
         sign_in moderator
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::CreateRoundRobinModerationNotificationsWorker) do
           Notification.send_moderation_notification(article)
         end
         get "/notifications"
@@ -448,7 +476,7 @@ RSpec.describe "NotificationsIndex" do
 
       it "does not render the notification when untrusted or unsubscribed from mod roundrobin", :aggregate_failures do
         sign_in user
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::CreateRoundRobinModerationNotificationsWorker) do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
@@ -458,7 +486,7 @@ RSpec.describe "NotificationsIndex" do
 
         user.add_role(:trusted)
         user.notification_setting.update(mod_roundrobin_notifications: false)
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::CreateRoundRobinModerationNotificationsWorker) do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
@@ -497,14 +525,14 @@ RSpec.describe "NotificationsIndex" do
       before { sign_in user }
 
       it "renders a welcome notification only when the broadcast is active", :aggregate_failures do
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::WelcomeNotificationWorker) do
           Notification.send_welcome_notification(user.id, broadcast.id)
         end
         get "/notifications"
         expect(response.body).not_to include broadcast.processed_html
 
         broadcast.update!(active: true)
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::WelcomeNotificationWorker) do
           Notification.send_welcome_notification(user.id, broadcast.id)
         end
         get "/notifications"
@@ -517,7 +545,7 @@ RSpec.describe "NotificationsIndex" do
         sign_in user
         badge = create(:badge, credits_awarded: 0)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NewBadgeAchievementWorker) do
           Notification.send_new_badge_achievement_notification(badge_achievement)
         end
         get "/notifications"
@@ -553,7 +581,7 @@ RSpec.describe "NotificationsIndex" do
         sign_in user
         badge = create(:badge, credits_awarded: 11)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NewBadgeAchievementWorker) do
           Notification.send_new_badge_achievement_notification(badge_achievement)
         end
         get "/notifications"
@@ -616,7 +644,7 @@ RSpec.describe "NotificationsIndex" do
 
       before do
         user2.follow(user)
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
           Notification.send_to_mentioned_users_and_followers(article)
         end
         sign_in user2
@@ -640,7 +668,7 @@ RSpec.describe "NotificationsIndex" do
         FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(org_with_domain))
         org_article = create(:article, user_id: user.id, organization: org_with_domain)
 
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
           Notification.send_to_mentioned_users_and_followers(org_article)
         end
 
@@ -655,7 +683,7 @@ RSpec.describe "NotificationsIndex" do
       let(:article) { create(:article, user_id: user.id, co_author_ids: [co_author.id]) }
 
       before do
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::CoAuthorWorker) do
           Notification.send_to_co_authors(article)
         end
         sign_in co_author
@@ -729,7 +757,7 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "renders the organization credit", :aggregate_failures do
-        sidekiq_perform_enqueued_jobs { Notification.send_to_co_authors(article) }
+        sidekiq_perform_enqueued_jobs(only: Notifications::CoAuthorWorker) { Notification.send_to_co_authors(article) }
         sign_in co_author
 
         get "/notifications"
@@ -748,7 +776,7 @@ RSpec.describe "NotificationsIndex" do
 
       before do
         user2.follow(user)
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
           Notification.send_to_mentioned_users_and_followers(article)
         end
         sign_in admin

@@ -37,9 +37,7 @@
 
     <div class="substories" id="substories">
       <% if @articles.any? %>
-        <% @articles.each do |article| %>
-          <%= render partial: "articles/single_story", locals: { story: article.decorate, featured: false, pinned: false } %>
-        <% end %>
+        <%= render_story_cards(@articles, featured: false, pinned: false) %>
         <div class="mt-4">
           <%= paginate @articles %>
         </div>

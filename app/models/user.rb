@@ -128,6 +128,7 @@ class User < ApplicationRecord
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
   has_many :organizations, through: :organization_memberships
+  has_many :pages, dependent: :destroy
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
   has_many :podcast_episode_appearances, dependent: :delete_all, inverse_of: :user
@@ -315,6 +316,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
+  after_update :sync_embed_page_slugs, if: :saved_change_to_username?
   after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
   after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
@@ -322,6 +324,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
   after_create_commit :create_onboarding_checklist
+  after_create_commit :bust_legacy_username_redirect_cache
 
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
@@ -359,6 +362,14 @@ class User < ApplicationRecord
     find_by(id: Settings::General.mascot_user_id)
   end
 
+  def self.for_username_or_legacy(username)
+    find_by(username: username) || for_legacy_username(username)
+  end
+
+  def self.for_legacy_username(username)
+    find_by(old_username: username) || find_by(old_old_username: username)
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
   end
@@ -394,19 +405,18 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
-  def set_initial_roles!
+  # Read `first_user` before saving the new user: on a fresh database the
+  # setting falls back to `!User.exists?`, which is false once this user exists.
+  # The value is only a hint; Users::ClaimFirstUser re-checks it under a lock
+  # so that at most one signup gets the first-user roles.
+  def set_initial_roles!(first_user: Settings::General.waiting_on_first_user)
     # Avoid overwriting roles for users who already exist but are e.g. logging in
     # through a new identity provider
     return unless valid? && previously_new_record?
+    return if first_user && Users::ClaimFirstUser.call(self)
 
-    if Settings::General.waiting_on_first_user
-      add_role(:creator)
-      add_role(:super_admin)
-      add_role(:trusted)
-    elsif Settings::Authentication.limit_new_users?
-      add_role(:limited)
-      # Otherwise just leave the new user in good standing
-    end
+    # Otherwise just leave the new user in good standing
+    add_role(:limited) if Settings::Authentication.limit_new_users?
   end
 
   def author_trust_score
@@ -684,6 +694,7 @@ class User < ApplicationRecord
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
+    :sub_permission?,
     :subforem_moderator?,
     :super_admin?,
     :support_admin?,
@@ -924,6 +935,22 @@ class User < ApplicationRecord
 
   def flipper_id
     "User:#{id}"
+  end
+
+  def ordered_embed_pages
+    pages.embed_html.order(:created_at, :id)
+  end
+
+  def embed_pages_enabled?
+    FeatureFlag.enabled_for_user?(:user_embed_pages, self) || FeatureFlag.enabled?(:user_embed_pages, self)
+  end
+
+  def can_manage_embed_pages?
+    registered? && !actively_spam_or_suspended? && embed_pages_enabled?
+  end
+
+  def can_serve_embed_pages?
+    registered? && !spam_or_suspended? && embed_pages_enabled?
   end
 
   def reactions_to
@@ -1226,6 +1253,13 @@ class User < ApplicationRecord
     Users::BustProfileIdentityCacheWorker.perform_async(id)
   end
 
+  def bust_legacy_username_redirect_cache
+    legacy_keys = EdgeCache::LegacySlugRedirectKeys.call(username, exclude_user_id: id)
+    return if legacy_keys.empty?
+
+    EdgeCache::PurgeByKeyWorker.perform_async(legacy_keys, [path])
+  end
+
   def bust_profile_details_cache
     Users::BustProfileDetailsCacheWorker.perform_async(id)
   end
@@ -1334,6 +1368,13 @@ class User < ApplicationRecord
     # Check for spam patterns when user gets spam or suspended role
     return unless role.name.in?(%w[spam suspended])
 
+    target_user_id = id
+    ActiveRecord.after_all_transactions_commit do
+      Page.embed_html.where(user_id: target_user_id).pluck(:slug).each do |page_slug|
+        Pages::BustCacheWorker.perform_async(page_slug, nil, target_user_id)
+      end
+    end
+
     # The domain scan can hit the statement timeout, so keep it out of this
     # callback: an error here rolls back the role grant (and aborts a banish).
     Spam::DomainDetectorWorker.perform_async(id)
@@ -1342,5 +1383,19 @@ class User < ApplicationRecord
     # so rescore on every grant/removal regardless of which code path changed the role.
     # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
     articles.published.find_each(&:async_score_calc)
+  end
+
+  def sync_embed_page_slugs
+    pages.embed_html.find_each do |embed_page|
+      suffix = embed_page.slug.to_s.split("/").last
+      next if suffix.blank?
+
+      new_slug = "#{username}/embed/#{suffix}"
+      next if embed_page.slug == new_slug
+      next if Page.where(slug: new_slug).where.not(id: embed_page.id).exists?
+
+      embed_page.user = self
+      embed_page.update!(slug: new_slug)
+    end
   end
 end

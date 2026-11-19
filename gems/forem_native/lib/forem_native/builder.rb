@@ -49,6 +49,21 @@ module ForemNative
         platform_candidates(platform).any? { |dir| File.exist?(extension_binary_path(platform_dir: dir)) }
     end
 
+    def self.binary_exports_symbol?(binary_path, symbol_name)
+      return false unless binary_path && File.file?(binary_path)
+
+      File.binread(binary_path).include?(symbol_name.to_s.b)
+    rescue SystemCallError
+      false
+    end
+
+    def self.fresh_binary_exists?(symbol_name, platform: RUBY_PLATFORM)
+      binary_exports_symbol?(extension_binary_path, symbol_name) ||
+        platform_candidates(platform).any? do |dir|
+          binary_exports_symbol?(extension_binary_path(platform_dir: dir), symbol_name)
+        end
+    end
+
     def self.cargo_available?
       return false if ENV["FOREM_NATIVE_SKIP_BUILD"] == "1"
 
@@ -60,8 +75,14 @@ module ForemNative
 
       FileUtils.mkdir_p(dest_dir)
       dest = File.join(dest_dir, "forem_native.#{dlext}")
-      FileUtils.cp(cargo_artifact_path, dest)
+      # Copy to a sibling temp file and rename atomically so overwriting a previously mmap'd
+      # shared library on macOS ARM64 never mutates an active vnode page cache in place.
+      tmp_dest = "#{dest}.tmp.#{Process.pid}.#{rand(1_000_000)}"
+      FileUtils.cp(cargo_artifact_path, tmp_dest)
+      File.rename(tmp_dest, dest)
       true
+    ensure
+      FileUtils.rm_f(tmp_dest) if tmp_dest && File.exist?(tmp_dest)
     end
 
     def self.compile!(dest_dir: LIB_TARGET_DIR)

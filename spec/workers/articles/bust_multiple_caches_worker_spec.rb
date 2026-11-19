@@ -2,24 +2,27 @@ require "rails_helper"
 
 RSpec.describe Articles::BustMultipleCachesWorker, type: :worker do
   describe "#perform" do
-    # Explicitly create article before the test is invoked, since
-    # creating an article will invoke EdgeCache::Bust#call in a callback.
     let!(:article) { create(:article) }
-    let(:path) { article.path }
     let(:worker) { subject }
-    let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
     before do
-      allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-      allow(cache_bust).to receive(:call).with(path)
-      allow(cache_bust).to receive(:call).with("#{path}?i=i")
+      allow(EdgeCache::PurgeByKey).to receive(:call)
     end
 
-    it "busts cache" do
+    it "purges article surrogate keys without querying paths eagerly", :aggregate_failures do
       worker.perform([article.id])
 
-      expect(cache_bust).to have_received(:call).with(path).once
-      expect(cache_bust).to have_received(:call).with("#{path}?i=i").once
+      expect(EdgeCache::PurgeByKey).to have_received(:call).once do |keys, fallback_paths:|
+        expect(keys).to eq(["articles/#{article.id}"])
+        expect(fallback_paths).to respond_to(:call)
+        expect(fallback_paths.call).to eq([article.path])
+      end
+    end
+
+    it "does nothing when article_ids is empty" do
+      worker.perform([])
+
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
   end
 end

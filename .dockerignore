@@ -1,5 +1,7 @@
 .dockerignore
 .gitignore
+.kamal/
+.env*
 logs/
 tmp/
 node_modules/

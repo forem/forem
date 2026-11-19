@@ -20,6 +20,10 @@ module Middlewares
         env["HTTP_HOST"] = original_host
       end
 
+      # Clear X-Forwarded-Host so downstream Rack/Rails host helpers cannot bypass
+      # RestoreOriginalHost's trust and validation checks by reading the raw header.
+      env.delete("HTTP_X_FORWARDED_HOST")
+
       @app.call(env)
     end
 

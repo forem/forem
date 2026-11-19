@@ -122,6 +122,14 @@ RSpec.describe Ai::SpamEscalationCheck do
     end
   end
 
+  it "escalates via Gemini Decision using GEMINI_API_KEY without needing a TypeSafe key" do
+    stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", nil)
+    enable_gemini_decision_for(:spam_escalation)
+    stub_gemini_decision(offplatform_contact: 0.5)
+
+    expect(check.escalate?).to be(true)
+  end
+
   it "does not escalate or call Jev when :spam_escalation is off, even with a TypeSafe key" do
     stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", "test-typesafe-key")
     allow(Ai::TypeSafe::Client).to receive(:new)

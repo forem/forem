@@ -65,7 +65,7 @@ module Admin
     def handle_user_cache
       user = User.find(params[:bust_user].to_i)
       user.touch(:profile_updated_at, :last_followed_at, :last_comment_at)
-      bust_link(user.path)
+      EdgeCache::BustUser.call(user)
     end
 
     def handle_article_cache

@@ -411,7 +411,7 @@ module Feeds
     def fetch_with_retry(url, retries: 0)
       body = +""
       streamed = false
-      response = HTTParty.get(
+      response = SafeHttp.get(
         url,
         timeout: 20,
         stream_body: true,

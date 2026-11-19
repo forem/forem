@@ -10,3 +10,67 @@ pt:
         description: Descubra os próximos eventos virtuais, desafios, transmissões e hackathons.
       view_on_calendar: Ver no calendário
       no_events: Nenhum evento agendado no momento. Volte em breve!
+      nav:
+        all_events: Todos os Eventos
+        meetups: Meetups
+        conferences: Conferências
+      landings:
+        meetup:
+          meta:
+            title: Meetups
+            description: Descubra os próximos meetups e encontros anteriores da comunidade de desenvolvedores.
+          heading: Meetups
+          subtitle: Conecte-se com outros desenvolvedores presencialmente e online em meetups da comunidade.
+          upcoming_heading: Próximos Meetups
+          past_heading: Meetups Anteriores
+          no_upcoming: Nenhum meetup agendado no momento. Volte em breve!
+          view_all_events: Ver todos os eventos
+        conference:
+          meta:
+            title: Conferências
+            description: Explore as próximas conferências, cúpulas e encontros da comunidade de desenvolvedores.
+          heading: Conferências
+          subtitle: Explore conferências para desenvolvedores, cúpulas e encontros comunitários de vários dias.
+          upcoming_heading: Próximas Conferências
+          past_heading: Conferências Anteriores
+          no_upcoming: Nenhuma conferência agendada no momento. Volte em breve!
+          view_all_events: Ver todos os eventos
+      gathering:
+        events: Eventos
+        meetups: Meetups
+        conferences: Conferências
+        live: AO VIVO
+        upcoming: EM BREVE
+        ended: ENCERRADO
+        details: Detalhes do Evento
+        dates: Datas
+        location: Local
+        format: Formato
+        host: Organização
+        register_heading: Tem interesse em participar?
+        register_description: Avise os organizadores que você tem interesse e receba lembretes do evento.
+        visit_website: Visitar o site do evento
+        register_external: Inscrever-se no evento
+      pages:
+        breadcrumbs:
+          challenges: Desafios
+        tabs:
+          nav_label: Navegação do evento
+          overview: Visão geral
+          live_stream: Transmissão ao vivo
+          challenge_details: Detalhes do desafio
+          event_details: Detalhes do evento
+          showcase: Showcase
+      event_articles:
+        heading: "Posts de %{event_title}"
+        badge: Feed do Evento
+        subtitle: Atualizações e artigos publicados especificamente para este evento.
+        article_pill: Artigo
+        time_ago: "há %{time}"
+        min_read: "%{count} min de leitura"
+        reactions_aria:
+          one: "1 reação"
+          other: "%{count} reações"
+        comments_aria:
+          one: "1 comentário"
+          other: "%{count} comentários"

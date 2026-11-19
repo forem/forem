@@ -48,7 +48,7 @@ RSpec.describe "Articles" do
         expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
         expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
 
-        expected_surrogate_key_headers = ["articles/#{article.id}"]
+        expected_surrogate_key_headers = ["articles-feed", "articles/#{article.id}"]
         expect(response.headers["Surrogate-Key"].split).to match_array(expected_surrogate_key_headers)
 
         expect(response.headers["X-Accel-Expires"]).to eq("600")
@@ -349,6 +349,35 @@ RSpec.describe "Articles" do
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Stats for Your Article")
+    end
+
+    context "when the article has been gemmed" do
+      let(:gem_giver) { create(:user, name: "Gem Giver") }
+      let(:article) { create(:article, user: user) }
+
+      it "lists who gave the gem in the reaction history" do
+        article.update_columns(favorited_by_user_id: gem_giver.id, favorited_at: Time.current)
+        get "#{article.path}/stats"
+
+        expect(response.body).to include("gem-history-entry")
+        expect(response.body).to include("Gem Giver")
+      end
+
+      it "orders the gem entry newest-first alongside reactions" do
+        reactor = create(:user, name: "Newer Reactor")
+        article.update_columns(favorited_by_user_id: gem_giver.id, favorited_at: 2.days.ago)
+        create(:reaction, reactable: article, user: reactor, category: "like", created_at: 1.day.ago)
+        get "#{article.path}/stats"
+
+        expect(response.body.index("Newer Reactor")).to be < response.body.index("gem-history-entry")
+      end
+
+      it "does not show a gem entry when the article has not been gemmed" do
+        create(:reaction, reactable: article, category: "like")
+        get "#{article.path}/stats"
+
+        expect(response.body).not_to include("gem-history-entry")
+      end
     end
   end
 end

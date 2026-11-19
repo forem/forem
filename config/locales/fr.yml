@@ -102,6 +102,20 @@ fr:
     following_everyone: "Vous suivez %{details} (toutes)"
     you_are_following: "Vous suivez"
     and: "et"
+    embed_sandbox:
+      deferred_message: "Widget interactif différé pour préserver les performances de la page."
+      load_widget: "Charger le widget"
+      throttled_message: "Le widget a été limité par la protection des performances."
+      reload_widget: "Recharger le widget"
+      dismiss: "Fermer"
+      stopped_responding: "Ce widget ne répond plus et a été mis en pause pour garder votre navigateur fluide."
+      slow_responding: "Ce widget met trop de temps à répondre."
+      pause: "Mettre en pause"
+      paused: "Widget mis en pause."
+      resume_widget: "Reprendre le widget"
+      reload: "Recharger"
+      navigation_blocked: "La navigation dans ce widget intégré a été bloquée pour votre sécurité."
+      preview_error: "Impossible d'afficher l'aperçu isolé pour le moment."
   date:
     abbr_day_names:
     - dim.
@@ -307,6 +321,7 @@ fr:
       odd: doit être étrange
       other_than: doit être différent de %{count}
       present: doit être vide
+      processing_error: "Échec du traitement de l'image, ce fichier n'est peut-être pas une image ?"
       required: doit exister
       taken: a déjà été pris
       too_long:

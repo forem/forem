@@ -13,6 +13,8 @@ class RateLimitChecker
     article_update: { retry_after: 30 },
     comment_antispam_creation: { retry_after: 300 },
     comment_creation: { retry_after: 30 },
+    embed_page_creation: { retry_after: 60 },
+    embed_page_update: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
     flag_appeal_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
@@ -455,8 +457,9 @@ class RateLimitChecker
 
   # Counts persisted Mention rows created in the last hour for the user's comments and articles.
   def recent_persisted_mention_count(exclude_notifiable: nil)
-    comment_scope = user.comments.where("created_at > ?", 1.hour.ago)
-    article_scope = user.articles.published.where("published_at > ?", 1.hour.ago)
+    cutoff = 1.hour.ago
+    comment_scope = user.comments.where("created_at > ?", cutoff)
+    article_scope = user.articles.published.where("published_at > ?", cutoff)
 
     if exclude_notifiable&.persisted?
       case exclude_notifiable
@@ -467,13 +470,15 @@ class RateLimitChecker
       end
     end
 
-    Mention.where(created_at: 1.hour.ago..)
-      .where(
-        "(mentionable_type = 'Comment' AND mentionable_id IN (?)) OR " \
-        "(mentionable_type = 'Article' AND mentionable_id IN (?))",
-        comment_scope.select(:id),
-        article_scope.select(:id),
-      ).count
+    # Split the OR across two UNION ALL branches so PostgreSQL can use
+    # index_mentions_on_mentionable_id_and_mentionable_type instead of a full Seq Scan.
+    recent_mentions = Mention.where(created_at: cutoff..)
+    comment_mentions = recent_mentions.where(mentionable_type: "Comment", mentionable_id: comment_scope.select(:id))
+      .select(:id)
+    article_mentions = recent_mentions.where(mentionable_type: "Article", mentionable_id: article_scope.select(:id))
+      .select(:id)
+
+    Mention.from(Arel.sql("(#{comment_mentions.to_sql} UNION ALL #{article_mentions.to_sql}) AS mentions")).count
   end
 
   # Counts @-mentions in rendered HTML of the user's comments and articles from the last hour.

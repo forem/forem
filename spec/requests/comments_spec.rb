@@ -69,6 +69,8 @@ RSpec.describe "Comments" do
       expect(response.body).to include(CGI.escapeHTML(article.title))
       expect(article_queries.size).to eq(1)
       expect(article_queries.first).to include(%("articles"."processed_html"))
+        .and(exclude("body_markdown"))
+        .and(exclude("body_html"))
         .and(exclude("semantic_embedding"))
         .and(exclude("reading_list_document"))
     end
@@ -105,6 +107,8 @@ RSpec.describe "Comments" do
       expect(slug_queries).not_to be_empty
       expect(slug_queries).to all(
         include(%("articles"."processed_html"))
+          .and(exclude("body_markdown"))
+          .and(exclude("body_html"))
           .and(exclude("semantic_embedding"))
           .and(exclude("reading_list_document")),
       )
@@ -201,6 +205,19 @@ RSpec.describe "Comments" do
                       sign_in: "placeholder").split("placeholder").first
         expect(response.body).not_to include(text)
       end
+
+      it "renders all selected root threads in one native call", :aggregate_failures do
+        allow(ForemNative).to receive(:render_comment_tree).and_call_original
+
+        get "#{article.path}/comments"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Top level one", "Top level two", "Sub one")
+        expect(response.body).not_to include("Top level three", "Sub two")
+        expect(ForemNative).to have_received(:render_comment_tree).once.with(
+          anything, anything, anything, anything, 2
+        )
+      end
     end
 
     context "when there are child spam comments" do
@@ -242,6 +259,56 @@ RSpec.describe "Comments" do
         get child.path
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
+      end
+
+      it "links to the parent comment without loading its markdown or embedding columns", :aggregate_failures do
+        allow(User).to receive(:staff_account).and_return(nil)
+        child
+        parent_queries = []
+        user_id_queries = []
+        callback = lambda do |*, payload|
+          next if payload[:name] == "SCHEMA"
+
+          sql = payload[:sql]
+          bind_values = Array(payload[:type_casted_binds])
+          user_id_queries << sql if sql.include?('FROM "users"') && sql.include?('"users"."id" =')
+          next unless sql.include?('FROM "comments" WHERE "comments"."id" =')
+
+          parent_queries << sql if bind_values.include?(comment.id) || sql.include?(%(= #{comment.id} ))
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get child.path }
+
+        expect(response.body).to include(comment.path, CGI.escapeHTML(comment.title(150)))
+        expect(parent_queries).not_to be_empty
+        expect(parent_queries.join).not_to include('"comments".*', "semantic_embedding", "body_markdown")
+        expect(user_id_queries).to be_empty
+      end
+
+      it "preloads only id and username when the parent comment belongs to a different user", :aggregate_failures do
+        allow(User).to receive(:staff_account).and_return(nil)
+        replier = create(:user)
+        reply = create(:comment, parent: comment, commentable: article, user: replier)
+        parent_user_queries = []
+        callback = lambda do |*, payload|
+          next if payload[:name] == "SCHEMA"
+
+          sql = payload[:sql]
+          parent_user_queries << sql if sql.include?('FROM "users"') && sql.include?('"users"."id" =')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get reply.path }
+
+        expect(response.body).to include(comment.path, CGI.escapeHTML(comment.title(150)))
+        expect(parent_user_queries.size).to eq(1)
+        expect(parent_user_queries.first).to include(%("users"."id"), %("users"."username"))
+          .and(exclude('"users".*'))
+      end
+
+      it "shows the parent's deleted placeholder title" do
+        comment.update_columns(deleted: true)
+        get child.path
+        expect(response.body).to include(CGI.escapeHTML(Comment.title_deleted))
       end
     end
 
@@ -519,6 +586,15 @@ RSpec.describe "Comments" do
 
       expect(response).to have_http_status(:ok)
       expect(flash[:error]).not_to be_nil
+    end
+
+    it "keeps the parent comment header when updating a reply", :aggregate_failures do
+      child = create(:comment, commentable: article, user: user, parent: comment)
+
+      put "/comments/#{child.id}", params: { comment: { body_markdown: "edited reply" } }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(comment.path, CGI.escapeHTML(comment.title(150)))
     end
 
     context "when the article is deleted" do

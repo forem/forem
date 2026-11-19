@@ -2,21 +2,31 @@ require "rails_helper"
 
 RSpec.describe BustCachePathWorker, type: :worker do
   let(:worker) { subject }
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
   include_examples "#enqueues_on_correct_queue", "high_priority"
 
   describe "#perform" do
-    let(:path) { "/foo" }
-
     before do
-      allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-      allow(cache_bust).to receive(:call).with(path)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      allow(EdgeCache::Bust).to receive(:call)
     end
 
-    it "busts cache for given path" do
-      worker.perform(path)
-      expect(cache_bust).to have_received(:call).with(path)
+    it "maps known global paths to EdgeCache::PurgeByKey", :aggregate_failures do
+      worker.perform("/")
+      worker.perform("/feed.xml")
+      worker.perform("/onboarding")
+
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("articles-feed", fallback_paths: "/feed.xml")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("onboarding-slideshow", fallback_paths: "/onboarding")
+      expect(EdgeCache::Bust).not_to have_received(:call)
+    end
+
+    it "falls back to EdgeCache::Bust for unmapped paths" do
+      worker.perform("/foo")
+
+      expect(EdgeCache::Bust).to have_received(:call).with("/foo")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
     end
   end
 end

@@ -39,18 +39,41 @@ var I18n = window.I18n = {
   }
 };
 
+// Keep this lazy proxy and ignore list in sync with app/javascript/utilities/frontendErrorTracking.js.
 (function() {
   var hbConfig = {};
   var hbBeforeNotifyHandlers = [];
   var hbContext = {};
+  var hbBreadcrumbs = [];
   var hbQueue = [];
   var hbLoadingPromise = null;
   var hbLoadFailed = false;
   var hbListenersAttached = false;
   var HB_MAX_QUEUE = 20;
 
+  function isErrorClientConfigured() {
+    return Boolean(hbConfig.dsn || hbConfig.apiKey);
+  }
+
+  function getActiveErrorScriptMetaName() {
+    if (hbConfig.dsn) {
+      return 'betterstack-errors-script';
+    }
+    if (hbConfig.apiKey) {
+      return 'honeybadger-script';
+    }
+    return null;
+  }
+
+  function getLoadedErrorClient() {
+    if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
+      return window.Honeybadger;
+    }
+    return null;
+  }
+
   function attachHoneybadgerWindowListeners() {
-    if (hbListenersAttached || !hbConfig.apiKey) return;
+    if (hbListenersAttached || !isErrorClientConfigured()) return;
     hbListenersAttached = true;
 
     window.addEventListener('error', function(event) {
@@ -71,8 +94,9 @@ var I18n = window.I18n = {
   }
 
   function passesBeforeNotify(err) {
-    var message = typeof err === 'string' ? err : (err && err.message);
-    var notice = { message: message };
+    var message = typeof err === 'string' ? err : (err && typeof err.message === 'string' ? err.message : undefined);
+    var name = err && typeof err === 'object' && typeof err.name === 'string' ? err.name : undefined;
+    var notice = { name: name, message: message };
     for (var i = 0; i < hbBeforeNotifyHandlers.length; i++) {
       try {
         if (hbBeforeNotifyHandlers[i](notice) === false) {
@@ -84,8 +108,9 @@ var I18n = window.I18n = {
   }
 
   function loadHoneybadgerClient() {
-    if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
-      return Promise.resolve(window.Honeybadger);
+    var loadedClient = getLoadedErrorClient();
+    if (loadedClient) {
+      return Promise.resolve(loadedClient);
     }
     if (hbLoadFailed) {
       return Promise.resolve(null);
@@ -93,7 +118,11 @@ var I18n = window.I18n = {
     if (hbLoadingPromise) {
       return hbLoadingPromise;
     }
-    var meta = document.querySelector('meta[name="honeybadger-script"]');
+    var metaName = getActiveErrorScriptMetaName();
+    if (!metaName) {
+      return Promise.resolve(null);
+    }
+    var meta = document.querySelector('meta[name="' + metaName + '"]');
     var scriptSrc = meta && meta.getAttribute('content');
     if (!scriptSrc) {
       return Promise.resolve(null);
@@ -103,8 +132,8 @@ var I18n = window.I18n = {
       script.src = scriptSrc;
       script.defer = true;
       script.onload = function() {
-        var realHb = window.Honeybadger;
-        if (realHb && !realHb.__isLazyProxy) {
+        var realHb = getLoadedErrorClient();
+        if (realHb) {
           if (typeof realHb.configure === 'function') {
             realHb.configure(hbConfig);
           }
@@ -116,6 +145,12 @@ var I18n = window.I18n = {
           if (Object.keys(hbContext).length > 0 && typeof realHb.setContext === 'function') {
             realHb.setContext(hbContext);
           }
+          while (hbBreadcrumbs.length > 0) {
+            var crumbArgs = hbBreadcrumbs.shift();
+            if (typeof realHb.addBreadcrumb === 'function') {
+              realHb.addBreadcrumb.apply(realHb, crumbArgs);
+            }
+          }
           while (hbQueue.length > 0) {
             var args = hbQueue.shift();
             if (typeof realHb.notify === 'function') {
@@ -125,6 +160,7 @@ var I18n = window.I18n = {
           resolve(realHb);
         } else {
           hbLoadFailed = true;
+          hbBreadcrumbs.length = 0;
           hbQueue.length = 0;
           resolve(null);
         }
@@ -132,6 +168,7 @@ var I18n = window.I18n = {
       script.onerror = function() {
         hbLoadFailed = true;
         hbLoadingPromise = null;
+        hbBreadcrumbs.length = 0;
         hbQueue.length = 0;
         script.remove();
         resolve(null);
@@ -145,21 +182,33 @@ var I18n = window.I18n = {
     __isLazyProxy: true,
     config: hbConfig,
     configure: function(opts) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.configure === 'function') {
+        return realHb.configure(opts);
+      }
       if (opts && typeof opts === 'object') {
         Object.assign(hbConfig, opts);
-        if (hbConfig.apiKey) {
+        if (isErrorClientConfigured()) {
           attachHoneybadgerWindowListeners();
         }
       }
       return this;
     },
     beforeNotify: function(handler) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.beforeNotify === 'function') {
+        return realHb.beforeNotify(handler);
+      }
       if (typeof handler === 'function') {
         hbBeforeNotifyHandlers.push(handler);
       }
       return this;
     },
     setContext: function(ctx) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.setContext === 'function') {
+        return realHb.setContext(ctx);
+      }
       if (ctx && typeof ctx === 'object') {
         Object.assign(hbContext, ctx);
       }
@@ -170,20 +219,52 @@ var I18n = window.I18n = {
     },
     clear: function() {
       hbContext = {};
+      hbBreadcrumbs.length = 0;
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.clear === 'function') {
+        return realHb.clear();
+      }
       return this;
     },
     resetContext: function(ctx) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.resetContext === 'function') {
+        return realHb.resetContext(ctx);
+      }
       hbContext = ctx && typeof ctx === 'object' ? Object.assign({}, ctx) : {};
       return this;
     },
+    addBreadcrumb: function(message, opts) {
+      var realHb = getLoadedErrorClient();
+      if (realHb && typeof realHb.addBreadcrumb === 'function') {
+        return realHb.addBreadcrumb(message, opts);
+      }
+      if (isErrorClientConfigured()) {
+        if (hbBreadcrumbs.length >= HB_MAX_QUEUE) {
+          hbBreadcrumbs.shift();
+        }
+        hbBreadcrumbs.push([message, opts]);
+      }
+      return this;
+    },
     notify: function(err, name, extra) {
-      if (hbLoadFailed || !hbConfig.apiKey || !passesBeforeNotify(err)) {
+      if (hbLoadFailed || !isErrorClientConfigured() || !passesBeforeNotify(err)) {
         return false;
       }
-      if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
-        return window.Honeybadger.notify(err, name, extra);
+      var realHb = getLoadedErrorClient();
+      if (realHb) {
+        return realHb.notify(err, name, extra);
       }
-      if (hbQueue.length < HB_MAX_QUEUE) {
+      var errKey = typeof err === 'string' ? err : (err && (err.name || '') + ':' + (err.message || ''));
+      if (errKey === ':') {
+        errKey = '';
+      }
+      var alreadyQueued = errKey && hbQueue.some(function(item) {
+        var queued = item[0];
+        var queuedKey = typeof queued === 'string' ? queued : (queued && (queued.name || '') + ':' + (queued.message || ''));
+        return queuedKey === errKey;
+      });
+      if (!alreadyQueued && hbQueue.length < HB_MAX_QUEUE) {
         hbQueue.push([err, name, extra]);
       }
       loadHoneybadgerClient();
@@ -200,7 +281,7 @@ I18n.translations = JSON.parse(document.getElementById('i18n-translations').data
 const isForemWebview = navigator.userAgent === 'ForemWebView/1';
 
 var instantClick
-  , InstantClick = instantClick = function(document, location, $userAgent) {
+  , InstantClick = window.InstantClick = window.instantClick = instantClick = function(document, location, $userAgent) {
   // Internal variables
   var $isChromeForIOS = $userAgent.indexOf(' CriOS/') > -1
     , $currentLocationWithoutHash
@@ -221,6 +302,7 @@ var instantClick
     , $trackedAssets = []
     , $keepScrollPosition = false
     , $isInternalNavigation = false
+    , $boundBody = null
 
   // Variables defined by public functions
     , $preloadOnMousedown
@@ -333,13 +415,19 @@ var instantClick
       searchTypeahead.classList.add('hidden');
     }
     var currentScrollY = window.pageYOffset
+    var isSameBodyNode = body === pageContentDiv
 
-    document.body.replaceChild(body, pageContentDiv)
+    if (pageContentDiv && !isSameBodyNode) {
+      document.body.replaceChild(body, pageContentDiv)
+    }
 
     var prog = document.getElementById("navigation-progress");
-    prog.classList.remove("showing");
+    if (prog) {
+      prog.classList.remove("showing");
+    }
 
     if (newUrl) {
+      var cleanUrl = newUrl.replace("?samepage=true", "").replace("&samepage=true", "");
       const routeChangeTarget = document.getElementById('route-change-target');
       if(routeChangeTarget) {
         routeChangeTarget.focus();
@@ -347,7 +435,7 @@ var instantClick
       document.getElementById('page-route-change').textContent = title;
       try {
         $isInternalNavigation = true;
-        history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
+        history.pushState(null, null, cleanUrl)
       } finally {
         $isInternalNavigation = false;
       }
@@ -376,7 +464,7 @@ var instantClick
       $keepScrollPosition = false
 
 
-      $currentLocationWithoutHash = removeHash(newUrl)
+      $currentLocationWithoutHash = removeHash(cleanUrl)
     }
     else {
       scrollTo(0, scrollY)
@@ -396,7 +484,9 @@ var instantClick
       document.title = title
     }
 
-    instantanize()
+    if (!isSameBodyNode) {
+      instantanize()
+    }
     if (pop) {
       triggerPageEvent('restore')
     }
@@ -598,6 +688,15 @@ var instantClick
       return
     }
 
+    if ($preloadTimer) {
+      clearTimeout($preloadTimer)
+      $preloadTimer = false
+    }
+    if ($isPreloading) {
+      $xhr.abort()
+      setPreloadingAsHalted()
+    }
+
     if (!(loc in $history)) {
       location.href = location.href
       return
@@ -618,15 +717,16 @@ var instantClick
 
   function instantanize(isInitializing) {
     var docBody = document.body;
-    if (docBody) {
-      document.body.addEventListener('touchstart', touchstartListener, true)
-      document.body.addEventListener('focus', focusListener, true)
+    if (docBody && docBody !== $boundBody) {
+      $boundBody = docBody;
+      docBody.addEventListener('touchstart', touchstartListener, true)
+      docBody.addEventListener('focus', focusListener, true)
       if ($preloadOnMousedown) {
-        document.body.addEventListener('mousedown', mousedownListener, true)
+        docBody.addEventListener('mousedown', mousedownListener, true)
       } else {
-        document.body.addEventListener('mouseover', mouseoverListener, true)
+        docBody.addEventListener('mouseover', mouseoverListener, true)
       }
-      document.body.addEventListener('click', clickListener, true)
+      docBody.addEventListener('click', clickListener, true)
     }
 
     if (!isInitializing) {
@@ -636,6 +736,7 @@ var instantClick
         , copyElement
         , parentNode
         , nextSibling
+        , scriptType
         , i
 
       // `scriptElementsInDOM` will change during the copy of scripts if
@@ -649,10 +750,14 @@ var instantClick
 
       for (i = 0; i < scriptElementsToCopy.length; i++) {
         originalElement = scriptElementsToCopy[i]
-        if (!originalElement) { // Might have disappeared, see previous comment
+        if (!originalElement || !originalElement.parentNode) { // Might have disappeared, see previous comment
           continue
         }
         if (originalElement.hasAttribute('data-no-instant')) {
+          continue
+        }
+        scriptType = originalElement.getAttribute('type')
+        if (scriptType && !/^(text\/javascript|application\/javascript|module)$/i.test(scriptType)) {
           continue
         }
 
@@ -971,19 +1076,27 @@ var instantClick
 
     var script = document.createElement('script');
     script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
-    document.head.appendChild(script);
+    var attempts = 0;
     var waitingOnPTR = setInterval(function(){
+      attempts += 1;
       if (typeof PullToRefresh !== 'undefined') {
-        var ptr = PullToRefresh.init({
+        PullToRefresh.init({
           mainElement: 'body',
           passive: true,
           onRefresh: function(){
             window.location.reload();
-            }
-         });
-         clearInterval(waitingOnPTR)
+          }
+        });
+        clearInterval(waitingOnPTR);
+      } else if (attempts >= 200) {
+        clearInterval(waitingOnPTR);
       }
-    }, 1)
+    }, 50);
+    script.onerror = function() {
+      clearInterval(waitingOnPTR);
+      script.remove();
+    };
+    document.head.appendChild(script);
   }
 
 
@@ -1014,11 +1127,30 @@ var instantClick
 
 // INITIALIZE/ERROR HANDLING
 
-  if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
+  if (document.body && document.body.dataset && document.body.dataset.betterstackErrorsDsn) {
+    Honeybadger.configure({
+      dsn: document.body.dataset.betterstackErrorsDsn,
+      environment: document.body.dataset.betterstackErrorsEnvironment || "<%= Rails.env %>",
+      revision: document.body.dataset.latestCommitId || document.body.dataset.releaseFootprint || document.body.dataset.deployedAt,
+      maxErrors: 20,
+    });
+
+    Honeybadger.beforeNotify(function(notice) {
+      if (!notice) return true
+      const parts = []
+      if (typeof notice.name === 'string' && notice.name) parts.push(notice.name)
+      if (typeof notice.message === 'string' && notice.message) parts.push(notice.message)
+      if (parts.length === 0) return true
+      const haystack = parts.join(': ')
+      const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i, /ChunkLoadError/i]
+      return !(ignorePatterns.some((pattern) => pattern.test(haystack)));
+    });
+  } else if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
     Honeybadger.configure({
       apiKey: document.body.dataset.honeybadgerKey,
       environment: "<%= Rails.env %>",
       revision: document.body.dataset.releaseFootprint,
+      maxErrors: 20,
     });
 
     Honeybadger.beforeNotify(function(notice) {
