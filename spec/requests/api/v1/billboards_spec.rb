@@ -323,13 +323,14 @@ RSpec.describe "Api::V1::Billboards" do
       end
 
       it "refuses to approve or publish it and leaves it unchanged", :aggregate_failures do
+        original_name = draft.name
         put api_billboard_path(draft.id), params: { name: "Renamed", approved: true }.to_json, headers: auth_header
         expect(response).to have_http_status(:forbidden)
 
         put api_billboard_path(draft.id), params: { published: true }.to_json, headers: auth_header
         expect(response).to have_http_status(:forbidden)
 
-        expect(draft.reload).to have_attributes(name: draft.name, approved: false, published: false)
+        expect(draft.reload).to have_attributes(name: original_name, approved: false, published: false)
       end
     end
 

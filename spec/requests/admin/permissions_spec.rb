@@ -393,16 +393,20 @@ RSpec.describe "/admin/permissions" do
         record_admin.add_role(:single_resource_admin, create(:billboard))
         get admin_permissions_path
 
-        expect(response.body).to include("@#{record_admin.username}")
-        expect(response.body).not_to include("sub_permissions[user_id]\" value=\"#{record_admin.id}\"")
-        expect(response.body.scan(/name="user_id" value="#{record_admin.id}"/).size).to eq(0)
+        row = Nokogiri::HTML(response.body).at_css("[data-testid='permission-member-row-#{record_admin.id}']")
+
+        expect(row).to be_present
+        expect(row.css("[data-testid='sub-permissions-Billboard']")).to be_empty
       end
 
       it "shows one editor, for the class-wide grant, to a user with record and class-wide roles" do
         target_user.add_role(:single_resource_admin, create(:billboard))
         get admin_permissions_path
 
-        expect(response.body.scan(/id="allow_#{target_user.id}_Billboard_approve"/).size).to eq(1)
+        row = Nokogiri::HTML(response.body).at_css("[data-testid='permission-member-row-#{target_user.id}']")
+
+        expect(row.css("[data-testid='sub-permissions-Billboard']").size).to eq(1)
+        expect(row.css("#allow_#{target_user.id}_Billboard_approve").size).to eq(1)
       end
 
       it "shows each Billboard admin's sub-permissions on the index", :aggregate_failures do
