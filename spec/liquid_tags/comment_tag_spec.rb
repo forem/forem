@@ -35,6 +35,10 @@ RSpec.describe CommentTag, type: :liquid_tag do
       expect(rendered_tag).to include(comment.readable_publish_date)
     end
 
+    it "links the comment date to the comment permalink" do
+      expect(rendered_tag).to include(%(href="#{URL.comment(comment)}"))
+    end
+
     it "embeds the comment published date" do
       expect(rendered_tag).to include(comment.decorate.readable_publish_date)
     end
