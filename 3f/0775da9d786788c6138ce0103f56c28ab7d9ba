@@ -1,0 +1,22 @@
+.devcontainer/devcontainer.json
+  h_f968154a99632d 20-21
+.devcontainer/features/sshd-on-demand/devcontainer-feature.json
+  h_f968154a99632d 1-9
+.devcontainer/features/sshd-on-demand/install.sh
+  h_f968154a99632d 1-46
+.devcontainer/postAttachCommand-init.sh
+  h_f968154a99632d 3-5,13-28,30-32,34-42,56-67
+.devcontainer/postCreateCommand-init.sh
+  h_f968154a99632d 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3f0775da9d786788c6138ce0103f56c28ab7d9ba",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
