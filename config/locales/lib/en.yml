@@ -301,3 +301,32 @@ en:
           bottom_of_body_content:
             description: Content that will be appended to the bottom of the body tag on every page (WARNING — This will cache within the page request unevenly. Proceed with care).
             placeholder: 'Leave empty if you do not want to add anything.'
+    sub_permissions:
+      admin:
+        full_access: Full access
+        granted_restricted: Granted restricted %{resource} Admin access to %{username}
+        restricted: Restricted
+        restricted_hint: Restricted grants can only do what is checked below. New sub-permissions added later start unchecked.
+        save: Save sub-permissions
+        summary: Sub-permissions
+        updated: Updated %{resource} sub-permissions for %{username}
+      baseline_hints:
+        billboard: Always permitted even when restricted — create and edit unapproved drafts, delete unapproved drafts, and unpublish or unapprove live billboards.
+      clause_descriptions:
+        billboard:
+          approve: Mark billboards as approved for display.
+          modify_approved: Edit attributes of or delete billboards that are already approved.
+          publish: Set billboards live so they appear to members.
+      clauses:
+        billboard:
+          approve: approve billboards
+          modify_approved: change or delete approved billboards and Event billboards
+          publish: publish billboards
+      errors:
+        malformed: The %{resource} sub-permissions are not in a recognized format.
+        missing: 'Your %{resource} admin access does not include: %{clauses}.'
+        mode_required: Choose Full access or Restricted.
+        no_grant: The user does not have %{resource} admin access to restrict.
+        not_configurable: "%{resource} admin access has no sub-permissions."
+        unknown_clauses: 'Unknown %{resource} sub-permissions: %{clauses}.'
+        unsupported_version: The %{resource} sub-permissions use an unsupported version.

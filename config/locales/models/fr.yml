@@ -16,7 +16,12 @@ fr:
       is_too_long: est trop long.
       invalid_date: doit être saisie au format JJ/MM/AAAA avec la date actuelle ou passée
       series_unpermitted: Vous devez avoir la permission de poster sur
+      event_not_found: doit faire référence à un événement existant
+      event_articles_disabled: n'autorise pas les articles associés
+      event_not_accepting_articles: ne peut être associé que pendant le déroulement de l'événement
       invalid_coauthor: doivent être des identifiants d'utilisateur valides
+      invalid_hidden_billboard_locations: doit être une liste d'emplacements de bannières de publication valides
+      invalid_hidden_billboard_locations_list: 'contient des emplacements de bannières invalides : %{locations}'
       same_author: ne doit pas être le même utilisateur que l'auteur
       must_not_have_spaces: ne doit pas comporter d'espaces
       published: Publié

@@ -178,5 +178,131 @@ RSpec.describe Authorizer, type: :policy do
     # code.
     it { is_expected.not_to be_nil }
   end
+
+  describe "#sub_permission?" do
+    let(:user) { create(:user) }
+    let(:clauses) { SubPermissions.clauses_for("Billboard") }
+
+    def restrict(user, allow, resource_type: "Billboard")
+      SubPermissions.update_grant(user: user, resource_type: resource_type,
+                                  sub_permissions: SubPermissions.build(allow: allow))
+    end
+
+    def grant_rows(user)
+      UserRole.where(user_id: user.id)
+    end
+
+    def allowed_clauses(user)
+      authorizer = described_class.for(user: user.reload)
+      clauses.select { |clause| authorizer.sub_permission?(resource: Billboard, clause: clause) }
+    end
+
+    it "raises on a clause that is not registered, even for admins", :aggregate_failures do
+      admin = create(:user, :admin)
+
+      expect { authorizer.sub_permission?(resource: Billboard, clause: "aprove") }.to raise_error(ArgumentError)
+      expect { described_class.for(user: admin).sub_permission?(resource: Billboard, clause: "aprove") }
+        .to raise_error(ArgumentError)
+      expect { authorizer.sub_permission?(resource: Article, clause: "approve") }.to raise_error(ArgumentError)
+    end
+
+    it "denies every clause to a user without a grant" do
+      expect(allowed_clauses(user)).to be_empty
+    end
+
+    it "allows every clause to an unrestricted grant, as before sub-permissions existed" do
+      user.add_role(:single_resource_admin, Billboard)
+
+      expect(allowed_clauses(user)).to eq(clauses)
+    end
+
+    it "allows only the listed clauses to a restricted grant", :aggregate_failures do
+      user.add_role(:single_resource_admin, Billboard)
+
+      restrict(user, [])
+      expect(allowed_clauses(user)).to be_empty
+
+      restrict(user, %w[publish])
+      expect(allowed_clauses(user)).to eq(%w[publish])
+
+      restrict(user, clauses)
+      expect(allowed_clauses(user)).to eq(clauses)
+    end
+
+    it "allows every clause to admins and super admins, even with a restricted grant", :aggregate_failures do
+      %i[admin super_admin].each do |role|
+        privileged = create(:user, role)
+        privileged.add_role(:single_resource_admin, Billboard)
+        restrict(privileged, [])
+
+        expect(allowed_clauses(privileged)).to eq(clauses)
+      end
+    end
+
+    it "does not treat tech admins or other roles as Billboard admins" do
+      user.add_role(:tech_admin)
+      user.add_role(:single_resource_admin, Article)
+
+      expect(allowed_clauses(user)).to be_empty
+    end
+
+    it "honors a global single_resource_admin grant the way rolify does" do
+      user.add_role(:single_resource_admin)
+
+      expect(allowed_clauses(user)).to eq(clauses)
+    end
+
+    it "combines grants, so an unrestricted grant outweighs a restricted one" do
+      user.add_role(:single_resource_admin, Billboard)
+      restrict(user, [])
+      user.add_role(:single_resource_admin)
+
+      expect(allowed_clauses(user)).to eq(clauses)
+    end
+
+    it "checks a record against grants on its class and on the record itself", :aggregate_failures do
+      billboard = create(:billboard)
+      other_billboard = create(:billboard)
+      user.add_role(:single_resource_admin, billboard)
+
+      expect(described_class.for(user: user.reload).sub_permission?(resource: billboard, clause: "approve")).to be(true)
+      expect(described_class.for(user: user).sub_permission?(resource: other_billboard, clause: "approve")).to be(false)
+      expect(described_class.for(user: user).sub_permission?(resource: Billboard, clause: "approve")).to be(false)
+    end
+
+    it "does not let another user's restriction or grant leak", :aggregate_failures do
+      other = create(:user)
+      other.add_role(:single_resource_admin, Billboard)
+      user.add_role(:single_resource_admin, Billboard)
+      restrict(user, [])
+
+      expect(allowed_clauses(user)).to be_empty
+      expect(allowed_clauses(other)).to eq(clauses)
+    end
+
+    context "when the stored configuration is unreadable" do
+      before { user.add_role(:single_resource_admin, Billboard) }
+
+      {
+        "a JSON null" => "'null'::jsonb",
+        "a future version" => %q('{"version": 2, "allow": ["approve", "publish", "modify_approved"]}'::jsonb),
+        "an unknown key" => %q('{"version": 1, "allow": ["approve"], "deny": []}'::jsonb),
+        "a string" => %q('"approve"'::jsonb),
+        "an array" => %q('["approve"]'::jsonb)
+      }.each do |description, sql|
+        it "fails closed with #{description}" do
+          grant_rows(user).update_all("sub_permissions = #{sql}")
+
+          expect(allowed_clauses(user)).to be_empty
+        end
+      end
+    end
+
+    it "is delegated from User" do
+      user.add_role(:single_resource_admin, Billboard)
+
+      expect(user.reload.sub_permission?(resource: Billboard, clause: "approve")).to be(true)
+    end
+  end
 end
 # rubocop:enable RSpec/PredicateMatcher

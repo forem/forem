@@ -61,3 +61,16 @@ en:
           challenge_details: Challenge Details
           event_details: Event Details
           showcase: Showcase
+      event_articles:
+        heading: "Posts from %{event_title}"
+        badge: Event Feed
+        subtitle: Updates and articles published specifically for this event.
+        article_pill: Article
+        time_ago: "%{time} ago"
+        min_read: "%{count} min read"
+        reactions_aria:
+          one: "1 reaction"
+          other: "%{count} reactions"
+        comments_aria:
+          one: "1 comment"
+          other: "%{count} comments"

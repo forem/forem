@@ -119,6 +119,31 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(response.body).to include("Test Article Content")
       end
 
+      it "omits only the configured hidden billboard locations on custom domains", :aggregate_failures do
+        url = "http://custom.org/#{article.slug}"
+        fixed_bottom = '[data-async-url$="/post_fixed_bottom"]'
+        sidebar = '[data-async-url$="/post_sidebar"]'
+
+        get url
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.at_css(fixed_bottom)).to be_present
+        expect(doc.at_css(sidebar)).to be_present
+
+        article.update!(hidden_billboard_locations: %w[post_fixed_bottom post_sidebar])
+
+        [url, "#{url}?i=i"].each do |article_url|
+          get article_url
+          expect(response).to have_http_status(:ok)
+          expect(response.headers["Surrogate-Control"]).to be_present
+          expect(response.headers["Surrogate-Key"].split).to include(article.record_key)
+          doc = Nokogiri::HTML(response.body)
+          expect(doc.at_css(fixed_bottom)).to be_nil
+          expect(doc.at_css(sidebar)).to be_nil
+          expect(doc.at_css('[data-async-url$="/post_comments"]')).to be_present
+          expect(doc.at_css('[data-async-url$="/post_sidebar_secondary"]')).to be_present
+        end
+      end
+
       it "renders article content and attribution with feed snapshots but without search payloads" do
         article_queries = []
         callback = lambda do |*, payload|

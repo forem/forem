@@ -61,3 +61,16 @@ fr:
           challenge_details: Détails du défi
           event_details: Détails de l'événement
           showcase: Vitrine
+      event_articles:
+        heading: "Publications de %{event_title}"
+        badge: Fil de l'événement
+        subtitle: Mises à jour et articles publiés spécifiquement pour cet événement.
+        article_pill: Article
+        time_ago: "il y a %{time}"
+        min_read: "%{count} min de lecture"
+        reactions_aria:
+          one: "1 réaction"
+          other: "%{count} réactions"
+        comments_aria:
+          one: "1 commentaire"
+          other: "%{count} commentaires"

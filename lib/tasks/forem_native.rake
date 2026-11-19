@@ -89,6 +89,7 @@ namespace :forem_native do
     benchmark_story_cards
     benchmark_image_ops
     benchmark_html_postprocess
+    benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
     require "memory_profiler"
@@ -1449,6 +1450,106 @@ namespace :forem_native do
       x.report("Ruby Legacy (Nokogiri DOM chain)") { legacy_postprocess.call }
       x.report("Rust Magnus (ForemNative.postprocess_rendered_html)") { native_postprocess.call }
       x.compare!
+    end
+  end
+
+  desc "Benchmark transcript redaction metadata aggregation (ForemNative vs legacy Ruby)"
+  task benchmark_redaction_metadata: :environment do
+    unless ForemNative::Native.respond_to?(:aggregate_transcript_redactions)
+      raise "Missing aggregate_transcript_redactions; rebuild with `bundle exec rake forem_native:compile` first"
+    end
+
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    scrubber = AgentSessionParsers::SensitiveDataScrubber
+    server_redactions = [scrubber::Redaction.new(pattern_name: "GitHub Token", match_count: 1)]
+
+    legacy_from_messages = lambda do |messages|
+      counts = Hash.new(0)
+      Array(messages).each do |message|
+        Array(message.dig("metadata", "redactions")).each do |redaction|
+          name = (redaction["name"] || redaction["pattern_name"]).to_s.strip
+          count = (redaction["count"] || redaction["match_count"]).to_i
+          counts[name] += count if name.present? && count.positive?
+        end
+      end
+      counts.sort_by { |_, count| -count }
+        .map { |name, count| { "name" => name, "count" => count } }
+    end
+    legacy_report = lambda do |result|
+      metadata = result.scrubbed_data.fetch("metadata", {}) || {}
+      client_report = metadata["redactions"].presence || legacy_from_messages.call(result.scrubbed_data["messages"])
+      metadata.merge(
+        "redactions" => AgentSessionParsers::RedactionMetadata.merge(client_report, result.redactions),
+      )
+    end
+    native_report = ->(result) { AgentSessionParsers::RedactionMetadata.for_scrub_result(result) }
+
+    zero_messages = Array.new(50_000) do
+      { "role" => "user", "content" => [{ "type" => "text", "text" => "hello" }] }
+    end
+    sparse_messages = Array.new(10_000) do |i|
+      if (i % 16).zero?
+        {
+          "role" => "user",
+          "metadata" => {
+            "redactions" => [
+              { "name" => "GitHub Token", "count" => 1 },
+              { "pattern_name" => "Home Directory", "match_count" => 2 },
+            ]
+          }
+        }
+      else
+        { "role" => "assistant", "content" => [{ "type" => "text", "text" => "ok" }] }
+      end
+    end
+    dense_messages = Array.new(10_000) do
+      {
+        "role" => "user",
+        "metadata" => {
+          "redactions" => [
+            { "name" => "GitHub Token", "count" => 1 },
+            { "pattern_name" => "Home Directory", "match_count" => 2 },
+          ]
+        }
+      }
+    end
+
+    workloads = {
+      "Zero (50,000 msgs, no message metadata)" => scrubber::Result.new(
+        scrubbed_data: { "messages" => zero_messages, "metadata" => { "redactions" => [] } },
+        redactions: [],
+      ),
+      "Sparse (10,000 msgs, 1/16 redacted + 1 server)" => scrubber::Result.new(
+        scrubbed_data: { "messages" => sparse_messages, "metadata" => {} },
+        redactions: server_redactions,
+      ),
+      "Dense (10,000 msgs, all redacted + 1 server)" => scrubber::Result.new(
+        scrubbed_data: { "messages" => dense_messages, "metadata" => {} },
+        redactions: server_redactions,
+      )
+    }
+
+    workloads.each do |label, result|
+      unless native_report.call(result) == legacy_report.call(result)
+        raise "Redaction metadata parity failure (#{label})"
+      end
+
+      puts "\n=== Transcript Redaction Metadata [#{label}] ==="
+      ruby_mem = MemoryProfiler.report { legacy_report.call(result) }
+      rust_mem = MemoryProfiler.report { native_report.call(result) }
+      puts "Ruby Legacy allocations (1 run): #{ruby_mem.total_allocated} objects " \
+           "(#{ruby_mem.total_allocated_memsize} bytes)"
+      puts "Rust Magnus allocations (1 run): #{rust_mem.total_allocated} objects " \
+           "(#{rust_mem.total_allocated_memsize} bytes)"
+
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby Legacy (#{label})") { legacy_report.call(result) }
+        x.report("Rust Magnus (#{label})") { native_report.call(result) }
+        x.compare!
+      end
     end
   end
 end

@@ -109,6 +109,33 @@ describe('billboard.js - internal navigation behavior', () => {
     expect(setupBillboardInteractivity).toHaveBeenCalled();
   });
 
+  it('ignores a persistent billboard response after its page is replaced', async () => {
+    document.body.innerHTML = `
+      <div id="page-content-inner" data-internal-nav="true">
+        <div class="js-billboard-container" data-async-url="/billboards/post_fixed_bottom"></div>
+      </div>
+    `;
+
+    let resolveFetch;
+    mockFetch.mockReturnValueOnce(new Promise((resolve) => {
+      resolveFetch = resolve;
+    }));
+
+    const loading = getBillboard();
+    document.body.innerHTML = '<div id="page-content-inner" data-internal-nav="true"></div>';
+    resolveFetch({
+      text: async () => `
+        <div class="js-billboard" data-special="persistent">
+          <template class="js-minimized-template">Minimized text</template>
+        </div>
+      `,
+    });
+    await loading;
+
+    expect(ensurePersistentMinimizedBillboardContainer).not.toHaveBeenCalled();
+    expect(executeBBScripts).not.toHaveBeenCalled();
+  });
+
   it('hides main container and does not show minimized when isInternalNav is true and billboard is NOT persistent', async () => {
     // Setup DOM
     document.body.innerHTML = `

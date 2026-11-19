@@ -1,0 +1,104 @@
+<% admin_roles = user_admin_roles(user, @sub_permissions, is_super_admin: @is_super_admin)
+   configurable_roles = admin_roles.select { |role| role[:configurable] }
+   global_override = user_global_override_label(admin_roles)
+   remaining_role_options = assignable_role_options_for_user(user, is_super_admin: @is_super_admin)
+   return_params = {
+     return_search: @search.presence,
+     return_role_filter: @role_filter.presence,
+     return_resource_filter: @resource_filter.presence
+   }.compact %>
+
+<tr data-testid="permission-member-row-<%= user.id %>">
+  <td class="admin-permissions-table__member-col">
+    <div class="admin-perm-member">
+      <% if user.profile_image_90.present? %>
+        <span class="crayons-avatar crayons-avatar--l admin-perm-member__avatar">
+          <img src="<%= user.profile_image_90 %>" class="crayons-avatar__image" alt="" loading="lazy" />
+        </span>
+      <% else %>
+        <span class="admin-perm-member__fallback-avatar" aria-hidden="true">
+          <%= (user.name.presence || user.username).first.to_s.upcase %>
+        </span>
+      <% end %>
+
+      <div class="admin-perm-member__info">
+        <% if user.name.present? %>
+          <%= link_to user.name, user.path, class: "admin-perm-member__name" %>
+        <% end %>
+        <div class="admin-perm-member__meta">
+          <%= link_to "@#{user.username}", user.path, class: "admin-perm-member__handle #{user.name.blank? ? 'fw-bold' : ''}" %>
+          <span aria-hidden="true">&middot;</span>
+          <span><%= t("views.admin.permissions.table.member_id", id: user.id) %></span>
+        </div>
+        <%= link_to admin_user_path(user), class: "admin-perm-member__manage-link" do %>
+          <span><%= t("views.admin.permissions.table.view_member") %></span>
+          <%= crayons_icon_tag(:"external-link", aria_hidden: true, width: 12, height: 12) %>
+        <% end %>
+      </div>
+    </div>
+  </td>
+
+  <td>
+    <div class="admin-perm-roles-cell">
+      <div class="admin-perm-roles-list">
+        <% admin_roles.each do |role| %>
+          <% pill_classes = ["admin-role-pill", "admin-role-pill--#{role[:tier].to_s.tr('_', '-')}"]
+             pill_classes << "admin-role-pill--restricted" if role[:restricted] %>
+          <div class="<%= pill_classes.join(" ") %>">
+            <% if role[:restricted] %>
+              <%= crayons_icon_tag(:lock, aria_hidden: true, class: "admin-role-pill__icon") %>
+            <% end %>
+            <span><%= role[:label] %></span>
+
+            <% if role[:can_revoke] %>
+              <%= button_to revoke_admin_permissions_path(return_params.merge(user_id: user.id, role_name: role[:value])),
+                            method: :delete,
+                            form_class: "admin-role-pill__revoke-form",
+                            class: "admin-role-pill__revoke-btn",
+                            title: t("views.admin.permissions.table.revoke_label", role: role[:label], username: user.username),
+                            aria: { label: t("views.admin.permissions.table.revoke_label", role: role[:label], username: user.username) },
+                            data: { confirm: t("views.admin.permissions.table.revoke_confirm", role: role[:label], username: user.username) } do %>
+                <%= crayons_icon_tag(:x, aria_hidden: true, width: 14, height: 14) %>
+              <% end %>
+            <% else %>
+              <span class="admin-role-pill__locked-indicator"
+                    title="<%= t("views.admin.permissions.table.super_admin_only_tooltip") %>">
+                <%= crayons_icon_tag(:lock, aria_hidden: true, width: 12, height: 12) %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <% configurable_roles.each do |role| %>
+        <%= render "sub_permissions_editor",
+                   user: user,
+                   role: role,
+                   global_override: global_override %>
+      <% end %>
+    </div>
+  </td>
+
+  <td class="admin-permissions-table__actions-col">
+    <% if remaining_role_options.any? && !admin_roles.any? { |r| r[:tier] == :super_admin } %>
+      <details class="admin-add-role">
+        <summary class="crayons-btn crayons-btn--s crayons-btn--outlined admin-add-role__trigger">
+          <%= crayons_icon_tag(:plus, aria_hidden: true, width: 14, height: 14) %>
+          <span><%= t("views.admin.permissions.table.add_role_trigger") %></span>
+        </summary>
+        <div class="admin-add-role__panel">
+          <%= form_with url: grant_admin_permissions_path, method: :post, local: true, class: "admin-add-role__form" do |f| %>
+            <%= permissions_return_filter_fields(search: @search, role_filter: @role_filter, resource_filter: @resource_filter) %>
+            <%= f.hidden_field :username, value: user.username %>
+            <%= f.select :role_name,
+                         grouped_options_for_select(remaining_role_options),
+                         { prompt: t("views.admin.permissions.table.add_role_prompt") },
+                         class: "crayons-select",
+                         required: true %>
+            <%= f.submit t("views.admin.permissions.table.add_role_submit"), class: "crayons-btn crayons-btn--s" %>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+  </td>
+</tr>

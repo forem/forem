@@ -16,6 +16,11 @@ x-backend: &backend
   <<: *app
   stdin_open: true
   tty: true
+  # postgres, redis and chrome run with host networking, so the backend services must too:
+  # on the default bridge network "localhost" in DATABASE_URL/REDIS_URL is the container itself.
+  # Docker Desktop: turn on Settings > Resources > Network > "Enable host networking" (4.34+)
+  # to reach these services (for example the web server on port 3000) from your machine.
+  network_mode: host
   volumes:
     - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
     - bundle:/usr/local/bundle
@@ -28,7 +33,10 @@ x-backend: &backend
     - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
     <<: *env
-    CHROME_URL: http://chrome:3333
+    CHROME_URL: http://localhost:3333   # service names do not resolve on the host network
+    # System specs: chrome shares the host network, so it reaches the Capybara server on loopback.
+    APP_HOST: 127.0.0.1
+    CAPYBARA_SERVER_HOST: 127.0.0.1
     REDIS_URL: redis://localhost:6379/
     DATABASE_URL: postgres://postgres:postgres@localhost:5432
     DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432
@@ -55,7 +63,9 @@ services:
       REDIS_URL: redis://localhost:6379/
       DATABASE_URL: postgres://postgres:postgres@localhost:5432
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432
-      CHROME_URL: http://chrome:3333
+      CHROME_URL: http://localhost:3333   # host network: service names do not resolve
+      APP_HOST: 127.0.0.1
+      CAPYBARA_SERVER_HOST: 127.0.0.1
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
       - bundle:/usr/local/bundle
@@ -70,8 +80,6 @@ services:
     tmpfs:
       - /workspaces/forem/tmp/pids
     network_mode: host
-    ports:
-      - '3000:3000'
 
   rails:
     <<: *backend
@@ -80,8 +88,6 @@ services:
   web:
     <<: *backend
     command: bundle exec rails server -b 0.0.0.0
-    ports:
-      - '3000:3000'
     depends_on:
       esbuild:
         condition: service_started
@@ -136,13 +142,15 @@ services:
 
   chrome:
     image: browserless/chrome:latest
-    ports:
-      - "3333:3333"
+    # Same network as the backend, so Chrome reaches the Capybara server on 127.0.0.1.
+    network_mode: host
     # Mount application source code to support file uploading
     # (otherwise Chrome won't be able to find files).
+    # Use the paths that the dip services (/app) and the devcontainer (/workspaces/forem) use.
     # NOTE: Make sure you use absolute paths in `#attach_file`.
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
+      - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
     environment:
       PORT: 3333
       CONNECTION_TIMEOUT: 600000
