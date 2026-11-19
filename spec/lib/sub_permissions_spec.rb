@@ -79,6 +79,18 @@ RSpec.describe SubPermissions do
       expect(grant_row(user, "Article").sub_permissions).to be_nil
     end
 
+    it "reports failure, not success, when the update matches no grant row" do
+      revoked = create(:user)
+      revoked.add_role(:single_resource_admin, Billboard)
+      revoked.remove_role(:single_resource_admin, Billboard)
+
+      result = described_class.update_grant(user: revoked, resource_type: "Billboard",
+                                            sub_permissions: described_class.build(allow: []))
+
+      expect(result).not_to be_success
+      expect(UserRole.where(user_id: revoked.id)).to be_empty
+    end
+
     it "refuses a user without the grant" do
       result = described_class.update_grant(user: create(:user), resource_type: "Billboard",
                                             sub_permissions: described_class.build(allow: []))

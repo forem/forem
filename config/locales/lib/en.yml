@@ -312,11 +312,12 @@ en:
       clauses:
         billboard:
           approve: approve billboards
-          modify_approved: change or delete approved billboards
+          modify_approved: change or delete approved billboards and Event billboards
           publish: publish billboards
       errors:
         malformed: The %{resource} sub-permissions are not in a recognized format.
         missing: 'Your %{resource} admin access does not include: %{clauses}.'
+        mode_required: Choose Full access or Restricted.
         no_grant: The user does not have %{resource} admin access to restrict.
         not_configurable: "%{resource} admin access has no sub-permissions."
         unknown_clauses: 'Unknown %{resource} sub-permissions: %{clauses}.'

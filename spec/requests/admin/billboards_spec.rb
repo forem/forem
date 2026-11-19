@@ -286,6 +286,27 @@ RSpec.describe "/admin/customization/billboards" do
       expect(response.parsed_body["error"]).to include("change or delete approved billboards")
     end
 
+    it "refuses to delete a billboard another request approved after it was loaded", :aggregate_failures do
+      draft = create(:billboard, approved: false, organization: nil)
+      allow(Billboard).to receive(:find).and_wrap_original do |original, *args|
+        original.call(*args).tap { |loaded| Billboard.where(id: loaded.id).update_all(approved: true) }
+      end
+
+      expect { delete admin_billboard_path(draft.id) }.not_to change(Billboard, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "refuses to edit a billboard another request approved after it was loaded", :aggregate_failures do
+      draft = create(:billboard, approved: false, organization: nil)
+      allow(Billboard).to receive(:find).and_wrap_original do |original, *args|
+        original.call(*args).tap { |loaded| Billboard.where(id: loaded.id).update_all(approved: true) }
+      end
+
+      put admin_billboard_path(draft.id), params: { body_markdown: "Swapped after approval" }
+      expect(response).to have_http_status(:forbidden)
+      expect(draft.reload.body_markdown).not_to eq("Swapped after approval")
+    end
+
     it "deletes an unapproved billboard" do
       draft = create(:billboard, approved: false, organization: nil)
 

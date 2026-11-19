@@ -40,6 +40,11 @@ module Admin
         return redirect_to admin_permissions_path, status: :see_other
       end
 
+      unless %w[0 1].include?(params[:restricted])
+        flash[:error] = I18n.t("lib.sub_permissions.errors.mode_required")
+        return redirect_to admin_permissions_path, status: :see_other
+      end
+
       allow = params[:allow].is_a?(Array) ? params[:allow] : []
       config = params[:restricted] == "1" ? SubPermissions.build(allow: allow) : nil
       result = SubPermissions.update_grant(user: user, resource_type: resource_class.name, sub_permissions: config)

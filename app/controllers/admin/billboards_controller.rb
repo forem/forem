@@ -54,11 +54,16 @@ module Admin
 
     def update
       @billboard = Billboard.find(params[:id])
-      @billboard.assign_attributes(billboard_params)
-      missing = missing_sub_permissions(:save)
+      missing = []
+      saved = false
+      @billboard.with_lock do
+        @billboard.assign_attributes(billboard_params)
+        missing = missing_sub_permissions(:save)
+        saved = @billboard.save if missing.empty?
+      end
       return render_missing_sub_permissions(:edit, missing) if missing.any?
 
-      if @billboard.save
+      if saved
         flash[:success] = I18n.t("admin.billboards_controller.updated")
         redirect_to edit_admin_billboard_path(params[:id])
       else
@@ -69,12 +74,17 @@ module Admin
 
     def destroy
       @billboard = Billboard.find(params[:id])
-      missing = missing_sub_permissions(:destroy)
+      missing = []
+      destroyed = false
+      @billboard.with_lock do
+        missing = missing_sub_permissions(:destroy)
+        destroyed = @billboard.destroy if missing.empty?
+      end
       if missing.any?
         return render json: { error: SubPermissions.missing_message(Billboard, missing) }, status: :forbidden
       end
 
-      if @billboard.destroy
+      if destroyed
         render json: { message: I18n.t("admin.billboards_controller.deleted") }, status: :ok
       else
         render json: { error: I18n.t("admin.billboards_controller.wrong") }, status: :unprocessable_entity

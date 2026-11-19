@@ -139,6 +139,57 @@ RSpec.describe BillboardPolicy, type: :policy do
     end
   end
 
+  describe "changing a billboard that belongs to an Event" do
+    let(:event) { create(:event) }
+    let(:billboard) { create(:billboard, event: event, approved: false, published: true) }
+
+    it "needs modify_approved to edit its content even though it is unapproved" do
+      billboard.body_markdown = "Swapped before the broadcast worker approves it"
+
+      expect(missing(billboard)).to eq(%w[modify_approved])
+    end
+
+    it "needs modify_approved to edit it while unapproving it, since the worker approves it again" do
+      billboard.assign_attributes(approved: false, published: false, body_markdown: "Swapped")
+
+      expect(missing(billboard)).to eq(%w[modify_approved])
+    end
+
+    it "needs nothing to unpublish it" do
+      billboard.published = false
+
+      expect(missing(billboard)).to be_empty
+    end
+
+    it "needs nothing to unapprove it" do
+      billboard.update_columns(approved: true)
+      billboard.approved = false
+
+      expect(missing(billboard)).to be_empty
+    end
+
+    it "needs modify_approved to detach it from its Event" do
+      billboard.event_id = nil
+
+      expect(missing(billboard)).to eq(%w[modify_approved])
+    end
+
+    it "needs modify_approved to attach a draft to an Event" do
+      draft = create(:billboard, approved: false, published: false)
+      draft.event_id = event.id
+
+      expect(missing(draft)).to eq(%w[modify_approved])
+    end
+
+    it "needs modify_approved to create one" do
+      expect(missing(build(:billboard, event: event, approved: false, published: false))).to eq(%w[modify_approved])
+    end
+
+    it "needs modify_approved to delete it" do
+      expect(missing(billboard, :destroy)).to eq(%w[modify_approved])
+    end
+  end
+
   it "needs nothing to delete an unapproved billboard" do
     expect(missing(create(:billboard, approved: false, published: true), :destroy)).to be_empty
   end

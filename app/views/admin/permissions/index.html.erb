@@ -62,6 +62,7 @@
                 <% 
                 fetched_roles = user.roles.map { |r| [r.name, r.resource_type, r.resource_id] }
                 display_roles = []
+                editable_sub_permission_types = []
                 if fetched_roles.any? { |r| r[0] == 'super_admin' }
                   display_roles = [{ label: "Super Admin", value: "super_admin" }]
                 elsif fetched_roles.any? { |r| r[0] == 'admin' }
@@ -69,9 +70,12 @@
                 else
                   display_roles = fetched_roles.select { |r| r[0] == 'single_resource_admin' && r[1].present? }.map do |r|
                     label = "#{r[1]} Admin"
-                    label += " (#{t('lib.sub_permissions.admin.restricted')})" if @sub_permissions.key?([user.id, r[1]])
-                    { label: label, value: "single_resource_admin|#{r[1]}", resource_type: r[1] }
+                    label += " (#{t('lib.sub_permissions.admin.restricted')})" if r[2].nil? && @sub_permissions.key?([user.id, r[1]])
+                    { label: label, value: "single_resource_admin|#{r[1]}" }
                   end
+                  editable_sub_permission_types = fetched_roles
+                    .select { |name, type, id| name == "single_resource_admin" && id.nil? && SubPermissions.configurable?(type) }
+                    .map(&:second).uniq
                 end
               %>
               
@@ -87,30 +91,29 @@
               <% end %>
               </div>
 
-              <% configurable_roles = display_roles.select { |role| SubPermissions.configurable?(role[:resource_type]) } %>
-              <% configurable_roles.each do |role| %>
-                <% stored_config = @sub_permissions[[user.id, role[:resource_type]]] %>
-                <% current_config = stored_config && SubPermissions::Config.new(stored_config, resource_type: role[:resource_type]) %>
-                <details class="text-sm" data-testid="sub-permissions-<%= role[:resource_type] %>">
+              <% editable_sub_permission_types.each do |resource_type| %>
+                <% restricted = @sub_permissions.key?([user.id, resource_type]) %>
+                <% current_config = restricted && SubPermissions::Config.new(@sub_permissions[[user.id, resource_type]], resource_type: resource_type) %>
+                <details class="text-sm" data-testid="sub-permissions-<%= resource_type %>">
                   <summary class="cursor-pointer text-base-70">
-                    <%= role[:resource_type] %> <%= t("lib.sub_permissions.admin.summary") %>:
-                    <%= stored_config ? t("lib.sub_permissions.admin.restricted") : t("lib.sub_permissions.admin.full_access") %>
+                    <%= resource_type %> <%= t("lib.sub_permissions.admin.summary") %>:
+                    <%= restricted ? t("lib.sub_permissions.admin.restricted") : t("lib.sub_permissions.admin.full_access") %>
                   </summary>
                   <%= form_with url: sub_permissions_admin_permissions_path, method: :patch, local: true, class: "flex flex-col gap-2 mt-2" do |f| %>
                     <%= f.hidden_field :user_id, value: user.id %>
-                    <%= f.hidden_field :role_name, value: role[:value] %>
+                    <%= f.hidden_field :role_name, value: "single_resource_admin|#{resource_type}" %>
                     <label class="flex items-center gap-2">
-                      <%= f.radio_button :restricted, "0", checked: stored_config.nil? %>
+                      <%= f.radio_button :restricted, "0", checked: !restricted %>
                       <%= t("lib.sub_permissions.admin.full_access") %>
                     </label>
                     <label class="flex items-center gap-2">
-                      <%= f.radio_button :restricted, "1", checked: stored_config.present? %>
+                      <%= f.radio_button :restricted, "1", checked: restricted %>
                       <%= t("lib.sub_permissions.admin.restricted") %>
                     </label>
-                    <% SubPermissions.clauses_for(role[:resource_type]).each do |clause| %>
+                    <% SubPermissions.clauses_for(resource_type).each do |clause| %>
                       <label class="flex items-center gap-2 pl-6">
-                        <%= check_box_tag "allow[]", clause, current_config&.allows?(clause), id: "allow_#{user.id}_#{role[:resource_type]}_#{clause}" %>
-                        <%= SubPermissions.clause_label(role[:resource_type], clause).upcase_first %>
+                        <%= check_box_tag "allow[]", clause, current_config && current_config.allows?(clause), id: "allow_#{user.id}_#{resource_type}_#{clause}" %>
+                        <%= SubPermissions.clause_label(resource_type, clause).upcase_first %>
                       </label>
                     <% end %>
                     <p class="text-base-60 pl-6"><%= t("lib.sub_permissions.admin.restricted_hint") %></p>

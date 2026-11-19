@@ -259,6 +259,64 @@ RSpec.describe "/admin/permissions" do
         )
       end
 
+      it "refuses a missing or unknown mode instead of restoring full access", :aggregate_failures do
+        SubPermissions.update_grant(user: target_user, resource_type: "Billboard",
+                                    sub_permissions: SubPermissions.build(allow: []))
+
+        [nil, "", "true", "restricted"].each do |mode|
+          params = { user_id: target_user.id, role_name: role_name, allow: %w[publish] }
+          params[:restricted] = mode unless mode.nil?
+          patch sub_permissions_admin_permissions_path, params: params
+
+          expect(flash[:error]).to be_present
+          expect(grant_config(target_user)).to eq({ "version" => 1, "allow" => [] })
+        end
+      end
+
+      {
+        "a JSON null" => "'null'::jsonb",
+        "a JSON false" => "'false'::jsonb",
+        "a future version" => %q('{"version": 2, "allow": ["approve"]}'::jsonb)
+      }.each do |description, sql|
+        it "shows an unreadable config (#{description}) as restricted, and saving it keeps it restricted",
+           :aggregate_failures do
+          UserRole.where(user_id: target_user.id).update_all("sub_permissions = #{sql}")
+          get admin_permissions_path
+
+          form = Nokogiri::HTML(response.body).css("form").detect do |candidate|
+            candidate.at_css("input[name='user_id'][value='#{target_user.id}']")
+          end
+
+          expect(response.body).to include("Billboard Admin (Restricted)")
+          expect(form.at_css("input[name='restricted'][value='1']")["checked"]).to be_present
+          expect(form.at_css("input[name='restricted'][value='0']")["checked"]).to be_nil
+          expect(form.css("input[name='allow[]'][checked]")).to be_empty
+
+          patch sub_permissions_admin_permissions_path,
+                params: { user_id: target_user.id, role_name: role_name, restricted: "1" }
+
+          expect(grant_config(target_user)).to eq({ "version" => 1, "allow" => [] })
+          expect(target_user.reload.sub_permission?(resource: Billboard, clause: "approve")).to be(false)
+        end
+      end
+
+      it "shows no editor for a user whose only Billboard role is scoped to one record" do
+        record_admin = create(:user)
+        record_admin.add_role(:single_resource_admin, create(:billboard))
+        get admin_permissions_path
+
+        expect(response.body).to include("@#{record_admin.username}")
+        expect(response.body).not_to include("sub_permissions[user_id]\" value=\"#{record_admin.id}\"")
+        expect(response.body.scan(/name="user_id" value="#{record_admin.id}"/).size).to eq(0)
+      end
+
+      it "shows one editor, for the class-wide grant, to a user with record and class-wide roles" do
+        target_user.add_role(:single_resource_admin, create(:billboard))
+        get admin_permissions_path
+
+        expect(response.body.scan(/id="allow_#{target_user.id}_Billboard_approve"/).size).to eq(1)
+      end
+
       it "shows each Billboard admin's sub-permissions on the index", :aggregate_failures do
         SubPermissions.update_grant(user: target_user, resource_type: "Billboard",
                                     sub_permissions: SubPermissions.build(allow: %w[publish]))

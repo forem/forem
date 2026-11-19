@@ -366,6 +366,63 @@ RSpec.describe "Api::V1::Billboards" do
       end
     end
 
+    describe "when another request approves the billboard first" do
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      before do
+        allow(Billboard).to receive(:find).and_wrap_original do |original, *args|
+          original.call(*args).tap { |loaded| Billboard.where(id: loaded.id).update_all(approved: true) }
+        end
+      end
+
+      it "decides against the locked, current row and refuses the edit", :aggregate_failures do
+        put api_billboard_path(draft.id), params: { body_markdown: "Swapped after approval" }.to_json,
+                                          headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload).to have_attributes(approved: true, body_markdown: draft.body_markdown)
+      end
+
+      it "reads the row with FOR UPDATE inside the transaction that writes it" do
+        statements = []
+        callback = ->(*, payload) { statements << payload[:sql] if payload[:sql].match?(/display_ads|BEGIN|COMMIT/) }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          put api_billboard_path(draft.id), params: { approved: false }.to_json, headers: auth_header
+        end
+
+        lock = statements.index { |sql| sql.include?("FOR UPDATE") }
+        update = statements.rindex { |sql| sql.start_with?("UPDATE \"display_ads\"") }
+        expect(lock).to be_present
+        expect(update).to be > lock
+        expect(statements[lock..update]).not_to include(a_string_matching(/\ACOMMIT|RELEASE SAVEPOINT/))
+      end
+    end
+
+    describe "an Event's billboard" do
+      let(:event) do
+        create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "tagged_broadcast")
+      end
+      let!(:event_billboard) { create(:billboard, event: event, approved: false, published: true) }
+
+      it "refuses to change content the broadcast worker would then approve", :aggregate_failures do
+        original = event_billboard.body_markdown
+        put api_billboard_path(event_billboard.id), params: { body_markdown: "Unreviewed" }.to_json,
+                                                    headers: auth_header
+        expect(response).to have_http_status(:forbidden)
+
+        Events::ManageBroadcastBillboardsWorker.new.perform
+        expect(event_billboard.reload).to have_attributes(approved: true, body_markdown: original)
+      end
+
+      it "lets it be taken down, and the worker does not bring it back live", :aggregate_failures do
+        put unpublish_api_billboard_path(event_billboard.id), headers: auth_header
+        expect(response).to have_http_status(:no_content)
+
+        Events::ManageBroadcastBillboardsWorker.new.perform
+        expect(Billboard.approved_and_published).not_to include(event_billboard)
+      end
+    end
+
     it "still renders previews" do
       post preview_api_billboards_path, params: { body_markdown: "## Preview" }.to_json, headers: auth_header
 

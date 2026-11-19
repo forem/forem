@@ -72,12 +72,11 @@ module SubPermissions
 
     role = Role.find_by(name: ROLE_NAME, resource_type: resource_type, resource_id: nil)
     grants = role ? UserRole.where(user_id: user.id, role_id: role.id) : UserRole.none
-    unless grants.exists?
+    if grants.update_all(sub_permissions: sub_permissions, updated_at: Time.current).zero?
       return Result.new(success?: false, errors: [I18n.t("lib.sub_permissions.errors.no_grant",
                                                          resource: resource_type)])
     end
 
-    grants.update_all(sub_permissions: sub_permissions, updated_at: Time.current)
     Result.new(success?: true, errors: [])
   end
 end

@@ -312,11 +312,12 @@ pt:
       clauses:
         billboard:
           approve: aprovar billboards
-          modify_approved: alterar ou excluir billboards aprovados
+          modify_approved: alterar ou excluir billboards aprovados e billboards de eventos
           publish: publicar billboards
       errors:
         malformed: As subpermissões de %{resource} não estão em um formato reconhecido.
         missing: 'Seu acesso de administrador de %{resource} não inclui: %{clauses}.'
+        mode_required: Escolha Acesso completo ou Restrito.
         no_grant: O usuário não tem acesso de administrador de %{resource} para restringir.
         not_configurable: O acesso de administrador de %{resource} não tem subpermissões.
         unknown_clauses: 'Subpermissões de %{resource} desconhecidas: %{clauses}.'
