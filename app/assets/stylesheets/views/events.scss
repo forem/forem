@@ -162,6 +162,19 @@
     }
   }
 
+  .event-articles-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--su-2);
+    border-radius: var(--radius);
+    background: rgba(var(--accent-brand-rgb), 0.12);
+    color: var(--accent-brand);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
   .feed-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -184,6 +197,10 @@
       flex-direction: column;
       gap: var(--su-3);
       transition: box-shadow 0.2s ease;
+
+      &--event {
+        border-top: 3px solid var(--accent-brand);
+      }
 
       &:hover {
         box-shadow: 0 0 0 1px var(--base-20), var(--shadow-sm);

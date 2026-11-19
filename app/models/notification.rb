@@ -110,8 +110,9 @@ class Notification < ApplicationRecord
     end
 
     def send_new_comment_notifications_without_delay(comment)
-      return if comment.commentable_type == "PodcastEpisode"
-      return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
+      return if comment.commentable_type.in?(%w[PodcastEpisode Event])
+      return if comment.commentable.user_id.present? &&
+        UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
       Notifications::NewComment::Send.call(comment)
     end
@@ -153,7 +154,9 @@ class Notification < ApplicationRecord
     def send_moderation_notification(notifiable)
       return unless [Comment, Article].include?(notifiable.class)
 
-      if notifiable.instance_of?(Comment) && UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
+      if notifiable.instance_of?(Comment) &&
+          notifiable.commentable&.user_id.present? &&
+          UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
         return
       end
 

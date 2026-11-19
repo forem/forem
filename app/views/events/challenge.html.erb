@@ -224,6 +224,8 @@
       <% end %>
     </aside>
   </div>
+
+  <%= render "event_articles", articles: @event_articles, event: @event %>
 </div>
 
 <%= javascript_include_tag "tagFollows", defer: true %>

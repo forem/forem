@@ -88,6 +88,8 @@ module Api
           :full_details,
           :primary_stream_url,
           :published,
+          :allow_articles,
+          :allow_comments,
           :start_time,
           :end_time,
           :type_of,

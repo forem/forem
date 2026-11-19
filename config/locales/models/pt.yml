@@ -16,6 +16,9 @@ pt:
       is_too_long: é muito longo.
       invalid_date: deve ser inserido no formato DD/MM/AAAA com data atual ou passada
       series_unpermitted: deve ser uma série que você tem permissão para postar
+      event_not_found: deve referenciar um evento existente
+      event_articles_disabled: não permite artigos marcados
+      event_not_accepting_articles: só pode ser marcado enquanto o evento estiver ao vivo
       invalid_coauthor: devem ser IDs de usuário válidos
       same_author: não deve ser o mesmo usuário que o autor
       must_not_have_spaces: não deve ter espaços
@@ -59,6 +62,8 @@ pt:
       is_not_valid: não é válido.
       locked: a discussão está bloqueada neste Post
       published_article: não é um artigo publicado
+      event_comments_disabled: não permite comentários
+      event_not_accepting_comments: só pode receber comentários enquanto o evento estiver ao vivo
       ai_disclosure:
         not_disclosed: Não divulgado
         no_ai: Sem IA
@@ -66,6 +71,7 @@ pt:
         fully_autonomous: Totalmente Autônomo
       type:
         Article: Artigo
+        Event: Evento
         item: item
         PodcastEpisode: Episódio de podcast
       suspended_too_many: Usuário suspenso por muitas interações de spam, acionado por autovomit.

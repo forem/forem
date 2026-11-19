@@ -35,7 +35,11 @@ module AlgoliaSearchable
     end
 
     def bad_comment?
-      score.negative?
+      score.negative? || hidden_event_comment?
+    end
+
+    def hidden_event_comment?
+      commentable_type == "Event" && !event_visible?
     end
   end
 end

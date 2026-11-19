@@ -12,6 +12,8 @@ class Event < ApplicationRecord
   has_many :signed_up_users, through: :event_signups, source: :user
   has_many :emails, dependent: :nullify
   has_many :pages, inverse_of: :event, dependent: :destroy
+  has_many :articles, dependent: :nullify
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
 
   enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3, meetup: 4, conference: 5 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
@@ -30,6 +32,7 @@ class Event < ApplicationRecord
   validates :bg_color_hex,
             format: { with: /\A#[0-9a-fA-F]{6}\z/, message: "must be a valid 6-digit hex color (e.g. #3B49DF)" },
             allow_blank: true
+  validates :comments_count, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validate :validate_owned_page_slug_sync,
            on: :update,
            if: -> { event_name_slug_changed? || event_variation_slug_changed? }
@@ -131,8 +134,77 @@ class Event < ApplicationRecord
     ActionController::Base.helpers.simple_format(description)
   end
 
+  def path
+    "/events/#{event_name_slug}/#{event_variation_slug}"
+  end
+
   def live?(at = Time.current)
     start_time.present? && end_time.present? && start_time <= at && end_time >= at
+  end
+
+  def started?(at = Time.current)
+    start_time.present? && start_time <= at
+  end
+
+  def upcoming?(at = Time.current)
+    start_time.present? && start_time > at
+  end
+
+  def ended?(at = Time.current)
+    end_time.present? && end_time < at
+  end
+
+  def articles_visible?(at = Time.current)
+    allow_articles? && started?(at)
+  end
+
+  def comments_visible?(at = Time.current)
+    allow_comments? && started?(at)
+  end
+
+  def accepting_articles?(at: Time.current, as_admin: false)
+    return false unless allow_articles?
+
+    as_admin || (published? && live?(at))
+  end
+
+  def accepting_comments?(at: Time.current, as_admin: false)
+    return false unless allow_comments?
+
+    as_admin || (published? && live?(at))
+  end
+
+  def visible_articles(at = Time.current)
+    return Article.none unless articles_visible?(at)
+
+    articles.published
+  end
+
+  def visible_comments(at = Time.current)
+    return Comment.none unless comments_visible?(at)
+
+    comments
+  end
+
+  # Commentable compatibility methods (mirroring PodcastEpisode)
+  def score
+    1
+  end
+
+  def subforem_id
+    nil
+  end
+
+  def co_author_ids
+    nil
+  end
+
+  def any_comments_hidden
+    false
+  end
+
+  def video
+    nil
   end
 
   def formatted_date_range
@@ -279,9 +351,7 @@ class Event < ApplicationRecord
   end
 
   def capture_owned_page_fallback_paths
-    @destroyed_owned_page_fallback_paths = owned_page_fallback_paths_for(
-      "/events/#{event_name_slug}/#{event_variation_slug}",
-    )
+    @destroyed_owned_page_fallback_paths = owned_page_fallback_paths_for(path)
   end
 
   def purge_event_edge_cache
@@ -291,7 +361,7 @@ class Event < ApplicationRecord
   end
 
   def event_edge_cache_fallback_paths
-    current_base = "/events/#{event_name_slug}/#{event_variation_slug}"
+    current_base = path
     paths = [current_base]
 
     if destroyed?

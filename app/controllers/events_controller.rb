@@ -1,8 +1,11 @@
 class EventsController < ApplicationController
   SHOW_ARTICLE_COLUMNS = %i[id user_id path title cached_tag_list published_at].freeze
   SHOW_USER_COLUMNS = %i[id name profile_image].freeze
+  EVENT_ARTICLES_LIMIT = 15
+  COMMUNITY_ARTICLES_LIMIT = 15
   PAST_LANDING_LIMIT = 12
-  private_constant :SHOW_ARTICLE_COLUMNS, :SHOW_USER_COLUMNS, :PAST_LANDING_LIMIT
+  private_constant :SHOW_ARTICLE_COLUMNS, :SHOW_USER_COLUMNS, :EVENT_ARTICLES_LIMIT,
+                   :COMMUNITY_ARTICLES_LIMIT, :PAST_LANDING_LIMIT
 
   def index
     @events = Event.published.includes(:page, :organization, :user)
@@ -45,6 +48,8 @@ class EventsController < ApplicationController
     return if render_event_custom_or_showcase_page
 
     if @event.challenge?
+      load_event_tagged_articles
+      preload_article_authors(@event_articles)
       render "challenge"
       return
     end
@@ -113,14 +118,36 @@ class EventsController < ApplicationController
     end
   end
 
+  def load_event_tagged_articles
+    @event_articles = []
+    return unless @event.articles_visible?
+
+    @event_articles = @event.articles.published
+      .select(SHOW_ARTICLE_COLUMNS)
+      .order(hotness_score: :desc, published_at: :desc)
+      .limit(EVENT_ARTICLES_LIMIT)
+      .to_a
+  end
+
   def load_event_articles
+    load_event_tagged_articles
+
     @primary_tag = @event.tags.select(:id, :name).first
     @tag_name = @primary_tag&.name
-    articles = Article.published.select(SHOW_ARTICLE_COLUMNS).order(hotness_score: :desc).limit(15)
+    articles = Article.published.select(SHOW_ARTICLE_COLUMNS)
+      .order(hotness_score: :desc)
+      .limit(COMMUNITY_ARTICLES_LIMIT)
     articles = articles.cached_tagged_with(@tag_name) if @tag_name.present?
+    articles = articles.where.not(id: @event_articles.map(&:id)) if @event_articles.any?
     @articles = articles.to_a
+    preload_article_authors(@event_articles + @articles)
+  end
+
+  def preload_article_authors(articles)
+    return if articles.empty?
+
     ActiveRecord::Associations::Preloader.new(
-      records: @articles, associations: :user, scope: User.select(SHOW_USER_COLUMNS),
+      records: articles, associations: :user, scope: User.select(SHOW_USER_COLUMNS),
     ).call
   end
 

@@ -195,6 +195,127 @@ RSpec.describe "Events" do
       end
     end
 
+    context "when an event allows tagged articles" do
+      let(:admin) { create(:user, :super_admin) }
+      let(:tag) { create(:tag, name: "eventtagtest") }
+
+      it "does not show admin pre-tagged articles or run an extra article query before start_time" do
+        upcoming = create(:event, published: true, allow_articles: true, title: "Upcoming Event",
+                                  start_time: 2.hours.from_now, end_time: 4.hours.from_now)
+        upcoming.tags << tag
+        create(:article, user: admin, event: upcoming, title: "Pre-Tagged Secret Post", published: true)
+        create(:article, title: "Related Community Post", tag_list: tag.name, published: true)
+
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql].to_s unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get event_path(upcoming.event_name_slug, upcoming.event_variation_slug)
+        end
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include("Pre-Tagged Secret Post", "event-articles-container")
+        expect(response.body).to include("Related Community Post")
+        expect(queries.grep(/FROM "articles"/).size).to eq(1)
+      end
+
+      it "shows published tagged articles above related community articles and deduplicates them" do
+        live_event = create(:event, published: true, allow_articles: true, allow_comments: true,
+                                    title: "Live Summit",
+                                    start_time: 1.hour.ago, end_time: 1.hour.from_now)
+        live_event.tags << tag
+
+        event_author = create(:user)
+        tagged_low = create(:article, user: event_author, event: live_event, title: "Tagged Lower Score",
+                                      tag_list: tag.name, published: true, hotness_score: 10)
+        tagged_high = create(:article, user: create(:user), event: live_event, title: "Tagged Top Score",
+                                       published: true, hotness_score: 100)
+        create(:article, user: event_author, event: live_event, title: "Unpublished Event Draft", published: false)
+        create(:article, user: event_author, event: live_event, title: "Scheduled Future Event Post",
+                         published: true, published_at: 2.hours.from_now)
+        create(:article, user: create(:user), title: "General Community Post", tag_list: tag.name, published: true)
+        create(:comment, user: event_author, commentable: live_event, body_markdown: "Hallway secret comment")
+
+        get event_path(live_event.event_name_slug, live_event.event_variation_slug)
+
+        expect(response).to have_http_status(:success)
+        body = response.body
+        doc = Nokogiri::HTML(body)
+        expect(body.index("event-articles-container")).to be < body.index("feed-container")
+        expect(doc.at_css("#event-articles-container").css(".article-title").map(&:text)).to eq(
+          [tagged_high.title, tagged_low.title],
+        )
+        expect(doc.at_css("#feed-container").css(".article-title").map(&:text)).to eq(["General Community Post"])
+        expect(body).not_to include("Unpublished Event Draft", "Scheduled Future Event Post", "Hallway secret comment")
+      end
+
+      it "batches authors across event and community articles without loading body columns" do
+        live_event = create(:event, published: true, allow_articles: true, title: "Batched Summit",
+                                    start_time: 1.hour.ago, end_time: 1.hour.from_now)
+        live_event.tags << tag
+        create(:article, user: create(:user), event: live_event, title: "Event Author Post", published: true)
+        create(:article, user: create(:user), title: "Community Author Post", tag_list: tag.name, published: true)
+
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          sql = payload[:sql].to_s
+          queries << sql unless payload[:name] == "SCHEMA" || sql.match?(/\A(BEGIN|COMMIT|SAVEPOINT|RELEASE)/)
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get event_path(live_event.event_name_slug, live_event.event_variation_slug)
+        end
+
+        expect(response).to have_http_status(:success)
+        expect(queries.grep(/FROM "users" WHERE "users"\."id" IN/).size).to eq(1)
+        expect(queries.grep(/FROM "users" WHERE "users"\."id" = \$1 LIMIT/)).to be_empty
+        expect(queries.grep(/FROM "articles"/).join("\n")).not_to include(
+          "body_markdown", "processed_html", 'SELECT "articles".*'
+        )
+      end
+
+      it "continues showing published tagged articles after the event ends and hides them when toggled off" do
+        ended_event = create(:event, published: true, allow_articles: true, title: "Ended Conf",
+                                     type_of: :conference,
+                                     start_time: 4.hours.ago, end_time: 1.hour.ago)
+        ended_event.tags << tag
+        create(:article, user: admin, event: ended_event, title: "Conference Recap Post",
+                         tag_list: "otherunrelatedtag", published: true)
+
+        get event_path(ended_event.event_name_slug, ended_event.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("event-articles-container", "Conference Recap Post")
+
+        ended_event.update!(allow_articles: false)
+        get event_path(ended_event.event_name_slug, ended_event.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include("event-articles-container", "Conference Recap Post")
+      end
+
+      it "renders nothing extra when allow_articles is enabled but no published articles are tagged" do
+        live_event = create(:event, published: true, allow_articles: true, title: "Empty Articles Event",
+                                    start_time: 1.hour.ago, end_time: 1.hour.from_now)
+        create(:article, user: admin, event: live_event, title: "Draft Only Post", published: false)
+
+        get event_path(live_event.event_name_slug, live_event.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include("event-articles-container", "Draft Only Post")
+      end
+
+      it "renders event-tagged articles on challenge event pages when enabled and published" do
+        challenge = create(:event, published: true, type_of: :challenge, allow_articles: true,
+                                   title: "Build Challenge",
+                                   start_time: 1.hour.ago, end_time: 1.hour.from_now)
+        create(:article, user: admin, event: challenge, title: "Challenge Kickoff Article", published: true)
+
+        get event_path(challenge.event_name_slug, challenge.event_variation_slug)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("event-articles-container", "Challenge Kickoff Article")
+      end
+    end
+
     context "when requesting an event that delegates to a page" do
       let(:delegated_page) { create(:page, slug: "delegated-page") }
       let!(:delegated_event) { create(:event, published: true, delegate_to_page: true, page: delegated_page) }

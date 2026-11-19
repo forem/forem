@@ -27,7 +27,7 @@ module CommentsHelper
   end
 
   def all_comments_visible?(commentable)
-    !(commentable.any_comments_hidden || any_hidden_negative_comments?(commentable))
+    !(commentable.try(:any_comments_hidden) || any_hidden_negative_comments?(commentable))
   end
 
   def article_comment_tree(article, limit, order)
@@ -59,7 +59,15 @@ module CommentsHelper
   end
 
   def get_ama_or_op_banner(commentable)
-    if commentable.decorate.cached_tag_list_array.include?(I18n.t("helpers.comments_helper.ama"))
+    tag_list = if commentable.is_a?(Article)
+                 commentable.decorate.cached_tag_list_array
+               elsif commentable.respond_to?(:tags_array)
+                 Array(commentable.tags_array)
+               else
+                 []
+               end
+
+    if tag_list.include?(I18n.t("helpers.comments_helper.ama"))
       I18n.t("helpers.comments_helper.ask_me_anything")
     else
       I18n.t("helpers.comments_helper.author")

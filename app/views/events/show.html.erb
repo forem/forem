@@ -60,6 +60,8 @@
         <% end %>
     </div>
 
+    <%= render "event_articles", articles: @event_articles, event: @event %>
+
     <% tag_name = defined?(@tag_name) ? @tag_name : @event.tags.first&.name %>
     <%= render "community_articles", articles: @articles, tag_name: tag_name %>
 </div>

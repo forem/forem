@@ -61,3 +61,7 @@ fr:
           challenge_details: Détails du défi
           event_details: Détails de l'événement
           showcase: Vitrine
+      event_articles:
+        heading: "Articles de %{event_title}"
+        badge: Articles de l'événement
+        subtitle: Articles publiés spécifiquement pour cet événement.

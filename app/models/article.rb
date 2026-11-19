@@ -44,6 +44,7 @@ class Article < ApplicationRecord
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+  belongs_to :event, optional: true
 
   belongs_to :organization, optional: true
   belongs_to :user
@@ -327,6 +328,7 @@ class Article < ApplicationRecord
   validate :restrict_type_based_on_role
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
+  validate :validate_event_assignment, if: :validating_event_assignment?
   validate :validate_tag
   validate :validate_video
   validate :user_mentions_in_markdown
@@ -406,6 +408,7 @@ class Article < ApplicationRecord
   after_update_commit :regenerate_summary_if_content_changed
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
+  after_commit :purge_previous_event_cache, on: :update, if: :saved_change_to_event_id?
 
   after_save :cleanup_memberships_if_unpublished,
              if: -> { saved_change_to_published? && published_before_last_save && !published? }
@@ -551,6 +554,20 @@ class Article < ApplicationRecord
 
   def favorited?
     favorited_by_user_id.present?
+  end
+
+  # Returns the associated event only when it is publicly visible as connected
+  # (published, allows articles, and has started). Admins may pre-tag an article
+  # before start_time, but it must not appear connected beforehand.
+  def visible_event(at = Time.current)
+    return if event_id.blank?
+    return unless event&.published? && event.articles_visible?(at)
+
+    event
+  end
+
+  def event_visible?(at = Time.current)
+    visible_event(at).present?
   end
 
   scope :from_subforem, lambda { |subforem_id = nil|
@@ -1779,6 +1796,46 @@ class Article < ApplicationRecord
     end
 
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
+  end
+
+  def validating_event_assignment?
+    has_event = event_id.present? || (association(:event).loaded? && event.present?)
+    has_event && (new_record? || will_save_change_to_event_id?)
+  end
+
+  def validate_event_assignment
+    if event.nil?
+      errors.add(:event_id, I18n.t("models.article.event_not_found"))
+      return
+    end
+
+    unless event.allow_articles?
+      errors.add(:event_id, I18n.t("models.article.event_articles_disabled"))
+      return
+    end
+
+    return if event.accepting_articles?(as_admin: acting_as_event_admin?)
+
+    errors.add(:event_id, I18n.t("models.article.event_not_accepting_articles"))
+  end
+
+  def acting_as_event_admin?
+    return true if admin_update
+
+    user.present? && (
+      user.administrative_access_to?(resource: Event) ||
+      (event.present? && user.administrative_access_to?(resource: event))
+    )
+  end
+
+  def purge_previous_event_cache
+    previous_event_id = saved_change_to_event_id.first
+    return if previous_event_id.blank?
+
+    previous_event = Event.select(:id, :event_name_slug, :event_variation_slug).find_by(id: previous_event_id)
+    return unless previous_event
+
+    EdgeCache::PurgeByKeyWorker.perform_async(previous_event.record_key, [previous_event.path])
   end
 
   def validate_co_authors

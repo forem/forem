@@ -175,4 +175,24 @@ RSpec.describe CommentPolicy, type: :policy do
       it { is_expected.to forbid_actions(%i[moderate moderator_create admin_delete]) }
     end
   end
+
+  context "when commentable is an Event" do
+    subject(:comment_policy) { described_class.new(user, event_comment) }
+
+    let(:user) { create(:user, :super_admin) }
+    let(:event) { build_stubbed(:event, allow_comments: true) }
+    let(:event_comment) { build_stubbed(:comment, commentable: event) }
+
+    it "forbids HTTP create and moderator_create for now" do
+      expect(comment_policy).to forbid_actions(%i[create new moderator_create])
+    end
+
+    it "also forbids create when wrapped in CommentCreator" do
+      creator = CommentCreator.build_comment(
+        { body_markdown: "Hello", commentable_id: event.id, commentable_type: "Event" },
+        current_user: user,
+      )
+      expect(described_class.new(user, creator)).to forbid_actions(%i[create])
+    end
+  end
 end

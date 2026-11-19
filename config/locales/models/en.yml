@@ -16,6 +16,9 @@ en:
       is_too_long: is too long.
       invalid_date: must be entered in DD/MM/YYYY format with current or past date
       series_unpermitted: must be one you have permission to post to
+      event_not_found: must reference an existing event
+      event_articles_disabled: does not allow tagged articles
+      event_not_accepting_articles: can only be tagged while the event is live
       invalid_coauthor: must be valid user IDs
       same_author: must not be the same user as the author
       must_not_have_spaces: must not have spaces
@@ -60,6 +63,8 @@ en:
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
       published_article: is not a published article
+      event_comments_disabled: does not allow comments
+      event_not_accepting_comments: can only receive comments while the event is live
       ai_disclosure:
         not_disclosed: Not Disclosed
         no_ai: No AI
@@ -67,6 +72,7 @@ en:
         fully_autonomous: Fully Autonomous
       type:
         Article: Article
+        Event: Event
         item: item
         PodcastEpisode: Podcast episode
       suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.

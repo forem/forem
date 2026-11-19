@@ -16,6 +16,9 @@ fr:
       is_too_long: est trop long.
       invalid_date: doit être saisie au format JJ/MM/AAAA avec la date actuelle ou passée
       series_unpermitted: Vous devez avoir la permission de poster sur
+      event_not_found: doit faire référence à un événement existant
+      event_articles_disabled: n'autorise pas les articles associés
+      event_not_accepting_articles: ne peut être associé que pendant le déroulement de l'événement
       invalid_coauthor: doivent être des identifiants d'utilisateur valides
       same_author: ne doit pas être le même utilisateur que l'auteur
       must_not_have_spaces: ne doit pas comporter d'espaces
@@ -59,6 +62,8 @@ fr:
       is_not_valid: n'est pas valide.
       locked: la discussion est verrouillée sur ce message
       published_article: n'est pas un article publié
+      event_comments_disabled: n'autorise pas les commentaires
+      event_not_accepting_comments: ne peut recevoir des commentaires que pendant le déroulement de l'événement
       ai_disclosure:
         not_disclosed: Non divulgué
         no_ai: Sans IA
@@ -66,6 +71,7 @@ fr:
         fully_autonomous: Entièrement autonome
       type:
         Article: Article
+        Event: Événement
         item: élément
         PodcastEpisode: Épisode de podcast
       suspended_too_many: L'utilisateur a été suspendu pour un trop grand nombre d'interactions spammy, déclenchées par autovomit.

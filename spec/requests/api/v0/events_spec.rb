@@ -211,5 +211,18 @@ RSpec.describe "Api::V0::Events" do
       expect(event.full_details).to eq("Updated comprehensive agenda and FAQ dump")
       expect(response.parsed_body["full_details"]).to eq("Updated comprehensive agenda and FAQ dump")
     end
+
+    it "allows administrators to toggle allow_articles and allow_comments and exposes comments_count" do
+      patch "/api/events/#{event.id}",
+            params: { event: { allow_articles: true, allow_comments: true } }.to_json,
+            headers: admin_headers
+
+      expect(response).to have_http_status(:success)
+      expect(event.reload.allow_articles).to be(true)
+      expect(event.allow_comments).to be(true)
+      expect(response.parsed_body["allow_articles"]).to be(true)
+      expect(response.parsed_body["allow_comments"]).to be(true)
+      expect(response.parsed_body["comments_count"]).to eq(0)
+    end
   end
 end

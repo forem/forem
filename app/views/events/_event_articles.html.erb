@@ -1,0 +1,37 @@
+<% if articles.present? %>
+  <section class="event-articles-section mt-8" aria-labelledby="event-articles-heading">
+    <div class="community-header event-articles-header mb-4">
+      <div class="flex items-center flex-wrap gap-2">
+        <h2 id="event-articles-heading" class="crayons-title m-0">
+          <%= t("views.events.event_articles.heading", event_title: event.title) %>
+        </h2>
+        <span class="event-articles-badge"><%= t("views.events.event_articles.badge") %></span>
+      </div>
+      <p class="event-articles-subtitle fs-s color-base-60 mt-1 mb-0">
+        <%= t("views.events.event_articles.subtitle") %>
+      </p>
+    </div>
+
+    <div id="event-articles-container" class="feed-grid">
+      <% articles.each do |article| %>
+        <article class="article-card article-card--event">
+          <div class="article-user">
+            <img src="<%= article.user.profile_image_90 %>" alt="<%= article.user.name %>" loading="lazy">
+            <span><%= article.user.name %></span>
+          </div>
+          <a href="<%= article.path %>" target="_blank" rel="noopener">
+            <h3 class="article-title"><%= article.title %></h3>
+          </a>
+          <div class="article-tags">
+            <% article.decorate.cached_tag_list_array.take(3).each do |tag| %>
+              <span class="tag">#<%= tag %></span>
+            <% end %>
+          </div>
+          <div class="article-meta">
+            <span><%= article.published_at&.strftime("%b %-d") %></span>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  </section>
+<% end %>

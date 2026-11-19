@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_19_161300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -172,6 +172,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.integer "displayed_comments_count"
     t.datetime "edited_at", precision: nil
     t.boolean "email_digest_eligible", default: true
+    t.bigint "event_id"
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.datetime "favorited_at"
@@ -242,6 +243,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
+    t.index ["event_id", "published", "hotness_score", "published_at"], name: "index_articles_on_event_id_published_hotness_published_at", order: { hotness_score: :desc, published_at: :desc }, where: "(event_id IS NOT NULL)"
     t.index ["favorited_by_user_id"], name: "index_articles_on_favorited_by_user_id"
     t.index ["featured", "published", "published_at"], name: "index_articles_on_featured_published_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
@@ -797,11 +799,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.boolean "allow_articles", default: false, null: false
+    t.boolean "allow_comments", default: false, null: false
     t.string "bg_color_hex"
     t.text "body_markdown"
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
+    t.integer "comments_count", default: 0, null: false
     t.string "cover_image"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
@@ -2308,6 +2313,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "article_activities", "articles"
   add_foreign_key "articles", "collections", on_delete: :nullify
+  add_foreign_key "articles", "events", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
   add_foreign_key "articles", "users", column: "favorited_by_user_id", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade

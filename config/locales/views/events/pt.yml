@@ -61,3 +61,7 @@ pt:
           challenge_details: Detalhes do desafio
           event_details: Detalhes do evento
           showcase: Showcase
+      event_articles:
+        heading: "Posts de %{event_title}"
+        badge: Posts do Evento
+        subtitle: Artigos publicados especificamente para este evento.

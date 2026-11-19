@@ -25,6 +25,11 @@ module EdgeCache
         fallback_paths << article.organization.path if article.organization.respond_to?(:path)
       end
 
+      if article.event_id.present? && article.event
+        keys << article.event.record_key
+        fallback_paths << article.event.path
+      end
+
       collect_custom_domain_paths(article, fallback_paths)
       collect_home_page_targets(article, keys, fallback_paths)
       collect_tag_page_targets(article, keys, fallback_paths)
