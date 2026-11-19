@@ -231,6 +231,68 @@ RSpec.describe "/admin/customization/billboards" do
     end
   end
 
+  context "when the user is a Billboard admin with restricted sub-permissions" do
+    let(:restricted_admin) do
+      create(:user, :single_resource_admin, :without_profile, profile_image: nil, resource: Billboard)
+    end
+    let(:draft_params) { params.merge(approved: false, published: false) }
+
+    before do
+      SubPermissions.update_grant(user: restricted_admin, resource_type: "Billboard",
+                                  sub_permissions: SubPermissions.build(allow: []))
+      sign_in restricted_admin
+    end
+
+    it "creates an unapproved, unpublished billboard" do
+      expect { post admin_billboards_path, params: draft_params }.to change(Billboard, :count).by(1)
+      expect(Billboard.last).to have_attributes(approved: false, published: false, creator_id: restricted_admin.id)
+    end
+
+    it "refuses to create a live billboard and shows why", :aggregate_failures do
+      expect { post_resource }.not_to change(Billboard, :count)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).to include(CGI.escapeHTML("Your Billboard admin access does not include: " \
+                                                      "approve billboards and publish billboards."))
+    end
+
+    it "edits an unapproved billboard but refuses to approve it", :aggregate_failures do
+      draft = create(:billboard, approved: false, published: false, organization: nil)
+
+      put admin_billboard_path(draft.id), params: { name: "Renamed" }
+      expect(draft.reload.name).to eq("Renamed")
+
+      put admin_billboard_path(draft.id), params: { approved: true }
+      expect(response).to have_http_status(:forbidden)
+      expect(draft.reload).not_to be_approved
+    end
+
+    it "refuses to edit an approved billboard but lets it be taken down", :aggregate_failures do
+      live = create(:billboard, approved: true, published: true, organization: nil)
+
+      put admin_billboard_path(live.id), params: { body_markdown: "Swapped after approval" }
+      expect(response).to have_http_status(:forbidden)
+      expect(live.reload.body_markdown).not_to eq("Swapped after approval")
+
+      put admin_billboard_path(live.id), params: { published: false }
+      expect(live.reload).not_to be_published
+    end
+
+    it "refuses to delete an approved billboard", :aggregate_failures do
+      live = create(:billboard, approved: true, published: true, organization: nil)
+
+      expect { delete admin_billboard_path(live.id) }.not_to change(Billboard, :count)
+      expect(response).to have_http_status(:forbidden)
+      expect(response.parsed_body["error"]).to include("change or delete approved billboards")
+    end
+
+    it "deletes an unapproved billboard" do
+      draft = create(:billboard, approved: false, organization: nil)
+
+      expect { delete admin_billboard_path(draft.id) }.to change(Billboard, :count).by(-1)
+    end
+  end
+
   context "when the user is the wrong single resource admin" do
     let(:single_resource_admin) do
       create(:user, :single_resource_admin, :without_profile, profile_image: nil, resource: Article)

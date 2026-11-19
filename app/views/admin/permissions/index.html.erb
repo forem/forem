@@ -68,7 +68,9 @@
                   display_roles = [{ label: "Admin", value: "admin" }]
                 else
                   display_roles = fetched_roles.select { |r| r[0] == 'single_resource_admin' && r[1].present? }.map do |r|
-                    { label: "#{r[1]} Admin", value: "single_resource_admin|#{r[1]}" }
+                    label = "#{r[1]} Admin"
+                    label += " (#{t('lib.sub_permissions.admin.restricted')})" if @sub_permissions.key?([user.id, r[1]])
+                    { label: label, value: "single_resource_admin|#{r[1]}", resource_type: r[1] }
                   end
                 end
               %>
@@ -84,7 +86,41 @@
                 </div>
               <% end %>
               </div>
-              
+
+              <% configurable_roles = display_roles.select { |role| SubPermissions.configurable?(role[:resource_type]) } %>
+              <% configurable_roles.each do |role| %>
+                <% stored_config = @sub_permissions[[user.id, role[:resource_type]]] %>
+                <% current_config = stored_config && SubPermissions::Config.new(stored_config, resource_type: role[:resource_type]) %>
+                <details class="text-sm" data-testid="sub-permissions-<%= role[:resource_type] %>">
+                  <summary class="cursor-pointer text-base-70">
+                    <%= role[:resource_type] %> <%= t("lib.sub_permissions.admin.summary") %>:
+                    <%= stored_config ? t("lib.sub_permissions.admin.restricted") : t("lib.sub_permissions.admin.full_access") %>
+                  </summary>
+                  <%= form_with url: sub_permissions_admin_permissions_path, method: :patch, local: true, class: "flex flex-col gap-2 mt-2" do |f| %>
+                    <%= f.hidden_field :user_id, value: user.id %>
+                    <%= f.hidden_field :role_name, value: role[:value] %>
+                    <label class="flex items-center gap-2">
+                      <%= f.radio_button :restricted, "0", checked: stored_config.nil? %>
+                      <%= t("lib.sub_permissions.admin.full_access") %>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <%= f.radio_button :restricted, "1", checked: stored_config.present? %>
+                      <%= t("lib.sub_permissions.admin.restricted") %>
+                    </label>
+                    <% SubPermissions.clauses_for(role[:resource_type]).each do |clause| %>
+                      <label class="flex items-center gap-2 pl-6">
+                        <%= check_box_tag "allow[]", clause, current_config&.allows?(clause), id: "allow_#{user.id}_#{role[:resource_type]}_#{clause}" %>
+                        <%= SubPermissions.clause_label(role[:resource_type], clause).upcase_first %>
+                      </label>
+                    <% end %>
+                    <p class="text-base-60 pl-6"><%= t("lib.sub_permissions.admin.restricted_hint") %></p>
+                    <div>
+                      <%= f.submit t("lib.sub_permissions.admin.save"), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+                    </div>
+                  <% end %>
+                </details>
+              <% end %>
+
               <% unless fetched_roles.any? { |r| r[0] == 'super_admin' } %>
                 <%= form_with url: grant_admin_permissions_path, method: :post, local: true, class: "flex items-center gap-2" do |f| %>
                   <%= f.hidden_field :username, value: user.username %>

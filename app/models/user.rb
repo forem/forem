@@ -694,6 +694,7 @@ class User < ApplicationRecord
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
+    :sub_permission?,
     :subforem_moderator?,
     :super_admin?,
     :support_admin?,

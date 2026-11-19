@@ -168,6 +168,126 @@ RSpec.describe "/admin/permissions" do
     end
   end
 
+  describe "PATCH /admin/permissions/sub_permissions" do
+    let(:target_user) { create(:user) }
+    let(:role_name) { "single_resource_admin|Billboard" }
+
+    def grant_config(user)
+      role = Role.find_by(name: "single_resource_admin", resource_type: "Billboard", resource_id: nil)
+      UserRole.find_by(user_id: user.id, role_id: role.id).sub_permissions
+    end
+
+    before { target_user.add_role(:single_resource_admin, Billboard) }
+
+    context "when signed in as an admin" do
+      before { sign_in create(:user, :admin) }
+
+      it "restricts the grant to the checked clauses", :aggregate_failures do
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: role_name, restricted: "1", allow: %w[publish] }
+
+        expect(response).to redirect_to(admin_permissions_path)
+        expect(flash[:success]).to be_present
+        expect(grant_config(target_user)).to eq({ "version" => 1, "allow" => %w[publish] })
+        expect(target_user.reload.sub_permission?(resource: Billboard, clause: "approve")).to be(false)
+      end
+
+      it "restricts the grant to nothing when no clause is checked" do
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: role_name, restricted: "1" }
+
+        expect(grant_config(target_user)).to eq({ "version" => 1, "allow" => [] })
+      end
+
+      it "restores full access" do
+        SubPermissions.update_grant(user: target_user, resource_type: "Billboard",
+                                    sub_permissions: SubPermissions.build(allow: []))
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: role_name, restricted: "0", allow: %w[publish] }
+
+        expect(grant_config(target_user)).to be_nil
+      end
+
+      it "refuses unknown clauses and leaves the grant unchanged", :aggregate_failures do
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: role_name, restricted: "1", allow: %w[publish everything] }
+
+        expect(flash[:error]).to include("everything")
+        expect(grant_config(target_user)).to be_nil
+      end
+
+      it "ignores a malformed allow parameter instead of storing it" do
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: role_name, restricted: "1", allow: { "0" => "publish" } }
+
+        expect(grant_config(target_user)).to eq({ "version" => 1, "allow" => [] })
+      end
+
+      it "refuses resource types without sub-permissions" do
+        target_user.add_role(:single_resource_admin, Article)
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: "single_resource_admin|Article", restricted: "1" }
+
+        expect(flash[:error]).to be_present
+      end
+
+      it "refuses other roles and unknown users", :aggregate_failures do
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: "admin", restricted: "1" }
+        expect(flash[:error]).to be_present
+
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: 0, role_name: role_name, restricted: "1" }
+        expect(flash[:error]).to be_present
+        expect(grant_config(target_user)).to be_nil
+      end
+
+      it "refuses a user who does not hold the grant" do
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: create(:user).id, role_name: role_name, restricted: "1" }
+
+        expect(flash[:error]).to be_present
+      end
+
+      it "writes an internal audit log entry" do
+        allow(Audit::Logger).to receive(:log)
+        patch sub_permissions_admin_permissions_path,
+              params: { user_id: target_user.id, role_name: role_name, restricted: "1", allow: %w[publish] }
+
+        expect(Audit::Logger).to have_received(:log).with(
+          :internal, anything, hash_including("action" => "update_sub_permissions", "target_user_id" => target_user.id)
+        )
+      end
+
+      it "shows each Billboard admin's sub-permissions on the index", :aggregate_failures do
+        SubPermissions.update_grant(user: target_user, resource_type: "Billboard",
+                                    sub_permissions: SubPermissions.build(allow: %w[publish]))
+        get admin_permissions_path
+
+        expect(response.body).to include("Billboard Admin (Restricted)")
+        expect(response.body).to include("data-testid=\"sub-permissions-Billboard\"")
+        expect(response.body).to match(/id="allow_#{target_user.id}_Billboard_publish"[^>]*checked/)
+        expect(response.body).not_to match(/id="allow_#{target_user.id}_Billboard_approve"[^>]*checked/)
+      end
+    end
+
+    context "when signed in as a restricted Billboard admin" do
+      before do
+        restricted = create(:user, :single_resource_admin, resource: Billboard)
+        SubPermissions.update_grant(user: restricted, resource_type: "Billboard",
+                                    sub_permissions: SubPermissions.build(allow: []))
+        sign_in restricted
+      end
+
+      it "cannot reach the permissions page to lift its own restriction" do
+        expect do
+          patch sub_permissions_admin_permissions_path,
+                params: { user_id: target_user.id, role_name: role_name, restricted: "0" }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
   describe "the OrganizationPageManagement resource admin role" do
     let(:target_user) { create(:user) }
     let(:role_name) { "single_resource_admin|OrganizationPageManagement" }

@@ -16,6 +16,7 @@ module Admin
                    .page(params[:page])
                    .per(50)
                end
+      @sub_permissions = restricted_grants(@users.map(&:id))
     end
 
     def grant
@@ -26,6 +27,38 @@ module Admin
     def revoke
       user = User.find_by(id: params[:user_id])
       mutate_role(user: user, mutation: :remove_role, success_verb: "Revoked", preposition: "from")
+    end
+
+    def sub_permissions
+      user = User.find_by(id: params[:user_id])
+      role_name, resource_type = params[:role_name].to_s.split("|", 2)
+      resource_class = resolve_resource_class(resource_type)
+      return refuse_super_admin_only unless assignable?(role_name, resource_type, resource_class)
+
+      unless user && role_name == SubPermissions::ROLE_NAME && resource_class
+        flash[:error] = "Invalid user or role" # rubocop:disable Rails/I18nLocaleTexts
+        return redirect_to admin_permissions_path, status: :see_other
+      end
+
+      allow = params[:allow].is_a?(Array) ? params[:allow] : []
+      config = params[:restricted] == "1" ? SubPermissions.build(allow: allow) : nil
+      result = SubPermissions.update_grant(user: user, resource_type: resource_class.name, sub_permissions: config)
+
+      if result.success?
+        audit_payload = {
+          "action" => "update_sub_permissions",
+          "target_user_id" => user.id,
+          "resource_type" => resource_class.name,
+          "sub_permissions" => config
+        }
+        Audit::Logger.log(:internal, current_user, audit_payload)
+        flash[:success] = I18n.t("lib.sub_permissions.admin.updated",
+                                 resource: resource_class.name, username: user.username)
+      else
+        flash[:error] = result.errors.to_sentence
+      end
+
+      redirect_to admin_permissions_path, status: :see_other
     end
 
     private
@@ -76,6 +109,18 @@ module Admin
     def refuse_super_admin_only
       flash[:error] = "Only super admins can grant or revoke #{params[:role_name]}"
       redirect_to admin_permissions_path, status: :see_other
+    end
+
+    def restricted_grants(user_ids)
+      return {} if user_ids.empty?
+
+      UserRole.joins(:role)
+        .where(user_id: user_ids)
+        .where(roles: { name: SubPermissions::ROLE_NAME, resource_type: SubPermissions::CLAUSES.keys })
+        .where(roles: { resource_id: nil })
+        .where.not(sub_permissions: nil)
+        .pluck(:user_id, "roles.resource_type", :sub_permissions)
+        .to_h { |user_id, resource_type, config| [[user_id, resource_type], config] }
     end
 
     def admin_role_ids
