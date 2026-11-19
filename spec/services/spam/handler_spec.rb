@@ -1043,6 +1043,12 @@ RSpec.describe Spam::Handler, type: :service do
 
         expect(described_class.handle_comment!(comment: non_link_comment)).to eq(:not_spam)
       end
+
+      it "handles malformed mailto links without raising URI::InvalidComponentError" do
+        malformed_mailto_comment = create(:comment, body_markdown: "[email](mailto:user@)")
+
+        expect(described_class.handle_comment!(comment: malformed_mailto_comment)).to eq(:not_spam)
+      end
     end
 
     context "when spam is triggered by RateLimit" do
