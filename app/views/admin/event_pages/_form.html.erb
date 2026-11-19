@@ -50,8 +50,12 @@
 </style>
 
 <% current_suffix = @page.slug&.delete_prefix("#{@event.page_slug_prefix}/") %>
+<% is_showcase = @page.event_showcase? || params[:kind] == "showcase" %>
 
 <%= form_for @page, url: url, method: method, html: { class: "grid gap-6" } do |f| %>
+  <% if is_new && is_showcase %>
+    <%= hidden_field_tag :kind, "showcase" %>
+  <% end %>
   <% if @page.errors.any? %>
     <div class="crayons-notice crayons-notice--danger">
       <% @page.errors.full_messages.each do |msg| %>
@@ -68,35 +72,40 @@
       <%= f.text_field :title, class: "crayons-textfield", required: true, placeholder: "e.g. Schedule" %>
     </div>
 
-    <div class="crayons-field">
-      <%= label_tag "page[slug_suffix]", t("views.organization_settings.pages.slug"), class: "crayons-field__label" %>
-      <div class="flex items-center flex-wrap gap-2">
-        <span class="fs-s color-base-60">/events/<%= @event.event_name_slug %>/<%= @event.event_variation_slug %>/p/</span>
-        <%= text_field_tag "page[slug_suffix]", current_suffix, class: "crayons-textfield flex-1", required: true, pattern: "[a-z0-9\\-]+", placeholder: "e.g. schedule" %>
+    <% if is_showcase %>
+      <div class="crayons-field">
+        <label class="crayons-field__label"><%= t("views.organization_settings.pages.slug") %></label>
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="fs-s color-base-60">/events/<%= @event.event_name_slug %>/<%= @event.event_variation_slug %>/</span>
+          <input type="text" class="crayons-textfield flex-1" value="<%= Page::SHOWCASE_SLUG_SUFFIX %>" disabled />
+        </div>
+        <p class="crayons-field__description"><%= t("views.admin.event_pages.showcase_slug_help") %></p>
       </div>
-      <p class="crayons-field__description"><%= t("views.organization_settings.pages.slug_help") %></p>
-    </div>
+    <% else %>
+      <div class="crayons-field">
+        <%= label_tag "page[slug_suffix]", t("views.organization_settings.pages.slug"), class: "crayons-field__label" %>
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="fs-s color-base-60">/events/<%= @event.event_name_slug %>/<%= @event.event_variation_slug %>/p/</span>
+          <%= text_field_tag "page[slug_suffix]", current_suffix, class: "crayons-textfield flex-1", required: true, pattern: "[a-z0-9\\-]+", placeholder: "e.g. schedule" %>
+        </div>
+        <p class="crayons-field__description"><%= t("views.organization_settings.pages.slug_help") %></p>
+      </div>
+    <% end %>
 
     <div class="crayons-field">
       <%= f.label :description, t("views.organization_settings.pages.description"), class: "crayons-field__label" %>
       <%= f.text_field :description, class: "crayons-textfield", placeholder: t("views.organization_settings.pages.description_placeholder") %>
     </div>
 
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :showcase, class: "crayons-checkbox", aria: { describedby: "event-page-showcase-hint" } %>
-      <div>
-        <%= f.label :showcase, t("views.admin.event_pages.showcase_checkbox"), class: "crayons-field__label" %>
-        <p id="event-page-showcase-hint" class="crayons-field__description"><%= t("views.admin.event_pages.showcase_hint") %></p>
+    <% unless is_showcase %>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :show_in_navigation, class: "crayons-checkbox", aria: { describedby: "event-page-navigation-hint" } %>
+        <div>
+          <%= f.label :show_in_navigation, t("views.admin.event_pages.show_in_navigation"), class: "crayons-field__label" %>
+          <p id="event-page-navigation-hint" class="crayons-field__description"><%= t("views.admin.event_pages.navigation_hint") %></p>
+        </div>
       </div>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :show_in_navigation, class: "crayons-checkbox", aria: { describedby: "event-page-navigation-hint" } %>
-      <div>
-        <%= f.label :show_in_navigation, t("views.admin.event_pages.show_in_navigation"), class: "crayons-field__label" %>
-        <p id="event-page-navigation-hint" class="crayons-field__description"><%= t("views.admin.event_pages.navigation_hint") %></p>
-      </div>
-    </div>
+    <% end %>
 
     <div class="crayons-field">
       <%= f.label :body_markdown, t("views.organization_settings.pages.content_label"), class: "crayons-field__label" %>

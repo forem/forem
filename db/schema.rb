@@ -1402,7 +1402,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.text "processed_html"
     t.string "redirect_to_url"
     t.boolean "show_in_navigation", default: true, null: false
-    t.boolean "showcase", default: false, null: false
     t.string "slug"
     t.string "social_image"
     t.bigint "subforem_id"
@@ -1412,7 +1411,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_120200) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["event_id"], name: "index_pages_on_event_id"
-    t.index ["event_id"], name: "index_pages_on_event_id_showcase_unique", unique: true, where: "((event_id IS NOT NULL) AND (showcase = true))"
     t.index ["organization_id"], name: "index_pages_on_organization_id"
     t.index ["page_template_id"], name: "index_pages_on_page_template_id"
     t.index ["slug", "subforem_id"], name: "index_pages_on_slug_and_subforem_id", unique: true

@@ -324,7 +324,7 @@ RSpec.describe "Events" do
           [conf_event, "Event Details", I18n.t("views.events.gathering.register_heading")],
         ].each do |evt, expected_native_tab, expected_native_marker|
           create(:page, event: evt, slug: evt.page_slug_for("readme"), title: "Event Showcase",
-                        body_markdown: "## Welcome Showcase for #{evt.title}", showcase: true)
+                        body_markdown: "## Welcome Showcase for #{evt.title}", position: 0)
           create(:page, event: evt, slug: evt.page_slug_for("faq"), title: "FAQ",
                         body_markdown: "## Event FAQ", position: 1)
 
@@ -345,7 +345,7 @@ RSpec.describe "Events" do
       it "omits feature-flag-inaccessible pages from event tabs and showcase landing" do
         public_showcase = create(
           :page, event: conf_event, slug: conf_event.page_slug_for("readme"),
-                 title: "Gated Showcase", body_markdown: "Showcase body", showcase: true
+                 title: "Gated Showcase", body_markdown: "Showcase body", position: 0
         )
         gated_tab = create(
           :page, event: conf_event, slug: conf_event.page_slug_for("vip"),

@@ -241,7 +241,7 @@ module Api
         end
         params.permit(*%i[title slug description is_top_level_path subforem_id
                           body_json body_markdown body_html body_css remote_social_image_url
-                          template redirect_to_url organization_id event_id showcase position show_in_navigation])
+                          template redirect_to_url organization_id event_id position show_in_navigation])
       end
     end
   end

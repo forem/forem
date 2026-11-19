@@ -174,7 +174,6 @@ namespace :admin do
       resources :pages, controller: "event_pages", except: [:show] do
         member do
           patch :reorder
-          patch :toggle_showcase
         end
         collection do
           post :preview

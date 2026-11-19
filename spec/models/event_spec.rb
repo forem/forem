@@ -431,16 +431,20 @@ RSpec.describe Event do
       expect(event.ordered_pages).to eq([first, second])
       expect(event.navigation_pages).to eq([second])
       expect(event.ordered_embed_pages).to eq([embed])
-      expect(event.showcase_page).to be_nil
+      expect(event.main_page).to be_nil
+      expect(event.readme_page?).to be(false)
 
-      first.update!(showcase: true, show_in_navigation: true)
-      expect(event.showcase_page).to eq(first)
+      readme = create(:page, event: event, slug: event.page_slug_for("readme"), position: 0)
+      expect(event.main_page).to eq(readme)
+      expect(event.showcase_page).to eq(readme)
+      expect(event.readme_page?).to be(true)
 
       event.update!(event_name_slug: "summit-new", event_variation_slug: "2026")
+      expect(readme.reload.slug).to eq("events/summit-new/2026/readme")
       expect(first.reload.slug).to eq("events/summit-new/2026/first")
       expect(embed.reload.slug).to eq("events/summit-new/2026/embed/schedule")
 
-      expect { event.destroy! }.to change(Page, :count).by(-3)
+      expect { event.destroy! }.to change(Page, :count).by(-4)
     end
 
     it "fails event validation instead of raising RecordInvalid on owned page slug collision" do

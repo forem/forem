@@ -116,12 +116,12 @@
         <li class="flex items-center justify-between gap-2 p-2 border rounded">
           <div class="flex items-center gap-2 flex-wrap">
             <strong><%= event_page.title %></strong>
-            <% if event_page.showcase? %>
+            <% if event_page.event_showcase? %>
               <span class="c-indicator c-indicator--success"><%= t("views.admin.event_pages.showcase") %></span>
             <% else %>
               <code class="fs-xs">/p/<%= suffix %></code>
             <% end %>
-            <% unless event_page.showcase? || event_page.show_in_navigation? %>
+            <% unless event_page.event_showcase? || event_page.show_in_navigation? %>
               <span class="c-indicator"><%= t("views.organization_settings.pages.hidden_from_tabs") %></span>
             <% end %>
           </div>

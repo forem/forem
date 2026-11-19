@@ -124,8 +124,6 @@ fr:
       embed_html_too_large: ne peut pas dépasser %{max_kb} Ko.
       event_page_invalid_slug: doit utiliser le format de chemin de page d'événement (%{prefix}<slug>).
       multiple_owners_not_allowed: La page ne peut appartenir qu'à un seul propriétaire (organisation, utilisateur ou événement).
-      showcase_event_only: ne peut être activé que pour les pages appartenant à un événement.
-      showcase_embed_not_allowed: ne peut pas être activé pour les pages embed_html.
       slug_blank: ne peut pas être vide
       user_embed_pages_limit_reached: Vous avez atteint le maximum de %{max} pages intégrées.
       user_page_must_be_embed_html: doit être embed_html pour les pages appartenant à un utilisateur.

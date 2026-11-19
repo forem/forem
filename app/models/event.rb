@@ -206,8 +206,13 @@ class Event < ApplicationRecord
     pages.embed_html.order(:created_at, :id)
   end
 
-  def showcase_page
-    pages.non_embed_html.find_by(showcase: true)
+  def main_page
+    pages.non_embed_html.find_by(slug: page_slug_for(Page::SHOWCASE_SLUG_SUFFIX))
+  end
+  alias showcase_page main_page
+
+  def readme_page?
+    main_page.present?
   end
 
   def navigation_pages

@@ -59,7 +59,7 @@ class EventsController < ApplicationController
     @event_pages = @event.ordered_pages.select do |page|
       FeatureFlag.accessible?(page.feature_flag_name, current_user)
     end
-    @showcase_page = @event_pages.detect(&:showcase?)
+    @showcase_page = @event_pages.detect(&:event_showcase?)
     @event_nav_pages = @event_pages.select { |page| page.show_in_navigation? && page != @showcase_page }
   end
 

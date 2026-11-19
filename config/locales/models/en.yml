@@ -125,8 +125,6 @@ en:
       embed_html_too_large: cannot exceed %{max_kb} KB.
       event_page_invalid_slug: must use the event page path format (%{prefix}<slug>).
       multiple_owners_not_allowed: Page can belong to only one owner (organization, user, or event).
-      showcase_event_only: can only be enabled for pages belonging to an event.
-      showcase_embed_not_allowed: cannot be enabled for embed_html pages.
       slug_blank: can't be blank
       user_embed_pages_limit_reached: You have reached the maximum of %{max} embedded pages.
       user_page_must_be_embed_html: must be embed_html for user-owned pages.

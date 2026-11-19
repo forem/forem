@@ -56,16 +56,15 @@ RSpec.describe "api/v1/pages" do
 
         ### Body Parameter Guidelines:
         - **title**: Heading displayed at the top of the page.
-        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).
+        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`). For event pages, scoped under `events/{event_name_slug}/{event_variation_slug}/{suffix}` (with `.../readme` acting as the optional Showcase/README landing view).
         - **body_markdown**: Content written in Markdown format.
         - **body_json**: Optional JSON payload for API-consumed/structured data pages.
         - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.
         - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.
         - **organization_id**: Optional ID of the organization this page belongs to.
         - **event_id**: Optional ID of the event this page belongs to.
-        - **showcase**: Optional boolean to designate this page as the Showcase/README landing view for its event.
         - **position**: Optional display order position for organization or event pages.
-        - **show_in_navigation**: Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API.
+        - **show_in_navigation**: Whether the page appears in organization or event tabs. Defaults to true. Only non-Showcase organization or event pages can set false. Hidden pages remain public at their URL and through the API.
         DESCRIBE
 
         produces "application/json"
@@ -87,8 +86,6 @@ RSpec.describe "api/v1/pages" do
                                          description: "The ID of the organization the page belongs to" },
                       event_id: { type: :integer, format: :int64,
                                   description: "The ID of the event the page belongs to" },
-                      showcase: { type: :boolean, default: false,
-                                  description: "Whether the page is selected as the Showcase/README landing view for its event" },
                       position: { type: :integer, format: :int32,
                                   description: "Display order position for organization pages" },
                       show_in_navigation: { type: :boolean, default: true,

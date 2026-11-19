@@ -29,7 +29,7 @@ RSpec.describe "Admin::EventPages" do
     end
   end
 
-  describe "CRUD, showcase toggle, reordering, and preview" do
+  describe "CRUD, optional readme showcase, reordering, and preview" do
     before { login_as(super_admin) }
 
     it "lists markdown pages and embed_html pages on index" do
@@ -48,9 +48,10 @@ RSpec.describe "Admin::EventPages" do
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include("Schedule", "Schedule Widget", event.embed_page_slug_for("widget"))
+      expect(response.body).to include(I18n.t("views.admin.event_pages.new_showcase"))
     end
 
-    it "creates a top-level markdown page and a showcase page" do
+    it "creates a top-level markdown page" do
       expect do
         post admin_event_pages_path(event), params: {
           page: {
@@ -65,13 +66,15 @@ RSpec.describe "Admin::EventPages" do
       created = event.pages.last
       expect(response).to redirect_to(admin_event_pages_path(event))
       expect(created.slug).to eq("events/forem-summit/2026/speakers")
-      expect(created.showcase?).to be(false)
+      expect(created.event_showcase?).to be(false)
+      expect(created.position).to eq(1)
+    end
 
+    it "creates an optional readme showcase page" do
       post admin_event_pages_path(event), params: {
+        kind: "showcase",
         page: {
           title: "Welcome",
-          slug_suffix: "",
-          showcase: "1",
           body_markdown: "# Welcome to Summit"
         }
       }
@@ -79,7 +82,28 @@ RSpec.describe "Admin::EventPages" do
       showcase_page = event.pages.order(:id).last
       expect(response).to redirect_to(admin_event_pages_path(event))
       expect(showcase_page.slug).to eq("events/forem-summit/2026/readme")
-      expect(showcase_page.showcase?).to be(true)
+      expect(showcase_page.event_showcase?).to be(true)
+      expect(showcase_page.position).to eq(0)
+      expect(event.main_page).to eq(showcase_page)
+    end
+
+    it "keeps the readme slug pinned when editing a showcase page" do
+      showcase = create(:page, event: event, slug: event.page_slug_for("readme"), title: "Showcase", position: 0)
+
+      patch admin_event_page_path(event, showcase), params: {
+        page: {
+          title: "Updated Showcase",
+          slug_suffix: "something-else",
+          body_markdown: "# Updated Showcase"
+        }
+      }
+
+      expect(response).to redirect_to(admin_event_pages_path(event))
+      expect(showcase.reload).to have_attributes(
+        title: "Updated Showcase",
+        slug: "events/forem-summit/2026/readme",
+        position: 0,
+      )
     end
 
     it "creates and updates sandboxed embed_html pages" do
@@ -126,52 +150,6 @@ RSpec.describe "Admin::EventPages" do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it "toggles showcase status and promotes hidden pages cleanly" do
-      page_one = create(:page, event: event, slug: event.page_slug_for("one"), title: "One", showcase: true)
-      page_two = create(
-        :page,
-        event: event,
-        slug: event.page_slug_for("two"),
-        title: "Two",
-        show_in_navigation: false,
-      )
-
-      patch toggle_showcase_admin_event_page_path(event, page_two)
-
-      expect(response).to redirect_to(admin_event_pages_path(event))
-      expect(page_one.reload.showcase?).to be(false)
-      expect(page_two.reload).to have_attributes(showcase: true, show_in_navigation: true)
-
-      patch toggle_showcase_admin_event_page_path(event, page_two)
-      expect(page_two.reload.showcase?).to be(false)
-    end
-
-    it "serializes showcase selection via the parent event lock on create, update, and toggle" do
-      first = create(:page, event: event, slug: event.page_slug_for("first"), title: "First", showcase: true)
-      second = create(:page, event: event, slug: event.page_slug_for("second"), title: "Second")
-      third_params = {
-        page: { title: "Third", slug_suffix: "third", body_markdown: "## Third", showcase: "1" }
-      }
-
-      allow(Event).to receive(:find).and_return(event)
-      allow(event).to receive(:with_lock).and_call_original
-
-      post admin_event_pages_path(event), params: third_params
-      expect(response).to redirect_to(admin_event_pages_path(event))
-
-      patch admin_event_page_path(event, second), params: {
-        page: { title: "Second Updated", slug_suffix: "second", body_markdown: "## Two", showcase: "1" }
-      }
-      expect(response).to redirect_to(admin_event_pages_path(event))
-
-      patch toggle_showcase_admin_event_page_path(event, first)
-      expect(response).to redirect_to(admin_event_pages_path(event))
-
-      expect(event).to have_received(:with_lock).exactly(3).times
-      expect(first.reload.showcase?).to be(true)
-      expect(second.reload.showcase?).to be(false)
-    end
-
     it "rebuilds ordinary page slugs against a concurrently renamed event and skips locking unchanged-slug updates" do
       stale_event = Event.find(event.id)
       allow(Event).to receive(:find).and_return(stale_event)
@@ -197,25 +175,15 @@ RSpec.describe "Admin::EventPages" do
       expect(stale_event).to have_received(:reload).with(lock: "FOR SHARE").once
     end
 
-    it "redirects with an alert instead of raising when unsetting showcase fails validation" do
-      showcase = create(:page, event: event, slug: event.page_slug_for("readme"), title: "Showcase", showcase: true)
-      showcase.update_column(:title, "")
-
-      patch toggle_showcase_admin_event_page_path(event, showcase)
-
-      expect(response).to redirect_to(admin_event_pages_path(event))
-      expect(flash[:alert]).to be_present
-      expect(showcase.reload.showcase?).to be(true)
-    end
-
-    it "reorders non-showcase markdown pages" do
+    it "reorders non-showcase markdown pages while keeping readme pinned first" do
+      readme = create(:page, event: event, slug: event.page_slug_for("readme"), title: "Readme", position: 0)
       first = create(:page, event: event, slug: event.page_slug_for("first"), title: "First", position: 1)
       second = create(:page, event: event, slug: event.page_slug_for("second"), title: "Second", position: 2)
 
       patch reorder_admin_event_page_path(event, second), params: { direction: "up" }
 
       expect(response).to redirect_to(admin_event_pages_path(event))
-      expect(event.ordered_pages.ids).to eq([second.id, first.id])
+      expect(event.ordered_pages.ids).to eq([readme.id, second.id, first.id])
     end
 
     it "previews markdown and sandboxed embed_html" do

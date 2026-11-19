@@ -775,13 +775,11 @@ en:
         pages_button: Pages
         back_to_event: Back to event
         new_page: Create new page
+        new_showcase: Create Showcase / README
         your_pages: Your Pages
-        order_help: Use the arrows to set the order of custom event tabs. If a Showcase page is selected, it stays pinned first.
+        order_help: Use the arrows to set the order of custom event tabs. If a Showcase / README page exists, it stays pinned first.
         showcase: Showcase
-        set_showcase: Set as Showcase
-        unset_showcase: Unset Showcase
-        showcase_checkbox: Use as Event Showcase / README page
-        showcase_hint: If checked, this page becomes the default landing view for the event, and the standard event view remains accessible as a tab.
+        showcase_slug_help: The Showcase / README page uses the readme slug and renders as the default landing view for this event, while the standard event view remains accessible as a tab.
         show_in_navigation: Show in event navigation tabs
         navigation_hint: Hidden pages remain accessible at their direct URL.
         no_pages: No pages created for this event yet.
@@ -791,9 +789,6 @@ en:
         updated: Event page updated successfully.
         deleted: Event page deleted successfully.
         reordered: Event page order updated.
-        showcase_set: Page set as event Showcase.
-        showcase_unset: Showcase status removed from page.
-        showcase_embed_forbidden: Embedded HTML pages cannot be set as the Showcase page.
       billboard_placement_area_configs:
         index:
           visibility: Visibility

@@ -430,27 +430,34 @@ RSpec.describe Page do
       expect(page.errors[:base]).to include(I18n.t("models.page.multiple_owners_not_allowed"))
     end
 
-    it "allows non-showcase event pages to be hidden from tabs, but requires showcase pages to stay visible" do
+    it "allows non-showcase event pages to be hidden from tabs, but requires readme showcase pages to stay visible" do
       hidden = create(:page, event: event, slug: event.page_slug_for("secret"), show_in_navigation: false)
       expect(hidden).to be_valid
 
-      hidden.showcase = true
+      hidden.slug = event.page_slug_for("readme")
       expect(hidden).not_to be_valid
       expect(hidden.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+
+      hidden_showcase = build(:page, event: event, slug: event.page_slug_for("readme"), show_in_navigation: false)
+      expect(hidden_showcase).not_to be_valid
+      expect(hidden_showcase.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
     end
 
-    it "requires showcase to belong to a non-embed event page and keeps at most one showcase per event" do
-      expect(build(:page, showcase: true)).not_to be_valid
+    it "identifies readme event pages as event_showcase? and excludes embed_html pages" do
+      readme = create(:page, event: event, slug: event.page_slug_for("readme"))
+      custom = create(:page, event: event, slug: event.page_slug_for("agenda"))
+      embed = create(
+        :page,
+        event: event,
+        template: Page::EMBED_HTML_TEMPLATE,
+        slug: event.embed_page_slug_for("readme"),
+        body_markdown: nil,
+        body_html: "<p>Embed</p>",
+      )
 
-      first_showcase = create(:page, event: event, slug: event.page_slug_for("welcome"), showcase: true)
-      second_page = create(:page, event: event, slug: event.page_slug_for("agenda"), showcase: false)
-
-      allow(Event).to receive(:where).and_call_original
-      second_page.update!(showcase: true)
-
-      expect(Event).to have_received(:where).with(id: event.id).at_least(:once)
-      expect(first_showcase.reload.showcase?).to be(false)
-      expect(second_page.reload.showcase?).to be(true)
+      expect(readme.event_showcase?).to be(true)
+      expect(custom.event_showcase?).to be(false)
+      expect(embed.event_showcase?).to be(false)
     end
 
     it "validates event non-embed and embed_html slug formats" do
@@ -483,7 +490,7 @@ RSpec.describe Page do
         body_markdown: nil,
         body_html: "<p>Widget</p>",
       )
-      showcase_page = create(:page, event: event, slug: event.page_slug_for("readme"), showcase: true)
+      showcase_page = create(:page, event: event, slug: event.page_slug_for("readme"))
       custom_page = create(:page, event: event, slug: event.page_slug_for("speakers"))
 
       expect(valid_embed.path).to eq("/events/ruby-conf/2026/embed/widget")

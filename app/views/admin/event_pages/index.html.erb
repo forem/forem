@@ -8,6 +8,9 @@
     </div>
     <div class="flex gap-2 flex-wrap">
       <%= link_to "&larr; #{t("views.admin.event_pages.back_to_event")}".html_safe, admin_event_path(@event), class: "crayons-btn crayons-btn--secondary" %>
+      <% if @showcase_page.nil? %>
+        <%= link_to t("views.admin.event_pages.new_showcase"), new_admin_event_page_path(@event, kind: "showcase"), class: "crayons-btn crayons-btn--secondary" %>
+      <% end %>
       <%= link_to t("views.admin.event_pages.new_page"), new_admin_event_page_path(@event), class: "crayons-btn" %>
     </div>
   </div>
@@ -47,11 +50,7 @@
 
               <div class="flex items-center gap-2 shrink-0 flex-wrap">
                 <% if is_showcase %>
-                  <%= button_to t("views.admin.event_pages.unset_showcase"),
-                                toggle_showcase_admin_event_page_path(@event, page),
-                                method: :patch,
-                                form: { class: "inline-block" },
-                                class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
+                  <span class="color-base-60 fs-s self-center mr-2"><%= t("views.organization_settings.pages.pinned_first") %></span>
                 <% else %>
                   <div class="flex gap-1" role="group" aria-label="<%= t("views.organization_settings.pages.reorder", title: page.title) %>">
                     <%= button_to "↑",
@@ -73,11 +72,6 @@
                                   title: t("views.organization_settings.pages.move_down"),
                                   aria: { label: t("views.organization_settings.pages.move_down_title", title: page.title) } %>
                   </div>
-                  <%= button_to t("views.admin.event_pages.set_showcase"),
-                                toggle_showcase_admin_event_page_path(@event, page),
-                                method: :patch,
-                                form: { class: "inline-block" },
-                                class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
                 <% end %>
                 <%= link_to t("views.organization_settings.pages.edit"), edit_admin_event_page_path(@event, page), class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
                 <%= button_to t("views.organization_settings.lead_forms.delete"), admin_event_page_path(@event, page), method: :delete, data: { confirm: t("views.organization_settings.pages.confirm_delete") }, class: "crayons-btn crayons-btn--danger crayons-btn--xs" %>
@@ -89,7 +83,10 @@
     <% else %>
       <div class="crayons-card p-8 text-center color-base-60">
         <p><%= t("views.admin.event_pages.no_pages") %></p>
-        <%= link_to t("views.admin.event_pages.new_page"), new_admin_event_page_path(@event), class: "crayons-btn mt-4" %>
+        <div class="flex justify-center gap-2 mt-4 flex-wrap">
+          <%= link_to t("views.admin.event_pages.new_showcase"), new_admin_event_page_path(@event, kind: "showcase"), class: "crayons-btn crayons-btn--secondary" %>
+          <%= link_to t("views.admin.event_pages.new_page"), new_admin_event_page_path(@event), class: "crayons-btn" %>
+        </div>
       </div>
     <% end %>
   </section>

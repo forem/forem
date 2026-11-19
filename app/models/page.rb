@@ -2,6 +2,7 @@ class Page < ApplicationRecord
   include LiquidEmbeddable
   extend UniqueAcrossModels
   EMBED_HTML_TEMPLATE = "embed_html".freeze
+  SHOWCASE_SLUG_SUFFIX = "readme".freeze
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt embed_html].freeze
   MAX_EMBED_HTML_BYTES = 256.kilobytes
   MAX_USER_EMBED_PAGES = 50
@@ -22,7 +23,6 @@ class Page < ApplicationRecord
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :validate_owner_constraints
-  validate :validate_showcase_constraints
   validate :validate_embed_html_constraints
   validate :body_present
   validate :validate_template_data
@@ -37,8 +37,6 @@ class Page < ApplicationRecord
   before_validation :normalize_embed_html_attributes
   before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
-  before_save :ensure_single_event_showcase,
-              if: -> { event_id.present? && showcase? && (new_record? || showcase_changed? || event_id_changed?) }
   before_create :enforce_user_embed_page_limit_with_lock, if: -> { user_id.present? && embed_html? }
 
   after_commit :ensure_uniqueness_of_landinge_page
@@ -49,7 +47,6 @@ class Page < ApplicationRecord
 
   scope :embed_html, -> { where(template: EMBED_HTML_TEMPLATE) }
   scope :non_embed_html, -> { where.not(template: EMBED_HTML_TEMPLATE) }
-  scope :showcase, -> { where(showcase: true) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if Subforem.disabled_by_env?
@@ -90,11 +87,15 @@ class Page < ApplicationRecord
     template == EMBED_HTML_TEMPLATE
   end
 
+  def event_showcase?
+    has_attribute?(:event_id) && event_id.present? && !embed_html? && slug.to_s.end_with?("/#{SHOWCASE_SLUG_SUFFIX}")
+  end
+
   def path
     if has_attribute?(:event_id) && event_id.present? && event.present?
       suffix = slug.to_s.split("/").last
       return "/events/#{event.event_name_slug}/#{event.event_variation_slug}/embed/#{suffix}" if embed_html?
-      return "/events/#{event.event_name_slug}/#{event.event_variation_slug}" if showcase?
+      return "/events/#{event.event_name_slug}/#{event.event_variation_slug}" if event_showcase?
 
       return "/events/#{event.event_name_slug}/#{event.event_variation_slug}/p/#{suffix}"
     end
@@ -110,7 +111,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id event_id showcase position show_in_navigation])
+                         organization_id event_id position show_in_navigation])
   end
 
   def uses_page_template?
@@ -142,7 +143,7 @@ class Page < ApplicationRecord
     # to Showcase while hidden still saves.
     if organization_id.blank? && event_id.blank?
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
-    elsif (organization_id.present? && showcase_or_first_page?) || (event_id.present? && showcase?)
+    elsif (organization_id.present? && showcase_or_first_page?) || event_showcase?
       # The header always renders the Showcase tab, so a stored flag has no effect on it.
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
     end
@@ -152,7 +153,7 @@ class Page < ApplicationRecord
     will_save_change_to_show_in_navigation? ||
       will_save_change_to_organization_id? ||
       will_save_change_to_event_id? ||
-      will_save_change_to_showcase?
+      will_save_change_to_slug?
   end
 
   def showcase_or_first_page?
@@ -165,7 +166,6 @@ class Page < ApplicationRecord
 
     self.is_top_level_path = false
     self.landing_page = false
-    self.showcase = false
     self.redirect_to_url = nil
     self.page_template_id = nil
   end
@@ -211,21 +211,6 @@ class Page < ApplicationRecord
     return unless new_record? && user.pages.embed_html.count >= MAX_USER_EMBED_PAGES
 
     errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
-  end
-
-  def validate_showcase_constraints
-    return unless showcase?
-
-    if event_id.blank?
-      errors.add(:showcase, I18n.t("models.page.showcase_event_only"))
-    elsif embed_html?
-      errors.add(:showcase, I18n.t("models.page.showcase_embed_not_allowed"))
-    end
-  end
-
-  def ensure_single_event_showcase
-    Event.where(id: event_id).lock.pick(:id)
-    Page.where(event_id: event_id, showcase: true).where.not(id: id).update_all(showcase: false)
   end
 
   def enforce_user_embed_page_limit_with_lock

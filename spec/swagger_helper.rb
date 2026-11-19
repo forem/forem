@@ -344,10 +344,6 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 type: :integer, format: :int64, nullable: true,
                 description: "The ID of the event the page belongs to, if any"
               },
-              showcase: {
-                type: :boolean, default: false,
-                description: "Whether the page is selected as the Showcase/README landing view for its event"
-              },
               position: {
                 type: :integer, format: :int32,
                 description: "Display order position for organization pages"
