@@ -52,8 +52,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
+  # Users::ClaimFirstUser has already set waiting_on_first_user to false.
   def prepare_new_forem_instance
-    Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
     Discover::RegisterWorker.perform_async # Register Forem instance on https://discover.forem.com
   end

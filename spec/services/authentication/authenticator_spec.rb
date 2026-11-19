@@ -292,6 +292,19 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user).to be_trusted
       end
 
+      it "does not grant creator roles from a stale setting value once another signup claimed them",
+         :aggregate_failures do
+        create(:user)
+        Settings::General.unscoped.create!(var: "waiting_on_first_user", value: false)
+        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
+
+        user = service.call
+
+        expect(user).not_to be_creator
+        expect(user).not_to be_super_admin
+        expect(user).not_to be_trusted
+      end
+
       %w[LoGiN signup].each do |nickname|
         it "registers a GitHub user with the reserved nickname #{nickname}" do
           auth_payload.info.nickname = nickname

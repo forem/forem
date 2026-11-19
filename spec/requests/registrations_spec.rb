@@ -549,6 +549,24 @@ RSpec.describe "Registrations" do
         expect(Settings::General.waiting_on_first_user).to be false
       end
 
+      it "does not grant creator roles to a second signup after the first one claimed them", :aggregate_failures do
+        create(:user)
+        Settings::General.unscoped.create!(var: "waiting_on_first_user", value: false)
+
+        post "/users", params:
+          { user: { name: "second user",
+                    username: "second_user",
+                    email: "second@example.com",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+
+        second_user = User.find_by(email: "second@example.com")
+        expect(second_user).not_to be_creator
+        expect(second_user).not_to be_super_admin
+        expect(second_user).not_to be_trusted
+        expect(Settings::General.mascot_user_id).to be_nil
+      end
+
       it "creates creator and mascot users, grants roles, logs in, redirects, and enqueues Discover::RegisterWorker",
          :aggregate_failures do
         expect(Settings::General.mascot_user_id).to be_nil
