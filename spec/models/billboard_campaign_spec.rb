@@ -31,6 +31,16 @@ RSpec.describe BillboardCampaign do
       expect(campaign).to be_over_cap
     end
 
+    it "counts a billboard that is joining the campaign exactly once" do
+      campaign.update!(max_impressions_count: 100)
+      member = create(:billboard, billboard_campaign: campaign)
+      member.update_column(:impressions_count, 60)
+      joining = build(:billboard, impressions_count: 40)
+
+      expect(campaign.over_cap?(joining)).to be(true)
+      expect(campaign.over_cap?(member.reload)).to be(false)
+    end
+
     it "sums clicks across the campaign's billboards" do
       campaign.update!(max_clicks_count: 3)
       create(:billboard, billboard_campaign: campaign).update_column(:clicks_count, 3)

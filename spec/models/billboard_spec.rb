@@ -1183,6 +1183,31 @@ RSpec.describe Billboard do
       capped.update_column(:clicks_count, 5)
       expect(capped.update(approved: true, max_clicks_count: 10)).to be(true)
     end
+
+    [nil, "", 1.5, 2**31].each do |value|
+      it "rejects a cap of #{value.inspect} with a validation error when approving", :aggregate_failures do
+        draft = create(:billboard, approved: false)
+        expect(draft.update(approved: true, max_impressions_count: value, max_clicks_count: value)).to be(false)
+        expect(draft.errors.attribute_names).to include(:max_impressions_count, :max_clicks_count)
+      end
+    end
+
+    it "counts the billboard being approved toward a campaign it is joining in the same save" do
+      campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 100)
+      draft = create(:billboard, approved: false)
+      draft.update_column(:impressions_count, 100)
+
+      expect(draft.update(approved: true, billboard_campaign: campaign)).to be(false)
+      expect(draft.reload.billboard_campaign_id).to be_nil
+    end
+
+    it "allows joining and approving when the campaign stays under its cap" do
+      campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 101)
+      draft = create(:billboard, approved: false)
+      draft.update_column(:impressions_count, 100)
+
+      expect(draft.update(approved: true, billboard_campaign: campaign)).to be(true)
+    end
   end
 
   describe "scopes" do

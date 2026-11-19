@@ -61,10 +61,118 @@ RSpec.describe "Api::V1::BillboardCampaigns" do
     end
   end
 
-  context "when the user is not an admin" do
-    it "refuses access" do
+  context "when a cap is out of range" do
+    before { api_secret.user.add_role(:admin) }
+
+    it "returns a validation error" do
+      post api_billboard_campaigns_path, params: campaign_params.merge(max_clicks_count: 2**31).to_json,
+                                         headers: auth_header
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  context "when the API key's user is a Billboard admin with restricted sub-permissions" do
+    let(:allowed) { [] }
+    let(:campaign) { BillboardCampaign.create!(name: "Launch", max_impressions_count: 1_000) }
+
+    before do
+      api_secret.user.add_role(:single_resource_admin, Billboard)
+      SubPermissions.update_grant(user: api_secret.user, resource_type: "Billboard",
+                                  sub_permissions: SubPermissions.build(allow: allowed))
+    end
+
+    it "can list, read and create campaigns", :aggregate_failures do
+      get api_billboard_campaigns_path, headers: auth_header
+      expect(response).to have_http_status(:ok)
+
+      get api_billboard_campaign_path(campaign.id), headers: auth_header
+      expect(response).to have_http_status(:ok)
+
       post api_billboard_campaigns_path, params: campaign_params.to_json, headers: auth_header
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to have_http_status(:created)
+    end
+
+    it "can change a campaign whose billboards are all unapproved" do
+      create(:billboard, approved: false, billboard_campaign: campaign)
+      put api_billboard_campaign_path(campaign.id), params: { max_impressions_count: 5_000 }.to_json,
+                                                    headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+      expect(campaign.reload.max_impressions_count).to eq(5_000)
+    end
+
+    {
+      "an approved billboard" => { approved: true },
+      "an Event-owned billboard" => { approved: false, event: :event }
+    }.each do |description, attrs|
+      it "refuses to change a campaign that governs #{description}", :aggregate_failures do
+        billboard_attrs = attrs.except(:event)
+        billboard_attrs[:event] = create(:event) if attrs[:event]
+        create(:billboard, billboard_campaign: campaign, **billboard_attrs)
+
+        put api_billboard_campaign_path(campaign.id),
+            params: { max_impressions_count: 5_000, expires_at: 1.year.from_now.iso8601 }.to_json,
+            headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(response.parsed_body).to eq(
+          "error" => "Your Billboard admin access does not include: " \
+                     "change or delete approved billboards and Event billboards.",
+          "status" => 403,
+        )
+        expect(campaign.reload).to have_attributes(max_impressions_count: 1_000, expires_at: nil)
+      end
+    end
+
+    context "with modify_approved" do
+      let(:allowed) { %w[modify_approved] }
+
+      it "can change a campaign that governs an approved billboard" do
+        create(:billboard, approved: true, billboard_campaign: campaign)
+        put api_billboard_campaign_path(campaign.id), params: { max_impressions_count: 5_000 }.to_json,
+                                                      headers: auth_header
+
+        expect(response).to have_http_status(:ok)
+        expect(campaign.reload.max_impressions_count).to eq(5_000)
+      end
+    end
+  end
+
+  describe "refusals" do
+    let(:campaign) { BillboardCampaign.create!(name: "Launch") }
+    let(:requests) do
+      {
+        index: -> { get api_billboard_campaigns_path, headers: headers },
+        show: -> { get api_billboard_campaign_path(campaign.id), headers: headers },
+        create: -> { post api_billboard_campaigns_path, params: campaign_params.to_json, headers: headers },
+        update: lambda {
+          put api_billboard_campaign_path(campaign.id), params: { name: "Changed" }.to_json, headers: headers
+        }
+      }
+    end
+
+    context "when the user is not an admin" do
+      let(:headers) { auth_header }
+
+      it "refuses every action", :aggregate_failures do
+        requests.each_value do |request|
+          request.call
+          expect(response).to have_http_status(:unauthorized)
+        end
+        expect(campaign.reload.name).to eq("Launch")
+      end
+    end
+
+    context "when the API key is missing" do
+      let(:headers) { v1_headers }
+
+      it "refuses every action", :aggregate_failures do
+        requests.each_value do |request|
+          request.call
+          expect(response).to have_http_status(:unauthorized)
+        end
+        expect(campaign.reload.name).to eq("Launch")
+      end
     end
   end
 end

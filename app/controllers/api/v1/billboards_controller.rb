@@ -20,6 +20,9 @@ module Api
 
       def create
         @billboard = Billboard.new(permitted_params)
+        missing = BillboardPolicy.new(@user, @billboard).missing_sub_permissions(:save)
+        return render_missing_sub_permissions(missing) if missing.any?
+
         @billboard.save!
         payload = { "action" => "api_billboard_create", "billboard_id" => @billboard.id }
         Audit::Logger.log(:admin_api, @user, payload)
@@ -28,7 +31,14 @@ module Api
 
       def update
         @billboard = Billboard.find(params[:id])
-        @billboard.update!(permitted_params)
+        missing = []
+        @billboard.with_lock do
+          @billboard.assign_attributes(permitted_params)
+          missing = BillboardPolicy.new(@user, @billboard).missing_sub_permissions(:save)
+          @billboard.save! if missing.empty?
+        end
+        return render_missing_sub_permissions(missing) if missing.any?
+
         payload = { "action" => "api_billboard_update", "billboard_id" => @billboard.id }
         Audit::Logger.log(:admin_api, @user, payload)
         render json: @billboard
@@ -71,6 +81,10 @@ module Api
 
       def require_admin
         authorize Billboard, :access?, policy_class: InternalPolicy
+      end
+
+      def render_missing_sub_permissions(missing)
+        render json: { error: SubPermissions.missing_message(Billboard, missing), status: 403 }, status: :forbidden
       end
 
       def permitted_params

@@ -23,7 +23,7 @@ module Admin
       :baseline_score,
       :co_author_ids_list,
       :published_at,
-      { context_notes_attributes: %i[id body_markdown] },
+      { context_notes_attributes: %i[id body_markdown], hidden_billboard_locations: [] },
     ].freeze
 
     def index

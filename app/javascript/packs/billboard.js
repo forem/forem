@@ -109,6 +109,8 @@ async function generateBillboard(element) {
 
       const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
+      if (!element.isConnected) return;
+
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
 

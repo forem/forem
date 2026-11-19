@@ -216,6 +216,27 @@
       </div>
     <% end %>
   </div>
+
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div>
+        <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.article_analytics.label") %></h4>
+        <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.article_analytics.description") %></p>
+      </div>
+      <% article_analytics_enabled = org_flags.enabled?(:org_article_analytics, org_actor) %>
+      <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+        <%= hidden_field_tag :feature, "org_article_analytics" %>
+        <%= hidden_field_tag :enabled, !article_analytics_enabled %>
+        <%= submit_tag article_analytics_enabled ? t("views.admin.organizations.org_features.article_analytics.disable") : t("views.admin.organizations.org_features.article_analytics.enable"),
+                       class: "crayons-btn #{article_analytics_enabled ? 'crayons-btn--danger' : 'crayons-btn--success'}" %>
+      <% end %>
+    </div>
+    <% if article_analytics_enabled %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= t("views.admin.organizations.org_features.article_analytics.enabled_notice") %>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 <div class="crayons-card p-6 mb-6">

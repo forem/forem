@@ -64,6 +64,9 @@ module Billboards
           counts_tabulated_at: timestamp
         )
       end
+
+      # Enforce caps on the counts this run just wrote
+      billboard.check_and_handle_delivery_limits
     end
 
     # Sums every category in one pass over the billboard's events instead of

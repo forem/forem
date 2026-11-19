@@ -20,7 +20,16 @@ module Api
 
       def update
         campaign = BillboardCampaign.find(params[:id])
-        campaign.update!(permitted_params)
+        missing = []
+        campaign.with_lock do
+          # Hold the campaign's billboards too, so none is approved between the check and the save.
+          campaign.billboards.lock.ids
+          campaign.assign_attributes(permitted_params)
+          missing = BillboardCampaignPolicy.new(@user, campaign).missing_sub_permissions(:save)
+          campaign.save! if missing.empty?
+        end
+        return render_missing_sub_permissions(missing) if missing.any?
+
         log_audit("api_billboard_campaign_update", campaign)
         render json: campaign
       end
@@ -29,6 +38,10 @@ module Api
 
       def require_admin
         authorize Billboard, :access?, policy_class: InternalPolicy
+      end
+
+      def render_missing_sub_permissions(missing)
+        render json: { error: SubPermissions.missing_message(Billboard, missing), status: 403 }, status: :forbidden
       end
 
       def log_audit(action, campaign)

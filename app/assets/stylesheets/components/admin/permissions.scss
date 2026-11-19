@@ -1,0 +1,916 @@
+.admin-permissions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-5);
+  max-width: 1200px;
+}
+
+.admin-permissions-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--su-3);
+
+  &__title {
+    margin: 0;
+  }
+
+  &__subtitle {
+    margin: var(--su-1) 0 0;
+    color: var(--base-60);
+    font-size: var(--fs-s);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Grant Admin Role Card
+// ---------------------------------------------------------------------------
+.admin-permissions-grant-card {
+  padding: var(--su-5);
+
+  &__header {
+    margin-bottom: var(--su-4);
+  }
+
+  &__heading {
+    margin: 0;
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+    color: var(--base-90);
+  }
+
+  &__description {
+    margin: var(--su-1) 0 0;
+    font-size: var(--fs-s);
+    color: var(--base-60);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) minmax(240px, 1.35fr) auto;
+    gap: var(--su-3);
+    align-items: end;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__submit {
+    height: 42px;
+    white-space: nowrap;
+  }
+}
+
+.admin-perm-input-group {
+  display: flex;
+  align-items: stretch;
+
+  &__prefix {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--su-3);
+    background-color: var(--base-10);
+    border: 1.5px solid var(--form-border);
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+    color: var(--base-60);
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-s);
+    user-select: none;
+  }
+
+  .crayons-textfield {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.admin-perm-grant-subpanel {
+  margin-top: var(--su-4);
+  padding: var(--su-4);
+  background: var(--card-secondary-bg);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius-card);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--su-2);
+    margin-bottom: var(--su-3);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--base-90);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--su-2);
+  }
+
+  &__footer {
+    margin-top: var(--su-3);
+    padding-top: var(--su-3);
+    border-top: 1px solid var(--base-20);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--su-2);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Filter Tabs & Search Toolbar
+// ---------------------------------------------------------------------------
+.admin-permissions-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-3);
+  padding: var(--su-4);
+  border-bottom: 1px solid var(--base-10);
+}
+
+.admin-permissions-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--su-2);
+}
+
+.admin-permissions-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--su-2);
+  padding: var(--su-1) var(--su-3);
+  border-radius: var(--radius);
+  font-size: var(--fs-s);
+  font-weight: var(--fw-medium);
+  color: var(--base-70);
+  background: transparent;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all var(--transition-props);
+
+  &:hover {
+    background: var(--base-10);
+    color: var(--base-100);
+    text-decoration: none;
+  }
+
+  &.is-active {
+    background: rgba(var(--accent-brand-rgb), 0.1);
+    color: var(--accent-brand-darker);
+    border-color: rgba(var(--accent-brand-rgb), 0.25);
+    font-weight: var(--fw-bold);
+
+    .admin-permissions-tab__count {
+      background: var(--accent-brand);
+      color: var(--base-inverted);
+    }
+  }
+
+  &--restricted {
+    &.is-active {
+      background: var(--accent-warning-a10);
+      color: var(--accent-warning-darker);
+      border-color: rgba(var(--yellow-600), 0.35);
+
+      .admin-permissions-tab__count {
+        background: var(--accent-warning-darker);
+        color: var(--base-inverted);
+      }
+    }
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    background: var(--base-10);
+    color: var(--base-70);
+  }
+}
+
+.admin-permissions-search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--su-3);
+
+  &__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-2);
+    flex: 1;
+    min-width: 240px;
+  }
+
+  &__input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+    max-width: 360px;
+
+    .admin-permissions-search-bar__icon {
+      position: absolute;
+      left: var(--su-3);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--base-50);
+      pointer-events: none;
+      width: 16px;
+      height: 16px;
+    }
+
+    .crayons-textfield {
+      padding-left: calc(var(--su-6) + var(--su-2));
+      font-size: var(--fs-s);
+    }
+  }
+
+  &__resource-select {
+    width: auto;
+    min-width: 180px;
+    font-size: var(--fs-s);
+  }
+
+  &__meta {
+    font-size: var(--fs-s);
+    color: var(--base-60);
+    white-space: nowrap;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Directory Table & Member Rows
+// ---------------------------------------------------------------------------
+.admin-permissions-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead th {
+    padding: var(--su-3) var(--su-4);
+    background: var(--card-secondary-bg);
+    border-bottom: 1px solid var(--base-10);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--base-60);
+    text-align: left;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--base-10);
+    transition: background var(--transition-props);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(var(--grey-100), 0.45);
+    }
+  }
+
+  tbody td {
+    padding: var(--su-4);
+    vertical-align: top;
+  }
+
+  &__member-col {
+    width: 260px;
+    min-width: 210px;
+  }
+
+  &__actions-col {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
+}
+
+.admin-perm-member {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--su-3);
+
+  &__avatar {
+    flex-shrink: 0;
+  }
+
+  &__fallback-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--base-10);
+    color: var(--base-70);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-s);
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-weight: var(--fw-bold);
+    color: var(--base-90);
+    font-size: var(--fs-base);
+    line-height: var(--lh-tight);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-brand);
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-2);
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+  }
+
+  &__handle {
+    color: var(--base-70);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-brand);
+    }
+  }
+
+  &__manage-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--base-60);
+    font-size: var(--fs-xs);
+    text-decoration: none;
+    margin-top: 2px;
+
+    &:hover {
+      color: var(--accent-brand);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Role Pills
+// ---------------------------------------------------------------------------
+.admin-perm-roles-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-3);
+}
+
+.admin-perm-roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--su-2);
+}
+
+.admin-role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--su-2);
+  padding: 4px 8px 4px 10px;
+  border-radius: 999px;
+  font-size: var(--fs-s);
+  font-weight: var(--fw-medium);
+  line-height: 1.3;
+  border: 1px solid var(--base-20);
+  background: var(--base-0);
+  color: var(--base-80);
+
+  &--super-admin {
+    background: rgba(var(--accent-brand-rgb), 0.1);
+    border-color: rgba(var(--accent-brand-rgb), 0.3);
+    color: var(--accent-brand-darker);
+  }
+
+  &--admin {
+    background: rgba(37, 99, 235, 0.09);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: #1d4ed8;
+  }
+
+  &--tech-admin {
+    background: rgba(124, 58, 237, 0.09);
+    border-color: rgba(124, 58, 237, 0.25);
+    color: #6d28d9;
+  }
+
+  &--resource {
+    background: var(--card-secondary-bg);
+    border-color: var(--base-20);
+    color: var(--base-80);
+  }
+
+  &--restricted {
+    background: var(--accent-warning-a10);
+    border-color: rgba(var(--yellow-600), 0.45);
+    color: var(--base-90);
+  }
+
+  &__icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--accent-warning-darker);
+  }
+
+  &__revoke-form {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  &__revoke-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--base-50);
+    cursor: pointer;
+    transition: all var(--transition-props);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--accent-danger-a10);
+      color: var(--accent-danger);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-danger);
+      outline-offset: 1px;
+    }
+  }
+
+  &__locked-indicator {
+    display: inline-flex;
+    align-items: center;
+    color: var(--base-50);
+    padding-right: 2px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sub-Permissions Strip & Disclosure Editor
+// ---------------------------------------------------------------------------
+.admin-subperm-card {
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  transition: border-color var(--transition-props), box-shadow var(--transition-props);
+
+  &--restricted {
+    border-color: rgba(var(--yellow-600), 0.4);
+  }
+
+  &[open] {
+    border-color: var(--base-30);
+    box-shadow: 0 2px 8px rgba(var(--black), 0.04);
+
+    .admin-subperm-card__chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--su-2);
+    padding: var(--su-2) var(--su-3);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+    }
+
+    &:hover {
+      background: var(--card-secondary-bg);
+      border-radius: var(--radius);
+    }
+  }
+
+  &__summary-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-2);
+    font-size: var(--fs-s);
+  }
+
+  &__resource-label {
+    font-weight: var(--fw-medium);
+    color: var(--base-80);
+  }
+
+  &__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+
+    &--full {
+      background: var(--accent-success-a10);
+      color: var(--accent-success-darker);
+    }
+
+    &--restricted {
+      background: var(--accent-warning-a10);
+      color: var(--accent-warning-darker);
+    }
+  }
+
+  &__chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: var(--radius);
+    font-size: var(--fs-xs);
+    background: var(--base-10);
+    color: var(--base-80);
+
+    &--muted {
+      background: transparent;
+      color: var(--base-60);
+      font-style: italic;
+      padding-left: 2px;
+    }
+  }
+
+  &__override-note {
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+    background: var(--base-10);
+    padding: 2px 8px;
+    border-radius: var(--radius);
+  }
+
+  &__toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--accent-brand);
+    white-space: nowrap;
+  }
+
+  &__chevron {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--transition-props);
+  }
+
+  &__body {
+    padding: var(--su-4);
+    border-top: 1px solid var(--base-10);
+    background: var(--card-secondary-bg);
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+}
+
+// Access Mode Radio Cards (shared by Grant card + Per-row Editor)
+.admin-perm-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--su-3);
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--su-3);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+
+  &__legend {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--base-60);
+    margin-bottom: var(--su-2);
+    padding: 0;
+  }
+}
+
+.admin-perm-mode-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--su-2);
+  padding: var(--su-3);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--base-20);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: all var(--transition-props);
+
+  &:hover {
+    border-color: var(--base-40);
+  }
+
+  &.is-selected {
+    border-color: var(--accent-brand);
+    background: rgba(var(--accent-brand-rgb), 0.04);
+    box-shadow: 0 0 0 1px rgba(var(--accent-brand-rgb), 0.15);
+  }
+
+  &--restricted.is-selected {
+    border-color: var(--accent-warning-darker);
+    background: rgba(var(--yellow-500), 0.06);
+    box-shadow: 0 0 0 1px rgba(var(--yellow-600), 0.2);
+  }
+
+  .crayons-radio {
+    margin-top: 2px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__title {
+    font-size: var(--fs-s);
+    font-weight: var(--fw-bold);
+    color: var(--base-90);
+  }
+
+  &__desc {
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+    line-height: 1.4;
+  }
+}
+
+// Clause Checklist (shared by Grant card + Per-row Editor)
+.admin-perm-clauses {
+  background: var(--card-bg);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  padding: var(--su-3);
+  transition: opacity var(--transition-props);
+
+  &.is-disabled {
+    opacity: 0.52;
+  }
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--su-2);
+    margin-bottom: var(--su-2);
+  }
+
+  &__heading {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--base-60);
+  }
+
+  &__presets {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--su-2);
+  }
+
+  &__preset-btn {
+    padding: 2px 8px;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    border-radius: var(--radius);
+    border: 1px solid var(--base-20);
+    background: var(--base-0);
+    color: var(--base-70);
+    cursor: pointer;
+    transition: all var(--transition-props);
+
+    &:hover:not(:disabled) {
+      background: var(--base-10);
+      color: var(--base-100);
+      border-color: var(--base-30);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--su-2);
+  }
+}
+
+.admin-perm-clause {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--su-3);
+  padding: var(--su-2);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition-props);
+
+  &:hover {
+    background: var(--card-secondary-bg);
+  }
+
+  .crayons-checkbox {
+    margin-top: 2px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__title {
+    font-size: var(--fs-s);
+    font-weight: var(--fw-medium);
+    color: var(--base-90);
+    line-height: 1.3;
+  }
+
+  &__desc {
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+    line-height: 1.4;
+  }
+}
+
+.admin-perm-hint {
+  margin-top: var(--su-3);
+  padding: var(--su-2) var(--su-3);
+  border-radius: var(--radius);
+  background: var(--base-10);
+  border-left: 3px solid var(--base-40);
+  font-size: var(--fs-xs);
+  color: var(--base-70);
+  line-height: 1.45;
+
+  p {
+    margin: 0;
+
+    + p {
+      margin-top: var(--su-1);
+    }
+  }
+}
+
+.admin-perm-editor-footer {
+  margin-top: var(--su-3);
+  padding-top: var(--su-3);
+  border-top: 1px solid var(--base-20);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--su-2);
+
+  &__summary {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--base-60);
+
+    &.is-restricted {
+      color: var(--accent-warning-darker);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--su-2);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Per-Row Add Role Disclosure
+// ---------------------------------------------------------------------------
+.admin-add-role {
+  display: inline-block;
+  text-align: left;
+
+  &__trigger {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+    }
+  }
+
+  &__panel {
+    margin-top: var(--su-2);
+    padding: var(--su-3);
+    border: 1px solid var(--base-20);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px rgba(var(--black), 0.08);
+    min-width: 240px;
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    gap: var(--su-2);
+
+    .crayons-select {
+      font-size: var(--fs-s);
+      padding-top: var(--su-1);
+      padding-bottom: var(--su-1);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Empty State & Pagination Footer
+// ---------------------------------------------------------------------------
+.admin-permissions-empty {
+  padding: var(--su-8) var(--su-4);
+  text-align: center;
+
+  &__title {
+    margin: 0 0 var(--su-1);
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+    color: var(--base-80);
+  }
+
+  &__description {
+    margin: 0 0 var(--su-4);
+    font-size: var(--fs-s);
+    color: var(--base-60);
+  }
+}
+
+.admin-permissions-pagination {
+  padding: var(--su-3) var(--su-4);
+  border-top: 1px solid var(--base-10);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

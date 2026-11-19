@@ -59,17 +59,17 @@ class Billboard < ApplicationRecord
   EMBEDDED_PLACEMENTS = %w[external_feed].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  POST_PLACEMENTS = %w[post_fixed_bottom
+                       post_body_bottom
+                       post_body_bottom_secondary
+                       post_sidebar
+                       post_sidebar_secondary
+                       post_comments
+                       post_comments_secondary
+                       post_comments_mid].freeze
   # Placement areas that pages load in the context of the article or page they're on
   # (see BillboardHelper#billboard_async_path)
-  CONTEXTUAL_PLACEMENTS = %w[page_fixed_bottom
-                             post_fixed_bottom
-                             post_body_bottom
-                             post_body_bottom_secondary
-                             post_sidebar
-                             post_sidebar_secondary
-                             post_comments
-                             post_comments_secondary
-                             post_comments_mid].freeze
+  CONTEXTUAL_PLACEMENTS = (["page_fixed_bottom"] + POST_PLACEMENTS).freeze
   HOME_PAGE_PLACEMENTS = %w[feed_first
                             feed_second
                             feed_third
@@ -105,7 +105,9 @@ class Billboard < ApplicationRecord
   validates :minimized_body_markdown, presence: true, if: :persistent?
   validates :organization, presence: true, if: :community?
   validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
-  validates :max_impressions_count, :max_clicks_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :max_impressions_count, :max_clicks_count,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0,
+                            less_than_or_equal_to: BillboardCampaign::MAX_CAP }
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
@@ -367,6 +369,11 @@ class Billboard < ApplicationRecord
     selected_number.to_i
   end
 
+  def self.human_readable_placement_area(area)
+    index = ALLOWED_PLACEMENT_AREAS.find_index(area.to_s)
+    index ? ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[index] : area.to_s
+  end
+
   def processed_html_final
     # This is a final non-database-driven step to adjust processed html
     # It is sort of a hack to avoid having to reprocess all articles
@@ -384,7 +391,7 @@ class Billboard < ApplicationRecord
   end
 
   def human_readable_placement_area
-    ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[ALLOWED_PLACEMENT_AREAS.find_index(placement_area)]
+    self.class.human_readable_placement_area(placement_area)
   end
 
   def validate_tag
@@ -416,19 +423,22 @@ class Billboard < ApplicationRecord
 
   def validate_delivery_cap_approval
     return unless approved? && will_save_change_to_approved?
-    return unless over_cap? || billboard_campaign&.expired? || billboard_campaign&.over_cap?
+    return unless over_cap? || billboard_campaign&.expired? || billboard_campaign&.over_cap?(self)
 
     errors.add(:approved, "cannot be set to true once the billboard or its campaign has ended or reached a cap")
   end
 
   def delivery_limit_reached?
     (expires_at.present? && expires_at < Time.current) || over_cap? ||
-      billboard_campaign&.expired? || billboard_campaign&.over_cap?
+      billboard_campaign&.expired? || billboard_campaign&.over_cap?(self)
   end
 
   def over_cap?
-    (max_impressions_count.positive? && impressions_count.to_i >= max_impressions_count) ||
-      (max_clicks_count.positive? && clicks_count.to_i >= max_clicks_count)
+    cap_reached?(max_impressions_count, impressions_count) || cap_reached?(max_clicks_count, clicks_count)
+  end
+
+  def cap_reached?(cap, count)
+    cap.to_i.positive? && count.to_i >= cap.to_i
   end
 
   def audience_segment_type

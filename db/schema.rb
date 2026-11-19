@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_19_190300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -172,6 +172,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
     t.integer "displayed_comments_count"
     t.datetime "edited_at", precision: nil
     t.boolean "email_digest_eligible", default: true
+    t.bigint "event_id"
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.datetime "favorited_at"
@@ -181,6 +182,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
     t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
     t.float "feed_success_score", default: 0.0, null: false
+    t.jsonb "hidden_billboard_locations", default: [], null: false
     t.integer "hotness_score", default: 0
     t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
@@ -242,6 +244,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
+    t.index ["event_id", "published", "hotness_score", "published_at"], name: "index_articles_on_event_id_published_hotness_published_at", order: { hotness_score: :desc, published_at: :desc }, where: "(event_id IS NOT NULL)"
     t.index ["favorited_by_user_id"], name: "index_articles_on_favorited_by_user_id"
     t.index ["featured", "published", "published_at"], name: "index_articles_on_featured_published_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
@@ -812,6 +815,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.boolean "allow_articles", default: false, null: false
     t.string "bg_color_hex"
     t.text "body_markdown"
     t.integer "broadcast_config", default: 0
@@ -2253,6 +2257,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
   create_table "users_roles", id: false, force: :cascade do |t|
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "role_id"
+    t.jsonb "sub_permissions"
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "user_id"
     t.index ["role_id"], name: "index_users_roles_on_role_id"
@@ -2323,6 +2328,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_130300) do
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "article_activities", "articles"
   add_foreign_key "articles", "collections", on_delete: :nullify
+  add_foreign_key "articles", "events", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
   add_foreign_key "articles", "users", column: "favorited_by_user_id", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
