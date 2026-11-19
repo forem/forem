@@ -62,8 +62,6 @@ pt:
       is_not_valid: não é válido.
       locked: a discussão está bloqueada neste Post
       published_article: não é um artigo publicado
-      event_comments_disabled: não permite comentários
-      event_not_accepting_comments: só pode receber comentários enquanto o evento estiver ao vivo
       ai_disclosure:
         not_disclosed: Não divulgado
         no_ai: Sem IA
@@ -71,7 +69,6 @@ pt:
         fully_autonomous: Totalmente Autônomo
       type:
         Article: Artigo
-        Event: Evento
         item: item
         PodcastEpisode: Episódio de podcast
       suspended_too_many: Usuário suspenso por muitas interações de spam, acionado por autovomit.

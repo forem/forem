@@ -63,8 +63,6 @@ en:
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
       published_article: is not a published article
-      event_comments_disabled: does not allow comments
-      event_not_accepting_comments: can only receive comments while the event is live
       ai_disclosure:
         not_disclosed: Not Disclosed
         no_ai: No AI
@@ -72,7 +70,6 @@ en:
         fully_autonomous: Fully Autonomous
       type:
         Article: Article
-        Event: Event
         item: item
         PodcastEpisode: Podcast episode
       suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.

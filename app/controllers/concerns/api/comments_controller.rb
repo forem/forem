@@ -4,7 +4,6 @@ module Api
 
     ATTRIBUTES_FOR_SERIALIZATION = %i[
       id processed_html user_id ancestry deleted hidden_by_commentable_user created_at ai_disclosure_level
-      commentable_id commentable_type
     ].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
@@ -42,10 +41,6 @@ module Api
 
       # being only one tree we know that the root comment is the first (and only) key
       @comment = tree_with_root_comment.keys.first
-      if @comment&.commentable_type == "Event" && !@comment.event_visible?
-        return error_not_found
-      end
-
       @comments = tree_with_root_comment[@comment]
 
       set_surrogate_key_header Comment.table_key, edge_cache_keys(tree_with_root_comment)

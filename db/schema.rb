@@ -800,13 +800,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_161300) do
 
   create_table "events", force: :cascade do |t|
     t.boolean "allow_articles", default: false, null: false
-    t.boolean "allow_comments", default: false, null: false
     t.string "bg_color_hex"
     t.text "body_markdown"
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
-    t.integer "comments_count", default: 0, null: false
     t.string "cover_image"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}

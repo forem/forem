@@ -63,5 +63,14 @@ pt:
           showcase: Showcase
       event_articles:
         heading: "Posts de %{event_title}"
-        badge: Posts do Evento
-        subtitle: Artigos publicados especificamente para este evento.
+        badge: Feed do Evento
+        subtitle: Atualizações e artigos publicados especificamente para este evento.
+        article_pill: Artigo
+        time_ago: "há %{time}"
+        min_read: "%{count} min de leitura"
+        reactions_aria:
+          one: "1 reação"
+          other: "%{count} reações"
+        comments_aria:
+          one: "1 comentário"
+          other: "%{count} comentários"

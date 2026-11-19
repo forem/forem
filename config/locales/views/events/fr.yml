@@ -62,6 +62,15 @@ fr:
           event_details: Détails de l'événement
           showcase: Vitrine
       event_articles:
-        heading: "Articles de %{event_title}"
-        badge: Articles de l'événement
-        subtitle: Articles publiés spécifiquement pour cet événement.
+        heading: "Publications de %{event_title}"
+        badge: Fil de l'événement
+        subtitle: Mises à jour et articles publiés spécifiquement pour cet événement.
+        article_pill: Article
+        time_ago: "il y a %{time}"
+        min_read: "%{count} min de lecture"
+        reactions_aria:
+          one: "1 réaction"
+          other: "%{count} réactions"
+        comments_aria:
+          one: "1 commentaire"
+          other: "%{count} commentaires"

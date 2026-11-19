@@ -83,7 +83,7 @@ module Ai
     def jev_state
       post = @comment.commentable
       state = {
-        post: { title: post.title, body: parent_body_markdown.truncate(1_500) },
+        post: { title: post.title, body: post.body_markdown.to_s.truncate(1_500) },
         comment: @comment.body_markdown.to_s.truncate(4_000)
       }
       state[:community] = { description: community_description } if community_description.present?
@@ -155,10 +155,6 @@ module Ai
       @community_description ||= resolve_community_description(@comment.commentable.try(:subforem_id))
     end
 
-    def parent_body_markdown
-      @parent_body_markdown ||= @comment.commentable.try(:body_markdown).to_s
-    end
-
     # --- Gemini ---
 
     ##
@@ -197,7 +193,7 @@ module Ai
         #{community_context_section}1.  **The Parent Content Post** (The post the comment was left in reply to):
             ---
             Title: #{@comment.commentable.title}
-            Body#{'(truncated)' if parent_body_markdown.size > 1500}: #{parent_body_markdown.first(1_500)}
+            Body#{'(truncated)' if @comment.commentable.body_markdown.size > 1500}: #{@comment.commentable.body_markdown.first(1_500)}
             ---
 
         2.  **The User's Recent Comment History**:

@@ -225,7 +225,7 @@
     </aside>
   </div>
 
-  <%= render "event_articles", articles: @event_articles, event: @event %>
+  <%= render "event_articles", articles: @event_articles, event: @event, previews: @event_article_previews %>
 </div>
 
 <%= javascript_include_tag "tagFollows", defer: true %>

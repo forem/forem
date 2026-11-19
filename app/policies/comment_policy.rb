@@ -10,8 +10,6 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    return false if event_comment?
-
     !user.spam_or_suspended? && !user.comment_suspended?
   end
 
@@ -42,8 +40,6 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    return false if event_comment?
-
     Authorizer.for(user: user).accesses_mod_response_templates?
   end
 
@@ -99,10 +95,6 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def user_commentable_author?
-    record.commentable.present? && record.commentable.user_id.present? && record.commentable.user_id == user.id
-  end
-
-  def event_comment?
-    record.respond_to?(:commentable_type) && record.commentable_type == "Event"
+    record.commentable.present? && record.commentable.user_id == user.id
   end
 end

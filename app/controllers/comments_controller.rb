@@ -243,9 +243,7 @@ class CommentsController < ApplicationController
     success = @comment.update(hidden_by_commentable_user: true)
 
     if success
-      if @comment&.commentable&.has_attribute?(:any_comments_hidden)
-        @comment.commentable.update_column(:any_comments_hidden, true)
-      end
+      @comment&.commentable&.update_column(:any_comments_hidden, true)
       if params[:hide_children] == "1"
         @comment.descendants.includes(:user, :commentable).find_each do |c|
           c.update(hidden_by_commentable_user: true)
@@ -263,11 +261,9 @@ class CommentsController < ApplicationController
     @comment.hidden_by_commentable_user = false
     if @comment.save
       @commentable = @comment&.commentable
-      if @commentable&.has_attribute?(:any_comments_hidden)
-        @commentable.update_columns(
-          any_comments_hidden: @commentable.comments.pluck(:hidden_by_commentable_user).include?(true),
-        )
-      end
+      @commentable&.update_columns(
+        any_comments_hidden: @commentable.comments.pluck(:hidden_by_commentable_user).include?(true),
+      )
       render json: { hidden: "false" }, status: :ok
     else
       render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
@@ -307,8 +303,6 @@ class CommentsController < ApplicationController
   def comment_should_be_visible?
     if @article
       @article.published?
-    elsif @commentable.is_a?(Event)
-      @commentable.published? && @commentable.comments_visible?
     else
       @root_comment
     end
@@ -401,8 +395,7 @@ class CommentsController < ApplicationController
   def user_blocked?
     return false if current_user.blocked_by_count.zero?
 
-    blocked_by_commentable_author = @comment.commentable&.user_id.present? &&
-      UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
+    blocked_by_commentable_author = UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
     blocked_by_comment_author = @comment.parent && UserBlock.blocking?(@comment.parent.user_id, current_user.id)
 
     blocked_by_commentable_author || blocked_by_comment_author || blocker_upthread?(@comment.parent)

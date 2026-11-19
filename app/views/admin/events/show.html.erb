@@ -72,15 +72,6 @@
           <span class="text-xs opacity-75">(<%= t("views.admin.events.show.tagged_articles_count", count: @event.articles.count) %>)</span>
         </li>
         <li>
-          <strong><%= t("views.admin.events.show.allow_comments") %>:</strong>
-          <% if @event.allow_comments? %>
-            <span class="c-indicator c-indicator--success"><%= t("views.admin.events.show.enabled") %></span>
-          <% else %>
-            <span class="c-indicator"><%= t("views.admin.events.show.disabled") %></span>
-          <% end %>
-          <span class="text-xs opacity-75">(<%= t("views.admin.events.show.event_comments_count", count: @event.comments_count) %>)</span>
-        </li>
-        <li>
           <strong>Start Time:</strong> 
           <span class="utc-time" data-iso="<%= @event.start_time.iso8601 %>"><%= @event.start_time %></span>
         </li>

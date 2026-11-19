@@ -846,47 +846,4 @@ RSpec.describe "Comments" do
       expect(flash[:notice]).to eq("Comment was successfully deleted.")
     end
   end
-
-  describe "Event comments HTTP isolation and visibility" do
-    let(:admin) { create(:user, :super_admin) }
-    let(:live_event) do
-      create(:event, published: true, allow_comments: true,
-                     start_time: 1.hour.ago, end_time: 1.hour.from_now)
-    end
-
-    it "rejects creating an Event comment via POST /comments" do
-      sign_in admin
-
-      expect do
-        post "/comments", params: {
-          comment: {
-            body_markdown: "Trying via HTTP",
-            commentable_id: live_event.id,
-            commentable_type: "Event"
-          }
-        }
-      end.not_to change(Comment, :count)
-
-      expect(response).to have_http_status(:unauthorized)
-    end
-
-    it "hides Event comment permalinks until visible and returns 200 once started and enabled" do
-      upcoming_event = create(:event, published: true, allow_comments: true,
-                                      start_time: 1.hour.from_now, end_time: 3.hours.from_now)
-      pre_comment = create(:comment, user: admin, commentable: upcoming_event, body_markdown: "Pre-event seed")
-
-      expect { get pre_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
-
-      upcoming_event.update!(start_time: 1.hour.ago, end_time: 1.hour.from_now)
-      get pre_comment.path
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Pre-event seed")
-
-      upcoming_event.update!(allow_comments: false)
-      expect { get pre_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
-
-      upcoming_event.update!(allow_comments: true, published: false)
-      expect { get pre_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
 end

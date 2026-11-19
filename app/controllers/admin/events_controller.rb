@@ -15,7 +15,6 @@ module Admin
       if fork_id.present?
         original_event = Event.find(fork_id)
         @event = original_event.dup
-        @event.comments_count = 0
         @event.tag_list = original_event.tag_list
       else
         @event = Event.new
@@ -80,7 +79,6 @@ module Admin
         :published,
         :elevated,
         :allow_articles,
-        :allow_comments,
         :start_time,
         :end_time,
         :type_of,

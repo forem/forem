@@ -1,11 +1,15 @@
 class EventsController < ApplicationController
   SHOW_ARTICLE_COLUMNS = %i[id user_id path title cached_tag_list published_at].freeze
-  SHOW_USER_COLUMNS = %i[id name profile_image].freeze
+  EVENT_ARTICLE_COLUMNS = %i[
+    id user_id path title type_of cached_tag_list published_at
+    public_reactions_count comments_count reading_time
+  ].freeze
+  SHOW_USER_COLUMNS = %i[id name username profile_image].freeze
   EVENT_ARTICLES_LIMIT = 15
   COMMUNITY_ARTICLES_LIMIT = 15
   PAST_LANDING_LIMIT = 12
-  private_constant :SHOW_ARTICLE_COLUMNS, :SHOW_USER_COLUMNS, :EVENT_ARTICLES_LIMIT,
-                   :COMMUNITY_ARTICLES_LIMIT, :PAST_LANDING_LIMIT
+  private_constant :SHOW_ARTICLE_COLUMNS, :EVENT_ARTICLE_COLUMNS, :SHOW_USER_COLUMNS,
+                   :EVENT_ARTICLES_LIMIT, :COMMUNITY_ARTICLES_LIMIT, :PAST_LANDING_LIMIT
 
   def index
     @events = Event.published.includes(:page, :organization, :user)
@@ -120,13 +124,27 @@ class EventsController < ApplicationController
 
   def load_event_tagged_articles
     @event_articles = []
+    @event_article_previews = {}
     return unless @event.articles_visible?
 
     @event_articles = @event.articles.published
-      .select(SHOW_ARTICLE_COLUMNS)
+      .select(EVENT_ARTICLE_COLUMNS)
       .order(hotness_score: :desc, published_at: :desc)
       .limit(EVENT_ARTICLES_LIMIT)
       .to_a
+    @event_article_previews = load_status_previews(@event_articles)
+  end
+
+  def load_status_previews(articles)
+    status_ids = articles.filter_map { |article| article.id if article.status? }
+    return {} if status_ids.empty?
+
+    Article.select(:id, :type_of, :processed_html)
+      .where(id: status_ids)
+      .each_with_object({}) do |article, previews|
+        preview = article.body_preview
+        previews[article.id] = preview if preview.present? && preview.length > 10
+      end
   end
 
   def load_event_articles

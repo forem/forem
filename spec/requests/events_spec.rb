@@ -222,7 +222,7 @@ RSpec.describe "Events" do
       end
 
       it "shows published tagged articles above related community articles and deduplicates them" do
-        live_event = create(:event, published: true, allow_articles: true, allow_comments: true,
+        live_event = create(:event, published: true, allow_articles: true,
                                     title: "Live Summit",
                                     start_time: 1.hour.ago, end_time: 1.hour.from_now)
         live_event.tags << tag
@@ -236,7 +236,6 @@ RSpec.describe "Events" do
         create(:article, user: event_author, event: live_event, title: "Scheduled Future Event Post",
                          published: true, published_at: 2.hours.from_now)
         create(:article, user: create(:user), title: "General Community Post", tag_list: tag.name, published: true)
-        create(:comment, user: event_author, commentable: live_event, body_markdown: "Hallway secret comment")
 
         get event_path(live_event.event_name_slug, live_event.event_variation_slug)
 
@@ -248,7 +247,34 @@ RSpec.describe "Events" do
           [tagged_high.title, tagged_low.title],
         )
         expect(doc.at_css("#feed-container").css(".article-title").map(&:text)).to eq(["General Community Post"])
-        expect(body).not_to include("Unpublished Event Draft", "Scheduled Future Event Post", "Hallway secret comment")
+        expect(body).not_to include("Unpublished Event Draft", "Scheduled Future Event Post")
+      end
+
+      it "renders quickie (status) posts in tweet-style feed cards alongside full articles" do
+        live_event = create(:event, published: true, allow_articles: true, title: "Quickie Event",
+                                    start_time: 1.hour.ago, end_time: 1.hour.from_now)
+        quickie_author = create(:user, username: "quickiedev", name: "Quickie Dev")
+        full_author = create(:user, username: "longformdev", name: "Longform Dev")
+
+        quickie = create(:published_article, user: quickie_author, event: live_event, type_of: :status,
+                                             title: "Keynote just kicked off!\n\nLoving the live demo.",
+                                             body_markdown: "", tag_list: "", hotness_score: 50)
+        quickie.update_column(:processed_html, '<p><img src="https://example.com/demo.png" alt="Demo slide"></p>')
+        create(:article, user: full_author, event: live_event, type_of: :full_post,
+                         title: "Deep Dive Recap", tag_list: "ruby",
+                         published: true, hotness_score: 20)
+
+        get event_path(live_event.event_name_slug, live_event.event_variation_slug)
+
+        expect(response).to have_http_status(:success)
+        doc = Nokogiri::HTML(response.body)
+        status_card = doc.at_css(".event-feed-item--status")
+        article_card = doc.at_css(".event-feed-item--article")
+
+        expect(status_card.text).to include("@quickiedev", "Keynote just kicked off!", "Loving the live demo.")
+        expect(status_card.at_css(".event-feed-item__preview img")["src"]).to include("demo.png")
+        expect(status_card.at_css(".event-feed-item__tags")).to be_nil
+        expect(article_card.text).to include("@longformdev", "Deep Dive Recap", "#ruby", "Article")
       end
 
       it "batches authors across event and community articles without loading body columns" do

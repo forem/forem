@@ -188,16 +188,14 @@ RSpec.describe "Admin::Events" do
       end
     end
 
-    context "with allow_articles and allow_comments toggles" do
+    context "with allow_articles toggle" do
       let(:attributes_with_toggles) do
-        valid_attributes.merge(allow_articles: true, allow_comments: true)
+        valid_attributes.merge(allow_articles: true)
       end
 
-      it "permits and sets allow_articles and allow_comments" do
+      it "permits and sets allow_articles" do
         post admin_events_path, params: { event: attributes_with_toggles }
-        created = Event.last
-        expect(created.allow_articles).to be(true)
-        expect(created.allow_comments).to be(true)
+        expect(Event.last.allow_articles).to be(true)
       end
     end
   end
@@ -237,16 +235,15 @@ RSpec.describe "Admin::Events" do
         expect(event.reload.cover_image.file).to be_nil
       end
 
-      it "updates allow_articles and allow_comments toggles and displays counts on show" do
-        patch admin_event_path(event), params: { event: { allow_articles: true, allow_comments: true } }
+      it "updates allow_articles toggle and displays count on show" do
+        patch admin_event_path(event), params: { event: { allow_articles: true } }
 
         expect(response).to redirect_to(admin_events_path)
         expect(event.reload.allow_articles).to be(true)
-        expect(event.allow_comments).to be(true)
 
         get admin_event_path(event)
         expect(response).to have_http_status(:success)
-        expect(response.body).to include("Allow Articles", "Allow Comments", "Enabled")
+        expect(response.body).to include("Allow Articles", "Enabled")
       end
     end
   end
@@ -282,9 +279,8 @@ RSpec.describe "Admin::Events" do
       it "pre-fills the form with attributes from the original event when fork_from_id is passed" do
         original_event = create(:event, title: "Original Event Title", description: "Original Description",
                                         full_details: "Original Full Details Dump",
-                                        allow_articles: true, allow_comments: true,
+                                        allow_articles: true,
                                         tag_list: %w[ruby rails])
-        original_event.update_column(:comments_count, 12)
 
         get new_admin_event_path(fork_from_id: original_event.id)
 
@@ -293,7 +289,6 @@ RSpec.describe "Admin::Events" do
         expect(response.body).to include("Original Description")
         expect(response.body).to include("Original Full Details Dump")
         expect(response.body).to include("ruby, rails")
-        expect(assigns(:event).comments_count).to eq(0) if respond_to?(:assigns)
       end
     end
   end

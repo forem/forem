@@ -243,28 +243,6 @@ RSpec.describe "Api::V1::Comments" do
         expect(hidden_child["children"]).not_to be_empty
       end
     end
-
-    context "when the comment belongs to an Event" do
-      let(:admin) { create(:user, :super_admin) }
-
-      it "returns 404 before start_time, when disabled, or when draft, and 200 once visible" do
-        event = create(:event, published: true, allow_comments: true,
-                               start_time: 1.hour.from_now, end_time: 3.hours.from_now)
-        event_comment = create(:comment, user: admin, commentable: event, body_markdown: "Hallway seed")
-
-        get api_comment_path(event_comment.id_code_generated), headers: headers
-        expect(response).to have_http_status(:not_found)
-
-        event.update!(start_time: 1.hour.ago, end_time: 1.hour.from_now)
-        get api_comment_path(event_comment.id_code_generated), headers: headers
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body["id_code"]).to eq(event_comment.id_code_generated)
-
-        event.update!(allow_comments: false)
-        get api_comment_path(event_comment.id_code_generated), headers: headers
-        expect(response).to have_http_status(:not_found)
-      end
-    end
   end
 
   describe "POST /api/comments/preview" do

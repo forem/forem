@@ -12,14 +12,12 @@ class Comment < ApplicationRecord
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
-  COMMENTABLE_TYPES = %w[Article PodcastEpisode Event].freeze
+  COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
   LOW_QUALITY_THRESHOLD = -75
   HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
-
-  attr_accessor :admin_update
 
   def ai_disclosure_label
     case ai_disclosure_level
@@ -89,7 +87,6 @@ class Comment < ApplicationRecord
 
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
-  validate :event_accepting_comments, if: :validating_event_commentable?
   validate :user_mentions_in_markdown
   validate :body_has_content
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
@@ -293,20 +290,6 @@ class Comment < ApplicationRecord
     commentable&.subforem_id
   end
 
-  # Returns the associated event only when it is publicly visible as connected
-  # (published, allows comments, and has started). Admins may pre-create event
-  # comments before start_time, but they must not appear connected beforehand.
-  def visible_event(at = Time.current)
-    return unless commentable_type == "Event"
-    return unless commentable&.published? && commentable.comments_visible?(at)
-
-    commentable
-  end
-
-  def event_visible?(at = Time.current)
-    visible_event(at).present?
-  end
-
   # === ActivityTrackable (Customer.io CDP activity events) ===
   # comment_created / _updated / _deleted. No draft state, so create publishes.
 
@@ -417,7 +400,7 @@ class Comment < ApplicationRecord
   end
 
   def wrap_timestamps_if_video_present!
-    return unless commentable_is_article? && commentable.video.present?
+    return unless commentable_type != "PodcastEpisode" && commentable.video.present?
 
     self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) do |string|
       "<a href='#{commentable.path}?t=#{string}'>#{string}</a>"
@@ -500,8 +483,6 @@ class Comment < ApplicationRecord
   end
 
   def should_send_email_notification?
-    return false if commentable_type == "Event" && !event_visible?
-
     parent_exists? &&
       parent_user.class.name != "Podcast" &&
       parent_user != user &&
@@ -534,33 +515,6 @@ class Comment < ApplicationRecord
     return unless commentable_type == "Article" && !commentable.published
 
     errors.add(:commentable_id, I18n.t("models.comment.published_article"))
-  end
-
-  def validating_event_commentable?
-    commentable_type == "Event" &&
-      (new_record? || will_save_change_to_commentable_id? || will_save_change_to_commentable_type?)
-  end
-
-  def event_accepting_comments
-    return unless commentable.is_a?(Event)
-
-    unless commentable.allow_comments?
-      errors.add(:commentable_id, I18n.t("models.comment.event_comments_disabled"))
-      return
-    end
-
-    return if commentable.accepting_comments?(as_admin: acting_as_event_admin?)
-
-    errors.add(:commentable_id, I18n.t("models.comment.event_not_accepting_comments"))
-  end
-
-  def acting_as_event_admin?
-    return true if admin_update
-
-    user.present? && (
-      user.administrative_access_to?(resource: Event) ||
-      (commentable.is_a?(Event) && user.administrative_access_to?(resource: commentable))
-    )
   end
 
   # Validates per-comment and hourly @-mention rate limits based on the commenter's trust tier.

@@ -9427,12 +9427,6 @@
           "allow_articles": {
             "type": "boolean"
           },
-          "allow_comments": {
-            "type": "boolean"
-          },
-          "comments_count": {
-            "type": "integer"
-          },
           "primary_stream_url": {
             "type": "string",
             "nullable": true
@@ -9539,10 +9533,6 @@
                 "default": false
               },
               "allow_articles": {
-                "type": "boolean",
-                "default": false
-              },
-              "allow_comments": {
                 "type": "boolean",
                 "default": false
               },

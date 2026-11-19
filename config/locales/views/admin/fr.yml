@@ -752,19 +752,13 @@ fr:
         form:
           allow_articles: "Autoriser les articles"
           allow_articles_description: "Permettre d'associer directement des articles à cet événement et de les afficher sur la page de l'événement une fois celui-ci commencé."
-          allow_comments: "Autoriser les commentaires (Discussion libre)"
-          allow_comments_description: "Permettre de publier des commentaires directement sur cet événement."
         show:
           allow_articles: "Articles autorisés"
-          allow_comments: "Commentaires autorisés"
           enabled: "Activé"
           disabled: "Désactivé"
           tagged_articles_count:
             one: "1 article associé"
             other: "%{count} articles associés"
-          event_comments_count:
-            one: "1 commentaire"
-            other: "%{count} commentaires"
           signups_title: "Inscriptions à l'événement"
           no_signups: "Aucune inscription pour cet événement pour le moment."
           headers:
