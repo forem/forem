@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-cd "${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
+workspace="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
+cd "$workspace"
 
 ruby_version="$(tr -d '[:space:]' < .ruby-version)"
 if [[ "$ruby_version" != "3.3.14" ]]; then
@@ -60,6 +61,7 @@ export PATH="$install_root/bin:$PATH"
 ruby -e 'abort unless RUBY_VERSION == "3.3.14" && RUBY_PATCHLEVEL == 208; puts "ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}"'
 
 if [[ "${1:-ruby-only}" == "bundler-cache" ]]; then
+  cd "$workspace"
   bundler_version="$(awk '/^BUNDLED WITH$/{getline; gsub(/^[[:space:]]+/, ""); print; exit}' Gemfile.lock)"
   gem install --no-document bundler --version "$bundler_version"
   bundle config set --local path vendor/bundle
