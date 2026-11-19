@@ -112,12 +112,14 @@ RSpec.describe "Api::V1::Pages with Resource Admin: OrganizationPageManagement" 
       expect(site_page.reload.body_markdown).not_to eq("Changed")
     end
 
-    it "cannot reach an embed-only HTML page" do
+    it "updates an embed-only HTML page without applying Markdown fields", :aggregate_failures do
       embed = create(:page, organization: organization, template: "embed_html", body_markdown: nil,
                             body_html: "<p>Widget</p>", slug: "#{organization.slug}/embed/widget")
-      put api_page_path(embed.id), params: { body_markdown: "Changed" }.to_json, headers: headers
+      put api_page_path(embed.id), params: { body_markdown: "Changed", body_html: "<p>Fresh</p>" }.to_json,
+                                   headers: headers
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:ok)
+      expect(embed.reload).to have_attributes(template: "embed_html", body_markdown: nil, body_html: "<p>Fresh</p>")
     end
   end
 

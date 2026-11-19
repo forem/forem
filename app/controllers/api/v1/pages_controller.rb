@@ -5,6 +5,8 @@ module Api
       before_action :set_page, only: %i[show update destroy]
 
       def index
+        return render_organization_embed_pages if params[:kind] == "embed"
+
         @pages = if params[:organization_id].present?
                    Page.non_embed_html
                      .where(organization_id: params[:organization_id])
@@ -16,10 +18,13 @@ module Api
       end
 
       def show
+        prevent_caching if @page.embed_html?
         render json: @page
       end
 
       def create
+        return create_organization_embed_page if params[:template] == Page::EMBED_HTML_TEMPLATE
+
         if page_admin?
           @page = Page.new(permitted_params)
         else
@@ -38,7 +43,7 @@ module Api
       end
 
       def update
-        if page_admin?
+        if page_admin? && !@page.embed_html?
           if @page.update(permitted_params)
             log_page_write("api_page_update")
             return render json: @page, status: :ok
@@ -48,12 +53,16 @@ module Api
         end
 
         @organization = @page.organization
-        authorize_org_admin!(@organization)
+        authorize_org_admin!(@organization) unless page_admin?
         if params[:organization_id].present? && params[:organization_id].to_i != @organization.id
           raise Pundit::NotAuthorizedError
         end
 
-        assign_org_page_updates
+        if @page.embed_html?
+          assign_org_embed_page_updates
+        else
+          assign_org_page_updates
+        end
         return render_validation_error if @page.errors.any?
 
         if @page.save
@@ -98,6 +107,41 @@ module Api
 
       private
 
+      def render_organization_embed_pages
+        @user = authenticated_user
+        raise Pundit::NotAuthorizedError unless @user
+
+        organization = Organization.find(params[:organization_id])
+        raise Pundit::NotAuthorizedError unless org_embed_page_reader?(organization)
+
+        prevent_caching
+        render json: organization.ordered_embed_pages
+      end
+
+      def create_organization_embed_page
+        @organization = Organization.find_by(id: params[:organization_id])
+        if page_admin?
+          raise ActionController::ParameterMissing, :organization_id unless @organization
+        else
+          authorize_org_admin!(@organization)
+        end
+
+        build_org_embed_page
+        return render_validation_error if @page.errors.any?
+
+        if @page.save
+          log_page_write("api_page_create")
+          render json: @page, status: :ok
+        else
+          render_validation_error
+        end
+      end
+
+      def prevent_caching
+        unset_cache_control_headers
+        response.headers["Cache-Control"] = "private, no-store"
+      end
+
       def log_page_write(action)
         via = if @via_page_management
                 { "via" => "org_pages_resource_admin", "organization_id" => @page.organization_id }
@@ -122,7 +166,16 @@ module Api
 
       def set_page
         @page = Page.find(params[:id])
-        raise ActiveRecord::RecordNotFound if @page.is_a?(Page) && @page.embed_html?
+        return unless @page.is_a?(Page) && @page.embed_html?
+
+        @user ||= authenticated_user
+        raise ActiveRecord::RecordNotFound unless org_embed_page_reader?(@page.organization)
+      end
+
+      def org_embed_page_reader?(organization)
+        return false unless @user && organization
+
+        page_admin? || org_page_access(organization).present?
       end
 
       def page_admin?
@@ -130,16 +183,17 @@ module Api
       end
 
       def authorize_org_admin!(organization, allow_page_management: true)
-        unless organization.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
-          raise Pundit::NotAuthorizedError
-        end
-        return if @user.org_admin?(organization)
+        access = org_page_access(organization, allow_page_management: allow_page_management)
+        raise Pundit::NotAuthorizedError unless access
 
-        unless allow_page_management && @user.single_resource_admin_for?(OrganizationPageManagement)
-          raise Pundit::NotAuthorizedError
-        end
+        @via_page_management = access == :page_management
+      end
 
-        @via_page_management = true
+      def org_page_access(organization, allow_page_management: true)
+        return unless organization.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[organization])
+        return :org_admin if @user.org_admin?(organization)
+
+        :page_management if allow_page_management && @user.single_resource_admin_for?(OrganizationPageManagement)
       end
 
       def build_org_page
@@ -169,9 +223,37 @@ module Api
         @page.description = @organization.summary.presence || @organization.name if @page.description.blank?
       end
 
+      def build_org_embed_page
+        @page = @organization.pages.build(embed_page_permitted_params)
+        @page.template = Page::EMBED_HTML_TEMPLATE
+        @page.position = 0
+        @page.description = @organization.summary.presence || @organization.name if @page.description.blank?
+
+        suffix = extract_org_slug_suffix("#{@organization.slug}/embed/")
+        if suffix.blank?
+          @page.errors.add(:slug, "suffix is required and must contain alphanumeric characters or hyphens")
+          return
+        end
+        @page.slug = "#{@organization.slug}/embed/#{suffix}"
+      end
+
+      def assign_org_embed_page_updates
+        @page.assign_attributes(embed_page_permitted_params)
+        @page.template = params[:template] if params[:template].present?
+        return unless params.key?(:slug) || params.key?(:slug_suffix)
+
+        suffix = extract_org_slug_suffix("#{@organization.slug}/embed/")
+        if suffix.blank?
+          @page.errors.add(:slug, "suffix is required and must contain alphanumeric characters or hyphens")
+          return
+        end
+        @page.slug = "#{@organization.slug}/embed/#{suffix}"
+      end
+
       def assign_org_page_updates
         @page.assign_attributes(org_admin_permitted_params)
         @page.template = "full_within_layout"
+        @page.template = Page::EMBED_HTML_TEMPLATE if params[:template] == Page::EMBED_HTML_TEMPLATE
 
         if @page.slug.end_with?("/readme")
           @page.slug = "#{@organization.slug}/readme"
@@ -189,9 +271,8 @@ module Api
         end
       end
 
-      def extract_org_slug_suffix
+      def extract_org_slug_suffix(org_prefix = "#{@organization.slug}/")
         raw_slug = (params[:slug_suffix].presence || params[:slug]).to_s.strip.sub(%r{\A/+}, "")
-        org_prefix = "#{@organization.slug}/"
         if raw_slug.include?("/")
           return "" unless raw_slug.downcase.start_with?(org_prefix.downcase)
 
@@ -209,6 +290,10 @@ module Api
 
       def org_admin_permitted_params
         params.permit(:title, :description, :body_markdown, :show_in_navigation)
+      end
+
+      def embed_page_permitted_params
+        params.permit(:title, :description, :body_html)
       end
 
       def permitted_params

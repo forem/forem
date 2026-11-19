@@ -5,6 +5,7 @@ class Page < ApplicationRecord
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt embed_html].freeze
   MAX_EMBED_HTML_BYTES = 256.kilobytes
   MAX_USER_EMBED_PAGES = 50
+  MAX_ORGANIZATION_EMBED_PAGES = 50
 
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
@@ -22,6 +23,7 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :validate_owner_constraints
   validate :validate_embed_html_constraints
+  validate :validate_organization_embed_page_limit, on: :create
   validate :body_present
   validate :validate_template_data
   validate :validate_redirect_to_url
@@ -35,6 +37,7 @@ class Page < ApplicationRecord
   before_validation :evaluate_markdown
   before_save :render_from_page_template, if: :uses_page_template?
   before_create :enforce_user_embed_page_limit_with_lock, if: -> { user_id.present? && embed_html? }
+  before_create :enforce_organization_embed_page_limit_with_lock, if: -> { organization_id.present? && embed_html? }
 
   after_commit :ensure_uniqueness_of_landinge_page
   after_commit :bust_cache
@@ -196,6 +199,21 @@ class Page < ApplicationRecord
     return unless Page.embed_html.where(user_id: user_id).count >= MAX_USER_EMBED_PAGES
 
     errors.add(:base, I18n.t("models.page.user_embed_pages_limit_reached", max: MAX_USER_EMBED_PAGES))
+    throw(:abort)
+  end
+
+  def validate_organization_embed_page_limit
+    return unless embed_html? && organization.present?
+    return if organization.pages.embed_html.count < MAX_ORGANIZATION_EMBED_PAGES
+
+    errors.add(:base, I18n.t("models.page.organization_embed_pages_limit_reached", max: MAX_ORGANIZATION_EMBED_PAGES))
+  end
+
+  def enforce_organization_embed_page_limit_with_lock
+    Organization.where(id: organization_id).lock.pick(:id)
+    return unless Page.embed_html.where(organization_id: organization_id).count >= MAX_ORGANIZATION_EMBED_PAGES
+
+    errors.add(:base, I18n.t("models.page.organization_embed_pages_limit_reached", max: MAX_ORGANIZATION_EMBED_PAGES))
     throw(:abort)
   end
 
