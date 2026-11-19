@@ -73,7 +73,7 @@ A more complete overview of our stack is available in [our docs](https://develop
 ### Launching in a Cloud Dev Environment
 
 - **GitHub Codespaces:** From your fork, choose **Code → Codespaces → Create codespace**. The repository's devcontainer (`.devcontainer/`) starts PostgreSQL and Redis for you; run `bin/setup` once it opens, then `bin/startup`.
-- **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension, or run `npx @devcontainers/cli up --workspace-folder .`, then `bin/setup` inside the container.
+- **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension and run `bin/setup`, then `bin/startup`, in its terminal. Without VS Code, run `npx @devcontainers/cli up --workspace-folder .` (it returns to your host shell), then `npx @devcontainers/cli exec --workspace-folder . bin/setup` and `npx @devcontainers/cli exec --workspace-folder . bin/startup`.
 
 Ona (formerly Gitpod) is closed to new signups, so it is no longer a recommended route for new contributors.
 
