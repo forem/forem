@@ -4,7 +4,7 @@ module Articles
   # before deletion.
   class BustDeletedArticleCacheWorker < BustCacheBaseWorker
     ATTRIBUTES = %w[
-      id user_id organization_id slug path published published_at cached_tag_list video
+      id user_id organization_id event_id slug path published published_at cached_tag_list video
     ].freeze
 
     def self.attributes_for(article)

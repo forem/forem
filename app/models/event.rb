@@ -12,6 +12,7 @@ class Event < ApplicationRecord
   has_many :signed_up_users, through: :event_signups, source: :user
   has_many :emails, dependent: :nullify
   has_many :pages, inverse_of: :event, dependent: :destroy
+  has_many :articles, dependent: :nullify
 
   enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3, meetup: 4, conference: 5 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
@@ -131,8 +132,40 @@ class Event < ApplicationRecord
     ActionController::Base.helpers.simple_format(description)
   end
 
+  def path
+    "/events/#{event_name_slug}/#{event_variation_slug}"
+  end
+
   def live?(at = Time.current)
     start_time.present? && end_time.present? && start_time <= at && end_time >= at
+  end
+
+  def started?(at = Time.current)
+    start_time.present? && start_time <= at
+  end
+
+  def upcoming?(at = Time.current)
+    start_time.present? && start_time > at
+  end
+
+  def ended?(at = Time.current)
+    end_time.present? && end_time < at
+  end
+
+  def articles_visible?(at = Time.current)
+    allow_articles? && started?(at)
+  end
+
+  def accepting_articles?(at: Time.current, as_admin: false)
+    return false unless allow_articles?
+
+    as_admin || (published? && live?(at))
+  end
+
+  def visible_articles(at = Time.current)
+    return Article.none unless articles_visible?(at)
+
+    articles.published
   end
 
   def formatted_date_range
@@ -279,9 +312,7 @@ class Event < ApplicationRecord
   end
 
   def capture_owned_page_fallback_paths
-    @destroyed_owned_page_fallback_paths = owned_page_fallback_paths_for(
-      "/events/#{event_name_slug}/#{event_variation_slug}",
-    )
+    @destroyed_owned_page_fallback_paths = owned_page_fallback_paths_for(path)
   end
 
   def purge_event_edge_cache
@@ -291,7 +322,7 @@ class Event < ApplicationRecord
   end
 
   def event_edge_cache_fallback_paths
-    current_base = "/events/#{event_name_slug}/#{event_variation_slug}"
+    current_base = path
     paths = [current_base]
 
     if destroyed?

@@ -9537,6 +9537,9 @@
           "published": {
             "type": "boolean"
           },
+          "allow_articles": {
+            "type": "boolean"
+          },
           "primary_stream_url": {
             "type": "string",
             "nullable": true
@@ -9639,6 +9642,10 @@
                 "nullable": true
               },
               "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "allow_articles": {
                 "type": "boolean",
                 "default": false
               },

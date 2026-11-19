@@ -16,6 +16,9 @@ en:
       is_too_long: is too long.
       invalid_date: must be entered in DD/MM/YYYY format with current or past date
       series_unpermitted: must be one you have permission to post to
+      event_not_found: must reference an existing event
+      event_articles_disabled: does not allow tagged articles
+      event_not_accepting_articles: can only be tagged while the event is live
       invalid_coauthor: must be valid user IDs
       invalid_hidden_billboard_locations: must be an array of valid post billboard locations
       invalid_hidden_billboard_locations_list: 'contains invalid billboard locations: %{locations}'

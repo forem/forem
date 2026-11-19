@@ -6,6 +6,7 @@ RSpec.describe Event do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:page).optional }
     it { is_expected.to have_many(:emails).dependent(:nullify) }
+    it { is_expected.to have_many(:articles).dependent(:nullify) }
   end
 
   describe "enums" do
@@ -503,6 +504,75 @@ RSpec.describe Event do
           "/events/purge-evt-v2/2026/embed/widget?mode=embed",
         ),
       )
+    end
+  end
+
+  describe "articles toggle, visibility, and nullify on destroy" do
+    it "defaults allow_articles to false" do
+      event = create(:event)
+      expect(event.allow_articles).to be(false)
+    end
+
+    it "evaluates timing and visibility predicates across before, during, and after" do
+      upcoming = build(:event, published: true, allow_articles: true,
+                               start_time: 2.hours.from_now, end_time: 4.hours.from_now)
+      live = build(:event, published: true, allow_articles: true,
+                           start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      ended = build(:event, published: true, allow_articles: true,
+                            start_time: 4.hours.ago, end_time: 2.hours.ago)
+      disabled = build(:event, published: true, allow_articles: false,
+                               start_time: 1.hour.ago, end_time: 1.hour.from_now)
+
+      expect(upcoming).to have_attributes(upcoming?: true, started?: false, articles_visible?: false)
+      expect(live).to have_attributes(started?: true, ended?: false, articles_visible?: true)
+      expect(ended).to have_attributes(started?: true, ended?: true, articles_visible?: true)
+      expect(disabled).to have_attributes(articles_visible?: false)
+    end
+
+    it "evaluates accepting_articles? for regular users vs admins" do
+      upcoming = build(:event, published: true, allow_articles: true,
+                               start_time: 2.hours.from_now, end_time: 4.hours.from_now)
+      live = build(:event, published: true, allow_articles: true,
+                           start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      ended = build(:event, published: true, allow_articles: true,
+                            start_time: 4.hours.ago, end_time: 2.hours.ago)
+      draft_live = build(:event, published: false, allow_articles: true,
+                                 start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      disabled = build(:event, published: true, allow_articles: false,
+                               start_time: 1.hour.ago, end_time: 1.hour.from_now)
+
+      expect([upcoming, ended, draft_live].map(&:accepting_articles?)).to all(be(false))
+      expect([upcoming, live, ended, draft_live].map { |e| e.accepting_articles?(as_admin: true) }).to all(be(true))
+      expect(live.accepting_articles?).to be(true)
+      expect(disabled.accepting_articles?(as_admin: true)).to be(false)
+    end
+
+    it "returns visible_articles only when allow_articles is true and the event has started" do
+      admin = create(:user, :super_admin)
+      upcoming = create(:event, published: true, allow_articles: true,
+                                start_time: 1.hour.from_now, end_time: 3.hours.from_now)
+      published_article = create(:article, user: admin, event: upcoming, published: true)
+      draft_article = create(:article, user: admin, event: upcoming, published: false)
+
+      expect(upcoming.visible_articles).to be_empty
+
+      upcoming.update!(start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      expect(upcoming.visible_articles).to contain_exactly(published_article)
+      expect(upcoming.visible_articles).not_to include(draft_article)
+
+      upcoming.update!(allow_articles: false)
+      expect(upcoming.visible_articles).to be_empty
+    end
+
+    it "nullifies associated articles without deleting them when destroyed" do
+      user = create(:user)
+      event = create(:event, published: true, allow_articles: true,
+                             start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      article = create(:article, user: user, event: event, published: true)
+
+      event.destroy!
+
+      expect(article.reload.event_id).to be_nil
     end
   end
 end

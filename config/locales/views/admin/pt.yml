@@ -663,7 +663,16 @@ pt:
       events:
         fork: "Duplicar"
         fork_event: "Duplicar Evento"
+        form:
+          allow_articles: "Permitir Artigos"
+          allow_articles_description: "Permitir que artigos sejam marcados diretamente neste evento e exibidos na página do evento após o início."
         show:
+          allow_articles: "Permitir Artigos"
+          enabled: "Ativado"
+          disabled: "Desativado"
+          tagged_articles_count:
+            one: "1 artigo marcado"
+            other: "%{count} artigos marcados"
           signups_title: "Inscrições no evento"
           no_signups: "Nenhuma inscrição para este evento ainda."
           headers:

@@ -755,7 +755,16 @@ fr:
       events:
         fork: "Dupliquer"
         fork_event: "Dupliquer l'événement"
+        form:
+          allow_articles: "Autoriser les articles"
+          allow_articles_description: "Permettre d'associer directement des articles à cet événement et de les afficher sur la page de l'événement une fois celui-ci commencé."
         show:
+          allow_articles: "Articles autorisés"
+          enabled: "Activé"
+          disabled: "Désactivé"
+          tagged_articles_count:
+            one: "1 article associé"
+            other: "%{count} articles associés"
           signups_title: "Inscriptions à l'événement"
           no_signups: "Aucune inscription pour cet événement pour le moment."
           headers:

@@ -764,7 +764,16 @@ en:
       events:
         fork: "Fork"
         fork_event: "Fork Event"
+        form:
+          allow_articles: "Allow Articles"
+          allow_articles_description: "Allow articles to be tagged directly to this event and displayed on the event page once the event starts."
         show:
+          allow_articles: "Allow Articles"
+          enabled: "Enabled"
+          disabled: "Disabled"
+          tagged_articles_count:
+            one: "1 tagged article"
+            other: "%{count} tagged articles"
           signups_title: "Event Signups"
           no_signups: "No signups for this event yet."
           headers:

@@ -16,6 +16,9 @@ pt:
       is_too_long: é muito longo.
       invalid_date: deve ser inserido no formato DD/MM/AAAA com data atual ou passada
       series_unpermitted: deve ser uma série que você tem permissão para postar
+      event_not_found: deve referenciar um evento existente
+      event_articles_disabled: não permite artigos marcados
+      event_not_accepting_articles: só pode ser marcado enquanto o evento estiver ao vivo
       invalid_coauthor: devem ser IDs de usuário válidos
       invalid_hidden_billboard_locations: deve ser uma lista de locais de banners de postagem válidos
       invalid_hidden_billboard_locations_list: 'contém locais de banners inválidos: %{locations}'
