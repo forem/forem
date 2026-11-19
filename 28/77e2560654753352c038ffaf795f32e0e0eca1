@@ -1,0 +1,106 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 165-177,201-204
+app/controllers/admin/events_controller.rb
+  h_f968154a99632d 18,82-83
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 91-92
+app/controllers/comments_controller.rb
+  h_f968154a99632d 246-248,266-270,310-311,404-405
+app/controllers/concerns/api/comments_controller.rb
+  h_f968154a99632d 7,45-48
+app/controllers/events_controller.rb
+  h_f968154a99632d 4-5,7-8,51-52,121-131,133-134,137-139,141,143-148,150
+app/helpers/comments_helper.rb
+  h_f968154a99632d 30,62-70
+app/models/article.rb
+  h_f968154a99632d 47,331,411,559-572,1801-1840
+app/models/comment.rb
+  h_f968154a99632d 15,22-23,92,296-309,420,503-504,539-565
+app/models/concerns/algolia_searchable/searchable_comment.rb
+  h_f968154a99632d 38-42
+app/models/event.rb
+  h_f968154a99632d 15-16,35,137-140,145-209,354,364
+app/models/notification.rb
+  h_f968154a99632d 113-115,157-159
+app/policies/comment_policy.rb
+  h_f968154a99632d 13-14,45-46,102-106
+app/services/ai/comment_check.rb
+  h_f968154a99632d 86,158-161,200
+app/services/edge_cache/bust_article.rb
+  h_f968154a99632d 28-32
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 251-266
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 65-82
+app/views/events/_event_articles.html.erb
+  h_f968154a99632d 1-37
+app/views/events/challenge.html.erb
+  h_f968154a99632d 227-228
+app/views/events/gathering.html.erb
+  h_f968154a99632d 142-143
+app/views/events/show.html.erb
+  h_f968154a99632d 63-64
+app/workers/articles/bust_deleted_article_cache_worker.rb
+  h_f968154a99632d 7
+config/locales/models/en.yml
+  h_f968154a99632d 19-21,66-67,75
+config/locales/models/fr.yml
+  h_f968154a99632d 19-21,65-66,74
+config/locales/models/pt.yml
+  h_f968154a99632d 19-21,65-66,74
+config/locales/views/admin/en.yml
+  h_f968154a99632d 761-765,767-776
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 752-756,758-767
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 660-664,666-675
+config/locales/views/events/en.yml
+  h_f968154a99632d 64-67
+config/locales/views/events/fr.yml
+  h_f968154a99632d 64-67
+config/locales/views/events/pt.yml
+  h_f968154a99632d 64-67
+db/migrate/20261119161000_add_article_and_comment_toggles_to_events.rb
+  h_f968154a99632d 1-21
+db/migrate/20261119161100_add_event_id_to_articles.rb
+  h_f968154a99632d 1-13
+db/migrate/20261119161200_add_event_id_index_to_articles.rb
+  h_f968154a99632d 1-25
+db/migrate/20261119161300_validate_event_id_on_articles.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,175,246,802-803,809,2316
+spec/models/article_event_spec.rb
+  h_f968154a99632d 1-166
+spec/models/comment_event_spec.rb
+  h_f968154a99632d 1-150
+spec/models/event_spec.rb
+  h_f968154a99632d 9-10,510-600
+spec/policies/comment_policy_spec.rb
+  h_f968154a99632d 178-197
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 190-202,239-250,285,287,296
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 214-226
+spec/requests/api/v1/comments_spec.rb
+  h_f968154a99632d 246-267
+spec/requests/comments_spec.rb
+  h_f968154a99632d 849-891
+spec/requests/events_spec.rb
+  h_f968154a99632d 198-318
+spec/swagger_helper.rb
+  h_f968154a99632d 924-926,956-957
+swagger/v1/api_v1.json
+  h_f968154a99632d 9427-9435,9541-9548
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2877e2560654753352c038ffaf795f32e0e0eca1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
