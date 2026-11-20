@@ -1,0 +1,83 @@
+# Cold start of the Flox environment on a clean machine: install Flox, download
+# and build the environment, then fresh clone -> GET / == 200 -> one model spec.
+# Every hosted runner starts with an empty Nix store, so these are true cold
+# numbers, package download included. Timings land in the run summary.
+name: Flox cold start
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [flox-fast]
+    paths:
+      - ".flox/**"
+      - ".github/workflows/flox-cold-start.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cold-start:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: x86_64-linux, os: ubuntu-24.04 }
+          - { name: aarch64-linux, os: ubuntu-24.04-arm }
+          - { name: aarch64-darwin, os: macos-15 }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Machine
+        run: |
+          echo "cpus=$(getconf _NPROCESSORS_ONLN)  $(uname -sm)" | tee -a "$RUNNER_TEMP/summary.txt"
+          echo "START=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Install Flox
+        uses: flox/install-flox-action@v2
+
+      - name: Download and build the environment
+        run: |
+          t0=$(date +%s)
+          echo "install_flox_s=$((t0 - START))" >> "$RUNNER_TEMP/summary.txt"
+          FOREM_BOOTSTRAP=0 flox activate -c 'realpath "$FLOX_ENV"' | tee "$RUNNER_TEMP/env-path"
+          t1=$(date +%s)
+          {
+            echo "download_and_build_env_s=$((t1 - t0))"
+            echo "nix_store_mb=$(du -sm /nix/store 2>/dev/null | cut -f1)"
+            echo "env_paths=$(nix-store -qR "$(cat "$RUNNER_TEMP/env-path")" | wc -l | tr -d ' ')"
+            flox --version | sed 's/^/flox=/'
+            nix --extra-experimental-features nix-command config show 2>/dev/null \
+              | grep -E '^(substituters|extra-substituters|trusted-substituters|http2|max-substitution-jobs) ' || true
+          } | tee -a "$RUNNER_TEMP/summary.txt"
+
+      - name: Fresh clone to contributor ready
+        run: |
+          export BENCH_LOGDIR="$RUNNER_TEMP/bench"
+          .flox/bench/contrib-ready.sh "${{ matrix.name }}" | tee -a "$RUNNER_TEMP/summary.txt"
+          grep -q '0 failures' "$BENCH_LOGDIR/${{ matrix.name }}.log"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### ${{ matrix.name }}"
+            echo '```'
+            cat "$RUNNER_TEMP/summary.txt" 2>/dev/null
+            cat .flox/cache/bootstrap/timings.tsv 2>/dev/null
+            echo "total_wall_s=$(( $(date +%s) - START ))"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flox-cold-start-${{ matrix.name }}
+          path: |
+            ${{ runner.temp }}/summary.txt
+            ${{ runner.temp }}/bench/
+            .flox/cache/bootstrap/
+          if-no-files-found: ignore
