@@ -116,13 +116,51 @@ RSpec.describe "AuthPassController", type: :request do
         sign_in user
       end
 
-      it "renders the iframe view with authentication token" do
+      it "renders the iframe view with authentication token scoped to same-origin" do
         host! "forem.com"
         get "/auth_pass/iframe"
 
         expect(response).to have_http_status(:ok)
+        expect(response.headers["Content-Security-Policy"]).to eq("frame-ancestors 'self'")
+        expect(response.headers["X-Frame-Options"]).to eq("SAMEORIGIN")
+        expect(response.headers["Cache-Control"]).to include("no-store")
         expect(response.body).to include("authenticated: true")
-        expect(response.body).to include("window.parent.postMessage")
+        expect(response.body).to include('window.parent.postMessage(data, "http://forem.com")')
+        expect(response.body).not_to include("postMessage(data, '*')")
+      end
+
+      it "scopes postMessage and CSP frame-ancestors to an allowed subforem origin" do
+        host! "forem.com"
+        get "/auth_pass/iframe", params: { passed_domain: "https://#{allowed_origin}" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Content-Security-Policy"]).to eq("frame-ancestors 'self' https://#{allowed_origin}")
+        expect(response.headers["X-Frame-Options"]).to be_nil
+        expect(response.body).to include("authenticated: true")
+        expect(response.body).to include(%(window.parent.postMessage(data, "https://#{allowed_origin}")))
+        expect(response.body).not_to include("postMessage(data, '*')")
+      end
+
+      it "does not emit a token or allow framing for an unauthorized passed_domain" do
+        host! "forem.com"
+        get "/auth_pass/iframe", params: { passed_domain: "https://evil.example" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Content-Security-Policy"]).to eq("frame-ancestors 'self'")
+        expect(response.headers["X-Frame-Options"]).to eq("SAMEORIGIN")
+        expect(response.body).to eq("<html><body></body></html>")
+        expect(response.body).not_to include("token")
+      end
+
+      it "does not emit a token or allow framing for an unauthorized Referer" do
+        host! "forem.com"
+        get "/auth_pass/iframe", headers: { "Referer" => "https://evil.example/landing" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Content-Security-Policy"]).to eq("frame-ancestors 'self'")
+        expect(response.headers["X-Frame-Options"]).to eq("SAMEORIGIN")
+        expect(response.body).to eq("<html><body></body></html>")
+        expect(response.body).not_to include("token")
       end
     end
 

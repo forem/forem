@@ -84,7 +84,8 @@ RSpec.describe "Custom Domain Iframe Auth Redirect", type: :request do
       get "http://forem.com/auth_pass/iframe?passed_domain=https://unauthorized-domain.com"
 
       expect(response).to have_http_status(:ok)
-      expect(response.headers["Content-Security-Policy"]).not_to include("unauthorized-domain.com")
+      expect(response.headers["Content-Security-Policy"]).to eq("frame-ancestors 'self'")
+      expect(response.headers["X-Frame-Options"]).to eq("SAMEORIGIN")
     end
   end
 end
