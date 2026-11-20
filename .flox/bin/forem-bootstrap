@@ -108,7 +108,9 @@ lane_pginit() {
   mark pginit start
   local rc=0
   if [ ! -s "$PGDATA/PG_VERSION" ]; then
-    initdb -D "$PGDATA" --username="$PGUSER" --auth=trust --no-locale --encoding=UTF8; rc=$?
+    # en_US.UTF-8, not C: Rails dumps schema.rb with indexes in the database's
+    # collation order, and the committed file is in en_US order.
+    initdb -D "$PGDATA" --username="$PGUSER" --auth=trust --locale=en_US.UTF-8 --encoding=UTF8; rc=$?
   fi
   mark pginit end; return $rc
 }

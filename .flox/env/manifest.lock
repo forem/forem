@@ -13,6 +13,14 @@
           "out"
         ]
       },
+      "glibcLocalesUtf8": {
+        "pkg-path": "glibcLocalesUtf8",
+        "pkg-group": "postgres",
+        "systems": [
+          "aarch64-linux",
+          "x86_64-linux"
+        ]
+      },
       "libpq": {
         "pkg-path": "libpq",
         "pkg-group": "postgres",
@@ -87,7 +95,7 @@
       "PGUSER": "postgres"
     },
     "hook": {
-      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  # Two checkouts hash to different ports, so they can run side by side.\n  # Override any of these before activating: FOREM_PORT, FOREM_PGPORT,\n  # FOREM_REDIS_PORT.\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n  # No Unix socket: macOS limits socket paths to 104 bytes, which a checkout\n  # nested a few directories deep can exceed. Shared by the service and bootstrap.\n  export FOREM_PG_ARGS=\"-c unix_socket_directories= -h 127.0.0.1 -p $PGPORT\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  # Gems come from GEM_HOME only; a ~/.gem or ~/.local/share/gem directory the\n  # contributor already has must not leak into Forem's load path.\n  export GEM_PATH=\"$GEM_HOME\"\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  # aarch64-linux compiles the pg gem. Point it at this environment's libpq\n  # (forem-pg-config), not whatever pg_config the host has on PATH, and link\n  # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the\n  # only direct dependency. Without this the gem linked the host's libpq and\n  # failed to load with `libgssapi_krb5.so.2: cannot open shared object file`.\n  case \"$(uname -sm)\" in\n    \"Linux aarch64\")\n      export BUNDLE_BUILD__PG=\"--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed\" ;;\n  esac\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
+      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  # Two checkouts hash to different ports, so they can run side by side.\n  # Override any of these before activating: FOREM_PORT, FOREM_PGPORT,\n  # FOREM_REDIS_PORT.\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  # Nix's glibc finds locales through this archive rather than the host's.\n  [ -f \"$FLOX_ENV/lib/locale/locale-archive\" ] && export LOCALE_ARCHIVE=\"$FLOX_ENV/lib/locale/locale-archive\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n  # No Unix socket: macOS limits socket paths to 104 bytes, which a checkout\n  # nested a few directories deep can exceed. Shared by the service and bootstrap.\n  export FOREM_PG_ARGS=\"-c unix_socket_directories= -h 127.0.0.1 -p $PGPORT\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  # Gems come from GEM_HOME only; a ~/.gem or ~/.local/share/gem directory the\n  # contributor already has must not leak into Forem's load path.\n  export GEM_PATH=\"$GEM_HOME\"\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  # aarch64-linux compiles the pg gem. Point it at this environment's libpq\n  # (forem-pg-config), not whatever pg_config the host has on PATH, and link\n  # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the\n  # only direct dependency. Without this the gem linked the host's libpq and\n  # failed to load with `libgssapi_krb5.so.2: cannot open shared object file`.\n  case \"$(uname -sm)\" in\n    \"Linux aarch64\")\n      export BUNDLE_BUILD__PG=\"--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed\" ;;\n  esac\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
     },
     "options": {
       "systems": [
@@ -206,6 +214,64 @@
       },
       "system": "x86_64-linux",
       "group": "node",
+      "priority": 5
+    },
+    {
+      "attr_path": "glibcLocalesUtf8",
+      "broken": false,
+      "derivation": "/nix/store/78w7jlh24a937h4ib8hlz9zwqzn6saxm-glibc-locales-2.40-66.drv",
+      "description": "Locale information for the GNU C Library",
+      "install_id": "glibcLocalesUtf8",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c5ae371f1a6a7fd27823bc500d9390b38c05fa55",
+      "name": "glibc-locales-2.40-66",
+      "pname": "glibcLocalesUtf8",
+      "rev": "c5ae371f1a6a7fd27823bc500d9390b38c05fa55",
+      "rev_count": 895122,
+      "rev_date": "2025-11-12T20:02:36Z",
+      "scrape_date": "2025-11-14T17:18:27.107402Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.40-66",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/llvn72rnjishxdb75m26wdw828nb05d6-glibc-locales-2.40-66"
+      },
+      "system": "aarch64-linux",
+      "group": "postgres",
+      "priority": 5
+    },
+    {
+      "attr_path": "glibcLocalesUtf8",
+      "broken": false,
+      "derivation": "/nix/store/acfn24j4h9y1rgkwvzpwrbj8wmxh5vpw-glibc-locales-2.40-66.drv",
+      "description": "Locale information for the GNU C Library",
+      "install_id": "glibcLocalesUtf8",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c5ae371f1a6a7fd27823bc500d9390b38c05fa55",
+      "name": "glibc-locales-2.40-66",
+      "pname": "glibcLocalesUtf8",
+      "rev": "c5ae371f1a6a7fd27823bc500d9390b38c05fa55",
+      "rev_count": 895122,
+      "rev_date": "2025-11-12T20:02:36Z",
+      "scrape_date": "2025-11-14T18:31:38.458044Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.40-66",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/chjn1qx216dbvj02b6s7diiz196d5c9z-glibc-locales-2.40-66"
+      },
+      "system": "x86_64-linux",
+      "group": "postgres",
       "priority": 5
     },
     {

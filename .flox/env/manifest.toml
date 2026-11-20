@@ -84,6 +84,17 @@ libpq.outputs = ["out", "dev"]
 libpq.systems = ["aarch64-linux"]
 libpq.pkg-group = "postgres"
 
+# Linux only: initdb creates the cluster with the en_US.UTF-8 collation, because
+# Rails writes db/schema.rb with indexes in the database's sort order and the
+# committed file was generated under en_US. A cluster in the "C" locale reorders
+# index lines, so running a migration (or `bin/rails db:reset`) would show
+# spurious schema.rb changes in a contributor's diff. macOS ships the locale;
+# Nix's glibc on Linux has none, so it comes from here, from the snapshot whose
+# glibc Postgres uses.
+glibcLocalesUtf8.pkg-path = "glibcLocalesUtf8"
+glibcLocalesUtf8.pkg-group = "postgres"
+glibcLocalesUtf8.systems = ["aarch64-linux", "x86_64-linux"]
+
 # -- JavaScript -----------------------------------------------------------------
 # Version from .nvmrc and package.json `engines`. Update both together. There
 # is no Yarn package: .yarnrc.yml pins yarnPath to the committed
@@ -127,6 +138,9 @@ on-activate = '''
   export REDIS_SESSIONS_URL="$REDIS_URL/1"
   export REDIS_SIDEKIQ_URL="$REDIS_URL/3"
   export REDIS_RPUSH_URL="$REDIS_URL/4"
+
+  # Nix's glibc finds locales through this archive rather than the host's.
+  [ -f "$FLOX_ENV/lib/locale/locale-archive" ] && export LOCALE_ARCHIVE="$FLOX_ENV/lib/locale/locale-archive"
 
   export PGDATA="$FLOX_ENV_CACHE/postgres"
   export FOREM_REDIS_DIR="$FLOX_ENV_CACHE/redis"
