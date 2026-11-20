@@ -6,6 +6,7 @@
 //! 2. Tested and benchmarked standalone with `cargo test` in milliseconds.
 //! 3. Compiled to `wasm32-unknown-unknown` (Option B) or standalone Rust services in future phases.
 
+pub mod ahoy_link;
 pub mod calendar;
 pub mod color;
 pub mod comment_tree;

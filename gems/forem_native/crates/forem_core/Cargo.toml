@@ -2,6 +2,7 @@
 name = "forem_core"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.85"
 description = "Pure-Rust performance core for Forem (zero Ruby/FFI dependencies; compatible with native C-ABI and WASM targets)"
 license = "MIT"
 publish = false

@@ -7385,4 +7385,272 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Ahoy email link tracking kernels" do
+    require "addressable/uri"
+    require "base64"
+    require "cgi"
+    require "nokogiri"
+    require "openssl"
+
+    let(:secret_token) { "forem_test_ahoy_secret_token_32bytes" }
+    let(:app_domain) { "dev.to" }
+    let(:external_base) { "https://dev.to/ahoy/click" }
+
+    let(:legacy_signature) do
+      lambda do |secret, token, campaign, url|
+        data = [token, campaign, url].map { |v| Base64.strict_encode64(v.to_s) }.join("|")
+        Base64.urlsafe_encode64(OpenSSL::HMAC.digest("SHA256", secret, data), padding: false)
+      end
+    end
+
+    let(:legacy_decorate_url) do
+      lambda do |href, domain, token, campaign, secret, ext_base|
+        uri = begin
+          Addressable::URI.heuristic_parse(href.to_s)
+        rescue StandardError
+          nil
+        end
+        next nil unless uri&.absolute? && %w[http https].include?(uri.scheme)
+        next nil if href.to_s.match?(/unsubscribe/i)
+        next nil if href.to_s.include?("ahoy_click=true")
+        next nil if uri.host == domain && uri.path.to_s.start_with?("/ahoy/")
+
+        sig = legacy_signature.call(secret, token, campaign, href)
+        if uri.host == domain
+          tracking_params = {
+            "ahoy_click" => true,
+            "t" => token,
+            "s" => sig,
+            "u" => CGI.escape(href),
+            "c" => campaign
+          }.reject { |_k, v| v.nil? || v.to_s.empty? }
+          uri.query_values = (uri.query_values(Array) || []) + tracking_params.to_a
+          port_part = uri.port ? ":#{uri.port}" : ""
+          url = "#{uri.scheme}://#{uri.host}#{port_part}#{uri.path}"
+          url += "?#{uri.query}" if uri.query && uri.query != ""
+          url
+        else
+          params = []
+          params << "c=#{CGI.escape(campaign)}" unless campaign.nil?
+          params << "s=#{CGI.escape(sig)}"
+          params << "t=#{CGI.escape(token)}"
+          params << "u=#{CGI.escape(href)}"
+          "#{ext_base}?#{params.join('&')}"
+        end
+      end
+    end
+
+    let(:legacy_decorate_html) do
+      lambda do |html, domain, token, campaign, secret, ext_base|
+        doc = Nokogiri::HTML::DocumentFragment.parse(html)
+        doc.css("a[href]").each do |link|
+          if link["data-skip-click"]
+            link.remove_attribute("data-skip-click")
+            next
+          end
+          decorated = legacy_decorate_url.call(link["href"], domain, token, campaign, secret, ext_base)
+          link["href"] = decorated if decorated
+        end
+        doc.to_s.gsub("&amp;", "&")
+      end
+    end
+
+    it "matches AhoyEmail::Utils.signature across edge cases and 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      edge_cases = [
+        ["short", "tok", "", "https://dev.to/ben/post"],
+        ["a" * 100, "token_with_unicode_🚀", "digest-2026", "https://dev.to/search?q=100%25%20ruby&x=café"],
+        [secret_token, "", "", ""],
+        [secret_token, "abc123", "spring 2026", "https://example.com/a?b=1&c=2#frag"],
+      ]
+      edge_cases.each do |secret, tok, camp, url|
+        expect(described_class.ahoy_signature(secret, tok, camp, url))
+          .to eq(legacy_signature.call(secret, tok, camp, url))
+      end
+
+      alphabet = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + %w[- _ . ~ / ? & = % + : # café 🚀]
+      1_000.times do |i|
+        secret = Array.new(rng.rand(1..96)) { alphabet.sample(random: rng) }.join
+        tok = Array.new(rng.rand(0..40)) { alphabet.sample(random: rng) }.join
+        camp = rng.rand(3).zero? ? "" : Array.new(rng.rand(1..24)) { alphabet.sample(random: rng) }.join
+        url = "https://dev.to/#{Array.new(rng.rand(0..60)) { alphabet.sample(random: rng) }.join}"
+        expect(described_class.ahoy_signature(secret, tok, camp, url))
+          .to eq(legacy_signature.call(secret, tok, camp, url)), "iteration #{i}"
+      end
+    end
+
+    it "matches legacy URL decoration across internal, external, skip, plain-text, and out-of-domain inputs" do
+      # Out-of-domain inputs return nil so Ruby falls back cleanly
+      [
+        "example.com",
+        "dev.to/ben/post",
+        "  https://dev.to/ben/post  ",
+        "https://user:pass@example.com/post",
+        "https://dev.to/post?bad=%ZZ",
+        "https://dev.to/post?a=1&&b=2",
+      ].each do |out_of_domain|
+        expect(
+          described_class.ahoy_decorate_url(out_of_domain, app_domain, "tok", nil, secret_token, external_base),
+        ).to be_nil, "expected nil for #{out_of_domain.inspect}"
+      end
+
+      # External URL without external_base_url returns nil (defer to Ruby url_for)
+      expect(
+        described_class.ahoy_decorate_url("https://example.com/post", app_domain, "tok", nil, secret_token, nil),
+      ).to be_nil
+
+      # Guaranteed unchanged/skipped inputs return false (no Ruby fallback needed)
+      [
+        "",
+        "Ben Halpern",
+        "A post you might like",
+        "A post you might like.",
+        "1.5 minutes read",
+        "mailto:yo@example.com",
+        "javascript:alert(1)",
+        "/relative/path.html",
+        "#section.1",
+        "https://dev.to/email_subscriptions/unsubscribe?ut=xyz",
+        "https://dev.to/post?ahoy_click=true&t=old&s=sig&u=x",
+        "https://dev.to/ahoy/click?t=old&s=sig&u=https%3A%2F%2Fexample.com",
+      ].each do |unchanged|
+        expect(
+          described_class.ahoy_decorate_url(unchanged, app_domain, "tok", nil, secret_token, external_base),
+        ).to be(false), "expected false for #{unchanged.inspect}"
+      end
+
+      # 1,000 randomized differential URLs
+      rng = Random.new(424_242)
+      hosts = ["dev.to", "dev.to:3000", "DEV.TO", "example.com", "github.com", "sub.example.org:8443"]
+      paths = ["", "/", "/ben/some-post", "/search", "/ahoy/click", "/email_subscriptions/unsubscribe", "/ben/café"]
+      queries = [
+        nil,
+        "",
+        "context=digest",
+        "q=100%25%20ruby&sort=top",
+        "a+b=hello+world&b=foo%20bar&c+d&bare&empty=",
+        "bb=42&tag=ruby&tag=rust",
+        "ahoy_click=true&t=old",
+      ]
+      campaigns = [nil, "", "digest", "weekly digest 2026"]
+
+      # Explicit edge cases: literal `+` in query keys and empty token preserving existing `t`
+      [
+        ["https://dev.to/search?a+b=one+two&c+d", "tok123", nil],
+        ["https://dev.to/post?t=original", "", nil],
+      ].each do |href, tok, camp|
+        native = described_class.ahoy_decorate_url(href, app_domain, tok, camp, secret_token, external_base)
+        expected = legacy_decorate_url.call(href, app_domain, tok, camp, secret_token, external_base)
+        expect(native).to eq(expected), "href=#{href.inspect} tok=#{tok.inspect}"
+      end
+
+      1_000.times do |i|
+        scheme = %w[http https HTTP HTTPS].sample(random: rng)
+        host = hosts.sample(random: rng)
+        path = paths.sample(random: rng)
+        query = queries.sample(random: rng)
+        frag = rng.rand(4).zero? ? "#section-#{rng.rand(1..9)}" : ""
+        href = "#{scheme}://#{host}#{path}#{query ? "?#{query}" : ''}#{frag}"
+        tok = "tok_#{rng.rand(10_000)}_#{['a', 'b c', 'x~y'].sample(random: rng)}"
+        camp = campaigns.sample(random: rng)
+
+        native = described_class.ahoy_decorate_url(href, app_domain, tok, camp, secret_token, external_base)
+        expected = legacy_decorate_url.call(href, app_domain, tok, camp, secret_token, external_base)
+        actual = native == false ? nil : native
+        expect(actual).to eq(expected), "iteration #{i}: href=#{href.inspect} camp=#{camp.inspect}"
+      end
+    end
+
+    it "rewrites HTML fragments identically to the Ruby reference" do
+      html_cases = [
+        %(<div><a href="https://dev.to/ben/some-post?context=digest">Read</a></div>),
+        %(<a href="https://dev.to/sponsor?bb=42">Ad</a>),
+        %(<a href="https://dev.to/ben/post" data-skip-click="true">Skip</a>),
+        %(<a href="https://dev.to/ben/post" data-skip-click>Skip bool</a>),
+        %(<p>Hello &amp; welcome <a href="https://dev.to/ben/post?a=1&amp;b=2">here</a> and <a href="https://example.com/x">there</a></p>),
+        %(<article><p>No anchors here</p></article>),
+        %(<img alt="Example: <a href='https://dev.to/post'>">),
+        %(<a href='https://dev.to/ben/single-quoted'>Read</a>),
+      ]
+
+      html_cases.each do |html|
+        actual = described_class.ahoy_decorate_html(html, app_domain, "tok123", "digest", secret_token, external_base)
+        expected = legacy_decorate_html.call(html, app_domain, "tok123", "digest", secret_token, external_base)
+        actual_doc = Nokogiri::HTML::DocumentFragment.parse(actual)
+        expected_doc = Nokogiri::HTML::DocumentFragment.parse(expected)
+        actual_anchors = actual_doc.css("a[href]").map { |a| a.attributes.transform_values(&:value) }
+        expected_anchors = expected_doc.css("a[href]").map { |a| a.attributes.transform_values(&:value) }
+        expect(actual_anchors).to eq(expected_anchors), "html=#{html.inspect}"
+        expect(actual).not_to include("data-skip-click")
+      end
+
+      [
+        %(<!-- <a href="https://dev.to/a">A</a> -->),
+        %(<textarea><a href="https://dev.to/a">A</a></textarea>),
+        %(<a href='https://dev.to/post"title="injected'>Read</a>),
+      ].each do |deferred_html|
+        expect(
+          described_class.ahoy_decorate_html(
+            deferred_html,
+            app_domain, "tok", nil, secret_token, external_base
+          ),
+        ).to be_nil, "expected nil for #{deferred_html.inspect}"
+      end
+    end
+
+    it "rewrites nested Customer.io payloads in a single FFI crossing" do
+      payload = {
+        "subject" => "Your weekly DEV digest.",
+        "name" => "Ben",
+        "count" => 42,
+        "unsubscribe_url" => "https://dev.to/email_subscriptions/unsubscribe?ut=xyz",
+        "articles" => [
+          {
+            "title" => "1.5 minutes read: Rust in Forem",
+            "url" => "https://dev.to/ben/rust-in-forem?context=digest",
+            "smart_summary" => %(<p>Check out <a href="https://dev.to/ben/rust-in-forem">this post</a> and <a href="https://example.com/docs">docs</a>.</p>)
+          },
+        ],
+        "billboards_html" => {
+          "first" => %(<a href="https://dev.to/sponsor?bb=42">Sponsor</a>)
+        }
+      }
+      result = described_class.ahoy_decorate_payload(payload, app_domain, "tok123", nil, secret_token, external_base)
+      expected_sponsor = legacy_decorate_url.call(
+        "https://dev.to/sponsor?bb=42", app_domain, "tok123", nil, secret_token, external_base
+      )
+      expect(result["subject"]).to equal(payload["subject"])
+      expect(result["name"]).to equal(payload["name"])
+      expect(result["count"]).to eq(42)
+      expect(result["unsubscribe_url"]).to equal(payload["unsubscribe_url"])
+      expect(result["articles"][0]["url"]).to eq(
+        legacy_decorate_url.call(payload["articles"][0]["url"], app_domain, "tok123", nil, secret_token, external_base),
+      )
+      expect(
+        Nokogiri::HTML::DocumentFragment.parse(result["billboards_html"]["first"]).at_css("a")["href"],
+      ).to eq(expected_sponsor)
+    end
+
+    it "defers identity hashes and stays safe across GC compaction during payload walks" do
+      identity_hash = {}.compare_by_identity
+      identity_hash[+"url"] = "https://dev.to/ben/first"
+      identity_hash[+"url"] = "https://dev.to/ben/second"
+      expect(
+        described_class.ahoy_decorate_payload(identity_hash, app_domain, "tok123", nil, secret_token, external_base),
+      ).to be_nil
+
+      large_payload = {
+        "items" => Array.new(64) do |idx|
+          { "k#{idx}" => "https://dev.to/ben/post-#{idx}", "ext" => "https://example.com/p/#{idx}" }
+        end
+      }
+      GC.compact if GC.respond_to?(:compact)
+      compacted_result = described_class.ahoy_decorate_payload(
+        large_payload, app_domain, "tok123", nil, secret_token, external_base
+      )
+      expect(compacted_result["items"].size).to eq(64)
+      expect(compacted_result["items"].last["k63"]).to include("ahoy_click=true")
+    end
+  end
 end
