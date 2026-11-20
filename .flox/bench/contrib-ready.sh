@@ -52,6 +52,10 @@ flox activate -c '
   flox services stop >/dev/null 2>&1
 ' > "$log" 2>&1; rc=$?
 t1=$(awk '/^T_ACTIVATED/{print $2}' "$log"); t2=$(awk '/^T_SERVED/{print $2}' "$log"); t3=$(awk '/^T_SPEC/{print $2}' "$log")
+if [ -z "$t2" ] || [ -z "$t3" ]; then
+  printf '%-20s rc=%s FAILED after %.1f s (bootstrap did not finish)\n' "$label" "$rc" "$(echo "${t1:-$(now)}-$t0"|bc)"
+  grep -E 'forem-bootstrap|failed' "$log" | tail -5; echo "log: $log"; exit 1
+fi
 printf '%-20s rc=%s bootstrap %6.1f s | services + GET / %5.1f s (%s) | first spec %5.1f s | total %6.1f s\n' \
   "$label" "$rc" "$(echo "$t1-$t0"|bc)" "$(echo "$t2-$t1"|bc)" "$(grep -o 'http=[0-9]*' "$log" | tail -1)" \
   "$(echo "$t3-$t2"|bc)" "$(echo "$t3-$t0"|bc)"

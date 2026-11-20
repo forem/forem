@@ -122,6 +122,13 @@ on-activate = '''
   fi
   unset _ruby
   export BUNDLE_APP_CONFIG="$FLOX_ENV_CACHE/bundle-config"   # leave .bundle/ alone
+  # aarch64-linux compiles the pg gem. pg_config --libs adds -lgssapi_krb5
+  # etc., which end up as direct NEEDED entries of pg_ext.so with no RUNPATH
+  # to find them at load time. libpq already carries its own RUNPATH to
+  # Kerberos, so link with --as-needed and keep only the libpq dependency.
+  case "$(uname -sm)" in
+    "Linux aarch64") export BUNDLE_BUILD__PG="--with-ldflags=-Wl,--as-needed" ;;
+  esac
   export PATH="$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH"
 
   mkdir -p "$GEM_HOME" "$BUNDLE_APP_CONFIG" "$FOREM_PGSOCKET" "$FOREM_REDIS_DIR"

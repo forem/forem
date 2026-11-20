@@ -120,7 +120,11 @@ if ! pg_isready -q -h 127.0.0.1 -p "$PGPORT"; then
 fi
 if ! redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; then
   redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
-    --save "" --appendonly no --daemonize yes >/dev/null && started_redis=1
+    --save "" --appendonly no --daemonize yes \
+    --logfile "$B/redis.log" --pidfile "$FOREM_REDIS_DIR/redis.pid" >/dev/null && started_redis=1
+  # --daemonize returns before the server listens; wait for it.
+  for _ in $(seq 1 50); do redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1 && break; sleep 0.1; done
+  redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1 || fail "redis-server" redis
 fi
 mark servers up
 

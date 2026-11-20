@@ -26,7 +26,7 @@ jobs:
         include:
           - { name: x86_64-linux, os: ubuntu-24.04 }
           - { name: aarch64-linux, os: ubuntu-24.04-arm }
-          - { name: aarch64-darwin, os: macos-14 }
+          - { name: aarch64-darwin, os: macos-15 }
     steps:
       - uses: actions/checkout@v4
 
@@ -58,6 +58,14 @@ jobs:
           export BENCH_LOGDIR="$RUNNER_TEMP/bench"
           .flox/bench/contrib-ready.sh "${{ matrix.name }}" | tee -a "$RUNNER_TEMP/summary.txt"
           grep -q '0 failures' "$BENCH_LOGDIR/${{ matrix.name }}.log"
+
+      - name: Diagnostics
+        if: failure() && runner.os == 'Linux'
+        run: |
+          for so in $(find "$HOME/.cache/forem-flox" -name pg_ext.so 2>/dev/null); do
+            echo "== $so"; readelf -d "$so" | grep -E 'NEEDED|RUNPATH|RPATH'
+          done
+          tail -30 .flox/cache/bootstrap/redis.log 2>/dev/null || true
 
       - name: Summary
         if: always()
