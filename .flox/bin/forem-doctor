@@ -1,0 +1,270 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# forem-doctor: is this checkout ready to develop on? Prints one JSON document
+# and exits 0 when every required component is ready, 1 when one is not, 2 when
+# it was run outside `flox activate`.
+#
+#   forem-doctor [--wait SECONDS] [--skip NAME[,NAME]] [--self-test]
+#
+# --wait    keep checking until ready or the timeout passes (for scripts and
+#           coding agents that start the services and then need to know when).
+# --skip    leave out components, e.g. `--skip web` before `flox services start`.
+#
+# Why this is a script and not manifest configuration: the checks compare the
+# running toolchain with Forem's own pin files (.ruby-version, .nvmrc,
+# Gemfile.lock, docker-compose.yml), count unapplied migrations and look for
+# seed rows. A manifest can start services but cannot decide what "ready" means
+# for this application. It uses only Ruby's standard library, so it runs
+# before `bundle install` has.
+
+require "json"
+require "net/http"
+require "open3"
+require "socket"
+require "timeout"
+require "tmpdir"
+
+module ForemDoctor
+  # Component names, in report order. `services` ones need `flox services start`.
+  COMPONENTS = %w[
+    compiler ruby node yarn bundler gems node_modules js_build
+    postgres postgres_version pgvector migrations seed_data redis web
+  ].freeze
+  SERVICE_COMPONENTS = %w[postgres postgres_version pgvector migrations seed_data redis web].freeze
+  MIN_PGVECTOR = "0.8.0"
+
+  module_function
+
+  # "3.3.14" <=> "3.3.9" compares numerically per segment, not as strings.
+  def version_at_least?(actual, minimum)
+    segments = ->(v) { v.to_s.scan(/\d+/).map(&:to_i) }
+    (segments.call(actual) <=> segments.call(minimum)) >= 0
+  end
+
+  def result(ready, expected: nil, actual: nil, fix: nil, detail: nil)
+    { "ready" => ready, "expected" => expected, "actual" => actual, "detail" => detail, "fix" => fix }.compact
+  end
+
+  def read_pin(root, name)
+    path = File.join(root, name)
+    File.exist?(path) ? File.read(path).strip : nil
+  end
+
+  def run(*cmd, env: {})
+    out, status = Open3.capture2e(env, *cmd)
+    [out.strip, status.success?]
+  rescue SystemCallError => e
+    [e.message, false]
+  end
+
+  def psql(env, sql, db: "Forem_development")
+    run("psql", "-X", "-At", "-h", "127.0.0.1", "-p", env.fetch("PGPORT"), "-U", env.fetch("PGUSER", "postgres"),
+        "-d", db, "-c", sql)
+  end
+
+  def tcp_open?(port)
+    Timeout.timeout(1) { TCPSocket.new("127.0.0.1", port.to_i).close }
+    true
+  rescue SystemCallError, Timeout::Error
+    false
+  end
+
+  # --- individual checks; each returns a result hash -------------------------
+
+  def check_compiler(_root, _env)
+    if RUBY_PLATFORM.include?("darwin")
+      dir, ok = run("xcode-select", "-p")
+      clang = ok && File.executable?(File.join(dir, "usr/bin/clang"))
+      return result(true, actual: "#{dir}/usr/bin/clang") if clang
+
+      return result(false, expected: "Xcode Command Line Tools", actual: "not installed",
+                           fix: "xcode-select --install")
+    end
+    out, ok = run("gcc", "--version")
+    ok ? result(true, actual: out.lines.first.to_s.strip) : result(false, expected: "gcc from the Flox environment", fix: "flox activate")
+  end
+
+  def check_ruby(root, _env)
+    want = read_pin(root, ".ruby-version")
+    ok = RUBY_VERSION == want
+    result(ok, expected: want, actual: RUBY_VERSION,
+               fix: ok ? nil : "Ruby in the manifest is out of date with .ruby-version; see 'Updating pins' in docs/flox.md")
+  end
+
+  def check_node(root, _env)
+    want = read_pin(root, ".nvmrc")&.delete_prefix("v")
+    out, = run("node", "--version")
+    actual = out.delete_prefix("v")
+    ok = actual == want
+    result(ok, expected: want, actual: actual,
+               fix: ok ? nil : "nodejs.version in .flox/env/manifest.toml must match .nvmrc")
+  end
+
+  def check_yarn(root, _env)
+    yarnrc = read_pin(root, ".yarnrc.yml").to_s
+    want = yarnrc[/yarn-(\d+\.\d+\.\d+)\.cjs/, 1]
+    out, = run("yarn", "--version")
+    ok = !want.nil? && out.lines.last.to_s.strip == want
+    result(ok, expected: want, actual: out.lines.last.to_s.strip,
+               fix: ok ? nil : "yarn on PATH must be .flox/bin/yarn (run inside `flox activate`)")
+  end
+
+  def check_bundler(root, _env)
+    lock = read_pin(root, "Gemfile.lock").to_s
+    want = lock[/^BUNDLED WITH\n\s+(\S+)/, 1]
+    out, = run("bundle", "--version", env: { "BUNDLE_GEMFILE" => File.join(root, "Gemfile") })
+    actual = out[/(\d+\.\d+\.\d+)/, 1]
+    ok = actual == want
+    result(ok, expected: want, actual: actual, fix: ok ? nil : "gem install bundler -v #{want}")
+  end
+
+  def check_gems(root, _env)
+    out, ok = run("bundle", "check", env: { "BUNDLE_GEMFILE" => File.join(root, "Gemfile") })
+    result(ok, detail: out.lines.last.to_s.strip, fix: ok ? nil : "flox activate (the bootstrap installs gems)")
+  end
+
+  def check_node_modules(root, _env)
+    state = File.join(root, "node_modules/.yarn-state.yml")
+    lock = File.join(root, "yarn.lock")
+    ok = File.exist?(state) && File.mtime(state) >= File.mtime(lock)
+    result(ok, fix: ok ? nil : "yarn install --immutable")
+  end
+
+  # esbuild writes the packs that every page loads; without them pages render unstyled.
+  def check_js_build(root, _env)
+    dir = File.join(root, "app/assets/builds")
+    files = Dir.exist?(dir) ? Dir.children(dir).reject { |f| f.start_with?(".") } : []
+    result(!files.empty?, detail: "#{files.size} files in app/assets/builds",
+                          fix: files.empty? ? "yarn build, or start the js service" : nil)
+  end
+
+  def check_postgres(_root, env)
+    open = tcp_open?(env.fetch("PGPORT"))
+    result(open, actual: "127.0.0.1:#{env['PGPORT']}", fix: open ? nil : "flox services start")
+  end
+
+  def check_postgres_version(root, env)
+    compose = read_pin(root, "docker-compose.yml").to_s
+    want = compose[%r{pgvector/pgvector:pg(\d+)}, 1]
+    out, ok = psql(env, "show server_version_num", db: "postgres")
+    actual = ok ? (out.to_i / 10_000).to_s : nil
+    result(ok && actual == want, expected: want, actual: actual, fix: ok ? nil : "flox services start")
+  end
+
+  def check_pgvector(_root, env)
+    out, ok = psql(env, "select extversion from pg_extension where extname = 'vector'")
+    ok = ok && !out.empty? && version_at_least?(out, MIN_PGVECTOR)
+    result(ok, expected: ">= #{MIN_PGVECTOR}", actual: out.empty? ? "extension not created" : out,
+               fix: ok ? nil : "bin/rails db:prepare")
+  end
+
+  def check_migrations(root, env)
+    out, ok = psql(env, "select version from schema_migrations")
+    return result(false, detail: "cannot read schema_migrations", fix: "bin/rails db:prepare") unless ok
+
+    applied = out.split("\n")
+    on_disk = Dir.children(File.join(root, "db/migrate")).filter_map { |f| f[/\A(\d+)_/, 1] }
+    pending = on_disk - applied
+    result(pending.empty?, detail: "#{pending.size} pending of #{on_disk.size}",
+                           fix: pending.empty? ? nil : "bin/rails db:migrate")
+  end
+
+  def check_seed_data(_root, env)
+    out, ok = psql(env, "select (select count(*) from users where email = 'admin@forem.local'), " \
+                        "(select count(*) from articles)")
+    admin, articles = out.split("|").map(&:to_i)
+    ok &&= admin.to_i.positive? && articles.to_i.positive?
+    result(ok, detail: "admin@forem.local: #{admin.to_i}, articles: #{articles.to_i}",
+               fix: ok ? nil : "bin/rails db:seed")
+  end
+
+  def check_redis(_root, env)
+    out, = run("redis-cli", "-h", "127.0.0.1", "-p", env.fetch("REDIS_PORT"), "ping")
+    ok = out == "PONG"
+    result(ok, actual: "127.0.0.1:#{env['REDIS_PORT']}", fix: ok ? nil : "flox services start")
+  end
+
+  def check_web(_root, env)
+    res = Net::HTTP.start("127.0.0.1", env.fetch("PORT").to_i, open_timeout: 2, read_timeout: 20) { |h| h.get("/") }
+    result(res.code == "200", expected: "200", actual: res.code, detail: "GET http://127.0.0.1:#{env['PORT']}/",
+                              fix: res.code == "200" ? nil : "flox services status; flox services logs web")
+  rescue SystemCallError, Timeout::Error, IOError
+    result(false, expected: "200", actual: "no response", fix: "flox services start")
+  end
+
+  def report(root, env, skip)
+    components = COMPONENTS.to_h do |name|
+      next [name, result(true, detail: "skipped")] if skip.include?(name)
+
+      [name, send(:"check_#{name}", root, env)]
+    end
+    dirty, = run("git", "-C", root, "status", "--porcelain", "--untracked-files=no")
+    {
+      "ready" => components.values.all? { |c| c["ready"] },
+      "checkout" => root,
+      "ports" => { "web" => env["PORT"].to_i, "postgres" => env["PGPORT"].to_i, "redis" => env["REDIS_PORT"].to_i },
+      "components" => components,
+      "tracked_files_modified" => dirty.lines.size
+    }
+  end
+
+  # --- self-test --------------------------------------------------------------
+
+  def self_test
+    failures = []
+    expect = lambda do |name, cond|
+      puts "#{cond ? 'ok' : 'not ok'} - #{name}"
+      failures << name unless cond
+    end
+    expect.call("3.3.14 >= 3.3.9 numerically", version_at_least?("3.3.14", "3.3.9"))
+    expect.call("0.8.1 >= 0.8.0", version_at_least?("0.8.1", "0.8.0"))
+    expect.call("0.7.4 < 0.8.0", !version_at_least?("0.7.4", "0.8.0"))
+    expect.call("component list has no duplicates", COMPONENTS.uniq == COMPONENTS)
+    expect.call("service components are components", (SERVICE_COMPONENTS - COMPONENTS).empty?)
+    expect.call("result drops nil fields", result(true) == { "ready" => true })
+
+    expect.call("check functions exist for every component", COMPONENTS.all? { |c| respond_to?(:"check_#{c}") })
+
+    Dir.mktmpdir do |root|
+      File.write(File.join(root, ".ruby-version"), "9.9.9\n")
+      expect.call("ruby check fails when .ruby-version differs", check_ruby(root, {})["ready"] == false)
+      File.write(File.join(root, ".ruby-version"), "#{RUBY_VERSION}\n")
+      expect.call("ruby check passes when .ruby-version matches", check_ruby(root, {})["ready"] == true)
+      env = { "PGPORT" => "1", "REDIS_PORT" => "1", "PORT" => "1" }
+      doc = report(root, env, %w[compiler node yarn bundler gems node_modules js_build migrations seed_data pgvector postgres_version])
+      expect.call("report is not ready when a service is down", doc["ready"] == false && doc["components"]["web"]["ready"] == false)
+      expect.call("skipped components count as ready", doc["components"]["gems"]["detail"] == "skipped")
+      expect.call("report serialises to JSON", JSON.parse(JSON.generate(doc)).key?("components"))
+    end
+    puts "#{failures.empty? ? 'PASS' : 'FAIL'}: #{failures.size} failing"
+    failures.empty? ? 0 : 1
+  end
+
+  def main(argv)
+    return self_test if argv.include?("--self-test")
+
+    wait = argv.index("--wait") ? argv[argv.index("--wait") + 1].to_i : 0
+    skip = argv.index("--skip") ? argv[argv.index("--skip") + 1].to_s.split(",") : []
+    root = ENV["FLOX_ENV_PROJECT"]
+    needed = %w[PGPORT REDIS_PORT PORT]
+    if root.nil? || needed.any? { |k| ENV[k].nil? }
+      warn JSON.generate("ready" => false, "error" => "not inside `flox activate`; run `flox activate -- .flox/bin/forem-doctor`")
+      return 2
+    end
+    deadline = Time.now + wait
+    doc = nil
+    loop do
+      doc = report(root, ENV.to_h, skip)
+      break if doc["ready"] || Time.now >= deadline
+
+      sleep 2
+    end
+    puts JSON.pretty_generate(doc)
+    doc["ready"] ? 0 : 1
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  exit ForemDoctor.main(ARGV)
+end

@@ -22,7 +22,9 @@ set -uo pipefail
 cd "$FLOX_ENV_PROJECT"
 B="$FLOX_ENV_CACHE/bootstrap"; mkdir -p "$B"
 
-now() { perl -MTime::HiRes=time -e 'printf "%.1f", time' 2>/dev/null || date +%s; }
+# Ruby is always on PATH here; perl and bc are not on a minimal Linux install.
+now() { ruby --disable-gems -e 'printf "%.1f", Time.now.to_f'; }
+elapsed() { awk -v a="$(now)" -v b="$T0" 'BEGIN { printf "%.1f", a - b }'; }
 ncpu() { getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4; }
 
 # Anything that changes what "ready" means goes into the stamp.
@@ -30,8 +32,17 @@ stamp() {
   {
     cat Gemfile.lock yarn.lock db/schema.rb 2>/dev/null
     printf '%s\n' "$GEM_HOME" "$(realpath "$(command -v node)")" "$PGDATA"
-  } | shasum -a 256 | cut -c1-16
+  } | cksum | cut -d' ' -f1
 }
+
+# Ruby's Flox package has no compiler in it, and native gems need one. Linux
+# gets gcc from the manifest; macOS uses the Xcode Command Line Tools (which a
+# clone via `git` has normally installed already).
+if [ "$(uname -s)" = Darwin ] && [ ! -x "$(xcode-select -p 2>/dev/null)/usr/bin/clang" ]; then
+  echo "forem-bootstrap: the Xcode Command Line Tools are missing (a compiler is needed for native gems)." >&2
+  echo "  Run: xcode-select --install   and then activate again." >&2
+  exit 1
+fi
 
 { printf 'stamp %s\n' "$(stamp)"; for t in ruby node bundle initdb; do printf '%s %s\n' "$t" "$(command -v $t)"; done; } > "$B/env.txt"
 
@@ -40,7 +51,7 @@ if [ "${1:-}" = "--if-needed" ] && [ -f "$B/ready" ] && [ "$(cat "$B/ready")" = 
 fi
 
 T0=$(now); : > "$B/timings.tsv"
-mark() { printf '%s\t%s\t%s\n' "$1" "$2" "$(echo "$(now) - $T0" | bc)" >> "$B/timings.tsv"; }
+mark() { printf '%s\t%s\t%s\n' "$1" "$2" "$(elapsed)" >> "$B/timings.tsv"; }
 say()  { printf '  %-10s %s\n' "$1" "$2"; }
 
 echo "forem-bootstrap: preparing this checkout (logs in $B)"
@@ -83,6 +94,11 @@ lane_js() {
     echo "node_modules up to date"
   else
     yarn install --immutable; rc=$?
+  fi
+  # The first page needs the esbuild output. The `js` service rebuilds on every
+  # change, but it starts after the app can already receive requests.
+  if [ $rc -eq 0 ] && [ -z "$(ls -A app/assets/builds 2>/dev/null)" ]; then
+    yarn build; rc=$?
   fi
   mark js end; return $rc
 }
@@ -170,4 +186,4 @@ say dev-db "ready (seeded)"
 
 stamp > "$B/ready"
 mark total end
-echo "forem-bootstrap: ready in $(echo "$(now) - $T0" | bc) s. Next: flox services start, then open http://localhost:$PORT"
+echo "forem-bootstrap: ready in $(elapsed) s. Next: flox services start, then open http://localhost:$PORT"
