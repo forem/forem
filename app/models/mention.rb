@@ -28,7 +28,10 @@ class Mention < ApplicationRecord
     Mentions::SendEmailNotificationWorker.perform_async(id)
   end
 
+  # Only require a persisted mentionable. Re-running the mentionable's full validation suite here
+  # (e.g. tag, co-author, or hourly mention rate-limit checks on an already-published Article) made
+  # Mention.create silently fail, so mentioned followers got the "new post" notification but no Mention.
   def permission
-    errors.add(:mentionable_id, I18n.t("models.mention.is_not_valid")) unless mentionable&.valid?
+    errors.add(:mentionable_id, I18n.t("models.mention.is_not_valid")) unless mentionable&.persisted?
   end
 end

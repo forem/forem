@@ -116,9 +116,22 @@ module Mentions
         return
       end
 
+      # Re-runs (e.g. Articles::Updater on edit) must not re-notify users who were already mentioned.
+      return if Mention.exists?(user_id: user.id, mentionable_id: notifiable.id,
+                                mentionable_type: notifiable.class.name)
+
       # The mentionable_type is the model that created the mention, the user is the user to be mentioned.
       mention = Mention.create(user_id: user.id, mentionable_id: notifiable.id,
                                mentionable_type: notifiable.class.name)
+
+      # Never send a notification for a mention that failed to save; log it so failures are visible.
+      unless mention.persisted?
+        Rails.logger.warn(
+          "Mentions::CreateAll could not create mention for user #{user.id} on " \
+          "#{notifiable.class.name} #{notifiable.id}: #{mention.errors.full_messages.to_sentence}",
+        )
+        return mention
+      end
 
       # If notifiable is an Article, we need to create the notification for the mention immediately so
       # that the notification exists in the database before we attempt to create other Article-related notifications.
