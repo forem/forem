@@ -14,7 +14,7 @@
       </a>
       <div>
         <a href="/<%= comment.user.username %>" class="crayons-link fw-medium"><%= comment.user.name %></a>
-        <span class="fs-xs color-base-60 ml-1"><%= comment.decorate.readable_publish_date %></span>
+        <a href="<%= URL.comment(comment) %>" class="fs-xs color-base-60 hover:color-base-90 ml-1"><%= comment.decorate.readable_publish_date %></a>
       </div>
     </div>
     <div class="text-styles">
