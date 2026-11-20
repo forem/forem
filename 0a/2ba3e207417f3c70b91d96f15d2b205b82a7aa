@@ -1,0 +1,66 @@
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 36,319-332
+app/services/edge_feed/kv_client.rb
+  h_f968154a99632d 1-128
+app/services/edge_feed/snapshot_builder.rb
+  h_f968154a99632d 1-383
+app/services/edge_feed/token_signer.rb
+  h_f968154a99632d 1-149
+app/services/edge_feed/user_profile_builder.rb
+  h_f968154a99632d 1-117
+app/services/feeds/record_config_visit.rb
+  h_f968154a99632d 28-34,36-38,40-41,54-63,68-114
+app/workers/edge_feed/sync_snapshots_worker.rb
+  h_f968154a99632d 1-49
+app/workers/edge_feed/sync_user_profile_worker.rb
+  h_f968154a99632d 1-21
+app/workers/users/update_user_activities_worker.rb
+  h_f968154a99632d 15-18
+config/initializers/warden_hooks.rb
+  h_f968154a99632d 1,14-25
+config/schedule.yml
+  h_f968154a99632d 242-247
+docs/fastly_edge_feed_mirror_poc.md
+  h_f968154a99632d 1-85
+edge/fastly_feed_compute/Cargo.toml
+  h_f968154a99632d 1-16
+edge/fastly_feed_compute/README.md
+  h_f968154a99632d 1-35
+edge/fastly_feed_compute/fastly.toml
+  h_f968154a99632d 1-27
+edge/fastly_feed_compute/src/main.rs
+  h_f968154a99632d 1-394
+gems/forem_native/crates/forem_core/src/edge_feed.rs
+  h_f968154a99632d 1-2596
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_f968154a99632d 636
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 12
+spec/requests/stories/feeds_edge_mirror_spec.rb
+  h_f968154a99632d 1-41
+spec/services/edge_feed/kv_client_spec.rb
+  h_f968154a99632d 1-59
+spec/services/edge_feed/snapshot_builder_spec.rb
+  h_f968154a99632d 1-88
+spec/services/edge_feed/token_signer_spec.rb
+  h_f968154a99632d 1-90
+spec/services/edge_feed/user_profile_builder_spec.rb
+  h_f968154a99632d 1-63
+spec/services/feeds/record_config_visit_edge_token_spec.rb
+  h_f968154a99632d 1-114
+spec/workers/edge_feed/sync_snapshots_worker_spec.rb
+  h_f968154a99632d 1-42
+spec/workers/edge_feed/sync_user_profile_worker_spec.rb
+  h_f968154a99632d 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0a2ba3e207417f3c70b91d96f15d2b205b82a7aa",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
