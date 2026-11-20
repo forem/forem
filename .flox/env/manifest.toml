@@ -1,0 +1,181 @@
+schema-version = "1.19.0"
+# One `flox activate -s` takes a fresh clone to a running, seeded Forem.
+# Guide: docs/flox.md. A "pkg-group" pins its packages to one snapshot of the
+# package catalog; an "output" is one slice of a package (`out` = libraries and
+# binaries, `dev` = headers and pkg-config files).
+
+[install]
+# Gemfile reads .ruby-version verbatim and the Flox catalog stops at ruby_3_3
+# 3.3.12, so Ruby comes from `flox/ruby_3_3`, which tracks 3.3 security releases
+# and has no compiler in its closure (42 MiB, not ~800 MiB on macOS). Switch back
+# to the catalog's `ruby_3_3` with `ruby.version` = .ruby-version once
+# `flox show ruby_3_3` lists it. Ruby 3.3 reaches end of support at the end of
+# March 2027. Own group: a `flox` catalog package cannot share one with nixpkgs.
+ruby.pkg-path = "flox/ruby_3_3"
+ruby.pkg-group = "ruby"
+
+# What native gems link against; the openssl and psych gems override Ruby's own.
+libyaml.pkg-path = "libyaml"
+libyaml.outputs = ["out", "dev"]
+openssl.pkg-path = "openssl"
+openssl.outputs = ["out", "dev"]
+pkg-config.pkg-path = "pkg-config"
+pkg-config.outputs = ["out"]
+# Linux only: the zlib gem compiles against it; macOS gets it from the SDK.
+zlib.pkg-path = "zlib"
+zlib.outputs = ["out", "dev"]
+zlib.systems = ["aarch64-linux", "x86_64-linux"]
+# Linux only: Ruby's closure has no compiler (macOS uses the Command Line Tools).
+# libruby is linked against the C library of the snapshot `flox/ruby_3_3` was
+# built from (glibc 2.44, gcc 16.2.0), and a gcc on an older glibc cannot link
+# it (`undefined reference to cosh@GLIBC_2.44`). Move this version when the Ruby
+# package moves to another nixpkgs snapshot.
+gcc.pkg-path = "gcc"
+gcc.outputs = ["out"]
+gcc.version = "16.2.0"
+gcc.systems = ["aarch64-linux", "x86_64-linux"]
+# Linux only: mkmf runs `make`, which a minimal Linux install may not have.
+gnumake.pkg-path = "gnumake"
+gnumake.systems = ["aarch64-linux", "x86_64-linux"]
+
+# docker-compose.yml and CI run Redis 7; 7.x only exists in an older snapshot,
+# so its own group keeps the others current.
+redis.pkg-path = "redis"
+redis.version = "7.2"
+redis.pkg-group = "redis"
+
+# PostgreSQL 13 (docker-compose.yml, CI) left nixpkgs after end of life, so it
+# lives in a late-2025 snapshot, and pgvector (0.8.0+, README.md) must come from
+# the same one or the server fails with `could not access file "$libdir/vector"`.
+# `out` only: the pg gem is prebuilt for arm64-darwin and x86_64-linux, and the
+# `dev` output alone pulled ~300 MB of toolchain.
+postgresql.pkg-path = "postgresql_13"
+postgresql.outputs = ["out"]
+postgresql.pkg-group = "postgres"
+pgvector.pkg-path = "postgresql13Packages.pgvector"
+pgvector.pkg-group = "postgres"
+# aarch64-linux has no prebuilt pg gem and compiles against libpq.
+libpq.pkg-path = "libpq"
+libpq.outputs = ["out", "dev"]
+libpq.systems = ["aarch64-linux"]
+libpq.pkg-group = "postgres"
+# initdb needs the en_US.UTF-8 collation: db/schema.rb was written in that index
+# order, and a cluster in the "C" locale makes migrations rewrite it. Nix's glibc
+# on Linux ships no locales; macOS has them.
+glibcLocalesUtf8.pkg-path = "glibcLocalesUtf8"
+glibcLocalesUtf8.pkg-group = "postgres"
+glibcLocalesUtf8.systems = ["aarch64-linux", "x86_64-linux"]
+
+# Version from .nvmrc and package.json `engines`; change all three together.
+# Yarn is the release committed at .yarnrc.yml's yarnPath, run by .flox/bin/yarn
+# (the catalog's yarn brings a second, newer Node).
+nodejs.pkg-path = "nodejs_22"
+nodejs.version = "22.23.4"
+nodejs.pkg-group = "node"
+
+[vars]
+PGUSER = "postgres"
+PGHOST = "127.0.0.1"
+# libpq's GSSAPI probe is not fork-safe on macOS; without this every request
+# crashes in PG::Connection#connect_start once Puma has forked.
+PGGSSENCMODE = "disable"
+# Bundler would otherwise delete vendor/cache gems it considers unused.
+BUNDLE_NO_PRUNE = "true"
+# What docker-compose.yml uses in development; Puma's cluster mode takes ~25 s
+# to shut down.
+WEB_CONCURRENCY = "1"
+
+[hook]
+on-activate = '''
+  # Three ports per checkout, derived from its path so checkouts can run side by
+  # side. They stay below the OS ephemeral ranges (Linux 32768+, macOS 49152+).
+  _crc="$(printf '%s' "$FLOX_ENV_PROJECT" | cksum | cut -d' ' -f1)"
+  _base=$((20000 + _crc % 3000 * 4))
+  export PORT="${FOREM_PORT:-$_base}" PGPORT="${FOREM_PGPORT:-$((_base + 1))}" REDIS_PORT="${FOREM_REDIS_PORT:-$((_base + 2))}"
+  unset _crc _base
+  # Exported values win over .env: dotenv-rails never overrides set variables.
+  export APP_DOMAIN="localhost:$PORT"
+  export DATABASE_URL="postgresql://127.0.0.1:$PGPORT/Forem_development"
+  export DATABASE_URL_TEST="postgresql://127.0.0.1:$PGPORT/Forem_test"
+  # Forem defaults each Redis URL to redis://localhost:6379, not to REDIS_URL.
+  export REDIS_URL="redis://127.0.0.1:$REDIS_PORT"
+  export REDIS_SESSIONS_URL="$REDIS_URL/1" REDIS_SIDEKIQ_URL="$REDIS_URL/3" REDIS_RPUSH_URL="$REDIS_URL/4"
+  [ -f "$FLOX_ENV/lib/locale/locale-archive" ] && export LOCALE_ARCHIVE="$FLOX_ENV/lib/locale/locale-archive"
+  export PGDATA="$FLOX_ENV_CACHE/postgres"
+  # Gems live in the checkout's cache and only there: a ~/.gem must not leak in.
+  export GEM_HOME="$FLOX_ENV_CACHE/gems" GEM_PATH="$FLOX_ENV_CACHE/gems"
+  export BUNDLE_APP_CONFIG="$FLOX_ENV_CACHE/bundle-config"   # leave .bundle/ alone
+  # The vendored pg gem finds this environment's libpq through pkg-config.
+  case "$(uname -sm)" in "Linux aarch64") export BUNDLE_BUILD__PG="--with-pg-config=ignore" ;; esac
+  export PATH="$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH"
+  echo "Forem: http://localhost:$PORT (started by 'flox activate -s')" >&2
+'''
+
+# `setup` installs gems and JavaScript packages and prepares the databases; web,
+# sidekiq and js wait for it. Failure shows as `setup Completed (1)` in
+# `flox services status`; read it with `flox services logs setup`.
+[services.setup]
+command = '''
+  set -eu
+  cd "$FLOX_ENV_PROJECT"
+  if [ "$(uname -s)" = Darwin ]; then
+    xcrun -f clang >/dev/null 2>&1 || { echo "No C compiler found; native gems need one. Run: xcode-select --install" >&2; exit 1; }
+  fi
+  # Gemfile.lock names the Bundler it was written with; a newer one rewrites the
+  # committed git gem under vendor/cache. This is the one rubygems.org request.
+  bundler="$(awk '/^BUNDLED WITH/ { getline; print $1 }' Gemfile.lock)"
+  gem list -i bundler -v "$bundler" >/dev/null || gem install bundler -v "$bundler" --no-document
+  bundle check >/dev/null || bundle install --local --jobs 8 & gems=$!
+  [ node_modules/.yarn-state.yml -nt yarn.lock ] || yarn install --immutable & js=$!
+  wait "$gems"; wait "$js"
+  [ -n "$(ls -A app/assets/builds 2>/dev/null)" ] || yarn build
+  [ -f .env ] || cp .env_sample .env
+  # Only when what the databases depend on changed.
+  stamp="$FLOX_ENV_CACHE/databases.stamp"
+  want="$(cat Gemfile.lock yarn.lock db/schema.rb db/seeds.rb | cksum)"
+  [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || exit 0
+  until pg_isready -q -p "$PGPORT" && redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; do sleep 0.2; done
+  # db:prepare seeds only a database it creates, and seeding needs node_modules
+  # (done above). A failed seed leaves a database that looks finished, so drop
+  # one we created and let the next run start over.
+  psql -d postgres -tAc "select 1 from pg_database where datname = 'Forem_development'" | grep -q 1 && existed=1 || existed=0
+  bin/rails app_initializer:setup forem:setup & dev=$!
+  RAILS_ENV=test bin/rails db:create db:schema:load & test=$!
+  wait "$test" || { wait "$dev" || true; exit 1; }
+  wait "$dev" || { [ "$existed" = 1 ] || bin/rails db:drop; exit 1; }
+  echo "$want" > "$stamp"
+'''
+depends-on.postgres = { condition = "process_started" }
+depends-on.redis = { condition = "process_started" }
+
+[services.postgres]
+command = '''
+  [ -s "$PGDATA/PG_VERSION" ] || initdb -D "$PGDATA" -U "$PGUSER" --auth=trust --locale=en_US.UTF-8 -E UTF8
+  # No Unix socket: macOS limits socket paths to 104 bytes. Trust auth is safe
+  # because the server listens on loopback only.
+  exec postgres -D "$PGDATA" -c unix_socket_directories= -h 127.0.0.1 -p "$PGPORT"
+'''
+shutdown.signal = 2   # SIGINT: fast shutdown
+
+[services.redis]
+command = '''
+  mkdir -p "$FLOX_ENV_CACHE/redis"
+  # LC_ALL=C: Redis 7.2 exits if setlocale() fails, and Nix's glibc has no data
+  # for the host's locale.
+  LC_ALL=C exec redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FLOX_ENV_CACHE/redis" --save "" --appendonly no
+'''
+
+[services.web]
+command = 'exec bin/rails server -p "$PORT" -b 127.0.0.1'
+depends-on.setup = { condition = "process_completed_successfully" }
+
+[services.sidekiq]
+command = 'exec bundle exec sidekiq'
+depends-on.setup = { condition = "process_completed_successfully" }
+
+[services.js]
+command = 'exec yarn build --watch'
+depends-on.setup = { condition = "process_completed_successfully" }
+
+[options]
+systems = ["aarch64-darwin", "aarch64-linux", "x86_64-linux"]
