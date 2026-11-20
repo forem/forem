@@ -7,6 +7,43 @@ RSpec.describe ArticleActivity do
   let(:day) { 2.days.ago.utc.to_date }
   let(:iso) { day.iso8601 }
 
+  describe ".daily_counters_between" do
+    it "loads only the requested days and leaves out reactor ids and referrers", :aggregate_failures do
+      described_class.create!(
+        article: article,
+        daily_page_views: {
+          "2026-02-28" => { "total" => 9, "sum_read_seconds" => 0, "logged_in_count" => 0 },
+          "2026-03-01" => { "total" => 3, "sum_read_seconds" => 30, "logged_in_count" => 1 }
+        },
+        daily_reactions: {
+          "2026-03-01" => { "total" => 2, "like" => 1, "readinglist" => 1, "reactor_ids" => [1, 2] },
+          "2026-03-03" => { "total" => 1, "fire" => 1, "reactor_ids" => [3] }
+        },
+        daily_comments: { "2026-03-02" => 4, "2026-03-03" => 1 },
+        daily_referrers: { "2026-03-01" => { "google.com" => 3 } },
+      )
+
+      rollup = described_class.daily_counters_between(Date.new(2026, 3, 1), Date.new(2026, 3, 2))
+        .find_by!(article_id: article.id)
+
+      expect(rollup.daily_page_views).to eq(
+        "2026-03-01" => { "total" => 3, "sum_read_seconds" => 30, "logged_in_count" => 1 },
+      )
+      expect(rollup.daily_reactions).to eq("2026-03-01" => { "total" => 2, "like" => 1, "readinglist" => 1 })
+      expect(rollup.daily_comments).to eq("2026-03-02" => 4)
+      expect(rollup.has_attribute?(:daily_referrers)).to be(false)
+    end
+
+    it "returns empty counters when no day falls in the range" do
+      described_class.create!(article: article, daily_comments: { "2026-02-01" => 2 })
+
+      rollup = described_class.daily_counters_between(Date.new(2026, 3, 1), Date.new(2026, 3, 2))
+        .find_by!(article_id: article.id)
+
+      expect([rollup.daily_page_views, rollup.daily_reactions, rollup.daily_comments]).to eq([{}, {}, {}])
+    end
+  end
+
   describe "#apply_page_view_delta!" do
     it "atomically increments per-day counters and the rolling total" do
       activity.apply_page_view_delta!(

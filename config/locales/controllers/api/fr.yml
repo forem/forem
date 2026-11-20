@@ -29,3 +29,7 @@ fr:
         prompt_too_long: Le 'prompt' doit comporter au maximum %{max} caractères
         invalid_aspect_ratio: "'aspect_ratio' doit être l'une des valeurs suivantes : %{valid}"
         generation_unavailable: La génération d'images par IA n'est pas disponible sur ce Forem
+      organization_article_analytics_controller:
+        end_before_start: Le paramètre de date 'end' ne doit pas être antérieur à 'start'
+        range_too_long: La plage de dates ne doit pas dépasser %{max} jours
+        start_and_end_required: Les paramètres de date 'start' et 'end' doivent être fournis ensemble
