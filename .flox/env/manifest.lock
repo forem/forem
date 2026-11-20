@@ -22,6 +22,16 @@
         "pkg-path": "imagemagick",
         "pkg-group": "ruby"
       },
+      "libclang": {
+        "pkg-path": "libclang",
+        "pkg-group": "rust",
+        "systems": [
+          "aarch64-linux"
+        ],
+        "outputs": [
+          "lib"
+        ]
+      },
       "libpq": {
         "pkg-path": "libpq",
         "pkg-group": "postgres",
@@ -111,7 +121,7 @@
       "PGUSER": "postgres"
     },
     "hook": {
-      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_PGSOCKET=\"$FLOX_ENV_CACHE/pgsock\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  # aarch64-linux compiles the pg gem. Point it at this environment's libpq\n  # (forem-pg-config), not whatever pg_config the host has on PATH, and link\n  # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the\n  # only direct dependency.\n  case \"$(uname -sm)\" in\n    \"Linux aarch64\")\n      export BUNDLE_BUILD__PG=\"--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed\" ;;\n  esac\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_PGSOCKET\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
+      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_PGSOCKET=\"$FLOX_ENV_CACHE/pgsock\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  # aarch64-linux compiles the pg gem. Point it at this environment's libpq\n  # (forem-pg-config), not whatever pg_config the host has on PATH, and link\n  # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the\n  # only direct dependency.\n  case \"$(uname -sm)\" in\n    \"Linux aarch64\")\n      export BUNDLE_BUILD__PG=\"--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed\"\n      # gems/forem_native has no committed aarch64-linux binary; cargo builds\n      # it, and rb-sys's bindgen needs this environment's libclang.\n      export LIBCLANG_PATH=\"$FLOX_ENV/lib\" ;;\n  esac\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_PGSOCKET\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
     },
     "options": {
       "systems": [
@@ -1292,13 +1302,13 @@
       "description": "Downloads your Rust project's dependencies and builds your project",
       "install_id": "cargo",
       "license": "[ MIT, Apache-2.0 ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d5cc6833999746cffdfe0598f7bc801a57b887a9",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
       "name": "cargo-1.99.1",
       "pname": "cargo",
-      "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
-      "rev_count": 1119549,
-      "rev_date": "2026-11-13T02:32:26Z",
-      "scrape_date": "2026-11-16T06:14:42.358636Z",
+      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "rev_count": 1122823,
+      "rev_date": "2026-11-17T04:43:17Z",
+      "scrape_date": "2026-11-19T06:14:10.377207Z",
       "stabilities": [
         "unstable"
       ],
@@ -1315,19 +1325,53 @@
       "priority": 5
     },
     {
+      "attr_path": "libclang",
+      "broken": false,
+      "derivation": "/nix/store/88yihpkc5cl9b5mi8c1wz3chhbr12ain-clang-21.1.8.drv",
+      "description": "C language family frontend for LLVM",
+      "install_id": "libclang",
+      "license": "[ NCSA, [ Apache-2.0 LLVM-exception ] ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "name": "clang-21.1.8",
+      "pname": "libclang",
+      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "rev_count": 1122823,
+      "rev_date": "2026-11-17T04:43:17Z",
+      "scrape_date": "2026-11-19T06:14:10.572072Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "21.1.8",
+      "outputs_to_install": [
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/293jh0rb259vmd536rkms41mphwybvps-clang-21.1.8-debug",
+        "dev": "/nix/store/1cdxjgb8wxiqk332yi54i6gfc7mnpb6v-clang-21.1.8-dev",
+        "lib": "/nix/store/q0zhygylvp7z5pjg7zpjxmm1h6fv70v0-clang-21.1.8-lib",
+        "out": "/nix/store/8mvc2f47kd29iwmraw3gllzrmdn6wr5v-clang-21.1.8",
+        "python": "/nix/store/dmby864vgfr9d16x8kwgy5yar3nzy66h-clang-21.1.8-python"
+      },
+      "system": "aarch64-linux",
+      "group": "rust",
+      "priority": 5
+    },
+    {
       "attr_path": "rustc",
       "broken": false,
       "derivation": "/nix/store/vhn3rndm83lzxqaa2rhm0h6yk9flwwa5-rustc-wrapper-1.99.1.drv",
       "description": "Safe, concurrent, practical language (wrapper script)",
       "install_id": "rustc",
       "license": "[ MIT, Apache-2.0 ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d5cc6833999746cffdfe0598f7bc801a57b887a9",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
       "name": "rustc-wrapper-1.99.1",
       "pname": "rustc",
-      "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
-      "rev_count": 1119549,
-      "rev_date": "2026-11-13T02:32:26Z",
-      "scrape_date": "2026-11-16T06:14:42.852134Z",
+      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "rev_count": 1122823,
+      "rev_date": "2026-11-17T04:43:17Z",
+      "scrape_date": "2026-11-19T06:14:10.791568Z",
       "stabilities": [
         "unstable"
       ],

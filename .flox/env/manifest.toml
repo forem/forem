@@ -55,6 +55,12 @@ cargo.systems = ["aarch64-linux"]
 rustc.pkg-path = "rustc"
 rustc.pkg-group = "rust"
 rustc.systems = ["aarch64-linux"]
+# rb-sys runs bindgen, which dlopens libclang. Without this it finds the
+# host's /usr/lib/llvm-*/libclang, which can't load under Nix's libc.
+libclang.pkg-path = "libclang"
+libclang.outputs = ["lib"]
+libclang.pkg-group = "rust"
+libclang.systems = ["aarch64-linux"]
 
 # -- PostgreSQL 13 + pgvector ---------------------------------------------------
 # Version from .mise.toml and docker-compose (pgvector/pgvector:pg13).
@@ -128,7 +134,10 @@ on-activate = '''
   # only direct dependency.
   case "$(uname -sm)" in
     "Linux aarch64")
-      export BUNDLE_BUILD__PG="--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed" ;;
+      export BUNDLE_BUILD__PG="--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed"
+      # gems/forem_native has no committed aarch64-linux binary; cargo builds
+      # it, and rb-sys's bindgen needs this environment's libclang.
+      export LIBCLANG_PATH="$FLOX_ENV/lib" ;;
   esac
   export PATH="$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH"
 
