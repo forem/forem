@@ -1,5 +1,6 @@
 class ArticleApiIndexService
   DEFAULT_PER_PAGE = 30
+  MAX_TOP_DAYS = 730
 
   def initialize(params)
     @page = params[:page].to_i
@@ -73,7 +74,7 @@ class ArticleApiIndexService
                elsif top.present?
                  published_articles_with_users_and_organizations
                    .cached_tagged_with(tag)
-                   .where("published_at > ?", top.to_i.days.ago)
+                   .where("published_at > ?", top_days.days.ago)
                    .order(score: :desc)
                else
                  # Evaluating the published check as a single boolean expression keeps
@@ -110,9 +111,13 @@ class ArticleApiIndexService
 
   def top_articles
     published_articles_with_users_and_organizations
-      .where("published_at > ?", top.to_i.days.ago)
+      .where("published_at > ?", top_days.days.ago)
       .order(score: :desc)
       .page(page).per(per_page || DEFAULT_PER_PAGE)
+  end
+
+  def top_days
+    top.to_i.clamp(0, MAX_TOP_DAYS)
   end
 
   def state_articles(state)

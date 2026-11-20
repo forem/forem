@@ -155,13 +155,14 @@ of comma-separated tags. Articles will be ordered by descending popularity.",
                   example: "fresh"
         parameter name: :top, in: :query, required: false,
                   description: "Using this parameter will allow the client to return the most popular articles
-in the last `N` days.
+in the last `N` days (clamped to a maximum of `730` days).
 `top` indicates the number of days since publication of the articles returned.
 This param can be used in conjuction with `tag`.",
                   schema: {
                     type: :integer,
                     format: :int32,
-                    minimum: 1
+                    minimum: 1,
+                    maximum: 730
                   },
                   example: 2
         parameter name: :collection_id, in: :query, required: false,
@@ -202,8 +203,8 @@ belonging to the requested collection, ordered by ascending publication date.",
                   description: "The search query term. Matches against article titles, tags, and body content.",
                   schema: { type: :string }
         parameter name: :top, in: :query, required: false,
-                  description: "Restricts search results to articles published within the last `N` days.",
-                  schema: { type: :integer }
+                  description: "Restricts search results to articles published within the last `N` days (clamped to a maximum of `730` days).",
+                  schema: { type: :integer, minimum: 1, maximum: 730 }
         parameter name: :page, in: :query, required: false,
                   description: "Pagination page index.",
                   schema: { type: :integer }
