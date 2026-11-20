@@ -7653,4 +7653,238 @@ RSpec.describe ForemNative do
       expect(compacted_result["items"].last["k63"]).to include("ahoy_click=true")
     end
   end
+
+  describe "FeedEvents ingestion, deduplication & FeedConfig counter scoring kernels" do
+    let(:categories) { %w[impression click reaction comment extended_pageview] }
+    let(:category_map) { categories.each_with_index.to_h }
+    let(:contexts) { %w[home search tag email sidebar] }
+
+    let(:legacy_timebox_sql) do
+      lambda do |events|
+        return if events.empty?
+
+        seen = {}
+        tuples = []
+        events.each do |ev|
+          article_id = ev[:article_id] || ev["article_id"]
+          user_id = ev[:user_id] || ev["user_id"] || 0
+          cat = ev[:category] || ev["category"]
+          cat_code = cat.is_a?(Integer) ? cat : category_map[cat.to_s]
+          key = [article_id, user_id, cat_code]
+          next if seen[key]
+
+          seen[key] = true
+          tuples << "(#{article_id},#{user_id},#{cat_code})"
+        end
+        "(article_id, COALESCE(user_id, 0), category) IN (#{tuples.join(',')})"
+      end
+    end
+
+    let(:legacy_deduplicate) do
+      lambda do |events, existing_tuples|
+        recent = Hash.new { |u, uid| u[uid] = Hash.new { |c, cat| c[cat] = {} } }
+        existing_tuples.each do |user_id, category, article_id, context_type, feed_config_id|
+          recent[user_id][category.to_s][[article_id, context_type.to_s, feed_config_id]] = true
+        end
+
+        events.filter_map do |ev|
+          uid = ev[:user_id]
+          cat = ev[:category].to_s
+          key = [ev[:article_id], ev[:context_type].to_s, ev[:feed_config_id]]
+          next if recent[uid][cat][key]
+
+          recent[uid][cat][key] = true
+          ev
+        end
+      end
+    end
+
+    let(:legacy_freshness) do
+      lambda do |published_at, event_time, lookback_setting|
+        return 1.0 if published_at.nil? || event_time.nil?
+
+        age_in_hours = (event_time.to_f - published_at.to_f) / 3600.0
+        return 1.5 if age_in_hours <= 12.0
+
+        lookback_days = lookback_setting.positive? ? lookback_setting : 10
+        lookback_hours = lookback_days * 24.0
+        return 1.0 if age_in_hours >= lookback_hours || lookback_hours <= 12.0
+
+        decay_window = lookback_hours - 12.0
+        progress = (age_in_hours - 12.0) / decay_window
+        raw_decay = 1.0 / (1.0 + (4.0 * progress))
+        min_decay = 1.0 / (1.0 + 4.0)
+        normalized_decay = (raw_decay - min_decay) / (1.0 - min_decay)
+        1.0 + (0.5 * normalized_decay)
+      end
+    end
+
+    let(:legacy_aggregate_counters) do
+      lambda do |rows, lookback_setting|
+        impressions_total = 0
+        impressions_users = Set.new
+        clicks_score = 0.0
+        best_freshness = { "reaction" => {}, "comment" => {}, "extended_pageview" => {} }
+
+        rows.each do |category, user_id, position, event_time, published_at|
+          cat = category.is_a?(Integer) ? categories[category] : category.to_s
+          case cat
+          when "impression"
+            impressions_total += 1
+            impressions_users.add(user_id)
+          when "click"
+            clicks_score += ((2.0 / 3)**(position.to_i - 1)) *
+              legacy_freshness.call(published_at, event_time, lookback_setting)
+          when "reaction", "comment", "extended_pageview"
+            freshness = legacy_freshness.call(published_at, event_time, lookback_setting)
+            user_scores = best_freshness[cat]
+            user_scores[user_id] = freshness if user_scores[user_id].nil? || freshness > user_scores[user_id]
+          end
+        end
+
+        next [0, 0.0] if impressions_total.zero?
+
+        reactions_score = best_freshness["reaction"].values.sum * 6 * 2
+        comments_score = best_freshness["comment"].values.sum * 12 * 2
+        pageviews_score = best_freshness["extended_pageview"].values.sum
+        score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / impressions_users.size
+        [impressions_total, score, impressions_users.size]
+      end
+    end
+
+    it "builds deduplicated feed_events_timebox_lookup_sql across edge cases and 1,000 randomized batches" do
+      expect(described_class.feed_events_timebox_lookup_sql([])).to be_nil
+      expect(described_class.feed_events_timebox_lookup_sql("not-an-array")).to be_nil
+      # Out-of-domain and malformed inputs return nil for parameterized Ruby fallback
+      expect(described_class.feed_events_timebox_lookup_sql([Object.new])).to be_nil
+      expect(described_class.feed_events_timebox_lookup_sql([{ article_id: "123", user_id: 1, category: "click" }]))
+        .to be_nil
+      expect(
+        described_class.feed_events_timebox_lookup_sql([{ article_id: 1, user_id: "1) OR 1=1--", category: "click" }]),
+      ).to be_nil
+      expect(described_class.feed_events_timebox_lookup_sql([{ article_id: 1, user_id: 1, category: "bogus" }]))
+        .to be_nil
+
+      # Both symbol-keyed and string-keyed hashes, plus nil user_id coalesced to 0
+      mixed = [
+        { article_id: 10, user_id: nil, category: "impression" },
+        { "article_id" => 10, "user_id" => nil, "category" => :impression },
+        { article_id: 11, user_id: 42, category: 1 },
+      ]
+      expect(described_class.feed_events_timebox_lookup_sql(mixed)).to eq(
+        "(article_id, COALESCE(user_id, 0), category) IN ((10,0,0),(11,42,1))",
+      )
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        batch = Array.new(rng.rand(1..20)) do
+          {
+            article_id: rng.rand(1..15),
+            user_id: rng.rand(3).zero? ? nil : rng.rand(1..5),
+            category: categories.sample(random: rng)
+          }
+        end
+        expect(described_class.feed_events_timebox_lookup_sql(batch))
+          .to eq(legacy_timebox_sql.call(batch)), "iteration #{i}"
+      end
+    end
+
+    it "deduplicates feed events identically to Ruby nested hashes across edge cases and 1,000 randomized batches" do
+      expect(described_class.deduplicate_feed_events([], [])).to eq([])
+      expect(described_class.deduplicate_feed_events([Object.new], [])).to be_nil
+      expect(described_class.deduplicate_feed_events([], [[1, "impression"]])).to be_nil
+      expect(described_class.deduplicate_feed_events([{ article_id: 1, category: "bad", context_type: "home" }], []))
+        .to be_nil
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        existing = Array.new(rng.rand(0..15)) do
+          [
+            rng.rand(3).zero? ? nil : rng.rand(1..4),
+            categories.sample(random: rng),
+            rng.rand(1..8),
+            contexts.sample(random: rng),
+            rng.rand(3).zero? ? nil : rng.rand(1..3),
+          ]
+        end
+        events = Array.new(rng.rand(1..25)) do |idx|
+          {
+            article_id: rng.rand(1..8),
+            user_id: rng.rand(3).zero? ? nil : rng.rand(1..4),
+            article_position: idx + 1,
+            category: categories.sample(random: rng),
+            context_type: contexts.sample(random: rng),
+            feed_config_id: rng.rand(3).zero? ? nil : rng.rand(1..3),
+            event_id: nil
+          }
+        end
+
+        actual = described_class.deduplicate_feed_events(events, existing)
+        expected = legacy_deduplicate.call(events, existing)
+        expect(actual).to eq(expected), "iteration #{i}"
+        # Preserves original Hash object identity (zero Hash cloning)
+        actual.each_with_index do |h, idx|
+          expect(h).to equal(expected[idx])
+        end
+      end
+    end
+
+    it "computes article_freshness_multiplier identically to Ruby across boundaries and 1,000 randomized inputs" do
+      base = 1_700_000_000.0
+      expect(described_class.article_freshness_multiplier(nil, base, 10)).to eq(1.0)
+      expect(described_class.article_freshness_multiplier(base, nil, 10)).to eq(1.0)
+      expect(described_class.article_freshness_multiplier("bad", base, 10)).to be_nil
+      expect(described_class.article_freshness_multiplier(base - 3600.0, base, 10)).to eq(1.5)
+      expect(described_class.article_freshness_multiplier(base - (12 * 3600.0), base, 10)).to eq(1.5)
+      expect(described_class.article_freshness_multiplier(base - (10 * 86_400.0), base, 10)).to eq(1.0)
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        event_ts = base + rng.rand(0.0..100_000.0)
+        age_secs = rng.rand(-3_600.0..(15 * 86_400.0))
+        pub_ts = rng.rand(10).zero? ? nil : event_ts - age_secs
+        lookback = [-5, 0, 1, 5, 10, 14, 30].sample(random: rng)
+
+        expect(described_class.article_freshness_multiplier(pub_ts, event_ts, lookback))
+          .to eq(legacy_freshness.call(pub_ts, event_ts, lookback)), "iteration #{i}"
+      end
+    end
+
+    it "aggregates feed config counters identically to Ruby across Time/Float rows and 1,000 randomized datasets" do
+      expect(described_class.aggregate_feed_config_counters([], 10)).to eq([0, 0.0])
+      expect(described_class.aggregate_feed_config_counters([[1, 2]], 10)).to be_nil
+      expect(described_class.aggregate_feed_config_counters([["click", 1, 1, "", 1_700_000_000.0]], 10)).to be_nil
+
+      # Verify compatibility with Ruby Time objects in addition to float epochs
+      now = Time.utc(2026, 11, 20, 12, 0, 0)
+      time_rows = [
+        ["impression", 1, 1, now, now - 3600],
+        ["click", 1, 2, now, now - (3 * 86_400)],
+        ["reaction", 1, 1, now, now - (5 * 86_400)],
+        ["comment", nil, 1, now, nil],
+      ]
+      expect(described_class.aggregate_feed_config_counters(time_rows, 10))
+        .to eq(legacy_aggregate_counters.call(time_rows, 10))
+
+      rng = Random.new(424_242)
+      base = 1_700_000_000.0
+      1_000.times do |i|
+        lookback = [0, 5, 10, 20].sample(random: rng)
+        rows = Array.new(rng.rand(0..40)) do
+          event_ts = base + rng.rand(0.0..50_000.0)
+          pub_ts = rng.rand(6).zero? ? nil : event_ts - rng.rand(0.0..(14 * 86_400.0))
+          [
+            categories.sample(random: rng),
+            rng.rand(5).zero? ? nil : rng.rand(1..12),
+            rng.rand(10).zero? ? nil : rng.rand(1..15),
+            event_ts,
+            pub_ts,
+          ]
+        end
+
+        expect(described_class.aggregate_feed_config_counters(rows, lookback))
+          .to eq(legacy_aggregate_counters.call(rows, lookback)), "iteration #{i}"
+      end
+    end
+  end
 end

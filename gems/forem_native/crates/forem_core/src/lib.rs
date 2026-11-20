@@ -13,6 +13,7 @@ pub mod comment_tree;
 pub mod emoji;
 pub(crate) mod emoji_data;
 pub mod feed;
+pub mod feed_events;
 pub mod fixer;
 pub mod html;
 pub mod image;
