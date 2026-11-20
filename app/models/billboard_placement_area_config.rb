@@ -19,6 +19,7 @@ class BillboardPlacementAreaConfig < ApplicationRecord
   # Cache key for storing all configs
   CACHE_KEY = "billboard_placement_area_configs".freeze
   CACHE_EXPIRY = 1.hour
+  MEMORY_CACHE_EXPIRY = 1.minute
 
   # Default cache expiry for billboard responses (3 minutes)
   DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS = 180
@@ -68,25 +69,29 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     all_configs[placement_area]
   end
 
-  # Get all configs (cached)
+  # Get all configs (cached in RequestStore, L1 MemoryFirstCache, and L2 Redis)
   def self.all_configs
     if RequestStore.store.key?(:billboard_placement_area_configs)
       return RequestStore.store[:billboard_placement_area_configs]
     end
 
-    configs = Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_EXPIRY) do
+    return all.index_by(&:placement_area) if Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
+
+    configs = MemoryFirstCache.fetch(
+      CACHE_KEY,
+      memory_expires_in: MEMORY_CACHE_EXPIRY,
+      redis_expires_in: CACHE_EXPIRY,
+    ) do
       all.index_by(&:placement_area)
     end
-    unless Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
-      RequestStore.store[:billboard_placement_area_configs] = configs
-    end
+    RequestStore.store[:billboard_placement_area_configs] = configs
     configs
   end
 
   # Bust the cache when configs are modified
   def self.bust_cache
     RequestStore.store.delete(:billboard_placement_area_configs)
-    Rails.cache.delete(CACHE_KEY)
+    MemoryFirstCache.delete(CACHE_KEY)
   end
 
   # Get cache expiry seconds for a specific placement area

@@ -572,5 +572,36 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
         expect(rate).to eq(100)
       end
     end
+
+    describe ".all_configs caching" do
+      let(:redis_cache) { ActiveSupport::Cache::MemoryStore.new }
+
+      before do
+        allow(Rails).to receive(:cache).and_return(redis_cache)
+      end
+
+      after do
+        RequestStore.clear!
+      end
+
+      it "serves subsequent requests from L1 MemoryFirstCache without reading Rails.cache and invalidates on update" do
+        config = described_class.create!(placement_area: "sidebar_left", signed_in_rate: 80, signed_out_rate: 60)
+
+        first = described_class.all_configs
+        expect(first["sidebar_left"].signed_in_rate).to eq(80)
+
+        RequestStore.clear!
+        allow(redis_cache).to receive(:read).and_call_original
+
+        second = described_class.all_configs
+        expect(second["sidebar_left"].signed_in_rate).to eq(80)
+        expect(redis_cache).not_to have_received(:read)
+
+        config.update!(signed_in_rate: 45)
+        RequestStore.clear!
+
+        expect(described_class.all_configs["sidebar_left"].signed_in_rate).to eq(45)
+      end
+    end
   end
 end
