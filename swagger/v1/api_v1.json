@@ -2029,6 +2029,147 @@
         }
       }
     },
+    "/api/billboard_campaigns": {
+      "get": {
+        "summary": "Billboard campaigns",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Retrieve a paginated list of billboard campaigns. Requires Billboard admin privileges.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BillboardCampaign"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a billboard campaign",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Create a billboard campaign to group billboards under shared delivery caps, an optional end date,\n        and an automated `ideal_daily_impressions` titration target.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "A billboard campaign",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillboardCampaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillboardCampaign"
+              }
+            }
+          },
+          "description": "Billboard campaign parameters."
+        }
+      }
+    },
+    "/api/billboard_campaigns/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "The ID of the billboard campaign.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "summary": "A billboard campaign",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Retrieve a single billboard campaign by ID. Requires Billboard admin privileges.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillboardCampaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a billboard campaign",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Update a billboard campaign's name, caps, end date, or `ideal_daily_impressions` titration target.\n        Modifying a campaign that governs an approved or Event-owned billboard requires the `modify_approved`\n        Billboard sub-permission.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillboardCampaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "403": {
+            "description": "missing sub-permissions"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillboardCampaign"
+              }
+            }
+          },
+          "description": "Billboard campaign parameters."
+        }
+      }
+    },
     "/api/billboards": {
       "get": {
         "summary": "Billboards",
@@ -8522,6 +8663,58 @@
           "name",
           "body_markdown",
           "placement_area"
+        ]
+      },
+      "BillboardCampaign": {
+        "description": "Groups billboards that share delivery caps, an end date, and ideal daily impression pacing",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the BillboardCampaign"
+          },
+          "name": {
+            "type": "string",
+            "description": "The campaign name (required)"
+          },
+          "organization_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Optional organization that owns the campaign"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp when the campaign expires and its billboards are taken down"
+          },
+          "max_impressions_count": {
+            "type": "integer",
+            "description": "Total impression cap across the campaign's billboards (0 means no cap)"
+          },
+          "max_clicks_count": {
+            "type": "integer",
+            "description": "Total click cap across the campaign's billboards (0 means no cap)"
+          },
+          "ideal_daily_impressions": {
+            "type": "integer",
+            "description": "Target daily impressions for automated 10-minute titration (0 disables pacing)"
+          },
+          "delivery_throttle_rate": {
+            "type": "number",
+            "description": "Current automated pass-through delivery rate (0.0 to 1.0) managed by the titration worker"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "Segment": {

@@ -539,6 +539,29 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             },
             required: %w[name body_markdown placement_area]
           },
+          BillboardCampaign: {
+            description: "Groups billboards that share delivery caps, an end date, and ideal daily impression pacing",
+            type: :object,
+            properties: {
+              id: { type: :integer, description: "The ID of the BillboardCampaign" },
+              name: { type: :string, description: "The campaign name (required)" },
+              organization_id: { type: :integer, nullable: true,
+                                 description: "Optional organization that owns the campaign" },
+              expires_at: { type: :string, format: :"date-time", nullable: true,
+                            description: "Timestamp when the campaign expires and its billboards are taken down" },
+              max_impressions_count: { type: :integer,
+                                       description: "Total impression cap across the campaign's billboards (0 means no cap)" },
+              max_clicks_count: { type: :integer,
+                                  description: "Total click cap across the campaign's billboards (0 means no cap)" },
+              ideal_daily_impressions: { type: :integer,
+                                         description: "Target daily impressions for automated 10-minute titration (0 disables pacing)" },
+              delivery_throttle_rate: { type: :number,
+                                        description: "Current automated pass-through delivery rate (0.0 to 1.0) managed by the titration worker" },
+              created_at: { type: :string, format: :"date-time" },
+              updated_at: { type: :string, format: :"date-time" }
+            },
+            required: %w[name]
+          },
           Segment: {
             description: "A manually managed audience segment",
             type: "object",
