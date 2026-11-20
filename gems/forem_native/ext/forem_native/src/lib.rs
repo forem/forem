@@ -5850,6 +5850,146 @@ fn ahoy_decorate_payload(
     decorate_payload_value(ruby, payload, &ctx, 0)
 }
 
+fn encode_base26_id(id: i64) -> String {
+    forem_core::api_comments::encode_base26_id(id)
+}
+
+fn format_utc_iso8601(epoch_secs: i64) -> Option<String> {
+    forem_core::api_comments::format_utc_iso8601(epoch_secs)
+}
+
+/// Borrows an optional UTF-8 compatible Ruby `String` in place without allocating.
+///
+/// # Safety
+/// The returned `&str` must not outlive any Ruby VM call or GC-triggering allocation.
+unsafe fn borrow_opt_utf8_str<'a>(val: Value) -> Option<Option<&'a str>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let rstr = RString::from_value(val)?;
+    if !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = rstr.test_as_str()?;
+    // SAFETY: Caller guarantees no Ruby VM calls or mutations occur while this slice lives.
+    Some(Some(std::mem::transmute::<&str, &'a str>(s)))
+}
+
+/// Borrows a required UTF-8 compatible Ruby `String` in place without allocating.
+///
+/// # Safety
+/// The returned `&str` must not outlive any Ruby VM call or GC-triggering allocation.
+unsafe fn borrow_req_utf8_str<'a>(val: Value) -> Option<&'a str> {
+    borrow_opt_utf8_str(val)?
+}
+
+#[allow(clippy::too_many_arguments)]
+fn serialize_api_comments_json(
+    ruby: &Ruby,
+    comments_flat: RArray,
+    users_flat: RArray,
+    labels_arr: RArray,
+    max_depth: i64,
+    single_root: bool,
+    root_offset: i64,
+    root_limit: Option<i64>,
+    escape_html_entities: bool,
+) -> Option<RArray> {
+    use forem_core::api_comments::{
+        ApiCommentLabels, ApiCommentRow, ApiCommentUser, ApiCommentsOptions,
+    };
+
+    let max_depth = usize::try_from(max_depth).ok()?;
+    let root_offset = usize::try_from(root_offset).ok()?;
+    let root_limit = match root_limit {
+        Some(limit) => Some(usize::try_from(limit).ok()?),
+        None => None,
+    };
+
+    let result = {
+        // SAFETY: No Ruby VM calls or allocations happen inside this block while
+        // borrowed `RArray` / `RString` slices are live.
+        unsafe {
+            let comments_slice = comments_flat.as_slice();
+            let users_slice = users_flat.as_slice();
+            let labels_slice = labels_arr.as_slice();
+
+            if comments_slice.len() % 8 != 0
+                || users_slice.len() % 8 != 0
+                || labels_slice.len() != 6
+            {
+                return None;
+            }
+
+            let labels = ApiCommentLabels {
+                deleted_body_html: borrow_req_utf8_str(labels_slice[0])?,
+                hidden_body_html: borrow_req_utf8_str(labels_slice[1])?,
+                ai_disclosure_labels: [
+                    borrow_req_utf8_str(labels_slice[2])?,
+                    borrow_req_utf8_str(labels_slice[3])?,
+                    borrow_req_utf8_str(labels_slice[4])?,
+                    borrow_req_utf8_str(labels_slice[5])?,
+                ],
+            };
+
+            let mut users = Vec::with_capacity(users_slice.len() / 8);
+            for chunk in users_slice.chunks_exact(8) {
+                let id = Integer::from_value(chunk[0])?.to_i64().ok()?;
+                users.push(ApiCommentUser {
+                    id,
+                    name: borrow_opt_utf8_str(chunk[1])?,
+                    username: borrow_opt_utf8_str(chunk[2])?,
+                    twitter_username: borrow_opt_utf8_str(chunk[3])?,
+                    github_username: borrow_opt_utf8_str(chunk[4])?,
+                    website_url: borrow_opt_utf8_str(chunk[5])?,
+                    profile_image: borrow_opt_utf8_str(chunk[6])?,
+                    profile_image_90: borrow_opt_utf8_str(chunk[7])?,
+                });
+            }
+
+            let mut rows = Vec::with_capacity(comments_slice.len() / 8);
+            for chunk in comments_slice.chunks_exact(8) {
+                let id = Integer::from_value(chunk[0])?.to_i64().ok()?;
+                let ancestry = borrow_opt_utf8_str(chunk[1])?;
+                let processed_html = borrow_opt_utf8_str(chunk[2])?;
+                let user_idx = Integer::from_value(chunk[3])?.to_i64().ok()?;
+                let deleted = chunk[4].to_bool();
+                let hidden = chunk[5].to_bool();
+                let created_at_sec = extract_optional_i64(chunk[6])?;
+                let ai_raw = Integer::from_value(chunk[7])?.to_i64().ok()?;
+                let ai_disclosure_idx = u8::try_from(ai_raw).ok()?;
+
+                rows.push(ApiCommentRow {
+                    id,
+                    ancestry,
+                    processed_html,
+                    user_idx,
+                    deleted,
+                    hidden,
+                    created_at_sec,
+                    ai_disclosure_idx,
+                });
+            }
+
+            let options = ApiCommentsOptions {
+                max_depth,
+                single_root,
+                root_offset,
+                root_limit,
+                escape_html_entities,
+            };
+
+            forem_core::api_comments::serialize_api_comments_json(&rows, &users, &labels, &options)
+        }
+    };
+
+    let (json, included_ids) = result?;
+    let out = ruby.ary_new_capa(2);
+    let _ = out.push(ruby.str_new(&json));
+    let _ = out.push(ruby.ary_from_iter(included_ids));
+    Some(out)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -6366,6 +6506,12 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "aggregate_feed_config_counters",
         function!(aggregate_feed_config_counters, 2),
+    )?;
+    native_mod.define_singleton_method("encode_base26_id", function!(encode_base26_id, 1))?;
+    native_mod.define_singleton_method("format_utc_iso8601", function!(format_utc_iso8601, 1))?;
+    native_mod.define_singleton_method(
+        "serialize_api_comments_json",
+        function!(serialize_api_comments_json, 8),
     )?;
     Ok(())
 }

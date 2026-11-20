@@ -7887,4 +7887,263 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "API Comments Streaming JSON Kernels" do
+    let(:ai_keys) { %w[not_disclosed no_ai some_ai fully_autonomous] }
+    let(:labels) do
+      [
+        "<p>[deleted]</p>",
+        "<p>[hidden by post author]</p>",
+        "Not disclosed",
+        "No AI",
+        "Some AI",
+        "Fully autonomous",
+      ]
+    end
+
+    let(:legacy_serialize_api_comments) do
+      lambda do |rows, users, labels_arr, max_depth:, single_root:, root_offset:, root_limit:, escape_html:|
+        return ["[]", []] if !single_root && (max_depth <= 0 || rows.empty?)
+        return if single_root && (max_depth <= 0 || rows.empty?)
+
+        by_id = rows.index_by { |r| r[:id] }
+        children_map = Hash.new { |h, k| h[k] = [] }
+        roots = []
+
+        rows.each do |row|
+          anc = row[:ancestry]
+          parent_id = anc.present? ? anc.split("/").last.to_i : nil
+          if parent_id && by_id.key?(parent_id)
+            children_map[parent_id] << row
+          else
+            roots << row
+          end
+        end
+
+        included_ids = []
+        build_node = lambda do |row, depth|
+          included_ids << row[:id]
+          ai_idx = row[:ai_disclosure_idx]
+          node = {
+            "type_of" => "comment",
+            "id_code" => row[:id].to_s(26),
+            "created_at" => row[:created_at_sec] ? Time.at(row[:created_at_sec]).utc.iso8601 : nil,
+            "ai_disclosure_level" => ai_keys[ai_idx],
+            "ai_disclosure_label" => labels_arr[2 + ai_idx]
+          }
+
+          if row[:deleted]
+            node["body_html"] = labels_arr[0]
+            node["user"] = {}
+          elsif row[:hidden]
+            node["body_html"] = labels_arr[1]
+            node["user"] = {}
+          else
+            u = users[row[:user_idx]]
+            node["body_html"] = row[:processed_html]
+            node["user"] = {
+              "name" => u[:name],
+              "username" => u[:username],
+              "twitter_username" => u[:twitter_username],
+              "github_username" => u[:github_username],
+              "user_id" => u[:id],
+              "website_url" => u[:website_url],
+              "profile_image" => u[:profile_image],
+              "profile_image_90" => u[:profile_image_90]
+            }
+          end
+
+          node["children"] = if depth + 1 < max_depth
+                               children_map[row[:id]].map { |child| build_node.call(child, depth + 1) }
+                             else
+                               []
+                             end
+          node
+        end
+
+        payload = if single_root
+                    return if roots.empty?
+
+                    build_node.call(roots.first, 0)
+                  else
+                    slice = roots[root_offset..] || []
+                    slice = slice.first(root_limit) if root_limit
+                    slice.map { |root| build_node.call(root, 0) }
+                  end
+
+        json = ActiveSupport::JSON.encode(payload, escape_html_entities: escape_html)
+        [json, included_ids]
+      end
+    end
+
+    it "encodes base26 IDs identically to Integer#to_s(26) across edge cases and 1,000 random values" do
+      [0, 1, 25, 26, 1000, -1, -1000, (2**62) - 1, -(2**62)].each do |val|
+        expect(described_class.encode_base26_id(val)).to eq(val.to_s(26))
+      end
+      expect(described_class.encode_base26_id(2**63)).to be_nil
+      expect(described_class.encode_base26_id("1000")).to be_nil
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        val = rng.rand(-10_000_000_000..10_000_000_000)
+        expect(described_class.encode_base26_id(val)).to eq(val.to_s(26)), "iteration #{i}"
+      end
+    end
+
+    it "formats UTC ISO-8601 timestamps identically to Time#utc.iso8601 across boundaries and 1,000 random values" do
+      [
+        0,
+        -1,
+        951_782_400,    # 2000-02-29T00:00:00Z
+        1_709_251_199,  # 2024-02-29T23:59:59Z
+        1_709_251_200,  # 2024-03-01T00:00:00Z
+        -2_203_977_600, # 1900-02-28T00:00:00Z
+        253_402_300_799, # 9999-12-31T23:59:59Z
+      ].each do |sec|
+        expect(described_class.format_utc_iso8601(sec)).to eq(Time.at(sec).utc.iso8601)
+      end
+
+      expect(described_class.format_utc_iso8601(253_402_300_800)).to be_nil
+      expect(described_class.format_utc_iso8601(-62_167_219_201)).to be_nil
+      expect(described_class.format_utc_iso8601("now")).to be_nil
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        sec = rng.rand(-2_000_000_000..4_102_444_800)
+        expect(described_class.format_utc_iso8601(sec))
+          .to eq(Time.at(sec).utc.iso8601), "iteration #{i}"
+      end
+    end
+
+    it "returns nil for out-of-domain inputs in serialize_api_comments_json" do
+      valid_user = [1, "Ada", "ada", nil, nil, nil, "https://img/640", "https://img/90"]
+      # Bad stride
+      expect(described_class.serialize_api_comments_json([1, 2], valid_user, labels, max_depth: 50)).to be_nil
+      # Missing user index
+      bad_user_row = [10, nil, "<p>hi</p>", 5, false, false, 1_700_000_000, 0]
+      expect(described_class.serialize_api_comments_json(bad_user_row, valid_user, labels, max_depth: 50)).to be_nil
+      # Malformed ancestry (including non-positive or overflowing ancestor segments)
+      %w[bad/path 0/42 9223372036854775808/42].each do |bad_ancestry|
+        bad_ancestry_row = [10, bad_ancestry, "<p>hi</p>", 0, false, false, 1_700_000_000, 0]
+        expect(described_class.serialize_api_comments_json(bad_ancestry_row, valid_user, labels, max_depth: 50))
+          .to be_nil
+      end
+      # Oversized 64-bit pagination/depth options (must return nil instead of raising RangeError)
+      valid_row = [10, nil, "<p>hi</p>", 0, false, false, 1_700_000_000, 0]
+      expect(described_class.serialize_api_comments_json(valid_row, valid_user, labels, max_depth: 2**63)).to be_nil
+      expect(
+        described_class.serialize_api_comments_json(valid_row, valid_user, labels, max_depth: 50, root_offset: 2**63),
+      ).to be_nil
+      expect(
+        described_class.serialize_api_comments_json(valid_row, valid_user, labels, max_depth: 50, root_limit: 2**63),
+      ).to be_nil
+      # Duplicate comment IDs
+      dup_rows = [
+        10, nil, "<p>a</p>", 0, false, false, 1_700_000_000, 0,
+        10, nil, "<p>b</p>", 0, false, false, 1_700_000_001, 0
+      ]
+      expect(described_class.serialize_api_comments_json(dup_rows, valid_user, labels, max_depth: 50)).to be_nil
+      # Empty in single_root mode
+      expect(
+        described_class.serialize_api_comments_json([], valid_user, labels, max_depth: 50, single_root: true),
+      ).to be_nil
+    end
+
+    it "matches the Ruby reference bit-for-bit across 1,000 randomized comment trees" do
+      rng = Random.new(424_242)
+      html_samples = [
+        "<p>Hello world!</p>",
+        "<p>Quotes \"here\" &amp; <a href=\"https://dev.to\">link</a></p>",
+        "<p>Unicode 🚀 日本語 café \u2028 line \u2029 para</p>",
+        "<pre><code>a \\ b\nc\td</code></pre>",
+        "",
+        nil,
+      ]
+      name_samples = ["Ada Lovelace", "Grace \"Hopper\"", "Renée 🚀", nil]
+
+      1_000.times do |i|
+        user_count = rng.rand(1..4)
+        users = Array.new(user_count) do |u_idx|
+          {
+            id: 100 + u_idx,
+            name: name_samples.sample(random: rng),
+            username: "user_#{u_idx}",
+            twitter_username: rng.rand(2).zero? ? "tw_#{u_idx}" : nil,
+            github_username: rng.rand(2).zero? ? "gh_#{u_idx}" : nil,
+            website_url: rng.rand(2).zero? ? "https://example.com/#{u_idx}" : nil,
+            profile_image: "https://media.dev.to/640/#{u_idx}.png",
+            profile_image_90: "https://media.dev.to/90/#{u_idx}.png"
+          }
+        end
+        users_flat = users.flat_map do |u|
+          [
+            u[:id], u[:name], u[:username], u[:twitter_username], u[:github_username],
+            u[:website_url], u[:profile_image], u[:profile_image_90]
+          ]
+        end
+
+        row_count = rng.rand(0..20)
+        rows = []
+        base_id = 1_000 + (i * 100)
+        row_count.times do |idx|
+          id = base_id + idx
+          ancestry = if rows.empty? || rng.rand(3).zero?
+                       # Occasionally give a subtree root an external parent ancestry (like Comment.subtree_of)
+                       rng.rand(4).zero? ? "7/8" : nil
+                     else
+                       parent = rows.sample(random: rng)
+                       parent[:ancestry] ? "#{parent[:ancestry]}/#{parent[:id]}" : parent[:id].to_s
+                     end
+          deleted = rng.rand(7).zero?
+          hidden = rng.rand(7).zero?
+          rows << {
+            id: id,
+            ancestry: ancestry,
+            processed_html: html_samples.sample(random: rng),
+            user_idx: deleted || hidden ? -1 : rng.rand(0...user_count),
+            deleted: deleted,
+            hidden: hidden,
+            created_at_sec: rng.rand(8).zero? ? nil : rng.rand(1_500_000_000..1_800_000_000),
+            ai_disclosure_idx: rng.rand(0..3)
+          }
+        end
+
+        comments_flat = rows.flat_map do |r|
+          [
+            r[:id], r[:ancestry], r[:processed_html], r[:user_idx],
+            r[:deleted], r[:hidden], r[:created_at_sec], r[:ai_disclosure_idx]
+          ]
+        end
+
+        single_root = row_count.positive? && rng.rand(4).zero?
+        max_depth = single_root ? rng.rand(1..6) : rng.rand(0..6)
+        root_offset = single_root ? 0 : rng.rand(0..4)
+        root_limit = single_root || rng.rand(2).zero? ? nil : rng.rand(1..5)
+        escape_html = rng.rand(2).zero?
+
+        actual = described_class.serialize_api_comments_json(
+          comments_flat,
+          users_flat,
+          labels,
+          max_depth: max_depth,
+          single_root: single_root,
+          root_offset: root_offset,
+          root_limit: root_limit,
+          escape_html_entities: escape_html,
+        )
+        expected = legacy_serialize_api_comments.call(
+          rows,
+          users,
+          labels,
+          max_depth: max_depth,
+          single_root: single_root,
+          root_offset: root_offset,
+          root_limit: root_limit,
+          escape_html: escape_html,
+        )
+
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end
