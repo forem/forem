@@ -40,9 +40,10 @@ jobs:
       matrix:
         include:
           - { name: x86_64-linux, os: ubuntu-24.04, experimental: false }
-          # Known failure: Ruby 3.3.0 (pinned by .ruby-version) segfaults in
-          # Fiber#resume during seeding on this runner, most likely Ruby bug
-          # #20085 (aarch64 pointer authentication, fixed in 3.3.1).
+          # Not yet shown to pass. The last run on the branch this came from
+          # failed in seeding with a Fiber#resume segfault under Ruby 3.3.0
+          # (Ruby bug #20085, fixed in 3.3.1); Ruby is now 3.3.14, so this
+          # needs a run to confirm. Keep non-blocking until it is green.
           - { name: aarch64-linux, os: ubuntu-24.04-arm, experimental: true }
           # Hosted macOS runners were not assigned in four tries on a fork
           # (capacity), so this entry may queue; it does not fail the run.

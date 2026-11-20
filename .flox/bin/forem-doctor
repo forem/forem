@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-
 # forem-doctor: is this checkout ready to develop on? Prints one JSON document
 # and exits 0 when every required component is ready, 1 when one is not, 2 when
 # it was run outside `flox activate`.
@@ -42,6 +40,8 @@ module ForemDoctor
     (segments.call(actual) <=> segments.call(minimum)) >= 0
   end
 
+  def monotonic_now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
   def result(ready, expected: nil, actual: nil, fix: nil, detail: nil)
     { "ready" => ready, "expected" => expected, "actual" => actual, "detail" => detail, "fix" => fix }.compact
   end
@@ -82,14 +82,20 @@ module ForemDoctor
                            fix: "xcode-select --install")
     end
     out, ok = run("gcc", "--version")
-    ok ? result(true, actual: out.lines.first.to_s.strip) : result(false, expected: "gcc from the Flox environment", fix: "flox activate")
+    if ok
+      result(true,
+             actual: out.lines.first.to_s.strip)
+    else
+      result(false, expected: "gcc from the Flox environment",
+                    fix: "flox activate")
+    end
   end
 
   def check_ruby(root, _env)
     want = read_pin(root, ".ruby-version")
-    ok = RUBY_VERSION == want
+    ok = want == RUBY_VERSION
     result(ok, expected: want, actual: RUBY_VERSION,
-               fix: ok ? nil : "Ruby in the manifest is out of date with .ruby-version; see 'Updating pins' in docs/flox.md")
+               fix: ok ? nil : "update ruby in .flox/env/manifest.toml; see 'Updating pins' in docs/flox.md")
   end
 
   def check_node(root, _env)
@@ -197,7 +203,7 @@ module ForemDoctor
     components = COMPONENTS.to_h do |name|
       next [name, result(true, detail: "skipped")] if skip.include?(name)
 
-      [name, send(:"check_#{name}", root, env)]
+      [name, public_send(:"check_#{name}", root, env)]
     end
     dirty, = run("git", "-C", root, "status", "--porcelain", "--untracked-files=no")
     {
@@ -232,8 +238,11 @@ module ForemDoctor
       File.write(File.join(root, ".ruby-version"), "#{RUBY_VERSION}\n")
       expect.call("ruby check passes when .ruby-version matches", check_ruby(root, {})["ready"] == true)
       env = { "PGPORT" => "1", "REDIS_PORT" => "1", "PORT" => "1" }
-      doc = report(root, env, %w[compiler node yarn bundler gems node_modules js_build migrations seed_data pgvector postgres_version])
-      expect.call("report is not ready when a service is down", doc["ready"] == false && doc["components"]["web"]["ready"] == false)
+      doc = report(root, env,
+                   %w[compiler node yarn bundler gems node_modules js_build migrations seed_data pgvector
+                  postgres_version])
+      expect.call("report is not ready when a service is down",
+                  doc["ready"] == false && doc["components"]["web"]["ready"] == false)
       expect.call("skipped components count as ready", doc["components"]["gems"]["detail"] == "skipped")
       expect.call("report serialises to JSON", JSON.parse(JSON.generate(doc)).key?("components"))
     end
@@ -246,17 +255,18 @@ module ForemDoctor
 
     wait = argv.index("--wait") ? argv[argv.index("--wait") + 1].to_i : 0
     skip = argv.index("--skip") ? argv[argv.index("--skip") + 1].to_s.split(",") : []
-    root = ENV["FLOX_ENV_PROJECT"]
+    root = ENV.fetch("FLOX_ENV_PROJECT", nil)
     needed = %w[PGPORT REDIS_PORT PORT]
     if root.nil? || needed.any? { |k| ENV[k].nil? }
-      warn JSON.generate("ready" => false, "error" => "not inside `flox activate`; run `flox activate -- .flox/bin/forem-doctor`")
+      warn JSON.generate("ready" => false,
+                         "error" => "not inside `flox activate`; run `flox activate -- .flox/bin/forem-doctor`")
       return 2
     end
-    deadline = Time.now + wait
+    deadline = monotonic_now + wait
     doc = nil
     loop do
       doc = report(root, ENV.to_h, skip)
-      break if doc["ready"] || Time.now >= deadline
+      break if doc["ready"] || monotonic_now >= deadline
 
       sleep 2
     end
