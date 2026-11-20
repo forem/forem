@@ -71,6 +71,25 @@ RSpec.describe "Search", :proper_status do
       expect(Search::Article).not_to have_received(:search_documents)
     end
 
+    it "ignores non-scalar page and per_page params instead of raising NoMethodError", :aggregate_failures do
+      allow(Homepage::FetchArticles).to receive(:call).and_return([])
+
+      get search_feed_content_path(homepage_params.merge(page: { nested: "1" }, per_page: { nested: "10" }))
+
+      expect(response).to have_http_status(:ok)
+      expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(page: nil, per_page: nil))
+
+      get search_feed_content_path(homepage_params.merge(page: ["1"], per_page: ["10"]))
+
+      expect(response).to have_http_status(:ok)
+      expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(page: nil, per_page: nil)).twice
+
+      get search_feed_content_path(homepage_params.merge(page: "2", per_page: { nested: "10" }))
+
+      expect(response).to have_http_status(:ok)
+      expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(page: 2, per_page: nil))
+    end
+
     it "parses published_at correctly", :aggregate_failures do
       article = create(:article, user: authorized_user, with_tags: false)
       get search_feed_content_path(homepage_params.merge(published_at: { gte: article.published_at.iso8601 }))

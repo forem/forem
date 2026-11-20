@@ -29,6 +29,10 @@ en:
         prompt_too_long: The 'prompt' must be %{max} characters or fewer
         invalid_aspect_ratio: "'aspect_ratio' must be one of: %{valid}"
         generation_unavailable: AI image generation is not available on this Forem
+      organization_article_analytics_controller:
+        end_before_start: Date parameter 'end' must not be before 'start'
+        range_too_long: Date range must not exceed %{max} days
+        start_and_end_required: Date parameters 'start' and 'end' must be provided together
       organization_article_reactions_controller:
         invalid_article_id: "'article_id' must be a positive integer"
         invalid_since: "'since' must be an RFC 3339 timestamp with a UTC offset"

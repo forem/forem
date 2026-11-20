@@ -3716,7 +3716,7 @@
           "analytics"
         ],
         "operationId": "getOrganizationArticleAnalytics",
-        "description": "Requires the org_article_analytics organization feature and active membership. Members and admins can export published organization posts with stored lifetime counters. This includes article identifiers, URLs, page views, public reactions and comments. Counters are eventual lifetime totals, not date-range analytics. updated_at describes the article and is not a cursor for metric changes. Results use the current subforem and ID order. Page size is capped at 100 and page depth at 1000. Independent posts that mention the organization are excluded. Responses are never cached.",
+        "description": "Requires the org_article_analytics organization feature and active membership. Members and admins can export published organization posts with stored lifetime counters. This includes article identifiers, URLs, page views, public reactions and comments. Counters are eventual lifetime totals. updated_at describes the article and is not a cursor for metric changes. Results use the current subforem and ID order. Page size is capped at 100 and page depth at 1000. Pass start and end together (YYYY-MM-DD, UTC, inclusive, at most 90 days) to add a daily series to each article with page views, comments and reactions by category, including reading list saves (counts only). reactions.total includes saves, as in the historical analytics endpoint. Days without activity are returned with zero counts. Daily values come from eventual rollups, so recent days may still be revised. An article whose rollup has not been built yet returns zeros for every day even if it had activity, and its past days can change once the rollup is first populated. Independent posts that mention the organization are excluded. Responses are never cached.",
         "parameters": [
           {
             "name": "organization_id",
@@ -3747,6 +3747,28 @@
               "maximum": 100,
               "default": 30
             }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "First day of the daily series (YYYY-MM-DD). Requires end.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "description": "Last day of the daily series (YYYY-MM-DD), at most 89 days after start. Requires start.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-31"
           }
         ],
         "responses": {
@@ -3806,6 +3828,66 @@
                       },
                       "comments_count": {
                         "type": "integer"
+                      },
+                      "daily": {
+                        "type": "array",
+                        "description": "Present only when start and end are given.",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "date",
+                            "page_views",
+                            "comments",
+                            "reactions"
+                          ],
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "page_views": {
+                              "type": "integer"
+                            },
+                            "comments": {
+                              "type": "integer"
+                            },
+                            "reactions": {
+                              "type": "object",
+                              "required": [
+                                "total",
+                                "like",
+                                "readinglist",
+                                "unicorn",
+                                "exploding_head",
+                                "raised_hands",
+                                "fire"
+                              ],
+                              "properties": {
+                                "total": {
+                                  "type": "integer"
+                                },
+                                "like": {
+                                  "type": "integer"
+                                },
+                                "readinglist": {
+                                  "type": "integer"
+                                },
+                                "unicorn": {
+                                  "type": "integer"
+                                },
+                                "exploding_head": {
+                                  "type": "integer"
+                                },
+                                "raised_hands": {
+                                  "type": "integer"
+                                },
+                                "fire": {
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -3815,6 +3897,29 @@
           },
           "401": {
             "description": "Organization membership or feature access required"
+          },
+          "422": {
+            "description": "Invalid date range",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "status"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 422
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Organization not found"

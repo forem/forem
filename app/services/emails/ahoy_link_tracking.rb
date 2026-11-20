@@ -50,7 +50,71 @@ module Emails
       unsubscribe?(href) || already_tracked?(uri, href)
     end
 
+    ALLOWED_EXTERNAL_URL_OPTION_KEYS = [:host, :protocol, :port, "host", "protocol", "port"].freeze
+    ALLOWED_HTTP_SCHEMES = %w[http https].freeze
+
+    def native_signing_available?
+      return false if AhoyEmail.secret_token.blank?
+
+      loc = AhoyEmail::Utils.method(:signature).source_location
+      loc.is_a?(Array) && loc[0].to_s.end_with?("/ahoy_email/utils.rb")
+    end
+
+    # Resolves standard `{ host:, protocol:, port: }` options into the mounted
+    # `/ahoy/click` base URL once per payload, returning `nil` for non-standard
+    # options so external links defer to `AhoyEmail::Engine.routes.url_helpers.url_for`.
+    def external_base_url(url_options)
+      return unless url_options.is_a?(Hash) && url_options.any?
+      return unless url_options.keys.all? { |k| ALLOWED_EXTERNAL_URL_OPTION_KEYS.include?(k) }
+      return if url_options[:protocol] == false || url_options["protocol"] == false
+
+      host_str = (url_options[:host] || url_options["host"]).to_s
+      return if host_str.empty? || host_str.match?(/[\s?#@]/)
+
+      protocol = url_options[:protocol] || url_options["protocol"]
+      port = url_options[:port] || url_options["port"]
+      build_external_base_url(host_str, protocol, port)
+    end
+
+    def build_external_base_url(host_str, protocol, port)
+      if host_str.start_with?("http://", "https://")
+        return if protocol.present? || port.present?
+
+        trimmed = host_str.chomp("/")
+        return if trimmed.index("/", trimmed.index("://") + 3)
+
+        return "#{trimmed}/ahoy/click"
+      end
+
+      scheme = protocol.present? ? protocol.to_s.delete_suffix("://").delete_suffix(":") : "http"
+      return unless ALLOWED_HTTP_SCHEMES.include?(scheme)
+
+      trimmed = host_str.chomp("/")
+      return if trimmed.include?("/")
+      return if port.present? && trimmed.include?(":")
+
+      port_part = format_external_port(scheme, port)
+      return if port_part.nil?
+
+      "#{scheme}://#{trimmed}#{port_part}/ahoy/click"
+    end
+
+    def format_external_port(scheme, port)
+      return "" if port.blank?
+
+      port_i = port.to_i
+      return if port_i <= 0 || port_i > 65_535
+      return "" if (scheme == "http" && port_i == 80) || (scheme == "https" && port_i == 443)
+
+      ":#{port_i}"
+    end
+
     def signature(href, token:, campaign:)
+      if native_signing_available?
+        native = ForemNative.ahoy_signature(AhoyEmail.secret_token, token.to_s, campaign.to_s, href.to_s)
+        return native if native
+      end
+
       AhoyEmail::Utils.signature(token: token, campaign: campaign, url: href)
     end
 
@@ -64,6 +128,17 @@ module Emails
     # and the controller verifies the signature against that twice-decoded
     # value.
     def internal_url(uri, href, token:, campaign:)
+      if native_signing_available? && href.instance_of?(String) && uri&.host.present?
+        native = ForemNative.ahoy_decorate_url(
+          href, uri.host, token.to_s, campaign&.to_s, AhoyEmail.secret_token, nil
+        )
+        return native if native.is_a?(String)
+      end
+
+      legacy_internal_url(uri, href, token: token, campaign: campaign)
+    end
+
+    def legacy_internal_url(uri, href, token:, campaign:)
       tracking_params = {
         "ahoy_click" => true,
         "t" => token,
@@ -89,6 +164,17 @@ module Emails
     # protocol + APP_DOMAIN, e.g. "https://dev.to"; ActionDispatch normalizes a
     # host carrying its own scheme, so this still builds a well-formed URL.
     def external_url(href, token:, campaign:, url_options: {})
+      if native_signing_available? && href.instance_of?(String) && (base = external_base_url(url_options))
+        native = ForemNative.ahoy_decorate_url(
+          href, "", token.to_s, campaign&.to_s, AhoyEmail.secret_token, base
+        )
+        return native if native.is_a?(String)
+      end
+
+      legacy_external_url(href, token: token, campaign: campaign, url_options: url_options)
+    end
+
+    def legacy_external_url(href, token:, campaign:, url_options: {})
       AhoyEmail::Engine.routes.url_helpers.url_for(
         url_options.merge(
           controller: "ahoy/messages",

@@ -5,6 +5,10 @@
 # A billboard that belongs to an Event counts as approved even while its approved flag is false:
 # Events::ManageBroadcastBillboardsWorker approves those rows on its own when the broadcast starts,
 # so changing one would put unreviewed content live.
+#
+# Moving a billboard into or out of a campaign, or deleting one that belongs to a campaign, needs
+# modify_approved when that campaign has another live billboard, because the move changes the totals
+# that decide when the campaign's caps take its billboards down.
 class BillboardPolicy < ApplicationPolicy
   TAKE_DOWN_ATTRIBUTES = %w[published].freeze
 
@@ -25,13 +29,30 @@ class BillboardPolicy < ApplicationPolicy
   private
 
   def required_sub_permissions(action)
-    return approved_in_database? || event_owned? ? %w[modify_approved] : [] if action == :destroy
+    if action == :destroy
+      return approved_in_database? || event_owned? || leaves_live_campaign? ? %w[modify_approved] : []
+    end
 
     clauses = []
     clauses << "approve" if turns_on?(:approved)
     clauses << "publish" if turns_on?(:published)
-    clauses << "modify_approved" if modifies_approved?
+    clauses << "modify_approved" if modifies_approved? || changes_live_campaign_membership?
     clauses
+  end
+
+  # A billboard's counts add to its campaign's caps, so joining or leaving a campaign with another
+  # live billboard changes how long that billboard stays live.
+  def changes_live_campaign_membership?
+    return false unless record.will_save_change_to_billboard_campaign_id?
+
+    [record.billboard_campaign_id, record.attribute_in_database(:billboard_campaign_id)].compact.any? do |id|
+      BillboardCampaign.find_by(id: id)&.governs_live_billboard?(except: record)
+    end
+  end
+
+  def leaves_live_campaign?
+    campaign_id = record.attribute_in_database(:billboard_campaign_id)
+    campaign_id.present? && BillboardCampaign.find_by(id: campaign_id)&.governs_live_billboard?(except: record)
   end
 
   def turns_on?(attribute)

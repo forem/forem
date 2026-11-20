@@ -101,6 +101,8 @@ Rails.application.routes.draw do
           put "unpublish", on: :member
         end
 
+        resources :billboard_campaigns, only: %i[index show create update]
+
         resources :segments, controller: "audience_segments", only: %i[index show create destroy] do
           get "users", on: :member
           put "add_users", on: :member

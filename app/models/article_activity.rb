@@ -18,6 +18,19 @@ class ArticleActivity < ApplicationRecord
   belongs_to :article
 
   REACTION_CATEGORIES = %w[like readinglist unicorn exploding_head raised_hands fire].freeze
+  DAILY_COUNTERS_SELECT = <<~SQL.squish.freeze
+    article_activities.article_id,
+    (SELECT COALESCE(jsonb_object_agg(key, value), '{}'::jsonb) FROM jsonb_each(daily_page_views)
+      WHERE key BETWEEN :start AND :end) AS daily_page_views,
+    (SELECT COALESCE(jsonb_object_agg(key, value - 'reactor_ids'), '{}'::jsonb) FROM jsonb_each(daily_reactions)
+      WHERE key BETWEEN :start AND :end) AS daily_reactions,
+    (SELECT COALESCE(jsonb_object_agg(key, value), '{}'::jsonb) FROM jsonb_each(daily_comments)
+      WHERE key BETWEEN :start AND :end) AS daily_comments
+  SQL
+
+  scope :daily_counters_between, lambda { |start_date, end_date|
+    select(sanitize_sql_array([DAILY_COUNTERS_SELECT, { start: start_date.iso8601, end: end_date.iso8601 }]))
+  }
 
   # ---------- READ API (response shape used by AnalyticsService) ----------
 

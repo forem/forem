@@ -10,7 +10,7 @@ class AuthPassController < ApplicationController
         };
 
         // Send the message to the parent window
-        window.parent.postMessage(data, '*');
+        window.parent.postMessage(data, %<target_origin>s);
       })();
     </script>
   HTML
@@ -37,42 +37,18 @@ class AuthPassController < ApplicationController
       return
     end
 
-    if (session_current_user_id || cookies[:remember_user_token].present?) &&
-        user_signed_in? && user_not_signed_out?(current_user)
-      # User is authenticated on the main domain
-      session[:user_id] = current_user.id
-      @token = generate_auth_token(current_user)
-    elsif session[:user_id]
-      # User is authenticated via the iframe session cookie
-      user = find_active_iframe_user(session[:user_id])
-      if user
-        @token = generate_auth_token(user)
-      else
-        session.delete(:user_id)
-        render body: EMPTY_IFRAME_HTML, content_type: "text/html", status: :ok
-        return
-      end
-    elsif (main_session_user_id = request.cookie_jar.signed[:user_id])
-      # Attempt to refresh the iframe session by checking main session
-      user = find_active_iframe_user(main_session_user_id)
-      if user
-        session[:user_id] = user.id
-        @token = generate_auth_token(user)
-      else
-        request.session_options[:skip] = true
-        render body: EMPTY_IFRAME_HTML, content_type: "text/html", status: :ok
-        return
-      end
-    else
-      request.session_options[:skip] = true
-      render body: EMPTY_IFRAME_HTML, content_type: "text/html", status: :ok
+    unless @parent_origin_allowed
+      render_empty_iframe
       return
     end
 
-    # Set headers to allow the iframe to be embedded
-    response.headers["X-Frame-Options"] = "ALLOWALL"
+    @token = resolve_iframe_auth_token
+    return if performed?
 
-    render body: format(AUTHENTICATED_IFRAME_HTML, token: @token), content_type: "text/html", status: :ok
+    target_origin = ERB::Util.json_escape((@target_origin || request.base_url).to_json)
+    render body: format(AUTHENTICATED_IFRAME_HTML, token: @token, target_origin: target_origin),
+           content_type: "text/html",
+           status: :ok
   end
 
   def token_login
@@ -119,21 +95,66 @@ class AuthPassController < ApplicationController
 
   private
 
+  def resolve_iframe_auth_token
+    if (session_current_user_id || cookies[:remember_user_token].present?) &&
+        user_signed_in? && user_not_signed_out?(current_user)
+      session[:user_id] = current_user.id
+      generate_auth_token(current_user)
+    elsif session[:user_id]
+      user = find_active_iframe_user(session[:user_id])
+      return generate_auth_token(user) if user
+
+      session.delete(:user_id)
+      render_empty_iframe(skip_session: false)
+    elsif (main_session_user_id = request.cookie_jar.signed[:user_id])
+      user = find_active_iframe_user(main_session_user_id)
+      if user
+        session[:user_id] = user.id
+        return generate_auth_token(user)
+      end
+
+      render_empty_iframe
+    else
+      render_empty_iframe
+    end
+  end
+
+  def render_empty_iframe(skip_session: true)
+    request.session_options[:skip] = true if skip_session
+    render body: EMPTY_IFRAME_HTML, content_type: "text/html", status: :ok
+    nil
+  end
+
   def set_iframe_csp
+    response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Surrogate-Control"] = "no-store"
+    @parent_origin_allowed = true
+    @target_origin = request.base_url
+
     parent_origin = params[:passed_domain].presence ||
       params[:parent_origin].presence ||
       request.headers["Referer"].presence
     return if parent_origin.blank?
 
     origin_host, normalized_origin = parse_origin_host_and_csp(parent_origin)
-    return if origin_host.blank?
+    if origin_host.blank?
+      @parent_origin_allowed = false
+      return
+    end
 
     allowed_domains = (Subforem.cached_all_domains + [Settings::General.app_domain]).compact.map(&:downcase)
     is_allowed = allowed_domains.include?(origin_host) ||
       OrgCustomDomainConstraint.custom_domain_org_for_host(origin_host).present?
-    return unless is_allowed
+    unless is_allowed
+      @parent_origin_allowed = false
+      return
+    end
 
+    @target_origin = normalized_origin
     response.headers["Content-Security-Policy"] = "frame-ancestors 'self' #{normalized_origin}"
+    response.headers.delete("X-Frame-Options")
   end
 
   def use_iframe_session_store

@@ -29,6 +29,10 @@ pt:
         prompt_too_long: O 'prompt' deve ter no máximo %{max} caracteres
         invalid_aspect_ratio: "'aspect_ratio' deve ser um dos seguintes: %{valid}"
         generation_unavailable: A geração de imagens por IA não está disponível neste Forem
+      organization_article_analytics_controller:
+        end_before_start: O parâmetro de data 'end' não pode ser anterior a 'start'
+        range_too_long: O intervalo de datas não pode exceder %{max} dias
+        start_and_end_required: Os parâmetros de data 'start' e 'end' devem ser informados juntos
       organization_article_reactions_controller:
         invalid_article_id: "'article_id' deve ser um número inteiro positivo"
         invalid_since: "'since' deve ser um carimbo de data/hora RFC 3339 com deslocamento UTC"

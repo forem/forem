@@ -21,10 +21,10 @@ module Admin
         [display_label, "#{SubPermissions::ROLE_NAME}|#{resource_type}"]
       end.sort_by(&:first)
 
-      [
-        [t("views.admin.permissions.grant.platform_group"), PLATFORM_ROLE_OPTIONS],
-        [t("views.admin.permissions.grant.resource_group"), resource_options],
-      ]
+      groups = []
+      groups << [t("views.admin.permissions.grant.platform_group"), PLATFORM_ROLE_OPTIONS] if is_super_admin
+      groups << [t("views.admin.permissions.grant.resource_group"), resource_options]
+      groups
     end
 
     def assignable_role_options_for_user(user, is_super_admin:)
@@ -52,7 +52,7 @@ module Admin
           configurable: false,
           stored_config: nil,
           restricted: false,
-          can_revoke: true
+          can_revoke: is_super_admin
         }
       end
 

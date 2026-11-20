@@ -298,7 +298,7 @@ module Middlewares
         "page_path" => json["path"],
         "user_id" => user_id,
         "user_language" => json["user_language"],
-        "referrer" => referrer && !referrer.start_with?(base_app_url) ? referrer : nil,
+        "referrer" => referrer.is_a?(String) && !referrer.start_with?(base_app_url) ? referrer : nil,
         "user_agent" => json["user_agent"],
         "viewport_size" => json["viewport_size"],
         "screen_resolution" => json["screen_resolution"],

@@ -53,6 +53,7 @@ module FeedEvents
       # acknowledging an entire lost batch as successfully recorded.
       attempts = (attempts || 0) + 1
       @recent_events = nil
+      @timebox_events = nil
       retry if attempts == 1
 
       raise
@@ -77,29 +78,25 @@ module FeedEvents
 
       # The user locks cover both the recent-event lookup and insertion.
       # Context is part of the suppression key; event IDs handle delivery retries.
+      existing_tuples = []
       if timebox.present?
-        find_existing_events_within_timebox do |event|
-          track_recent_event(event)
-        end
+        @timebox_events = events
+        find_existing_events_within_timebox { |tuple| existing_tuples << tuple }
       end
 
-      records_to_insert = events.filter_map do |event|
-        unless recent_event?(event)
-          track_recent_event(event)
-          event.is_a?(Hash) ? event : ATTRIBUTES_FOR_INSERT.index_with { |attr| event[attr] }
-        end
-      end
-
+      records_to_insert = deduplicate_events(events, existing_tuples)
       return if records_to_insert.blank?
 
       persist_records(records_to_insert)
     end
 
     def records_with_existing_references(records_to_insert)
-      article_ids = records_to_insert.pluck(:article_id).compact.uniq
+      article_ids = records_to_insert.filter_map { |r| r[:article_id] }.uniq
+      return [] if article_ids.empty?
+
       valid_article_ids = Set.new(Article.where(id: article_ids).ids)
-      user_ids = records_to_insert.pluck(:user_id).compact.uniq
-      valid_user_ids = Set.new(User.where(id: user_ids).ids)
+      user_ids = records_to_insert.filter_map { |r| r[:user_id] }.uniq
+      valid_user_ids = user_ids.empty? ? Set.new : Set.new(User.where(id: user_ids).ids)
 
       records_to_insert.select do |r|
         valid_article_ids.include?(r[:article_id]) &&
@@ -130,6 +127,29 @@ module FeedEvents
       end
     end
 
+    def deduplicate_events(events, existing_tuples)
+      ForemNative.deduplicate_feed_events(events, existing_tuples) ||
+        legacy_deduplicate_events(events, existing_tuples)
+    end
+
+    def legacy_deduplicate_events(events, existing_tuples)
+      existing_tuples.each do |tuple|
+        if tuple.is_a?(Array)
+          user_id, category, article_id, context_type, feed_config_id = tuple
+          recent_events[user_id][category][[article_id, context_type, feed_config_id]] = true
+        else
+          track_recent_event(tuple)
+        end
+      end
+
+      events.filter_map do |event|
+        unless recent_event?(event)
+          track_recent_event(event)
+          event.is_a?(Hash) ? event : ATTRIBUTES_FOR_INSERT.index_with { |attr| event[attr] }
+        end
+      end
+    end
+
     def recent_events
       @recent_events ||= Hash.new do |users, user_id|
         users[user_id] = Hash.new do |categories, category|
@@ -151,7 +171,29 @@ module FeedEvents
     end
 
     def find_existing_events_within_timebox(&block)
-      values = valid_events.reduce([]) do |acc, event|
+      target_events = @timebox_events || valid_events
+      return if target_events.empty?
+
+      relation = FeedEvent.where("created_at > ?", timebox.ago.utc)
+      # Security contract: ForemNative.feed_events_timebox_lookup_sql only emits
+      # SQL containing integer (i64) IDs and allowlisted category enum codes (u8),
+      # returning nil on any non-numeric or unrecognized input so we fall back to
+      # parameterized legacy_timebox_where. If this lookup ever needs a text field,
+      # pass it as a bind parameter rather than extending the native SQL formatter.
+      sql_clause = ForemNative.feed_events_timebox_lookup_sql(target_events)
+      relation = if sql_clause
+                   relation.where(Arel.sql(sql_clause))
+                 else
+                   legacy_timebox_where(relation, target_events)
+                 end
+
+      relation
+        .pluck(:user_id, :category, :article_id, :context_type, :feed_config_id)
+        .each(&block)
+    end
+
+    def legacy_timebox_where(relation, target_events)
+      values = target_events.reduce([]) do |acc, event|
         acc << event[:article_id]
         # Postgres is...iffy about comparing NULL (NULL !== NULL), and chokes if it is present in a tuple comparison.
         # Coalescing to 0 is fine because primary keys auto-increment from 1.
@@ -159,15 +201,12 @@ module FeedEvents
         acc << FeedEvent.categories[event[:category]]
       end
 
-      values_clause = Array.new(valid_events.length) { "(?, ?, ?)" }.join(", ")
+      values_clause = Array.new(target_events.length) { "(?, ?, ?)" }.join(", ")
 
-      FeedEvent
-        .where("created_at > ?", timebox.ago.utc)
-        .where(
-          "(article_id, COALESCE(user_id, 0), category) IN (#{values_clause})",
-          *values,
-        )
-        .find_each(&block)
+      relation.where(
+        "(article_id, COALESCE(user_id, 0), category) IN (#{values_clause})",
+        *values,
+      )
     end
   end
 end

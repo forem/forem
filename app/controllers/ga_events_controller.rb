@@ -58,13 +58,14 @@ class GaEventsController < ApplicationMetalController
   end
 
   def event_params(json, user_id)
+    referrer = json["referrer"]
     {
       page_title: json["document_title"],
       page_location: json["document_path"],
       page_path: json["path"],
       user_id: user_id,
       user_language: json["user_language"],
-      referrer: json["referrer"] && !json["referrer"].start_with?(app_url) ? json["referrer"] : nil,
+      referrer: referrer.is_a?(String) && !referrer.start_with?(app_url) ? referrer : nil,
       user_agent: json["user_agent"],
       viewport_size: json["viewport_size"],
       screen_resolution: json["screen_resolution"],

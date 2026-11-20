@@ -137,6 +137,16 @@ RSpec.describe "/admin/permissions" do
       expect(flash[:success]).to be_present
     end
 
+    it "writes an internal audit log entry" do
+      allow(Audit::Logger).to receive(:log)
+      post grant_admin_permissions_path, params: { username: target_user.username, role_name: "admin" }
+
+      expect(Audit::Logger).to have_received(:log).with(
+        :internal, super_admin, hash_including("action" => "grant_role", "target_user_id" => target_user.id,
+                                               "role_name" => "admin", "resource_type" => nil)
+      )
+    end
+
     it "strips @ from username and grants the role" do
       post grant_admin_permissions_path, params: { username: "@#{target_user.username}", role_name: "admin" }
       expect(target_user.reload.roles.pluck(:name)).to include("admin")
@@ -240,6 +250,18 @@ RSpec.describe "/admin/permissions" do
       expect(flash[:success]).to be_present
     end
 
+    it "writes an internal audit log entry" do
+      target_user.add_role(:single_resource_admin, Event)
+      allow(Audit::Logger).to receive(:log)
+      delete revoke_admin_permissions_path,
+             params: { user_id: target_user.id, role_name: "single_resource_admin|Event" }
+
+      expect(Audit::Logger).to have_received(:log).with(
+        :internal, super_admin, hash_including("action" => "revoke_role", "target_user_id" => target_user.id,
+                                               "role_name" => "single_resource_admin", "resource_type" => "Event")
+      )
+    end
+
     it "fails gracefully with invalid role" do
       delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: "invalid_role" }
       expect(response).to redirect_to(admin_permissions_path)
@@ -253,6 +275,51 @@ RSpec.describe "/admin/permissions" do
       expect(response).to redirect_to(admin_permissions_path)
       expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).not_to exist
       expect(flash[:success]).to be_present
+    end
+  end
+
+  describe "global admin roles" do
+    let(:target_user) { create(:user) }
+
+    context "when signed in as an admin who is not a super admin" do
+      before { sign_in create(:user, :admin) }
+
+      it "refuses to grant them", :aggregate_failures do
+        %w[admin super_admin tech_admin].each do |role_name|
+          post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to be_present
+          expect(target_user.reload.roles.pluck(:name)).not_to include(role_name)
+        end
+      end
+
+      it "refuses to revoke them", :aggregate_failures do
+        target_user.add_role(:admin)
+
+        delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: "admin" }
+
+        expect(response).to redirect_to(admin_permissions_path)
+        expect(flash[:error]).to be_present
+        expect(target_user.reload.roles.pluck(:name)).to include("admin")
+      end
+
+      it "still grants a single resource admin role" do
+        post grant_admin_permissions_path,
+             params: { username: target_user.username, role_name: "single_resource_admin|Event" }
+
+        expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).to exist
+      end
+    end
+
+    context "when signed in as a Permission resource admin" do
+      before { sign_in create(:user, :single_resource_admin, resource: Permission) }
+
+      it "refuses to grant them" do
+        post grant_admin_permissions_path, params: { username: target_user.username, role_name: "super_admin" }
+
+        expect(target_user.reload.roles.pluck(:name)).not_to include("super_admin")
+      end
     end
   end
 
@@ -393,16 +460,20 @@ RSpec.describe "/admin/permissions" do
         record_admin.add_role(:single_resource_admin, create(:billboard))
         get admin_permissions_path
 
-        expect(response.body).to include("@#{record_admin.username}")
-        expect(response.body).not_to include("sub_permissions[user_id]\" value=\"#{record_admin.id}\"")
-        expect(response.body.scan(/name="user_id" value="#{record_admin.id}"/).size).to eq(0)
+        row = Nokogiri::HTML(response.body).at_css("[data-testid='permission-member-row-#{record_admin.id}']")
+
+        expect(row).to be_present
+        expect(row.css("[data-testid='sub-permissions-Billboard']")).to be_empty
       end
 
       it "shows one editor, for the class-wide grant, to a user with record and class-wide roles" do
         target_user.add_role(:single_resource_admin, create(:billboard))
         get admin_permissions_path
 
-        expect(response.body.scan(/id="allow_#{target_user.id}_Billboard_approve"/).size).to eq(1)
+        row = Nokogiri::HTML(response.body).at_css("[data-testid='permission-member-row-#{target_user.id}']")
+
+        expect(row.css("[data-testid='sub-permissions-Billboard']").size).to eq(1)
+        expect(row.css("#allow_#{target_user.id}_Billboard_approve").size).to eq(1)
       end
 
       it "shows each Billboard admin's sub-permissions on the index", :aggregate_failures do
@@ -523,6 +594,123 @@ RSpec.describe "/admin/permissions" do
 
         delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: noncanonical_role_name }
         expect(page_management_role(target_user)).not_to exist
+      end
+    end
+  end
+
+  describe "global platform admin roles (super_admin, admin, tech_admin)" do
+    let(:target_user) { create(:user) }
+
+    context "when signed in as a regular admin who is not a super admin" do
+      let(:regular_admin) { create(:user, :admin) }
+
+      before { sign_in regular_admin }
+
+      it "refuses to grant super_admin, admin, or tech_admin to self or another user", :aggregate_failures do
+        %w[super_admin admin tech_admin].each do |role_name|
+          post grant_admin_permissions_path, params: { username: regular_admin.username, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to include("Only super admins")
+
+          post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to include("Only super admins")
+          expect(target_user.reload.roles.where(name: role_name)).not_to exist
+        end
+
+        expect(regular_admin.reload.super_admin?).to be(false)
+        expect(regular_admin.tech_admin?).to be(false)
+      end
+
+      it "refuses to revoke super_admin, admin, or tech_admin from another user", :aggregate_failures do
+        super_admin_target = create(:user, :super_admin)
+        super_admin_target.add_role(:admin)
+        super_admin_target.add_role(:tech_admin)
+
+        %w[super_admin admin tech_admin].each do |role_name|
+          delete revoke_admin_permissions_path, params: { user_id: super_admin_target.id, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to include("Only super admins")
+          expect(super_admin_target.reload.roles.where(name: role_name)).to exist
+        end
+      end
+
+      it "hides platform roles from grant selects and locks revoke buttons on the index", :aggregate_failures do
+        super_admin_target = create(:user, :super_admin)
+        super_admin_target.add_role(:tech_admin)
+
+        get admin_permissions_path
+        doc = Nokogiri::HTML(response.body)
+
+        option_values = doc.css("select[name='role_name'] option").pluck("value")
+        expect(option_values).not_to include("super_admin", "admin", "tech_admin")
+        expect(option_values).to include("single_resource_admin|Event")
+
+        revoke_actions = doc.css("form.admin-role-pill__revoke-form").pluck("action")
+        expect(revoke_actions.none? { |action| action.include?("role_name=super_admin") }).to be(true)
+        expect(revoke_actions.none? { |action| action.include?("role_name=admin") }).to be(true)
+        expect(revoke_actions.none? { |action| action.include?("role_name=tech_admin") }).to be(true)
+      end
+
+      it "still grants and revokes ordinary single resource admin roles", :aggregate_failures do
+        post grant_admin_permissions_path,
+             params: { username: target_user.username, role_name: "single_resource_admin|Event" }
+        expect(target_user.reload.single_resource_admin_for?(Event)).to be(true)
+
+        delete revoke_admin_permissions_path,
+               params: { user_id: target_user.id, role_name: "single_resource_admin|Event" }
+        expect(target_user.reload.single_resource_admin_for?(Event)).to be(false)
+      end
+    end
+
+    context "when signed in as a Permission resource admin" do
+      let(:permission_admin) { create(:user, :single_resource_admin, resource: Permission) }
+
+      before { sign_in permission_admin }
+
+      it "refuses to grant super_admin, admin, or tech_admin to self or another user", :aggregate_failures do
+        %w[super_admin admin tech_admin].each do |role_name|
+          post grant_admin_permissions_path, params: { username: permission_admin.username, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to include("Only super admins")
+          expect(permission_admin.reload.roles.where(name: role_name)).not_to exist
+
+          post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to include("Only super admins")
+          expect(target_user.reload.roles.where(name: role_name)).not_to exist
+        end
+      end
+
+      it "refuses to revoke super_admin, admin, or tech_admin", :aggregate_failures do
+        super_admin_target = create(:user, :super_admin)
+        super_admin_target.add_role(:admin)
+        super_admin_target.add_role(:tech_admin)
+
+        %w[super_admin admin tech_admin].each do |role_name|
+          delete revoke_admin_permissions_path, params: { user_id: super_admin_target.id, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:error]).to include("Only super admins")
+          expect(super_admin_target.reload.roles.where(name: role_name)).to exist
+        end
+      end
+    end
+
+    context "when signed in as a super admin" do
+      before { sign_in create(:user, :super_admin) }
+
+      it "grants and revokes super_admin, admin, and tech_admin", :aggregate_failures do
+        %w[super_admin admin tech_admin].each do |role_name|
+          post grant_admin_permissions_path, params: { username: target_user.username, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:success]).to be_present
+          expect(target_user.reload.roles.where(name: role_name)).to exist
+
+          delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: role_name }
+          expect(response).to redirect_to(admin_permissions_path)
+          expect(flash[:success]).to be_present
+          expect(target_user.reload.roles.where(name: role_name)).not_to exist
+        end
       end
     end
   end
