@@ -53,6 +53,14 @@ lane_gems() {
   mark gems start
   local lock="$GEM_HOME/.forem-bootstrap.lock" waited=0 rc
   until mkdir "$lock" 2>/dev/null; do sleep 1; waited=$((waited+1)); [ $waited -gt 900 ] && break; done
+  # Gemfile.lock's BUNDLED WITH names Bundler 2.4.17, the version CI and the
+  # Containerfile use. Ruby ships a newer Bundler, which rewrites the committed
+  # git gem under vendor/cache into a bare repository and leaves the tree dirty.
+  # `bundle` switches to the locked version by itself once it is installed.
+  want="$(awk '/^BUNDLED WITH/ { getline; gsub(/ /, ""); print; exit }' Gemfile.lock)"
+  if [ -n "$want" ] && ! gem list -i -v "$want" bundler >/dev/null 2>&1; then
+    gem install bundler -v "$want" --no-document || { rmdir "$lock" 2>/dev/null; return 1; }
+  fi
   if bundle check >/dev/null 2>&1; then
     echo "gems already satisfied"; rc=0
   else

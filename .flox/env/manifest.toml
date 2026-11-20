@@ -144,6 +144,9 @@ on-activate = '''
     export GEM_HOME="$FLOX_ENV_CACHE/gems"
   fi
   unset _ruby
+  # Gems come from GEM_HOME only; a ~/.gem or ~/.local/share/gem directory the
+  # contributor already has must not leak into Forem's load path.
+  export GEM_PATH="$GEM_HOME"
   export BUNDLE_APP_CONFIG="$FLOX_ENV_CACHE/bundle-config"   # leave .bundle/ alone
   # aarch64-linux compiles the pg gem. Point it at this environment's libpq
   # (forem-pg-config), not whatever pg_config the host has on PATH, and link
