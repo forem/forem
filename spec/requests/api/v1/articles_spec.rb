@@ -86,10 +86,39 @@ RSpec.describe "Api::V1::Articles" do
         get api_articles_path, params: { page: 1001 }, headers: headers
         expect(response).to have_http_status(:unauthorized)
         expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+        expect(response.headers["Cache-Control"]).to eq("no-store")
+        expect(response.headers["Surrogate-Control"]).to eq("no-store")
       end
 
       it "allows requests with page greater than 1000 with a valid API key" do
         get api_articles_path, params: { page: 1001 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "rejects requests whose pagination offset exceeds 30000 without an API key", :aggregate_failures do
+        get "/api/articles/latest", params: { page: 32, per_page: 1000 }, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Pagination offset limited to 30000 without an API key")
+        expect(response.headers["Cache-Control"]).to eq("no-store")
+        expect(response.headers["Surrogate-Control"]).to eq("no-store")
+      end
+
+      it "rejects username state=all requests whose implicit offset exceeds 30000 without an API key" do
+        get api_articles_path, params: { username: article.user.username, state: "all", page: 32 }, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Pagination offset limited to 30000 without an API key")
+      end
+
+      it "allows requests within the 30000 pagination offset limit without an API key", :aggregate_failures do
+        get "/api/articles/latest", params: { page: 31, per_page: 1000 }, headers: headers
+        expect(response).to have_http_status(:ok)
+
+        get api_articles_path, params: { page: 1000 }, headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "allows requests whose pagination offset exceeds 30000 with a valid API key" do
+        get "/api/articles/latest", params: { page: 32, per_page: 1000 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
       end
 
@@ -1848,6 +1877,19 @@ RSpec.describe "Api::V1::Articles" do
 
     it "allows requests with page greater than 1000 with a valid API key" do
       get "/api/articles/search", params: { page: 1001 }, headers: auth_headers
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "rejects requests whose pagination offset exceeds 30000 without an API key", :aggregate_failures do
+      get "/api/articles/search", params: { page: 32, per_page: 1000 }, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to eq("Pagination offset limited to 30000 without an API key")
+      expect(response.headers["Cache-Control"]).to eq("no-store")
+      expect(response.headers["Surrogate-Control"]).to eq("no-store")
+    end
+
+    it "allows requests whose pagination offset exceeds 30000 with a valid API key" do
+      get "/api/articles/search", params: { page: 32, per_page: 1000 }, headers: auth_headers
       expect(response).to have_http_status(:ok)
     end
 
