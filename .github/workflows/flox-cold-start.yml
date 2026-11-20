@@ -1,13 +1,10 @@
-# Cold start of the Flox environment on a clean machine: install Flox, download
-# and build the environment, then fresh clone -> GET / == 200 -> one model spec.
-# Every hosted runner starts with an empty Nix store, so these are true cold
-# numbers, package download included. Timings land in the run summary.
+# Fresh clone to a running, seeded app on a clean machine with only Flox
+# installed (the runner's Nix store starts empty, so package downloads count).
+# GitHub Actions on pull requests from forks wait for approval by a maintainer.
 name: Flox cold start
 
 on:
   workflow_dispatch:
-  # Only when the Flox environment (or this workflow) changes. Pull requests
-  # from forks need a Forem team member's `/ci` reply before this runs.
   pull_request:
     paths:
       - ".flox/**"
@@ -31,95 +28,32 @@ permissions:
 
 jobs:
   cold-start:
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
-    continue-on-error: ${{ matrix.experimental }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { name: x86_64-linux, os: ubuntu-24.04, experimental: false }
-          # Not yet shown to pass. The last run on the branch this came from
-          # failed in seeding with a Fiber#resume segfault under Ruby 3.3.0
-          # (Ruby bug #20085, fixed in 3.3.1); Ruby is now 3.3.14, so this
-          # needs a run to confirm. Keep non-blocking until it is green.
-          - { name: aarch64-linux, os: ubuntu-24.04-arm, experimental: true }
-          # Hosted macOS runners were not assigned in four tries on a fork
-          # (capacity), so this entry may queue; it does not fail the run.
-          - { name: aarch64-darwin, os: macos-15, experimental: true }
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v6
+      - uses: flox/install-flox-action@v2
 
-      - name: Machine
+      - name: Setup finishes, the app answers, a spec passes
+        # `-s` starts the services; they stop when this step's shell exits.
+        shell: flox activate -s -- bash --noprofile --norc -e -o pipefail {0}
         run: |
-          echo "cpus=$(getconf _NPROCESSORS_ONLN)  $(uname -sm)" | tee -a "$RUNNER_TEMP/summary.txt"
-          echo "START=$(date +%s)" >> "$GITHUB_ENV"
-
-      - name: Install Flox
-        uses: flox/install-flox-action@v2
-
-      - name: Download and build the environment
-        run: |
-          t0=$(date +%s)
-          echo "install_flox_s=$((t0 - START))" >> "$RUNNER_TEMP/summary.txt"
-          FOREM_BOOTSTRAP=0 flox activate -c 'realpath "$FLOX_ENV"' | tee "$RUNNER_TEMP/env-path"
-          t1=$(date +%s)
-          {
-            echo "download_and_build_env_s=$((t1 - t0))"
-            echo "nix_store_mb=$(du -sm /nix/store 2>/dev/null | cut -f1)"
-            echo "env_paths=$(nix-store -qR "$(cat "$RUNNER_TEMP/env-path")" | wc -l | tr -d ' ')"
-            flox --version | sed 's/^/flox=/'
-            nix --extra-experimental-features nix-command config show 2>/dev/null \
-              | grep -E '^(substituters|extra-substituters|trusted-substituters|http2|max-substitution-jobs) ' || true
-          } | tee -a "$RUNNER_TEMP/summary.txt"
-
-      - name: forem-doctor self-test
-        run: flox activate -c '.flox/bin/forem-doctor --self-test'
-
-      - name: Fresh clone to contributor ready
-        run: |
-          export BENCH_LOGDIR="$RUNNER_TEMP/bench"
-          .flox/bench/contrib-ready.sh "${{ matrix.name }}" | tee -a "$RUNNER_TEMP/summary.txt"
-          grep -q '0 failures' "$BENCH_LOGDIR/${{ matrix.name }}.log"
-          grep -q '"ready": true' "$BENCH_LOGDIR/${{ matrix.name }}.doctor.json"
-
-      - name: Readiness check fails when services are down
-        # forem-doctor must exit 1 and say why, not report ready.
-        run: |
-          set +e
-          flox activate -c '.flox/bin/forem-doctor --skip js_build > "$RUNNER_TEMP/doctor-down.json"'
-          rc=$?
-          test "$rc" -eq 1
-          grep -q '"ready": false' "$RUNNER_TEMP/doctor-down.json"
-
-      - name: Diagnostics
-        if: failure() && runner.os == 'Linux'
-        run: |
-          for so in $(find "$HOME/.cache/forem-flox" -name pg_ext.so 2>/dev/null); do
-            echo "== $so"; readelf -d "$so" | grep -E 'NEEDED|RUNPATH|RPATH'
+          until curl -fs -o /dev/null "http://localhost:$PORT/"; do
+            if flox services status --json | jq -e 'any(.[]; .name == "setup" and .status == "Completed" and .exit_code != 0)' > /dev/null; then
+              echo "setup failed; last lines of its log:"; flox services logs setup -n 80; exit 1
+            fi
+            sleep 3
           done
-          tail -30 .flox/cache/bootstrap/redis.log 2>/dev/null || true
-
-      - name: Summary
-        if: always()
-        run: |
-          {
-            echo "### ${{ matrix.name }}"
-            echo '```'
-            cat "$RUNNER_TEMP/summary.txt" 2>/dev/null
-            cat .flox/cache/bootstrap/timings.tsv 2>/dev/null
-            echo "total_wall_s=$(( $(date +%s) - START ))"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          flox services status --json | jq -e 'any(.[]; .name == "setup" and .status == "Completed" and .exit_code == 0)'
+          bin/rspec spec/models/tag_spec.rb
 
       - name: Upload logs
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: flox-cold-start-${{ matrix.name }}
+          name: flox-cold-start-logs
           path: |
-            ${{ runner.temp }}/summary.txt
-            ${{ runner.temp }}/bench/
-            .flox/cache/bootstrap/
+            .flox/log/
+            .flox/cache/gems/extensions/**/mkmf.log
+            .flox/cache/gems/extensions/**/gem_make.out
           if-no-files-found: ignore

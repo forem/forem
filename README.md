@@ -88,7 +88,7 @@ With [Flox](https://flox.dev) installed, one command takes a fresh clone to a ru
 git clone https://github.com/forem/forem.git && cd forem && flox activate -s
 ```
 
-See [docs/flox.md](docs/flox.md) for day-to-day commands, running several checkouts at once, and a machine-readable readiness check.
+See [docs/flox.md](docs/flox.md) for prerequisites and day-to-day commands.
 
 ### Installation Documentation
 
