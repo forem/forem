@@ -32,5 +32,23 @@ RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController" do
         post "/incoming_webhooks/mailchimp/#{secret}/unsubscribe", params: params
       end.to change { user.reload.notification_setting.email_newsletter }.from(true).to(false)
     end
+
+    it "returns not authorized when mailchimp_incoming_webhook_secret is blank" do
+      allow(Settings::General).to receive(:mailchimp_incoming_webhook_secret).and_return("")
+
+      expect do
+        post "/incoming_webhooks/mailchimp/%20/unsubscribe", params: params
+      end.to raise_error(Pundit::NotAuthorizedError)
+      expect(user.reload.notification_setting.email_newsletter).to be(true)
+    end
+
+    it "returns not authorized when mailchimp_incoming_webhook_secret is nil" do
+      allow(Settings::General).to receive(:mailchimp_incoming_webhook_secret).and_return(nil)
+
+      expect do
+        post "/incoming_webhooks/mailchimp/any/unsubscribe", params: params
+      end.to raise_error(Pundit::NotAuthorizedError)
+      expect(user.reload.notification_setting.email_newsletter).to be(true)
+    end
   end
 end

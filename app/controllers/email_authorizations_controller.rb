@@ -6,7 +6,10 @@ class EmailAuthorizationsController < ApplicationController
     raise ActionController::RoutingError, "Not Found" unless current_user == user
 
     email_authorization = user.email_authorizations.order(created_at: :desc).first
-    correct_token = email_authorization.confirmation_token == params[:confirmation_token]
+    expected_token = email_authorization&.confirmation_token
+    provided_token = params[:confirmation_token]
+    correct_token = expected_token.present? && provided_token.is_a?(String) &&
+      ActiveSupport::SecurityUtils.secure_compare(provided_token, expected_token)
     raise ActionController::RoutingError, "Not Found" unless correct_token
 
     email_authorization.update(verified_at: Time.current)
