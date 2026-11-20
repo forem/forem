@@ -590,4 +590,37 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(queries.size).to eq(1)
     end
   end
+
+  context "when considering throttled billboard campaigns" do
+    let(:throttled_campaign) { BillboardCampaign.create!(name: "Throttled", ideal_daily_impressions: 5_000) }
+    let(:active_campaign) { BillboardCampaign.create!(name: "Active", ideal_daily_impressions: 5_000) }
+    let!(:throttled_bb) { create_billboard(billboard_campaign: throttled_campaign) }
+    let!(:active_bb) { create_billboard(billboard_campaign: active_campaign) }
+    let!(:uncampaigned_bb) { create_billboard(billboard_campaign: nil) }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      Rails.cache.clear
+      MemoryFirstCache.clear
+    end
+
+    it "excludes billboards belonging to excluded campaigns on both native and legacy paths", :aggregate_failures do
+      allow(Billboards::CampaignPacing).to receive(:excluded_campaign_ids).and_return([throttled_campaign.id])
+
+      native_results = filter_billboards.to_a
+      expect(native_results).not_to include(throttled_bb)
+      expect(native_results).to include(active_bb, uncampaigned_bb)
+
+      legacy_results = described_class.new(area: "post_sidebar", user_signed_in: false).__send__(:legacy_call).to_a
+      expect(legacy_results).not_to include(throttled_bb)
+      expect(legacy_results).to include(active_bb, uncampaigned_bb)
+    end
+
+    it "includes all campaign billboards when no campaigns are excluded" do
+      allow(Billboards::CampaignPacing).to receive(:excluded_campaign_ids).and_return([])
+
+      results = filter_billboards.to_a
+      expect(results).to include(throttled_bb, active_bb, uncampaigned_bb)
+    end
+  end
 end

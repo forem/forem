@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_19_190300) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_20_160100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -342,12 +342,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_19_190300) do
 
   create_table "billboard_campaigns", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.float "delivery_throttle_rate", default: 1.0, null: false
     t.datetime "expires_at"
+    t.integer "ideal_daily_impressions", default: 0, null: false
     t.integer "max_clicks_count", default: 0, null: false
     t.integer "max_impressions_count", default: 0, null: false
     t.string "name", null: false
     t.bigint "organization_id"
     t.datetime "updated_at", null: false
+    t.index ["ideal_daily_impressions"], name: "idx_billboard_campaigns_on_ideal_daily_impressions", where: "(ideal_daily_impressions > 0)"
     t.index ["organization_id"], name: "index_billboard_campaigns_on_organization_id"
   end
 

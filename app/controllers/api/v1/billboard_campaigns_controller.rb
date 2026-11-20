@@ -51,7 +51,8 @@ module Api
       end
 
       def permitted_params
-        params.permit :name, :organization_id, :expires_at, :max_impressions_count, :max_clicks_count
+        params.permit :name, :organization_id, :expires_at, :max_impressions_count, :max_clicks_count,
+                      :ideal_daily_impressions
       end
     end
   end

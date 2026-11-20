@@ -5,7 +5,12 @@ RSpec.describe "Api::V1::BillboardCampaigns" do
   let(:api_secret) { create(:api_secret) }
   let(:auth_header) { v1_headers.merge({ "api-key" => api_secret.secret }) }
   let(:campaign_params) do
-    { name: "CodeNewbie S28", expires_at: 2.weeks.from_now.iso8601, max_impressions_count: 50_000 }
+    {
+      name: "CodeNewbie S28",
+      expires_at: 2.weeks.from_now.iso8601,
+      max_impressions_count: 50_000,
+      ideal_daily_impressions: 5_000
+    }
   end
 
   context "when the user is an admin" do
@@ -22,7 +27,12 @@ RSpec.describe "Api::V1::BillboardCampaigns" do
       end.to change(BillboardCampaign, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      expect(response.parsed_body).to include("name" => "CodeNewbie S28", "max_impressions_count" => 50_000)
+      expect(response.parsed_body).to include(
+        "name" => "CodeNewbie S28",
+        "max_impressions_count" => 50_000,
+        "ideal_daily_impressions" => 5_000,
+        "delivery_throttle_rate" => 1.0,
+      )
       expect(AuditLog.last).to have_attributes(slug: "api_billboard_campaign_create",
                                                data: include("billboard_campaign_id" => BillboardCampaign.last.id))
     end
@@ -32,12 +42,18 @@ RSpec.describe "Api::V1::BillboardCampaigns" do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it "updates a campaign" do
+    it "updates a campaign including ideal_daily_impressions and ignores delivery_throttle_rate" do
       campaign = BillboardCampaign.create!(name: "Launch")
-      put api_billboard_campaign_path(campaign.id), params: { max_clicks_count: 200 }.to_json, headers: auth_header
+      put api_billboard_campaign_path(campaign.id),
+          params: { max_clicks_count: 200, ideal_daily_impressions: 10_000, delivery_throttle_rate: 0.1 }.to_json,
+          headers: auth_header
 
       expect(response).to have_http_status(:ok)
-      expect(campaign.reload.max_clicks_count).to eq(200)
+      expect(campaign.reload).to have_attributes(
+        max_clicks_count: 200,
+        ideal_daily_impressions: 10_000,
+        delivery_throttle_rate: 1.0,
+      )
     end
 
     it "lists and shows campaigns" do
