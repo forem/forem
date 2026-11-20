@@ -124,6 +124,31 @@ RSpec.describe "Api::V1::Users" do
         get me_api_users_path, headers: headers.merge({ "api-key" => "invalid api key" })
         expect(response).to have_http_status(:unauthorized)
       end
+
+      it "returns unauthorized when the api-key header has invalid multibyte characters or null bytes",
+         :aggregate_failures do
+        invalid_keys = [
+          (+"invalid\xFFkey").force_encoding(Encoding::ASCII_8BIT),
+          (+"truncated\xE2\x80").force_encoding(Encoding::ASCII_8BIT),
+          (+"\xC3\xA9").force_encoding(Encoding::ASCII_8BIT),
+          (+"invalid\xFFkey").force_encoding(Encoding::UTF_8),
+          "null\x00key",
+          "null\x00key".encode(Encoding::UTF_16LE),
+          "null\x00key".encode(Encoding::UTF_16BE),
+        ]
+
+        allow(ApiSecret).to receive(:includes).and_call_original
+
+        invalid_keys.each do |invalid_key|
+          ActiveRecord::Base.connection.unprepared_statement do
+            get me_api_users_path, headers: headers.merge("api-key" => invalid_key)
+          end
+
+          expect(response).to have_http_status(:unauthorized)
+        end
+
+        expect(ApiSecret).not_to have_received(:includes)
+      end
     end
 
     context "with delegated Bearer authentication" do
