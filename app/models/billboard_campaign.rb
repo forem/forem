@@ -22,6 +22,14 @@ class BillboardCampaign < ApplicationRecord
     expires_at.present? && expires_at < Time.current
   end
 
+  def with_billboards_locked
+    self.class.transaction do
+      billboards.order(:id).lock.ids
+      lock!
+      yield
+    end
+  end
+
   # A billboard is live here when it is approved or Event-owned, the same rule BillboardPolicy uses.
   def governs_live_billboard?(except: nil)
     live = billboards.where(approved: true).or(billboards.where.not(event_id: nil))
