@@ -148,7 +148,8 @@ command = '''
 
 [services.redis]
 command = '''
-  exec redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
+  # Redis 7.2 exits if setlocale() fails; Nix's glibc lacks host locales on Linux.
+  LC_ALL=C exec redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
     --save "" --appendonly no
 '''
 

@@ -128,7 +128,7 @@
         "command": "  exec postgres -D \"$PGDATA\" -k \"$FOREM_PGSOCKET\" -h 127.0.0.1 -p \"$PGPORT\"\n"
       },
       "redis": {
-        "command": "  exec redis-server --bind 127.0.0.1 --port \"$REDIS_PORT\" --dir \"$FOREM_REDIS_DIR\" \\\n    --save \"\" --appendonly no\n"
+        "command": "  # Redis 7.2 exits if setlocale() fails; Nix's glibc lacks host locales on Linux.\n  LC_ALL=C exec redis-server --bind 127.0.0.1 --port \"$REDIS_PORT\" --dir \"$FOREM_REDIS_DIR\" \\\n    --save \"\" --appendonly no\n"
       },
       "sidekiq": {
         "command": "  cd \"$FLOX_ENV_PROJECT\" && exec bundle exec sidekiq\n"

@@ -26,7 +26,8 @@ jobs:
         include:
           - { name: x86_64-linux, os: ubuntu-24.04 }
           - { name: aarch64-linux, os: ubuntu-24.04-arm }
-          - { name: aarch64-darwin, os: macos-15 }
+          # aarch64-darwin (macos-15) dropped: GitHub never assigned a runner
+          # in four tries (capacity). Measure macOS locally with contrib-ready.sh.
     steps:
       - uses: actions/checkout@v4
 

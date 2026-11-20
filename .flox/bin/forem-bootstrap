@@ -124,7 +124,9 @@ fi
 if ! redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; then
   # A plain background job, not --daemonize: on Linux runners the daemonized
   # child died silently after "Redis is starting". Output goes to the log.
-  redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
+  # LC_ALL=C: Redis 7.2 exits if setlocale() fails, and Nix's glibc has no
+  # data for the host's locale (C.UTF-8 on GitHub's Linux runners).
+  LC_ALL=C redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
     --save "" --appendonly no > "$B/redis.log" 2>&1 &
   redis_pid=$! started_redis=1
   for _ in $(seq 1 300); do redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1 && break; sleep 0.1; done
