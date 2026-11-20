@@ -15,6 +15,7 @@ module Articles
     ENGAGEMENT_REPLACE_THREAD_KEY = :update_dependent_embeds_engagement_replace
     RECORD_PRIORITY = %w[Billboard Page Article Comment].freeze
     DYNAMIC_FEED_OPTION_REGEX = /\b(?:sort=(?:reactions|comments|score)|min_reactions=\d+|min_comments=\d+)\b/
+    RefreshFailed = Class.new(StandardError)
 
     def self.lock_args(args)
       [args.first, structural_args?(args) ? "structural" : "engagement"]
@@ -230,8 +231,11 @@ module Articles
 
     # Force a re-render of the given records, bypassing feed-specific skip and backoff checks.
     # Used when an embed template changes and stored processed_html must be regenerated.
+    # Every record is attempted; failures are raised afterwards so the caller's job retries.
     def refresh_records(record_type, ids)
       return if ids.blank?
+
+      @refresh_failures = []
       process_records_for_type(
         record_type,
         ids.index_with { [] },
@@ -239,6 +243,11 @@ module Articles
         membership_changed: true,
         engagement_only: false,
       )
+      return if @refresh_failures.empty?
+
+      raise RefreshFailed, "Failed refreshing #{record_type} #{@refresh_failures.join(', ')}"
+    ensure
+      @refresh_failures = nil
     end
 
     private
@@ -552,6 +561,7 @@ module Articles
         "[Articles::UpdateDependentEmbedsWorker] Failed refreshing #{record.class.name}##{record.try(:id)}: " \
         "#{e.class} - #{e.message}",
       )
+      @refresh_failures&.push(record.try(:id))
     end
   end
 end
