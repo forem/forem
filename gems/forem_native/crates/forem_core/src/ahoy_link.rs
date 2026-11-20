@@ -38,11 +38,11 @@ pub enum UrlOutcome {
 #[inline]
 fn feed_base64_strict(hasher: &mut Sha256, input: &[u8]) {
     let mut buf = [0u8; 64];
-    let (chunks, rem) = input.as_chunks::<48>();
+    let chunks = input.chunks_exact(48);
+    let rem = chunks.remainder();
     for chunk in chunks {
         let mut out_idx = 0;
-        let (triples, _) = chunk.as_chunks::<3>();
-        for triple in triples {
+        for triple in chunk.chunks_exact(3) {
             let n = ((triple[0] as u32) << 16) | ((triple[1] as u32) << 8) | (triple[2] as u32);
             buf[out_idx] = B64_STD[((n >> 18) & 0x3f) as usize];
             buf[out_idx + 1] = B64_STD[((n >> 12) & 0x3f) as usize];
@@ -53,7 +53,8 @@ fn feed_base64_strict(hasher: &mut Sha256, input: &[u8]) {
         hasher.update(&buf);
     }
 
-    let (triples, tail) = rem.as_chunks::<3>();
+    let triples = rem.chunks_exact(3);
+    let tail = triples.remainder();
     let mut out_idx = 0;
     for triple in triples {
         let n = ((triple[0] as u32) << 16) | ((triple[1] as u32) << 8) | (triple[2] as u32);
@@ -906,7 +907,12 @@ pub fn ahoy_decorate_html<'a>(
                                 // Never emit a raw `"` inside a double-quoted `href="..."`;
                                 // defer quote-bearing URLs (e.g. from single-quoted `href`)
                                 // to Nokogiri so URL data can never break out into attributes.
-                                if new_href.contains('"') {
+                                // Also defer spaces and non-ASCII bytes, which libxml2's
+                                // serializer percent-escapes inside `href`.
+                                if new_href
+                                    .bytes()
+                                    .any(|b| b == b'"' || b == b' ' || b >= 0x80)
+                                {
                                     return None;
                                 }
                                 let buf = out.get_or_insert_with(|| {
@@ -1196,5 +1202,65 @@ mod tests {
         .expect("should keep img tag untouched");
         assert!(matches!(out, Cow::Borrowed(_)));
         assert_eq!(out.as_ref(), html);
+    }
+
+    #[test]
+    fn decorate_html_defers_hrefs_that_libxml2_would_escape() {
+        for html in [
+            "<a href=\"https://dev.to/ben/caf\u{e9}\">Read</a>",
+            "<a href=\"https://dev.to/ben/a b\">Read</a>",
+        ] {
+            assert!(
+                ahoy_decorate_html(
+                    html,
+                    "dev.to",
+                    "tok",
+                    None,
+                    b"sec",
+                    Some("https://dev.to/ahoy/click")
+                )
+                .is_none(),
+                "expected None for {html:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn streamed_base64_matches_strict_encode64_at_every_chunk_boundary() {
+        fn strict_encode64(input: &[u8]) -> Vec<u8> {
+            let mut out = Vec::new();
+            for chunk in input.chunks(3) {
+                let b = [
+                    chunk[0],
+                    *chunk.get(1).unwrap_or(&0),
+                    *chunk.get(2).unwrap_or(&0),
+                ];
+                let n = ((b[0] as u32) << 16) | ((b[1] as u32) << 8) | (b[2] as u32);
+                out.push(B64_STD[((n >> 18) & 0x3f) as usize]);
+                out.push(B64_STD[((n >> 12) & 0x3f) as usize]);
+                out.push(if chunk.len() > 1 {
+                    B64_STD[((n >> 6) & 0x3f) as usize]
+                } else {
+                    b'='
+                });
+                out.push(if chunk.len() > 2 {
+                    B64_STD[(n & 0x3f) as usize]
+                } else {
+                    b'='
+                });
+            }
+            out
+        }
+
+        let input: Vec<u8> = (0..=200u32).map(|i| (i * 37 % 256) as u8).collect();
+        for len in 0..=input.len() {
+            let mut streamed = Sha256::new();
+            feed_base64_strict(&mut streamed, &input[..len]);
+            assert_eq!(
+                streamed.finalize(),
+                sha256(&strict_encode64(&input[..len])),
+                "mismatch at length {len}"
+            );
+        }
     }
 }
