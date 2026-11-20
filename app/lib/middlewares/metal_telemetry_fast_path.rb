@@ -333,7 +333,7 @@ module Middlewares
     def handle_feed_events_create(env)
       req = ActionDispatch::Request.new(env)
       raw_params = req.parameters
-      token_user_id = resolve_token_user_id(env, raw_params)
+      token_user_id = resolve_token_user_id(env, req.request_parameters)
       csrf_status = verify_csrf!(
         env,
         FeedEventsController,
@@ -382,7 +382,7 @@ module Middlewares
     def handle_feed_config_visit_create(env)
       req = ActionDispatch::Request.new(env)
       raw_params = req.parameters
-      token_user_id = resolve_token_user_id(env, raw_params)
+      token_user_id = resolve_token_user_id(env, req.request_parameters)
       csrf_status = verify_csrf!(
         env,
         FeedConfigVisitsController,
@@ -462,22 +462,23 @@ module Middlewares
       session_opts[:skip] = true if session_opts
     end
 
-    def resolve_token_user_id(env, raw_params)
-      auth_header = env["HTTP_AUTHORIZATION"]
-      jwt_param = raw_params&.[]("jwt")
-      return unless auth_header || jwt_param
-
-      token = if auth_header.present? && auth_header.start_with?("Bearer ")
-                auth_header.split.last
-              elsif jwt_param.present?
-                jwt_param
-              end
-      return unless token.is_a?(String)
+    def resolve_token_user_id(env, request_body_params)
+      token = Authentication::AuthToken.extract_bearer_token(env["HTTP_AUTHORIZATION"])
+      if token.blank? && request_body_params.is_a?(Hash)
+        body_jwt = request_body_params["jwt"]
+        token = body_jwt if body_jwt.is_a?(String) && body_jwt.present?
+      end
+      return unless token
 
       payload = decode_auth_token(token)
       return unless payload && payload["user_id"]
+      return if payload["purpose"] == Authentication::AuthToken::AUTH_PASS_PURPOSE
 
-      User.where(id: payload["user_id"]).pick(:id)
+      user = User.select(:id, :encrypted_password, :current_sign_in_at, :last_sign_in_at, :locked_at)
+        .find_by(id: payload["user_id"])
+      return unless user && Authentication::AuthToken.valid_for_user?(payload, user)
+
+      user.id
     end
 
     def decode_auth_token(token)

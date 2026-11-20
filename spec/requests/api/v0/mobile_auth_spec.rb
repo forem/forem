@@ -40,17 +40,20 @@ RSpec.describe "Api::V0::MobileAuth", type: :request do
             )
         end
 
-        it "authenticates the user successfully and issues an aligned jwt cookie" do
+        it "authenticates the user successfully and issues aligned jwt and remember_user_token cookies" do
           post "/api/auth/mobile_exchange", params: { provider: "google_oauth2", access_token: valid_access_token }
           
           expect(response).to have_http_status(:ok)
+          expect(response.headers["Cache-Control"]).to include("no-store")
           expect(JSON.parse(response.body)["jwt"]).to eq(valid_jwt)
           
-          # Assert cookie is present and attributes are properly set (httponly)
-          jwt_cookie_header = response.headers["Set-Cookie"]
-          expect(jwt_cookie_header).to be_present
-          expect(jwt_cookie_header).to match(/jwt=mock\.jwt\.token/)
-          expect(jwt_cookie_header).to match(/HttpOnly/i)
+          # Assert cookies are present and attributes are properly set (httponly)
+          set_cookie_header = Array(response.headers["Set-Cookie"]).join("\n")
+          expect(set_cookie_header).to be_present
+          expect(set_cookie_header).to match(/jwt=mock\.jwt\.token/)
+          expect(set_cookie_header).to match(/remember_user_token=/)
+          expect(set_cookie_header).to match(/forem_user_signed_in=true/)
+          expect(set_cookie_header).to match(/HttpOnly/i)
         end
 
         context "when the user has never signed in before (current_sign_in_at is blank)" do

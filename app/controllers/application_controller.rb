@@ -452,15 +452,15 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_by_token
-    auth_header = request.headers["Authorization"]
-    return unless auth_header.present? && auth_header.start_with?("Bearer ")
+    token = Authentication::AuthToken.extract_bearer_token(request.headers["Authorization"])
+    return unless token
 
-    token = auth_header.split.last
     payload = decode_auth_token(token)
     return unless payload && payload["user_id"]
+    return if payload["purpose"] == Authentication::AuthToken::AUTH_PASS_PURPOSE
 
     user = User.find_by(id: payload["user_id"])
-    return unless user
+    return unless user && Authentication::AuthToken.valid_for_user?(payload, user)
 
     @current_user = user
     @token_authenticated = true

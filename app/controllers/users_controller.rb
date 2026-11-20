@@ -124,6 +124,7 @@ class UsersController < ApplicationController
     set_current_tab("account")
     if @user.email?
       Users::DeleteWorker.perform_async(@user.id)
+      Authentication::AuthToken.revoke_for_user!(@user.id)
       sign_out @user
       flash[:global_notice] = I18n.t("users_controller.deletion_scheduled")
       redirect_to new_user_registration_path

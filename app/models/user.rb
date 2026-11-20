@@ -336,6 +336,7 @@ class User < ApplicationRecord
   after_commit :bust_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
   after_commit :bust_profile_image_cache, on: :update, if: :profile_image_changed_for_cache?
   after_commit :enqueue_profile_spam_check, on: :update, if: :name_contains_spam_trigger_terms?
+  after_commit :revoke_auth_tokens_on_password_change, on: :update, if: :saved_change_to_encrypted_password?
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
@@ -1397,5 +1398,9 @@ class User < ApplicationRecord
       embed_page.user = self
       embed_page.update!(slug: new_slug)
     end
+  end
+
+  def revoke_auth_tokens_on_password_change
+    Authentication::AuthToken.revoke_for_user!(id)
   end
 end
