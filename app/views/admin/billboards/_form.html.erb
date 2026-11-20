@@ -173,6 +173,24 @@
       <p class="crayons-field__description">Billboard will automatically be marked as not approved after this time</p>
     </div>
 
+    <fieldset class="flex flex-col gap-4">
+      <legend class="crayons-field__label mb-2"><%= t("views.admin.billboard_campaigns.delivery_controls") %></legend>
+      <div class="crayons-field">
+        <%= label_tag :billboard_campaign_id, t("views.admin.billboard_campaigns.id"), class: "crayons-field__label" %>
+        <%= number_field_tag :billboard_campaign_id, @billboard.billboard_campaign_id, min: 1, class: "crayons-textfield", autocomplete: "off", aria: { describedby: "billboard-campaign-help" } %>
+        <p id="billboard-campaign-help" class="crayons-field__description">
+          <%= t("views.admin.billboard_campaigns.membership_help_html", campaigns: link_to(t("views.admin.billboard_campaigns.title"), admin_billboard_campaigns_path, class: "c-link")) %>
+        </p>
+      </div>
+      <p id="billboard-caps-help" class="crayons-field__description"><%= t("views.admin.billboard_campaigns.billboard_limits") %></p>
+      <% %i[max_impressions_count max_clicks_count].each do |attribute| %>
+        <div class="crayons-field">
+          <%= label_tag attribute, t("views.admin.billboard_campaigns.#{attribute}"), class: "crayons-field__label" %>
+          <%= number_field_tag attribute, @billboard.public_send(attribute), min: 0, max: BillboardCampaign::MAX_CAP, required: true, class: "crayons-textfield", autocomplete: "off", aria: { describedby: "billboard-caps-help" } %>
+        </div>
+      <% end %>
+    </fieldset>
+
     <div class="crayons-field">
       <%= label_tag :priority, "Prioritized:", class: "crayons-field__label" %>
       <%= select_tag :priority, options_for_select([false, true], selected: @billboard.priority), class: "crayons-select" %>

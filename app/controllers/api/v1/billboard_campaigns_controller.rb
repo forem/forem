@@ -21,11 +21,7 @@ module Api
       def update
         campaign = BillboardCampaign.find(params[:id])
         missing = []
-        BillboardCampaign.transaction do
-          # Hold the campaign's billboards, then the campaign, so none is approved between the check and the
-          # save. Billboard saves lock their own row before the campaign's, so this order can't deadlock.
-          campaign.billboards.order(:id).lock.ids
-          campaign.lock!
+        campaign.with_billboards_locked do
           campaign.assign_attributes(permitted_params)
           missing = BillboardCampaignPolicy.new(@user, campaign).missing_sub_permissions(:save)
           campaign.save! if missing.empty?

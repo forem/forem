@@ -104,6 +104,8 @@ class Billboard < ApplicationRecord
   validates :body_markdown, presence: true
   validates :minimized_body_markdown, presence: true, if: :persistent?
   validates :organization, presence: true, if: :community?
+  validates :billboard_campaign, presence: true,
+                                 if: -> { billboard_campaign_id.present? && will_save_change_to_billboard_campaign_id? }
   validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
   validates :max_impressions_count, :max_clicks_count,
             numericality: { only_integer: true, greater_than_or_equal_to: 0,

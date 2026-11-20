@@ -40,10 +40,15 @@ module Admin
     def create
       @billboard = Billboard.new(billboard_params)
       @billboard.creator = current_user
-      missing = missing_sub_permissions(:save)
+      missing = []
+      saved = Billboard.transaction do
+        @billboard.lock_affected_campaigns!
+        missing = missing_sub_permissions(:save)
+        @billboard.save if missing.empty?
+      end
       return render_missing_sub_permissions(:new, missing) if missing.any?
 
-      if @billboard.save
+      if saved
         flash[:success] = I18n.t("admin.billboards_controller.created")
         redirect_to edit_admin_billboard_path(@billboard.id)
       else
@@ -101,7 +106,8 @@ module Admin
                     :exclude_article_ids, :audience_segment_id, :priority, :browser_context,
                     :exclude_role_names, :target_role_names, :include_subforem_ids,
                     :render_mode, :template, :custom_display_label, :requires_cookies, :expires_at,
-                    :special_behavior, :minimized_body_markdown)
+                    :special_behavior, :minimized_body_markdown, :billboard_campaign_id,
+                    :max_impressions_count, :max_clicks_count)
     end
 
     def authorize_admin
