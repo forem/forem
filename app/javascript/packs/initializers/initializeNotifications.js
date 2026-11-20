@@ -113,12 +113,56 @@ function initReactions() {
           thisButt.classList.add('hidden');
           thisButt.classList.remove('inline-flex');
           setTimeout(() => {
-            document
-              .getElementById(
-                `comment-textarea-for-${thisButt.dataset.reactableId}`,
-              )
-              .focus();
+            const textarea = document.getElementById(
+              `comment-textarea-for-${thisButt.dataset.reactableId}`,
+            );
+            if (!textarea) {
+              return;
+            }
+            textarea.focus();
+            // Mount the rich text toolbar (formatting buttons, image upload,
+            // emoji picker, etc.) on the reply textarea so the notification
+            // reply matches the article comment form. Mirrors the dynamic
+            // reply path in commentsPage.js.
+            if (
+              window.Forem &&
+              typeof window.Forem.initializeEnhancedCommentTextArea ===
+                'function'
+            ) {
+              window.Forem.initializeEnhancedCommentTextArea(textarea);
+            }
           }, 30);
+        };
+      }
+
+      // Dismissing an inline reply form should only hide it (and restore the
+      // "Reply" toggle button) so it can be reopened, rather than removing the
+      // form from the DOM like the shared handleFormClose does.
+      butts = document.getElementsByClassName('js-notification-reply-dismiss');
+
+      for (let i = 0; i < butts.length; i++) {
+        const butt = butts[i];
+
+        butt.onclick = function (event) {
+          event.preventDefault();
+          const { reactableId } = this.dataset;
+
+          const form = document.getElementById(
+            `comment-form-for-${reactableId}`,
+          );
+          if (form) {
+            form.classList.add('hidden');
+          }
+
+          // Restore the matching "Reply" toggle button that was hidden when the
+          // form was opened.
+          const toggle = document.querySelector(
+            `.toggle-reply-form[data-reactable-id="${reactableId}"]`,
+          );
+          if (toggle) {
+            toggle.classList.remove('hidden');
+            toggle.classList.add('inline-flex');
+          }
         };
       }
     }

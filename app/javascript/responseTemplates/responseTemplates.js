@@ -63,8 +63,31 @@ function buildHTML(response, typeOf) {
   return `Error 😞`;
 }
 
-function submitAsModerator(responseTemplateId, parentId) {
-  const commentableId = document.getElementById('comment_commentable_id').value;
+/**
+ * Reads a comment[...] hidden field value from the given form.
+ *
+ * @param {HTMLFormElement} form The comment form
+ * @param {string} field The comment attribute name, e.g. "parent_id"
+ * @returns {string|null} The field value, or null when absent or blank
+ */
+function readCommentField(form, field) {
+  const input = form.querySelector(`[name="comment[${field}]"]`);
+  return input && input.value ? input.value : null;
+}
+
+/**
+ * Submits a moderator response template as a comment.
+ *
+ * @param {string} responseTemplateId The response template ID
+ * @param {HTMLFormElement} form The selected comment form, used for parent and commentable data
+ */
+function submitAsModerator(responseTemplateId, form) {
+  const parentId = readCommentField(form, 'parent_id');
+  const commentableId =
+    readCommentField(form, 'commentable_id') ||
+    document.getElementById('comment_commentable_id')?.value;
+  const commentableType =
+    readCommentField(form, 'commentable_type') || 'Article';
 
   fetch(`/comments/moderator_create`, {
     method: 'POST',
@@ -80,7 +103,7 @@ function submitAsModerator(responseTemplateId, parentId) {
       comment: {
         body_markdown: '',
         commentable_id: commentableId,
-        commentable_type: 'Article',
+        commentable_type: commentableType,
         parent_id: parentId,
       },
     }),
@@ -112,8 +135,6 @@ function addClickListeners(form, onTemplateSelected) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
-  const parentCommentId =
-    form.id !== 'new_comment' && !form.id.includes('edit_comment');
   const insertButtons = Array.from(
     responsesContainer.getElementsByClassName('insert-template-button'),
   );
@@ -145,7 +166,7 @@ function addClickListeners(form, onTemplateSelected) {
       e.preventDefault();
 
       if (confirm(confirmMsg)) {
-        submitAsModerator(e.target.dataset.responseTemplateId, parentCommentId);
+        submitAsModerator(e.target.dataset.responseTemplateId, form);
       }
     });
   });
