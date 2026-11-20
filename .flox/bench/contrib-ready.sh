@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Time "fresh clone -> contributor ready" for this environment (option 3).
+# Time "fresh clone -> contributor ready" for this environment.
 #
 #   .flox/bench/contrib-ready.sh <label> [--wipe-gems] [--wipe-yarn-cache]
 #
@@ -12,7 +12,8 @@
 #   --wipe-gems        also empties the shared compiled-gem dir for this Ruby
 #                      (~/.cache/forem-flox/gems/<ruby>), i.e. a first-ever checkout
 #   --wipe-yarn-cache  uses an empty, isolated Yarn global folder instead of ~/.yarn
-# Logs go to $BENCH_LOGDIR (default: a new temp dir).
+# Logs go to $BENCH_LOGDIR (default: a new temp dir), with the readiness report
+# (forem-doctor JSON) next to them as <label>.doctor.json.
 set -u
 label=${1:?label}; shift
 logdir=${BENCH_LOGDIR:-$(mktemp -d)}; mkdir -p "$logdir"; log="$logdir/$label.log"
@@ -34,6 +35,7 @@ if [ $wipe_yarn = 1 ]; then
   find "$YARN_GLOBAL_FOLDER" -delete 2>/dev/null; mkdir -p "$YARN_GLOBAL_FOLDER"
 fi
 
+export BENCH_LOGDIR="$logdir" LABEL="$label"
 t0=$(now)
 flox activate -c '
   now() { perl -MTime::HiRes=time -e "printf q(%.1f), time"; }
@@ -42,13 +44,13 @@ flox activate -c '
     echo "bootstrap did not finish; logs in $FLOX_ENV_CACHE/bootstrap/"; exit 1
   fi
   flox services start >/dev/null 2>&1
-  for i in $(seq 1 360); do
-    c=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/" 2>/dev/null)
-    [ "$c" = 200 ] && break; sleep 0.5
-  done
+  # forem-doctor waits for every component, GET / == 200 included.
+  .flox/bin/forem-doctor --wait 360 > "$FLOX_ENV_CACHE/doctor.json"; echo "doctor_exit=$?"
+  c=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/" 2>/dev/null)
   echo "http=$c"; echo "T_SERVED $(now)"
   bin/rspec spec/models/tag_spec.rb 2>&1 | grep -E "examples?, "
   echo "T_SPEC $(now)"
+  cp "$FLOX_ENV_CACHE/doctor.json" "$BENCH_LOGDIR/$LABEL.doctor.json"
   flox services stop >/dev/null 2>&1
 ' > "$log" 2>&1; rc=$?
 t1=$(awk '/^T_ACTIVATED/{print $2}' "$log"); t2=$(awk '/^T_SERVED/{print $2}' "$log"); t3=$(awk '/^T_SPEC/{print $2}' "$log")

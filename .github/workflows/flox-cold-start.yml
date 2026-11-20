@@ -6,11 +6,25 @@ name: Flox cold start
 
 on:
   workflow_dispatch:
-  push:
-    branches: [flox-fast]
+  # Only when the Flox environment (or this workflow) changes. Pull requests
+  # from forks need a Forem team member's `/ci` reply before this runs.
+  pull_request:
     paths:
       - ".flox/**"
+      - ".ruby-version"
+      - ".nvmrc"
       - ".github/workflows/flox-cold-start.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".flox/**"
+      - ".ruby-version"
+      - ".nvmrc"
+      - ".github/workflows/flox-cold-start.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 permissions:
   contents: read
@@ -30,10 +44,11 @@ jobs:
           # Fiber#resume during seeding on this runner, most likely Ruby bug
           # #20085 (aarch64 pointer authentication, fixed in 3.3.1).
           - { name: aarch64-linux, os: ubuntu-24.04-arm, experimental: true }
-          # aarch64-darwin (macos-15) dropped: GitHub never assigned a runner
-          # in four tries (capacity). Measure macOS locally with contrib-ready.sh.
+          # Hosted macOS runners were not assigned in four tries on a fork
+          # (capacity), so this entry may queue; it does not fail the run.
+          - { name: aarch64-darwin, os: macos-15, experimental: true }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Machine
         run: |
@@ -58,11 +73,24 @@ jobs:
               | grep -E '^(substituters|extra-substituters|trusted-substituters|http2|max-substitution-jobs) ' || true
           } | tee -a "$RUNNER_TEMP/summary.txt"
 
+      - name: forem-doctor self-test
+        run: flox activate -c '.flox/bin/forem-doctor --self-test'
+
       - name: Fresh clone to contributor ready
         run: |
           export BENCH_LOGDIR="$RUNNER_TEMP/bench"
           .flox/bench/contrib-ready.sh "${{ matrix.name }}" | tee -a "$RUNNER_TEMP/summary.txt"
           grep -q '0 failures' "$BENCH_LOGDIR/${{ matrix.name }}.log"
+          grep -q '"ready": true' "$BENCH_LOGDIR/${{ matrix.name }}.doctor.json"
+
+      - name: Readiness check fails when services are down
+        # forem-doctor must exit 1 and say why, not report ready.
+        run: |
+          set +e
+          flox activate -c '.flox/bin/forem-doctor --skip js_build > "$RUNNER_TEMP/doctor-down.json"'
+          rc=$?
+          test "$rc" -eq 1
+          grep -q '"ready": false' "$RUNNER_TEMP/doctor-down.json"
 
       - name: Diagnostics
         if: failure() && runner.os == 'Linux'
