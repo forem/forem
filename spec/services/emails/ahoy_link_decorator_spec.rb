@@ -153,4 +153,101 @@ RSpec.describe Emails::AhoyLinkDecorator, type: :service do
       expect(params_from(article["url"])["ahoy_click"]).to eq("true")
     end
   end
+
+  describe "out-of-domain fallbacks and campaign handling" do
+    it "preserves campaign parameter semantics on internal and external links" do
+      with_campaign = decorate(
+        { "internal" => article_url, "external" => "https://example.com/post" },
+        data: { token: token, campaign: "digest" },
+      )
+      expect(params_from(with_campaign["internal"])["c"]).to eq("digest")
+      expect(params_from(with_campaign["external"])["c"]).to eq("digest")
+
+      with_empty_campaign = decorate(
+        { "internal" => article_url, "external" => "https://example.com/post" },
+        data: { token: token, campaign: "" },
+      )
+      expect(params_from(with_empty_campaign["internal"])).not_to have_key("c")
+      expect(params_from(with_empty_campaign["external"])["c"]).to eq("")
+    end
+
+    it "falls back transparently for HTML containing comments and schemeless heuristic URLs" do
+      payload = {
+        "commented_html" => %(<!-- comment --><a href="#{article_url}">Read</a>),
+        "heuristic" => "example.com/post"
+      }
+      native_returns = []
+      allow(ForemNative).to receive(:ahoy_decorate_payload).and_wrap_original do |original, *args|
+        res = original.call(*args)
+        native_returns << res
+        res
+      end
+
+      result = decorate(payload)
+
+      expect(native_returns).to eq([nil])
+      href = Nokogiri::HTML::DocumentFragment.parse(result["commented_html"]).at_css("a")["href"]
+      expect(params_from(href)["ahoy_click"]).to eq("true")
+      expect(result["heuristic"]).to include("/ahoy/click?")
+      expect(params_from(result["heuristic"])["u"]).to eq("example.com/post")
+    end
+
+    it "preserves HashWithIndifferentAccess payload classes via Ruby fallback" do
+      payload = { "url" => article_url }.with_indifferent_access
+      result = decorate(payload)
+
+      expect(result).to be_a(ActiveSupport::HashWithIndifferentAccess)
+      expect(params_from(result[:url])["ahoy_click"]).to eq("true")
+    end
+
+    it "preserves compare_by_identity hashes via Ruby fallback" do
+      payload = {}.compare_by_identity
+      k1 = +"url"
+      k2 = +"url"
+      payload[k1] = article_url
+      payload[k2] = "https://example.com/post"
+      result = decorate(payload)
+
+      expect(result.compare_by_identity?).to be(true)
+      expect(result.size).to eq(2)
+      expect(params_from(result[k1])["ahoy_click"]).to eq("true")
+      expect(result[k2]).to include("/ahoy/click?")
+    end
+
+    it "reads fresh mailer url_options on repeated calls to the same decorator instance" do
+      decorator = described_class.new({ "ext" => "https://example.com/post" }, ahoy_data)
+      original_options = ActionMailer::Base.default_url_options
+      begin
+        ActionMailer::Base.default_url_options = { host: "first.example.test", protocol: "https" }
+        first = decorator.call
+        ActionMailer::Base.default_url_options = { host: "second.example.test", protocol: "https" }
+        second = decorator.call
+
+        expect(first["ext"]).to start_with("https://first.example.test/ahoy/click?")
+        expect(second["ext"]).to start_with("https://second.example.test/ahoy/click?")
+      ensure
+        ActionMailer::Base.default_url_options = original_options
+      end
+    end
+
+    it "defers non-standard external url_options without breaking internal link tracking" do
+      expect(Emails::AhoyLinkTracking.external_base_url({ 1 => "bad", :host => "dev.to" })).to be_nil
+      expect(Emails::AhoyLinkTracking.external_base_url({ host: "dev.to", protocol: false })).to be_nil
+      expect(
+        Emails::AhoyLinkTracking.external_base_url({ host: "dev.to:8443", protocol: "https", port: 9443 }),
+      ).to be_nil
+      expect(
+        Emails::AhoyLinkTracking.external_base_url({ host: "dev.to", protocol: "https", port: 9443 }),
+      ).to eq("https://dev.to:9443/ahoy/click")
+    end
+
+    it "never injects attributes when rewriting single-quoted hrefs containing double quotes" do
+      html = %(<a href='https://#{domain}/post"title="injected'>Read</a>)
+      result = decorate({ "smart_summary" => html })
+      anchor = Nokogiri::HTML::DocumentFragment.parse(result["smart_summary"]).at_css("a")
+
+      expect(anchor.attributes.keys).to eq(["href"])
+      expect(params_from(anchor["href"])["ahoy_click"]).to eq("true")
+    end
+  end
 end

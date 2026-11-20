@@ -1,3 +1,4 @@
+import '../shared/preact/preactRuntime';
 import 'focus-visible';
 import {
   initializeMobileMenu,
@@ -5,9 +6,13 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
-import { initializePodcastPlayback } from '../utilities/podcastPlayback';
-import { createRootFragment } from '../shared/preact/preact-root-fragment';
+import {
+  loadMediaPlaybackBundle,
+  shouldInitializePodcastPlayback,
+} from '../utilities/mediaPlaybackLoader';
+import { maybeLoadEventSignupButtons } from '../utilities/eventSignupButtonsLoader';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
+import { loadCommentTextAreaBundle } from '@utilities/commentTextAreaLoader';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
@@ -25,31 +30,44 @@ Document.prototype.ready = new Promise((resolve) => {
 // pack ran, queued by the stub in layouts/application.html.erb.
 const queuedBillboardPlacementReveals =
   window.Forem?.queuedBillboardPlacementReveals || [];
+const existingCommentTextArea = window.Forem?.CommentTextArea;
+const existingRenderCommentTextArea = window.Forem?.renderCommentTextArea;
+const existingCreateEmojiPopup = window.Forem?.createEmojiPopup;
+const existingRenderWindowModal = window.Forem?.renderWindowModal;
+const existingUnmountWindowModal = window.Forem?.unmountWindowModal;
+const existingPostscribe = window.Forem?.postscribe;
+const existingInitializePodcastPlayback =
+  window.Forem?.initializePodcastPlayback;
+const existingInitializeVideoPlayback = window.Forem?.initializeVideoPlayback;
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   audioInitialized: false,
-  preactImport: undefined,
-  getPreactImport() {
-    if (!this.preactImport) {
-      this.preactImport = import('preact');
-    }
-    return this.preactImport;
-  },
+  CommentTextArea: existingCommentTextArea,
+  renderCommentTextArea: existingRenderCommentTextArea,
+  createEmojiPopup: existingCreateEmojiPopup,
+  renderWindowModal: existingRenderWindowModal,
+  unmountWindowModal: existingUnmountWindowModal,
+  postscribe: existingPostscribe,
+  initializePodcastPlayback: existingInitializePodcastPlayback,
+  initializeVideoPlayback: existingInitializeVideoPlayback,
   enhancedCommentTextAreaImport: undefined,
   getEnhancedCommentTextAreaImports() {
     if (!this.enhancedCommentTextAreaImport) {
-      this.enhancedCommentTextAreaImport = import(
-        './CommentTextArea/CommentTextArea'
+      this.enhancedCommentTextAreaImport = loadCommentTextAreaBundle().catch(
+        (err) => {
+          this.enhancedCommentTextAreaImport = undefined;
+          throw err;
+        },
       );
     }
-    return Promise.all([
-      this.enhancedCommentTextAreaImport,
-      this.getPreactImport(),
-    ]);
+    return Promise.all([this.enhancedCommentTextAreaImport]);
   },
   initializeEnhancedCommentTextArea: async (originalTextArea) => {
-    const parentContainer = originalTextArea.parentElement;
+    const parentContainer = originalTextArea?.parentElement;
+    if (!parentContainer) {
+      return;
+    }
 
     const alreadyInitialized =
       parentContainer.classList.contains('c-autocomplete');
@@ -58,13 +76,17 @@ window.Forem = {
       return;
     }
 
-    const [{ CommentTextArea }, { render, h }] =
+    if (typeof window.Forem.renderCommentTextArea === 'function') {
+      window.Forem.renderCommentTextArea(originalTextArea);
+      return;
+    }
+
+    const [{ renderCommentTextArea }] =
       await window.Forem.getEnhancedCommentTextAreaImports();
 
-    render(
-      <CommentTextArea vanillaTextArea={originalTextArea} />,
-      createRootFragment(parentContainer, originalTextArea),
-    );
+    if (typeof renderCommentTextArea === 'function') {
+      renderCommentTextArea(originalTextArea);
+    }
   },
   showModal: showWindowModal,
   closeModal: () => closeWindowModal(),
@@ -72,52 +94,84 @@ window.Forem = {
   Runtime,
 };
 
+window.initializePodcastPlayback =
+  window.initializePodcastPlayback ||
+  (() => {
+    loadMediaPlaybackBundle().then(({ initializePodcastPlayback }) => {
+      initializePodcastPlayback?.();
+    });
+  });
+
+function maybeInitializeMediaPlayback() {
+  const needsVideo = Boolean(document.getElementById('video-player-source'));
+  const needsPodcast = shouldInitializePodcastPlayback(Runtime);
+
+  if (!needsVideo && !needsPodcast) {
+    return;
+  }
+
+  loadMediaPlaybackBundle().then(
+    ({ initializePodcastPlayback, initializeVideoPlayback }) => {
+      if (needsVideo && document.getElementById('video-player-source')) {
+        initializeVideoPlayback?.();
+      }
+      if (needsPodcast) {
+        initializePodcastPlayback?.();
+      }
+    },
+  );
+}
+
 queuedBillboardPlacementReveals.forEach(revealBillboardPlacement);
 
 if (document.location.pathname.startsWith('/dashboard')) {
-  import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
-    initializeDashboardSort();
-  });
+  import('./initializers/initializeDashboardSort').then(
+    ({ initializeDashboardSort }) => {
+      initializeDashboardSort();
+    },
+  );
 }
 
-if (document.getElementById('video-player-source')) {
-  import('../utilities/videoPlayback').then(({ initializeVideoPlayback }) => {
-    initializeVideoPlayback();
-  });
-}
-
-initializePodcastPlayback();
+maybeInitializeMediaPlayback();
+maybeLoadEventSignupButtons();
 document.ready.then(() => {
   initializeSlides();
 });
+function updateSearchPlaceholder() {
+  const searchElement = document.getElementById('search-input');
+  if (!searchElement) {
+    return;
+  }
+  const articleContainer = document.getElementById('article-show-container');
+  if (articleContainer?.dataset?.articleId) {
+    searchElement.placeholder = 'Find related posts...';
+  } else {
+    searchElement.placeholder = 'Search...';
+  }
+}
+
 InstantClick.on('change', () => {
   if (document.location.pathname.startsWith('/dashboard')) {
-    import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
-      initializeDashboardSort();
-    });
+    import('./initializers/initializeDashboardSort').then(
+      ({ initializeDashboardSort }) => {
+        initializeDashboardSort();
+      },
+    );
   }
 
-  if (document.getElementById('video-player-source')) {
-    import('../utilities/videoPlayback').then(({ initializeVideoPlayback }) => {
-      initializeVideoPlayback();
-    });
-  }
-
-  initializePodcastPlayback();
+  maybeInitializeMediaPlayback();
+  maybeLoadEventSignupButtons();
   initializeSlides();
+  trackCreateAccountClicks('sidebar-wrapper-left');
 
   if (window.instgrm?.Embeds?.process) {
     window.instgrm.Embeds.process();
   }
 
-  const searchElement = document.getElementById('search-input');
-  const articleContainer = document.getElementById('article-show-container');
-  if (searchElement && articleContainer?.dataset?.articleId) {
-    searchElement.placeholder = 'Find related posts...';
-  } else {
-    searchElement.placeholder = 'Search...';
-  }
+  updateSearchPlaceholder();
 });
+
+InstantClick.on('restore', updateSearchPlaceholder);
 
 // Initialize data-runtime context to the body data-attribute
 document.body.dataset.runtime = window.Forem.Runtime.currentContext();
@@ -134,7 +188,11 @@ function getPageEntries() {
  * Initializes the left hand side hamburger menu
  */
 function initializeNav() {
-  const { currentPage } = document.getElementById('page-content').dataset;
+  const pageContent = document.getElementById('page-content');
+  if (!pageContent) {
+    return;
+  }
+  const { currentPage } = pageContent.dataset;
   const menuTriggers = [
     ...document.querySelectorAll('.js-hamburger-trigger, .hamburger a'),
   ];
@@ -175,6 +233,9 @@ waitOnBaseData()
     InstantClick.on('change', () => {
       initializeNav();
     });
+    InstantClick.on('restore', () => {
+      initializeNav();
+    });
 
     if (Runtime.currentMedium() === 'ForemWebView') {
       // Dynamic import of the namespace
@@ -193,26 +254,6 @@ waitOnBaseData()
 // we need to call initializeNav here for the initial page load
 initializeNav();
 
-async function loadCreatorSettings() {
-  try {
-    const [{ LogoUploadController }, { Application }] = await Promise.all([
-      import('@admin/controllers/logo_upload_controller'),
-      import('@hotwired/stimulus'),
-    ]);
-
-    const application = Application.start();
-    application.register('logo-upload', LogoUploadController);
-  } catch (error) {
-    Honeybadger.notify(
-      `Error loading the creator settings controller: ${error.message}`,
-    );
-  }
-}
-
-if (document.location.pathname === '/admin/creator_settings/new') {
-  loadCreatorSettings();
-}
-
 document.ready.then(() => {
   setTimeout(() => {
     history.scrollRestoration = 'manual';
@@ -223,28 +264,31 @@ document.ready.then(() => {
   )[0];
   hamburgerTrigger.addEventListener('click', getNavigation);
 
-
-  // Dynamically loading the script.js.
-  // We don't currently have dynamic insert working, so using this
-  // method instead.
-  const hoverElement = document.querySelector("#search-input");
-
-  const scriptElement = document.querySelector('meta[name="search-script"]');
-  if (scriptElement) {
-    hoverElement.addEventListener("mouseenter", function() {
-      const scriptPath = scriptElement.getAttribute("content");
-
-      // Check if the script is already added to the head
-      if (scriptPath && !document.querySelector(`script[src="${scriptPath}"]`)) {
-        const script = document.createElement("script");
+  // Dynamically load Search.js on hover or keyboard focus of #search-input.
+  const searchInput = document.querySelector('#search-input');
+  const searchScriptMeta = document.querySelector('meta[name="search-script"]');
+  if (searchInput && searchScriptMeta) {
+    const ensureSearchScriptLoaded = () => {
+      const scriptPath = searchScriptMeta.getAttribute('content');
+      if (
+        scriptPath &&
+        !document.querySelector(`script[src="${scriptPath}"]`)
+      ) {
+        const script = document.createElement('script');
         script.src = scriptPath;
-        script.defer = true; // Optional, if you want it to load in deferred mode
+        script.defer = true;
+        script.onerror = () => {
+          script.remove();
+        };
         document.head.appendChild(script);
       }
-    }, { once: true }); // Ensures the hover event only triggers once
+    };
+    searchInput.addEventListener('mouseenter', ensureSearchScriptLoaded);
+    searchInput.addEventListener('focus', ensureSearchScriptLoaded);
   }
 });
 
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
 trackCreateAccountClicks('comments-locked-cta');
+trackCreateAccountClicks('sidebar-wrapper-left');

@@ -1,5 +1,3 @@
 <div class="ltag-org-posts">
-  <% articles.each do |story| %>
-    <%= render partial: "articles/single_story", locals: { story: story, featured: false } %>
-  <% end %>
+  <%= render_story_cards(articles, featured: false) %>
 </div>

@@ -10,6 +10,7 @@ module Ai
   # - Tags are one absolute Noul per candidate tag, all in one request, because several tags
   #   can apply at once; code keeps the strongest few above a threshold.
   class ArticleEnhancer
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
     VERSION = "1.1".freeze
@@ -116,7 +117,7 @@ module Ai
     end
 
     def jev?(function_key)
-      @injected_client.nil? && selection(function_key).jev?
+      @injected_client.nil? && selection(function_key).decision?
     end
 
     def gemini_client(function_key)
@@ -125,8 +126,8 @@ module Ai
     end
 
     def jev_client(function_key)
-      Ai::TypeSafe::Client.new(model: selection(function_key).model, wrapper: self, affected_content: @article,
-                               affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      selection(function_key).decision_client(wrapper: self, affected_content: @article,
+                                              affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
     # --- Jev (TypeSafe System One) ---
@@ -220,7 +221,7 @@ module Ai
     # Gets candidate tags for the article's subforem, limited to top 150 by hotness.
     # @return [ActiveRecord::Relation<Tag>] Candidate tags.
     def get_candidate_tags
-      Tag.from_subforem(@article.subforem_id)
+      Tag.from_subforem(effective_subforem_id(@article.subforem_id))
         .supported
         .order(hotness_score: :desc)
         .limit(150)

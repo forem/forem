@@ -210,6 +210,13 @@ module Settings
     # recent window so a fresh instance still works.
     setting :github_contributor_prs_scanned_through, type: :string, default: ""
 
+    # User ids (as strings) whose per-user merged-PR search in
+    # Badges::AwardContributorFromGithub has not completed yet - e.g. the run ran
+    # out of Search API budget after awarding them a baseline badge. Hourly runs
+    # retry these before applying the "already holds a badge" skip, and an id is
+    # removed only once its search completes (or can no longer change anything).
+    setting :github_contributor_pending_pr_search_user_ids, type: :array, default: %w[]
+
     def self.algolia_search_enabled?
       algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
     end

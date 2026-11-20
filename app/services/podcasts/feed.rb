@@ -13,7 +13,7 @@ module Podcasts
     # @see Podcasts::EnqueueGetEpisodesWorker
     def get_episodes(limit: 100, force_update: false)
       # increased the redirect limit from 5 (default) to 7 to be able to handle such urls
-      rss = HTTParty.get(podcast.feed_url, limit: 7).body.to_s
+      rss = SafeHttp.get(podcast.feed_url, max_redirects: 7).body.to_s
       feed = RSS::Parser.parse(rss, false)
 
       set_unreachable(status: :unparsable, force_update: force_update) && return unless feed
@@ -26,7 +26,8 @@ module Podcasts
       end
       podcast.update_columns(reachable: true, status_notice: "")
       feed.items.size
-    rescue Net::OpenTimeout, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, SocketError, HTTParty::RedirectionTooDeep
+    rescue Net::OpenTimeout, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, SocketError, HTTParty::RedirectionTooDeep,
+           SafeHttp::Error
       set_unreachable(status: :unreachable, force_update: force_update)
     rescue OpenSSL::SSL::SSLError
       set_unreachable(status: :ssl_failed, force_update: force_update)

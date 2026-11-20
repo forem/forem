@@ -36,4 +36,25 @@ RSpec.describe ArticleApiIndexService do
                                        where: "((published = true) AND (featured = true))")
     end
   end
+
+  describe "#get with a tag" do
+    let(:tag_name) { "ruby" }
+
+    it "returns only published past articles for the tag ordered by hotness_score descending" do
+      older_hot = create(:article, :past, tags: tag_name, past_published_at: 2.days.ago)
+      newer_cold = create(:article, :past, tags: tag_name, past_published_at: 1.day.ago)
+      older_hot.update_column(:hotness_score, 500)
+      newer_cold.update_column(:hotness_score, 100)
+
+      unpublished = create(:article, tags: tag_name, published: false)
+      future_scheduled = create(:article, tags: tag_name, published: true, published_at: 1.day.from_now)
+      other_tag = create(:article, :past, tags: "elixir", past_published_at: 1.hour.ago)
+
+      relation = described_class.new(tag: tag_name).get
+
+      expect(relation.to_sql).to include("COALESCE(articles.published AND articles.published_at <=")
+      expect(relation.to_a).to eq([older_hot, newer_cold])
+      expect(relation.to_a).not_to include(unpublished, future_scheduled, other_tag)
+    end
+  end
 end

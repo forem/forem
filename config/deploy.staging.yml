@@ -1,0 +1,14 @@
+# Staging / Raw-IP / Pre-DNS Destination (`bundle exec kamal setup -d staging` / `bundle exec kamal deploy -d staging`)
+#
+# Use for quick bare-metal/VM previews over plain HTTP before DNS or SSL certificates are set up.
+# `kamal-proxy` listens on port 80 and routes all requests by IP without Let's Encrypt ACME challenges.
+
+proxy:
+  ssl: false
+  forward_headers: true
+
+env:
+  clear:
+    APP_PROTOCOL: <%= ENV.fetch("APP_PROTOCOL", "http://").to_s.inspect %>
+    FORCE_SSL_IN_RAILS: <%= ENV.fetch("FORCE_SSL_IN_RAILS", "false").to_s.inspect %>
+    RAILS_ASSUME_SSL: <%= ENV.fetch("RAILS_ASSUME_SSL", "false").to_s.inspect %>

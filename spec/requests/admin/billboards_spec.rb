@@ -44,6 +44,37 @@ RSpec.describe "/admin/customization/billboards" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
+
+      it "uses without_count pagination and selects only summary columns", :aggregate_failures do
+        create(:billboard, name: "Target Billboard", body_markdown: "Heavy markdown payload", organization: nil)
+
+        queries = []
+        subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          queries << payload[:sql]
+        end
+        get admin_billboards_path, params: { search: "Target" }
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Target Billboard")
+        count_queries = queries.grep(/SELECT COUNT\(\*\) FROM "display_ads"/i)
+        expect(count_queries).to be_empty
+
+        select_query = queries.detect { |sql| sql.include?('FROM "display_ads"') }
+        expect(select_query).to be_present
+        expect(select_query).not_to include("body_markdown")
+        expect(select_query).not_to include('"display_ads"."processed_html"')
+      end
+
+      it "renders previous link on subsequent pages", :aggregate_failures do
+        create_list(:billboard, 2, organization: nil)
+
+        get admin_billboards_path, params: { page: 2, search: "Ad" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('rel="prev"')
+      end
     end
 
     describe "GET /admin/customization/billboards/:id/edit" do
@@ -61,6 +92,32 @@ RSpec.describe "/admin/customization/billboards" do
       it "allows the request" do
         get admin_billboard_path(billboard.id)
         expect(response).to have_http_status(:ok)
+      end
+
+      it "bounds billboard events to the recent 30-day window and preloads event users", :aggregate_failures do
+        recent_user_one = create(:user, :without_profile, profile_image: nil)
+        recent_user_two = create(:user, :without_profile, profile_image: nil)
+        stale_user = create(:user, :without_profile, profile_image: nil)
+        create(:billboard_event, billboard: billboard, user: recent_user_one, category: "click", created_at: 2.days.ago)
+        create(:billboard_event, billboard: billboard, user: recent_user_two, category: "click", created_at: 3.days.ago)
+        create(:billboard_event, billboard: billboard, user: stale_user, category: "click", created_at: 45.days.ago)
+
+        preload_queries = []
+        subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          if payload[:sql].include?('SELECT "users"."id", "users"."username" FROM "users"')
+            preload_queries << payload[:sql]
+          end
+        end
+        get admin_billboard_path(billboard.id)
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("@#{recent_user_one.username}")
+        expect(response.body).to include("@#{recent_user_two.username}")
+        expect(response.body).not_to include("@#{stale_user.username}")
+        expect(preload_queries.size).to eq(1)
       end
     end
 
@@ -171,6 +228,89 @@ RSpec.describe "/admin/customization/billboards" do
           delete admin_billboard_path(billboard.id)
         end.to change(Billboard, :count).by(-1)
       end
+    end
+  end
+
+  context "when the user is a Billboard admin with restricted sub-permissions" do
+    let(:restricted_admin) do
+      create(:user, :single_resource_admin, :without_profile, profile_image: nil, resource: Billboard)
+    end
+    let(:draft_params) { params.merge(approved: false, published: false) }
+
+    before do
+      SubPermissions.update_grant(user: restricted_admin, resource_type: "Billboard",
+                                  sub_permissions: SubPermissions.build(allow: []))
+      sign_in restricted_admin
+    end
+
+    it "creates an unapproved, unpublished billboard" do
+      expect { post admin_billboards_path, params: draft_params }.to change(Billboard, :count).by(1)
+      expect(Billboard.last).to have_attributes(approved: false, published: false, creator_id: restricted_admin.id)
+    end
+
+    it "refuses to create a live billboard and shows why", :aggregate_failures do
+      expect { post_resource }.not_to change(Billboard, :count)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).to include(CGI.escapeHTML("Your Billboard admin access does not include: " \
+                                                      "approve billboards and publish billboards."))
+    end
+
+    it "edits an unapproved billboard but refuses to approve it", :aggregate_failures do
+      draft = create(:billboard, approved: false, published: false, organization: nil)
+
+      put admin_billboard_path(draft.id), params: { name: "Renamed" }
+      expect(draft.reload.name).to eq("Renamed")
+
+      put admin_billboard_path(draft.id), params: { approved: true }
+      expect(response).to have_http_status(:forbidden)
+      expect(draft.reload).not_to be_approved
+    end
+
+    it "refuses to edit an approved billboard but lets it be taken down", :aggregate_failures do
+      live = create(:billboard, approved: true, published: true, organization: nil)
+
+      put admin_billboard_path(live.id), params: { body_markdown: "Swapped after approval" }
+      expect(response).to have_http_status(:forbidden)
+      expect(live.reload.body_markdown).not_to eq("Swapped after approval")
+
+      put admin_billboard_path(live.id), params: { published: false }
+      expect(live.reload).not_to be_published
+    end
+
+    it "refuses to delete an approved billboard", :aggregate_failures do
+      live = create(:billboard, approved: true, published: true, organization: nil)
+
+      expect { delete admin_billboard_path(live.id) }.not_to change(Billboard, :count)
+      expect(response).to have_http_status(:forbidden)
+      expect(response.parsed_body["error"]).to include("change or delete approved billboards")
+    end
+
+    it "refuses to delete a billboard another request approved after it was loaded", :aggregate_failures do
+      draft = create(:billboard, approved: false, organization: nil)
+      allow(Billboard).to receive(:find).and_wrap_original do |original, *args|
+        original.call(*args).tap { |loaded| Billboard.where(id: loaded.id).update_all(approved: true) }
+      end
+
+      expect { delete admin_billboard_path(draft.id) }.not_to change(Billboard, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "refuses to edit a billboard another request approved after it was loaded", :aggregate_failures do
+      draft = create(:billboard, approved: false, organization: nil)
+      allow(Billboard).to receive(:find).and_wrap_original do |original, *args|
+        original.call(*args).tap { |loaded| Billboard.where(id: loaded.id).update_all(approved: true) }
+      end
+
+      put admin_billboard_path(draft.id), params: { body_markdown: "Swapped after approval" }
+      expect(response).to have_http_status(:forbidden)
+      expect(draft.reload.body_markdown).not_to eq("Swapped after approval")
+    end
+
+    it "deletes an unapproved billboard" do
+      draft = create(:billboard, approved: false, organization: nil)
+
+      expect { delete admin_billboard_path(draft.id) }.to change(Billboard, :count).by(-1)
     end
   end
 

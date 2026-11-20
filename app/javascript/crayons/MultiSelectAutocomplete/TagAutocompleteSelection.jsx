@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { ButtonNew as Button, Icon } from '@crayons';
+import { ButtonNew as Button } from '@crayons/Buttons';
+import { Icon } from '@crayons/Icons';
 import Close from '@images/x.svg';
 
 /**

@@ -38,7 +38,7 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "Upload a new agent session.\n\n### S3 Upload Workflow:\n1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.\n2. Upload the raw transcript to S3.\n3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).",
+        "description": "Upload a new agent session.\n\n### S3 Upload Workflow:\n1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.\n2. Upload the raw transcript to S3 with a PUT to `presigned_url`, sending exactly the returned `headers`.\n3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).",
         "operationId": "createAgentSession",
         "parameters": [
 
@@ -149,8 +149,11 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.",
+        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.\n\n### Upload Rules:\n- Declare the exact size of the file in bytes as `content_length`. The maximum is 10485760 bytes (10MB), the same limit applied to curated session data.\n- PUT the file to `presigned_url` within 15 minutes, sending exactly the returned `headers`. The size is part of the signature, so S3 rejects a body of any other length.\n- Rate limited per user to a configurable number of URLs per configurable window (by default 20 per hour), counted whether or not a session is later created. Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable uploads.",
         "operationId": "presignAgentSession",
+        "parameters": [
+
+        ],
         "responses": {
           "200": {
             "description": "successful",
@@ -164,11 +167,32 @@
                     },
                     "presigned_url": {
                       "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "Headers to send with the PUT to presigned_url. Each is part of the signature.",
+                      "properties": {
+                        "Content-Type": {
+                          "type": "string"
+                        },
+                        "Content-Length": {
+                          "type": "string"
+                        },
+                        "x-amz-acl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "Content-Type",
+                        "Content-Length",
+                        "x-amz-acl"
+                      ]
                     }
                   },
                   "required": [
                     "s3_key",
-                    "presigned_url"
+                    "presigned_url",
+                    "headers"
                   ]
                 }
               }
@@ -177,9 +201,36 @@
           "401": {
             "description": "unauthorized"
           },
+          "422": {
+            "description": "missing or too large content_length"
+          },
+          "429": {
+            "description": "too many requests"
+          },
           "503": {
             "description": "service unavailable"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content_length": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10485760,
+                    "description": "Exact size of the raw transcript in bytes."
+                  }
+                },
+                "required": [
+                  "content_length"
+                ]
+              }
+            }
+          },
+          "description": "Size of the file to upload."
         }
       }
     },
@@ -566,7 +617,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).",
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`). Omitting it records `not_disclosed`; an unrecognized value returns `422`. Ignored when the Forem has AI disclosure turned off.",
         "operationId": "createArticle",
         "parameters": [
 
@@ -854,7 +905,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article, an admin of the article's organization, or a site admin.\n- Edits by anyone other than the author are recorded in the audit log.\n- Returns `404` if the article does not exist or the API key's user may not edit it.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
+        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article, an admin of the article's organization, or a site admin.\n- Edits by anyone other than the author are recorded in the audit log.\n- Returns `404` if the article does not exist or the API key's user may not edit it.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- An unrecognized `ai_disclosure_level` returns `422` (allowed: `not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).\n- Setting `published: false` on an already published article will revert it to draft status.",
         "operationId": "updateArticle",
         "parameters": [
           {
@@ -2009,7 +2060,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
+        "description": "Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.\n\n        ### Restricted Billboard admins:\n        A Billboard admin whose grant has restricted sub-permissions gets a 403 naming what is missing when the\n        request would approve or publish a billboard without the `approve` or `publish` sub-permission.",
         "parameters": [
 
         ],
@@ -2029,6 +2080,9 @@
           },
           "401": {
             "description": "unauthorized"
+          },
+          "403": {
+            "description": "missing sub-permissions"
           },
           "422": {
             "description": "unprocessable"
@@ -2087,7 +2141,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
+        "description": "Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.\n\n        ### Restricted Billboard admins:\n        A Billboard admin whose grant has restricted sub-permissions gets a 403 naming what is missing when the\n        update would approve or publish the billboard, or change one that is already approved, without the\n        matching sub-permission (`approve`, `publish` or `modify_approved`). Unpublishing or unapproving a\n        billboard never needs a sub-permission.",
         "parameters": [
           {
             "name": "id",
@@ -2115,6 +2169,9 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "missing sub-permissions"
           },
           "404": {
             "description": "not found"
@@ -3007,7 +3064,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`).",
+        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`, `meetup`, `conference`).",
         "operationId": "getEvents",
         "parameters": [
           {
@@ -3021,7 +3078,9 @@
                 "live_stream",
                 "takeover",
                 "other",
-                "challenge"
+                "challenge",
+                "meetup",
+                "conference"
               ]
             }
           }
@@ -3650,6 +3709,224 @@
         }
       }
     },
+    "/api/organizations/{organization_id}/article_analytics": {
+      "get": {
+        "summary": "Export article analytics for an organization",
+        "tags": [
+          "analytics"
+        ],
+        "operationId": "getOrganizationArticleAnalytics",
+        "description": "Requires the org_article_analytics organization feature and active membership. Members and admins can export published organization posts with stored lifetime counters. This includes article identifiers, URLs, page views, public reactions and comments. Counters are eventual lifetime totals. updated_at describes the article and is not a cursor for metric changes. Results use the current subforem and ID order. Page size is capped at 100 and page depth at 1000. Pass start and end together (YYYY-MM-DD, UTC, inclusive, at most 90 days) to add a daily series to each article with page views, comments and reactions by category, including reading list saves (counts only). reactions.total includes saves, as in the historical analytics endpoint. Days without activity are returned with zero counts. Daily values come from eventual rollups, so recent days may still be revised. An article whose rollup has not been built yet returns zeros for every day even if it had activity, and its past days can change once the rollup is first populated. Independent posts that mention the organization are excluded. Responses are never cached.",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "First day of the daily series (YYYY-MM-DD). Requires end.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "description": "Last day of the daily series (YYYY-MM-DD), at most 89 days after start. Requires start.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization article metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "title",
+                      "path",
+                      "url",
+                      "user_id",
+                      "organization_id",
+                      "published_at",
+                      "updated_at",
+                      "page_views_count",
+                      "public_reactions_count",
+                      "comments_count"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "user_id": {
+                        "type": "integer"
+                      },
+                      "organization_id": {
+                        "type": "integer"
+                      },
+                      "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "page_views_count": {
+                        "type": "integer"
+                      },
+                      "public_reactions_count": {
+                        "type": "integer"
+                      },
+                      "comments_count": {
+                        "type": "integer"
+                      },
+                      "daily": {
+                        "type": "array",
+                        "description": "Present only when start and end are given.",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "date",
+                            "page_views",
+                            "comments",
+                            "reactions"
+                          ],
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "page_views": {
+                              "type": "integer"
+                            },
+                            "comments": {
+                              "type": "integer"
+                            },
+                            "reactions": {
+                              "type": "object",
+                              "required": [
+                                "total",
+                                "like",
+                                "readinglist",
+                                "unicorn",
+                                "exploding_head",
+                                "raised_hands",
+                                "fire"
+                              ],
+                              "properties": {
+                                "total": {
+                                  "type": "integer"
+                                },
+                                "like": {
+                                  "type": "integer"
+                                },
+                                "readinglist": {
+                                  "type": "integer"
+                                },
+                                "unicorn": {
+                                  "type": "integer"
+                                },
+                                "exploding_head": {
+                                  "type": "integer"
+                                },
+                                "raised_hands": {
+                                  "type": "integer"
+                                },
+                                "fire": {
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Organization membership or feature access required"
+          },
+          "422": {
+            "description": "Invalid date range",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "status"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 422
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organization not found"
+          }
+        }
+      }
+    },
     "/api/organizations/{username}": {
       "get": {
         "summary": "An organization (by username)",
@@ -3730,6 +4007,49 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/organizations/{organization_id_or_username}/listings": {
+      "get": {
+        "summary": "Organization's listings",
+        "tags": [
+          "organizations",
+          "listings"
+        ],
+        "security": [
+
+        ],
+        "description": "This endpoint has been retired and always returns an empty array for an existing organization.\n\n### Path Parameter Options:\n- **organization_id_or_username**: Supports either the organization's numerical ID or its string username (slug).",
+        "operationId": "getOrgListings",
+        "parameters": [
+          {
+            "name": "organization_id_or_username",
+            "in": "path",
+            "required": true,
+            "description": "The organization's numerical ID or string username.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Organization's listings (with ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
                   }
                 }
               }
@@ -3982,7 +4302,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Retrieve details for all Page objects in the system.\n\n        ### Pages Overview:\n        - Pages are custom static or dynamic views hosted on the Forem instance.\n        - Publicly visible unless restricted.\n        - Helpful for building custom menus, rendering site policies, or embedding custom forms.",
+        "description": "Retrieve details for all Page objects in the system.\n\n        ### Pages Overview:\n        - Pages are custom static or dynamic views hosted on the Forem instance.\n        - Publicly visible unless restricted; pages belonging to unpublished events require page or event admin authentication.\n        - Helpful for building custom menus, rendering site policies, or embedding custom forms.\n        - Embed-only HTML pages (`template: \"embed_html\"`) are never included in this listing.\n\n        ### Organization embed pages:\n        Pass `kind=embed` with `organization_id` to list that organization's embed-only HTML pages instead, ordered by creation and including `body_html`, so a client can compare content before updating. This requires authentication as a site page admin, or, when the organization pages feature is enabled for the organization, as one of its admins or a holder of the `Resource Admin: OrganizationPageManagement` role. Other callers receive `401`, and responses are sent with `Cache-Control: private, no-store`.",
         "parameters": [
           {
             "name": "organization_id",
@@ -3992,6 +4312,28 @@
             "schema": {
               "type": "integer",
               "format": "int64"
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter pages belonging to a specific event ID, ordered by position.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "description": "Set to `embed` with `organization_id` to list the organization's embed-only HTML pages. Requires authorization.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "embed"
+              ]
             }
           }
         ],
@@ -4008,6 +4350,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "unauthorized embed page listing"
           }
         }
       },
@@ -4016,7 +4361,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.",
+        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled). Holders of the `Resource Admin: OrganizationPageManagement` role can also create pages of any organization with the organization pages feature enabled, without being a member; those writes add `via` and `organization_id` to the audit log entry.  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`). For event pages, scoped under `events/{event_name_slug}/{event_variation_slug}/{suffix}` (with `.../readme` acting as the optional Showcase/README landing view).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization Markdown pages always use `full_within_layout`; send `embed_html` to create an organization embed page (see below).\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **event_id**: Optional ID of the event this page belongs to.\n        - **position**: Optional display order position for organization or event pages.\n        - **show_in_navigation**: Whether the page appears in organization or event tabs. Defaults to true. Only non-Showcase organization or event pages can set false. Hidden pages remain public at their URL and through the API.\n\n        ### Organization embed pages:\n        Send `template: \"embed_html\"` with `organization_id` to create an embed-only HTML page, served only inside sandboxed iframes through `{% embed %}`. The same callers who manage the organization's pages can create one, and site page admins must supply `organization_id` too.\n        - Only `title`, `description`, `body_html` and `slug` (or `slug_suffix`) are used. The slug is always `{org_slug}/embed/{suffix}`, and either the suffix or the full slug is accepted.\n        - `body_html` is stored as is and never rendered as Markdown or Liquid. It must be at most 256 KB and stay within the HTML nesting depth and element count limits.\n        - An organization can have at most 50 embed pages.\n        - The template is fixed at creation: an embed page can never become a Markdown page, and a Markdown page can never become an embed page.",
         "parameters": [
 
         ],
@@ -4051,7 +4396,15 @@
                   },
                   "body_markdown": {
                     "type": "string",
-                    "description": "The text (in markdown) of the page (required)"
+                    "description": "The text (in markdown) of the page (required unless the template is embed_html)"
+                  },
+                  "body_html": {
+                    "type": "string",
+                    "description": "For embed_html organization pages, the HTML document (required for them)"
+                  },
+                  "slug_suffix": {
+                    "type": "string",
+                    "description": "For organization pages, the part of the slug after the organization prefix"
                   },
                   "body_json": {
                     "type": "string",
@@ -4066,10 +4419,20 @@
                     "format": "int64",
                     "description": "The ID of the organization the page belongs to"
                   },
+                  "event_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The ID of the event the page belongs to"
+                  },
                   "position": {
                     "type": "integer",
                     "format": "int32",
                     "description": "Display order position for organization pages"
+                  },
+                  "show_in_navigation": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API."
                   },
                   "template": {
                     "type": "string",
@@ -4079,7 +4442,8 @@
                       "nav_bar_included",
                       "json",
                       "css",
-                      "txt"
+                      "txt",
+                      "embed_html"
                     ],
                     "default": "contained",
                     "description": "Controls what kind of layout the page is rendered in"
@@ -4101,7 +4465,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Retrieve details for a single Page object specified by ID.",
+        "description": "Retrieve details for a single Page object specified by ID. Embed-only HTML pages (`template: \"embed_html\"`) return `404` unless the caller is authenticated and may manage the organization's pages (see `GET /api/pages` with `kind=embed`).",
         "parameters": [
           {
             "name": "id",
@@ -4134,7 +4498,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
+        "description": "Update an existing page's details by ID. `show_in_navigation` controls organization tabs only. Hidden pages remain public at their URL and through the API. Only non-Showcase organization pages can set it to false. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization. Holders of the `Resource Admin: OrganizationPageManagement` role can also update pages of any organization with the organization pages feature enabled, without being a member; those writes add `via` and `organization_id` to the audit log entry. For embed-only HTML pages, only `title`, `description`, `body_html` and `slug` (or `slug_suffix`) are used, the slug stays under `{org_slug}/embed/`, and changing `template` returns `422`; callers who cannot manage the organization's pages receive `404`.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -4183,7 +4547,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_destroy` with the actor and target ids in the admin API audit log.",
+        "description": "Delete a custom page from the system by ID, including organization embed-only HTML pages. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization. The `Resource Admin: OrganizationPageManagement` role cannot delete pages.  Successful writes log `api_page_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -4224,7 +4588,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.",
+        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it. Requires site administrative privileges, or, for the supplied `organization_id` when the organization pages feature is enabled, organization admin privileges or the `Resource Admin: OrganizationPageManagement` role.",
         "operationId": "previewPage",
         "parameters": [
 
@@ -4715,6 +5079,156 @@
             }
           },
           "description": "Updated list parameters."
+        }
+      }
+    },
+    "/api/related_articles": {
+      "get": {
+        "summary": "Discover public community articles",
+        "tags": [
+          "articles"
+        ],
+        "operationId": "getRelatedArticles",
+        "description": "Requires active membership and the org_related_articles feature for organization_id. Query supports up to five comma-separated alternative names and date bounds. In keyword matching, a name of several words matches those words next to each other; hybrid semantic candidates are not phrase-filtered and need not contain the phrase. Page size is capped at 100, page at 1000. Keyword mode sorts newest first unless sort=relevance. Each result carries discovery_rank, a relevance score comparable within one response but not across responses. Hybrid mode fuses at most 100 keyword and 100 semantic candidates using reciprocal rank fusion; it is not an exhaustive export. Semantic candidates require cosine distance <= 0.4. Query embeddings are cached for one hour. Missing vectors remain eligible for keyword matches; provider failures fall back to keyword. X-Discovery-Mode reports the effective mode; hybrid also returns X-Discovery-Candidate-Limit: 200 and X-Discovery-Exhaustive: false. discovery_match identifies keyword/semantic sources. Visibility, community, score and publication-date filters apply before candidate limits. Keyword matches include author/org metadata and are not literal body-mention counts.",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Organization granting discovery access; caller must be an active member."
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "keyword",
+                "hybrid"
+              ],
+              "default": "keyword"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "description": "Technology names, for example PostgreSQL,Postgres. Up to five comma-separated searches. In keyword matching, a search of several words matches those words next to each other, so Tiger Data matches that phrase rather than mentions of tiger and data separately; hybrid semantic candidates are not phrase-filtered and need not contain the phrase."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "recent",
+                "relevance"
+              ],
+              "default": "recent"
+            },
+            "description": "recent returns newest first. relevance ranks by match strength, which accounts for how often a term occurs and whether it appears in the title rather than the body."
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Inclusive publication date (YYYY-MM-DD)."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Inclusive publication date (YYYY-MM-DD)."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Public articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/ArticleIndex"
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "discovery_match"
+                        ],
+                        "properties": {
+                          "discovery_match": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "keyword",
+                                "semantic"
+                              ]
+                            }
+                          },
+                          "discovery_rank": {
+                            "type": "number",
+                            "description": "Relevance score, comparable within one response only."
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Organization not found"
+          },
+          "422": {
+            "description": "Invalid query or date interval"
+          }
         }
       }
     },
@@ -5281,7 +5795,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n- Pass `name` to look up one tag by its exact name, for example to find its ID.\n  The lookup also finds tags that are not supported.\n\nIt supports pagination, each page will contain 10 tags by default.",
+        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors and tag selection screens in settings.\n- Supports global navigation and explore lists.\n- Pass `name` to look up one tag by its exact name, for example to find its ID.\n  The lookup also finds tags that are not supported.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
           {
@@ -7479,6 +7993,11 @@
             "description": "For JSON pages, the JSON body",
             "nullable": true
           },
+          "body_html": {
+            "type": "string",
+            "nullable": true,
+            "description": "Raw HTML. For embed_html organization pages, the sandboxed HTML document"
+          },
           "is_top_level_path": {
             "type": "boolean",
             "description": "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution"
@@ -7493,10 +8012,21 @@
             "nullable": true,
             "description": "The ID of the organization the page belongs to, if any"
           },
+          "event_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true,
+            "description": "The ID of the event the page belongs to, if any"
+          },
           "position": {
             "type": "integer",
             "format": "int32",
             "description": "Display order position for organization pages"
+          },
+          "show_in_navigation": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the page appears in organization tabs. Defaults to true. Only non-Showcase organization pages can set false. Hidden pages remain public at their URL and through the API."
           },
           "template": {
             "type": "string",
@@ -7506,7 +8036,8 @@
               "nav_bar_included",
               "json",
               "css",
-              "txt"
+              "txt",
+              "embed_html"
             ],
             "default": "contained",
             "description": "Controls what kind of layout the page is rendered in"
@@ -9101,7 +9632,9 @@
               "live_stream",
               "takeover",
               "other",
-              "challenge"
+              "challenge",
+              "meetup",
+              "conference"
             ]
           },
           "start_time": {
@@ -9113,6 +9646,9 @@
             "format": "date-time"
           },
           "published": {
+            "type": "boolean"
+          },
+          "allow_articles": {
             "type": "boolean"
           },
           "primary_stream_url": {
@@ -9220,6 +9756,10 @@
                 "type": "boolean",
                 "default": false
               },
+              "allow_articles": {
+                "type": "boolean",
+                "default": false
+              },
               "start_time": {
                 "type": "string",
                 "format": "date-time"
@@ -9234,7 +9774,9 @@
                   "live_stream",
                   "takeover",
                   "other",
-                  "challenge"
+                  "challenge",
+                  "meetup",
+                  "conference"
                 ]
               },
               "organization_id": {

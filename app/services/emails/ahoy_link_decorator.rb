@@ -31,13 +31,36 @@ module Emails
     def call
       return @message_data if @token.blank? || @message_data.blank?
 
+      remove_instance_variable(:@native_context) if defined?(@native_context)
+
+      if (ctx = native_context)
+        native = ForemNative.ahoy_decorate_payload(@message_data, *ctx)
+        return native unless native.nil?
+      end
+
       decorate(@message_data)
     rescue StandardError => e
       Rails.logger.warn("[ahoy_link_decorator] skipped: #{e.class}: #{e.message}")
       @message_data
+    ensure
+      remove_instance_variable(:@native_context) if defined?(@native_context)
     end
 
     private
+
+    def native_context
+      return @native_context if defined?(@native_context)
+
+      @native_context = if AhoyLinkTracking.native_signing_available?
+                          [
+                            Settings::General.app_domain.to_s,
+                            @token.to_s,
+                            @campaign&.to_s,
+                            AhoyEmail.secret_token,
+                            AhoyLinkTracking.external_base_url(url_options),
+                          ]
+                        end
+    end
 
     def decorate(value)
       case value
@@ -61,6 +84,15 @@ module Emails
     end
 
     def decorate_html(html)
+      if (ctx = native_context)
+        native = ForemNative.ahoy_decorate_html(html, *ctx)
+        return native unless native.nil?
+      end
+
+      legacy_decorate_html(html)
+    end
+
+    def legacy_decorate_html(html)
       doc = Nokogiri::HTML::DocumentFragment.parse(html)
       doc.css("a[href]").each do |link|
         next if skip_attribute?(link)
@@ -82,6 +114,20 @@ module Emails
 
     # Returns nil when the value should keep its original string.
     def decorate_url(href)
+      if (ctx = native_context)
+        native = ForemNative.ahoy_decorate_url(href, *ctx)
+        return if native == false
+        return native if native.is_a?(String)
+      end
+
+      legacy_decorate_url(href)
+    rescue StandardError => e
+      # One unparseable link must not cost the whole payload its tracking.
+      Rails.logger.warn("[ahoy_link_decorator] link skipped: #{e.class}: #{e.message}")
+      nil
+    end
+
+    def legacy_decorate_url(href)
       uri = AhoyLinkTracking.parse_uri(href)
       return unless AhoyLinkTracking.trackable?(uri)
       return if AhoyLinkTracking.skip?(uri, href)
@@ -93,10 +139,6 @@ module Emails
           href, token: @token, campaign: @campaign, url_options: url_options
         )
       end
-    rescue StandardError => e
-      # One unparseable link must not cost the whole payload its tracking.
-      Rails.logger.warn("[ahoy_link_decorator] link skipped: #{e.class}: #{e.message}")
-      nil
     end
 
     # ApplicationMailer#setup_subforem_context sets this per message, so it

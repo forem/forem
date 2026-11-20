@@ -27,6 +27,18 @@ module UnifiedEmbed
     end
 
     def find_handler_for(link:)
+      return if link.blank?
+
+      return { klass: PageTag, skip_validation: true } if PageTag.embeddable_page?(link)
+
+      if site_relative_path?(link)
+        expanded_link = URL.url(link)
+        fallback_handler = find_handler_for(link: expanded_link)
+        return fallback_handler.merge(skip_validation: true, expanded_link: expanded_link) if fallback_handler
+
+        return
+      end
+
       possible_domains = Subforem.cached_domains + [Settings::General.app_domain]
       domain_pattern = possible_domains.map { |domain| Regexp.escape(domain) }.join("|")
       local_url_pattern = %r{https?://(#{domain_pattern})(:\d+)?}
@@ -47,6 +59,12 @@ module UnifiedEmbed
     def find_liquid_tag_for(link:)
       handler = find_handler_for(link: link)
       (handler&.dig(:klass)) || OpenGraphTag
+    end
+
+    private
+
+    def site_relative_path?(link)
+      link.to_s.start_with?("/") && !link.to_s.start_with?("//")
     end
   end
 end

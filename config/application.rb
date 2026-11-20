@@ -40,6 +40,10 @@ if Rails.env.test? || Rails.env.development?
   end
 end
 
+# Honeybadger's Railtie has to load before the app boots; only load it when configured
+# (see config/initializers/honeybadger.rb).
+require "honeybadger" if ENV["HONEYBADGER_API_KEY"].present?
+
 module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting

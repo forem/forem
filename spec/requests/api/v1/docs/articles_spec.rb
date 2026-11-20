@@ -38,7 +38,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
 - **description**: A short summary of the article used for previews and SEO meta description.
-- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`)."
+- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`). Omitting it records `not_disclosed`; an unrecognized value returns `422`. Ignored when the Forem has AI disclosure turned off."
         operationId "createArticle"
         produces "application/json"
         consumes "application/json"
@@ -290,6 +290,7 @@ belonging to the requested collection, ordered by ascending publication date.",
 - Edits by anyone other than the author are recorded in the audit log.
 - Returns `404` if the article does not exist or the API key's user may not edit it.
 - Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.
+- An unrecognized `ai_disclosure_level` returns `422` (allowed: `not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).
 - Setting `published: false` on an already published article will revert it to draft status."
         operationId "updateArticle"
         produces "application/json"

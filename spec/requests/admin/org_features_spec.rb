@@ -20,6 +20,8 @@ RSpec.describe "/admin/customization/org_features" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Readme Page")
       expect(response.body).to include("Lead Forms")
+      expect(response.body).to include("Related Articles API")
+      expect(response.body).to include("Article Analytics API")
     end
 
     it "shows orgs with individual feature access" do

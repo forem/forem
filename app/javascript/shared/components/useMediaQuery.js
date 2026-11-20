@@ -6,6 +6,7 @@ import { useState, useEffect } from 'preact/hooks';
  * Note: These were copied from _import.scss.
  */
 export const BREAKPOINTS = Object.freeze({
+  ExtraSmall: 480,
   Small: 640,
   Medium: 768,
   Large: 1024,

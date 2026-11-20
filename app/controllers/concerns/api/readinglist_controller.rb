@@ -31,6 +31,7 @@ module Api
         .joins(:profile)
         .select(UsersController::SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find(articles.map(&:user_id))
+        .each { |user| hydrate_joined_profile(user) }
         .index_by(&:id)
 
       articles_by_id = articles.index_by(&:id)
@@ -38,6 +39,19 @@ module Api
       @articles_by_reaction_ids = @readinglist.each_with_object({}) do |reaction, result|
         result[reaction.id] = articles_by_id[reaction.reactable_id]
       end
+    end
+
+    private
+
+    def hydrate_joined_profile(user)
+      profile = Profile.instantiate(
+        "user_id" => user.id,
+        "summary" => user[:summary],
+        "location" => user[:location],
+        "website_url" => user[:website_url],
+      )
+      profile.readonly!
+      user.association(:profile).target = profile
     end
   end
 end

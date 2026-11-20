@@ -1,18 +1,34 @@
-import { h, render } from 'preact';
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { initKeyboardShortcuts } from '../utilities/keyboardShortcuts';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('global-signup-modal');
+/**
+ * Registers the `Escape` shortcut for closing `#global-signup-modal` and cleans up any prior listener.
+ */
+function setupSignupModalShortcuts() {
+  window.__signupModalShortcutsCleanup?.();
 
-  render(
-    <KeyboardShortcuts
-      shortcuts={{
-        Escape() {
-          const modal = document.getElementById('global-signup-modal');
-          modal?.classList.add('hidden');
-        },
-      }}
-    />,
-    root,
-  );
-});
+  if (!document.getElementById('global-signup-modal')) {
+    return;
+  }
+
+  const cleanupEscape = initKeyboardShortcuts({
+    Escape() {
+      const modal = document.getElementById('global-signup-modal');
+      modal?.classList.add('hidden');
+    },
+  });
+
+  const cleanup = () => {
+    cleanupEscape?.();
+    if (window.__signupModalShortcutsCleanup === cleanup) {
+      window.__signupModalShortcutsCleanup = null;
+    }
+  };
+
+  window.__signupModalShortcutsCleanup = cleanup;
+}
+
+if (document.readyState !== 'loading') {
+  setupSignupModalShortcuts();
+} else {
+  document.addEventListener('DOMContentLoaded', setupSignupModalShortcuts);
+}

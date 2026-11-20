@@ -154,6 +154,10 @@ RSpec.describe "AgentSessions#create" do
   end
 
   describe "POST /agent_sessions/presign" do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+
+    before { allow(Rails).to receive(:cache).and_return(cache) }
+
     context "when S3 is enabled" do
       before do
         allow(AgentSessions::S3Storage).to receive_messages(
@@ -163,13 +167,34 @@ RSpec.describe "AgentSessions#create" do
         )
       end
 
-      it "returns presigned URL and s3_key" do
-        post presign_agent_sessions_path, as: :json
+      it "returns presigned URL, s3_key and upload headers for the declared size" do
+        post presign_agent_sessions_path, params: { content_length: 2048 }, as: :json
 
         expect(response).to have_http_status(:ok)
         json = response.parsed_body
         expect(json["s3_key"]).to eq("agent_sessions/1/test.jsonl")
         expect(json["presigned_url"]).to eq("https://s3.example.com/presigned")
+        expect(json["headers"]).to include("Content-Length" => "2048")
+        expect(AgentSessions::S3Storage).to have_received(:presigned_put_url)
+          .with("agent_sessions/1/test.jsonl", content_length: 2048)
+      end
+
+      it "returns 422 when content_length is missing or too large" do
+        post presign_agent_sessions_path, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        post presign_agent_sessions_path, params: { content_length: AgentSession::MAX_CURATED_DATA_SIZE + 1 }, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns 429 once the presign limit is reached" do
+        allow(Settings::RateLimit).to receive(:agent_session_presign).and_return(1)
+
+        post presign_agent_sessions_path, params: { content_length: 2048 }, as: :json
+        expect(response).to have_http_status(:ok)
+
+        post presign_agent_sessions_path, params: { content_length: 2048 }, as: :json
+        expect(response).to have_http_status(:too_many_requests)
       end
     end
 
@@ -179,14 +204,14 @@ RSpec.describe "AgentSessions#create" do
       end
 
       it "returns 503" do
-        post presign_agent_sessions_path, as: :json
+        post presign_agent_sessions_path, params: { content_length: 2048 }, as: :json
         expect(response).to have_http_status(:service_unavailable)
       end
     end
 
     it "requires authentication" do
       sign_out user
-      post presign_agent_sessions_path, as: :json
+      post presign_agent_sessions_path, params: { content_length: 2048 }, as: :json
       expect(response.status).to be_in([302, 401])
     end
   end

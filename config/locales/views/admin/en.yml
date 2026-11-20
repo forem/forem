@@ -335,6 +335,7 @@ en:
               resource_admin_event: Event Admin
               resource_admin_survey: Survey Admin
               resource_admin_organization: Organization Admin
+              resource_admin_organization_page_management: Organization Page Management Admin
               resource_admin_podcast: Podcast Admin
               resource_admin_navigation_link: Navigation Link Admin
               resource_admin_request_redirect: Request Redirect Admin
@@ -514,6 +515,7 @@ en:
           "Resource Admin: Event": "Resource Admin: Event"
           "Resource Admin: Survey": "Resource Admin: Survey"
           "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: OrganizationPageManagement": "Resource Admin: OrganizationPageManagement"
           "Resource Admin: Podcast": "Resource Admin: Podcast"
           "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
           "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"
@@ -670,6 +672,18 @@ en:
             enable: Enable Dofollow
             disable: Disable Dofollow
             enabled_notice: Dofollow links are enabled for this organization's readme page.
+          related_articles:
+            label: Related Articles API
+            description: When enabled, members of this organization can call the related articles API to find public community writing about their technology.
+            enable: Enable Related Articles
+            disable: Disable Related Articles
+            enabled_notice: The related articles API is enabled for this organization.
+          article_analytics:
+            label: Article Analytics API
+            description: When enabled, members of this organization can export their own articles' performance through the analytics API.
+            enable: Enable Article Analytics
+            disable: Disable Article Analytics
+            enabled_notice: The article analytics API is enabled for this organization.
         bulk_add_users:
           heading: Bulk Add Members
           description: "Add multiple users to this organization at once. Enter a comma-separated list of usernames (with or without @ and spaces). Existing members will be skipped."
@@ -750,7 +764,16 @@ en:
       events:
         fork: "Fork"
         fork_event: "Fork Event"
+        form:
+          allow_articles: "Allow Articles"
+          allow_articles_description: "Allow articles to be tagged directly to this event and displayed on the event page once the event starts."
         show:
+          allow_articles: "Allow Articles"
+          enabled: "Enabled"
+          disabled: "Disabled"
+          tagged_articles_count:
+            one: "1 tagged article"
+            other: "%{count} tagged articles"
           signups_title: "Event Signups"
           no_signups: "No signups for this event yet."
           headers:
@@ -761,6 +784,26 @@ en:
             day_before: "1 Day Before"
             hour_before: "1 Hour Before"
             none: "None"
+      event_pages:
+        heading: Event Pages
+        manage_pages: Manage Pages
+        pages_button: Pages
+        back_to_event: Back to event
+        new_page: Create new page
+        new_showcase: Create Showcase / README
+        your_pages: Your Pages
+        order_help: Use the arrows to set the order of custom event tabs. If a Showcase / README page exists, it stays pinned first.
+        showcase: Showcase
+        showcase_slug_help: The Showcase / README page uses the readme slug and renders as the default landing view for this event, while the standard event view remains accessible as a tab.
+        show_in_navigation: Show in event navigation tabs
+        navigation_hint: Hidden pages remain accessible at their direct URL.
+        no_pages: No pages created for this event yet.
+        embed_section_description: Create sandboxed HTML widgets and interactive embeds scoped to this event. They can be embedded into any event page or article using the Liquid embed tag.
+        markdown_placeholder: "Use Markdown and Liquid tags to compose your event page.\n\nExample:\n## Schedule\n\n- 10:00 AM — Opening Keynote\n\n{% embed https://example.com/events/my-event/2026/embed/schedule %}"
+        created: Event page created successfully.
+        updated: Event page updated successfully.
+        deleted: Event page deleted successfully.
+        reordered: Event page order updated.
       billboard_placement_area_configs:
         index:
           visibility: Visibility

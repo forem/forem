@@ -2317,6 +2317,61 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body["warnings"].first).to include("not_disclosed")
       end
 
+      it "sets a recognized level on create" do
+        post api_articles_path, params: { article: { title: "Disclosed", body_markdown: "Hello",
+                                                     ai_disclosure_level: "some_ai" } }.to_json,
+                                headers: auth_headers
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(Article.last).to be_some_ai
+      end
+
+      it "returns 422 listing the allowed levels for an unrecognized level on create" do
+        expect do
+          post api_articles_path, params: { article: { title: "Bogus", body_markdown: "Hello",
+                                                       ai_disclosure_level: "bogus" } }.to_json,
+                                  headers: auth_headers
+        end.not_to change(Article, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"])
+          .to eq("ai_disclosure_level must be one of: not_disclosed, no_ai, some_ai, fully_autonomous")
+      end
+
+      it "returns 422 for an unrecognized level on update and leaves the article unchanged" do
+        article = create(:article, user: user, ai_disclosure_level: :no_ai)
+
+        put api_article_path(article.id), params: { article: { ai_disclosure_level: "bogus" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(article.reload).to be_no_ai
+      end
+
+      it "preserves an existing disclosure when ai_disclosure_level is blank on update" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        put api_article_path(article.id),
+            params: { article: { title: "An edited title", ai_disclosure_level: "" } }.to_json,
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload).to be_some_ai
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
+
+      it "returns 404 before validating ai_disclosure_level when the article is not editable" do
+        other_article = create(:article, user: create(:user), ai_disclosure_level: :no_ai)
+
+        put api_article_path(other_article.id), params: { article: { ai_disclosure_level: "bogus" } }.to_json,
+                                                headers: auth_headers
+
+        expect(response).to have_http_status(:not_found)
+        expect(other_article.reload).to be_no_ai
+      end
+
       it "omits warnings when the article is already disclosed" do
         article = create(:article, user: user, ai_disclosure_level: :some_ai)
 
@@ -2330,6 +2385,16 @@ RSpec.describe "Api::V1::Articles" do
 
     context "when ai disclosure is disabled" do
       before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "ignores ai_disclosure_level, including unrecognized values" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { ai_disclosure_level: "bogus" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload).to be_not_disclosed
+      end
 
       it "does not attach warnings on update" do
         article = create(:article, user: user, ai_disclosure_level: :not_disclosed)

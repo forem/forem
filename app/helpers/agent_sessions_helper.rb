@@ -114,9 +114,7 @@ module AgentSessionsHelper
   end
 
   def rouge_highlight(code, lang)
-    lexer = Rouge::Lexer.find(lang) || Rouge::Lexers::PlainText.new
-    formatter = Rouge::Formatters::HTML.new
-    html = formatter.format(lexer.lex(code))
+    html = ForemNative.syntax_highlight_html(code, lang)
     # Sanitize to only allow <span> with class attribute (defense in depth)
     sanitizer = Rails::HTML5::SafeListSanitizer.new
     sanitizer.sanitize(html, tags: %w[span], attributes: %w[class])
@@ -125,14 +123,7 @@ module AgentSessionsHelper
   def language_from_path(path)
     return if path.blank?
 
-    # Input might contain extra text; grab the first path-like token
-    token = path.to_s.strip.split(/\s/).first
-    ext = File.extname(token.to_s).delete_prefix(".")
-    return if ext.blank?
-
-    # Try Rouge lexer lookup
-    lexer = Rouge::Lexer.find_fancy(ext) || Rouge::Lexer.find(ext)
-    lexer&.tag
+    ForemNative.syntax_language_from_path(path)
   rescue StandardError
     nil
   end

@@ -82,6 +82,7 @@ module ActivityTrackable
   # Cheapest check first. Moderated actors stay silent for the same reason as
   # User#track_engagement!: a pruned Customer.io profile must not be resurrected.
   def trackable_events_skipped?
+    return true if super
     return true unless Settings::General.customerio_cdp_enabled(subforem_id: Subforem.cached_default_id)
 
     actor = trackable_actor
@@ -89,6 +90,6 @@ module ActivityTrackable
     return true unless actor.member?
     return true if actor.spam_or_suspended?
 
-    super
+    false
   end
 end

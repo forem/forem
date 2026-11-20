@@ -4,6 +4,39 @@ RSpec.describe Settings::UserExperience do
   before { described_class.clear_cache }
   after { described_class.clear_cache }
 
+  describe "sticky feed settings" do
+    it "defaults to 60 hours, 50 percent, and a 30-minute reward interval" do
+      expect(described_class.feed_config_sticky_hours).to eq(60)
+      expect(described_class.feed_config_sticky_percentage).to eq(50)
+      expect(described_class.feed_config_repeat_visit_minutes).to eq(30)
+    end
+
+    it "allows disabling sticky selection and configuring the interval" do
+      described_class.feed_config_sticky_hours = 0
+      described_class.feed_config_sticky_percentage = 0
+      described_class.feed_config_repeat_visit_minutes = 45
+      expect(described_class.feed_config_sticky_hours).to eq(0)
+      expect(described_class.feed_config_sticky_percentage).to eq(0)
+      expect(described_class.feed_config_repeat_visit_minutes).to eq(45)
+    end
+
+    it "accepts a fully sticky feed" do
+      expect { described_class.feed_config_sticky_percentage = 100 }.not_to raise_error
+    end
+
+    {
+      feed_config_sticky_hours: [-1],
+      feed_config_sticky_percentage: [-1, 101],
+      feed_config_repeat_visit_minutes: [0, -1]
+    }.each do |setting, invalid_values|
+      invalid_values.each do |value|
+        it "rejects #{setting} of #{value}" do
+          expect { described_class.public_send(:"#{setting}=", value) }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+  end
+
   describe "validating hex string format" do
     it "allows 3 character hex strings" do
       expect do

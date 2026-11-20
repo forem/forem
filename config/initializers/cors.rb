@@ -41,7 +41,7 @@ Rails.application.config.middleware.insert_before(
 
   # Embedding sites record impressions and clicks without cookies (see BillboardEventsController).
   allow do
-    origins { |source, _env| Billboard.embed_origins.include?(source) }
+    origins { |source, _env| Billboard.embed_origin?(source) }
     resource "/bb_tabulations*", methods: %i[post patch options], headers: %w[content-type], max_age: 2.hours.to_i
   end
 end

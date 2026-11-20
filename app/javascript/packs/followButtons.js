@@ -465,6 +465,19 @@ function initializeNonBulkFollowButtons() {
     '.follow-action-button:not(.follow-user):not(.follow-subforem):not([data-fetched])',
   );
 
+  if (nonBulkFollowButtons.length === 0) {
+    return;
+  }
+
+  if (document.body.getAttribute('data-user-status') === 'logged-out') {
+    nonBulkFollowButtons.forEach((button) => {
+      const { info } = button.dataset;
+      const { className, name } = JSON.parse(info);
+      addAriaLabelToButton({ button, followType: className, followName: name });
+    });
+    return;
+  }
+
   waitOnBaseData().then(() => {
     const userLoggedIn =
       document.body.getAttribute('data-user-status') === 'logged-in';

@@ -1,4 +1,4 @@
-<h2 class="crayons-subtitle-1"><%= t("views.admin.users.reports.subtitle", user: @user.name, num: @related_reports.count) %></h2>
+<h2 class="crayons-subtitle-1"><%= t("views.admin.users.reports.subtitle", user: @user.name, num: @related_reports.load.size) %></h2>
 
 <% unless @related_reports.empty? %>
   <div class="pt-3">

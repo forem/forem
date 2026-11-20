@@ -81,10 +81,22 @@ class AgentSessionsController < ApplicationController
       return
     end
 
-    s3_key = AgentSessions::S3Storage.generate_key(current_user.id)
-    presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key)
+    content_length = AgentSessions::S3Storage.permitted_content_length(params[:content_length])
+    unless content_length
+      render json: { error: AgentSessions::S3Storage::CONTENT_LENGTH_ERROR }, status: :unprocessable_entity
+      return
+    end
 
-    render json: { s3_key: s3_key, presigned_url: presigned_url }
+    rate_limiter.consume!(:agent_session_presign)
+
+    s3_key = AgentSessions::S3Storage.generate_key(current_user.id)
+    presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key, content_length: content_length)
+
+    render json: {
+      s3_key: s3_key,
+      presigned_url: presigned_url,
+      headers: AgentSessions::S3Storage.upload_headers(content_length)
+    }
   end
 
   def raw_url
@@ -127,7 +139,7 @@ class AgentSessionsController < ApplicationController
   def create_from_curated_data
     begin
       curated = parse_curated_data_param
-    rescue JSON::ParserError => e
+    rescue JSON::ParserError
       render json: { error: "Invalid JSON in curated_data" }, status: :unprocessable_entity
       return
     end
@@ -144,7 +156,7 @@ class AgentSessionsController < ApplicationController
     @agent_session.tool_name = tool_name.presence || curated.dig("metadata", "tool_name") || "claude_code"
     @agent_session.curated_data = result.scrubbed_data
     @agent_session.s3_key = create_params[:s3_key] if create_params[:s3_key].present?
-    @agent_session.session_metadata = session_metadata_from_scrub_result(result)
+    @agent_session.session_metadata = AgentSessionParsers::RedactionMetadata.for_scrub_result(result)
 
     if params[:agent_session]&.key?(:slices)
       @agent_session.slices = parse_create_slices_param
@@ -186,19 +198,9 @@ class AgentSessionsController < ApplicationController
     curated = raw.is_a?(String) ? JSON.parse(raw, max_nesting: 50) : raw.to_unsafe_h
     result = AgentSessionParsers::SensitiveDataScrubber.scrub(curated)
     @agent_session.curated_data = result.scrubbed_data
-    @agent_session.session_metadata = session_metadata_from_scrub_result(result)
+    @agent_session.session_metadata = AgentSessionParsers::RedactionMetadata.for_scrub_result(result)
   rescue JSON::ParserError
     # Ignore invalid JSON — validation will catch it
-  end
-
-  def session_metadata_from_scrub_result(result)
-    metadata = result.scrubbed_data.fetch("metadata", {}) || {}
-    metadata_redactions = metadata["redactions"].presence ||
-      AgentSessionParsers::RedactionMetadata.from_messages(result.scrubbed_data["messages"])
-
-    metadata.merge(
-      "redactions" => AgentSessionParsers::RedactionMetadata.merge(metadata_redactions, result.redactions),
-    )
   end
 
   def parse_curated_data_param

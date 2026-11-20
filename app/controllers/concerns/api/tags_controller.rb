@@ -33,6 +33,8 @@ module Api
     private
 
     def supported_tags_scope
+      return Tag.supported if Subforem.disabled_by_env?
+
       subforem_id = RequestStore.store[:subforem_id]
       if subforem_id.present? && subforem_id != RequestStore.store[:root_subforem_id]
         Tag.joins(:subforem_relationships)

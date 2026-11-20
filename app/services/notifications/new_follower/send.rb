@@ -22,7 +22,10 @@ module Notifications
 
       def call
         recent_follows = Follow.non_suspended(followable_type, followable_id)
-          .where("follows.created_at > ?", 24.hours.ago).order(created_at: :desc)
+          .where(blocked: [false, true])
+          .where("follows.created_at > ?", 24.hours.ago)
+          .select(:id, :follower_id)
+          .order(created_at: :desc)
 
         notification_params = { action: "Follow" }
         case followable_type
@@ -36,7 +39,7 @@ module Notifications
         if aggregated_siblings.empty?
           notification = Notification.find_by(notification_params)&.destroy
         else
-          json_data = { user: user_data(follower), aggregated_siblings: aggregated_siblings }
+          json_data = { user: user_data(follower(followers)), aggregated_siblings: aggregated_siblings }
           notification = Notification.find_or_initialize_by(notification_params)
 
           # we explicitly load the correct follow, to avoid incurring in the possibility of
@@ -62,8 +65,8 @@ module Notifications
 
       attr_reader :followable_id, :followable_type, :follower_id, :is_read
 
-      def follower
-        User.find(follower_id)
+      def follower(followers = nil)
+        followers&.detect { |user| user.id == follower_id } || User.find(follower_id)
       end
     end
   end

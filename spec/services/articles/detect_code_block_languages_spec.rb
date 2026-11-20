@@ -131,4 +131,54 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
       expect(service.call).to be(true)
     end
   end
+
+  describe "#call with Gemini Decision selected" do
+    let(:markdown) { "```\ndef hello\n  puts 'hi'\nend\n```\n\nText\n\n```\nconst x = 1;\n```" }
+    let(:service) { described_class.new(article) }
+
+    before { enable_gemini_decision_for(:code_block_language_detection) }
+
+    it "detects code block languages via Gemini Decision" do
+      stub_gemini_decision do |state|
+        { language: state[:code].start_with?("def") ? ["ruby", 0.9] : ["javascript", 0.8] }
+      end
+
+      expect(service.call).to be(true)
+      expect(article.reload.body_markdown).to include("```ruby").and include("```javascript")
+    end
+
+    it "leaves the article unchanged when the Gemini Decision circuit breaker is open" do
+      client = instance_double(Ai::GeminiDecision::Client)
+      allow(Ai::GeminiDecision::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::GeminiDecision::Client::CircuitOpenError, "open")
+
+      expect { expect(service.call).to be(false) }.not_to(change { article.reload.body_markdown })
+      expect(client).to have_received(:evaluate).once
+    end
+  end
+
+  describe ".language_criteria and language normalization" do
+    let(:markdown) { "```\nputs 1\n```" }
+
+    it "exposes all 228 canonical Rouge tags and human-readable titles", :aggregate_failures do
+      expect(described_class::SUPPORTED_LANGUAGE_TAGS.size).to eq(228)
+      expect(described_class::SUPPORTED_LANGUAGE_TAGS).to eq(described_class::SUPPORTED_LANGUAGE_TAGS.uniq.sort)
+      expect(described_class.language_criteria["ruby"]).to eq("Ruby")
+      expect(described_class.language_criteria["javascript"]).to eq("JavaScript")
+      expect(described_class.language_criteria["cpp"]).to eq("C++")
+      expect(described_class.language_criteria["plaintext"]).to eq(
+        "Plain text, console output, or no specific language",
+      )
+    end
+
+    it "normalizes fence info strings, markdown fences, aliases, and unknown hints", :aggregate_failures do
+      instance = described_class.new(article, ai_client: ai_client)
+      expect(instance.__send__(:normalize_language, "```ts\n")).to eq("typescript")
+      expect(instance.__send__(:normalize_language, "  Py  ")).to eq("python")
+      expect(instance.__send__(:normalize_language, "sh extra_arg")).to eq("shell")
+      expect(instance.__send__(:normalize_language, "unknown_lang")).to eq("plaintext")
+      expect(instance.__send__(:normalize_language, nil)).to eq("plaintext")
+      expect(instance.__send__(:normalize_language, "")).to eq("plaintext")
+    end
+  end
 end

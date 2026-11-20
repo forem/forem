@@ -1,6 +1,17 @@
+import { Application } from '@hotwired/stimulus';
 import { replaceTextInputWithColorPicker } from '../../colorPickers/replaceTextInputWithColorPicker';
+import { LogoUploadController } from '@admin/controllers/logo_upload_controller';
 import { isLowContrast } from '@utilities/color/contrastValidator';
 import { brightness } from '@utilities/color/accentCalculator';
+
+try {
+  const application = Application.start();
+  application.register('logo-upload', LogoUploadController);
+} catch (error) {
+  window.Honeybadger?.notify(
+    `Error loading the creator settings controller: ${error.message}`,
+  );
+}
 
 const vanillaPicker = document.getElementById(
   'creator_settings_form_primary_brand_color_hex',

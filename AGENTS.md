@@ -16,6 +16,9 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Re-usability**: Changes should strengthen Forem as a platform, avoiding DEV-specific hardcoding unless absolutely necessary.
 - **Disruption & Clarification**: Always be vigilant about not disrupting existing functionality (e.g., core auth, feed sorting, cache pipelines). If a proposal touches or runs adjacent to a major subsystem, explicitly ask clarifying questions to validate isolation and proactively determine if extra tests are needed to guarantee no side-effects occur.
 
+## Feature Flags
+- **No Data Update Scripts for Feature Flags**: Do not create `lib/data_update_scripts` (or matching specs) just to add or register a feature flag. Gate code with `FeatureFlag.enabled?(:flag_name, ...)`; admins manually add and enable flags as needed via the admin Feature Flags (Flipper) UI.
+
 ## Background Workers & Sidekiq
 - **Job Storm Prevention**: When enqueuing jobs that might trigger rapidly (e.g., from reactions, comments, or article updates), carefully assess if a debounce lock is required. 
 - **Modern Configuration**: Prefer `include Sidekiq::Job` over `Sidekiq::Worker`. Use `sidekiq_options lock: :until_executing, on_conflict: :replace` for coalescing repetitive events.
@@ -34,10 +37,11 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
   - Never use `current_user` or `session_current_user_id` to personalize responses in edge-cached controller actions (`before_action :set_cache_control_headers` / `RequestStore.store[:edge_caching_in_place]`) or inside shared Rails fragment caches (`<% cache ... %>` not keyed by viewer ID) to prevent cross-user cache leaks and private data exposure.
   - At Fastly (`config/fastly/snippets/check_for_remember_user_token_in_cookie_to_set_header.vcl`), cached responses vary only on `X-Loggedin` (`logged-in` vs. `logged-out` via `user_signed_in?`), **not** per-viewer session. Calling `session_current_user_id` bypasses `EdgeCacheSafetyCheck#current_user` and bakes the first signed-in viewer's state into the shared edge/fragment cache for all other signed-in users.
   - **Performance & Query Triage Rule**: When investigating `IS NULL` queries (e.g., `WHERE user_id IS NULL`) or per-user lookups in a controller or view, **first verify whether the action is edge-cached (`set_cache_control_headers`) or rendered inside a shared fragment cache**. If it is on a cached path without `unset_cache_control_headers`, do **not** merely guard the query with `session_current_user_id.present?` — remove the per-viewer server lookup from the cached path altogether and handle viewer-specific state client-side or via an uncached async endpoint.
-- **Database Indexes**:
+- **Database Indexes & Large-Table DDL**:
   - Add indexes concurrently using `algorithm: :concurrently`.
   - Use `disable_ddl_transaction!` in the migration class.
   - Ideally, place index additions in their own separate migration files.
+  - **PgBouncer / Neon Transaction Pooling (`statement_timeout`)**: Production connects through a PgBouncer transaction pooler (`-pooler`), where `execute "SET statement_timeout = 0;"` (and `STATEMENT_TIMEOUT` session `variables`) do **not** persist across autocommit DDL statements. For concurrent indexes or `VALIDATE CONSTRAINT` migrations on large tables (e.g., `articles`, `comments`, `reactions`, `notifications`), open a dedicated direct unpooled `PG::Connection` (strip `-pooler` from `host`, drop stale `hostaddr` if changed, and pass `-c statement_timeout=0` in startup `options`), check `pg_index.indisvalid` / `pg_constraint.convalidated` for idempotency, and drop leftover invalid indexes before creating (see `db/migrate/20261119161200_add_event_id_index_to_articles.rb` and `db/migrate/20261119161300_validate_event_id_on_articles.rb`).
 
 ## Database & Schema Collisions
 - If the `schema.rb` file is modified with extra changes not tied to the migration (due to branch collision, etc.), clean up and manually fix the `schema.rb` file to match the scope of work actually being done in your migration.
@@ -50,9 +54,23 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
   - `pt` (Portuguese)
   - And any others present in `config/locales`.
 
-## Frontend
+## Frontend & Client-Side Asset Delivery
 - We are transitioning to a Preact-first frontend.
 - Use `app/javascript` and `app/assets` patterns as established.
+- **Signed-In vs. Signed-Out Contextual Delivery (`Vary: X-Loggedin`)**:
+  - Gate signed-in-only JavaScript packs and DOM payloads (moderation tools, response templates, comment composer enhancements, favorite controls, user status checks) in ERB views with `user_signed_in?` (Fastly varies edge caches on `X-Loggedin: logged-in` vs. `logged-out`). Never call `current_user` or `session_current_user_id` on edge-cached paths.
+  - Guard client-side pack entrypoints and initializers with `checkUserLoggedIn()` (`document.body?.dataset?.userStatus === 'logged-in'`) or `getUserDataAndCsrfTokenSafely()` so scripts on signed-out pages short-circuit immediately without polling `waitOnBaseData()` or firing unauthenticated API requests.
+- **InstantClick (`?i=i`) & Mixed-Cache Safety**:
+  - `<head>` scripts (`unless internal_navigation?` in `app/views/layouts/application.html.erb`) load only on full page loads, whereas `<script>` tags inside `#page-content` re-execute on every InstantClick page transition.
+  - Any pack inside `#page-content` or registered with `InstantClick.on('change')` MUST be idempotent: mark initialized DOM nodes (`node.dataset.initialized = 'true'`), guard `InstantClick.on('change')` registration against duplicate attachment when a body pack re-executes, and disconnect `MutationObserver` or window `scroll` listeners on `InstantClick.on('change')` and `beforeunload`.
+  - Account for mixed cache states across InstantClick transitions (e.g., landing on a Fastly-cached initial page and navigating via `?i=i` to an uncached or newer page during a rolling deploy). Prefer simple server-side `user_signed_in?` view gates or `<meta>`-backed lazy loaders over splitting `<head>` initializers into separate body packs without a fallback loader.
+- **Lazy Asset Bundle Loading (`createAssetBundleLoader`)**:
+  - When deferring on-demand packs (such as `CommentTextArea`, `emojiPicker`, `windowModal`, `mediaPlayback`, or `postscribeLoader`) behind `<meta name="*-script" content="<%= asset_path ... %>">` tags in `application.html.erb`, use `createAssetBundleLoader` from `app/javascript/utilities/loadAssetBundle.js`.
+  - Always include `onerror: "this.remove()"` on any eager `javascript_include_tag` that pairs with a lazy loader, and ensure dynamic `<script>` loaders remove failed `<script>` elements on `error` so subsequent InstantClick navigations or interactions can retry cleanly instead of waiting on a failed `<script>` element.
+- **Shared Preact Runtime (`window.__foremPreact` & `ensurePreactRuntime`)**:
+  - Root layout entrypoints (`app/javascript/packs/application.jsx` and `app/javascript/packs/admin.js`, plus the standalone fallback `app/javascript/packs/preactRuntime.js`) initialize `window.__foremPreact = { preact, hooks, compat }` via `app/javascript/shared/preact/preactRuntime.js`.
+  - `esbuild.config.mjs` (`sharedPreactRuntimePlugin`) externalizes `preact`, `preact/hooks`, `preact/compat`, `react`, and `react-dom` across all secondary packs so they share the single `window.__foremPreact` instance and wraps secondary Preact packs with `ensurePreactRuntime` (`app/javascript/shared/preact/ensurePreactRuntime.js`).
+  - `ensurePreactRuntime` executes packs synchronously when `window.__foremPreact` is present, and automatically loads `preactRuntime.js` (via `#page-content[data-preact-runtime-src]` or `meta[name="preact-runtime-script"]`) if a user with a stale pre-deploy `<head>` navigates via InstantClick (`?i=i`) to a post-deploy `#page-content`.
 
 ## Documentation
 - If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.

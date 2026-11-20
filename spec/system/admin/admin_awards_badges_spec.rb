@@ -25,14 +25,12 @@ RSpec.describe "Admin awards badges" do
     visit admin_badge_achievements_award_badges_path
   end
 
-  it "loads the view and lists the badges", :aggregate_failures do
+  it "lists the badges and awards the selected badge", :aggregate_failures do
     expect(page).to have_content("Badges")
     badges.each do |badge|
       expect(page).to have_content(badge)
     end
-  end
 
-  it "awards badges" do
     expect do
       sidekiq_perform_enqueued_jobs { award_two_badges }
     end.to change { user.badges.count }.by(1).and change { user2.badges.count }.by(1)

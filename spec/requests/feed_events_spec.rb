@@ -27,9 +27,12 @@ RSpec.describe "FeedEvents" do
       end
 
       it "creates a feed click event" do
+        allow(FeedEvent).to receive(:new).and_call_original
         expect { post "/feed_events", params: { feed_events: [event_params] } }.to change(FeedEvent, :count).by(1)
 
         expect(response).to be_successful
+        expect(request.session_options[:skip]).to be(true)
+        expect(FeedEvent).not_to have_received(:new)
         expect(article.feed_events.first).to have_attributes(
           user_id: user.id,
           article_position: 4,

@@ -136,10 +136,19 @@ RSpec.describe "/api/admin/users" do
         omniauth_mock_mlh_payload
         create(:identity, user: older, provider: "mlh", uid: "core-12345")
 
-        get "/api/admin/users",
-            params: { identity_provider: "mlh", identity_uid: "core-12345" },
-            headers: headers
+        sql_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          sql_queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/admin/users",
+              params: { identity_provider: "mlh", identity_uid: "core-12345" },
+              headers: headers
+        end
+
         expect(response.parsed_body["users"].pluck("id")).to eq([older.id])
+        expect(response.parsed_body["total"]).to eq(1)
+        expect(sql_queries.grep(/SELECT DISTINCT|SELECT COUNT/i)).to be_empty
       end
     end
   end
@@ -331,7 +340,8 @@ RSpec.describe "/api/admin/users" do
     before { Audit::Subscribe.listen :admin_api }
     after  { Audit::Subscribe.forget :admin_api }
 
-    let!(:target) { create(:user) }
+    let(:target) { create(:user, :without_profile, profile_image: nil) }
+    let(:headers) { admin_api_headers.merge("Content-Type" => "application/json") }
 
     it "uses the same Core-synced consent allowlist as the event emitter" do
       expect(Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS)
@@ -341,167 +351,113 @@ RSpec.describe "/api/admin/users" do
     def put_settings(body, id: target.id)
       put "/api/admin/users/#{id}/notification_settings",
           params: body.to_json,
-          headers: admin_api_headers.merge("Content-Type" => "application/json")
+          headers: headers
     end
 
-    it "updates email_newsletter through the model (callbacks fire)" do
-      target.notification_setting.update!(email_newsletter: true)
-
-      put_settings({ notification_setting: { email_newsletter: false } })
-
-      expect(response).to have_http_status(:ok)
-      expect(target.notification_setting.reload.email_newsletter).to be(false)
-      expect(response.parsed_body["notification_setting"]["email_newsletter"]).to be(false)
-    end
-
-    it "can also set email_newsletter true" do
-      put_settings({ notification_setting: { email_newsletter: true } })
-
-      expect(target.notification_setting.reload.email_newsletter).to be(true)
-    end
-
-    it "logs an audit entry with the change" do
+    it "updates allowlisted settings, returns every allowlisted key, and logs audit entries",
+       :aggregate_failures do
       target.notification_setting.update!(email_newsletter: true)
 
       expect do
         put_settings({ notification_setting: { email_newsletter: false } })
       end.to change(AuditLog, :count).by(1)
 
+      expect(response).to have_http_status(:ok)
+      expect(target.notification_setting.reload.email_newsletter).to be(false)
+      expect(response.parsed_body["notification_setting"]["email_newsletter"]).to be(false)
+      expect(response.parsed_body["notification_setting"].keys).to match_array(
+        Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s),
+      )
+
       audit = AuditLog.last
       expect(audit.slug).to eq("update_notification_settings")
       expect(audit.data["target_user_id"]).to eq(target.id)
       expect(audit.data["changes"]).to eq("email_newsletter" => [true, false])
+
+      put_settings({ notification_setting: { email_newsletter: true, email_digest_periodic: true } })
+      expect(target.notification_setting.reload.email_newsletter).to be(true)
+
+      expect do
+        put_settings({ notification_setting: { email_digest_periodic: false } })
+      end.to change(AuditLog, :count).by(1)
+
+      expect(response).to have_http_status(:ok)
+      expect(target.notification_setting.reload.email_digest_periodic).to be(false)
+      expect(AuditLog.last.data["changes"]).to eq("email_digest_periodic" => [true, false])
+
+      target.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
+      put_settings({ notification_setting: { email_newsletter: false,
+                                             email_digest_periodic: false } })
+      setting = target.notification_setting.reload
+      expect(setting.email_newsletter).to be(false)
+      expect(setting.email_digest_periodic).to be(false)
     end
 
     # Core pushes ITS OWN consent state through this endpoint; if the write
     # emitted the CDP newsletter/digest events, Core would consume its own
     # push as a user consent change (destroying the layered
     # global-unsubscribe / list-preference distinction).
-    it "does not emit CDP newsletter events for admin-API writes" do
+    it "does not emit CDP newsletter, digest, or per-notification events for admin-API writes",
+       :aggregate_failures do
       allow(Trackable::Registry).to receive(:active_names).and_return([:any])
       allow(Trackable::DispatchWorker).to receive(:perform_async)
       Settings::General.customerio_cdp_enabled = true
       FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
-      target.notification_setting.update!(email_newsletter: true)
+      target.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
 
       with_trackable_events do
         put_settings({ notification_setting: { email_newsletter: false } })
-      end
-
-      expect(target.notification_setting.reload.email_newsletter).to be(false)
-      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
-        .with(anything, /user_newsletter/, anything, anything, anything)
-    ensure
-      FeatureFlag.remove(:dev_core_user_sync)
-    end
-
-    # Same suppression, driven by the OTHER independent consent this endpoint
-    # can write: the digest events must not fire back at Core either, or a
-    # digest-only admin-API write would be consumed as a user-originated
-    # digest change.
-    it "does not emit CDP digest events for admin-API writes" do
-      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
-      allow(Trackable::DispatchWorker).to receive(:perform_async)
-      Settings::General.customerio_cdp_enabled = true
-      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
-      target.notification_setting.update!(email_digest_periodic: true)
-
-      with_trackable_events do
         put_settings({ notification_setting: { email_digest_periodic: false } })
-      end
-
-      expect(target.notification_setting.reload.email_digest_periodic).to be(false)
-      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
-        .with(anything, /user_digest/, anything, anything, anything)
-    ensure
-      FeatureFlag.remove(:dev_core_user_sync)
-    end
-
-    # Same suppression again, for the five per-notification consents. These now
-    # emit their own DEV → Core events, so an admin-API write of them must stay
-    # silent too or Core would consume its own push straight back.
-    it "does not emit CDP events for the per-notification consents on admin-API writes" do
-      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
-      allow(Trackable::DispatchWorker).to receive(:perform_async)
-      Settings::General.customerio_cdp_enabled = true
-      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
-
-      with_trackable_events do
         put_settings({ notification_setting: { email_comment_notifications: false,
                                                email_badge_notifications: false } })
       end
 
-      expect(target.notification_setting.reload.email_comment_notifications).to be(false)
+      setting = target.notification_setting.reload
+      expect(setting.email_newsletter).to be(false)
+      expect(setting.email_digest_periodic).to be(false)
+      expect(setting.email_comment_notifications).to be(false)
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     ensure
       FeatureFlag.remove(:dev_core_user_sync)
     end
 
-    it "rejects a body missing the notification_setting wrapper with the admin error_code" do
+    it "rejects missing wrapper or unpermitted settings with 422 and returns 404 for unknown users",
+       :aggregate_failures do
       put_settings({ email_newsletter: false })
-
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error_code"]).to eq("invalid_notification_settings")
-    end
 
-    it "rejects a body with no permitted settings" do
       put_settings({ notification_setting: { welcome_notifications: false } })
-
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error_code"]).to eq("invalid_notification_settings")
-    end
 
-    it "returns 404 for unknown users" do
+      put_settings({ notification_setting: { mobile_comment_notifications: false } })
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(target.notification_setting.reload.mobile_comment_notifications).to be(true)
+
       put_settings({ notification_setting: { email_newsletter: false } }, id: 999_999)
-
       expect(response).to have_http_status(:not_found)
     end
 
-    it "updates email_digest_periodic" do
-      target.notification_setting.update!(email_digest_periodic: true)
+    it "coalesces base_email_eligible and updated_at into a single user UPDATE when email_newsletter changes",
+       :aggregate_failures do
+      target.notification_setting.update!(email_newsletter: false)
+      target.update_columns(base_email_eligible: false, updated_at: 1.day.ago)
+      headers # warm up super_admin caller before recording queries
 
-      put_settings({ notification_setting: { email_digest_periodic: false } })
+      user_updates = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        user_updates << payload[:sql] if payload[:sql]&.start_with?('UPDATE "users"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        put_settings({ notification_setting: { email_newsletter: true } })
+      end
 
       expect(response).to have_http_status(:ok)
-      expect(target.notification_setting.reload.email_digest_periodic).to be(false)
-    end
-
-    it "updates several allowlisted keys in one call" do
-      target.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
-
-      put_settings({ notification_setting: { email_newsletter: false,
-                                             email_digest_periodic: false } })
-
-      setting = target.notification_setting.reload
-      expect(setting.email_newsletter).to be(false)
-      expect(setting.email_digest_periodic).to be(false)
-    end
-
-    it "returns every allowlisted key in the response" do
-      put_settings({ notification_setting: { email_digest_periodic: true } })
-
-      body = response.parsed_body["notification_setting"]
-      expect(body.keys).to match_array(
-        Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s),
-      )
-    end
-
-    it "rejects a payload of only unknown keys" do
-      put_settings({ notification_setting: { mobile_comment_notifications: false } })
-
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(target.notification_setting.reload.mobile_comment_notifications).to be(true)
-    end
-
-    it "audits digest changes too" do
-      target.notification_setting.update!(email_digest_periodic: true)
-
-      expect do
-        put_settings({ notification_setting: { email_digest_periodic: false } })
-      end.to change(AuditLog, :count).by(1)
-
-      audit = AuditLog.last
-      expect(audit.data["changes"]).to eq("email_digest_periodic" => [true, false])
+      expect(user_updates.size).to eq(1)
+      expect(target.reload.base_email_eligible).to be(true)
+      expect(target.updated_at).to be > 1.minute.ago
     end
   end
 
@@ -509,13 +465,16 @@ RSpec.describe "/api/admin/users" do
     before { Audit::Subscribe.listen :admin_api }
     after  { Audit::Subscribe.forget :admin_api }
 
-    let!(:target) { create(:user) }
+    let(:target) { create(:user, profile_image: nil) }
+    let(:headers) { admin_api_headers }
 
-    %w[Suspended Spam Warned Trusted Limited].each do |status|
-      it "applies #{status}" do
-        put "/api/admin/users/#{target.id}/status",
-            params: { status: status, note: "for testing" },
-            headers: admin_api_headers
+    it "applies moderation statuses, clears them with Good standing, and audits changes", :aggregate_failures do
+      %w[Suspended Spam Warned Trusted Limited].each do |status|
+        expect do
+          put "/api/admin/users/#{target.id}/status",
+              params: { status: status, note: "for testing" },
+              headers: headers
+        end.to change(AuditLog, :count).by(1)
 
         expect(response).to have_http_status(:ok)
         target.reload
@@ -526,43 +485,34 @@ RSpec.describe "/api/admin/users" do
         when "Trusted"   then expect(target.roles.exists?(name: "trusted")).to be true
         when "Limited"   then expect(target.roles.exists?(name: "limited")).to be true
         end
-      end
-    end
 
-    it "applies Good standing (clears moderation roles)" do
-      target.add_role(:suspended)
+        audit = AuditLog.last
+        expect(audit.slug).to eq("update_user_status")
+        expect(audit.data).to include("target_user_id" => target.id, "new_status" => status)
+      end
+
+      expect(target.limited?).to be true
+
       put "/api/admin/users/#{target.id}/status",
           params: { status: "Good standing", note: "rehab" },
-          headers: admin_api_headers
+          headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(target.reload.suspended?).to be false
+      expect(target.reload.limited?).to be false
     end
 
-    it "rejects invalid status" do
+    it "rejects invalid and role-grant statuses", :aggregate_failures do
       put "/api/admin/users/#{target.id}/status",
-          params: { status: "Banishedish" }, headers: admin_api_headers
+          params: { status: "Banishedish" }, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error_code"]).to eq("invalid_status")
-    end
 
-    it "rejects role-grant statuses (Admin, Super Moderator, Tech Admin)" do
       put "/api/admin/users/#{target.id}/status",
-          params: { status: "Admin" }, headers: admin_api_headers
+          params: { status: "Admin" }, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error_code"]).to eq("invalid_status")
-    end
-
-    it "audits the change" do
-      expect do
-        put "/api/admin/users/#{target.id}/status",
-            params: { status: "Suspended", note: "auditable" }, headers: admin_api_headers
-      end.to change(AuditLog, :count).by(1)
-      audit = AuditLog.last
-      expect(audit.slug).to eq("update_user_status")
-      expect(audit.data).to include("target_user_id" => target.id, "new_status" => "Suspended")
     end
   end
 
@@ -570,29 +520,29 @@ RSpec.describe "/api/admin/users" do
     before { Audit::Subscribe.listen :admin_api }
     after  { Audit::Subscribe.forget :admin_api }
 
-    let!(:keeper) { create(:user) }
-    let!(:loser)  { create(:user) }
+    let(:keeper) { create(:user, :without_profile, profile_image: nil) }
+    let(:loser)  { create(:user, profile_image: nil) }
+    let(:headers) { admin_api_headers }
 
-    it "merges loser into keeper end-to-end" do
+    it "merges loser into keeper, audits the merge, and deletes the merged-away user in the background",
+       :aggregate_failures do
       article = create(:article, user: loser, with_main_image: false)
       comment = create(:comment, user: loser, commentable: article)
 
-      post "/api/admin/users/#{keeper.id}/merge",
-           params: { merge_user_id: loser.id },
-           headers: admin_api_headers
+      expect do
+        sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [loser.id, true, "merge"]) do
+          post "/api/admin/users/#{keeper.id}/merge",
+               params: { merge_user_id: loser.id },
+               headers: headers
+        end
+      end.to change(AuditLog, :count).by(1)
 
       expect(response).to have_http_status(:ok)
       expect(article.reload.user_id).to eq(keeper.id)
       expect(comment.reload.user_id).to eq(keeper.id)
-    end
-
-    it "deletes the merged-away user in the background" do
-      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [loser.id, true, "merge"]) do
-        post "/api/admin/users/#{keeper.id}/merge",
-             params: { merge_user_id: loser.id },
-             headers: admin_api_headers
-      end
-      expect(response).to have_http_status(:ok)
+      audit = AuditLog.last
+      expect(audit.slug).to eq("merge_users")
+      expect(audit.data).to include("keep_user_id" => keeper.id, "deleted_user_id" => loser.id)
 
       sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
 
@@ -600,17 +550,15 @@ RSpec.describe "/api/admin/users" do
       expect(User.exists?(keeper.id)).to be(true)
     end
 
-    it "returns 409 cannot_merge_user_into_itself when ids match" do
+    it "returns 409 when ids match and 404 when merge_user_id does not exist", :aggregate_failures do
       post "/api/admin/users/#{keeper.id}/merge",
-           params: { merge_user_id: keeper.id }, headers: admin_api_headers
+           params: { merge_user_id: keeper.id }, headers: headers
 
       expect(response).to have_http_status(:conflict)
       expect(response.parsed_body["error_code"]).to eq("cannot_merge_user_into_itself")
-    end
 
-    it "returns 404 when merge_user_id does not exist (does not mask as conflict)" do
       post "/api/admin/users/#{keeper.id}/merge",
-           params: { merge_user_id: 999_999 }, headers: admin_api_headers
+           params: { merge_user_id: 999_999 }, headers: headers
 
       expect(response).to have_http_status(:not_found)
       expect(response.parsed_body["error_code"]).to eq("not_found")
@@ -623,20 +571,10 @@ RSpec.describe "/api/admin/users" do
       create(:identity, user: loser, provider: "twitter", uid: "2")
 
       post "/api/admin/users/#{keeper.id}/merge",
-           params: { merge_user_id: loser.id }, headers: admin_api_headers
+           params: { merge_user_id: loser.id }, headers: headers
 
       expect(response).to have_http_status(:conflict)
       expect(response.parsed_body["error_code"]).to eq("merge_identity_conflict")
-    end
-
-    it "audits the merge" do
-      expect do
-        post "/api/admin/users/#{keeper.id}/merge",
-             params: { merge_user_id: loser.id }, headers: admin_api_headers
-      end.to change(AuditLog, :count).by(1)
-      audit = AuditLog.last
-      expect(audit.slug).to eq("merge_users")
-      expect(audit.data).to include("keep_user_id" => keeper.id, "deleted_user_id" => loser.id)
     end
   end
 end

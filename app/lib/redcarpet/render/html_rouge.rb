@@ -1,10 +1,6 @@
-require "rouge/plugins/redcarpet"
-
 module Redcarpet
   module Render
     class HTMLRouge < HTML
-      include Rouge::Plugins::Redcarpet
-
       MERMAID_LANGUAGE = "mermaid".freeze
       MERMAID_MAX_SOURCE_BYTES = 20_000
       MERMAID_MAX_LINES = 500
@@ -16,7 +12,7 @@ module Redcarpet
         normalized_language = language.to_s.downcase
         diagram = mermaid_block(code) if mermaid_language?(normalized_language)
 
-        diagram || super(code, normalized_language)
+        diagram || ForemNative.syntax_highlight_code_block(code, normalized_language)
       end
 
       def image(link, title, alt_text)

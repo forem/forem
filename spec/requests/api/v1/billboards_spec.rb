@@ -60,7 +60,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "requires_cookies", "special_behavior", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
-                          "seconds_visible")
+                          "seconds_visible", "max_impressions_count", "max_clicks_count",
+                          "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -84,7 +85,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "priority", "weight", "target_geolocations", "requires_cookies",
                           "special_behavior", "expires_at", "exclude_survey_completions", "exclude_survey_ids",
                           "content_updated_at", "tags_array", "event_id",
-                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible",
+                          "max_impressions_count", "max_clicks_count", "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -167,7 +169,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
-                          "seconds_visible")
+                          "seconds_visible", "max_impressions_count", "max_clicks_count",
+                          "billboard_campaign_id")
       end
 
       it "also accepts target geolocations as an array" do
@@ -238,6 +241,265 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
       end
+    end
+  end
+
+  context "when the API key's user is a Billboard admin with restricted sub-permissions" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:auth_header) { v1_headers.merge({ "api-key" => api_secret.secret }) }
+    let(:allowed) { [] }
+    let(:draft_params) { billboard_params.merge(approved: false, published: false) }
+
+    before do
+      user.add_role(:single_resource_admin, Billboard)
+      SubPermissions.update_grant(user: user, resource_type: "Billboard",
+                                  sub_permissions: SubPermissions.build(allow: allowed))
+    end
+
+    it "can still list and read billboards", :aggregate_failures do
+      get api_billboards_path, headers: auth_header
+      expect(response).to have_http_status(:success)
+
+      get api_billboard_path(billboard1.id), headers: auth_header
+      expect(response).to have_http_status(:success)
+    end
+
+    it "creates an unapproved, unpublished billboard", :aggregate_failures do
+      expect do
+        post api_billboards_path, params: draft_params.to_json, headers: auth_header
+      end.to change(Billboard, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+      expect(Billboard.last).to have_attributes(approved: false, published: false)
+    end
+
+    it "defaults to unapproved and unpublished when the flags are omitted" do
+      post api_billboards_path, params: billboard_params.except(:approved, :published).to_json, headers: auth_header
+
+      expect(response).to have_http_status(:created)
+      expect(Billboard.last).to have_attributes(approved: false, published: false)
+    end
+
+    {
+      "approved" => { approved: true, published: false, missing: "approve billboards" },
+      "published" => { approved: false, published: true, missing: "publish billboards" },
+      "live" => { approved: true, published: true, missing: "approve billboards and publish billboards" }
+    }.each do |state, attrs|
+      it "refuses to create a billboard #{state} and saves nothing", :aggregate_failures do
+        expect do
+          post api_billboards_path, params: billboard_params.merge(attrs.slice(:approved, :published)).to_json,
+                                    headers: auth_header
+        end.not_to change(Billboard, :count)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(response.parsed_body).to eq(
+          "error" => "Your Billboard admin access does not include: #{attrs[:missing]}.",
+          "status" => 403,
+        )
+      end
+    end
+
+    it "accepts approval flags in any form Rails casts to true" do
+      post api_billboards_path, params: billboard_params.merge(approved: "1", published: "true").to_json,
+                                headers: auth_header
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "does not write an audit log for a refused write" do
+      allow(Audit::Logger).to receive(:log)
+      post api_billboards_path, params: billboard_params.to_json, headers: auth_header
+
+      expect(Audit::Logger).not_to have_received(:log)
+    end
+
+    describe "updating an unapproved billboard" do
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      it "edits its content" do
+        put api_billboard_path(draft.id), params: { name: "Renamed", body_markdown: "New copy" }.to_json,
+                                          headers: auth_header
+
+        expect(response).to have_http_status(:success)
+        expect(draft.reload).to have_attributes(name: "Renamed", body_markdown: "New copy")
+      end
+
+      it "refuses to approve or publish it and leaves it unchanged", :aggregate_failures do
+        original_name = draft.name
+        put api_billboard_path(draft.id), params: { name: "Renamed", approved: true }.to_json, headers: auth_header
+        expect(response).to have_http_status(:forbidden)
+
+        put api_billboard_path(draft.id), params: { published: true }.to_json, headers: auth_header
+        expect(response).to have_http_status(:forbidden)
+
+        expect(draft.reload).to have_attributes(name: original_name, approved: false, published: false)
+      end
+    end
+
+    describe "updating an approved billboard" do
+      it "refuses to change its content and leaves it unchanged", :aggregate_failures do
+        original = billboard1.body_markdown
+        put api_billboard_path(billboard1.id), params: { body_markdown: "Swapped after approval" }.to_json,
+                                               headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(response.parsed_body["error"]).to include("change or delete approved billboards")
+        expect(billboard1.reload.body_markdown).to eq(original)
+      end
+
+      it "accepts a write that changes nothing" do
+        put api_billboard_path(billboard1.id), params: { approved: true, published: true }.to_json,
+                                               headers: auth_header
+
+        expect(response).to have_http_status(:success)
+      end
+
+      it "takes it down by unapproving it" do
+        put api_billboard_path(billboard1.id), params: { approved: false }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:success)
+        expect(billboard1.reload).not_to be_approved
+      end
+
+      it "takes it down through the unpublish endpoint" do
+        put unpublish_api_billboard_path(billboard1.id), headers: auth_header
+
+        expect(response).to have_http_status(:no_content)
+        expect(billboard1.reload).not_to be_published
+      end
+    end
+
+    describe "when another request approves the billboard first" do
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      before do
+        allow(Billboard).to receive(:find).and_wrap_original do |original, *args|
+          original.call(*args).tap { |loaded| Billboard.where(id: loaded.id).update_all(approved: true) }
+        end
+      end
+
+      it "decides against the locked, current row and refuses the edit", :aggregate_failures do
+        put api_billboard_path(draft.id), params: { body_markdown: "Swapped after approval" }.to_json,
+                                          headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload).to have_attributes(approved: true, body_markdown: draft.body_markdown)
+      end
+
+      it "reads the row with FOR UPDATE inside the transaction that writes it" do
+        statements = []
+        callback = ->(*, payload) { statements << payload[:sql] if payload[:sql].match?(/display_ads|BEGIN|COMMIT/) }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          put api_billboard_path(draft.id), params: { approved: false }.to_json, headers: auth_header
+        end
+
+        lock = statements.index { |sql| sql.include?("FOR UPDATE") }
+        update = statements.rindex { |sql| sql.start_with?("UPDATE \"display_ads\"") }
+        expect(lock).to be_present
+        expect(update).to be > lock
+        expect(statements[lock..update]).not_to include(a_string_matching(/\ACOMMIT|RELEASE SAVEPOINT/))
+      end
+    end
+
+    describe "an Event's billboard" do
+      let(:event) do
+        create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "tagged_broadcast")
+      end
+      let!(:event_billboard) { create(:billboard, event: event, approved: false, published: true) }
+
+      it "refuses to change content the broadcast worker would then approve", :aggregate_failures do
+        original = event_billboard.body_markdown
+        put api_billboard_path(event_billboard.id), params: { body_markdown: "Unreviewed" }.to_json,
+                                                    headers: auth_header
+        expect(response).to have_http_status(:forbidden)
+
+        Events::ManageBroadcastBillboardsWorker.new.perform
+        expect(event_billboard.reload).to have_attributes(approved: true, body_markdown: original)
+      end
+
+      it "lets it be taken down, and the worker does not bring it back live", :aggregate_failures do
+        put unpublish_api_billboard_path(event_billboard.id), headers: auth_header
+        expect(response).to have_http_status(:no_content)
+
+        Events::ManageBroadcastBillboardsWorker.new.perform
+        expect(Billboard.approved_and_published).not_to include(event_billboard)
+      end
+    end
+
+    it "still renders previews" do
+      post preview_api_billboards_path, params: { body_markdown: "## Preview" }.to_json, headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when the grant allows approving and publishing" do
+      let(:allowed) { %w[approve publish] }
+
+      it "creates a live billboard" do
+        post api_billboards_path, params: billboard_params.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:created)
+        expect(Billboard.last).to have_attributes(approved: true, published: true)
+      end
+
+      it "still cannot change an approved billboard" do
+        put api_billboard_path(billboard1.id), params: { name: "Changed" }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when the user is also an admin" do
+      before { user.add_role(:admin) }
+
+      it "ignores the restriction" do
+        post api_billboards_path, params: billboard_params.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:created)
+      end
+    end
+
+    context "with a campaign that has a live billboard" do
+      let(:campaign) { BillboardCampaign.create!(name: "Live", max_impressions_count: 1_000) }
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      before do
+        create(:billboard, approved: true, published: true, billboard_campaign: campaign)
+        draft.update_column(:impressions_count, 900)
+      end
+
+      it "refuses to attach a billboard to the campaign", :aggregate_failures do
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: campaign.id }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to be_nil
+      end
+
+      it "refuses to detach a billboard from the campaign", :aggregate_failures do
+        draft.update_column(:billboard_campaign_id, campaign.id)
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: nil }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to eq(campaign.id)
+      end
+    end
+  end
+
+  context "when the API key's user is an unrestricted Billboard admin" do
+    let(:api_secret) { create(:api_secret) }
+    let(:auth_header) { v1_headers.merge({ "api-key" => api_secret.secret }) }
+
+    before { api_secret.user.add_role(:single_resource_admin, Billboard) }
+
+    it "keeps full access: creating live billboards and changing approved ones", :aggregate_failures do
+      post api_billboards_path, params: billboard_params.to_json, headers: auth_header
+      expect(response).to have_http_status(:created)
+      expect(Billboard.last).to have_attributes(approved: true, published: true)
+
+      put api_billboard_path(billboard1.id), params: { name: "Changed" }.to_json, headers: auth_header
+      expect(response).to have_http_status(:success)
+      expect(billboard1.reload.name).to eq("Changed")
     end
   end
 

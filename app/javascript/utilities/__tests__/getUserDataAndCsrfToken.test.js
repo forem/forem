@@ -35,6 +35,7 @@ const encodeCookieUser = (user) => {
 const resetEnvironment = () => {
   document.head.innerHTML = '';
   document.body.removeAttribute('data-user');
+  document.body.removeAttribute('data-user-status');
   window.localStorage.clear();
   document.cookie =
     'current_user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
@@ -128,6 +129,19 @@ describe('getUserDataAndCsrfTokenSafely', () => {
     ).resolves.toEqual({
       currentUser: null,
       csrfToken: undefined,
+    });
+  });
+
+  test('resolves immediately without polling when body userStatus is logged-out', async () => {
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="logged-out-csrf" />';
+    document.body.dataset.userStatus = 'logged-out';
+
+    await expect(
+      getUserDataAndCsrfTokenSafely({ waitTime: 1000, maxWaitTime: 5000 }),
+    ).resolves.toEqual({
+      currentUser: null,
+      csrfToken: 'logged-out-csrf',
     });
   });
 });

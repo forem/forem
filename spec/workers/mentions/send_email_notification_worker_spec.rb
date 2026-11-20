@@ -48,5 +48,27 @@ RSpec.describe Mentions::SendEmailNotificationWorker, type: :worker do
     it_behaves_like "a valid mentionable" do
       let(:mention) { create(:mention, user_id: user.id, mentionable_id: article.id, mentionable_type: "Article") }
     end
+
+    context "when mentionable author is spam or mentionable is flagged" do
+      let(:mention) { create(:mention, user_id: user.id, mentionable_id: comment.id, mentionable_type: "Comment") }
+
+      it "does not send an email when the mentionable author is marked as spam" do
+        allow(NotifyMailer).to receive(:with)
+        comment.user.add_role(:spam)
+
+        worker.perform(mention.id)
+
+        expect(NotifyMailer).not_to have_received(:with)
+      end
+
+      it "does not send an email when the mentionable has a negative score" do
+        allow(NotifyMailer).to receive(:with)
+        comment.update_column(:score, -3)
+
+        worker.perform(mention.id)
+
+        expect(NotifyMailer).not_to have_received(:with)
+      end
+    end
   end
 end

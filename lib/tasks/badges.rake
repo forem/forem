@@ -35,3 +35,11 @@ task :award_fab_five_badges, [:arg1] => :environment do |_t, args|
   Badges::AwardFabFive.call(usernames)
   puts "Done!"
 end
+
+# One-time (or occasional) full-history backfill of thumbs-up milestone badges.
+# rake award_thumbs_up_badges_backfill
+task award_thumbs_up_badges_backfill: :environment do
+  puts "Backfilling thumbs-up badges for users with >= #{Badges::AwardThumbsUp::MIN_THRESHOLD} reactions..."
+  Badges::AwardThumbsUp.backfill
+  puts "Done!"
+end

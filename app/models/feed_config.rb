@@ -1,6 +1,8 @@
 class FeedConfig < ApplicationRecord
   LOW_IMPRESSION_COUNT = 25
   TOP_POOL_LIMIT = 15
+  REPEAT_VISIT_SCORE_MULTIPLIER = 1.0
+  POWER_USER_REPEAT_VISIT_SCORE_MULTIPLIER = 1.5
 
   BUCKET_ALL = "all".freeze
   BUCKET_FEED_NEW_USER = "feed_new_user".freeze
@@ -138,11 +140,21 @@ class FeedConfig < ApplicationRecord
         .limit(ARCHIVE_TOP_LIMIT)
         .ids
 
-      bucket_scope
+      stale_configs = bucket_scope
         .where("created_at < ?", cutoff)
         .where.not(id: top_ids)
-        .in_batches(of: 1000)
-        .update_all(archived: true, updated_at: Time.current)
+        .where(
+          "NOT EXISTS (SELECT 1 FROM feed_config_assignments " \
+          "WHERE feed_config_id = feed_configs.id AND expires_at > ?)", Time.current
+        )
+      stale_configs.in_batches(of: 1000) do |batch|
+        transaction do
+          # Selection holds this same lock until its assignment commits. The
+          # subsequent UPDATE gets a fresh snapshot of those assignments.
+          locked_ids = batch.reorder(:id).lock.ids
+          stale_configs.where(id: locked_ids).update_all(archived: true, updated_at: Time.current)
+        end
+      end
     end
   end
 
@@ -161,9 +173,31 @@ class FeedConfig < ApplicationRecord
   end
 
   def self.max_feed_lookback_hours
-    lookback_days = Settings::UserExperience.feed_lookback_days.to_i
+    subforem_id = RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] ||
+      Subforem.cached_default_id
+    lookback_days = Settings::UserExperience.feed_lookback_days(subforem_id: subforem_id).to_i
     days = lookback_days.positive? ? lookback_days : DEFAULT_FEED_LOOKBACK_DAYS
     days * 24
+  end
+
+  def self.repeat_visit_score_multiplier_sql
+    power_user_bucket = targeting_buckets.fetch(BUCKET_FEED_POWER_USER)
+    "CASE WHEN targeting_bucket = #{power_user_bucket} " \
+      "THEN #{POWER_USER_REPEAT_VISIT_SCORE_MULTIPLIER} " \
+      "ELSE #{REPEAT_VISIT_SCORE_MULTIPLIER} END"
+  end
+
+  def self.record_repeat_visit(config_id)
+    # Use the last measured impression-user denominator, just as the engagement
+    # score does. Normal feedback refreshes reconcile it with any new viewers.
+    # Both score refreshes and this increment read the counter inside UPDATE so
+    # concurrent engagement feedback cannot overwrite newly earned return credit.
+    where(id: config_id, archived: false).update_all(
+      "feed_repeat_visits_count = feed_repeat_visits_count + 1, " \
+      "feed_success_score = COALESCE(feed_success_score, 0) + " \
+      "CASE WHEN feed_impression_users_count > 0 " \
+      "THEN (#{repeat_visit_score_multiplier_sql}) / feed_impression_users_count ELSE 0 END",
+    )
   end
 
   def self.resolve_selection_bucket(user: nil, context_type: nil, targeting_bucket: nil)
@@ -200,33 +234,42 @@ class FeedConfig < ApplicationRecord
 
   def self.select_for_targeted_bucket(bucket)
     bucket_scope = active.where(targeting_bucket: bucket)
+    # `fallback_scope` only includes `[bucket, BUCKET_ALL]` where `BUCKET_ALL` is 0
+    # and every targeted bucket enum value is > 0, so `targeting_bucket: :desc`
+    # orders the target bucket ahead of `BUCKET_ALL` while matching the B-tree index.
     fallback_scope = active.where(targeting_bucket: [bucket, BUCKET_ALL])
-    bucket_int = targeting_buckets.fetch(bucket.to_s)
-    bucket_priority_sql = Arel.sql("CASE WHEN targeting_bucket = #{bucket_int.to_i} THEN 0 ELSE 1 END ASC")
 
     roll = rand(100)
     selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs in this bucket
                  low_imp_candidates = fallback_scope
                    .where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
-                   .order(bucket_priority_sql, created_at: :desc)
+                   .order(targeting_bucket: :desc, created_at: :desc)
                    .limit(TOP_POOL_LIMIT)
                    .to_a
                  bucket_candidates = low_imp_candidates.select { |c| c.targeting_bucket == bucket.to_s }
                  (bucket_candidates.presence || low_imp_candidates).sample
                elsif roll < 25 # 5% of the time, pick a random config so none are completely starved
-                 fallback_scope.order(bucket_priority_sql, Arel.sql("RANDOM()")).limit(1).first
+                 fallback_scope.order(targeting_bucket: :desc).order(Arel.sql("RANDOM()")).limit(1).first
                end
 
     proven_fallback = fallback_scope.where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT)
     tested_fallback = fallback_scope.where("feed_impressions_count > 0")
 
     selected ||
-      proven_fallback.order(bucket_priority_sql, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      tested_fallback.order(bucket_priority_sql, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      fallback_scope.order(bucket_priority_sql, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      proven_fallback.order(targeting_bucket: :desc, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      tested_fallback.order(targeting_bucket: :desc, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      fallback_scope.order(targeting_bucket: :desc, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
       bucket_scope.first_or_create
   end
   private_class_method :select_for_targeted_bucket
+
+  def repeat_visit_score_multiplier
+    if bucket_feed_power_user?
+      POWER_USER_REPEAT_VISIT_SCORE_MULTIPLIER
+    else
+      REPEAT_VISIT_SCORE_MULTIPLIER
+    end
+  end
 
   def score_sql(user, include_semantic: true)
     ForemNative.feed_config_score_sql(*native_score_sql_payload(user, include_semantic: include_semantic)) ||
@@ -349,6 +392,8 @@ class FeedConfig < ApplicationRecord
       requested_bucket: targeting_bucket,
     )
     clone.feed_impressions_count = 0
+    clone.feed_impression_users_count = 0
+    clone.feed_repeat_visits_count = 0
     clone.feed_success_score = 0.0
     clone.archived = false
     clone.tap(&:save)
@@ -405,7 +450,8 @@ class FeedConfig < ApplicationRecord
                            end
 
     store = RequestStore.store
-    is_root_subforem = store[:subforem_id].present? &&
+    is_root_subforem = !Subforem.disabled_by_env? &&
+      store[:subforem_id].present? &&
       store[:root_subforem_id].present? &&
       store[:subforem_id] == store[:root_subforem_id]
 
@@ -575,6 +621,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if subforem_follow_weight.positive? &&
+        !Subforem.disabled_by_env? &&
         RequestStore.store[:subforem_id].present? &&
         RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
       subforem_ids = subforem_follow_ids.compact_blank
@@ -644,6 +691,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if recent_subforem_weight.positive? &&
+        !Subforem.disabled_by_env? &&
         activity_store&.recent_subforems&.any? &&
         RequestStore.store[:root_subforem_id].present? &&
         RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]

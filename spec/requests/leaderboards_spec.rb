@@ -5,6 +5,11 @@ RSpec.describe "Leaderboards" do
     let!(:user_high) { create_leaderboard_user(name: "Alice", username: "alice", badge_achievements_count: 5) }
     let!(:user_low) { create_leaderboard_user(name: "Bob", username: "bob", badge_achievements_count: 2) }
 
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(nil)
+      allow(Settings::Community).to receive(:staff_user_id).and_return(nil)
+    end
+
     def create_leaderboard_user(*traits, **attrs)
       create(:user, :without_profile, *traits, profile_image: nil, **attrs)
     end

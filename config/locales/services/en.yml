@@ -65,6 +65,7 @@ en:
           warning: Warning
         enter_fullscreen_mode: Enter fullscreen mode
         exit_fullscreen_mode: Exit fullscreen mode
+        reload_embed: Reload widget
     markdown_processor:
       parser:
         invalid_markdown_detected: Invalid markdown detected!
@@ -82,6 +83,9 @@ en:
         new: "💬 New Comment"
       new_mention:
         new: "🗣️ New Mention"
+    pages:
+      embed_html_wrapper:
+        complexity_fallback: "This embedded widget exceeds safe HTML complexity limits and cannot be rendered."
     payments:
       customer:
         usd: usd
@@ -130,6 +134,8 @@ en:
       comment_handler:
         marked_spam_repeat_auto_flags: User marked as spam after %{count} of their comments from the last month were auto-flagged as spam, triggered by autovomit.
         marked_spam_comment_flood: New account marked as spam after commenting on %{count} posts in a day, triggered by autovomit.
+      phishing_or_signup:
+        marked_spam: Low-trust account marked as spam for platform impersonation, phishing, or deceptive signup solicitation, triggered by autovomit.
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source not found.

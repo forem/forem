@@ -16,9 +16,8 @@
       <% if @articles.present? %>
         <% stories = @articles.map(&:decorate) %>
         <% preload_tag_colors(stories) %>
-        <% stories.each do |story| %>
-          <%= render "articles/single_story", story: story, featured: story.main_image.present? %>
-        <% end %>
+        <% Article.preload_reaction_counts_for_reactable(@articles.select { |article| article.public_reactions_count.positive? }) %>
+        <%= render_story_cards(stories, featured_for: ->(story) { story.main_image.present? }) %>
         <%= paginate @articles %>
         <%= javascript_include_tag "feedPreviewCards", "localizeArticleDates", defer: true %>
       <% else %>

@@ -49,6 +49,23 @@ RSpec.describe Ai::ArticleCheck, type: :service do
         expect(prompt).to include("- #testtag: Assure it does not contain spoilers.")
       end
     end
+
+    context "when expanded_content_advisement_spec is configured" do
+      before do
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+          .and_return("DEV software community.")
+        allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec)
+          .and_return("The DEV Content Playbook: reward real code.")
+        allow(ai_client).to receive(:call).and_return("NO")
+      end
+
+      it "includes both the internal spec and expanded advisement playbook in the prompt" do
+        prompt = described_class.new(article).send(:build_prompt)
+        expect(prompt).to include("DEV software community.")
+        expect(prompt).to include("Content Advisement Playbook:")
+        expect(prompt).to include("The DEV Content Playbook: reward real code.")
+      end
+    end
   end
 
   describe "#spam? with Jev selected" do
@@ -84,11 +101,20 @@ RSpec.describe Ai::ArticleCheck, type: :service do
       expect(described_class.new(article).spam?).to be(false)
     end
 
-    it "flags off-topic promotion but not off-topic content alone" do
+    it "flags off-topic promotion or non-good-faith off-topic content, but not good-faith off-topic content alone" do
       stub_jev(off_topic: 0.95, advertisement: 0.1, good_faith: 0.9)
       expect(described_class.new(article).spam?).to be(false)
 
       stub_jev(off_topic: 0.95, advertisement: 0.6, good_faith: 0.9)
+      expect(described_class.new(article).spam?).to be(true)
+
+      stub_jev(off_topic: 0.95, advertisement: 0.1, good_faith: 0.2)
+      expect(described_class.new(article).spam?).to be(true)
+    end
+
+    it "flags repetitive link-vehicle spam" do
+      create(:article, user: user, title: "Prior promotional post")
+      stub_jev(repetitive_promotion: 0.9, link_vehicle: 0.6, good_faith: 0.6)
       expect(described_class.new(article).spam?).to be(true)
     end
 

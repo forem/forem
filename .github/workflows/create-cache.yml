@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-cache:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       E2E: true
       RAILS_ENV: test
@@ -46,7 +46,7 @@ jobs:
           path: vendor/bundle
           key: setup-ruby-bundler-cache-v6-ubuntu-${{ steps.ruby-ver.outputs.os_version }}-x64-ruby-${{ steps.ruby-ver.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ steps.ruby-ver.outputs.lockfile_hash }}
       - name: Cache pre-compiled assets
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: assetscache
         if: steps.assetscache-lookup.outputs.cache-hit != 'true'
         with:

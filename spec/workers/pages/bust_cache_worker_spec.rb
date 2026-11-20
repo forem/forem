@@ -31,5 +31,25 @@ RSpec.describe Pages::BustCacheWorker, type: :worker do
       worker.perform(page_slug, Organization.maximum(:id).to_i + 1)
       expect(EdgeCache::BustPage).to have_received(:call).with(page_slug, organization: nil)
     end
+
+    it "passes the user to the cache buster when a user id is given" do
+      user = create(:user)
+      allow(EdgeCache::BustPage).to receive(:call)
+      worker.perform(page_slug, nil, user.id)
+      expect(EdgeCache::BustPage).to have_received(:call).with(page_slug, organization: nil, user: user)
+    end
+
+    it "busts the cache with user: nil when the user no longer exists" do
+      allow(EdgeCache::BustPage).to receive(:call)
+      worker.perform(page_slug, nil, User.maximum(:id).to_i + 1)
+      expect(EdgeCache::BustPage).to have_received(:call).with(page_slug, organization: nil, user: nil)
+    end
+
+    it "passes the event to the cache buster when an event id is given" do
+      event = create(:event)
+      allow(EdgeCache::BustPage).to receive(:call)
+      worker.perform(page_slug, nil, nil, event.id)
+      expect(EdgeCache::BustPage).to have_received(:call).with(page_slug, organization: nil, event: event)
+    end
   end
 end

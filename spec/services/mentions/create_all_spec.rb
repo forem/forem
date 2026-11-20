@@ -182,4 +182,25 @@ RSpec.describe Mentions::CreateAll, type: :service do
   it_behaves_like "invalid notifiable and has mentions" do
     let(:notifiable) { create(:article, user_id: user2.id) }
   end
+
+  context "when author is spam or notifiable is flagged as spam" do
+    let(:mascot) { create(:user) }
+    let(:notifiable) { create(:comment, body_markdown: mention_markdown, user_id: user2.id, commentable: article) }
+
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot.id)
+    end
+
+    it "does not create mentions when the author is marked as spam" do
+      user2.add_role(:spam)
+      described_class.call(notifiable)
+      expect(Mention.count).to eq(0)
+    end
+
+    it "does not create mentions when the notifiable has an active mascot vomit reaction" do
+      create(:reaction, user: mascot, reactable: notifiable, category: "vomit")
+      described_class.call(notifiable)
+      expect(Mention.count).to eq(0)
+    end
+  end
 end

@@ -41,14 +41,36 @@ RSpec.describe EventsHelper do
 
   describe "#event_type_accent_class" do
     it "maps the event type to an accent class" do
-      event = build_stubbed(:event, type_of: "takeover")
-      expect(helper.event_type_accent_class(event)).to eq("calendar__accent--takeover")
+      expect(helper.event_type_accent_class(build_stubbed(:event, type_of: "takeover")))
+        .to eq("calendar__accent--takeover")
+      expect(helper.event_type_accent_class(build_stubbed(:event, type_of: "meetup")))
+        .to eq("calendar__accent--meetup")
+      expect(helper.event_type_accent_class(build_stubbed(:event, type_of: "conference")))
+        .to eq("calendar__accent--conference")
     end
 
     it "falls back to other for unknown types" do
       event = build_stubbed(:event, type_of: "live_stream")
       allow(event).to receive(:type_of).and_return("mystery")
       expect(helper.event_type_accent_class(event)).to eq("calendar__accent--other")
+    end
+  end
+
+  describe "#event_pill_class" do
+    it "maps event format labels to pill classes" do
+      expect(helper.event_pill_class(build_stubbed(:event, type_of: "meetup"))).to eq("event-pill--meetup")
+      expect(helper.event_pill_class(build_stubbed(:event, type_of: "conference"))).to eq("event-pill--conference")
+      expect(helper.event_pill_class(build_stubbed(:event, type_of: "other"))).to eq("event-pill--default")
+    end
+  end
+
+  describe "#safe_event_url" do
+    it "allows http, https, and relative paths while rejecting unsafe schemes" do
+      expect(helper.safe_event_url("https://example.com/conf")).to eq("https://example.com/conf")
+      expect(helper.safe_event_url("/events/foo/bar")).to eq("/events/foo/bar")
+      expect(helper.safe_event_url("javascript:alert(1)")).to be_nil
+      expect(helper.safe_event_url("//evil.example")).to be_nil
+      expect(helper.safe_event_url("")).to be_nil
     end
   end
 
@@ -71,6 +93,18 @@ RSpec.describe EventsHelper do
     end
     let(:live_takeover) do
       build_stubbed(:event, type_of: "takeover", start_time: now - 1.hour, end_time: now + 2.hours)
+    end
+    let(:upcoming_meetup) do
+      build_stubbed(:event, type_of: "meetup", start_time: now + 1.day, end_time: now + 2.days)
+    end
+    let(:live_meetup) do
+      build_stubbed(:event, type_of: "meetup", start_time: now - 1.hour, end_time: now + 2.hours)
+    end
+    let(:upcoming_conference) do
+      build_stubbed(:event, type_of: "conference", start_time: now + 1.day, end_time: now + 2.days)
+    end
+    let(:live_conference) do
+      build_stubbed(:event, type_of: "conference", start_time: now - 1.hour, end_time: now + 2.hours)
     end
     let(:upcoming_other) { build_stubbed(:event, type_of: "other", start_time: now + 1.day, end_time: now + 2.days) }
 
@@ -113,6 +147,17 @@ RSpec.describe EventsHelper do
       expect(heading).to eq("Live and Upcoming Takeovers")
     end
 
+    it "returns meetup and conference headings" do
+      expect(helper.sidebar_events_heading([upcoming_meetup], now: now)).to eq("Upcoming Meetups")
+      expect(helper.sidebar_events_heading([live_meetup], now: now)).to eq("Live Meetups")
+      expect(helper.sidebar_events_heading([live_meetup, upcoming_meetup], now: now))
+        .to eq("Live and Upcoming Meetups")
+      expect(helper.sidebar_events_heading([upcoming_conference], now: now)).to eq("Upcoming Conferences")
+      expect(helper.sidebar_events_heading([live_conference], now: now)).to eq("Live Conferences")
+      expect(helper.sidebar_events_heading([live_conference, upcoming_conference], now: now))
+        .to eq("Live and Upcoming Conferences")
+    end
+
     it "returns 'Live and Upcoming Events' when mixed types include both live and upcoming" do
       heading = helper.sidebar_events_heading([live_challenge, upcoming_stream], now: now)
       expect(heading).to eq("Live and Upcoming Events")
@@ -133,6 +178,8 @@ RSpec.describe EventsHelper do
       expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "challenge"))).to eq("Challenge")
       expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "live_stream"))).to eq("Live Stream")
       expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "takeover"))).to eq("Takeover")
+      expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "meetup"))).to eq("Meetup")
+      expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "conference"))).to eq("Conference")
       expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "other"))).to eq("Event")
     end
   end

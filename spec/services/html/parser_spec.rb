@@ -457,6 +457,69 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(html).wrap_mentions_with_links.html
       expect(parsed_html).not_to include("\n")
     end
+
+    it "batches User lookups when multiple candidate mentions exist" do
+      relation = Class.new do
+        def initialize(values)
+          @values = values
+        end
+
+        def pluck(_column)
+          @values
+        end
+      end.new([user.username])
+      allow(User).to receive(:where).with(username: [user.username, "missing_user"]).and_return(relation)
+      allow(User).to receive(:find_by)
+
+      html = "<p>@#{user.username} and @missing_user</p>"
+      parsed_html = described_class.new(html).wrap_mentions_with_links.html
+
+      expect(User).to have_received(:where).with(username: [user.username, "missing_user"])
+      expect(User).not_to have_received(:find_by)
+      expect(parsed_html).to include("@#{user.username}</a>")
+      expect(parsed_html).to include("and @missing_user</p>")
+    end
+  end
+
+  describe "fast substring guards and native transforms" do
+    it "skips DOM parsing in #prefix_all_images when no <img> tag is present" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      parser = described_class.new("<p>No images here</p>")
+
+      expect(parser.prefix_all_images.html).to eq("<p>No images here</p>")
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+    end
+
+    it "skips DOM parsing in #transform_markdown_alerts when no alert marker is present" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      parser = described_class.new("<blockquote><p>Just a quote</p></blockquote>")
+
+      expect(parser.transform_markdown_alerts.html).to eq("<blockquote><p>Just a quote</p></blockquote>")
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+    end
+
+    it "normalizes <video> elements in #enforce_gif_like_videos without DOM parsing" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      html = '<p><video src="https://example.com/clip.mp4"></video></p>'
+      parsed_html = described_class.new(html).enforce_gif_like_videos.html
+
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(parsed_html).to include('data-gif-video="true"', 'autoplay="autoplay"', 'preload="metadata"')
+    end
+
+    it "reuses FULLSCREEN_ACTION_CACHE without re-parsing inline SVGs on cache hits", :aggregate_failures do
+      described_class.new("").fullscreen_action_html
+
+      parser = described_class.new("")
+      allow(parser).to receive(:inline_svg_tag).and_call_original
+      allow(Nokogiri::XML::Document).to receive(:parse).and_call_original
+
+      action_html = parser.fullscreen_action_html
+
+      expect(parser).not_to have_received(:inline_svg_tag)
+      expect(Nokogiri::XML::Document).not_to have_received(:parse)
+      expect(action_html).to include("js-fullscreen-code-action")
+    end
   end
 
   describe "#parse_emojis" do

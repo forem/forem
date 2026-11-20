@@ -1,5 +1,5 @@
 <% preload_tag_colors(@stories) %>
-<%= render partial: "articles/single_story", collection: @stories, as: :story, locals: { featured: false } %>
+<%= render_story_cards(@stories, featured: false) %>
 <% if @stories.size > 1 %>
   <div class="placeholder-div"></div>
 <% end %>

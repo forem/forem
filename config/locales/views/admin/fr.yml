@@ -327,6 +327,7 @@ fr:
               resource_admin_event: Event Admin
               resource_admin_survey: Survey Admin
               resource_admin_organization: Organization Admin
+              resource_admin_organization_page_management: Organization Page Management Admin
               resource_admin_podcast: Podcast Admin
               resource_admin_navigation_link: Navigation Link Admin
               resource_admin_request_redirect: Request Redirect Admin
@@ -505,6 +506,7 @@ fr:
           "Resource Admin: Event": "Resource Admin: Event"
           "Resource Admin: Survey": "Resource Admin: Survey"
           "Resource Admin: Organization": "Resource Admin: Organization"
+          "Resource Admin: OrganizationPageManagement": "Resource Admin: OrganizationPageManagement"
           "Resource Admin: Podcast": "Resource Admin: Podcast"
           "Resource Admin: NavigationLink": "Resource Admin: NavigationLink"
           "Resource Admin: RequestRedirect": "Resource Admin: RequestRedirect"
@@ -661,6 +663,18 @@ fr:
             enable: Activer Dofollow
             disable: Désactiver Dofollow
             enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+          related_articles:
+            label: API Articles Associés
+            description: Lorsque activé, les membres de cette organisation peuvent appeler l'API des articles associés pour trouver des écrits publics de la communauté sur leur technologie.
+            enable: Activer Articles Associés
+            disable: Désactiver Articles Associés
+            enabled_notice: L'API des articles associés est activée pour cette organisation.
+          article_analytics:
+            label: API Analytique des Articles
+            description: Lorsque activé, les membres de cette organisation peuvent exporter les performances de leurs propres articles via l'API analytique.
+            enable: Activer Analytique des Articles
+            disable: Désactiver Analytique des Articles
+            enabled_notice: L'API analytique des articles est activée pour cette organisation.
         bulk_add_users:
           heading: Ajouter des membres en bloc
           description: "Ajoutez plusieurs utilisateurs à cette organisation en une seule fois. Entrez une liste de noms d'utilisateur séparés par des virgules (avec ou sans @ et espaces). Les membres existants seront ignorés."
@@ -741,7 +755,16 @@ fr:
       events:
         fork: "Dupliquer"
         fork_event: "Dupliquer l'événement"
+        form:
+          allow_articles: "Autoriser les articles"
+          allow_articles_description: "Permettre d'associer directement des articles à cet événement et de les afficher sur la page de l'événement une fois celui-ci commencé."
         show:
+          allow_articles: "Articles autorisés"
+          enabled: "Activé"
+          disabled: "Désactivé"
+          tagged_articles_count:
+            one: "1 article associé"
+            other: "%{count} articles associés"
           signups_title: "Inscriptions à l'événement"
           no_signups: "Aucune inscription pour cet événement pour le moment."
           headers:
@@ -752,6 +775,26 @@ fr:
             day_before: "1 jour avant"
             hour_before: "1 heure avant"
             none: "Aucune"
+      event_pages:
+        heading: Pages de l'événement
+        manage_pages: Gérer les pages
+        pages_button: Pages
+        back_to_event: Retour à l'événement
+        new_page: Créer une nouvelle page
+        new_showcase: Créer une page Showcase / README
+        your_pages: Vos pages
+        order_help: Utilisez les flèches pour définir l'ordre des onglets de l'événement. Si une page Showcase / README existe, elle reste épinglée en premier.
+        showcase: Showcase
+        showcase_slug_help: La page Showcase / README utilise le slug readme et devient la vue d'accueil par défaut de cet événement, tandis que la vue standard reste accessible via un onglet.
+        show_in_navigation: Afficher dans les onglets de navigation de l'événement
+        navigation_hint: Les pages masquées restent accessibles via leur URL directe.
+        no_pages: Aucune page créée pour cet événement pour le moment.
+        embed_section_description: Créez des widgets HTML isolés et des intégrations interactives pour cet événement, utilisables dans n'importe quelle page d'événement ou article via la balise Liquid embed.
+        markdown_placeholder: "Utilisez Markdown et les balises Liquid pour composer votre page d'événement."
+        created: Page d'événement créée avec succès.
+        updated: Page d'événement mise à jour avec succès.
+        deleted: Page d'événement supprimée avec succès.
+        reordered: Ordre des pages mis à jour.
       billboard_placement_area_configs:
         index:
           visibility: Visibilité

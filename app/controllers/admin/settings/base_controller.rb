@@ -8,7 +8,7 @@ module Admin
         result = upsert_config(settings_params)
 
         if result.success?
-          Audit::Logger.log(:internal, current_user, params.dup)
+          Audit::Logger.log(:internal, current_user, request.filtered_parameters)
           render json: { message: I18n.t("core.success_settings") }, status: :ok
         else
           render json: { error: result.errors.to_sentence }, status: :unprocessable_entity
@@ -22,7 +22,7 @@ module Admin
       end
 
       def bust_agent_guidance_cache
-        EdgeCache::Bust.call("/llms.txt")
+        EdgeCache::PurgeByKey.call("llms_page", fallback_paths: "/llms.txt")
       end
 
       # Override this method if you need to call a custom class for upserting.

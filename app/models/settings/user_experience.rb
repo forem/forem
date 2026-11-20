@@ -18,6 +18,15 @@ module Settings
       inclusion: { in: FEED_STYLES }
     }
     setting :feed_lookback_days, type: :integer, default: 10
+    setting :feed_config_sticky_hours, type: :integer, default: 60, validates: {
+      numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    }
+    setting :feed_config_sticky_percentage, type: :integer, default: 50, validates: {
+      numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+    }
+    setting :feed_config_repeat_visit_minutes, type: :integer, default: 30, validates: {
+      numericality: { only_integer: true, greater_than: 0 }
+    }
     setting :home_feed_minimum_score, type: :integer, default: 0
     setting :index_minimum_score, type: :integer, default: 0
     setting :index_minimum_date, type: :integer, default: 1_500_000_000

@@ -1,6 +1,6 @@
 import { getCursorXY } from '@utilities/textAreaUtils';
 
-const URL_REGEX = /^https?:\/\/\S+$/;
+export const URL_REGEX = /^https?:\/\/\S+$/;
 const POPOVER_ID = 'embed-url-popover';
 const POPOVER_TIMEOUT_MS = 5000;
 

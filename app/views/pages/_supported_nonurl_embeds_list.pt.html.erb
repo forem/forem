@@ -1,32 +1,78 @@
 <% @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user) %>
 
-<h4>Call To Action (CTA)</h4>
-<p><pre>{% cta link %} description {% endcta %}</pre></p>
-<p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>
+<div class="bg-base-inverted border border-base-20 radius-auto p-4 mb-4">
+<h4>Agent Session</h4>
+<p>Incorpore uma sessão de agente de codificação curada:</p>
+<pre><code>{% agent_session ID %}</code></pre>
+<p>Incorpore uma fatia nomeada:</p>
+<pre><code>{% agent_session ID planning %}</code></pre>
+<p>Ou incorpore uma faixa de mensagens por índice:</p>
+<pre><code>{% agent_session ID 0..10 %}</code></pre>
+<p class="fs-s"><a href="/agent_sessions/new">Faça upload e curadoria de uma sessão</a> para obter o ID.</p>
 
-<h4>Details</h4>
-<p>You can embed a <code>details</code> HTML element by using details, spoiler, or collapsible. The <em>summary</em> will be what the dropdown title displays. The <em>content</em> will be the text hidden behind the dropdown. This is great for when you want to hide text (i.e. answers to questions) behind a user action/intent (i.e. a click).</p>
+<h4 class="mt-4">Card</h4>
+<p>Você pode criar um cartão de destaque independente para enfatizar conteúdos importantes. O conteúdo dentro do cartão pode usar Markdown.</p>
+<pre><code>{% card %}<br>This is some **important** content inside a card!<br>{% endcard %}</code></pre>
+
+<h4 class="mt-4">Call To Action (CTA)</h4>
+<p>Forneça um <em>link</em> para o qual o usuário será redirecionado ao clicar. A <em>description</em> conterá o rótulo/descrição do botão de chamada para ação.</p>
+<pre><code>{% cta link %}<br> description <br>{% endcta %}</code></pre>
+
+<h4 class="mt-4">Details / Spoiler / Collapsible</h4>
+<p>Você pode incorporar um elemento HTML interativo para ocultar conteúdo atrás de um resumo. Isso é ótimo para esconder texto (por exemplo, respostas a perguntas) atrás de um clique.</p>
 <pre>
   <code>{% details summary %} content {% enddetails %}</code>
   <code>{% spoiler summary %} content {% endspoiler %}</code>
   <code>{% collapsible summary %} content {% endcollapsible %}</code>
 </pre>
 
-<h4>KaTex</h4>
-<p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
-<pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
-<p>To render KaTeX inline add the "inline" option:</p>
-<pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+<h4 class="mt-4">KaTex</h4>
+<p>Coloque sua expressão matemática dentro de um bloco Liquid KaTeX, da seguinte forma:</p>
+<pre><code>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}</code></pre>
+<p>Para renderizar KaTeX em linha, adicione a opção « inline »:</p>
+<pre><code>{% katex inline %} c = \pm\sqrt{a^2 + b^2} {% endkatex %}</code></pre>
 
+<h4 class="mt-4">Feed</h4>
+<p>Incorpore um feed de artigos por organização, tag ou múltiplas tags:</p>
+<pre><code>{% feed org=org-slug %}<br>{% feed tag=ruby %}<br>{% feed tags=ruby,javascript limit=10 sort=reactions %}</code></pre>
+<p class="fs-s">Opções: <code>limit</code> (1-30), <code>sort</code> (recent/reactions/comments/score), <code>min_reactions</code>, <code>min_comments</code>, <code>since</code> (ex.: 30d ou 2025-01-01).</p>
+
+<h4 class="mt-4">Layout (Row &amp; Col)</h4>
+<p>Crie layouts de grade responsivos:</p>
+<pre><code>{% row %}<br>  {% col background=default %}Column 1{% endcol %}<br>  {% col span=2 background=subtle %}Wide column{% endcol %}<br>{% endrow %}</code></pre>
+<p class="fs-s"><code>span</code> define a largura da coluna (1-4, padrão 1). <code>background</code> aceita <code>default</code> ou <code>subtle</code>.</p>
+
+<h4 class="mt-4">Features</h4>
+<p>Exiba uma grade de cartões de recursos:</p>
+<pre><code>{% features %}<br>  {% feature title="Fast" icon="lightning" %}Optimized for speed.{% endfeature %}<br>  {% feature title="Secure" icon="🔒" %}Built with security in mind.{% endfeature %}<br>  {% feature title="Simple" %}No icon needed.{% endfeature %}<br>{% endfeatures %}</code></pre>
+<p class="fs-s"><code>title</code> é obrigatório. <code>icon</code> é opcional e aceita um emoji ou um dos nomes de ícones suportados abaixo.</p>
+<p class="fs-s">Ícones suportados: <%= safe_join(FeatureTag::ICONS.map { |icon_name| content_tag(:code, icon_name) }, ", ") %>.</p>
+
+<h4 class="mt-4">Quote</h4>
+<p>Exiba um depoimento ou citação:</p>
+<pre><code>{% quote author="Jane Doe" role="CTO" rating=5 %}Great product!{% endquote %}</code></pre>
+<p class="fs-s">Opções: <code>author</code> (obrigatório), <code>role</code>, <code>image</code>, <code>rating</code> (1-5), <code>source</code>, <code>link</code>.</p>
+<p>Agrupe vários depoimentos em colunas responsivas:</p>
+<pre><code>{% quotes %}<br>  {% quote author="Jane Doe" rating=5 %}Great product!{% endquote %}<br>  {% quote author="John Smith" %}Easy to recommend.{% endquote %}<br>{% endquotes %}</code></pre>
+
+<h4 class="mt-4">Offer</h4>
+<p>Crie uma caixa de chamada para ação com um botão:</p>
+<pre><code>{% offer link="https://example.com" button="Sign Up" %}Join us today!{% endoffer %}</code></pre>
+<p class="fs-s"><code>link</code> é opcional (o botão fica oculto sem ele). <code>button</code> usa « Learn More » por padrão.</p>
+
+<h4 class="mt-4">Slides</h4>
+<p>Crie um carrossel ou galeria de imagens/vídeos:</p>
+<pre><code>{% slides mode="carousel" %}<br>  {% slide image="https://example.com/photo.jpg" alt="Description" %}<br>  {% slide video="https://youtube.com/watch?v=abc123" %}<br>{% endslides %}</code></pre>
+<p class="fs-s">Cada slide precisa de pelo menos um dos seguintes: <code>image</code>, <code>video</code> ou <code>link</code>. Opcionais: <code>title</code>, <code>alt</code>.</p>
+<p class="fs-s"><code>mode="carousel"</code> apresenta os cartões em uma faixa deslizante com controles opcionais no desktop.</p>
 
 <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
-  <h4><%= community_name %> User Subscriptions</h4>
+  <h4 class="mt-4"><%= community_name %> User Subscriptions</h4>
   <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>
   <p>You can add call-to-action text that will show above the subscribe button:</p>
   <code>{% user_subscription If you'd like to receive future updates, subscribe below! %}</code>
-  <p class="fs-s">
-    If a reader is signed out, the button will prompt them to sign in first
-    to subscribe. If the reader is signed in, the button will prompt them
-    to subscribe.
+  <p class="fs-s mb-0 mt-2">
+    If a reader is signed out, the button will prompt them to sign in first to subscribe. If the reader is signed in, the button will prompt them to subscribe.
   </p>
 <% end %>
+</div>

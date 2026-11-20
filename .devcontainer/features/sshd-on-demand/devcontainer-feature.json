@@ -1,0 +1,9 @@
+{
+  "id": "sshd-on-demand",
+  "version": "1.0.0",
+  "name": "SSH server (on demand)",
+  "description": "Installs OpenSSH server for gh codespace ssh/cp/logs without starting it at container start. When started, it listens on loopback only and accepts keys only.",
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

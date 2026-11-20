@@ -96,6 +96,8 @@ module URL
       end
     end
 
+    return url(article.path) if Subforem.disabled_by_env?
+
     has_subforem_attr = ar_record ? record.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
     return url(article.path) unless has_subforem_attr
     
@@ -108,7 +110,7 @@ module URL
   end
 
   def self.page(page)
-    return url(page.path) unless page.respond_to?(:subforem_id)
+    return url(page.path) if Subforem.disabled_by_env? || !page.respond_to?(:subforem_id)
     
     # Use cached lookup to avoid N+1 queries
     subforem_id = page.subforem_id || RequestStore.store[:subforem_id]
@@ -122,6 +124,8 @@ module URL
   #
   # @param comment [Comment] the comment to create the URL for
   def self.comment(comment)
+    return url(comment.path) if Subforem.disabled_by_env?
+
     # Use cached lookup to avoid N+1 queries
     subforem_id = if comment.commentable.class.name == "Article" && comment.commentable.respond_to?(:subforem_id)
                     comment.commentable.subforem_id || RequestStore.store[:default_subforem_id]
@@ -178,6 +182,8 @@ module URL
         return url(nil, user.custom_domain)
       end
     end
+
+    return url(user.username) if Subforem.disabled_by_env?
 
     # Use cached lookup to avoid N+1 queries
     subforem_id = RequestStore.store[:subforem_id]

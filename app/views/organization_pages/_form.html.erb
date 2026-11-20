@@ -91,6 +91,16 @@
       <%= f.text_field :description, class: "crayons-textfield", placeholder: t("views.organization_settings.pages.description_placeholder") %>
     </div>
 
+    <% if @organization.main_page.present? && @page != @organization.main_page %>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :show_in_navigation, class: "crayons-checkbox", aria: { describedby: "page-navigation-hint" } %>
+        <div>
+          <%= f.label :show_in_navigation, t("views.organization_settings.pages.show_in_navigation"), class: "crayons-field__label" %>
+          <p id="page-navigation-hint" class="crayons-field__description"><%= t("views.organization_settings.pages.navigation_hint") %></p>
+        </div>
+      </div>
+    <% end %>
+
     <div class="crayons-field">
       <%= f.label :body_markdown, t("views.organization_settings.pages.content_label"), class: "crayons-field__label" %>
 

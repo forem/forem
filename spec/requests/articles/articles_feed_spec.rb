@@ -41,6 +41,31 @@ RSpec.describe "ArticlesFeed" do
 
     before { create(:article, user: user, tags: "ruby, rails") }
 
+    [nil, "rss-avatar.png"].each do |profile_image|
+      it "preserves the channel and cache tags with a narrow user lookup (image: #{profile_image.inspect})" do
+        user.update_column(:profile_image, profile_image)
+        user.reload
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?('FROM "users"') && !payload[:cached]
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/feed/#{user.username}"
+        end
+
+        channel = Nokogiri::XML(response.body).at_xpath("/rss/channel")
+        expect(response).to have_http_status(:ok)
+        expect(channel.at_xpath("title").text).to eq("#{Settings::Community.community_name}: #{user.name}")
+        expect(channel.at_xpath("description").text).to include("#{user.name} (@#{user.username})")
+        expect(channel.at_xpath("link").text).to end_with(user.path)
+        expect(channel.at_xpath("image/url").text).to end_with(user.profile_image_90)
+        expect(response.headers["Surrogate-Key"].split).to include(*user.profile_identity_cache_keys)
+        expect(queries.size).to eq(1)
+        expect(queries.first).not_to include('"users".*')
+      end
+    end
+
     def article_and_tagging_queries
       queries = []
       callback = lambda do |*, payload|
@@ -64,6 +89,40 @@ RSpec.describe "ArticlesFeed" do
 
     it "returns not found when the requested page is past the last article" do
       expect { get "/feed/#{user.username}?page=50" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  context "with an organization feed" do
+    let(:organization) { create(:organization) }
+
+    before { article.update!(organization: organization) }
+
+    [nil, "rss-organization.png"].each do |profile_image|
+      it "preserves the channel and cache tag with a narrow organization lookup (image: #{profile_image.inspect})" do
+        organization.update_column(:profile_image, profile_image)
+        organization.reload
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?('"organizations"."slug" =') && !payload[:cached]
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/feed/#{organization.slug}"
+        end
+
+        channel = Nokogiri::XML(response.body).at_xpath("/rss/channel")
+        expect(response).to have_http_status(:ok)
+        expect(channel.at_xpath("title").text).to eq("#{Settings::Community.community_name}: #{organization.name}")
+        expect(channel.at_xpath("description").text).to include("#{organization.name} (#{organization.slug})")
+        expect(channel.at_xpath("link").text).to end_with(organization.path)
+        expect(channel.at_xpath("image/url").text).to end_with(organization.profile_image_90)
+        expect(channel.xpath("item/title").map(&:text)).to eq([article.title])
+        expect(response.headers["Surrogate-Key"].split).to include(organization.record_key)
+        expect(queries).to contain_exactly(
+          a_string_starting_with('SELECT "organizations"."id", "organizations"."name", ' \
+                                 '"organizations"."slug", "organizations"."profile_image"'),
+        )
+      end
     end
   end
 

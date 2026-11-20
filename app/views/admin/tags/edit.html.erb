@@ -22,7 +22,7 @@
           <%= f.submit "Add Moderator", class: "crayons-btn" %>
         </div>
       <% end %>
-      <% if @tag_moderators.exists? %>
+      <% if @tag_moderators.any? %>
         <ul class="list-none">
           <% @tag_moderators.each do |user| %>
               <li class="flex justify-between mb-2">

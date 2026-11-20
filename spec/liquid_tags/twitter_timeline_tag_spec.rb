@@ -35,4 +35,11 @@ RSpec.describe TwitterTimelineTag, type: :lyquid_tag do
       end
     end
   end
+
+  describe ".script" do
+    it "only injects platform.twitter.com/widgets.js when a timeline embed is present" do
+      expect(described_class.script).to include("ltag_twitter_timeline-liquid-tag")
+      expect(described_class.script).to include("https://platform.twitter.com/widgets.js")
+    end
+  end
 end

@@ -1,5 +1,7 @@
 module Articles
   class Creator
+    include Articles::DeadlockRetry
+
     def self.call(...)
       new(...).call
     end
@@ -100,8 +102,12 @@ module Articles
       @article
     end
 
+    # Persists @article after validating any pending co-author invitations,
+    # retrying transient PostgreSQL deadlocks via Articles::DeadlockRetry.
     def save_article
-      return @article.save if co_author_invitations.nil? || co_author_invitations.prepare
+      if co_author_invitations.nil? || co_author_invitations.prepare
+        return with_deadlock_retry { @article.save }
+      end
 
       co_author_invitations.errors.each { |message| @article.errors.add(:base, message) }
       false

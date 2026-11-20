@@ -6,6 +6,3 @@ brew "pkg-config"
 brew "cairo" # from canvas
 brew "pango" # from canvas
 brew "pixman" # from canvas
-
-# Dependencies of Forem itself at runtime
-brew "imagemagick"

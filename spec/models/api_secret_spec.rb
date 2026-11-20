@@ -30,7 +30,10 @@ RSpec.describe ApiSecret do
   end
 
   describe "Rack::Attack cache invalidation optimization" do
-    before do
+    let(:admin) { create(:user, :admin) }
+    let(:regular_user) { create(:user) }
+
+    def stub_cache_delete
       cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
       allow(Rails).to receive(:cache) { cache_db }
 
@@ -40,14 +43,43 @@ RSpec.describe ApiSecret do
     end
 
     context "when ApiSecret is created" do
+      before do
+        admin
+        regular_user
+        stub_cache_delete
+      end
+
       it "clears the cache if it belongs to an admin" do
-        create(:api_secret, user: create(:user, :admin))
+        create(:api_secret, user: admin)
         expect(Rails.cache).to have_received(:delete)
           .with(Rack::Attack::ADMIN_API_CACHE_KEY)
       end
 
-      it "doesn't clear the cache if it belongs to an admin" do
-        create(:api_secret)
+      it "doesn't clear the cache if it belongs to a non-admin" do
+        create(:api_secret, user: regular_user)
+        expect(Rails.cache).not_to have_received(:delete)
+          .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+      end
+    end
+
+    context "when ApiSecret is destroyed" do
+      let(:admin_secret) { create(:api_secret, user: admin) }
+      let(:regular_secret) { create(:api_secret, user: regular_user) }
+
+      before do
+        admin_secret
+        regular_secret
+        stub_cache_delete
+      end
+
+      it "clears the cache if it belongs to an admin" do
+        admin_secret.destroy!
+        expect(Rails.cache).to have_received(:delete)
+          .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+      end
+
+      it "doesn't clear the cache if it belongs to a non-admin" do
+        regular_secret.destroy!
         expect(Rails.cache).not_to have_received(:delete)
           .with(Rack::Attack::ADMIN_API_CACHE_KEY)
       end

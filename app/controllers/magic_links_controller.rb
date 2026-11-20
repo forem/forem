@@ -1,7 +1,10 @@
 class MagicLinksController < ApplicationController
+  SIGN_IN_TOKEN_TTL = 15.minutes
+
   def show
-    user = User.find_by(sign_in_token: params[:id])
-    if user && user.sign_in_token_sent_at > 20.minutes.ago
+    user = User.where("sign_in_token_sent_at > ?", SIGN_IN_TOKEN_TTL.ago)
+      .find_by(sign_in_token: params[:id])
+    if user && claim_sign_in_token?(user)
       if user.confirmed_at.blank?
         user.update_column(:confirmed_at, Time.current)
         # update_column bypasses the Trackable after_commit, so tell the
@@ -25,7 +28,12 @@ class MagicLinksController < ApplicationController
   end
 
   def create
-    not_found if params[:email].blank?
+    not_found unless params[:email].is_a?(String) && params[:email].present?
+
+    unless captcha_verified?
+      flash[:notice] = I18n.t("registrations_controller.error.#{Captcha.provider.error_key}")
+      redirect_to new_magic_link_path(email: params[:email]) and return
+    end
 
     @user = User.find_by(email: params[:email])
     if @user
@@ -65,5 +73,21 @@ class MagicLinksController < ApplicationController
         redirect_to new_user_session_path and return
       end
     end
+  end
+
+  private
+
+  # Codes are single use. Clearing atomically means overlapping requests can't
+  # both redeem one, and a stale request can't wipe a newly issued code.
+  def claim_sign_in_token?(user)
+    User.where(id: user.id, sign_in_token: params[:id])
+      .where("sign_in_token_sent_at > ?", SIGN_IN_TOKEN_TTL.ago)
+      .update_all(sign_in_token: nil, sign_in_token_sent_at: nil) == 1
+  end
+
+  def captcha_verified?
+    return true unless Captcha::CheckRegistrationEnabled.call
+
+    Captcha.provider.verify(context: self, action: "magic_link")
   end
 end

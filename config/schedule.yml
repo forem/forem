@@ -121,15 +121,17 @@ send_welcome_notifications:
 hourly_feed_cache_bust:
   description: "Busts the edge cache of the feed (runs hourly on the hour)"
   cron: "0 * * * *"
-  class: "BustCachePathWorker"
+  class: "EdgeCache::PurgeByKeyWorker"
   args:
-    - "/feed.xml"
+    - ["articles-feed"]
+    - ["/feed", "/feed.xml"]
 daily_home_cache_bust:
   description: "Busts the edge cache of the homepage (runs daily at 00:00 UTC)"
   cron: "0 0 * * *"
-  class: "BustCachePathWorker"
+  class: "EdgeCache::PurgeByKeyWorker"
   args:
-    - "/"
+    - ["main_app_home_page"]
+    - ["/"]
 send_email_digest:
   description: "Sends the email digest to users (runs at 11:30 UTC on Wednesday, Thursday, Friday, and Saturday)"
   cron: "30 11 * * 1,2,3,4,5"

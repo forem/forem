@@ -32,7 +32,7 @@ const initializeDateRangePickers = async () => {
     { default: moment },
   ] = await Promise.all([
     import('preact'),
-    import('@crayons'),
+    import('@crayons/formElements/DateRangePicker'),
     import('moment'),
   ]);
 

@@ -1,5 +1,6 @@
 module Articles
   class Updater
+    include Articles::DeadlockRetry
     Result = Struct.new(:success, :article, keyword_init: true)
 
     def self.call(...)
@@ -40,13 +41,15 @@ module Articles
 
     attr_reader :user, :article, :article_params, :co_author_invitee_ids
 
+    # Updates and saves the article after validating any co-author invitations,
+    # retrying transient PostgreSQL deadlocks via Articles::DeadlockRetry.
     def save_article
-      return article.update(article_params) if co_author_invitations.nil?
+      return with_deadlock_retry { article.update(article_params) } if co_author_invitations.nil?
 
       # Assign first so the invitations are checked against the post as it will be saved
       # (e.g. its organization).
       article.assign_attributes(article_params)
-      return article.save if co_author_invitations.prepare
+      return with_deadlock_retry { article.save } if co_author_invitations.prepare
 
       co_author_invitations.errors.each { |message| article.errors.add(:base, message) }
       false

@@ -4,8 +4,18 @@ import { checkUserLoggedIn } from '@utilities/checkUserLoggedIn';
 import { globalFeatureFlagEnabled } from '@utilities/featureFlags';
 import { FavoriteControl } from '../favoriteControl/FavoriteControl';
 
+/**
+ * Mounts FavoriteControl instances onto uninitialized `[data-favorite-control]` nodes,
+ * skipping Preact rendering on unfavorited nodes when the viewer cannot favorite them.
+ * @param {Object|null} currentUser The signed-in user object, or null when signed out.
+ */
 function initializeFavoriteControls(currentUser) {
   const nodes = document.querySelectorAll('[data-favorite-control]');
+  const userId = currentUser?.id ?? null;
+  const canSeeControl =
+    currentUser?.community_leader === true ||
+    (currentUser?.favorite_allowance != null &&
+      currentUser.favorite_allowance > 0);
 
   for (const node of nodes) {
     if (node.dataset.initialized === 'true') {
@@ -22,6 +32,10 @@ function initializeFavoriteControls(currentUser) {
       labelFavorite,
       labelFavorited,
       labelFavoritedByYou,
+      confirmTitle,
+      confirmBody,
+      confirmSubmit,
+      confirmCancel,
       modalTitle,
       modalBody,
       modalRemainingZero,
@@ -33,6 +47,18 @@ function initializeFavoriteControls(currentUser) {
       modalExhaustedBody,
       modalExhaustedClose,
     } = node.dataset;
+
+    const isFavorited = favorited === 'true';
+    const isOwnContent =
+      userId != null && Number(favoritableUserId) === userId;
+
+    if (!isFavorited && (!canSeeControl || isOwnContent)) {
+      if (node.children.length > 0) {
+        node.innerHTML = '';
+      }
+      node.dataset.initialized = 'true';
+      continue;
+    }
 
     render(
       <FavoriteControl
@@ -46,6 +72,10 @@ function initializeFavoriteControls(currentUser) {
         labelFavorite={labelFavorite}
         labelFavorited={labelFavorited}
         labelFavoritedByYou={labelFavoritedByYou}
+        confirmTitle={confirmTitle}
+        confirmBody={confirmBody}
+        confirmSubmit={confirmSubmit}
+        confirmCancel={confirmCancel}
         modalTitle={modalTitle}
         modalBody={modalBody}
         modalRemainingZero={modalRemainingZero}
@@ -83,6 +113,9 @@ function mount() {
 
 mount();
 
-window.InstantClick.on('change', () => {
-  mount();
-});
+if (!window.__favoriteControlsListenerRegistered) {
+  window.__favoriteControlsListenerRegistered = true;
+  window.InstantClick?.on('change', () => {
+    mount();
+  });
+}

@@ -34,6 +34,40 @@ RSpec.describe Users::UsernameGenerator, type: :service do
     expect(result_from(["a", "-", ".a.", " a "])).to match(%([a-z]+{12}))
   end
 
+  %w[login signup admin].each do |username|
+    it "suffixes the reserved username #{username}" do
+      expect(result_from([username])).to match(/\A#{username}_\d+\z/)
+    end
+  end
+
+  it "checks reserved names after normalization" do
+    expect(result_from(["Lo.GiN"])).to match(/\Alogin_\d+\z/)
+  end
+
+  it "prefers an available supplied username over suffixing a reserved name" do
+    expect(result_from(%w[login available_username])).to eq("available_username")
+  end
+
+  it "uses the runtime reserved list for route-derived names" do
+    allow(ReservedWords).to receive(:all).and_return(["custom_route"])
+
+    expect(result_from(["custom_route"])).to match(/\Acustom_route_\d+\z/)
+  end
+
+  it "skips reserved suffixed candidates before using the random fallback" do
+    generator = described_class.new(["login"], detector: does_not_exist, generator: -> { "available_username" })
+    allow(generator).to receive(:rand).with(100).and_return(7)
+    allow(ReservedWords).to receive(:all).and_return(%w[login login_7])
+
+    expect(generator.call).to eq("available_username")
+  end
+
+  it "returns nil when every random candidate is reserved" do
+    result = described_class.call([], detector: does_not_exist, generator: -> { "login" })
+
+    expect(result).to be_nil
+  end
+
   context "when username already exists" do
     subject(:result) { described_class.call ["username"], detector: username_exists }
 

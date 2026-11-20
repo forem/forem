@@ -20,3 +20,6 @@ pt:
         description: Sua conta foi suspensa e tem acesso limitado. Sua capacidade de publicar e comentar pode estar limitada.
         contact_or_appeal_html: "Para mais informações, você pode enviar uma mensagem para %{contact} ou %{appeal_link}."
         appeal_link: enviar um recurso
+      spam_notice:
+        heading: Conta sinalizada
+        description: Sua conta foi sinalizada e está temporariamente somente leitura. Você pode ver seu painel e as estatísticas das suas publicações, mas não pode publicar, editar ou comentar até que a sinalização seja analisada.

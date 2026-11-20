@@ -30,12 +30,90 @@ RSpec.describe "/admin/content_manager/tags" do
       get admin_tags_path
       expect(response).to have_http_status :ok
     end
+
+    it "batch-resolves moderated status without per-tag N+1 role queries or heavy column hydration" do
+      moderated_tag = create(:tag, name: "modtag", taggings_count: 10, wiki_body_markdown: "Heavy wiki")
+      unmoderated_tag = create(:tag, name: "plain", taggings_count: 5, rules_markdown: "Heavy rules")
+      create(:tag, name: "thirdtag", taggings_count: 1)
+      user.add_role(:tag_moderator, moderated_tag)
+
+      queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        next if payload[:name] == "SCHEMA" || payload[:cached]
+
+        queries << payload[:sql]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get admin_tags_path
+      end
+
+      expect(response).to have_http_status(:ok)
+      role_queries = queries.grep(/FROM "roles"/i)
+      user_role_join_queries = queries.grep(/FROM "users" INNER JOIN "users_roles"/i)
+      tag_row_queries = queries.grep(
+        /SELECT "tags"\."id", "tags"\."name", "tags"\."alias_for", "tags"\."taggings_count" FROM "tags"/i,
+      )
+
+      expect(role_queries.size).to eq(1)
+      expect(user_role_join_queries).to be_empty
+      expect(tag_row_queries.size).to eq(1)
+
+      rows = Nokogiri::HTML(response.body).css("tbody tr").to_h do |tr|
+        cells = tr.css("td").map { |td| td.text.strip }
+        [cells[0], cells[4]]
+      end
+      expect(rows[moderated_tag.name]).to eq("true")
+      expect(rows[unmoderated_tag.name]).to eq("false")
+    end
+
+    it "marks all displayed tags as moderated when a class-wide tag_moderator role is assigned" do
+      tag_a = create(:tag, name: "taga")
+      tag_b = create(:tag, name: "tagb")
+      user.add_role(:tag_moderator, Tag)
+
+      get admin_tags_path
+
+      rows = Nokogiri::HTML(response.body).css("tbody tr").to_h do |tr|
+        cells = tr.css("td").map { |td| td.text.strip }
+        [cells[0], cells[4]]
+      end
+      expect(rows[tag_a.name]).to eq("true")
+      expect(rows[tag_b.name]).to eq("true")
+    end
   end
 
   describe "GET /admin/content_manager/tags/:id" do
     it "responds with 200 OK" do
       get edit_admin_tag_path(tag.id)
       expect(response).to have_http_status :ok
+    end
+
+    it "skips querying users when the tag has no moderators and avoids duplicate exists? queries when moderated" do
+      unmoderated_queries = []
+      callback = lambda do |target|
+        lambda do |_name, _start, _finish, _id, payload|
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          target << payload[:sql]
+        end
+      end
+
+      ActiveSupport::Notifications.subscribed(callback.call(unmoderated_queries), "sql.active_record") do
+        get edit_admin_tag_path(tag.id)
+      end
+      expect(unmoderated_queries.grep(/SELECT "users"\."id", "users"\."username" FROM "users"/i)).to be_empty
+      expect(response.body).to include("This tag currently has no moderators.")
+
+      user.add_role(:tag_moderator, tag)
+      moderated_queries = []
+      ActiveSupport::Notifications.subscribed(callback.call(moderated_queries), "sql.active_record") do
+        get edit_admin_tag_path(tag.id)
+      end
+
+      expect(moderated_queries.grep(/SELECT "users"\."id", "users"\."username" FROM "users"/i).size).to eq(1)
+      expect(moderated_queries.grep(/SELECT 1 AS one FROM "users"/i)).to be_empty
+      expect(response.body).to include("@#{user.username}")
     end
 
     it "renders supported and suggested checkboxes with accessible descriptions" do

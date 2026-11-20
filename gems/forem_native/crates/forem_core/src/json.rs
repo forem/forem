@@ -35,6 +35,11 @@ const HEX: &[u8; 16] = b"0123456789abcdef";
 /// `s.to_json` (json 2.7 escapes plus the Rails ` ` / ` ` and, when
 /// `escape_html` is true, `<` / `>` / `&` rewrites).
 pub fn write_json_string(out: &mut String, s: &str, escape_html: bool) {
+    write_quoted(out, s, escape_html);
+}
+
+/// Writes `s` as a quoted, ActiveSupport-escaped JSON string into any [`JsonOutput`] sink.
+fn write_quoted<W: JsonOutput>(out: &mut W, s: &str, escape_html: bool) {
     let bytes = s.as_bytes();
     out.reserve(bytes.len() + 2);
     out.push('"');
@@ -96,13 +101,63 @@ pub fn json_quote(s: &str, escape_html: bool) -> String {
     out
 }
 
+/// Output shared by the encoder and byte counter. Neither implementation can fail.
+pub trait JsonOutput: Write {
+    /// Reserves capacity for at least `additional` more bytes when backed by a buffer.
+    fn reserve(&mut self, additional: usize);
+    /// Appends a single UTF-8 character to the output or adds its UTF-8 byte length.
+    fn push(&mut self, value: char);
+    /// Appends a UTF-8 string slice to the output or adds its byte length.
+    fn push_str(&mut self, value: &str);
+}
+
+impl JsonOutput for String {
+    fn reserve(&mut self, additional: usize) {
+        String::reserve(self, additional);
+    }
+    fn push(&mut self, value: char) {
+        String::push(self, value);
+    }
+    fn push_str(&mut self, value: &str) {
+        String::push_str(self, value);
+    }
+}
+
+/// A counting sink: retains no document bytes, regardless of input size.
+#[derive(Default)]
+pub struct JsonByteCount(pub usize);
+
+impl Write for JsonByteCount {
+    fn write_str(&mut self, value: &str) -> std::fmt::Result {
+        self.0 += value.len();
+        Ok(())
+    }
+}
+
+impl JsonOutput for JsonByteCount {
+    fn reserve(&mut self, _additional: usize) {}
+    fn push(&mut self, value: char) {
+        self.0 += value.len_utf8();
+    }
+    fn push_str(&mut self, value: &str) {
+        self.0 += value.len();
+    }
+}
+
+/// Encoded byte length of a string, including quotes, without allocating its JSON.
+pub fn json_quoted_size(value: &str, escape_html: bool) -> usize {
+    let mut count = JsonByteCount::default();
+    write_quoted(&mut count, value, escape_html);
+    count.0
+}
+
 /// Streaming JSON document writer producing the same compact output as `JSON.generate`
 /// (no whitespace, `,` and `:` separators) with ActiveSupport's string escaping.
 ///
 /// Callers are responsible for balancing `begin_*` / `end_*` calls and for calling
 /// [`JsonWriter::key`] before every value inside an object.
-pub struct JsonWriter {
-    buf: String,
+pub struct JsonWriter<W = String> {
+    buf: W,
     escape_html: bool,
     // One entry per open container: true until its first element has been written.
     first: Vec<bool>,
@@ -111,9 +166,24 @@ pub struct JsonWriter {
 }
 
 impl JsonWriter {
+    /// Creates a string-backed [`JsonWriter`] with the specified initial byte capacity.
     pub fn new(escape_html: bool, capacity: usize) -> Self {
+        Self::with_output(escape_html, String::with_capacity(capacity))
+    }
+}
+
+impl JsonWriter<JsonByteCount> {
+    /// Creates a byte-counting [`JsonWriter`] that tracks encoded JSON length without allocating a buffer.
+    pub fn counting(escape_html: bool) -> Self {
+        Self::with_output(escape_html, JsonByteCount::default())
+    }
+}
+
+impl<W: JsonOutput> JsonWriter<W> {
+    /// Initializes a [`JsonWriter`] wrapping the provided [`JsonOutput`] sink.
+    fn with_output(escape_html: bool, buf: W) -> Self {
         Self {
-            buf: String::with_capacity(capacity),
+            buf,
             escape_html,
             first: Vec::new(),
             after_key: false,
@@ -161,16 +231,18 @@ impl JsonWriter {
         self.buf.push(']');
     }
 
+    /// Writes an object member key followed by `:`.
     pub fn key(&mut self, key: &str) {
         self.separate();
-        write_json_string(&mut self.buf, key, self.escape_html);
+        write_quoted(&mut self.buf, key, self.escape_html);
         self.buf.push(':');
         self.after_key = true;
     }
 
+    /// Writes a JSON string value.
     pub fn string(&mut self, value: &str) {
         self.separate();
-        write_json_string(&mut self.buf, value, self.escape_html);
+        write_quoted(&mut self.buf, value, self.escape_html);
     }
 
     pub fn int(&mut self, value: i64) {
@@ -189,7 +261,8 @@ impl JsonWriter {
         self.buf.push_str("null");
     }
 
-    pub fn finish(self) -> String {
+    /// Consumes the writer and returns the underlying output sink.
+    pub fn finish(self) -> W {
         self.buf
     }
 }
@@ -197,6 +270,49 @@ impl JsonWriter {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verifies that `json_quoted_size` matches the byte length of `json_quote` across escape modes.
+    #[test]
+    fn counts_quoted_bytes_without_a_buffer() {
+        let inputs = [
+            "",
+            "plain",
+            "é 😀 漢字",
+            "\"\\\r\n\t",
+            "<>&",
+            "\u{2028}\u{2029}",
+            "\u{0}\u{8}\u{b}\u{c}\u{1f}",
+            "&#64; &amp;",
+        ];
+        for escape_html in [true, false] {
+            for input in inputs {
+                assert_eq!(
+                    json_quoted_size(input, escape_html),
+                    json_quote(input, escape_html).len()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn counts_nested_documents_and_integer_boundaries() {
+        let mut w = JsonWriter::counting(true);
+        w.begin_object();
+        w.key("<&>");
+        w.begin_array();
+        w.int(i64::MIN);
+        w.int(i64::MAX);
+        w.null();
+        w.bool(true);
+        w.bool(false);
+        w.string("😀\u{2028}");
+        w.begin_object();
+        w.end_object();
+        w.end_array();
+        w.end_object();
+        assert_eq!(w.depth(), 0);
+        assert_eq!(w.finish().0, r#"{"\u003c\u0026\u003e":[-9223372036854775808,9223372036854775807,null,true,false,"😀\u2028",{}]}"#.len());
+    }
 
     #[test]
     fn quotes_plain_strings() {

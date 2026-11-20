@@ -93,7 +93,7 @@
   </div>
 <% end %>
 
-<% if @reactions && @reactions.any? %>
+<% if (@reactions && @reactions.any?) || @gem_given_by %>
   <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-6">
     <div class="crayons-card p-4 m:p-5 overflow-auto" style="max-height:600px">
       <header class="analytics-card-header">
@@ -116,7 +116,14 @@
           <%= t("views.stats.reactions_history") %>
         </h2>
       </header>
-      <% @reactions.each do |reaction| %>
+      <%# Gems are stored on the article, not as Reactions, so merge the gem into the
+          newest-first list by comparing timestamps. A gem without a timestamp stays first. %>
+      <% gem_pending = @gem_given_by.present? %>
+      <% (@reactions || []).each do |reaction| %>
+        <% if gem_pending && (@gem_given_at.nil? || @gem_given_at >= reaction.created_at) %>
+          <%= render "shared/gem_history_entry" %>
+          <% gem_pending = false %>
+        <% end %>
         <div class="fs-sm py-2 flex items-center">
           <div class="mr-3 relative">
             <img class="crayons-avatar h-8 w-8" style="height: 30px; width: 30px;" src="<%= reaction.user.profile_image_90 %>" width="25" height="25">
@@ -132,6 +139,9 @@
             </div>
           </div>
         </div>
+      <% end %>
+      <% if gem_pending %>
+        <%= render "shared/gem_history_entry" %>
       <% end %>
     </div>
   </div>

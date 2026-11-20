@@ -1,12 +1,10 @@
 require "rails_helper"
 
 RSpec.describe EdgeCache::BustPodcastEpisode, type: :service do
-  let(:cache_bust) { instance_double(EdgeCache::Bust) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:podcast_path) { "/cfp" }
   let(:podcast_slug) { "-007" }
-
   let(:paths) do
     [
       podcast_path,
@@ -16,31 +14,25 @@ RSpec.describe EdgeCache::BustPodcastEpisode, type: :service do
   end
 
   before do
-    allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-
-    paths.each do |path|
-      allow(cache_bust).to receive(:call).with(path).once
-    end
-
-    allow(podcast_episode).to receive(:purge)
-    allow(podcast_episode).to receive(:purge_all)
+    podcast_episode
+    allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
-  it "busts the cache" do
+  it "purges podcast episode, podcast, and podcast index surrogate keys in one call" do
     described_class.call(podcast_episode, podcast_path, podcast_slug)
 
-    paths.each do |path|
-      expect(cache_bust).to have_received(:call).with(path).once
-    end
-
-    expect(podcast_episode).to have_received(:purge)
-    expect(podcast_episode).to have_received(:purge_all)
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+      [podcast_episode.record_key, podcast_episode.table_key, "podcast_episodes_all", "podcasts/#{podcast_slug}"],
+      fallback_paths: paths,
+    ).once
   end
 
-  it "logs an error" do
+  it "logs an error if purging raises" do
     allow(Rails.logger).to receive(:warn)
-    allow(cache_bust).to receive(:call).and_raise(StandardError)
-    described_class.call(podcast_episode, 12, podcast_slug)
+    allow(EdgeCache::PurgeByKey).to receive(:call).and_raise(StandardError)
+
+    described_class.call(podcast_episode, podcast_path, podcast_slug)
+
     expect(Rails.logger).to have_received(:warn).once
   end
 end

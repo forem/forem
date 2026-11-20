@@ -1,5 +1,5 @@
 require "rails_helper"
-require "cypress-rails/finds_bin"
+require Rails.root.join("lib/cypress-rails/finds_bin").to_s
 
 RSpec.describe CypressRails::FindsBin do
   describe ".call" do

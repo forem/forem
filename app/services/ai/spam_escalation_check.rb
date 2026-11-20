@@ -8,7 +8,9 @@ module Ai
   # Runs only when the :spam_escalation function is set to Jev (see Ai::FunctionConfig);
   # otherwise content without links is never escalated, as before.
   class SpamEscalationCheck
-    VERSION = "1.3".freeze
+    include Ai::CommunityContext
+
+    VERSION = "1.4".freeze
     FUNCTION_KEY = :spam_escalation
 
     MAX_TEXT_LENGTH = 3_000
@@ -51,10 +53,10 @@ module Ai
     # @return [Boolean] true if the content should go to the full spam check
     def escalate?
       selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      return false unless selection.jev?
+      return false unless selection.decision?
 
-      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: @content,
-                                        affected_user: @content.user, **Ai::TypeSafe::Client::FAIL_FAST)
+      client = selection.decision_client(wrapper: self, affected_content: @content,
+                                         affected_user: @content.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: { content: @text, community: community_description }, questions: QUESTIONS)
       QUESTIONS.keys.any? { |id| result.noul(id) >= threshold }
     rescue StandardError => e
@@ -67,15 +69,10 @@ module Ai
     # The same description of what belongs on the (sub)forem that Ai::ContentModerationLabeler uses,
     # so "off-topic" means off-topic for this community rather than a hardcoded subject.
     def community_description
-      subforem_id = @content.subforem_id
-      description = if subforem_id
-                      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-                        Settings::Community.community_description(subforem_id: subforem_id)
-                    else
-                      Settings::RateLimit.internal_content_description_spec.presence ||
-                        Settings::Community.community_description
-                    end
-      description.to_s.first(MAX_TEXT_LENGTH)
+      subforem_id = @content.try(:subforem_id)
+      description = resolve_community_description(subforem_id)
+      advisement = resolve_content_advisement_spec(subforem_id)
+      [description.presence, advisement.presence].compact.join("\n\n").first(MAX_TEXT_LENGTH)
     end
 
     # Admin-tunable (Settings::AiFunctions). The default favors recall, since a false escalation

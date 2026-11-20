@@ -7,6 +7,24 @@ RSpec.describe "articles/_single_story.html.erb", type: :view do
   let(:article) { create(:article, user: author) }
   let(:story) { article.decorate }
 
+  context "with the article show projection" do
+    let(:organization) { create(:organization) }
+    let(:article) { create(:article, user: author, organization: organization) }
+    let(:story) do
+      Article.select(Article.column_names - StoriesController::UNRENDERED_ARTICLE_COLUMNS).find(article.id).decorate
+    end
+
+    it "renders the cached author and organization in the story card" do
+      allow(view).to receive(:user_signed_in?).and_return(false)
+
+      render partial: "articles/single_story",
+             locals: { story: story, featured: false, feed_style_preference: "basic" }
+
+      expect(rendered).to have_link(author.name, href: "/#{author.username}")
+      expect(rendered).to have_link(organization.name, href: "/#{organization.slug}")
+    end
+  end
+
   context "when user is signed in" do
     let(:current_user) { create(:user) }
 

@@ -1,6 +1,6 @@
-<div id="response-templates-data" class="hidden"></div>
 <% if user_signed_in? %>
-  <%= javascript_include_tag "validateFileInputs", defer: true %>
+  <div id="response-templates-data" class="hidden"></div>
+  <%= javascript_include_tag "validateFileInputs", "CommentTextArea/CommentTextArea", defer: true, onerror: "this.remove()" %>
 <% end %>
 
 <% if @comment.errors.any? %>
@@ -48,24 +48,26 @@
 
     </div>
 
-    <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates fs-base hidden">
-      <header class="mb-3">
-        <button type="button" class="crayons-btn personal-template-button active" data-target-type="personal" data-form-id="new_comment"><%= t("views.comments.write.template.personal") %></button>
-        <button type="button" class="crayons-btn moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment"><%= t("views.comments.write.template.moderator") %></button>
-      </header>
+    <% if user_signed_in? %>
+      <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates fs-base hidden">
+        <header class="mb-3">
+          <button type="button" class="crayons-btn personal-template-button active" data-target-type="personal" data-form-id="new_comment"><%= t("views.comments.write.template.personal") %></button>
+          <button type="button" class="crayons-btn moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment"><%= t("views.comments.write.template.moderator") %></button>
+        </header>
 
-      <div class="personal-responses-container">
-        <%# filled by JS %>
-      </div>
-      <div class="moderator-responses-container hidden">
-        <%# filled by JS %>
-      </div>
+        <div class="personal-responses-container">
+          <%# filled by JS %>
+        </div>
+        <div class="moderator-responses-container hidden">
+          <%# filled by JS %>
+        </div>
 
-      <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>">
-        <%= t("views.comments.write.template.create.subtitle") %>
-      </a>
-      <p><%= t("views.comments.write.template.create.desc") %></p>
-    </div>
+        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>">
+          <%= t("views.comments.write.template.create.subtitle") %>
+        </a>
+        <p><%= t("views.comments.write.template.create.desc") %></p>
+      </div>
+    <% end %>
 
     <div class="comment-form__preview text-styles text-styles--secondary" id="preview-div"></div>
 

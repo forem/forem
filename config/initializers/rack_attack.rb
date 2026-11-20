@@ -1,11 +1,21 @@
+require Rails.root.join("lib/local_redis/rack_attack_proxy")
+if Rails.cache.is_a?(ActiveSupport::Cache::LocalRedisCacheStore)
+  Rack::Attack.cache.store = Rails.cache
+end
+
 Rack::Attack.throttled_response_retry_after_header = true
 
 module Rack
   class Attack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
-    API_SEARCH_PATH_REGEX =
-      %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?(?:articles|users|concepts)/(?:semantic_)?search(?:\.json)?\z}
+    API_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/api/}
+    API_SEARCH_PATH_REGEX = %r{
+      \A(?:/locale/[^/]+)?/api/(?:v\d+/)?
+      (?:(?:articles|users|concepts)/(?:semantic_)?search|related_articles)(?:\.json)?\z
+    }x
+    MAGIC_LINK_CREATE_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links(?:\.[^/.?]+)?\z}
+    MAGIC_LINK_SHOW_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links/(?!new(?:\.[^/.?]+)?\z)[^/]+\z}
 
     # Method that checks API Key from the request and returns true if it
     # belongs to an admin, false otherwise
@@ -46,6 +56,31 @@ module Rack
         else
           ActionDispatch::Request.new(env).remote_ip
         end
+      end
+
+      def api_write?
+        (put? || patch? || post? || delete?) && normalized_path.match?(API_PATH_REGEX)
+      end
+
+      def magic_link_create?
+        post? && normalized_path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
+      end
+
+      def magic_link_show?
+        normalized_path.match?(MAGIC_LINK_SHOW_PATH_REGEX)
+      end
+
+      # Rails params, not Rack's: they differ on query/body conflicts and JSON
+      # bodies, and this has to key on the address the controller will email.
+      def magic_link_email
+        ActionDispatch::Request.new(env).params["email"].to_s.strip.downcase.presence
+      end
+
+      private
+
+      # The router collapses slashes before matching, so `//magic_links` and `//api/pages` still route.
+      def normalized_path
+        ActionDispatch::Journey::Router::Utils.normalize_path(path)
       end
     end
 
@@ -110,8 +145,7 @@ module Rack
     end
 
     throttle("api_write_throttle", limit: 1, period: 1) do |request|
-      api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && (request.put? || request.post? || request.delete?)
+      if request.api_write?
         Honeycomb.add_field("user_api_key", request.env["HTTP_API_KEY"])
         unless admin_api_key?(request)
           request.track_and_return_ip
@@ -120,11 +154,8 @@ module Rack
     end
 
     throttle("api_write_key_throttle", limit: 1, period: 1) do |request|
-      api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && (request.put? || request.post? || request.delete?)
-        unless admin_api_key?(request)
-          request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
-        end
+      if request.api_write? && !admin_api_key?(request)
+        request.env["HTTP_API_KEY"].presence
       end
     end
 
@@ -138,6 +169,27 @@ module Rack
       if request.path == "/lead_submissions" && request.post?
         request.track_and_return_ip
       end
+    end
+
+    throttle("magic_links_create_throttle", limit: 5, period: 1.minute) do |request|
+      request.track_and_return_ip if request.magic_link_create?
+    end
+
+    throttle("magic_links_create_throttle_per_hour", limit: 20, period: 1.hour) do |request|
+      request.track_and_return_ip if request.magic_link_create?
+    end
+
+    throttle("magic_links_email_throttle", limit: 3, period: 10.minutes) do |request|
+      request.magic_link_email if request.magic_link_create?
+    end
+
+    # No method check: Rails also routes HEAD to #show, so a GET-only rule could be sidestepped.
+    throttle("magic_links_show_throttle", limit: 10, period: 1.minute) do |request|
+      request.track_and_return_ip if request.magic_link_show?
+    end
+
+    throttle("magic_links_show_throttle_per_hour", limit: 30, period: 1.hour) do |request|
+      request.track_and_return_ip if request.magic_link_show?
     end
 
     throttle("sitemap_throttle", limit: 10, period: 1.minute) do |request|

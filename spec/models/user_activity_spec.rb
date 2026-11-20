@@ -111,11 +111,19 @@ RSpec.describe UserActivity, type: :model do
         expect(activity.last_activity_at).to be_within(3.seconds).of(Time.current)
       end
 
-      it "stores exactly the 20 most recent page-views in descending order" do
+      it "stores the most recent page-views in descending order without a bare created_at index scan" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        page_view_queries = queries.grep(/FROM "page_views"/)
+        expect(page_view_queries.size).to eq(1)
+        expect(page_view_queries.first).to include("ORDER BY (page_views.created_at + INTERVAL '0 seconds') DESC")
+
         expected = user.page_views
-                       .order(created_at: :desc)
-                       .limit(20)
-                       .pluck(:article_id, :created_at, :time_tracked_in_seconds)
+          .order(created_at: :desc)
+          .limit(20)
+          .pluck(:article_id, :created_at, :time_tracked_in_seconds)
 
         expect(activity.recently_viewed_articles.map(&:first)).to eq(expected.map(&:first))
       end

@@ -43,10 +43,25 @@ module Api
           return
         end
 
-        s3_key = AgentSessions::S3Storage.generate_key(@user.id)
-        presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key)
+        content_length = AgentSessions::S3Storage.permitted_content_length(params[:content_length])
+        unless content_length
+          render json: { error: AgentSessions::S3Storage::CONTENT_LENGTH_ERROR, status: 422 },
+                 status: :unprocessable_entity
+          return
+        end
 
-        render json: { s3_key: s3_key, presigned_url: presigned_url }
+        # Sessions are counted only once created, so presign needs its own
+        # limit to stop unbounded URL minting.
+        rate_limiter.consume!(:agent_session_presign)
+
+        s3_key = AgentSessions::S3Storage.generate_key(@user.id)
+        presigned_url = AgentSessions::S3Storage.presigned_put_url(s3_key, content_length: content_length)
+
+        render json: {
+          s3_key: s3_key,
+          presigned_url: presigned_url,
+          headers: AgentSessions::S3Storage.upload_headers(content_length)
+        }
       end
 
       def raw_url
@@ -91,7 +106,7 @@ module Api
         @agent_session.tool_name = params[:tool_name].presence || curated.dig("metadata", "tool_name") || "claude_code"
         @agent_session.curated_data = result.scrubbed_data
         @agent_session.s3_key = params[:s3_key] if params[:s3_key].present?
-        @agent_session.session_metadata = session_metadata_from_scrub_result(result)
+        @agent_session.session_metadata = AgentSessionParsers::RedactionMetadata.for_scrub_result(result)
 
         save_and_respond
       rescue JSON::ParserError
@@ -102,16 +117,6 @@ module Api
         @agent_session.tool_name = params[:tool_name].presence || "claude_code"
         @agent_session.s3_key = params[:s3_key]
         save_and_respond
-      end
-
-      def session_metadata_from_scrub_result(result)
-        metadata = result.scrubbed_data.fetch("metadata", {}) || {}
-        metadata_redactions = metadata["redactions"].presence ||
-          AgentSessionParsers::RedactionMetadata.from_messages(result.scrubbed_data["messages"])
-
-        metadata.merge(
-          "redactions" => AgentSessionParsers::RedactionMetadata.merge(metadata_redactions, result.redactions),
-        )
       end
 
       def save_and_respond

@@ -11,8 +11,10 @@ class Event < ApplicationRecord
   has_many :event_signups, dependent: :destroy
   has_many :signed_up_users, through: :event_signups, source: :user
   has_many :emails, dependent: :nullify
+  has_many :pages, inverse_of: :event, dependent: :destroy
+  has_many :articles, dependent: :nullify
 
-  enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3 }
+  enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3, meetup: 4, conference: 5 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
 
   validates :title, presence: true
@@ -29,12 +31,19 @@ class Event < ApplicationRecord
   validates :bg_color_hex,
             format: { with: /\A#[0-9a-fA-F]{6}\z/, message: "must be a valid 6-digit hex color (e.g. #3B49DF)" },
             allow_blank: true
+  validate :validate_owned_page_slug_sync,
+           on: :update,
+           if: -> { event_name_slug_changed? || event_variation_slug_changed? }
 
   before_validation :set_default_bg_color_hex
   before_save :format_stream_urls
   before_save :evaluate_markdown, if: :body_markdown_changed?
+  after_update :sync_owned_page_slugs,
+               if: -> { saved_change_to_event_name_slug? || saved_change_to_event_variation_slug? }
+  before_destroy :capture_owned_page_fallback_paths, prepend: true
   after_commit :ensure_broadcast_billboards_and_workers, on: %i[create update]
   after_commit :bust_upcoming_events_cache, on: %i[create update destroy]
+  after_commit :purge_event_edge_cache, on: %i[update destroy]
 
   scope :published, -> { where(published: true) }
   scope :elevated, -> { where(elevated: true) }
@@ -123,8 +132,40 @@ class Event < ApplicationRecord
     ActionController::Base.helpers.simple_format(description)
   end
 
+  def path
+    "/events/#{event_name_slug}/#{event_variation_slug}"
+  end
+
   def live?(at = Time.current)
     start_time.present? && end_time.present? && start_time <= at && end_time >= at
+  end
+
+  def started?(at = Time.current)
+    start_time.present? && start_time <= at
+  end
+
+  def upcoming?(at = Time.current)
+    start_time.present? && start_time > at
+  end
+
+  def ended?(at = Time.current)
+    end_time.present? && end_time < at
+  end
+
+  def articles_visible?(at = Time.current)
+    allow_articles? && started?(at)
+  end
+
+  def accepting_articles?(at: Time.current, as_admin: false)
+    return false unless allow_articles?
+
+    as_admin || (published? && live?(at))
+  end
+
+  def visible_articles(at = Time.current)
+    return Article.none unless articles_visible?(at)
+
+    articles.published
   end
 
   def formatted_date_range
@@ -142,6 +183,12 @@ class Event < ApplicationRecord
     end
   end
 
+  # The zone that the event's dates are shown in, from data["time_zone"]
+  # (for example "America/Los_Angeles").  Falls back to the app time zone.
+  def time_zone
+    ActiveSupport::TimeZone[data&.dig("time_zone").to_s] || Time.zone
+  end
+
   def location_display
     data&.dig("location") || data&.dig(:location) || "Everywhere, Worldwide"
   end
@@ -157,6 +204,10 @@ class Event < ApplicationRecord
       "CHALLENGE"
     when "takeover"
       "TAKEOVER"
+    when "meetup"
+      "MEETUP"
+    when "conference"
+      "CONFERENCE"
     else
       "EVENT"
     end
@@ -187,7 +238,132 @@ class Event < ApplicationRecord
     }
   end
 
+  def ordered_pages
+    pages.non_embed_html.order(:position, :created_at, :id)
+  end
+
+  def ordered_embed_pages
+    pages.embed_html.order(:created_at, :id)
+  end
+
+  def main_page
+    pages.non_embed_html.find_by(slug: page_slug_for(Page::SHOWCASE_SLUG_SUFFIX))
+  end
+  alias showcase_page main_page
+
+  def readme_page?
+    main_page.present?
+  end
+
+  def navigation_pages
+    ordered_pages.where(show_in_navigation: true)
+  end
+
+  def page_slug_prefix
+    "events/#{event_name_slug}/#{event_variation_slug}"
+  end
+
+  def page_slug_for(suffix)
+    "#{page_slug_prefix}/#{suffix}"
+  end
+
+  def embed_page_slug_for(suffix)
+    "#{page_slug_prefix}/embed/#{suffix}"
+  end
+
   private
+
+  def validate_owned_page_slug_sync
+    return if errors[:event_name_slug].any? || errors[:event_variation_slug].any?
+
+    old_name = event_name_slug_was || event_name_slug
+    old_var = event_variation_slug_was || event_variation_slug
+    old_prefix = "events/#{old_name}/#{old_var}/"
+    new_prefix = "#{page_slug_prefix}/"
+    return if old_prefix == new_prefix
+
+    owned_pages_with_slug_prefix(old_prefix).find_each do |owned_page|
+      owned_page.association(:event).target = self
+      owned_page.slug = "#{new_prefix}#{owned_page.slug.delete_prefix(old_prefix)}"
+      next if owned_page.valid?
+
+      errors.add(:base, owned_page.errors.full_messages.to_sentence)
+      break
+    end
+  end
+
+  def sync_owned_page_slugs
+    old_name = saved_change_to_event_name_slug&.first || event_name_slug
+    old_var = saved_change_to_event_variation_slug&.first || event_variation_slug
+    old_prefix = "events/#{old_name}/#{old_var}/"
+    new_prefix = "#{page_slug_prefix}/"
+    return if old_prefix == new_prefix
+
+    owned_pages_with_slug_prefix(old_prefix).find_each do |owned_page|
+      owned_page.association(:event).target = self
+      new_slug = "#{new_prefix}#{owned_page.slug.delete_prefix(old_prefix)}"
+      next if owned_page.update(slug: new_slug)
+
+      errors.add(:base, owned_page.errors.full_messages.to_sentence)
+      raise ActiveRecord::Rollback
+    end
+  rescue ActiveRecord::RecordNotUnique
+    errors.add(:base, I18n.t("models.event.owned_page_slug_taken"))
+    raise ActiveRecord::Rollback
+  end
+
+  def owned_pages_with_slug_prefix(prefix)
+    escaped_prefix = ActiveRecord::Base.sanitize_sql_like(prefix)
+    pages.where("slug LIKE ?", "#{escaped_prefix}%")
+  end
+
+  def capture_owned_page_fallback_paths
+    @destroyed_owned_page_fallback_paths = owned_page_fallback_paths_for(path)
+  end
+
+  def purge_event_edge_cache
+    return unless destroyed? || previous_changes.except("updated_at").any?
+
+    EdgeCache::PurgeByKeyWorker.perform_async(record_key, event_edge_cache_fallback_paths)
+  end
+
+  def event_edge_cache_fallback_paths
+    current_base = path
+    paths = [current_base]
+
+    if destroyed?
+      paths.concat(Array(@destroyed_owned_page_fallback_paths))
+    else
+      old_base = previous_event_base_path
+      paths << old_base if old_base
+      owned_pages_snapshot = pages.pluck(:slug, :template)
+      paths.concat(owned_page_fallback_paths_for(current_base, owned_pages_snapshot))
+      paths.concat(owned_page_fallback_paths_for(old_base, owned_pages_snapshot)) if old_base
+    end
+
+    paths.uniq
+  end
+
+  def previous_event_base_path
+    return unless previous_changes.key?("event_name_slug") || previous_changes.key?("event_variation_slug")
+
+    old_name = previous_changes.dig("event_name_slug", 0) || event_name_slug
+    old_var = previous_changes.dig("event_variation_slug", 0) || event_variation_slug
+    "/events/#{old_name}/#{old_var}"
+  end
+
+  def owned_page_fallback_paths_for(base_path, rows = pages.pluck(:slug, :template))
+    rows.filter_map do |page_slug, template|
+      suffix = page_slug.to_s.split("/").last
+      next if suffix.blank?
+
+      if template == Page::EMBED_HTML_TEMPLATE
+        "#{base_path}/embed/#{suffix}?mode=embed"
+      else
+        "#{base_path}/p/#{suffix}"
+      end
+    end
+  end
 
   def evaluate_markdown
     if body_markdown.blank?

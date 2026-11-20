@@ -1,0 +1,69 @@
+<div class="crayons-field"
+     id="<%= prefix %>-embed-html-editor"
+     data-embed-editor="true"
+     data-preview-url="<%= preview_url %>">
+  <div class="flex items-center justify-between mb-2">
+    <%= f.label :body_html, t("views.organization_settings.pages.embed_content_label"), for: "#{prefix}_embed_body_html", class: "crayons-field__label mb-0" %>
+    <div class="flex gap-1" role="tablist">
+      <button type="button"
+              id="<%= prefix %>-embed-tab-edit"
+              role="tab"
+              aria-controls="<%= prefix %>-embed-edit-pane"
+              data-embed-tab="edit"
+              class="crayons-btn crayons-btn--secondary crayons-btn--s"
+              aria-selected="true">
+        <%= t("views.organization_settings.pages.edit") %>
+      </button>
+      <button type="button"
+              id="<%= prefix %>-embed-tab-preview"
+              role="tab"
+              aria-controls="<%= prefix %>-embed-preview-pane"
+              data-embed-tab="preview"
+              class="crayons-btn crayons-btn--ghost crayons-btn--s"
+              aria-selected="false">
+        <%= t("views.organization_settings.page.preview") %>
+      </button>
+    </div>
+  </div>
+
+  <div id="<%= prefix %>-embed-edit-pane"
+       role="tabpanel"
+       aria-labelledby="<%= prefix %>-embed-tab-edit"
+       data-embed-pane="edit">
+    <%= f.text_area :body_html,
+                    id: "#{prefix}_embed_body_html",
+                    data: { embed_input: "body_html" },
+                    class: "crayons-textfield ff-monospace fs-base",
+                    style: "min-height: 400px;",
+                    required: true,
+                    placeholder: t("views.organization_settings.pages.embed_content_placeholder") %>
+  </div>
+
+  <div id="<%= prefix %>-embed-preview-pane"
+       role="tabpanel"
+       aria-labelledby="<%= prefix %>-embed-tab-preview"
+       data-embed-pane="preview"
+       data-sandboxed-embed="true"
+       data-embed-preview="true"
+       class="hidden">
+    <div class="crayons-notice crayons-notice--danger mb-2 hidden"
+         data-embed-preview-error="true"
+         data-default-error="<%= t("views.organization_settings.pages.embed_preview_error") %>"></div>
+    <div class="ltag__page-viewport">
+      <iframe id="<%= prefix %>-embed-preview-frame"
+              data-embed-preview-frame="true"
+              title="<%= t("views.organization_settings.page.preview") %>"
+              width="100%"
+              height="480"
+              frameborder="0"
+              sandbox="<%= OrganizationEmbedsController::SANDBOX_DIRECTIVE %>"
+              credentialless
+              referrerpolicy="no-referrer"
+              allow="<%= PageTag::IFRAME_ALLOW_POLICY %>"
+              style="width: 100%; border: 1px solid var(--card-border, #e1e5e9); border-radius: var(--radius-auto, 6px); background: #fff;">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<%= javascript_include_tag "pageEmbedSandbox", defer: true, onerror: "this.remove()" %>

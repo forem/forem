@@ -2,7 +2,7 @@ module Articles
   class HandleSpamWorker
     include Sidekiq::Job
 
-    sidekiq_options queue: :high_priority
+    sidekiq_options queue: :high_priority, lock: :until_executing, on_conflict: :replace
 
     def perform(article_id)
       article = Article.find_by(id: article_id)
@@ -48,7 +48,8 @@ module Articles
       valid_tags = Tag.supported.where(name: tag_names).pluck(:name)
 
       if valid_tags.any?
-        # Apply tags to article
+        # Apply tags to article without re-triggering HandleSpamWorker
+        article.skip_autovomits = true
         article.tag_list = valid_tags
         article.cached_tag_list = valid_tags.join(", ")
         article.save
@@ -57,6 +58,8 @@ module Articles
       else
         Rails.logger.warn("No valid tags found from suggestions #{tag_names.join(', ')} for article #{article.id}")
       end
+    ensure
+      article.skip_autovomits = false
     end
   end
 end

@@ -107,7 +107,7 @@ class UsersController < ApplicationController
       redirect_to sign_up_path and return
     end
 
-    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}", local_cache: false)
 
     if destroy_token.blank?
       flash[:settings_notice] = I18n.t("users_controller.token_expired")
@@ -220,7 +220,8 @@ class UsersController < ApplicationController
 
     not_authorized unless current_user.org_admin?(org) && removable_org_membership
 
-    removable_org_membership.delete
+    # destroy (not delete) so a withdrawn invitation's notification is cleaned up too
+    removable_org_membership.destroy
     flash[:settings_notice] = I18n.t("users_controller.removed_member", name: removable.name)
     redirect_to organization_settings_path(org.slug)
   end
@@ -346,7 +347,7 @@ class UsersController < ApplicationController
   end
 
   def destroy_request_in_progress?
-    Rails.cache.exist?("user-destroy-token-#{@user.id}")
+    Rails.cache.exist?("user-destroy-token-#{@user.id}", local_cache: false)
   end
 
   def import_articles_from_feed(user)

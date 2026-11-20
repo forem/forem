@@ -1,0 +1,57 @@
+<% return if embedded_view? %>
+<% has_showcase = @showcase_page.present? %>
+<% nav_pages = @event_nav_pages || [] %>
+<% return unless event_has_tabs?(@showcase_page, nav_pages) %>
+<%
+  root_path = event_path(@event.event_name_slug, @event.event_variation_slug)
+  native_path = has_showcase ? event_path(@event.event_name_slug, @event.event_variation_slug, mode: "overview") : root_path
+  native_active = @event_page.nil?
+  native_label = event_native_tab_label(@event, has_showcase: has_showcase)
+%>
+<nav class="crayons-tabs event-header-tabs flex items-center flex-wrap mb-4" aria-label="<%= t("views.events.pages.tabs.nav_label") %>" id="event-tab-nav">
+  <% if has_showcase %>
+    <% showcase_title = @showcase_page.title.presence || t("views.events.pages.tabs.showcase") %>
+    <% showcase_active = @event_page == @showcase_page %>
+    <a href="<%= root_path %>"
+       data-instant-keep-scroll="true"
+       class="crayons-tabs__item <%= 'crayons-tabs__item--current' if showcase_active %>"
+       <% if showcase_active %>aria-current="page"<% end %>
+       data-text="<%= showcase_title %>">
+      <%= showcase_title %>
+    </a>
+  <% else %>
+    <a href="<%= native_path %>"
+       data-instant-keep-scroll="true"
+       class="crayons-tabs__item <%= 'crayons-tabs__item--current' if native_active %>"
+       <% if native_active %>aria-current="page"<% end %>
+       data-text="<%= native_label %>">
+      <%= native_label %>
+    </a>
+  <% end %>
+
+  <% nav_pages.each do |page| %>
+    <%
+      suffix = event_page_suffix(page)
+      tab_path = event_custom_page_path(@event.event_name_slug, @event.event_variation_slug, suffix)
+      is_current = @event_page == page
+    %>
+    <a href="<%= tab_path %>"
+       data-instant-keep-scroll="true"
+       class="crayons-tabs__item <%= 'crayons-tabs__item--current' if is_current %>"
+       <% if is_current %>aria-current="page"<% end %>
+       data-text="<%= page.title %>">
+      <%= page.title %>
+    </a>
+  <% end %>
+
+  <% if has_showcase %>
+    <a href="<%= native_path %>"
+       data-instant-keep-scroll="true"
+       class="crayons-tabs__item event-tab-overview <%= 'crayons-tabs__item--current' if native_active %>"
+       <% if native_active %>aria-current="page"<% end %>
+       data-text="<%= native_label %>"
+       style="margin-left: auto;">
+      <%= native_label %>
+    </a>
+  <% end %>
+</nav>

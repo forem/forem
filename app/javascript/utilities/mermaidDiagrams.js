@@ -13,6 +13,9 @@ function loadMermaidBundle() {
   const script = document.createElement('script');
   script.src = scriptPath;
   script.defer = true;
+  script.onerror = () => {
+    script.remove();
+  };
   document.head.appendChild(script);
 }
 

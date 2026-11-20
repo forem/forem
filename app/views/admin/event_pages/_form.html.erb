@@ -1,0 +1,147 @@
+<style>
+  #org-page-editor-root .crayons-article-form__content {
+    border: 1px solid var(--base-20);
+    border-radius: var(--radius);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  #org-page-editor-root .crayons-article-form__header {
+    border-bottom: 1px solid var(--base-20);
+    padding: var(--su-1) var(--su-2);
+    background: var(--card-bg);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  #org-page-editor-root .crayons-article-form__header--fixed {
+    z-index: 100;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  #org-page-editor-root .crayons-article-form__header--placeholder {
+    height: 44px;
+  }
+  #org-page-editor-root .crayons-tabs {
+    margin-left: 0;
+  }
+  #org-page-editor-root .crayons-tabs__list {
+    width: auto;
+  }
+  #org-page-editor-root .crayons-tabs__list li {
+    width: auto;
+  }
+  #org-page-editor-root .crayons-tabs__item {
+    width: auto;
+    white-space: nowrap;
+  }
+  #org-page-editor-root .crayons-article-form__body {
+    flex: 1;
+  }
+  #org-page-editor-root #org_page_markdown {
+    min-height: 400px;
+  }
+  #org-page-editor-root .crayons-article__body .crayons-textfield {
+    min-height: 0;
+    font-size: var(--fs-base);
+  }
+  #org-page-editor-root .ltag-quote {
+    min-width: 0;
+  }
+</style>
+
+<% current_suffix = @page.slug&.delete_prefix("#{@event.page_slug_prefix}/") %>
+<% is_showcase = @page.event_showcase? || params[:kind] == "showcase" %>
+
+<%= form_for @page, url: url, method: method, html: { class: "grid gap-6" } do |f| %>
+  <% if is_new && is_showcase %>
+    <%= hidden_field_tag :kind, "showcase" %>
+  <% end %>
+  <% if @page.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger">
+      <% @page.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="crayons-card crayons-card--content-rows p-6">
+    <h2><%= is_new ? t("views.organization_settings.pages.create_heading") : t("views.organization_settings.pages.edit_heading") %></h2>
+
+    <div class="crayons-field">
+      <%= f.label :title, t("views.organization_settings.pages.title"), class: "crayons-field__label" %>
+      <%= f.text_field :title, class: "crayons-textfield", required: true, placeholder: "e.g. Schedule" %>
+    </div>
+
+    <% if is_showcase %>
+      <div class="crayons-field">
+        <label class="crayons-field__label"><%= t("views.organization_settings.pages.slug") %></label>
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="fs-s color-base-60">/events/<%= @event.event_name_slug %>/<%= @event.event_variation_slug %>/</span>
+          <input type="text" class="crayons-textfield flex-1" value="<%= Page::SHOWCASE_SLUG_SUFFIX %>" disabled />
+        </div>
+        <p class="crayons-field__description"><%= t("views.admin.event_pages.showcase_slug_help") %></p>
+      </div>
+    <% else %>
+      <div class="crayons-field">
+        <%= label_tag "page[slug_suffix]", t("views.organization_settings.pages.slug"), class: "crayons-field__label" %>
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="fs-s color-base-60">/events/<%= @event.event_name_slug %>/<%= @event.event_variation_slug %>/p/</span>
+          <%= text_field_tag "page[slug_suffix]", current_suffix, class: "crayons-textfield flex-1", required: true, pattern: "[a-z0-9\\-]+", placeholder: "e.g. schedule" %>
+        </div>
+        <p class="crayons-field__description"><%= t("views.organization_settings.pages.slug_help") %></p>
+      </div>
+    <% end %>
+
+    <div class="crayons-field">
+      <%= f.label :description, t("views.organization_settings.pages.description"), class: "crayons-field__label" %>
+      <%= f.text_field :description, class: "crayons-textfield", placeholder: t("views.organization_settings.pages.description_placeholder") %>
+    </div>
+
+    <% unless is_showcase %>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :show_in_navigation, class: "crayons-checkbox", aria: { describedby: "event-page-navigation-hint" } %>
+        <div>
+          <%= f.label :show_in_navigation, t("views.admin.event_pages.show_in_navigation"), class: "crayons-field__label" %>
+          <p id="event-page-navigation-hint" class="crayons-field__description"><%= t("views.admin.event_pages.navigation_hint") %></p>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="crayons-field">
+      <%= f.label :body_markdown, t("views.organization_settings.pages.content_label"), class: "crayons-field__label" %>
+
+      <div id="org-page-editor-root"
+           data-default-value="<%= @page.body_markdown %>"
+           data-textarea-name="page[body_markdown]"
+           data-preview-url="<%= preview_admin_event_pages_path(@event) %>"
+           data-placeholder="<%= t("views.admin.event_pages.markdown_placeholder") %>">
+        <div class="crayons-article-form__content">
+          <div class="crayons-article-form__header">
+            <nav class="crayons-article-form__tabs crayons-tabs ml-auto" aria-label="View post modes">
+              <ul class="crayons-tabs__list">
+                <li>
+                  <button data-text="<%= t("views.organization_settings.pages.edit") %>" class="crayons-tabs__item crayons-tabs__item--current" type="button" aria-current="page"><%= t("views.organization_settings.pages.edit") %></button>
+                </li>
+                <li>
+                  <button data-text="<%= t("views.organization_settings.page.preview") %>" class="crayons-tabs__item" type="button"><%= t("views.organization_settings.page.preview") %></button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="crayons-article-form__body drop-area text-padding">
+            <div class="crayons-article-form__cover" role="presentation"></div>
+            <div class="crayons-article-form__title"></div>
+            <%= f.text_area :body_markdown, id: "org_page_markdown", class: "crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100", style: "min-height: 400px;", placeholder: t("views.admin.event_pages.markdown_placeholder") %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-2 mt-4">
+      <button type="submit" class="crayons-btn"><%= t("views.organization_settings.page.save") %></button>
+      <%= link_to t("views.organization_settings.pages.cancel"), admin_event_pages_path(@event), class: "crayons-btn crayons-btn--secondary" %>
+    </div>
+  </div>
+<% end %>
+
+<%= javascript_include_tag "orgPageEditor", defer: true %>

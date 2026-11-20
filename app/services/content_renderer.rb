@@ -31,9 +31,8 @@ class ContentRenderer
       markdown_urls = markdown_text.scan(markdown_pattern).flatten
       html_urls = markdown_text.scan(html_pattern).flatten
       all_urls = markdown_urls + html_urls
-      stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
-      filtered_urls = all_urls.reject { |url| url.include?(stored_image_url) }
-      filtered_urls.uniq.each do |url|
+      filtered_urls = ArticleImageUploader.normalize_external_image_urls(all_urls)
+      filtered_urls.each do |url|
         MediaStore.where(original_url: url).first_or_create
       rescue StandardError => e
         Rails.logger.error("Error storing images: #{e.message}")

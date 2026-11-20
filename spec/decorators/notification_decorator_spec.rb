@@ -139,6 +139,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
     it "responds to article fields (even if blank)" do
       expect(decorated.article_id).to be_nil
+      expect(decorated.article_path).to be_nil
       expect(decorated.article_url).to be_nil
       expect(decorated.article_title).to be_nil
       expect(decorated.article_tag_list).to eq([])
@@ -220,6 +221,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
     it "responds to article fields (even if blank)" do
       expect(decorated.article_id).to be_nil
+      expect(decorated.article_path).to be_nil
       expect(decorated.article_url).to be_nil
       expect(decorated.article_title).to be_nil
       expect(decorated.article_tag_list).to eq([])
@@ -308,22 +310,31 @@ RSpec.describe NotificationDecorator, type: :decorator do
           .with(notifiable_type: "Article", notifiable_id: article_id)
       end
 
-      it "can find article's id, path title, tag_list and updated_at" do
+      it "can find article's id, path, title, tag_list and updated_at" do
         expect(decorated.article_id).to eq(article_id)
-        expect(decorated.article_url).to eq("https://example.com/a_user/article-here")
+        expect(decorated.article_path).to eq("/a_user/article-here")
+        expect(decorated.article_url).to eq("/a_user/article-here")
         expect(decorated.article_title).to eq("Article Here")
         expect(decorated.article_tag_list).to eq([])
         expect(decorated.article_updated_at).to eq("2023-06-02T06:55:53.406Z")
       end
 
-      it "falls back to path or cleans malformed double ports in article_url" do
+      it "prefers path over a custom domain url and cleans malformed double ports when falling back to url" do
+        custom_domain_article = { "url" => "https://blog.mlh.com/article-here",
+                                  "path" => "/mlh/article-here" }
+        custom_domain_notif = build(:notification, json_data: { "article" => custom_domain_article }).decorate
+        expect(custom_domain_notif.article_path).to eq("/mlh/article-here")
+        expect(custom_domain_notif.article_url).to eq("/mlh/article-here")
+
         double_port_article = { "url" => "http://localhost:3000:3100/a_user/article-here",
                                 "path" => "/a_user/article-here" }
         double_port_notif = build(:notification, json_data: { "article" => double_port_article }).decorate
+        expect(double_port_notif.article_path).to eq("/a_user/article-here")
         expect(double_port_notif.article_url).to eq("/a_user/article-here")
 
         no_path_article = { "url" => "http://localhost:3000:3100/a_user/article-here" }
         no_path_notif = build(:notification, json_data: { "article" => no_path_article }).decorate
+        expect(no_path_notif.article_path).to eq("http://localhost:3000/a_user/article-here")
         expect(no_path_notif.article_url).to eq("http://localhost:3000/a_user/article-here")
       end
 
@@ -412,6 +423,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       it "responds to article fields (even if blank)" do
         expect(decorated.article_id).to be_blank
+        expect(decorated.article_path).to be_blank
         expect(decorated.article_url).to be_blank
         expect(decorated.article_title).to be_blank
         expect(decorated.article_tag_list).to eq([])
@@ -524,6 +536,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       it "responds to article fields (even if blank)" do
         expect(decorated.article_id).to be_blank
+        expect(decorated.article_path).to be_blank
         expect(decorated.article_url).to be_blank
         expect(decorated.article_title).to be_blank
         expect(decorated.article_tag_list).to eq([])

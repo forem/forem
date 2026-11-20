@@ -2,6 +2,10 @@ module Stories
   class FeedsController < ApplicationController
     include Instrumentation
 
+    # Feed previews render processed_html; source Markdown, legacy HTML, and vectors
+    # are only needed by other comment paths, which keep their normal projections.
+    UNRENDERED_COMMENT_COLUMNS = %w[body_markdown body_html semantic_embedding].freeze
+
     respond_to :json
 
     before_action :current_user_by_token, only: [:show]
@@ -16,6 +20,9 @@ module Stories
       preload_common_settings
 
       @stories = assign_feed_stories
+      if @sticky_config && @stories.any?
+        response.headers["X-Feed-Visit-Token"] = @sticky_config.visit_token(host: request.host)
+      end
 
       # After getting stories, preload settings for any additional subforems if in root
       preload_additional_subforem_settings
@@ -24,12 +31,37 @@ module Stories
       preload_feed_associations
 
       # Add edge cache headers for signed out users only
-      return if user_signed_in?
+      if user_signed_in?
+        response.headers["Cache-Control"] = "private, no-store"
+        return
+      end
 
+      set_surrogate_key_header(*feed_surrogate_keys)
       set_cache_control_headers(60) # 1 minute expiration
     end
 
     private
+
+    def feed_surrogate_keys
+      tag_name = params[:tag].downcase.strip if params[:tag].is_a?(String)
+      feed_key = if tag_name&.match?(/\A[a-z0-9_-]+\z/)
+                   if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                     "tag-#{tag_name}-top-#{params[:timeframe]}"
+                   elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+                     "tag-#{tag_name}-latest"
+                   else
+                     "tag-#{tag_name}-home"
+                   end
+                 elsif params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                   "stories-top-#{params[:timeframe]}"
+                 elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+                   "stories-latest"
+                 else
+                   "main_app_home_page"
+                 end
+
+      [feed_key, *@stories.map(&:record_key)].compact
+    end
 
     def add_pinned_article
       return if params[:timeframe].present?
@@ -69,11 +101,7 @@ module Stories
       feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
-               @feed_config = FeedConfig.select_for_feed(
-                 preferred_id: params[:item],
-                 user: current_user,
-                 context_type: FeedEvent::CONTEXT_TYPE_HOME,
-               )
+               @feed_config = configured_feed_config
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else
@@ -96,7 +124,7 @@ module Stories
                  span_type: "db",
                  resource: "#{self.class}.#{__method__}",
                  tags: { feed_class: feed.class.to_s.dasherize }) do
-        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant).to_a
       end
     end
 
@@ -123,6 +151,17 @@ module Stories
         # weighted query implementation as it returns a lovely
         # ActiveRecord::Relation.  So this is a compromise.
         feed.default_home_feed(user_signed_in: false).to_a
+      end
+    end
+
+    def configured_feed_config
+      if @page == 1 && params[:tag].blank? && params[:item].blank? && params[:passed_domain].blank?
+        @sticky_config = Feeds::StickyConfig.new(user: current_user)
+        @sticky_config.select
+      else
+        FeedConfig.select_for_feed(
+          preferred_id: params[:item], user: current_user, context_type: FeedEvent::CONTEXT_TYPE_HOME,
+        )
       end
     end
 
@@ -186,6 +225,8 @@ module Stories
         .per(25)
     end
 
+    # Preloads fragment caches, context notes, top comments, and reaction counts
+    # for uncached feed story records to avoid per-story N+1 queries.
     def preload_feed_associations
       records = @stories.map(&:object)
       if @page <= 2 && perform_caching && records.any?
@@ -208,17 +249,29 @@ module Stories
       comments_assoc = @comments_variant.to_sym
       comments_missing = records.select { |r| r.comments_count.positive? && !r.association(comments_assoc).loaded? }
       if comments_missing.any?
+        columns = Comment.column_names - UNRENDERED_COMMENT_COLUMNS
         ranked = Comment.where(
           commentable_type: "Article", commentable_id: comments_missing.map(&:id),
           score: 5.., ancestry: nil, hidden_by_commentable_user: false, deleted: false
-        ).select("comments.id, ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS rn")
+        ).select(*columns)
+          .select("ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS feed_comment_rank")
         ActiveRecord::Associations::Preloader.new(
           records: comments_missing, associations: comments_assoc,
-          scope: Comment.where(id: Comment.from(ranked, :ranked_comments).where("rn <= 3").select(:id)).includes(:user)
+          scope: Comment.from(ranked, :comments).where("feed_comment_rank <= 3").select(*columns).includes(:user)
         ).call
       end
 
-      Article.preload_reaction_counts_for_reactable(records.select { |r| r.public_reactions_count.positive? })
+      preload_reaction_counts(records)
+    end
+
+    # Prefills empty reaction counts for zero-reaction stories and batch-preloads
+    # reaction counts for stories with positive public reaction counts.
+    #
+    # @param records [Array<Article>]
+    def preload_reaction_counts(records)
+      with_reactions, without_reactions = records.partition { |r| r.public_reactions_count.positive? }
+      without_reactions.each { |r| r.instance_variable_set(:@preloaded_reaction_counts_for_reactable, []) }
+      Article.preload_reaction_counts_for_reactable(with_reactions)
     end
 
     def story_cache_key(rec, vc, digest_path)
@@ -235,7 +288,7 @@ module Stories
       current_subforem_id = RequestStore.store[:subforem_id]
       root_subforem_id = RequestStore.store[:root_subforem_id]
 
-      if current_subforem_id == root_subforem_id
+      if !Subforem.disabled_by_env? && current_subforem_id.present? && current_subforem_id == root_subforem_id
         # We're in root subforem - need to handle multiple subforems dynamically
         # We'll cache settings for the most common subforems to avoid repeated queries
         @cached_subforem_logos = {}

@@ -20,6 +20,9 @@ module Api
 
       def create
         @billboard = Billboard.new(permitted_params)
+        missing = BillboardPolicy.new(@user, @billboard).missing_sub_permissions(:save)
+        return render_missing_sub_permissions(missing) if missing.any?
+
         @billboard.save!
         payload = { "action" => "api_billboard_create", "billboard_id" => @billboard.id }
         Audit::Logger.log(:admin_api, @user, payload)
@@ -28,7 +31,15 @@ module Api
 
       def update
         @billboard = Billboard.find(params[:id])
-        @billboard.update!(permitted_params)
+        missing = []
+        @billboard.with_lock do
+          @billboard.assign_attributes(permitted_params)
+          @billboard.lock_affected_campaigns!
+          missing = BillboardPolicy.new(@user, @billboard).missing_sub_permissions(:save)
+          @billboard.save! if missing.empty?
+        end
+        return render_missing_sub_permissions(missing) if missing.any?
+
         payload = { "action" => "api_billboard_update", "billboard_id" => @billboard.id }
         Audit::Logger.log(:admin_api, @user, payload)
         render json: @billboard
@@ -73,6 +84,10 @@ module Api
         authorize Billboard, :access?, policy_class: InternalPolicy
       end
 
+      def render_missing_sub_permissions(missing)
+        render json: { error: SubPermissions.missing_message(Billboard, missing), status: 403 }, status: :forbidden
+      end
+
       def permitted_params
         params.permit :approved, :body_markdown, :minimized_body_markdown, :creator_id, :display_to, :page_id,
                       :browser_context,
@@ -82,6 +97,7 @@ module Api
                       :custom_display_label, :template, :render_mode, :preferred_article_ids,
                       :exclude_role_names, :target_role_names, :include_subforem_ids, :prefer_paired_with_billboard_id,
                       :expires_at, :exclude_survey_completions, :exclude_survey_ids,
+                      :max_impressions_count, :max_clicks_count, :billboard_campaign_id,
                       # Permitting twice allows both comma-separated string and array values
                       :target_geolocations, target_geolocations: []
       end

@@ -38,6 +38,10 @@ RSpec.describe FeedConfig, type: :model do
   end
 
   describe "#score_sql" do
+    around do |example|
+      Timecop.freeze(Time.current) { example.run }
+    end
+
     context "when tag_follow_weight is positive and tag count configs present" do
       before do
         feed_config.tag_follow_weight      = 6.0
@@ -487,7 +491,10 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
-      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
+      feed_config.update_columns(
+        feed_impressions_count: 250, feed_success_score: 1.45,
+        feed_impression_users_count: 10, feed_repeat_visits_count: 6
+      )
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -495,8 +502,9 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_tag_count_max).to eq(6)
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
-      expect(clone.feed_impressions_count).to eq(0)
-      expect(clone.feed_success_score).to eq(0.0)
+      expect(clone).to have_attributes(
+        feed_impressions_count: 0, feed_impression_users_count: 0, feed_repeat_visits_count: 0, feed_success_score: 0.0,
+      )
       expect(clone.archived).to be(false)
     end
 
@@ -671,6 +679,16 @@ RSpec.describe FeedConfig, type: :model do
       expect(config.published_at_diversity_half_lookback_hours)
         .to eq(described_class::DEFAULT_FEED_LOOKBACK_DAYS * 12.0)
     end
+
+    it "resolves max_feed_lookback_hours against Subforem.cached_default_id when RequestStore is empty" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      Settings::UserExperience.set_feed_lookback_days(5, subforem_id: default_subforem.id)
+
+      expect(described_class.max_feed_lookback_hours).to eq(120)
+    end
   end
 
   describe ".targeting_bucket_for" do
@@ -774,6 +792,22 @@ RSpec.describe FeedConfig, type: :model do
   describe ".archive_stale_configs!" do
     before do
       stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 3)
+    end
+
+    it "keeps an assigned config active until its 60-hour window expires" do
+      Timecop.freeze do
+        config = create(:feed_config, created_at: 3.days.ago)
+        create(:feed_config_assignment, feed_config: config, expires_at: 60.hours.from_now)
+        stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 0)
+
+        described_class.archive_stale_configs!
+        expect(config.reload).not_to be_archived
+
+        Timecop.freeze(60.hours.from_now) do
+          described_class.archive_stale_configs!
+          expect(config.reload).to be_archived
+        end
+      end
     end
 
     it "archives configs outside the top limit that are older than 2 days" do
@@ -990,6 +1024,10 @@ RSpec.describe FeedConfig, type: :model do
     let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
+    # Both SQL builders embed Time.current at one-second precision. Freeze time so a
+    # second boundary between the two calls cannot make identical SQL compare unequal.
+    around { |example| Timecop.freeze { example.run } }
+
     it "includes semantic embedding calculation when activity store has a vector" do
       user_activity = create(:user_activity, user: user)
       # Simulating a pgvector array using standard ruby array to test the sql string generation
@@ -1205,6 +1243,17 @@ RSpec.describe FeedConfig, type: :model do
         expect(zero_weight_config.base_score_sql(user)).to include("(articles.score * 2.0)")
         expect(zero_weight_config.base_score_sql(user)).not_to include("semantic_embedding")
       end
+    end
+  end
+
+  describe "#repeat_visit_score_multiplier" do
+    it "returns 1.0 for standard buckets and 1.5 for feed_power_user" do
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_ALL).repeat_visit_score_multiplier)
+        .to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_CASUAL_USER)
+        .repeat_visit_score_multiplier).to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_POWER_USER)
+        .repeat_visit_score_multiplier).to eq(1.5)
     end
   end
 end

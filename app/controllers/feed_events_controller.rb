@@ -1,5 +1,5 @@
 class FeedEventsController < ApplicationMetalController
-  before_action :current_user_by_token, only: [:create]
+  prepend_before_action :current_user_by_token, only: [:create]
   skip_forgery_protection if: :token_authenticated?
   include ActionController::Head
 
@@ -11,6 +11,7 @@ class FeedEventsController < ApplicationMetalController
     feed_config_id
     event_id
   ].freeze
+  FEED_EVENT_ALLOWED_STRING_PARAMS = FEED_EVENT_ALLOWED_PARAMS.map(&:to_s).freeze
 
   MAX_BATCH_SIZE = 20
   REQUESTS_PER_MINUTE = 120
@@ -39,7 +40,8 @@ class FeedEventsController < ApplicationMetalController
 
   def feed_events_params
     @feed_events_params ||= params[:feed_events].map do |event|
-      event.slice(*FEED_EVENT_ALLOWED_PARAMS).merge(user_id: session_current_user_id)
+      raw = event.is_a?(ActionController::Parameters) ? event.to_unsafe_h : event
+      raw.slice(*FEED_EVENT_ALLOWED_STRING_PARAMS, *FEED_EVENT_ALLOWED_PARAMS).merge(user_id: session_current_user_id)
     end
   end
 end

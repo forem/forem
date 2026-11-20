@@ -1,5 +1,6 @@
 class ProfilePinsController < ApplicationController
   before_action :authenticate_user!, only: %i[create update]
+  before_action :check_suspended, only: %i[create update]
 
   def create
     @profile_pin = ProfilePin.new
@@ -31,8 +32,9 @@ class ProfilePinsController < ApplicationController
   end
 
   def bust_user_profile
-    cache_bust = EdgeCache::Bust.new
-    cache_bust.call(current_user.path)
-    cache_bust.call("#{current_user.path}?i=i")
+    EdgeCache::PurgeByKey.call(
+      current_user.profile_details_record_key,
+      fallback_paths: current_user.profile_cache_bust_paths,
+    )
   end
 end

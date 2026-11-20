@@ -4,6 +4,9 @@ require "sentry-sidekiq"
 # Load Honeycomb's Faraday patch first, as the initializers do. Its alias_method
 # recurses forever if it runs after Sentry prepends onto Faraday::Connection.
 require "honeycomb-beeline"
+# Requiring the SDK after Rails boot replaces Forem's nil-safe facade. Restore
+# the initializer so subsequently loaded request specs retain the boot behavior.
+load Rails.root.join("config/initializers/honeycomb.rb")
 
 RSpec.describe "Sentry (Better Stack errors & tracing) initializer" do # rubocop:disable RSpec/DescribeClass
   let(:initializer_path) { Rails.root.join("config/initializers/sentry.rb") }
@@ -41,6 +44,11 @@ RSpec.describe "Sentry (Better Stack errors & tracing) initializer" do # rubocop
     transaction.span_recorder.spans.reject { |span| span == transaction }
   ensure
     Sentry.get_current_scope.clear
+  end
+
+  it "keeps Honeycomb's boot facade usable after loading the SDK without a client" do
+    expect { Honeycomb.add_field("test.key", "value") }.not_to raise_error
+    expect(Honeycomb.start_span(name: "test") { :ok }).to eq(:ok)
   end
 
   it "enables faraday and excon HTTP client patches" do

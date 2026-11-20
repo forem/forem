@@ -7,37 +7,46 @@ require_relative "forem_native/builder"
 # In production, CI, and local development, it loads either the platform-compiled
 # shared library (`forem_native/forem_native.{so,bundle}` from `Containerfile` /
 # `rake forem_native:compile`) or the committed precompiled platform binary
-# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
+# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
+  LATEST_NATIVE_SYMBOL = :ahoy_decorate_payload
+  PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
+  PROFILE_AVATAR_STYLE_KEYS = %i[
+    backdrop outfit arm head topper eyes accessory cheeks mouth
+  ].freeze
   @native_loaded = false
 
   class << self
     def load_native!
-      return true if @native_loaded && defined?(Native)
+      return true if @native_loaded && defined?(Native) && Native.respond_to?(LATEST_NATIVE_SYMBOL)
 
-      # 1. If a local `cargo build --release` has already produced an artifact in `target/release`
-      #    (and no precompiled or staged binary is present yet), stage it into `lib/forem_native/`.
-      if !Builder.precompiled_binary_exists? && File.exist?(Builder.cargo_artifact_path)
+      # 1. If a local `cargo build --release` has already produced an up-to-date artifact in
+      #    `target/release` (and no fresh staged/precompiled binary is present yet), stage it.
+      if ENV["FOREM_NATIVE_SKIP_BUILD"] != "1" &&
+          !Builder.fresh_binary_exists?(LATEST_NATIVE_SYMBOL) &&
+          Builder.binary_exports_symbol?(Builder.cargo_artifact_path, LATEST_NATIVE_SYMBOL)
         Builder.install_built_artifact!
       end
 
-      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary.
-      if require_candidate_binary
+      # 2. Try loading an already-staged local/Containerfile build or precompiled platform binary
+      #    that exports `LATEST_NATIVE_SYMBOL` (checked before `require` so a stale binary is
+      #    never cached in `$LOADED_FEATURES` / `dlopen` prior to auto-compilation).
+      if require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
-      # 3. If no binary is present on disk yet (e.g. an exotic platform),
-      #    compile the Rust workspace automatically via `cargo` and load it.
-      if Builder.compile! && require_candidate_binary
+      # 3. If no up-to-date binary is present on disk yet and `cargo` is available, compile the
+      #    Rust workspace automatically and load the freshly staged build.
+      if Builder.compile! && require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
         @native_loaded = true
         return true
       end
 
       raise LoadError,
-            "Failed to load ForemNative Rust extension for #{RUBY_PLATFORM}. " \
-            "Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
+            "Failed to load up-to-date ForemNative Rust extension (requiring #{LATEST_NATIVE_SYMBOL}) " \
+            "for #{RUBY_PLATFORM}. Run `bundle exec rake forem_native:compile` or ensure `cargo` is installed."
     end
 
     # Returns true when the compiled Rust `magnus` extension is loaded and active.
@@ -748,6 +757,13 @@ module ForemNative
       Native.scrub_agent_session_messages(messages)&.sort_by { |_, count| -count }
     end
 
+    # Counts per-message redactions in first-seen order, or returns nil for Ruby coercion.
+    def aggregate_transcript_redactions(messages)
+      return unless Native.respond_to?(:aggregate_transcript_redactions) && messages.instance_of?(Array)
+
+      Native.aggregate_transcript_redactions(messages)
+    end
+
     # Adds `"js-code-highlight"` to every `div.highlight` element on canonical HTML fragments,
     # matching `Html::Parser#add_control_class_to_codeblock`.
     def add_control_class_to_codeblock(html)
@@ -832,6 +848,67 @@ module ForemNative
       Native.extract_mentioned_usernames(html)
     end
 
+    # Scrubs unsafe `href`/`src` URIs and adds `target="_blank"` + `rel="noopener noreferrer"`
+    # to outbound `a[href^="http"]` links outside `app_domain` on canonical HTML fragments,
+    # matching `MarkdownProcessor::Parser#add_target_blank_to_outbound_links`.
+    def add_target_blank_to_outbound_links(html, app_domain)
+      return unless Native.respond_to?(:add_target_blank_to_outbound_links)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless app_domain.is_a?(String)
+
+      Native.add_target_blank_to_outbound_links(html, app_domain.to_s)
+    end
+
+    # Removes `<br>` elements directly nested inside `<ul>`, `<ol>`, or `<li>` on canonical
+    # HTML fragments.
+    def remove_nested_linebreak_in_list_fragment(html)
+      return unless Native.respond_to?(:remove_nested_linebreak_in_list_fragment)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.remove_nested_linebreak_in_list_fragment(html)
+    end
+
+    # Enforces GIF-like attributes on `<video>` elements on canonical HTML fragments, matching
+    # `Html::Parser#enforce_gif_like_videos`.
+    def enforce_gif_like_videos(html)
+      return unless Native.respond_to?(:enforce_gif_like_videos)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.enforce_gif_like_videos(html)
+    end
+
+    # Inserts `action_html` into `div.highlight__panel` elements on canonical HTML fragments,
+    # matching `Html::Parser#add_fullscreen_button_to_panel`.
+    def add_fullscreen_button_to_panel(html, action_html)
+      return unless Native.respond_to?(:add_fullscreen_button_to_panel)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless action_html.instance_of?(String) && action_html.encoding == Encoding::UTF_8
+
+      Native.add_fullscreen_button_to_panel(html, action_html)
+    end
+
+    # Single-FFI HTML post-processing pipeline combining outbound link tagging, list `<br>`
+    # cleanup, image link wrapping, `<video>` normalization, fused codeblock enhancements,
+    # table wrapping, empty `<p>` pruning, colon-emoji replacement, raw-tag unescaping,
+    # `@mention` linking, and optional `Nokogiri::HTML` `body.inner_html` newline normalization.
+    def postprocess_rendered_html(html, app_domain:, fullscreen_action_html: "", existing_usernames: [],
+                                  base_url: "", run_target_blank: true, normalize_document: true)
+      return unless Native.respond_to?(:postprocess_rendered_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless app_domain.is_a?(String) && fullscreen_action_html.is_a?(String)
+      return unless existing_usernames.is_a?(Array) && base_url.is_a?(String)
+
+      Native.postprocess_rendered_html(
+        html,
+        app_domain.to_s,
+        fullscreen_action_html.to_s,
+        existing_usernames,
+        base_url.to_s,
+        run_target_blank ? true : false,
+        normalize_document ? true : false,
+      )
+    end
+
     # Renders the day links of the `calendar/_calendar_widget` month grid in one pass, matching
     # `CalendarHelper#legacy_calendar_grid_days_html`. Days are `Date#jd` Integers. Returns `nil`
     # for grids, paths, or `type_of` values outside the plain-ASCII, 1583-9999 fast path.
@@ -853,6 +930,14 @@ module ForemNative
       return unless string.instance_of?(String)
 
       Native.json_quote(string, escape_html_entities ? true : false)
+    end
+
+    # Exact ActiveSupport JSON byte length without allocating the serialized document.
+    # Unsupported values (including non-string object keys) defer to the caller.
+    def json_encoded_size(value, escape_html_entities: true)
+      return unless Native.respond_to?(:json_encoded_size)
+
+      Native.json_encoded_size(value, escape_html_entities ? true : false)
     end
 
     # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
@@ -933,7 +1018,856 @@ module ForemNative
       Native.sanitize_feed_error(message)
     end
 
+    # Verifies a Rails `encoded_masked_token` against the session's `encoded_real_token` in
+    # constant time, matching `ActionController::RequestForgeryProtection#valid_authenticity_token?`.
+    # Returns `true` or `false`, or `nil` if `encoded_real_token` is outside the 32-byte token domain.
+    def verify_authenticity_token(encoded_masked_token, encoded_real_token, action_path = nil, request_method = nil)
+      return unless Native.respond_to?(:verify_authenticity_token)
+      return unless encoded_masked_token.instance_of?(String) && encoded_real_token.instance_of?(String)
+      return unless (action_path.nil? || action_path.instance_of?(String)) &&
+        (request_method.nil? || request_method.instance_of?(String))
+
+      Native.verify_authenticity_token(encoded_masked_token, encoded_real_token, action_path, request_method)
+    end
+
+    # Verifies an HS256 JWT token against `secret` and `now_sec` in constant time, returning
+    # the decoded payload Hash for standard flat payloads, `false` when malformed/invalid/expired,
+    # or `nil` when the caller should fall back to `JWT.decode`.
+    def verify_hs256_jwt(token, secret, now_sec = Time.now.to_i)
+      return unless Native.respond_to?(:verify_hs256_jwt)
+      return unless token.instance_of?(String) && secret.instance_of?(String) && now_sec.is_a?(Integer)
+
+      Native.verify_hs256_jwt(token, secret, now_sec)
+    end
+
+    # Builds the single-statement `SET LOCAL synchronous_commit TO OFF; UPDATE "display_ad_events" ...`
+    # SQL query for `BillboardEvent.add_impression_seconds`. Returns `:invalid` when `id` casts to nil,
+    # the SQL String when valid, or `nil` for out-of-domain inputs.
+    def billboard_event_update_sql(id, user_id, seconds, now_time, cutoff_time)
+      return unless Native.respond_to?(:billboard_event_update_sql)
+      return unless (user_id.nil? || user_id.is_a?(Integer)) && seconds.is_a?(Integer) &&
+        now_time.respond_to?(:tv_sec) && cutoff_time.respond_to?(:tv_sec)
+
+      now_utc = now_time.utc? ? now_time : now_time.getutc
+      cutoff_utc = cutoff_time.utc? ? cutoff_time : cutoff_time.getutc
+      Native.billboard_event_update_sql(
+        id, user_id, seconds, now_utc.tv_sec, now_utc.usec, cutoff_utc.tv_sec, cutoff_utc.usec
+      )
+    end
+
+    # Validates and builds the single-statement `SET LOCAL synchronous_commit TO OFF; INSERT INTO ...`
+    # SQL query for `BillboardEvent.create_with_async_commit`. Returns the SQL String, `:invalid` when
+    # validation fails, or `nil` when the caller should fall back to `legacy_create_with_async_commit`.
+    def billboard_event_insert_sql(args)
+      return unless Native.respond_to?(:billboard_event_insert_sql) && args.is_a?(Array)
+
+      Native.billboard_event_insert_sql(args)
+    end
+
+    # Checks whether `origin` matches any whitespace-trimmed non-empty entry in `raw_origins`,
+    # matching `raw_origins.to_s.split(",").map(&:strip).reject(&:empty?).include?(origin)`.
+    def origin_in_comma_list(origin, raw_origins)
+      return false if origin.nil? || raw_origins.nil?
+      return unless Native.respond_to?(:origin_in_comma_list)
+      return unless origin.instance_of?(String) && raw_origins.instance_of?(String)
+
+      Native.origin_in_comma_list(origin, raw_origins)
+    end
+
+    # Checks whether `value` matches `Feeds::RecordConfigVisit::UUID_PATTERN`
+    # (`/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i`).
+    def valid_uuid(value)
+      return false unless value.is_a?(String)
+      return unless Native.respond_to?(:valid_uuid) && value.instance_of?(String)
+
+      Native.valid_uuid(value)
+    end
+
+    # Computes `Digest::SHA256.digest("feed_events:#{user_id}").unpack1("q>")` for
+    # `FeedEvents::BulkUpsert#call` on the stack with zero heap allocations.
+    def feed_events_advisory_lock_key(user_id)
+      return unless Native.respond_to?(:feed_events_advisory_lock_key)
+      return unless user_id.is_a?(Integer) && user_id >= -2**63 && user_id < 2**63
+
+      Native.feed_events_advisory_lock_key(user_id)
+    end
+
+    # Evaluates `ValidRequest#valid_request_origin?` without allocating `URI::HTTP` objects or
+    # running `String#gsub` on the heap. Returns `true`, `false`, `:null_origin`, or `nil` when
+    # the caller should fall back to `URI.parse`.
+    def valid_request_origin(referer, origin, base_url, request_host, request_port)
+      return unless Native.respond_to?(:valid_request_origin)
+
+      Native.valid_request_origin(referer, origin, base_url, request_host, request_port)
+    end
+
+    # Extracts `[domain, path]` from a `PageView#referrer` string matching
+    # `parsed_url = Addressable::URI.parse(referrer); [parsed_url.domain, parsed_url.path]`.
+    def extract_referrer_domain_and_path(referrer)
+      return unless Native.respond_to?(:extract_referrer_domain_and_path)
+      return unless referrer.instance_of?(String)
+
+      Native.extract_referrer_domain_and_path(referrer)
+    end
+
+    # Classifies `(method, path)` for `Middlewares::MetalTelemetryFastPath`, returning
+    # `[:billboard_update, id]`, `[:billboard_create, nil]`, `[:page_view_update, id]`,
+    # `[:page_view_create, nil]`, `[:ga_event_create, nil]`, `[:feed_events_create, nil]`,
+    # `[:feed_config_visits_create, nil]`, or `nil`.
+    def match_metal_telemetry_route(method, path)
+      return unless Native.respond_to?(:match_metal_telemetry_route)
+      return unless method.instance_of?(String) && path.instance_of?(String)
+
+      Native.match_metal_telemetry_route(method, path)
+    end
+
+    # Parses a `POST /fallback_activity_recorder` JSON payload into the 11-key stringified Hash
+    # expected by `Ga::TrackEventWorker`, returning `:invalid` on malformed JSON or `nil` when
+    # the caller should fall back to `JSON.parse`.
+    def extract_ga_event_params(json_body, app_url, user_id = nil)
+      return unless Native.respond_to?(:extract_ga_event_params)
+      return unless json_body.instance_of?(String) && (user_id.nil? || user_id.is_a?(Integer)) &&
+        (app_url.nil? || app_url.instance_of?(String))
+
+      Native.extract_ga_event_params(json_body, app_url, user_id)
+    end
+
+    # Validates and normalizes an Array of `FeedEvent` attribute Hashes in a single native pass
+    # without instantiating `FeedEvent` ActiveRecord models, matching `FeedEvents::BulkUpsert#valid_events`.
+    def validate_and_normalize_feed_events(events)
+      return unless Native.respond_to?(:validate_and_normalize_feed_events) && events.is_a?(Array)
+
+      Native.validate_and_normalize_feed_events(events)
+    end
+
+    # Builds the deduplicated PostgreSQL tuple `IN (...)` predicate for `FeedEvents::BulkUpsert`
+    # timebox lookups without `Array#join` or `sanitize_sql_array` allocations.
+    def feed_events_timebox_lookup_sql(events)
+      return unless Native.respond_to?(:feed_events_timebox_lookup_sql) && events.is_a?(Array)
+
+      Native.feed_events_timebox_lookup_sql(events)
+    end
+
+    # Deduplicates candidate `FeedEvent` Hashes against existing timebox tuples and earlier
+    # batch entries in a single Rust pass, eliminating nested Ruby `Hash`/`Array` allocations.
+    def deduplicate_feed_events(events, existing_tuples)
+      return unless Native.respond_to?(:deduplicate_feed_events) &&
+        events.is_a?(Array) && existing_tuples.is_a?(Array)
+
+      Native.deduplicate_feed_events(events, existing_tuples)
+    end
+
+    # Computes `FeedEvent.article_freshness_multiplier` from UTC epoch float timestamps and
+    # `lookback_days` setting in pure Rust.
+    def article_freshness_multiplier(published_at_epoch, event_time_epoch, lookback_days)
+      return unless Native.respond_to?(:article_freshness_multiplier) && lookback_days.is_a?(Integer)
+      return unless (published_at_epoch.nil? || published_at_epoch.is_a?(Numeric)) &&
+        (event_time_epoch.nil? || event_time_epoch.is_a?(Numeric))
+
+      Native.article_freshness_multiplier(
+        published_at_epoch&.to_f,
+        event_time_epoch&.to_f,
+        lookback_days,
+      )
+    end
+
+    # Aggregates `[impressions_total, score, impression_users]` (or `[0, 0.0]` when no
+    # impressions) for `FeedEvent.calculate_feed_config_counters` in a single Rust pass.
+    def aggregate_feed_config_counters(rows, lookback_days)
+      return unless Native.respond_to?(:aggregate_feed_config_counters) &&
+        rows.is_a?(Array) && lookback_days.is_a?(Integer)
+
+      Native.aggregate_feed_config_counters(rows, lookback_days)
+    end
+
+    # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
+    # in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
+    def billboard_event_create_from_json_sql(json_body, user_id, geolocation, header_user_agent, is_embed, now_time)
+      return unless Native.respond_to?(:billboard_event_create_from_json_sql)
+      return unless json_body.instance_of?(String) && (user_id.nil? || user_id.is_a?(Integer)) &&
+        now_time.respond_to?(:tv_sec)
+
+      now_utc = now_time.utc? ? now_time : now_time.getutc
+      Native.billboard_event_create_from_json_sql(
+        json_body, user_id, geolocation, header_user_agent, is_embed ? true : false, now_utc.tv_sec, now_utc.usec
+      )
+    end
+
+    # Extracts deduplicated `[tag_name, url, options]` tuples from Markdown outside fenced and
+    # single-line inline code spans, matching `LiquidEmbedExtractor.extract`.
+    def extract_liquid_embed_tags(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_liquid_embed_tags(content)
+    end
+
+    # Extracts deduplicated `http(s)://` URLs from Markdown outside fenced code blocks, inline
+    # code spans, and single-line Liquid tags with trailing punctuation stripped, matching
+    # `WebpageExtractor.extract`.
+    def extract_markdown_webpage_urls(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_markdown_webpage_urls(content)
+    end
+
+    # Extracts deduplicated Markdown (`!\[.*?\]\((.*?)\)`) and HTML (`<img.*?src=["'](.*?)["']`)
+    # image URLs excluding `excluded_substring`, matching
+    # `Articles::EnrichImageAttributes.store_image_if_appropriate`.
+    def extract_markdown_and_html_image_urls(markdown, excluded_substring = "")
+      return unless markdown.instance_of?(String) && excluded_substring.instance_of?(String)
+
+      Native.extract_markdown_and_html_image_urls(markdown, excluded_substring)
+    end
+
+    # Cleans a comma-delimited tag list string in a single pass, matching
+    # `ActsAsTaggableOn::TagParser#clean`.
+    def clean_tag_list(input)
+      return unless input.instance_of?(String)
+
+      Native.clean_tag_list(input)
+    end
+
+    # Literal transcript substitutions, with no entity decoding or DOM normalization.
+    # Non-UTF-8 strings and subclasses retain their Ruby encoding/gsub semantics.
+    def wrap_untagged_codeblocks(html)
+      return unless Native.respond_to?(:wrap_untagged_codeblocks)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.wrap_untagged_codeblocks(html)
+    end
+
+    # Replaces literal `[REDACTED]` markers with `<span class="agent-session-redacted">[REDACTED]</span>`.
+    def style_redaction_markers(html)
+      return unless Native.respond_to?(:style_redaction_markers)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.style_redaction_markers(html)
+    end
+
+    # Fuses code wrapping and marker styling after Rouge in one native call.
+    def postprocess_transcript_html(html, redact: true)
+      return unless Native.respond_to?(:postprocess_transcript_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.postprocess_transcript_html(html, redact)
+    end
+
+    # Scans `cached_tag_list` (`", "`-delimited) in-place and returns the first tag matching
+    # `allowed_tags` (or `Constants::Tags::FLARE_TAG_NAMES` when `allowed_tags` is nil),
+    # `false` when no flare tag matches on valid input, or `nil` for out-of-domain inputs.
+    def match_first_flare_tag(cached_tag_list, allowed_tags = nil)
+      return unless Native.respond_to?(:match_first_flare_tag)
+      return unless cached_tag_list.nil? || cached_tag_list.instance_of?(String)
+      return unless allowed_tags.nil? || allowed_tags.is_a?(Array)
+
+      Native.match_first_flare_tag(cached_tag_list, allowed_tags)
+    end
+
+    # Groups `[[article_id, cached_tag_list], ...]` pairs by their first matching flare tag
+    # in a single native pass (`{ flare_tag => [article_ids] }`), matching
+    # `Homepage::FetchTagFlares.articles_tag_flares`. Returns `nil` for out-of-domain inputs.
+    def match_articles_flare_tags(pairs, allowed_tags = nil)
+      return unless Native.respond_to?(:match_articles_flare_tags)
+      return unless pairs.is_a?(Array) && (allowed_tags.nil? || allowed_tags.is_a?(Array))
+
+      Native.match_articles_flare_tags(pairs, allowed_tags)
+    end
+
+    # Builds a single `(CASE <select_fragment>\nWHEN <v> THEN <f>...\nELSE <fallback> END)`
+    # SQL expression, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+    def build_relevancy_lever_sql(select_fragment, cases, fallback)
+      return unless Native.respond_to?(:build_relevancy_lever_sql)
+      return unless select_fragment.instance_of?(String) && cases.is_a?(Array)
+      return unless fallback.is_a?(Integer) || fallback.is_a?(Float)
+
+      Native.build_relevancy_lever_sql(select_fragment, cases, fallback)
+    end
+
+    # Compiles the joined `relevance_score_components_as_sql` expression for
+    # `Articles::Feeds::VariantQuery` in a single pre-allocated Rust buffer.
+    def build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+      return unless Native.respond_to?(:build_variant_relevancy_score_sql)
+      return unless levers.is_a?(Array)
+
+      Native.build_variant_relevancy_score_sql(levers, has_user ? true : false, minimize_ai ? true : false)
+    end
+
+    # Encodes an HS256 JWT with payload `{"user_id":<user_id>,"exp":<exp>}` signed with `secret`,
+    # matching `JWT.encode({ user_id: user_id, exp: exp }, secret)` byte-for-byte.
+    def encode_hs256_jwt(user_id, exp, secret)
+      return unless Native.respond_to?(:encode_hs256_jwt)
+      return unless user_id.is_a?(Integer) && exp.is_a?(Integer) && secret.instance_of?(String)
+
+      Native.encode_hs256_jwt(user_id, exp, secret)
+    end
+
+    # Masks a 32-byte base64-encoded real CSRF token with a 32-byte `one_time_pad` using Rails 8's
+    # global CSRF token HMAC (`!real_csrf_token`), matching `form_authenticity_token`.
+    def mask_authenticity_token(encoded_real_token, one_time_pad)
+      return unless Native.respond_to?(:mask_authenticity_token)
+      return unless encoded_real_token.instance_of?(String) && one_time_pad.instance_of?(String)
+
+      Native.mask_authenticity_token(encoded_real_token, one_time_pad)
+    end
+
+    # Parses an `Origin`, `Referer`, or `passed_domain` header/param value for `AuthPassController`
+    # into `[origin_host, normalized_csp_origin]`, or `nil` for non-standard inputs.
+    def parse_auth_pass_origin(raw_origin)
+      return unless Native.respond_to?(:parse_auth_pass_origin)
+      return unless raw_origin.instance_of?(String) && !raw_origin.empty?
+
+      Native.parse_auth_pass_origin(raw_origin)
+    end
+
+    # Builds the JSON response body for `AsyncInfoController#base_data` in a single allocation.
+    def build_base_data_json(broadcast:, param:, token:, user: nil, client_geolocation: nil,
+                             default_email_optin_allowed: false, creator: false)
+      return unless Native.respond_to?(:build_base_data_json)
+      return unless param.instance_of?(String) && token.instance_of?(String)
+
+      Native.build_base_data_json(
+        broadcast,
+        param,
+        token,
+        user,
+        client_geolocation,
+        default_email_optin_allowed ? true : false,
+        creator ? true : false,
+      )
+    end
+
+    # Resolves the JSON response body for `FollowsController#bulk_show` in a single pass.
+    def resolve_bulk_follow_json(viewer_id, is_user_type, ids, forward_flags, reverse_flags)
+      return unless Native.respond_to?(:resolve_bulk_follow_json)
+      return unless viewer_id.is_a?(Integer) && ids.is_a?(Array) &&
+        forward_flags.is_a?(Array) && reverse_flags.is_a?(Array)
+
+      Native.resolve_bulk_follow_json(viewer_id, is_user_type ? true : false, ids, forward_flags, reverse_flags)
+    end
+
+    # Classifies a `User-Agent` header into `:mobile_in_app`, `:mobile_web`, `:desktop`, or `:unknown`
+    # in a single pass, matching `Billboards::FilteredAdsQuery#browser_context_ads`.
+    def classify_billboard_browser_context(user_agent)
+      return unless Native.respond_to?(:classify_billboard_browser_context)
+      return unless user_agent.instance_of?(String)
+
+      Native.classify_billboard_browser_context(user_agent)
+    end
+
+    # Checks whether an ISO 3166 code (e.g. `"US-CA"`) falls within any of `geo_codes`,
+    # matching `Geolocation.code_covered_by?(code, geo_codes)` with zero allocations.
+    # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
+    def geolocation_code_covered_by?(code, geo_codes)
+      return unless Native.respond_to?(:geolocation_code_covered_by)
+      return unless (code.nil? || code.instance_of?(String)) && geo_codes.is_a?(Array)
+
+      Native.geolocation_code_covered_by(code, geo_codes)
+    end
+    # rubocop:enable Style/ReturnNilInPredicateMethodDefinition
+
+    # Extracts the 2-letter uppercase ISO 3166-1 alpha-2 country code from a geolocation header,
+    # matching `BillboardsController#viewer_country`. Returns `false` when no country code matches.
+    def extract_viewer_country(geo)
+      return unless Native.respond_to?(:extract_viewer_country)
+      return unless geo.nil? || geo.instance_of?(String)
+
+      Native.extract_viewer_country(geo)
+    end
+
+    # Compiles the SQL predicate for `Billboards::FilteredAdsQuery` tag matching in a single pass.
+    # rubocop:disable Style/OptionalBooleanParameter
+    def build_billboard_tag_clause_sql(tags, include_untagged = true, optimized_taggable = false)
+      return unless Native.respond_to?(:build_billboard_tag_clause_sql)
+      return unless tags.is_a?(Array)
+
+      Native.build_billboard_tag_clause_sql(tags, include_untagged ? true : false, optimized_taggable ? true : false)
+    end
+    # rubocop:enable Style/OptionalBooleanParameter
+
+    # Compiles the SQL predicate for `Billboards::FilteredAdsQuery#role_filtered_ads` in a single pass.
+    def build_billboard_role_filter_sql(role_names)
+      return unless Native.respond_to?(:build_billboard_role_filter_sql)
+      return unless role_names.is_a?(Array)
+
+      Native.build_billboard_role_filter_sql(role_names)
+    end
+
+    # Compiles the CTE SQL query for `Billboard.weighted_random_selection` in a single allocation.
+    def build_billboard_weighted_random_sql(base_query, target_article_id, low_impressions, random_val)
+      return unless Native.respond_to?(:build_billboard_weighted_random_sql)
+      return unless base_query.instance_of?(String) &&
+        (target_article_id.nil? || target_article_id.is_a?(Integer)) &&
+        (low_impressions.nil? || low_impressions.is_a?(Integer))
+
+      native_random = native_float(random_val)
+      return unless native_random
+
+      Native.build_billboard_weighted_random_sql(base_query, target_article_id, low_impressions, native_random)
+    end
+
+    # Compiles the CTE SQL query for `Billboard.new_only_random_selection` in a single allocation.
+    def build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+      return unless Native.respond_to?(:build_billboard_new_only_sql)
+      return unless base_query.instance_of?(String) &&
+        low_impressions.is_a?(Integer) && fallback_limit.is_a?(Integer)
+
+      Native.build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+    end
+
+    # Compiles the combined SQL `WHERE` predicate for `Billboards::FilteredAdsQuery#call`.
+    def build_filtered_ads_where_sql(params_array)
+      return unless Native.respond_to?(:build_filtered_ads_where_sql) && params_array.is_a?(Array)
+
+      Native.build_filtered_ads_where_sql(params_array)
+    end
+
+    # Returns the sorted Array of all 228 canonical syntax highlighting language tags,
+    # matching `Articles::DetectCodeBlockLanguages::SUPPORTED_LANGUAGE_TAGS`.
+    def syntax_supported_language_tags
+      return unless Native.respond_to?(:syntax_supported_language_tags)
+
+      Native.syntax_supported_language_tags
+    end
+
+    # Returns the `tag => title_or_criteria` Hash for all 228 supported language tags,
+    # matching `Articles::DetectCodeBlockLanguages.language_criteria`.
+    def syntax_language_criteria
+      return unless Native.respond_to?(:syntax_language_criteria)
+
+      Native.syntax_language_criteria
+    end
+
+    # Resolves a lexer name or alias to its canonical tag (e.g. `"js"` => `"javascript"`),
+    # matching `Rouge::Lexer.find(name)&.tag`.
+    def syntax_lexer_tag(name)
+      return if name.nil?
+      return unless Native.respond_to?(:syntax_lexer_tag)
+
+      str = name.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      return unless str.valid_encoding?
+
+      Native.syntax_lexer_tag(str)
+    end
+
+    # Normalizes an arbitrary language hint to a supported canonical tag or `"plaintext"`,
+    # matching `Articles::DetectCodeBlockLanguages#normalize_language`.
+    def syntax_normalize_language(language)
+      return "plaintext" unless Native.respond_to?(:syntax_normalize_language)
+
+      str = language.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      return "plaintext" unless str.valid_encoding?
+
+      Native.syntax_normalize_language(str) || "plaintext"
+    end
+
+    # Resolves a lexer tag with CGI query options (`?mimetype=...`) and `"guess"` source/shebang
+    # detection, matching `Rouge::Lexer.find_fancy(lang, code)&.tag`.
+    def syntax_find_fancy_tag(lang, code = nil, rescue_ambiguous: true)
+      return unless Native.respond_to?(:syntax_find_fancy_tag)
+
+      lang_str = coerce_optional_utf8_string(lang)
+      return if !lang.nil? && lang_str.nil?
+
+      code_str = coerce_optional_utf8_string(code)
+      Native.syntax_find_fancy_tag(lang_str, code_str, rescue_ambiguous ? true : false)
+    end
+
+    # Extracts the file extension from `path` and resolves its canonical lexer tag,
+    # matching `AgentSessionsHelper#language_from_path`.
+    def syntax_language_from_path(path)
+      return if path.nil?
+      return unless Native.respond_to?(:syntax_language_from_path)
+
+      str = coerce_optional_utf8_string(path)
+      return unless str
+
+      Native.syntax_language_from_path(str)
+    end
+
+    # Highlights `code` for `lang` and returns the inner `<span class="...">` HTML stream,
+    # matching `Rouge::Formatters::HTML.new.format(lexer.lex(code))`.
+    def syntax_highlight_html(code, lang = nil)
+      return "" if code.nil?
+      return unless Native.respond_to?(:syntax_highlight_html)
+
+      code_str = coerce_optional_utf8_string(code)
+      return unless code_str
+
+      lang_str = coerce_optional_utf8_string(lang)
+      Native.syntax_highlight_html(code_str, lang_str)
+    end
+
+    # Highlights a fenced Markdown code block and wraps it in
+    # `<div class="highlight"><pre class="highlight {tag}"><code>...</code></pre></div>`,
+    # matching `Redcarpet::Render::HTMLRouge#block_code`.
+    def syntax_highlight_code_block(code, lang = nil)
+      return unless Native.respond_to?(:syntax_highlight_code_block)
+
+      code_str = coerce_optional_utf8_string(code)
+      return unless code_str
+
+      lang_str = coerce_optional_utf8_string(lang)
+      Native.syntax_highlight_code_block(code_str, lang_str)
+    end
+
+    # Decodes a PNG, JPEG, GIF (first frame), or WebP binary String into an in-memory
+    # `ForemNative::SocialCanvas`.
+    def social_image_decode(bytes)
+      Native.social_image_decode(bytes.to_s)
+    end
+
+    # Loads and caches a static mask image (such as `app/assets/images/rounded_mask.png`)
+    # in Rust memory, returning a fresh `ForemNative::SocialCanvas` clone.
+    def social_image_open_cached_mask(path)
+      Native.social_image_open_cached_mask(path.to_s)
+    end
+
+    # Opens a local file path, URI, or IO-like object and decodes it into an in-memory
+    # `ForemNative::SocialCanvas` (using the in-memory Rust cache for static mask paths).
+    def social_image_open(path_or_url)
+      return social_image_open_cached_mask(path_or_url) if path_or_url == "app/assets/images/rounded_mask.png"
+
+      bytes = if path_or_url.respond_to?(:open)
+                path_or_url.open(&:read)
+              elsif path_or_url.to_s.match?(%r{\A[A-Za-z][A-Za-z0-9+\-.]*://}) &&
+                  (uri = URI.parse(path_or_url.to_s)).respond_to?(:open)
+                uri.open(&:read)
+              else
+                File.binread(path_or_url.to_s)
+              end
+      social_image_decode(bytes)
+    end
+
+    # Draws the 400x209 ellipse mesh on `base_color`, applies `-blur 0x48`, and resizes to
+    # `1200x627!` with `-filter Gaussian`, returning a `ForemNative::SocialCanvas`.
+    def social_image_draw_background(base_color, blobs)
+      Native.social_image_draw_background(base_color.to_s, blobs)
+    end
+
+    # Draws the article browser-window frame onto `canvas` in place and returns `canvas`.
+    def social_image_draw_window(canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_window(target)
+      target
+    end
+
+    # Draws the profile browser-window frame with `brand_color` onto `canvas` in place and returns `canvas`.
+    def social_image_draw_profile_window(canvas, brand_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_profile_window(target, brand_color.to_s)
+      target
+    end
+
+    # Renders a `label:` or `caption:` text image in memory using the cached TrueType font at `font_path`.
+    def social_image_render_text(kind, text, font_path, pointsize, color, width: nil)
+      Native.social_image_render_text(
+        kind.to_s,
+        text.to_s,
+        font_path.to_s,
+        pointsize.to_f,
+        color.to_s,
+        width&.to_i,
+      )
+    end
+
+    # Resizes `logo_canvas` to `x30` and composites it onto the window title bar of `canvas`.
+    def social_image_add_logo(canvas, logo_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_logo(target, coerce_social_canvas(logo_canvas))
+      target
+    end
+
+    # Draws the opening quote mark in `accent_color` and composites `quote_canvas` onto `canvas`.
+    def social_image_add_quote(canvas, quote_canvas, font_path, accent_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_quote(
+        target,
+        coerce_social_canvas(quote_canvas),
+        font_path.to_s,
+        accent_color.to_s,
+      )
+      target
+    end
+
+    # Resizes `author_canvas` and `mask_canvas` to `64x64`, composites them onto `canvas`,
+    # and draws the 3px circular border.
+    def social_image_add_profile_image(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_image(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Resizes and `DstOut`-masks `author_canvas` to `112x112`, draws the white halo ring,
+    # composites the circular avatar, and draws the 3px black border onto `canvas`.
+    def social_image_add_profile_card_avatar(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_card_avatar(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Composites the profile name, `@handle`, and Follow button label onto `canvas`.
+    def social_image_add_profile_header(canvas, name_canvas, handle_canvas, follow_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_header(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(handle_canvas),
+        coerce_social_canvas(follow_canvas),
+      )
+      target
+    end
+
+    # Composites the profile bio onto `canvas`.
+    def social_image_add_profile_bio(canvas, bio_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_bio(target, coerce_social_canvas(bio_canvas))
+      target
+    end
+
+    # Composites the profile footer metadata line onto `canvas`.
+    def social_image_add_profile_meta(canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_meta(target, coerce_social_canvas(meta_canvas))
+      target
+    end
+
+    # Composites the article author name and metadata line onto `canvas`.
+    def social_image_add_byline(canvas, name_canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_byline(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(meta_canvas),
+      )
+      target
+    end
+
+    # Renders a nested comment tree (`CommentsHelper#nested_comments`) and its full partial
+    # hierarchy in a single native pass, returning `[html, current_comment_index, shown_billboard]`
+    # or `nil` when any input falls outside the native domain.
+    def render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+      return unless Native.respond_to?(:render_comment_tree)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && nodes_flat.is_a?(Array)
+      return unless root_count.is_a?(Integer) && root_count >= 0
+
+      Native.render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+    end
+
+    # Renders a `<a class="crayons-tag ...">` pill matching `ApplicationHelper#render_tag_link`
+    # byte-for-byte, or `nil` when any argument is a String subclass (`SafeBuffer`), non-UTF-8,
+    # an empty/`/`-containing route segment, or a malformed `#rrggbb` color hex.
+    def render_tag_link(tag_name, tag_route, bg_color_hex, filled: false, monochrome: false,
+                        classes: "", path_suffix: "")
+      return unless Native.respond_to?(:render_tag_link)
+      return unless tag_name.instance_of?(String) && tag_route.instance_of?(String) &&
+        bg_color_hex.instance_of?(String) && classes.instance_of?(String) && path_suffix.instance_of?(String)
+
+      Native.render_tag_link(
+        tag_name,
+        tag_route,
+        bg_color_hex,
+        filled ? true : false,
+        monochrome ? true : false,
+        classes,
+        path_suffix,
+      )
+    end
+
+    # Renders `1..=N` story cards matching `app/views/articles/_single_story.html.erb` into a
+    # single UTF-8 HTML buffer, or `nil` when any input falls outside the native domain.
+    def render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+      return unless Native.respond_to?(:render_story_cards)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && orgs_flat.is_a?(Array) && cards_flat.is_a?(Array)
+
+      Native.render_story_cards(static_ctx, view_ctx, authors_flat, orgs_flat, cards_flat)
+    end
+
+    # Renders a deterministic `400x400` 8-bit RGB PNG mascot avatar from `traits`
+    # (`{ palette: { bg:, halo:, ... }, backdrop:, outfit:, arm:, head:, topper:, eyes:,
+    # accessory:, cheeks:, mouth: }`), replacing `MiniMagick::Tool::Convert` in
+    # `Images::ProfileImageGenerator`.
+    def render_profile_image_png(traits)
+      raise ArgumentError, "traits must be a Hash" unless traits.is_a?(Hash)
+
+      palette = traits[:palette] || traits["palette"]
+      raise ArgumentError, "traits[:palette] must be a Hash" unless palette.is_a?(Hash)
+
+      flat = PROFILE_AVATAR_PALETTE_KEYS.map do |key|
+        (palette.key?(key) ? palette[key] : palette[key.to_s]).to_s
+      end
+      PROFILE_AVATAR_STYLE_KEYS.each do |key|
+        flat << (traits.key?(key) ? traits[key] : traits[key.to_s]).to_s
+      end
+
+      Native.render_profile_image_png(flat)
+    end
+
+    # Inspects raw image bytes without full pixel decompression, returning
+    # `{ format: String, width: Integer, height: Integer, frame_count: Integer,
+    # exif_orientation: Integer }`. Raises `ArgumentError` on unrecognized or corrupt bytes.
+    def image_inspect(bytes)
+      fmt, width, height, frame_count, exif_orientation = Native.image_inspect(bytes.to_s)
+      {
+        format: fmt,
+        width: width,
+        height: height,
+        frame_count: frame_count,
+        exif_orientation: exif_orientation
+      }
+    end
+
+    # Inspects an image file at `path`, returning the `image_inspect` Hash.
+    def image_inspect_file(path)
+      image_inspect(File.binread(path.to_s))
+    end
+
+    # Counts animation frames / container pages in the image file at `path`.
+    def image_frame_count(path)
+      image_inspect_file(path)[:frame_count]
+    end
+
+    # Strips EXIF/XMP/IPTC/comment/trailing metadata (losslessly when EXIF orientation is `1`,
+    # or orienting pixels and re-encoding when EXIF orientation is `2..=8`) for images with
+    # `<= frame_strip_max` frames. Returns modified binary `String` or `nil` when unchanged.
+    def image_strip_and_auto_orient(bytes, frame_strip_max: 150)
+      Native.image_strip_and_auto_orient(bytes.to_s, frame_strip_max.to_i)
+    end
+
+    # Strips metadata and applies EXIF orientation in-place at `path` when modified.
+    # Returns `true` when the file was updated, or `false` when already clean / skipped.
+    def strip_and_auto_orient_file!(path, frame_strip_max: 150)
+      file_path = path.to_s
+      updated = image_strip_and_auto_orient(File.binread(file_path), frame_strip_max: frame_strip_max)
+      return false if updated.nil?
+
+      File.binwrite(file_path, updated)
+      true
+    end
+
+    # Resizes to cover `width x height` and crops according to `gravity` (`"Center"`, `"North"`,
+    # `"South"`, `"East"`, `"West"`, etc.), returning `[encoded_bytes, format_str]`.
+    def image_resize_to_fill(bytes, width, height, gravity = "Center", font_path: nil)
+      Native.image_resize_to_fill(
+        bytes.to_s,
+        width.to_i,
+        height.to_i,
+        gravity.to_s,
+        font_path&.to_s,
+      )
+    end
+
+    # Downscales proportionally so dimensions do not exceed `max_width x max_height` (never
+    # upscaling smaller images), returning `[encoded_bytes, format_str]`.
+    def image_resize_to_limit(bytes, max_width, max_height, font_path: nil)
+      Native.image_resize_to_limit(
+        bytes.to_s,
+        max_width&.to_i,
+        max_height&.to_i,
+        font_path&.to_s,
+      )
+    end
+
+    # Decodes any supported raster or SVG image and encodes it as an 8-bit PNG (preserving alpha).
+    # Pass `reject_blank: true` to raise `ArgumentError` if the decoded canvas has no visible pixels.
+    def image_convert_to_png(bytes, font_path: nil, reject_blank: false)
+      Native.image_convert_to_png_checked(
+        bytes.to_s,
+        font_path&.to_s,
+        reject_blank ? true : false,
+      )
+    end
+
+    # Resizes an image to fit within `width x height` and encodes as PNG (`Images::GenerateSubforemImages`).
+    def subforem_resize_png(bytes, width, height, font_path: nil)
+      Native.subforem_resize_png(bytes.to_s, width.to_i, height.to_i, font_path&.to_s)
+    end
+
+    # Composites `logo_bytes` (`300x300` fit at `+350+100`) over `background_bytes` (cropped to
+    # `1000x500` when `custom_background` is true) and encodes as PNG (`Images::GenerateSubforemImages`).
+    def subforem_social_image_png(logo_bytes, background_bytes, custom_background: false, font_path: nil)
+      Native.subforem_social_image_png(
+        logo_bytes.to_s,
+        background_bytes.to_s,
+        custom_background ? true : false,
+        font_path&.to_s,
+      )
+    end
+
+    # Computes `AhoyEmail::Utils.signature(token:, campaign:, url:)` on the stack with zero
+    # intermediate Base64 or OpenSSL allocations.
+    def ahoy_signature(secret_token, token, campaign, url)
+      return unless Native.respond_to?(:ahoy_signature)
+      return unless secret_token.is_a?(String) && !secret_token.empty?
+
+      Native.ahoy_signature(secret_token, token.to_s, campaign.to_s, url.to_s)
+    end
+
+    # Classifies and rewrites a single URL for Ahoy email click tracking.
+    # Returns the decorated String, `false` when guaranteed unchanged/skipped, or `nil` when
+    # the input falls outside the strict fast-path domain and should defer to Ruby.
+    def ahoy_decorate_url(href, app_domain, token, campaign, secret_token, external_base_url = nil)
+      return unless Native.respond_to?(:ahoy_decorate_url)
+      return unless href.instance_of?(String) && app_domain.is_a?(String) &&
+        token.is_a?(String) && secret_token.is_a?(String) && !secret_token.empty?
+      return unless campaign.nil? || campaign.is_a?(String)
+      return unless external_base_url.nil? || external_base_url.is_a?(String)
+
+      Native.ahoy_decorate_url(href, app_domain, token, campaign, secret_token, external_base_url)
+    end
+
+    # Single-pass streaming `<a href>` rewriter for email HTML fragments, honoring
+    # `data-skip-click` and `&amp;` unescaping without constructing a Nokogiri DOM.
+    # Returns `nil` when the fragment falls outside the fast-path domain.
+    def ahoy_decorate_html(html, app_domain, token, campaign, secret_token, external_base_url = nil)
+      return unless Native.respond_to?(:ahoy_decorate_html)
+      return unless html.instance_of?(String) && app_domain.is_a?(String) &&
+        token.is_a?(String) && secret_token.is_a?(String) && !secret_token.empty?
+      return unless campaign.nil? || campaign.is_a?(String)
+      return unless external_base_url.nil? || external_base_url.is_a?(String)
+
+      Native.ahoy_decorate_html(html, app_domain, token, campaign, secret_token, external_base_url)
+    end
+
+    # Single-FFI-crossing recursive decorator for Customer.io `message_data` Hash/Array/String
+    # payloads. Returns untouched Ruby Strings by reference and `nil` on out-of-domain values.
+    def ahoy_decorate_payload(payload, app_domain, token, campaign, secret_token, external_base_url = nil)
+      return unless Native.respond_to?(:ahoy_decorate_payload)
+      return unless app_domain.is_a?(String) && token.is_a?(String) &&
+        secret_token.is_a?(String) && !secret_token.empty?
+      return unless campaign.nil? || campaign.is_a?(String)
+      return unless external_base_url.nil? || external_base_url.is_a?(String)
+
+      Native.ahoy_decorate_payload(payload, app_domain, token, campaign, secret_token, external_base_url)
+    end
+
     private
+
+    def coerce_social_canvas(image)
+      return image if defined?(SocialCanvas) && image.is_a?(SocialCanvas)
+      return social_image_decode(File.binread(image.path)) if image.respond_to?(:path) && image.path
+
+      social_image_decode(image.to_s)
+    end
+
+    def coerce_optional_utf8_string(value)
+      return if value.nil?
+
+      str = value.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      str if str.valid_encoding?
+    end
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
     def native_float(amount)
@@ -943,18 +1877,35 @@ module ForemNative
       end
     end
 
-    def require_candidate_binary
-      candidates = ["forem_native/forem_native"] +
-        Builder.platform_candidates.map { |dir| "forem_native/#{dir}/forem_native" }
+    def candidate_binaries
+      [["forem_native/forem_native", Builder.extension_binary_path]] +
+        Builder.platform_candidates.map do |dir|
+          ["forem_native/#{dir}/forem_native", Builder.extension_binary_path(platform_dir: dir)]
+        end
+    end
 
-      candidates.each do |candidate|
-        require candidate
-        return true if defined?(ForemNative::Native)
+    def require_candidate_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      candidate_binaries.each do |require_name, binary_path|
+        next unless File.file?(binary_path)
+        next if require_symbol && !Builder.binary_exports_symbol?(binary_path, require_symbol)
+
+        require require_name
+        return true if defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol))
       rescue LoadError
         next
       end
 
       false
+    end
+
+    def require_fresh_staged_binary(require_symbol: LATEST_NATIVE_SYMBOL)
+      staged_path = Builder.extension_binary_path
+      return false if require_symbol && !Builder.binary_exports_symbol?(staged_path, require_symbol)
+
+      require "forem_native/forem_native"
+      defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol)) ? true : false
+    rescue LoadError
+      require_candidate_binary(require_symbol: require_symbol)
     end
   end
 end

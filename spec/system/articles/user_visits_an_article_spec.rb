@@ -29,20 +29,25 @@ RSpec.describe "Views an article" do
     expect(page).to have_content(article.title)
   end
 
-  it "shows non-negative comments" do
+  it "shows non-negative comments", :aggregate_failures do
     comments = Array.new(4) do |i|
       create(:comment, commentable: article, user: user, body_markdown: "Comment body #{i}")
     end
     admin = create(:user, :admin)
     create(:thumbsdown_reaction, reactable: comments.last, user: admin)
-    sidekiq_perform_enqueued_jobs
+    sidekiq_perform_enqueued_jobs(only: Comments::CalculateScoreWorker)
+
+    expect(comments.first(3).map { |comment| comment.reload.score }).to all(be >= 0)
+    expect(comments.last.reload.score).to be < 0
 
     visit article.path
     expect(page).to have_css(".single-comment-node", visible: :visible, count: 4)
+    expect(page).to have_css("#comment-node-#{comments.last.id}", visible: :visible)
 
     sign_out user
     visit article.path
     expect(page).to have_css(".single-comment-node", visible: :visible, count: 3)
+    expect(page).to have_no_css("#comment-node-#{comments.last.id}")
   end
 
   describe "sticky nav sidebar" do

@@ -26,41 +26,55 @@ module UnifiedEmbed
     ].freeze
 
     def self.new(tag_name, input, parse_context)
-      stripped_input = ActionController::Base.helpers.strip_tags(input).strip
-
-      # Parse input to check for 'minimal' keyword
-      parts = stripped_input.split(/\s+/)
-      minimal_mode = parts.include?("minimal")
-
-      # Find the URL (first part that looks like a URL)
-      url = parts.find { |part| part.match?(%r{^https?://}) } || parts.first
-
+      url, minimal_mode, extra_options = parse_embed_input(input)
       handler_before_validation = UnifiedEmbed::Registry.find_handler_for(link: url)
 
       begin
-        validated_link = if handler_before_validation&.dig(:skip_validation)
-                           url
-                         else
-                           validate_link(input: url)
-                         end
+        validated_link = resolve_validated_link(url, handler_before_validation)
+        klass = resolve_embed_klass(validated_link, minimal_mode, handler_before_validation)
+        tag_input = build_tag_input(klass, validated_link, extra_options)
 
-        # In minimal mode, only use allow-listed embeds, otherwise fall back to OpenGraphTag
-        klass = if minimal_mode
-                  if handler_before_validation && MINIMAL_ALLOWLIST.include?(handler_before_validation[:klass])
-                    handler_before_validation[:klass]
-                  else
-                    OpenGraphTag
-                  end
-                else
-                  UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
-                end
-
-        klass.__send__(:new, tag_name, validated_link, parse_context)
+        klass.__send__(:new, tag_name, tag_input, parse_context)
       rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError => e
         Rails.logger.warn("[UnifiedEmbed::Tag] Network/SSL error during validation for '#{url}': #{e.class} - #{e.message}")
         FallbackTag.__send__(:new, tag_name, url, parse_context)
       end
     end
+
+    def self.parse_embed_input(input)
+      stripped_input = ActionController::Base.helpers.strip_tags(input).strip
+      parts = stripped_input.split(/\s+/)
+      minimal_mode = parts.include?("minimal")
+      non_minimal_parts = parts.reject { |part| part == "minimal" }
+      url = non_minimal_parts.detect { |part| part.match?(%r{\A(?:https?://|/(?!/))}) } || parts.first
+      extra_options = non_minimal_parts.reject { |part| part == url }
+      [url, minimal_mode, extra_options]
+    end
+    private_class_method :parse_embed_input
+
+    def self.resolve_validated_link(url, handler_before_validation)
+      if handler_before_validation&.dig(:skip_validation)
+        handler_before_validation[:expanded_link] || url
+      else
+        validate_link(input: url)
+      end
+    end
+    private_class_method :resolve_validated_link
+
+    def self.resolve_embed_klass(validated_link, minimal_mode, handler_before_validation)
+      return UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link) unless minimal_mode
+      return handler_before_validation[:klass] if handler_before_validation && MINIMAL_ALLOWLIST.include?(handler_before_validation[:klass])
+
+      OpenGraphTag
+    end
+    private_class_method :resolve_embed_klass
+
+    def self.build_tag_input(klass, validated_link, extra_options)
+      return validated_link unless klass == PageTag && extra_options.any?
+
+      ([validated_link] + extra_options).join(" ")
+    end
+    private_class_method :build_tag_input
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)
       uri = URI.parse(input.to_s.split.first.to_s)

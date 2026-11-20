@@ -1,12 +1,14 @@
 require "rails_helper"
 
 RSpec.describe Articles::ApiSearchQuery, type: :query do
+  let(:user) { create(:user, name: "Jane Doe") }
+
   before do
-    create(:article, published: false)
-    create(:article, title: "Top ten Interview tips")
-    create(:article, title: "Top ten Ruby tips")
-    create(:article, title: "Frontend Frameworks")
-    create(:article)
+    create(:article, user: user, published: false)
+    create(:article, user: user, title: "Top ten Interview tips")
+    create(:article, user: user, title: "Top ten Ruby tips")
+    create(:article, user: user, title: "Frontend Frameworks")
+    create(:article, user: user)
   end
 
   context "when there is no query parameter" do
@@ -41,24 +43,32 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
       sql = relation.to_sql
 
       expect(relation.map(&:id)).to eq([high_hotness.id, low_hotness.id])
+      expect(sql).to include("COALESCE(articles.published, false) = TRUE")
+      expect(sql).to include("(articles.published_at + INTERVAL '0 seconds') <=")
       expect(sql).to include("(articles.score + 0) >=")
       expect(sql).to include("(articles.hotness_score + 0) DESC")
       expect(sql).not_to include("ts_rank")
       expect(sql).not_to include("INNER JOIN")
     end
 
-    it "orders by score expression and wraps published_at when both q and top parameters are present",
+    it "orders by score expression and keeps lower published_at bound indexable when both q and top are present",
        :aggregate_failures do
       low_score = Article.find_by(title: "Top ten Interview tips")
       high_score = Article.find_by(title: "Top ten Ruby tips")
+      stale_article = Article.find_by(title: "Frontend Frameworks")
       low_score.update_columns(score: 5, hotness_score: 500)
       high_score.update_columns(score: 50, hotness_score: 5)
+      stale_article.update!(title: "Top ten Legacy tips")
+      stale_article.update_columns(score: 500, published_at: 30.days.ago)
 
       relation = described_class.call({ q: "tips", top: 7 })
       sql = relation.to_sql
 
       expect(relation.map(&:id)).to eq([high_score.id, low_score.id])
-      expect(sql).to include("(articles.published_at + INTERVAL '0 seconds') >")
+      expect(sql).to include('"articles"."published" = TRUE')
+      expect(sql).to include("(articles.published_at + INTERVAL '0 seconds') <=")
+      expect(sql).to include("(published_at >")
+      expect(sql).not_to include("(articles.published_at + INTERVAL '0 seconds') >")
       expect(sql).to include("(articles.score + 0) >=")
       expect(sql).to include("(articles.score + 0) DESC")
       expect(sql).not_to include("ts_rank")

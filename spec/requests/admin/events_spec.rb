@@ -187,6 +187,17 @@ RSpec.describe "Admin::Events" do
         expect(Event.last.bg_color_hex).to eq("#7C3AED")
       end
     end
+
+    context "with allow_articles toggle" do
+      let(:attributes_with_toggles) do
+        valid_attributes.merge(allow_articles: true)
+      end
+
+      it "permits and sets allow_articles" do
+        post admin_events_path, params: { event: attributes_with_toggles }
+        expect(Event.last.allow_articles).to be(true)
+      end
+    end
   end
 
   describe "PATCH /admin/content_manager/events/:id" do
@@ -223,6 +234,17 @@ RSpec.describe "Admin::Events" do
         expect(response).to redirect_to(admin_events_path)
         expect(event.reload.cover_image.file).to be_nil
       end
+
+      it "updates allow_articles toggle and displays count on show" do
+        patch admin_event_path(event), params: { event: { allow_articles: true } }
+
+        expect(response).to redirect_to(admin_events_path)
+        expect(event.reload.allow_articles).to be(true)
+
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Allow Articles", "Enabled")
+      end
     end
   end
 
@@ -257,6 +279,7 @@ RSpec.describe "Admin::Events" do
       it "pre-fills the form with attributes from the original event when fork_from_id is passed" do
         original_event = create(:event, title: "Original Event Title", description: "Original Description",
                                         full_details: "Original Full Details Dump",
+                                        allow_articles: true,
                                         tag_list: %w[ruby rails])
 
         get new_admin_event_path(fork_from_id: original_event.id)

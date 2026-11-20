@@ -61,7 +61,6 @@ class SearchController < ApplicationController
   def listings
     render json: { result: [] }
   end
-  
 
   def usernames
     context = commentable_context(params[:context_type])&.find(params[:context_id])
@@ -72,7 +71,7 @@ class SearchController < ApplicationController
       context: context,
       priority_user_ids: priority_ids,
       recent_user_ids: current_user&.cached_recent_user_ids,
-      requesting_user_id: current_user&.id
+      requesting_user_id: current_user&.id,
     )
 
     render json: { result: result }
@@ -88,18 +87,17 @@ class SearchController < ApplicationController
 
     class_name = feed_params[:class_name].to_s.inquiry
 
-    is_homepage_search = (
+    is_homepage_search =
       class_name.Article? &&
       feed_params[:search_fields].blank? &&
       feed_params[:sort_by].present?
-    )
 
     # If Algolia is configured and it's not a homepage search, return blank response
     algolia_configured = (ApplicationConfig["ALGOLIA_APPLICATION_ID"].present? &&
                           ApplicationConfig["ALGOLIA_API_KEY"].present?) ||
-                         (Settings::General.algolia_application_id.present? &&
-                          Settings::General.algolia_api_key.present?)
-    
+      (Settings::General.algolia_application_id.present? &&
+       Settings::General.algolia_api_key.present?)
+
     if algolia_configured && !is_homepage_search
       render json: { result: [] }
       return
@@ -230,8 +228,16 @@ class SearchController < ApplicationController
   end
 
   def format_integer_params
-    params[:page] = params[:page].to_i if params[:page].present?
-    params[:per_page] = params[:per_page].to_i if params[:per_page].present?
+    %i[page per_page].each do |key|
+      next unless params.key?(key)
+
+      value = params[key]
+      if value.is_a?(String) || value.is_a?(Integer)
+        params[key] = value.to_i if value.present?
+      else
+        params.delete(key)
+      end
+    end
   end
 
   # Some Elasticsearches/QueryBuilders treat values such as empty Strings and

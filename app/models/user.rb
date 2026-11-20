@@ -69,7 +69,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :notification_setting, class_name: "Users::NotificationSetting",
+                                 dependent: :delete, inverse_of: :user
   has_one :onboarding_checklist, dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
@@ -127,6 +128,7 @@ class User < ApplicationRecord
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
   has_many :organizations, through: :organization_memberships
+  has_many :pages, dependent: :destroy
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
   has_many :podcast_episode_appearances, dependent: :delete_all, inverse_of: :user
@@ -314,6 +316,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
+  after_update :sync_embed_page_slugs, if: :saved_change_to_username?
   after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
   after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
@@ -321,6 +324,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
   after_create_commit :create_onboarding_checklist
+  after_create_commit :bust_legacy_username_redirect_cache
 
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
@@ -358,6 +362,14 @@ class User < ApplicationRecord
     find_by(id: Settings::General.mascot_user_id)
   end
 
+  def self.for_username_or_legacy(username)
+    find_by(username: username) || for_legacy_username(username)
+  end
+
+  def self.for_legacy_username(username)
+    find_by(old_username: username) || find_by(old_old_username: username)
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     ["agent_sessions_count", "apple_username", "articles_count", "badge_achievements_count", "base_email_eligible", "blocked_by_count", "blocking_others_count", "checked_code_of_conduct", "checked_terms_and_conditions", "comments_count", "confirmation_sent_at", "confirmed_at", "created_at", "credits_count", "current_sign_in_at", "current_subscriber_status", "email", "export_requested", "exported_at", "facebook_username", "failed_attempts", "feed_fetched_at", "following_orgs_count", "following_tags_count", "following_users_count", "forem_username", "github_repos_updated_at", "github_username", "google_oauth2_created_at", "google_oauth2_username", "id", "id_value", "invitation_accepted_at", "invitation_created_at", "invitation_limit", "invitation_sent_at", "invitations_count", "invited_by_id", "invited_by_type", "last_article_at", "last_comment_at", "last_followed_at", "last_moderation_notification", "last_notification_activity", "last_onboarding_page", "last_presence_at", "last_reacted_at", "last_sign_in_at", "latest_article_updated_at", "locked_at", "max_score", "mlh_username", "name", "old_old_username", "old_username", "onboarding_package_requested", "onboarding_subforem_id", "organization_info_updated_at", "payment_pointer", "profile_image", "profile_updated_at", "public_reactions_count", "rating_votes_count", "reactions_count", "registered", "registered_at", "reputation_modifier", "reset_password_sent_at", "saw_onboarding", "score", "sign_in_count", "sign_in_token_sent_at", "signup_cta_variant", "spent_credits_count", "stripe_id_code", "subscribed_to_user_subscriptions_count", "twitter_username", "type_of", "unconfirmed_email", "unspent_credits_count", "updated_at", "username"]
   end
@@ -393,19 +405,18 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
-  def set_initial_roles!
+  # Read `first_user` before saving the new user: on a fresh database the
+  # setting falls back to `!User.exists?`, which is false once this user exists.
+  # The value is only a hint; Users::ClaimFirstUser re-checks it under a lock
+  # so that at most one signup gets the first-user roles.
+  def set_initial_roles!(first_user: Settings::General.waiting_on_first_user)
     # Avoid overwriting roles for users who already exist but are e.g. logging in
     # through a new identity provider
     return unless valid? && previously_new_record?
+    return if first_user && Users::ClaimFirstUser.call(self)
 
-    if Settings::General.waiting_on_first_user
-      add_role(:creator)
-      add_role(:super_admin)
-      add_role(:trusted)
-    elsif Settings::Authentication.limit_new_users?
-      add_role(:limited)
-      # Otherwise just leave the new user in good standing
-    end
+    # Otherwise just leave the new user in good standing
+    add_role(:limited) if Settings::Authentication.limit_new_users?
   end
 
   def author_trust_score
@@ -435,6 +446,7 @@ class User < ApplicationRecord
 
     if new_record?
       self.score = calculated_score
+      sync_base_email_eligible!
     else
       update_column(:score, calculated_score)
       sync_base_email_eligible!
@@ -510,10 +522,26 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}_#{RequestStore.store[:subforem_id]}") do
-      ids = user_activity&.alltime_reading_list_articles.presence || begin
-        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC").limit(1000)
-        published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
-        readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
+      # Only read alltime_reading_list_articles instead of hydrating the full user_activities row
+      # (which carries the 768-dim interest_embedding vector and 10 other JSONB columns).
+      activity_ids = if association(:user_activity).loaded?
+                       user_activity&.alltime_reading_list_articles
+                     else
+                       UserActivity.where(user_id: id).pick(:alltime_reading_list_articles)
+                     end
+      ids = activity_ids.presence || begin
+        # Order by `(created_at + INTERVAL '0 seconds') DESC` so high-volume accounts in
+        # `pg_stats.most_common_vals` use `index_reactions_on_user_id_reactable_id_reactable_type_category`
+        # + Sort instead of a backward scan across the full `index_reactions_on_created_at` index on LIMIT 1000.
+        readinglist_ids = Reaction.readinglist_for_user(self)
+          .order(Arel.sql("reactions.created_at + INTERVAL '0 seconds' DESC"))
+          .limit(1000)
+          .pluck(:reactable_id)
+        if readinglist_ids.empty?
+          []
+        else
+          readinglist_ids & Article.published.from_subforem.where(id: readinglist_ids).ids
+        end
       end
       ids.first(1000)
     end
@@ -666,6 +694,7 @@ class User < ApplicationRecord
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
+    :sub_permission?,
     :subforem_moderator?,
     :super_admin?,
     :support_admin?,
@@ -773,17 +802,28 @@ class User < ApplicationRecord
   #
   # @return [Array<String>] an array of subforem domains
   def moderator_for_subforems_not_cached
+    return [] if Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
+
+    if association(:roles).loaded?
+      subforem_roles = roles.select { |role| role.name == "subforem_moderator" && role.resource_type == "Subforem" }
+      return [] if subforem_roles.empty?
+
+      subforem_ids = subforem_roles.map(&:resource_id)
+      return Subforem.with_role(:subforem_moderator, self).pluck(:domain) if subforem_ids.include?(nil)
+
+      domains_by_id = Subforem.cached_id_to_domain_hash
+      return subforem_ids.filter_map { |id| domains_by_id[id] }
+    end
+
     Subforem.with_role(:subforem_moderator, self).pluck(:domain)
   end
 
   def admin_organizations
-    org_ids = organization_memberships.admin.pluck(:organization_id)
-    organizations.where(id: org_ids)
+    organizations.merge(OrganizationMembership.admin)
   end
 
   def member_organizations
-    org_ids = organization_memberships.member.pluck(:organization_id)
-    organizations.where(id: org_ids)
+    organizations.merge(OrganizationMembership.member)
   end
 
   def org_member?(organization)
@@ -792,6 +832,13 @@ class User < ApplicationRecord
 
   def org_admin?(organization)
     organization_memberships.admin.exists?(organization: organization)
+  end
+
+  def member_of_minimum_indexed_organization?
+    organizations
+      .merge(OrganizationMembership.active)
+      .where("organizations.baseline_score > 0")
+      .exists?
   end
 
   def block; end
@@ -890,6 +937,22 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  def ordered_embed_pages
+    pages.embed_html.order(:created_at, :id)
+  end
+
+  def embed_pages_enabled?
+    FeatureFlag.enabled_for_user?(:user_embed_pages, self) || FeatureFlag.enabled?(:user_embed_pages, self)
+  end
+
+  def can_manage_embed_pages?
+    registered? && !actively_spam_or_suspended? && embed_pages_enabled?
+  end
+
+  def can_serve_embed_pages?
+    registered? && !spam_or_suspended? && embed_pages_enabled?
+  end
+
   def reactions_to
     Reaction.for_user(self)
   end
@@ -910,9 +973,7 @@ class User < ApplicationRecord
   end
 
   def send_magic_link!
-    # Generate random string
-    number = rand(10**8)
-    self.sign_in_token = number.to_s.rjust(8, "0")
+    self.sign_in_token = SecureRandom.random_number(10**10).to_s.rjust(10, "0")
     self.sign_in_token_sent_at = Time.now.utc
     if save
       VerificationMailer.with(user_id: id).magic_link.deliver_now
@@ -943,20 +1004,24 @@ class User < ApplicationRecord
     track_engagement!(last_presence_at)
   end
 
-  def sync_base_email_eligible!
+  def sync_base_email_eligible!(touch: false)
     # User is eligible if they are registered, have an email, are not suspended,
     # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
       email.present? &&
       score.to_i >= 0 &&
-      notification_setting&.email_newsletter? &&
-      !has_role?(:suspended) &&
-      !has_role?(:spam)
+      notification_setting&.email_newsletter? == true &&
+      !spam_or_suspended?
 
-    return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+    unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+      update_columns(updated_at: Time.current) if touch && !new_record?
+      return
+    end
 
     if new_record?
       self.base_email_eligible = is_eligible
+    elsif touch
+      update_columns(base_email_eligible: is_eligible, updated_at: Time.current)
     else
       update_column(:base_email_eligible, is_eligible)
     end
@@ -1188,6 +1253,13 @@ class User < ApplicationRecord
     Users::BustProfileIdentityCacheWorker.perform_async(id)
   end
 
+  def bust_legacy_username_redirect_cache
+    legacy_keys = EdgeCache::LegacySlugRedirectKeys.call(username, exclude_user_id: id)
+    return if legacy_keys.empty?
+
+    EdgeCache::PurgeByKeyWorker.perform_async(legacy_keys, [path])
+  end
+
   def bust_profile_details_cache
     Users::BustProfileDetailsCacheWorker.perform_async(id)
   end
@@ -1276,8 +1348,10 @@ class User < ApplicationRecord
 
   # super is Devise's !confirmed?: without it, users confirmed at creation
   # (OAuth signups via skip_confirmation!) still get a confirmation email.
+  # Check super first so Devise's after_set_user hook short-circuits in memory
+  # for already-confirmed users without reading Settings::SMTP from Redis.
   def confirmation_required?
-    ForemInstance.smtp_enabled? && super
+    super && ForemInstance.smtp_enabled?
   end
 
   def update_user_roles_cache(role)
@@ -1287,21 +1361,41 @@ class User < ApplicationRecord
     Rails.cache.delete("user-#{id}/role_names")
     Rails.cache.delete("user-#{id}/moderator_for_tags")
     Rails.cache.delete("user-#{id}/moderator_for_subforems")
+    Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY) if role.name.in?(Rack::Attack::ADMIN_ROLES)
     refresh_auto_audience_segments
     trusted?
 
     # Check for spam patterns when user gets spam or suspended role
-    if role.name.in?(%w[spam suspended])
-      # The domain scan can hit the statement timeout, so keep it out of this
-      # callback: an error here rolls back the role grant (and aborts a banish).
-      Spam::DomainDetectorWorker.perform_async(id)
-      calculate_score
-      # Article scores include a spam penalty that also governs Algolia indexability,
-      # so rescore on every grant/removal regardless of which code path changed the role.
-      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
-      articles.published.find_each(&:async_score_calc)
+    return unless role.name.in?(%w[spam suspended])
+
+    target_user_id = id
+    ActiveRecord.after_all_transactions_commit do
+      Page.embed_html.where(user_id: target_user_id).pluck(:slug).each do |page_slug|
+        Pages::BustCacheWorker.perform_async(page_slug, nil, target_user_id)
+      end
     end
 
-    sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
+    # The domain scan can hit the statement timeout, so keep it out of this
+    # callback: an error here rolls back the role grant (and aborts a banish).
+    Spam::DomainDetectorWorker.perform_async(id)
+    calculate_score
+    # Article scores include a spam penalty that also governs Algolia indexability,
+    # so rescore on every grant/removal regardless of which code path changed the role.
+    # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+    articles.published.find_each(&:async_score_calc)
+  end
+
+  def sync_embed_page_slugs
+    pages.embed_html.find_each do |embed_page|
+      suffix = embed_page.slug.to_s.split("/").last
+      next if suffix.blank?
+
+      new_slug = "#{username}/embed/#{suffix}"
+      next if embed_page.slug == new_slug
+      next if Page.where(slug: new_slug).where.not(id: embed_page.id).exists?
+
+      embed_page.user = self
+      embed_page.update!(slug: new_slug)
+    end
   end
 end

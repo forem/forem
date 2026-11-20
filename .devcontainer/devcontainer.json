@@ -17,6 +17,8 @@
       "enableNonRootDocker": "false",
       "moby": "true"
     },
+    // Installs sshd for `gh codespace ssh/cp/logs` without starting it; see the feature's install.sh.
+    "./features/sshd-on-demand": {},
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
       "configureZshAsDefaultShell": "true"

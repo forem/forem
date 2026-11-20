@@ -3,13 +3,16 @@ module MarkdownProcessor
     include Instrumentation
 
     BAD_XSS_REGEX = [
-      /src=["'](data|&)/i,
+/src=["'](data|&)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
     ].freeze
 
     CODE_BLOCKS_REGEX = /(~{3}|`{3}|`{2}|`)[\s\S]*?\1/
 
     WORDS_READ_PER_MINUTE = 275.0
+
+    # Redcarpet drops list item text beyond this indentation depth
+    MAX_LIST_INDENT_SPACES = 16
 
     # @param content [String] The user input, mix of markdown and liquid.  This might be an
     #        article's markdown body.
@@ -58,9 +61,41 @@ module MarkdownProcessor
           html = e.message
         end
 
-        html = add_target_blank_to_outbound_links(html)
-        parse_html(html, prefix_images_options)
+        finalize_html(html, prefix_images_options)
       end
+    end
+
+    # Prevent Redcarpet from dropping text in deeply nested lists
+    def normalize_overly_nested_lists(content)
+      current_fence_marker = nil
+
+      content.each_line.map do |line|
+        if current_fence_marker
+          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
+          next line
+        end
+
+        opening_marker = fenced_code_block_opening_marker(line)
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub(/^([ \t]+)([-*+]|\d+\.)[ \t]+(.*)$/) do
+          indent = Regexp.last_match(1)
+          marker = Regexp.last_match(2)
+          text   = Regexp.last_match(3)
+
+          normalized_indent =
+            if indent.include?("\t")
+              indent[0, 4]
+            else
+              indent[0, MAX_LIST_INDENT_SPACES]
+            end
+
+          "#{normalized_indent}#{marker} #{text}"
+        end
+      end.join
     end
 
     def convert_deeply_nested_links_to_html(content)
@@ -97,24 +132,8 @@ module MarkdownProcessor
 
     def add_target_blank_to_outbound_links(html)
       app_domain = Settings::General.app_domain
-      doc = Nokogiri::HTML.fragment(html)
-      scrub_unsafe_uris(doc)
-      doc.css('a[href^="http"]').each do |link|
-        href = link["href"]
-        next unless href&.exclude?(app_domain)
-
-        link[:target] = "_blank"
-        existing_rel = link[:rel]
-        new_rel = %w[noopener noreferrer]
-        if existing_rel
-          existing_rel_values = existing_rel.split
-          new_rel = (existing_rel_values + new_rel).uniq.join(" ")
-        else
-          new_rel = new_rel.join(" ")
-        end
-        link[:rel] = new_rel
-      end
-      doc.to_html
+      ForemNative.add_target_blank_to_outbound_links(html, app_domain) ||
+        legacy_add_target_blank_to_outbound_links(html, app_domain)
     end
 
     def calculate_reading_time
@@ -180,12 +199,19 @@ module MarkdownProcessor
     end
 
     def preprocess_for_finalize(content)
-      result = ForemNative.preprocess_markdown_for_finalize(content)
+      # Cap excessive list indentation before the fused preprocessing chain so the
+      # normalization reaches Redcarpet on BOTH the native
+      # (ForemNative.preprocess_markdown_for_finalize) and legacy paths. Without this,
+      # normal UTF-8 article/comment rendering (the native path) would still drop the
+      # text of list items nested beyond MAX_LIST_INDENT_SPACES.
+      normalized_content = normalize_overly_nested_lists(content)
+
+      result = ForemNative.preprocess_markdown_for_finalize(normalized_content)
       if result == :xss_attempt
         raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
       end
 
-      result || legacy_preprocess_for_finalize(content)
+      result || legacy_preprocess_for_finalize(normalized_content)
     end
 
     private
@@ -278,13 +304,92 @@ module MarkdownProcessor
       end.join
     end
 
+    def finalize_html(html, prefix_images_options)
+      return html if html.blank?
+
+      has_alert = html.match?(/<blockquote/i) && (html.include?("[!") || html.include?("&"))
+      has_figcaption = html.match?(/<figcaption/i)
+
+      unless has_alert || has_figcaption
+        if html.match?(/<img/i)
+          linked = add_target_blank_to_outbound_links(html)
+          prefixed = Html::Parser.new(linked).prefix_all_images(**prefix_images_options).html
+          result = native_postprocess_rendered_html(prefixed, run_target_blank: false)
+          return result if result
+
+          return parse_post_prefix_html(Html::Parser.new(prefixed).remove_nested_linebreak_in_list).html
+        else
+          result = native_postprocess_rendered_html(html, run_target_blank: true)
+          return result if result
+        end
+      end
+
+      parse_html(add_target_blank_to_outbound_links(html), prefix_images_options)
+    end
+
+    def native_postprocess_rendered_html(html, run_target_blank:)
+      prepared_html = html
+      if html.include?("@") && html.include?("<br")
+        prepared_html = ForemNative.remove_nested_linebreak_in_list_fragment(html)
+        return unless prepared_html
+      end
+
+      usernames = if prepared_html.include?("@")
+                    ForemNative.extract_mention_usernames(prepared_html)
+                  else
+                    []
+                  end
+      return unless usernames
+
+      existing_usernames = Html::Parser.resolve_existing_usernames(usernames)
+      action_html = prepared_html.include?("highlight") ? Html::Parser.new("").fullscreen_action_html : ""
+      app_domain = Settings::General.app_domain
+      base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{app_domain}"
+
+      ForemNative.postprocess_rendered_html(
+        prepared_html,
+        app_domain: app_domain,
+        fullscreen_action_html: action_html,
+        existing_usernames: existing_usernames,
+        base_url: base_url,
+        run_target_blank: run_target_blank,
+        normalize_document: true,
+      )
+    end
+
+    def legacy_add_target_blank_to_outbound_links(html, app_domain = Settings::General.app_domain)
+      doc = Nokogiri::HTML.fragment(html)
+      scrub_unsafe_uris(doc)
+      doc.css('a[href^="http"]').each do |link|
+        href = link["href"]
+        next unless href&.exclude?(app_domain)
+
+        link[:target] = "_blank"
+        existing_rel = link[:rel]
+        new_rel = %w[noopener noreferrer]
+        link[:rel] =
+          if existing_rel
+            (existing_rel.split + new_rel).uniq.join(" ")
+          else
+            new_rel.join(" ")
+          end
+      end
+      doc.to_html
+    end
+
     def parse_html(html, prefix_images_options)
       return html if html.blank?
 
-      Html::Parser
+      parser = Html::Parser
         .new(html)
         .remove_nested_linebreak_in_list
         .prefix_all_images(**prefix_images_options)
+
+      parse_post_prefix_html(parser).html
+    end
+
+    def parse_post_prefix_html(parser)
+      parser
         .wrap_all_images_in_links
         .enforce_gif_like_videos
         .add_control_class_to_codeblock
@@ -297,7 +402,6 @@ module MarkdownProcessor
         .unescape_raw_tag_in_codeblocks
         .wrap_all_figures_with_tags
         .wrap_mentions_with_links
-        .html
     end
 
     URI_ATTRIBUTES = %w[href src].freeze

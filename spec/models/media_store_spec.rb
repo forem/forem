@@ -29,6 +29,15 @@ RSpec.describe MediaStore do
         media_store.valid?
         expect(media_store.output_url).to eq("http://example.com/existing_output.jpg")
       end
+
+      it "fails validation cleanly instead of raising PG::NotNullViolation when upload_from_url returns nil" do
+        uploader = instance_double(ArticleImageUploader, upload_from_url: nil)
+        allow(ArticleImageUploader).to receive(:new).and_return(uploader)
+
+        record = described_class.where(original_url: "http://example.com/broken.jpg").first_or_create
+        expect(record).not_to be_persisted
+        expect(record.errors[:output_url]).to be_present
+      end
     end
   end
 end

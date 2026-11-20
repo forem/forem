@@ -17,9 +17,11 @@
   <meta name="twitter:description" content="<%= @page.description %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
-<%= javascript_include_tag "homePage", defer: true %>
+<% if user_signed_in? && @page.template == "nav_bar_included" && !embedded_view? %>
+  <%= javascript_include_tag "homePage", defer: true %>
+<% end %>
 <main id="main-content">
-  <% if @page.template == "contained" %>
+  <% if @page.template == "contained" || (@page.template == "nav_bar_included" && embedded_view?) %>
     <div class="crayons-layout crayons-layout--limited-l">
       <div class="crayons-card text-styles text-padding">
         <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
@@ -41,6 +43,8 @@
     <%= @page.processed_html.html_safe %>
   <% end %>
 </main>
-<div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:page_fixed_bottom, page_id: @page.id) %>"></div>
-<%= javascript_include_tag "billboard", defer: true %>
+<% unless embedded_view? %>
+  <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:page_fixed_bottom, page_id: @page.id) %>"></div>
+  <%= javascript_include_tag "billboard", defer: true %>
+<% end %>
 <%= javascript_include_tag "pageFunctionality", defer: true %>

@@ -1,6 +1,3 @@
-import { h, render } from 'preact';
-import { UserMetadata } from '../profilePreviewCards/UserMetadata';
-import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
@@ -8,6 +5,90 @@ import {
 import { request } from '@utilities/http/request';
 
 const cachedAuthorMetadata = {};
+
+function createMetadataItem(label, valueNodeOrText) {
+  const li = document.createElement('li');
+
+  const keyDiv = document.createElement('div');
+  keyDiv.className = 'key';
+  keyDiv.textContent = label;
+
+  const valueDiv = document.createElement('div');
+  valueDiv.className = 'value';
+  if (valueNodeOrText instanceof Node) {
+    valueDiv.appendChild(valueNodeOrText);
+  } else {
+    valueDiv.textContent = valueNodeOrText;
+  }
+
+  li.appendChild(keyDiv);
+  li.appendChild(valueDiv);
+  return li;
+}
+
+export function buildUserMetadataFragment({
+  email,
+  location,
+  summary,
+  created_at: createdAt,
+  education,
+  work,
+}) {
+  const fragment = document.createDocumentFragment();
+
+  if (summary) {
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'color-base-70';
+    summaryDiv.textContent = summary;
+    fragment.appendChild(summaryDiv);
+  }
+
+  const detailsDiv = document.createElement('div');
+  detailsDiv.className = 'user-metadata-details';
+
+  const ul = document.createElement('ul');
+  ul.className = 'user-metadata-details-inner';
+
+  if (email) {
+    const emailLink = document.createElement('a');
+    emailLink.href = `mailto:${email}`;
+    emailLink.textContent = email;
+    ul.appendChild(createMetadataItem('Email', emailLink));
+  }
+
+  if (work) {
+    ul.appendChild(createMetadataItem('Work', work));
+  }
+
+  if (location) {
+    ul.appendChild(createMetadataItem('Location', location));
+  }
+
+  if (education) {
+    ul.appendChild(createMetadataItem('Education', education));
+  }
+
+  const joinedOnDate = new Date(createdAt);
+  const joinedOnDateString = new Intl.DateTimeFormat(
+    navigator.language || 'default',
+    {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  ).format(joinedOnDate);
+
+  const timeEl = document.createElement('time');
+  timeEl.setAttribute('datetime', createdAt);
+  timeEl.className = 'date';
+  timeEl.textContent = joinedOnDateString;
+  ul.appendChild(createMetadataItem('Joined', timeEl));
+
+  detailsDiv.appendChild(ul);
+  fragment.appendChild(detailsDiv);
+
+  return fragment;
+}
 
 async function populateMissingMetadata(metadataPlaceholder) {
   const { authorId, fetched } = metadataPlaceholder.dataset;
@@ -34,10 +115,7 @@ async function populateMissingMetadata(metadataPlaceholder) {
 function renderMetadata(metadata, placeholder) {
   const container = placeholder.parentElement;
 
-  render(
-    <UserMetadata {...metadata} />,
-    createRootFragment(container, placeholder),
-  );
+  placeholder.replaceWith(buildUserMetadataFragment(metadata));
 
   container
     .closest('.profile-preview-card__content')
@@ -108,7 +186,7 @@ if (document.getElementById('index-container')) {
 const dropdownRepositionListener = getDropdownRepositionListener();
 document.addEventListener('scroll', dropdownRepositionListener);
 
-InstantClick.on('change', () => {
+window.InstantClick?.on('change', () => {
   observer.disconnect();
   document.removeEventListener('scroll', dropdownRepositionListener);
 });

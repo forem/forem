@@ -9,7 +9,7 @@ For platform-wide guides, getting started tutorials, and API references, please 
 ## 📚 Available Documentation
 
 ### 🚀 Deployment & Infrastructure
-- **[Kamal 2 Deployment Guide](kamal-deployment.md)** - Instructions, architectural overview, and container topology for deploying Forem using Kamal 2 and Kamal Proxy.
+- **[Kamal 2 Deployment Guide](kamal-deployment.md)** - Complete end-to-end guide for deploying Forem with Kamal 2 (`v2.12+`) across single bare-metal servers, DigitalOcean, managed databases, multi-node clusters, and edge proxies.
 - **[Read-Only Database Support](README_READ_ONLY_DATABASE.md)** - Architecture and configuration (`READ_ONLY_DATABASE_URL`) for routing user query execution to read-only database replicas.
 
 ### 🛠️ Developer Tools & Services

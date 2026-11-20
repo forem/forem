@@ -6,6 +6,7 @@ RSpec.describe Event do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:page).optional }
     it { is_expected.to have_many(:emails).dependent(:nullify) }
+    it { is_expected.to have_many(:articles).dependent(:nullify) }
   end
 
   describe "enums" do
@@ -15,6 +16,8 @@ RSpec.describe Event do
         takeover: 1,
         other: 2,
         challenge: 3,
+        meetup: 4,
+        conference: 5,
       )
     end
 
@@ -353,6 +356,19 @@ RSpec.describe Event do
     end
   end
 
+  describe "#time_zone" do
+    it "uses the zone named in data" do
+      event = build(:event, data: { "time_zone" => "America/Los_Angeles" })
+
+      expect(event.time_zone.tzinfo.identifier).to eq("America/Los_Angeles")
+    end
+
+    it "falls back to the app time zone when data has no zone or an unknown one" do
+      expect(build(:event, data: {}).time_zone).to eq(Time.zone)
+      expect(build(:event, data: { "time_zone" => "Not/AZone" }).time_zone).to eq(Time.zone)
+    end
+  end
+
   describe "#format_pill_label" do
     it "returns custom format when present in data" do
       event = build(:event, data: { "format" => "in-person" })
@@ -367,6 +383,16 @@ RSpec.describe Event do
     it "defaults to CHALLENGE for challenge" do
       event = build(:event, type_of: :challenge)
       expect(event.format_pill_label).to eq("CHALLENGE")
+    end
+
+    it "defaults to MEETUP for meetup" do
+      event = build(:event, type_of: :meetup)
+      expect(event.format_pill_label).to eq("MEETUP")
+    end
+
+    it "defaults to CONFERENCE for conference" do
+      event = build(:event, type_of: :conference)
+      expect(event.format_pill_label).to eq("CONFERENCE")
     end
   end
 
@@ -399,6 +425,167 @@ RSpec.describe Event do
       event = create(:event, body_markdown: "Hello **world**")
       event.update!(body_markdown: "")
       expect(event.reload.processed_html).to be_nil
+    end
+  end
+
+  describe "owned pages" do
+    it "orders markdown pages, embed pages, showcase, and syncs page slugs on rename" do
+      event = create(:event, event_name_slug: "summit", event_variation_slug: "v1")
+      second = create(:page, event: event, slug: event.page_slug_for("second"), position: 2)
+      first = create(:page, event: event, slug: event.page_slug_for("first"), position: 1, show_in_navigation: false)
+      embed = create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("schedule"),
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Schedule</div>",
+      )
+
+      expect(event.ordered_pages).to eq([first, second])
+      expect(event.navigation_pages).to eq([second])
+      expect(event.ordered_embed_pages).to eq([embed])
+      expect(event.main_page).to be_nil
+      expect(event.readme_page?).to be(false)
+
+      readme = create(:page, event: event, slug: event.page_slug_for("readme"), position: 0)
+      expect(event.main_page).to eq(readme)
+      expect(event.showcase_page).to eq(readme)
+      expect(event.readme_page?).to be(true)
+
+      event.update!(event_name_slug: "summit-new", event_variation_slug: "2026")
+      expect(readme.reload.slug).to eq("events/summit-new/2026/readme")
+      expect(first.reload.slug).to eq("events/summit-new/2026/first")
+      expect(embed.reload.slug).to eq("events/summit-new/2026/embed/schedule")
+
+      expect { event.destroy! }.to change(Page, :count).by(-4)
+    end
+
+    it "fails event validation instead of raising RecordInvalid on owned page slug collision" do
+      event = create(:event, event_name_slug: "summit-src", event_variation_slug: "v1")
+      owned = create(:page, event: event, slug: event.page_slug_for("faq"))
+      create(:page, slug: "events/summit-dst/v1/faq")
+
+      expect(event.update(event_name_slug: "summit-dst")).to be(false)
+      expect(event.errors[:base]).to be_present
+      expect(owned.reload.slug).to eq("events/summit-src/v1/faq")
+    end
+
+    it "enqueues edge cache purge with owned page and embed fallback paths when updated or destroyed" do
+      event = create(:event, published: true, event_name_slug: "purge-evt", event_variation_slug: "2026")
+      create(:page, event: event, slug: event.page_slug_for("agenda"), title: "Agenda")
+      create(
+        :page,
+        event: event,
+        slug: event.embed_page_slug_for("widget"),
+        title: "Widget",
+        template: Page::EMBED_HTML_TEMPLATE,
+        body_markdown: nil,
+        body_html: "<div>Widget</div>",
+      )
+      allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_async)
+
+      event.update!(published: false)
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt/2026",
+          "/events/purge-evt/2026/p/agenda",
+          "/events/purge-evt/2026/embed/widget?mode=embed",
+        ),
+      )
+
+      event.update!(event_name_slug: "purge-evt-v2")
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt-v2/2026",
+          "/events/purge-evt-v2/2026/p/agenda",
+          "/events/purge-evt-v2/2026/embed/widget?mode=embed",
+          "/events/purge-evt/2026",
+          "/events/purge-evt/2026/p/agenda",
+          "/events/purge-evt/2026/embed/widget?mode=embed",
+        ),
+      )
+
+      event.destroy!
+      expect(EdgeCache::PurgeByKeyWorker).to have_received(:perform_async).with(
+        event.record_key,
+        contain_exactly(
+          "/events/purge-evt-v2/2026",
+          "/events/purge-evt-v2/2026/p/agenda",
+          "/events/purge-evt-v2/2026/embed/widget?mode=embed",
+        ),
+      )
+    end
+  end
+
+  describe "articles toggle, visibility, and nullify on destroy" do
+    it "defaults allow_articles to false" do
+      event = create(:event)
+      expect(event.allow_articles).to be(false)
+    end
+
+    it "evaluates timing and visibility predicates across before, during, and after" do
+      upcoming = build(:event, published: true, allow_articles: true,
+                               start_time: 2.hours.from_now, end_time: 4.hours.from_now)
+      live = build(:event, published: true, allow_articles: true,
+                           start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      ended = build(:event, published: true, allow_articles: true,
+                            start_time: 4.hours.ago, end_time: 2.hours.ago)
+      disabled = build(:event, published: true, allow_articles: false,
+                               start_time: 1.hour.ago, end_time: 1.hour.from_now)
+
+      expect(upcoming).to have_attributes(upcoming?: true, started?: false, articles_visible?: false)
+      expect(live).to have_attributes(started?: true, ended?: false, articles_visible?: true)
+      expect(ended).to have_attributes(started?: true, ended?: true, articles_visible?: true)
+      expect(disabled).to have_attributes(articles_visible?: false)
+    end
+
+    it "evaluates accepting_articles? for regular users vs admins" do
+      upcoming = build(:event, published: true, allow_articles: true,
+                               start_time: 2.hours.from_now, end_time: 4.hours.from_now)
+      live = build(:event, published: true, allow_articles: true,
+                           start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      ended = build(:event, published: true, allow_articles: true,
+                            start_time: 4.hours.ago, end_time: 2.hours.ago)
+      draft_live = build(:event, published: false, allow_articles: true,
+                                 start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      disabled = build(:event, published: true, allow_articles: false,
+                               start_time: 1.hour.ago, end_time: 1.hour.from_now)
+
+      expect([upcoming, ended, draft_live].map(&:accepting_articles?)).to all(be(false))
+      expect([upcoming, live, ended, draft_live].map { |e| e.accepting_articles?(as_admin: true) }).to all(be(true))
+      expect(live.accepting_articles?).to be(true)
+      expect(disabled.accepting_articles?(as_admin: true)).to be(false)
+    end
+
+    it "returns visible_articles only when allow_articles is true and the event has started" do
+      admin = create(:user, :super_admin)
+      upcoming = create(:event, published: true, allow_articles: true,
+                                start_time: 1.hour.from_now, end_time: 3.hours.from_now)
+      published_article = create(:article, user: admin, event: upcoming, published: true)
+      draft_article = create(:article, user: admin, event: upcoming, published: false)
+
+      expect(upcoming.visible_articles).to be_empty
+
+      upcoming.update!(start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      expect(upcoming.visible_articles).to contain_exactly(published_article)
+      expect(upcoming.visible_articles).not_to include(draft_article)
+
+      upcoming.update!(allow_articles: false)
+      expect(upcoming.visible_articles).to be_empty
+    end
+
+    it "nullifies associated articles without deleting them when destroyed" do
+      user = create(:user)
+      event = create(:event, published: true, allow_articles: true,
+                             start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      article = create(:article, user: user, event: event, published: true)
+
+      event.destroy!
+
+      expect(article.reload.event_id).to be_nil
     end
   end
 end

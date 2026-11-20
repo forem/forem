@@ -424,6 +424,23 @@ RSpec.describe "UserProfiles" do
         expect(response.body).to include("A book bot 🤖")
       end
 
+      it "loads only the github_repos columns the repositories area reads", :aggregate_failures do
+        GithubRepo.upsert(github_user, **params, language: "Ruby", fork: true, info_hash: { "size" => 1 })
+
+        repo_queries = []
+        callback = lambda do |*, payload|
+          repo_queries << payload[:sql] if payload[:sql].include?('FROM "github_repos"')
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/#{github_user.username}"
+        end
+
+        expect(response.body).to include("A book bot 🤖", params[:url], CGI.escapeHTML(params[:name]), "Ruby")
+        expect(repo_queries.size).to eq(1)
+        expect(repo_queries.first).to include('"github_repos"."stargazers_count"')
+        expect(repo_queries.first).not_to include("info_hash")
+      end
+
       it "does not show a non featured repository" do
         GithubRepo.upsert(github_user, **params.merge(featured: false))
 

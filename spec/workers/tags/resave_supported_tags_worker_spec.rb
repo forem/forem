@@ -16,5 +16,15 @@ RSpec.describe Tags::ResaveSupportedTagsWorker, type: :worker do
         expect(tag.updated_at).to be > old_update_timestamp
       end
     end
+
+    it "skips Subforem score updates when Subforem.disabled_by_env? is true" do
+      create(:subforem, domain: "dev.to")
+      allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+      allow(Subforem).to receive(:find_each)
+
+      worker.perform
+
+      expect(Subforem).not_to have_received(:find_each)
+    end
   end
 end

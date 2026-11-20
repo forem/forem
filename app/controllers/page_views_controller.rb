@@ -21,7 +21,8 @@ class PageViewsController < ApplicationMetalController
     if page_view_create_params[:viewable_type].blank? || page_view_create_params[:viewable_id].blank?
       page_view_create_params.delete(:viewable_type)
       page_view_create_params.delete(:viewable_id)
-    elsif !ALLOWED_VIEWABLE_TYPES.include?(page_view_create_params[:viewable_type]) || page_view_create_params[:viewable_id].to_i <= 0
+    elsif ALLOWED_VIEWABLE_TYPES.exclude?(page_view_create_params[:viewable_type]) ||
+        page_view_create_params[:viewable_id].to_i <= 0
       page_view_create_params.delete(:viewable_type)
       page_view_create_params.delete(:viewable_id)
     else
@@ -56,12 +57,12 @@ class PageViewsController < ApplicationMetalController
   private
 
   def send_algolia_insight
-    return unless params[:article_id].present?
+    return if params[:article_id].blank?
     return unless session_current_user_id &&
       Settings::General.algolia_application_id.present? &&
       Settings::General.algolia_api_key.present?
 
-    AlgoliaInsightsService.new.track_event(
+    AlgoliaInsights::TrackEventWorker.perform_async(
       "view",
       "Article Viewed",
       session_current_user_id,
@@ -69,7 +70,8 @@ class PageViewsController < ApplicationMetalController
       "Article_#{Rails.env}",
       Time.current.to_i * 1000,
       nil,
-      nil
+      nil,
+      RequestStore.store[:subforem_id],
     )
   end
 end

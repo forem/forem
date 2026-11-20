@@ -37,6 +37,18 @@ RSpec.describe "OmniAuth Callbacks Failure" do
     expect(response).to redirect_to(new_user_session_url)
   end
 
+  it "does not notify Honeybadger on user_cancelled_authorize" do
+    error = OmniAuth::Strategies::OAuth2::CallbackError.new("user_cancelled_authorize")
+    omniauth_setup_authentication_error(error)
+    omniauth_setup_invalid_credentials(:apple)
+
+    post "/users/auth/apple"
+    follow_redirect!
+
+    expect(Rails.error).not_to have_received(:report)
+    expect(response).to redirect_to(new_user_session_url)
+  end
+
   it "notifies Honeybadger and Datadog on an unexpected CallbackError", :aggregate_failures do
     params = '{"callback_url"=>"http://localhost:3000/users/auth/apple/callback", "state"=>"navbar_basic"}'
     error = OmniAuth::Strategies::OAuth2::CallbackError.new(:access_denied, "user denied access", "https://example.com")

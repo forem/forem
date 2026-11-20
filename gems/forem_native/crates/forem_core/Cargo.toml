@@ -2,6 +2,7 @@
 name = "forem_core"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.85"
 description = "Pure-Rust performance core for Forem (zero Ruby/FFI dependencies; compatible with native C-ABI and WASM targets)"
 license = "MIT"
 publish = false
@@ -9,3 +10,12 @@ publish = false
 [lib]
 name = "forem_core"
 path = "src/lib.rs"
+
+[dependencies]
+# Social image rendering (`social_image`): all pure Rust, so the crate stays portable to
+# `wasm32` and standalone services.
+gif = { version = "0.14", default-features = false, features = ["std"] }
+image-webp = "0.2"
+png = "0.18"
+skrifa = "0.49"
+zune-jpeg = { version = "0.5", default-features = false, features = ["std"] }

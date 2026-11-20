@@ -2,15 +2,18 @@ require "rails_helper"
 
 RSpec.describe Images::ProfileImageGenerator, type: :service do
   describe ".call" do
-    it "returns a valid 400x400 PNG image File" do
+    it "returns a valid 400x400 PNG image File without spawning subprocesses" do
+      allow(Open3).to receive(:popen3).and_call_original
+
       file = described_class.call
 
       expect(file).to be_a(File)
       expect(File.exist?(file.path)).to be(true)
+      expect(Open3).not_to have_received(:popen3)
 
-      image = MiniMagick::Image.open(file.path)
-      expect(image.type).to eq("PNG")
-      expect(image.dimensions).to eq([400, 400])
+      info = ForemNative.image_inspect_file(file.path)
+      expect(info[:format]).to eq("png")
+      expect([info[:width], info[:height]]).to eq([400, 400])
     ensure
       file&.close
     end
@@ -29,8 +32,8 @@ RSpec.describe Images::ProfileImageGenerator, type: :service do
       different&.close
     end
 
-    it "falls back to a static asset image if MiniMagick raises an error" do
-      allow(MiniMagick::Tool::Convert).to receive(:new).and_raise(MiniMagick::Error, "convert failed")
+    it "falls back to a static asset image if ForemNative raises an error" do
+      allow(ForemNative).to receive(:render_profile_image_png).and_raise(StandardError, "render failed")
       allow(Rails.logger).to receive(:warn)
 
       file = described_class.call

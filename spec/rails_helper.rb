@@ -150,7 +150,9 @@ RSpec.configure do |config|
 
   config.extend WithModel
 
-  config.after(:each, type: :system) do
+  config.around(:each, type: :system) do |example|
+    example.run
+  ensure
     Warden::Manager._on_request.clear
   end
 

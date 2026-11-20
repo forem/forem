@@ -60,14 +60,18 @@ module Spam
     def find_potential_ring
       # Get users who have reacted to articles by the same authors as our user
       shared_authors = find_shared_authors
-      return [] if shared_authors.empty?
+      return [] if shared_authors.size < MIN_SHARED_AUTHORS
 
       # Find users who have high overlap with our user's reaction patterns
       potential_ring_members = find_users_with_similar_patterns(shared_authors).to_a
+      return [] if potential_ring_members.size < MIN_RING_SIZE
+
       # Set lookups: the Array#include? scan was O(member reactions x shared authors) per member
       shared_author_ids = shared_authors.to_set
-      # Reacted-to authors kept only for members that pass, for reuse in is_legitimate_ring?
+      # Reacted-to authors and preloaded User records kept only for members that pass,
+      # for reuse in is_legitimate_ring?, validate_ring_legitimacy, and adjust_reputation_for_ring.
       @ring_member_reacted_author_ids = {}
+      @ring_member_users = {}
 
       # Filter to only include users who meet the ring criteria. One primary-key query
       # per 100 candidates instead of a User.find per candidate; each slice's users can
@@ -75,11 +79,31 @@ module Spam
       # any_admin? check reads them in memory instead of a COUNT query per member.
       potential_ring_members.each_slice(100).flat_map do |members|
         member_users = User.includes(:roles).where(id: members.map(&:id)).index_by(&:id)
-        members.select do |member|
+        eligible_members = members.filter_map do |member|
           member_user = member_users.fetch(member.id) { User.find(member.id) }
-          meets_ring_criteria?(member, member_user, shared_author_ids)
+          next if member_user.any_admin? || member_user.trusted?
+
+          [member, member_user]
+        end
+        reacted_authors_by_user = reacted_author_ids_for_users(eligible_members.map { |member, _| member.id })
+
+        eligible_members.filter_map do |member, member_user|
+          member if meets_ring_criteria?(member, member_user, shared_author_ids, reacted_authors_by_user[member.id])
         end
       end
+    end
+
+    def reacted_author_ids_for_users(user_ids)
+      return {} if user_ids.empty?
+
+      Reaction.public_category
+        .only_articles
+        .where(user_id: user_ids, created_at: 3.months.ago..)
+        .joins("JOIN articles ON reactions.reactable_id = articles.id")
+        .pluck(:user_id, Arel.sql("articles.user_id"))
+        .each_with_object(Hash.new { |h, k| h[k] = [] }) do |(reactor_id, author_id), by_user|
+          by_user[reactor_id] << author_id
+        end
     end
 
     def reacted_author_ids_for(member_user)
@@ -109,28 +133,40 @@ module Spam
       end
     end
 
+    def min_shared_author_reactions
+      (MIN_REACTIONS_THRESHOLD * MIN_AUTHOR_CONCENTRATION).ceil
+    end
+
     def find_users_with_similar_patterns(shared_authors)
-      # Find users who have reacted to articles by the same authors
+      # Find users who have reacted to articles by the same authors.
+      # Any member passing meets_ring_criteria? has >= MIN_REACTIONS_THRESHOLD total reactions
+      # with >= MIN_AUTHOR_CONCENTRATION to shared_authors, so enforce that minimum count here.
       User.joins(:reactions)
-          .joins("JOIN articles ON reactions.reactable_id = articles.id")
-          .where(reactions: { 
+        .joins("JOIN articles ON reactions.reactable_id = articles.id")
+        .where(
+          reactions: {
             reactable_type: "Article",
             category: ReactionCategory.public.map(&:to_s),
             created_at: 3.months.ago..
-          })
-          .where("articles.user_id IN (?)", shared_authors)
-          .where.not(id: user_id)
-          .group("users.id")
-          .having("COUNT(DISTINCT articles.user_id) >= ?", MIN_SHARED_AUTHORS)
-          .select("users.id, COUNT(DISTINCT articles.user_id) as shared_author_count")
+          },
+        )
+        .where("articles.user_id IN (?)", shared_authors)
+        .where.not(id: user_id)
+        .group("users.id")
+        .having(
+          "COUNT(DISTINCT articles.user_id) >= ? AND COUNT(reactions.id) >= ?",
+          MIN_SHARED_AUTHORS,
+          min_shared_author_reactions,
+        )
+        .select("users.id, COUNT(DISTINCT articles.user_id) as shared_author_count")
     end
 
-    def meets_ring_criteria?(member, member_user, shared_author_ids)
+    def meets_ring_criteria?(member, member_user, shared_author_ids, member_reactions = nil)
       # Skip admin and trusted users
       return false if member_user.any_admin? || member_user.trusted?
 
       # Get this member's recent reactions
-      member_reactions = reacted_author_ids_for(member_user)
+      member_reactions ||= reacted_author_ids_for(member_user)
 
       # Calculate concentration of reactions to shared authors
       shared_author_reactions = member_reactions.count { |author_id| shared_author_ids.include?(author_id) }
@@ -148,6 +184,7 @@ module Spam
       return false if self_reaction_percentage > MAX_SELF_REACTION_PERCENTAGE
 
       @ring_member_reacted_author_ids[member.id] = member_reactions
+      @ring_member_users[member.id] = member_user
       true
     end
 
@@ -179,7 +216,7 @@ module Spam
       
       # Check for legitimate community indicators
       legitimate_indicators = potential_ring.count do |member|
-        member_user = User.find(member.id)
+        member_user = @ring_member_users&.fetch(member.id, nil) || User.find(member.id)
         
         # Check if they follow the original user or are followed by them
         follows_original = member_user.following_users.exists?(id: user_id)
@@ -199,11 +236,14 @@ module Spam
 
     def adjust_reputation_for_ring(ring_members)
       ring_members.each do |member|
-        member_user = User.find(member.id)
+        member_user = @ring_member_users&.fetch(member.id, nil) || User.find(member.id)
         
         # Halve reputation modifier for ring members (multiply by 0.5)
-        new_modifier = (member_user.reputation_modifier * 0.5).round(2)
-        member_user.update!(reputation_modifier: new_modifier)
+        new_modifier = nil
+        member_user.with_lock do
+          new_modifier = (member_user.reputation_modifier * 0.5).round(2)
+          member_user.update!(reputation_modifier: new_modifier)
+        end
         
         # Log the action for audit purposes
         Note.create!(

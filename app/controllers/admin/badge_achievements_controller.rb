@@ -2,13 +2,14 @@ module Admin
   class BadgeAchievementsController < Admin::ApplicationController
     layout "admin"
 
+    # Lists badge achievements ordered by reverse primary key with trimmed columns and countless pagination.
     def index
       @q = BadgeAchievement
-        .includes(:badge)
-        .includes(:user)
-        .order(created_at: :desc)
+        .select(:id, :user_id, :badge_id, :created_at)
+        .includes(:badge, :user)
+        .order(id: :desc)
         .ransack(params[:q])
-      @badge_achievements = @q.result.page(params[:page] || 1).per(15)
+      @badge_achievements = @q.result.page(params[:page] || 1).per(15).without_count
     end
 
     def destroy

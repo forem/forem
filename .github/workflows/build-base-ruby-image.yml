@@ -16,31 +16,34 @@ on:
     paths:
       - 'Containerfile.base'
       - '.ruby-version-next'
+      - '.github/workflows/build-base-ruby-image.yml'
 
 jobs:
   build-image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          fetch-depth: "2" # Get current and preceding commit only
-      - name: Detect relevant changed files in this job
-        id: containerfile-changed
-        uses: tj-actions/changed-files@v37
-        with:
-          files: Containerfile.base
-      - name: Do not push to GHCR if this commit does not target the main branch
-        if: ${{ github.event_name != 'push' && github.event_name != 'workflow_dispatch' }}
+          persist-credentials: false
+      - name: Audit this workflow with zizmor
+        run: pipx run --spec zizmor==1.32.0 zizmor --offline .github/workflows/build-base-ruby-image.yml
+      - name: Skip publishing except on main pushes or manual dispatches
+        if: ${{ github.event_name != 'workflow_dispatch' && (github.event_name != 'push' || github.ref != 'refs/heads/main') }}
         run: echo "SKIP_PUSH=1" >> $GITHUB_ENV
       - name: Set up QEMU for cross-compiling to ARM64
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        with:
+          image: docker.io/tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
+          platforms: arm64
       - name: Set up Docker BuildX
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
       - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-        uses: docker/login-action@v2
+        if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}

@@ -125,12 +125,16 @@ class FeedEvent < ApplicationRecord
 
     ThrottledCall.perform(throttle_key, throttle_for: 5.minutes) do
       executed = true
-      impressions_total, score = calculate_feed_config_counters(feed_config_id)
+      impressions_total, score, impression_users = calculate_feed_config_counters(feed_config_id)
       next if impressions_total.zero?
 
       FeedConfig.where(id: feed_config_id).update_all(
-        feed_success_score: score,
+        feed_success_score: Arel.sql(
+          "#{score} + feed_repeat_visits_count * " \
+          "(#{FeedConfig.repeat_visit_score_multiplier_sql}) / #{impression_users}",
+        ),
         feed_impressions_count: impressions_total,
+        feed_impression_users_count: impression_users,
       )
     end
 
@@ -139,13 +143,29 @@ class FeedEvent < ApplicationRecord
     Rails.cache.delete(format(ThrottledCall::KEY_TEMPLATE, key: throttle_key))
   end
 
-  def self.article_freshness_multiplier(published_at, event_time = Time.current)
+  def self.article_freshness_multiplier(published_at, event_time = Time.current, lookback_days: nil)
     return FRESHNESS_MIN_MULTIPLIER if published_at.blank? || event_time.blank?
 
-    age_in_hours = (event_time.to_f - published_at.to_f) / 3600.0
+    published_epoch = published_at.to_f
+    event_epoch = event_time.to_f
+    return FRESHNESS_MAX_MULTIPLIER if ((event_epoch - published_epoch) / 3600.0) <= FRESHNESS_MAX_BONUS_HOURS
+
+    resolved_days = lookback_days.nil? ? resolved_freshness_lookback_days : lookback_days.to_i
+    ForemNative.article_freshness_multiplier(published_epoch, event_epoch, resolved_days) ||
+      legacy_article_freshness_multiplier(published_epoch, event_epoch, resolved_days)
+  end
+
+  def self.resolved_freshness_lookback_days
+    subforem_id = RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] ||
+      Subforem.cached_default_id
+    Settings::UserExperience.feed_lookback_days(subforem_id: subforem_id).to_i
+  end
+  private_class_method :resolved_freshness_lookback_days
+
+  def self.legacy_article_freshness_multiplier(published_epoch, event_epoch, lookback_setting)
+    age_in_hours = (event_epoch - published_epoch) / 3600.0
     return FRESHNESS_MAX_MULTIPLIER if age_in_hours <= FRESHNESS_MAX_BONUS_HOURS
 
-    lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
     lookback_days = lookback_setting.positive? ? lookback_setting : DEFAULT_FRESHNESS_LOOKBACK_DAYS
     lookback_hours = lookback_days * 24.0
     return FRESHNESS_MIN_MULTIPLIER if age_in_hours >= lookback_hours || lookback_hours <= FRESHNESS_MAX_BONUS_HOURS
@@ -158,13 +178,29 @@ class FeedEvent < ApplicationRecord
 
     FRESHNESS_MIN_MULTIPLIER + ((FRESHNESS_MAX_MULTIPLIER - FRESHNESS_MIN_MULTIPLIER) * normalized_decay)
   end
+  private_class_method :legacy_article_freshness_multiplier
 
   def self.calculate_feed_config_counters(feed_config_id)
     rows = FeedEvent
       .where(feed_config_id: feed_config_id)
       .left_joins(:article)
-      .pluck(:category, :user_id, :article_position, :created_at, "articles.published_at")
+      .pluck(
+        :category,
+        :user_id,
+        :article_position,
+        Arel.sql("EXTRACT(EPOCH FROM feed_events.created_at AT TIME ZONE 'UTC')::double precision"),
+        Arel.sql("EXTRACT(EPOCH FROM articles.published_at AT TIME ZONE 'UTC')::double precision"),
+      )
 
+    return [0, 0.0] if rows.empty?
+
+    lookback_days = resolved_freshness_lookback_days
+    ForemNative.aggregate_feed_config_counters(rows, lookback_days) ||
+      legacy_calculate_feed_config_counters(rows, lookback_days)
+  end
+  private_class_method :calculate_feed_config_counters
+
+  def self.legacy_calculate_feed_config_counters(rows, lookback_days)
     impressions_total = 0
     impressions_users = Set.new
     clicks_score = 0.0
@@ -176,9 +212,10 @@ class FeedEvent < ApplicationRecord
         impressions_total += 1
         impressions_users.add(user_id)
       when "click"
-        clicks_score += ((2.0 / 3)**(position.to_i - 1)) * article_freshness_multiplier(published_at, event_time)
+        freshness = article_freshness_multiplier(published_at, event_time, lookback_days: lookback_days)
+        clicks_score += ((2.0 / 3)**(position.to_i - 1)) * freshness
       when "reaction", "comment", "extended_pageview"
-        freshness = article_freshness_multiplier(published_at, event_time)
+        freshness = article_freshness_multiplier(published_at, event_time, lookback_days: lookback_days)
         user_scores = best_freshness[category]
         user_scores[user_id] = freshness if user_scores[user_id].nil? || freshness > user_scores[user_id]
       end
@@ -191,9 +228,9 @@ class FeedEvent < ApplicationRecord
     pageviews_score = best_freshness["extended_pageview"].values.sum
     score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / impressions_users.size
 
-    [impressions_total, score]
+    [impressions_total, score, impressions_users.size]
   end
-  private_class_method :calculate_feed_config_counters
+  private_class_method :legacy_calculate_feed_config_counters
 
   # Run only for newly ingested engagement, after its storage transaction commits.
   def process_ingested_engagement
