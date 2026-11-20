@@ -77,6 +77,7 @@ describe('initializeNotifications reply form toggle', () => {
     // Mounting helper that commentsPage normally registers on window.Forem.
     initializeEnhancedCommentTextArea = jest.fn();
     window.Forem = { initializeEnhancedCommentTextArea };
+    window.handleFocus = jest.fn();
 
     // Keep markNotificationsAsRead's fetch from throwing.
     global.fetch = jest.fn(() => Promise.resolve({ status: 200 }));
@@ -90,6 +91,7 @@ describe('initializeNotifications reply form toggle', () => {
     jest.clearAllTimers();
     jest.useRealTimers();
     delete window.Forem;
+    delete window.handleFocus;
     delete global.getCsrfToken;
     delete global.sendFetch;
     delete global.InstantClick;
