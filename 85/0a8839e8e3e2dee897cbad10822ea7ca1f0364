@@ -1,0 +1,38 @@
+app/controllers/api/v0/mobile_auth_controller.rb
+  h_f968154a99632d 39-41,47-64
+app/controllers/application_controller.rb
+  h_f968154a99632d 455-456
+app/controllers/application_metal_controller.rb
+  h_f968154a99632d 30-35
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 17-31,60-61,63,65-78,84-86,97,100,102-103,105,112,115,129,131,133,136,144,245-246
+app/controllers/users_controller.rb
+  h_f968154a99632d 127
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 336,385,465-471,477-478
+app/models/user.rb
+  h_f968154a99632d 339,1402-1405
+app/services/authentication/auth_token.rb
+  h_f968154a99632d 6,9,14-15,18-20,32,51-52,55-57,64-70,73-74,83-84,90,94,100-103,113-152,154-161
+app/views/layouts/_bottom_scripts.html.erb
+  h_f968154a99632d 46,49,70,73
+config/initializers/filter_parameter_logging.rb
+  h_f968154a99632d 5-6
+spec/requests/api/v0/mobile_auth_spec.rb
+  h_f968154a99632d 43,47,50-56
+spec/requests/auth_passes_spec.rb
+  h_f968154a99632d 50,173-209,278-315
+spec/requests/token_authentication_security_spec.rb
+  h_f968154a99632d 3,6-12,29-35,55-68,72-98,100,108-167
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "850a8839e8e3e2dee897cbad10822ea7ca1f0364",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
