@@ -403,6 +403,7 @@ class Article < ApplicationRecord
 
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
+  after_commit :schedule_cache_bust, on: %i[create update], if: -> { published? && scheduled? }
 
   after_commit :update_dependent_embeds_if_needed, on: %i[create update destroy]
 
@@ -2163,6 +2164,13 @@ class Article < ApplicationRecord
 
   def touch_collection
     collection.touch if collection && previous_changes.present?
+  end
+
+  def schedule_cache_bust
+    return unless published? && scheduled?
+    return unless saved_change_to_published_at?
+
+    Articles::BustCacheWorker.perform_at(published_at, id)
   end
 
   def enrich_image_attributes
