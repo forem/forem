@@ -25,16 +25,20 @@ module Feeds
     def call
       return unless valid_payload?
 
-      assignment = FeedConfigAssignment.find_by(
-        id: @data["assignment_id"], user_id: @user_id, subforem_id: @data["subforem_id"],
-      )
-      return unless assignment
+      if @edge_token
+        record_edge_token_visit
+      else
+        assignment = FeedConfigAssignment.find_by(
+          id: @data["assignment_id"], user_id: @user_id, subforem_id: @data["subforem_id"],
+        )
+        return unless assignment
 
-      assignment.with_lock do
-        @now = Time.current
-        next unless active_assignment?(assignment)
+        assignment.with_lock do
+          @now = Time.current
+          next unless active_assignment?(assignment)
 
-        record_event(assignment)
+          record_event(assignment)
+        end
       end
     rescue ActiveRecord::RecordNotFound
       # A user, subforem, or assignment can disappear between lookup and locking.
@@ -47,9 +51,65 @@ module Feeds
       return false unless @token.is_a?(String) && @token.bytesize <= 4096
       return false unless self.class.valid_uuid?(@event_id)
 
-      @data = FeedConfigAssignment.visit_verifier.verified(@token, purpose: :feed_config_visit)
+      if edge_visit_token?
+        return false unless FeatureFlag.enabled?(:fastly_edge_feed_mirror) && EdgeFeed::TokenSigner.configured?
+
+        @edge_token = true
+        @data = EdgeFeed::TokenSigner.verify_visit_token(@token)
+      else
+        @edge_token = false
+        @data = FeedConfigAssignment.visit_verifier.verified(@token, purpose: :feed_config_visit)
+      end
+
       @data.is_a?(Hash) && @data["user_id"] == @user_id && @data["host"] == @host &&
         @data["subforem_id"] == @subforem_id
+    end
+
+    def edge_visit_token?
+      @token.start_with?("#{EdgeFeed::TokenSigner::VISIT_TOKEN_PREFIX}.")
+    end
+
+    def record_edge_token_visit
+      expires_at = @data["expires_at"]
+      return unless expires_at.is_a?(Time) && enabled?(@subforem_id)
+
+      FeedConfigAssignment.transaction(requires_new: true) do
+        lock_edge_assignment_scope
+        @now = Time.current
+        next unless expires_at > @now && FeedConfig.active.exists?(id: @data["feed_config_id"])
+
+        assignment = find_or_sync_edge_assignment(expires_at)
+        record_event(assignment)
+      end
+    end
+
+    def lock_edge_assignment_scope
+      key = Digest::SHA256.digest("feed_config_assignment:#{@user_id}:#{@subforem_id}").unpack1("q>")
+      FeedConfigAssignment.connection.execute("SELECT pg_advisory_xact_lock(#{key})")
+    end
+
+    def find_or_sync_edge_assignment(expires_at)
+      assignment = FeedConfigAssignment.lock.find_by(user_id: @user_id, subforem_id: @subforem_id)
+      if assignment.nil?
+        FeedConfigAssignment.create!(
+          user_id: @user_id,
+          subforem_id: @subforem_id,
+          feed_config_id: @data["feed_config_id"],
+          expires_at: expires_at,
+          last_rewarded_at: nil,
+          repeat_visits_count: 0,
+        )
+      elsif assignment.feed_config_id == @data["feed_config_id"] && assignment.expires_at.to_i == expires_at.to_i
+        assignment
+      else
+        assignment.update!(
+          feed_config_id: @data["feed_config_id"],
+          expires_at: expires_at,
+          last_rewarded_at: nil,
+          repeat_visits_count: 0,
+        )
+        assignment
+      end
     end
 
     def active_assignment?(assignment)
