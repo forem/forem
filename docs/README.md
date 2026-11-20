@@ -13,6 +13,7 @@ For platform-wide guides, getting started tutorials, and API references, please 
 - **[Read-Only Database Support](README_READ_ONLY_DATABASE.md)** - Architecture and configuration (`READ_ONLY_DATABASE_URL`) for routing user query execution to read-only database replicas.
 
 ### 🛠️ Developer Tools & Services
+- **[Developing with Flox](flox.md)** - One-command local setup on macOS and Linux (Ruby, Node, PostgreSQL with pgvector, Redis, seeded database), day-to-day commands, several checkouts side by side, and the `forem-doctor` JSON readiness check.
 - **[Developer Tools (`/dev_tools`)](dev_tools.md)** - Guide to the isolated local developer dashboard, instant session spoofing across seeded accounts, and debugging utilities.
 - **[GitHub Repository Recap Service](github_repo_recap_service.md)** - Architectural details and usage of the `Ai::GithubRepoRecap` service for generating AI-powered repository activity summaries.
 

@@ -10,6 +10,13 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - `.windsurfrules`
 - `.github/copilot-instructions.md`
 
+## Local Development Environment (Flox)
+- **One command**: `flox activate -s` in a fresh clone installs the toolchain, sets up and seeds the databases and starts Postgres, Redis, the web server, Sidekiq and the JS watcher. It is an alternative to the Dev Container, `mise` and `dip` setups, which keep working. See `docs/flox.md`.
+- **Readiness check**: `flox activate -c '.flox/bin/forem-doctor'` prints JSON with a `ready` flag per component and exits non-zero when something is not ready. Use `--wait SECONDS` after starting services and `--skip NAME` to leave a component out. Check it before assuming the app, the database or Redis is up.
+- **Run commands inside the environment**: prefix with `flox activate -s -c '<command>'` (for example `flox activate -s -c 'bin/rspec spec/models/tag_spec.rb'`). Services stop when the activation that started them exits.
+- **Do not hand-edit `.flox/env/manifest.lock`** (regenerate it with `flox lock-manifest`), and keep `.flox/env/manifest.toml` in step with `.ruby-version` and `.nvmrc` as described in `docs/flox.md`.
+- **Several checkouts**: each checkout or git worktree derives its own ports and database, so they can run at the same time.
+
 ## General Philosophy
 - **Follow Patterns**: Application consistency is key. Mimic existing patterns for controllers, services, and specs.
 - **Smaller is Better**: Prefer atomic, focused modifications over sprawling refactors.
