@@ -38,6 +38,9 @@ t0=$(now)
 flox activate -c '
   now() { perl -MTime::HiRes=time -e "printf q(%.1f), time"; }
   echo "T_ACTIVATED $(now)"
+  if [ ! -f "$FLOX_ENV_CACHE/bootstrap/ready" ]; then
+    echo "bootstrap did not finish; logs in $FLOX_ENV_CACHE/bootstrap/"; exit 1
+  fi
   flox services start >/dev/null 2>&1
   for i in $(seq 1 360); do
     c=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/" 2>/dev/null)

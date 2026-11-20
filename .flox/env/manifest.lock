@@ -91,6 +91,18 @@
         "outputs": [
           "out"
         ]
+      },
+      "zlib": {
+        "pkg-path": "zlib",
+        "pkg-group": "ruby",
+        "systems": [
+          "aarch64-linux",
+          "x86_64-linux"
+        ],
+        "outputs": [
+          "out",
+          "dev"
+        ]
       }
     },
     "vars": {
@@ -459,6 +471,67 @@
       },
       "system": "x86_64-linux",
       "group": "postgres",
+      "priority": 5
+    },
+    {
+      "attr_path": "cargo",
+      "broken": false,
+      "derivation": "/nix/store/1nsn97k369s93g90wkjbirlrhkb9am1p-cargo-1.99.1.drv",
+      "description": "Downloads your Rust project's dependencies and builds your project",
+      "install_id": "cargo",
+      "license": "[ MIT, Apache-2.0 ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d5cc6833999746cffdfe0598f7bc801a57b887a9",
+      "name": "cargo-1.99.1",
+      "pname": "cargo",
+      "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
+      "rev_count": 1119549,
+      "rev_date": "2026-11-13T02:32:26Z",
+      "scrape_date": "2026-11-16T06:14:42.358636Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.99.1",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/5mgvxfka6ypzva3p3jxipf9hscgc3k9r-cargo-1.99.1"
+      },
+      "system": "aarch64-linux",
+      "group": "rust",
+      "priority": 5
+    },
+    {
+      "attr_path": "rustc",
+      "broken": false,
+      "derivation": "/nix/store/vhn3rndm83lzxqaa2rhm0h6yk9flwwa5-rustc-wrapper-1.99.1.drv",
+      "description": "Safe, concurrent, practical language (wrapper script)",
+      "install_id": "rustc",
+      "license": "[ MIT, Apache-2.0 ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d5cc6833999746cffdfe0598f7bc801a57b887a9",
+      "name": "rustc-wrapper-1.99.1",
+      "pname": "rustc",
+      "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
+      "rev_count": 1119549,
+      "rev_date": "2026-11-13T02:32:26Z",
+      "scrape_date": "2026-11-16T06:14:42.852134Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.99.1",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/9hbmwm0nkf0sl09jp8s7g0fj1ymsl7la-rustc-wrapper-1.99.1-doc",
+        "man": "/nix/store/jsfrl54g7fdjgn02llgmm9sfizp39a6b-rustc-wrapper-1.99.1-man",
+        "out": "/nix/store/gpba2i84yavbcsj4idsjhsdyzfzff1kd-rustc-wrapper-1.99.1"
+      },
+      "system": "aarch64-linux",
+      "group": "rust",
       "priority": 5
     },
     {
@@ -1210,64 +1283,67 @@
       "priority": 5
     },
     {
-      "attr_path": "cargo",
+      "attr_path": "zlib",
       "broken": false,
-      "derivation": "/nix/store/1nsn97k369s93g90wkjbirlrhkb9am1p-cargo-1.99.1.drv",
-      "description": "Downloads your Rust project's dependencies and builds your project",
-      "install_id": "cargo",
-      "license": "[ MIT, Apache-2.0 ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d5cc6833999746cffdfe0598f7bc801a57b887a9",
-      "name": "cargo-1.99.1",
-      "pname": "cargo",
-      "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
-      "rev_count": 1119549,
-      "rev_date": "2026-11-13T02:32:26Z",
-      "scrape_date": "2026-11-16T06:14:42.358636Z",
+      "derivation": "/nix/store/w8fsx4lb68f4r7b4x9igdrj1qzrd1lvn-zlib-1.3.1.drv",
+      "description": "Lossless data-compression library",
+      "install_id": "zlib",
+      "license": "Zlib",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
+      "name": "zlib-1.3.1",
+      "pname": "zlib",
+      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
+      "rev_count": 617818,
+      "rev_date": "2024-04-27T21:35:43Z",
+      "scrape_date": "2024-06-13T21:39:17Z",
       "stabilities": [
+        "staging",
         "unstable"
       ],
       "unfree": false,
-      "version": "1.99.1",
+      "version": "1.3.1",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/5mgvxfka6ypzva3p3jxipf9hscgc3k9r-cargo-1.99.1"
+        "dev": "/nix/store/jn3ia8c60dh319d6nm0w3dz3gnrrf931-zlib-1.3.1-dev",
+        "out": "/nix/store/6nypjril3rq5y2iac7xj512crwwmaj0n-zlib-1.3.1",
+        "static": "/nix/store/f74qz4zh37k7ila34kpfb504s6s6p80a-zlib-1.3.1-static"
       },
       "system": "aarch64-linux",
-      "group": "rust",
+      "group": "ruby",
       "priority": 5
     },
     {
-      "attr_path": "rustc",
+      "attr_path": "zlib",
       "broken": false,
-      "derivation": "/nix/store/vhn3rndm83lzxqaa2rhm0h6yk9flwwa5-rustc-wrapper-1.99.1.drv",
-      "description": "Safe, concurrent, practical language (wrapper script)",
-      "install_id": "rustc",
-      "license": "[ MIT, Apache-2.0 ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d5cc6833999746cffdfe0598f7bc801a57b887a9",
-      "name": "rustc-wrapper-1.99.1",
-      "pname": "rustc",
-      "rev": "d5cc6833999746cffdfe0598f7bc801a57b887a9",
-      "rev_count": 1119549,
-      "rev_date": "2026-11-13T02:32:26Z",
-      "scrape_date": "2026-11-16T06:14:42.852134Z",
+      "derivation": "/nix/store/fig01ylm8j5ii826ygkwm8rpx7kcj0zc-zlib-1.3.1.drv",
+      "description": "Lossless data-compression library",
+      "install_id": "zlib",
+      "license": "Zlib",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
+      "name": "zlib-1.3.1",
+      "pname": "zlib",
+      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
+      "rev_count": 617818,
+      "rev_date": "2024-04-27T21:35:43Z",
+      "scrape_date": "2024-06-13T21:39:17Z",
       "stabilities": [
+        "staging",
         "unstable"
       ],
       "unfree": false,
-      "version": "1.99.1",
+      "version": "1.3.1",
       "outputs_to_install": [
-        "man",
         "out"
       ],
       "outputs": {
-        "doc": "/nix/store/9hbmwm0nkf0sl09jp8s7g0fj1ymsl7la-rustc-wrapper-1.99.1-doc",
-        "man": "/nix/store/jsfrl54g7fdjgn02llgmm9sfizp39a6b-rustc-wrapper-1.99.1-man",
-        "out": "/nix/store/gpba2i84yavbcsj4idsjhsdyzfzff1kd-rustc-wrapper-1.99.1"
+        "dev": "/nix/store/vi5lphqwg9cj7xkaggvw5n0wqsmwdlq5-zlib-1.3.1-dev",
+        "out": "/nix/store/rrhw8p4hdrbh3pq7p2hlc1z2ixxzcxcb-zlib-1.3.1",
+        "static": "/nix/store/a8f8kkn9s34jwj58m54cm162ny56rsda-zlib-1.3.1-static"
       },
-      "system": "aarch64-linux",
-      "group": "rust",
+      "system": "x86_64-linux",
+      "group": "ruby",
       "priority": 5
     }
   ]

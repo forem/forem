@@ -26,7 +26,7 @@ jobs:
         include:
           - { name: x86_64-linux, os: ubuntu-24.04 }
           - { name: aarch64-linux, os: ubuntu-24.04-arm }
-          - { name: aarch64-darwin, os: macos-15 }
+          - { name: aarch64-darwin, os: macos-14 }
     steps:
       - uses: actions/checkout@v4
 

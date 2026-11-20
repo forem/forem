@@ -38,6 +38,12 @@ libyaml.pkg-group = "ruby"
 openssl.pkg-path = "openssl"
 openssl.outputs = ["out", "dev"]
 openssl.pkg-group = "ruby"
+# The zlib gem (via metainspector -> faraday-gzip) compiles against zlib.
+# macOS gets it from the SDK; Linux runners have no headers or -lz to offer.
+zlib.pkg-path = "zlib"
+zlib.outputs = ["out", "dev"]
+zlib.pkg-group = "ruby"
+zlib.systems = ["aarch64-linux", "x86_64-linux"]
 pkg-config.pkg-path = "pkg-config"
 pkg-config.pkg-group = "ruby"
 gcc.pkg-path = "gcc"
