@@ -4450,6 +4450,43 @@ RSpec.describe Article do
       expect(result).to include("Third paragraph")
       expect(result).not_to include("Fourth paragraph")
     end
+
+    it "escapes angle brackets for short quickies" do
+      article.type_of = "status"
+      article.title = "<img src=x onerror=alert(1)>\nSecond line"
+      result = article.title_finalized_for_feed
+      expect(result).to eq("<p class=\"quickie-paragraph\">&lt;img src=x onerror=alert(1)&gt;<br>Second line</p>")
+    end
+
+    it "escapes angle brackets in truncated quickies, including inside URLs" do
+      article.type_of = "status"
+      article.title = "<script>alert(1)</script>\nLine 2\nLine 3\nLine 4\n" \
+                      "https://example.com/<img src=x onerror=alert(1)>\nLine 6\nLine 7\nLine 8\nLine 9"
+      result = article.title_finalized_for_feed
+      expect(result).to include("...read more")
+      expect(result).to include("&lt;script&gt;alert(1)&lt;/script&gt;")
+      expect(result).not_to include("<script")
+      expect(result).not_to include("<img")
+    end
+
+    context "when ForemNative declines the title" do
+      before { allow(ForemNative).to receive(:quickie_title_html).and_return(nil) }
+
+      it "escapes angle brackets for short quickies" do
+        article.type_of = "status"
+        article.title = "<img src=x onerror=alert(1)>\nSecond line"
+        result = article.title_finalized_for_feed
+        expect(result).to eq("<p class=\"quickie-paragraph\">&lt;img src=x onerror=alert(1)&gt;<br>Second line</p>")
+      end
+
+      it "escapes angle brackets in truncated quickies" do
+        article.type_of = "status"
+        article.title = "<script>alert(1)</script>\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6 \nLine 7\nLine 8\nLine 9"
+        result = article.title_finalized_for_feed
+        expect(result).to include("&lt;script&gt;alert(1)&lt;/script&gt;")
+        expect(result).not_to include("<script")
+      end
+    end
   end
 
   describe "#normalize_title" do
