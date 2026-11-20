@@ -30,6 +30,7 @@ module Homepage
     end
 
     attributes(
+      :ai_disclosure_level,
       :class_name,
       :cloudinary_video_url,
       :favorited_by_user_id,

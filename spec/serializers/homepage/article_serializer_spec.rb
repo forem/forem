@@ -26,6 +26,29 @@ RSpec.describe Homepage::ArticleSerializer, type: :serializer do
       expect(response.first[:favorited_by_user_id]).to eq(leader.id)
     end
 
+    it "includes the AI disclosure level so search results can show the AI label" do
+      article.update_columns(ai_disclosure_level: Article.ai_disclosure_levels[:some_ai])
+
+      response = described_class.serialized_collection_from(relation: Article.all)
+
+      expect(response.first[:ai_disclosure_level]).to eq("some_ai")
+    end
+
+    it "includes the AI disclosure level when serializing Homepage::ArticlesQuery results" do
+      article.update_columns(ai_disclosure_level: Article.ai_disclosure_levels[:fully_autonomous])
+
+      relation = Homepage::ArticlesQuery.call(sort_by: :hotness_score, sort_direction: :desc)
+      response = described_class.serialized_collection_from(relation: relation)
+
+      expect(response.first[:ai_disclosure_level]).to eq("fully_autonomous")
+    end
+
+    it "reports not_disclosed for articles without AI disclosure" do
+      response = described_class.serialized_collection_from(relation: Article.all)
+
+      expect(response.first[:ai_disclosure_level]).to eq("not_disclosed")
+    end
+
     it "reports no favoriter for unfavorited articles" do
       response = described_class.serialized_collection_from(relation: Article.all)
 

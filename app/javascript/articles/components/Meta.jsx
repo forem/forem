@@ -109,6 +109,8 @@ export const Meta = ({ article, organization }) => {
                     ? 'Disclosed as fully AI-generated'
                     : 'Disclosed as AI-assisted'
                 }
+                role="img"
+                tabIndex={0}
                 aria-label={
                   article.ai_disclosure_level === 'fully_autonomous' || article.ai_disclosure_level === 5
                     ? 'Disclosed as fully AI-generated'
