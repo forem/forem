@@ -50,8 +50,14 @@ zlib.outputs = ["out", "dev"]
 zlib.systems = ["aarch64-linux", "x86_64-linux"]
 # Linux only. Ruby's closure holds no compiler, so gem builds use this one. On
 # macOS they use the Xcode Command Line Tools compiler; see docs/flox.md.
+# Version 15.3.0 is the compiler of the nixpkgs snapshot `flox/ruby_3_3` is
+# built from, so gems are compiled against the same glibc 2.42 that the Ruby
+# binary loads. A newer gcc would bring a newer glibc and gems could then
+# reference symbols the running Ruby's libc does not have. When `flox/ruby_3_3`
+# moves to a newer snapshot, move this version with it.
 gcc.pkg-path = "gcc"
 gcc.outputs = ["out"]
+gcc.version = "15.3.0"
 gcc.systems = ["aarch64-linux", "x86_64-linux"]
 
 # -- Redis ----------------------------------------------------------------------
