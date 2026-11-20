@@ -1180,6 +1180,53 @@ module ForemNative
       Native.aggregate_feed_config_counters(rows, lookback_days)
     end
 
+    # Encodes an integer ID in base 26 matching `Integer#to_s(26)` (e.g. `Comment#id_code_generated`).
+    def encode_base26_id(id)
+      return unless Native.respond_to?(:encode_base26_id)
+      return unless id.is_a?(Integer) && id >= -2**63 && id < 2**63
+
+      Native.encode_base26_id(id)
+    end
+
+    # Formats UTC epoch seconds as `YYYY-MM-DDTHH:MM:SSZ` matching `Time.at(sec).utc.iso8601`.
+    # Returns `nil` for timestamps outside years `0000..=9999`.
+    def format_utc_iso8601(epoch_secs)
+      return unless Native.respond_to?(:format_utc_iso8601)
+      return unless epoch_secs.is_a?(Integer) && epoch_secs >= -2**63 && epoch_secs < 2**63
+
+      Native.format_utc_iso8601(epoch_secs)
+    end
+
+    # Builds the nested API comment tree from flat comment & deduplicated user buffers, applies
+    # `max_depth` pruning and optional root pagination, and streams the Jbuilder-equivalent JSON
+    # payload plus included comment IDs `[json_string, included_ids]` in a single Rust pass.
+    def serialize_api_comments_json(
+      comments_flat,
+      users_flat,
+      labels,
+      max_depth:,
+      single_root: false,
+      root_offset: 0,
+      root_limit: nil,
+      escape_html_entities: true
+    )
+      return unless Native.respond_to?(:serialize_api_comments_json)
+      return unless comments_flat.is_a?(Array) && users_flat.is_a?(Array) && labels.is_a?(Array)
+      return unless valid_i64_integer?(max_depth) && valid_i64_integer?(root_offset)
+      return unless root_limit.nil? || valid_i64_integer?(root_limit)
+
+      Native.serialize_api_comments_json(
+        comments_flat,
+        users_flat,
+        labels,
+        max_depth,
+        single_root ? true : false,
+        root_offset,
+        root_limit,
+        escape_html_entities ? true : false,
+      )
+    end
+
     # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
     # in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
     def billboard_event_create_from_json_sql(json_body, user_id, geolocation, header_user_agent, is_embed, now_time)
@@ -1906,6 +1953,10 @@ module ForemNative
       defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol)) ? true : false
     rescue LoadError
       require_candidate_binary(require_symbol: require_symbol)
+    end
+
+    def valid_i64_integer?(value)
+      value.is_a?(Integer) && value >= -2**63 && value < 2**63
     end
   end
 end

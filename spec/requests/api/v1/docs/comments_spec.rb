@@ -40,12 +40,22 @@ RSpec.describe "Api::V1::Docs::Comments" do
                   example: "321"
 
         response "200", "A List of Comments" do
+          let!(:reply_comment) { create(:comment, commentable: article, parent: comments) }
+          let!(:second_root_comment) { create(:comment, commentable: article) }
           let(:a_id) { article.id }
+          let(:page) { 1 }
+          let(:per_page) { 1 }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/Comment" }
           add_examples
 
-          run_test!
+          run_test! do |response|
+            body = response.parsed_body
+            expect(body.size).to eq(1)
+            expect(body.first["id_code"]).to eq(comments.id_code_generated)
+            expect(body.first["id_code"]).not_to eq(second_root_comment.id_code_generated)
+            expect(body.first["children"].pluck("id_code")).to eq([reply_comment.id_code_generated])
+          end
         end
 
         response "404", "Resource Not Found" do
@@ -75,10 +85,17 @@ RSpec.describe "Api::V1::Docs::Comments" do
                   example: "321"
 
         response "200", "A List of the Comments" do
+          let!(:reply_comment) { create(:comment, commentable: article, parent: comments) }
           let(:id) { comments.id_code }
           add_examples
 
-          run_test!
+          run_test! do |response|
+            body = response.parsed_body
+            expect(body["type_of"]).to eq("comment")
+            expect(body["id_code"]).to eq(comments.id_code_generated)
+            expect(body).to include("body_html", "created_at", "ai_disclosure_level", "ai_disclosure_label", "user")
+            expect(body["children"].pluck("id_code")).to eq([reply_comment.id_code_generated])
+          end
         end
 
         response "404", "Comment Not Found" do

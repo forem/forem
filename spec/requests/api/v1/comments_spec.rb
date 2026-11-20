@@ -168,6 +168,36 @@ RSpec.describe "Api::V1::Comments" do
           "created_at" => root_comment.created_at.utc.iso8601,
         )
       end
+
+      it "scopes surrogate-key headers to returned paginated comments and matches Jbuilder fallback",
+         :aggregate_failures do
+        child_comment.update!(deleted: true)
+        grandchild_comment.update!(hidden_by_commentable_user: true)
+
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        native_body = response.parsed_body
+        native_keys = response.headers["surrogate-key"].split.to_set
+
+        expected_keys = [
+          article.record_key, "comments",
+          root_comment.record_key, child_comment.record_key,
+          grandchild_comment.record_key, great_grandchild_comment.record_key
+        ].to_set
+        expect(native_body.size).to eq(1)
+        expect(native_keys).to eq(expected_keys)
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        expect(response.parsed_body).to eq(native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+      end
+
+      it "falls back to legacy Kaminari parsing for non-digit-prefixed per_page values", :aggregate_failures do
+        get api_comments_path(a_id: article.id, page: 1, per_page: "+2"), headers: headers
+        expect(response).to have_http_status(:ok)
+        # Kaminari ignores "+2" and uses its default page size (25), returning all 4 roots
+        expect(response.parsed_body.size).to eq(4)
+      end
     end
   end
 
