@@ -720,11 +720,12 @@
             "name": "top",
             "in": "query",
             "required": false,
-            "description": "Using this parameter will allow the client to return the most popular articles\nin the last `N` days.\n`top` indicates the number of days since publication of the articles returned.\nThis param can be used in conjuction with `tag`.",
+            "description": "Using this parameter will allow the client to return the most popular articles\nin the last `N` days (clamped to a maximum of `730` days).\n`top` indicates the number of days since publication of the articles returned.\nThis param can be used in conjuction with `tag`.",
             "schema": {
               "type": "integer",
               "format": "int32",
-              "minimum": 1
+              "minimum": 1,
+              "maximum": 730
             },
             "example": 2
           },
@@ -782,9 +783,11 @@
             "name": "top",
             "in": "query",
             "required": false,
-            "description": "Restricts search results to articles published within the last `N` days.",
+            "description": "Restricts search results to articles published within the last `N` days (clamped to a maximum of `730` days).",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 730
             }
           },
           {

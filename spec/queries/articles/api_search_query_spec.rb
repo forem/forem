@@ -89,5 +89,17 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
       articles = described_class.call({ top: 10 })
       expect(articles.count).to eq(3)
     end
+
+    it "clamps top to MAX_TOP_DAYS", :aggregate_failures do
+      within_window = Article.find_by(title: "Top ten Ruby tips")
+      outside_window = Article.find_by(title: "Top ten Interview tips")
+      within_window.update_column(:published_at, 700.days.ago)
+      outside_window.update_column(:published_at, 800.days.ago)
+
+      results = described_class.call({ q: "tips", top: 1500 }).to_a
+
+      expect(results).to include(within_window)
+      expect(results).not_to include(outside_window)
+    end
   end
 end
