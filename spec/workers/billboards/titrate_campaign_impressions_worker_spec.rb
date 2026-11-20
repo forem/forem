@@ -127,5 +127,58 @@ RSpec.describe Billboards::TitrateCampaignImpressionsWorker, type: :worker do
         expect { worker.perform }.to raise_error(ActiveRecord::QueryCanceled)
       end
     end
+
+    it "does not overwrite or re-throttle a campaign disabled concurrently after initial load" do
+      campaign = BillboardCampaign.create!(name: "Disabled Mid-Run", ideal_daily_impressions: 1_440)
+      bb = create(:billboard, billboard_campaign: campaign, approved: true, published: true,
+                              priority: false, weight: 0.5)
+      create(:billboard_event, billboard: bb, category: "impression", counts_for: 60, created_at: now - 2.minutes)
+
+      # Simulate pacing being disabled after the worker loads active campaigns and while it reads events
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_wrap_original do |original, &block|
+        result = original.call(&block)
+        campaign.update!(ideal_daily_impressions: 0)
+        result
+      end
+
+      travel_to(now) do
+        worker.perform
+
+        expect(campaign.reload.delivery_throttle_rate).to eq(1.0)
+        expect(bb.reload.weight).to eq(0.5)
+        expect(Billboards::CampaignPacing.throttled_campaign_rates).to eq({})
+      end
+    end
+
+    it "rolls back billboard updates atomically if campaign updates fail" do
+      campaign = BillboardCampaign.create!(name: "Atomic", ideal_daily_impressions: 1_440)
+      bb = create(:billboard, billboard_campaign: campaign, approved: true, published: true,
+                              priority: false, weight: 0.5)
+      create(:billboard_event, billboard: bb, category: "impression", counts_for: 60, created_at: now - 2.minutes)
+
+      allow(worker).to receive(:batch_update_campaigns).and_raise(ActiveRecord::StatementInvalid, "db blip")
+
+      travel_to(now) do
+        expect { worker.perform }.to raise_error(ActiveRecord::StatementInvalid)
+        expect(bb.reload.weight).to eq(0.5)
+        expect(campaign.reload.delivery_throttle_rate).to eq(1.0)
+      end
+    end
+
+    it "logs cache publish failures after DB commit instead of raising for a duplicate retry" do
+      campaign = BillboardCampaign.create!(name: "Cache Blip", ideal_daily_impressions: 14_400)
+      bb = create(:billboard, billboard_campaign: campaign, approved: true, published: true,
+                              priority: false, weight: 2.0)
+
+      allow(Billboards::CampaignPacing).to receive(:refresh_throttled_campaign_rates_cache!)
+        .and_raise(Redis::CannotConnectError, "redis down")
+      allow(Rails.logger).to receive(:error)
+
+      travel_to(now) do
+        expect { worker.perform }.not_to raise_error
+        expect(bb.reload.weight).to be > 2.0
+        expect(Rails.logger).to have_received(:error).with(/cache publish failed: redis down/)
+      end
+    end
   end
 end

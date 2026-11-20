@@ -55,6 +55,6 @@ class BillboardCampaign < ApplicationRecord
   def clear_throttle_cache_if_disabled
     return unless destroyed? || (saved_change_to_ideal_daily_impressions? && ideal_daily_impressions.to_i.zero?)
 
-    Billboards::CampaignPacing.remove_campaign_from_throttle_cache(id)
+    Billboards::CampaignPacing.refresh_throttled_campaign_rates_cache!
   end
 end

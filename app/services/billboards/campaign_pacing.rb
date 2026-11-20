@@ -36,12 +36,9 @@ module Billboards
     class << self
       # Returns a hash of `{ campaign_id (Integer) => pass_through_rate (Float < 1.0) }`
       # served from L1 in-process memory to avoid per-request Redis round-trips.
+      # Never writes back to Redis on a miss so concurrent readers cannot race with the writer.
       def throttled_campaign_rates
-        cached = MemoryFirstCache.fetch(
-          THROTTLE_CACHE_KEY,
-          memory_expires_in: THROTTLE_MEMORY_EXPIRY,
-          redis_expires_in: THROTTLE_MEMORY_EXPIRY,
-        ) { {} }
+        cached = MemoryFirstCache.fetch(THROTTLE_CACHE_KEY, memory_expires_in: THROTTLE_MEMORY_EXPIRY)
         return {} unless cached.is_a?(Hash) && cached.any?
 
         cached.each_with_object({}) do |(campaign_id, rate), hash|
@@ -69,21 +66,25 @@ module Billboards
           sanitized[campaign_id.to_i] = rate_f if rate_f < 1.0
         end
 
-        MemoryFirstCache.delete(THROTTLE_CACHE_KEY)
-        Rails.cache.write(THROTTLE_CACHE_KEY, sanitized, expires_in: THROTTLE_CACHE_EXPIRY)
-        sanitized
+        MemoryFirstCache.write(
+          THROTTLE_CACHE_KEY,
+          sanitized,
+          memory_expires_in: THROTTLE_MEMORY_EXPIRY,
+          redis_expires_in: THROTTLE_CACHE_EXPIRY,
+        )
       end
 
-      def remove_campaign_from_throttle_cache(campaign_id)
-        cached = Rails.cache.read(THROTTLE_CACHE_KEY)
-        target_id = campaign_id.to_i
-        return unless cached.is_a?(Hash) && (cached.key?(target_id) || cached.key?(target_id.to_s))
+      # Rebuilds and atomically publishes the throttle map from the authoritative database state,
+      # preventing concurrent disable callbacks or stale worker snapshots from resurrecting disabled campaigns.
+      def refresh_throttled_campaign_rates_cache!(now: Time.current)
+        active_rates = BillboardCampaign
+          .with_ideal_daily_impressions
+          .where("expires_at IS NULL OR expires_at > ?", now)
+          .where("delivery_throttle_rate < 1.0")
+          .pluck(:id, :delivery_throttle_rate)
+          .to_h
 
-        updated = cached.each_with_object({}) do |(k, v), hash|
-          id = k.to_i
-          hash[id] = v.to_f unless id == target_id
-        end
-        write_throttled_campaign_rates(updated)
+        write_throttled_campaign_rates(active_rates)
       end
 
       def expected_window_impressions(ideal_daily_impressions, traffic_multiplier: 1.0)
@@ -99,6 +100,12 @@ module Billboards
         rate = current_throttle_rate.to_f.clamp(0.0, 1.0)
         expected = expected_window_impressions(ideal_daily_impressions, traffic_multiplier: traffic_multiplier)
         return Result.new(throttle_rate: rate, billboard_updates: []) if expected <= 0.0 || billboards.empty?
+
+        # Never let the smoothing deadband hold a hard-paused campaign closed when it has positive
+        # expected delivery and received zero impressions.
+        if rate <= 0.0 && actual_impressions.to_f <= 0.0
+          return Result.new(throttle_rate: MIN_OPEN_THROTTLE_RATE, billboard_updates: [])
+        end
 
         ratio = (actual_impressions.to_f + SMOOTHING_PRIOR) / (expected + SMOOTHING_PRIOR)
         return Result.new(throttle_rate: rate, billboard_updates: []) if ratio.between?(DEADBAND_LOW, DEADBAND_HIGH)

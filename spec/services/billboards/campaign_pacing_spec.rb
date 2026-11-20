@@ -205,6 +205,23 @@ RSpec.describe Billboards::CampaignPacing do
       expect(result.billboard_updates).to be_empty
     end
 
+    it "reopens a paused low-target campaign instead of stalling in the deadband" do
+      bb = billboard_struct.new(id: 1, weight: 0.01, priority: false)
+
+      # ideal = 36 => expected = 0.25/10m; smoothed ratio (3.0 / 3.25 = 0.923) is inside the deadband,
+      # but a hard-paused campaign (0.0) with positive expected delivery and 0 actual must still reopen.
+      result = described_class.calculate_adjustments(
+        ideal_daily_impressions: 36,
+        actual_impressions: 0,
+        traffic_multiplier: 1.0,
+        current_throttle_rate: 0.0,
+        billboards: [bb],
+      )
+
+      expect(result.throttle_rate).to eq(described_class::MIN_OPEN_THROTTLE_RATE)
+      expect(result.billboard_updates).to be_empty
+    end
+
     it "snaps delivery_throttle_rate cleanly to 1.0 when ramping up past threshold" do
       bb = billboard_struct.new(id: 1, weight: 0.01, priority: false)
 
@@ -234,11 +251,32 @@ RSpec.describe Billboards::CampaignPacing do
       expect(described_class.excluded_campaign_ids(rng: high_rng)).to contain_exactly(10, 20)
     end
 
-    it "removes an individual campaign from the throttle cache" do
-      described_class.write_throttled_campaign_rates(10 => 0.2, 20 => 0.5)
-      described_class.remove_campaign_from_throttle_cache(10)
+    it "writes atomically without deleting from Redis first and does not write back on miss" do
+      cache = Rails.cache
+      allow(cache).to receive(:delete).and_call_original
+      allow(cache).to receive(:write).and_call_original
 
-      expect(described_class.throttled_campaign_rates).to eq(20 => 0.5)
+      expect(described_class.throttled_campaign_rates).to eq({})
+      expect(cache).not_to have_received(:write)
+
+      described_class.write_throttled_campaign_rates(10 => 0.25)
+
+      expect(cache).not_to have_received(:delete)
+      expect(described_class.throttled_campaign_rates).to eq(10 => 0.25)
+    end
+
+    it "rebuilds the throttle cache from authoritative DB state across multiple disables" do
+      c1 = BillboardCampaign.create!(name: "C1", ideal_daily_impressions: 5_000, delivery_throttle_rate: 0.2)
+      c2 = BillboardCampaign.create!(name: "C2", ideal_daily_impressions: 5_000, delivery_throttle_rate: 0.4)
+      c3 = BillboardCampaign.create!(name: "C3", ideal_daily_impressions: 5_000, delivery_throttle_rate: 0.6)
+
+      described_class.refresh_throttled_campaign_rates_cache!
+      expect(described_class.throttled_campaign_rates).to eq(c1.id => 0.2, c2.id => 0.4, c3.id => 0.6)
+
+      c1.update!(ideal_daily_impressions: 0)
+      c2.update!(ideal_daily_impressions: 0)
+
+      expect(described_class.throttled_campaign_rates).to eq(c3.id => 0.6)
     end
   end
 end

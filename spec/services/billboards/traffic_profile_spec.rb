@@ -107,6 +107,25 @@ RSpec.describe Billboards::TrafficProfile do
       end
     end
 
+    it "uses MIN(id + 0) for window start probes so PostgreSQL uses the created_at BRIN index" do
+      executed_sql = []
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_wrap_original do |original, &block|
+        original.call do |conn|
+          allow(conn).to receive(:execute).and_wrap_original do |exec_orig, sql, *args|
+            executed_sql << sql
+            exec_orig.call(sql, *args)
+          end
+          block.call(conn)
+        end
+      end
+
+      travel_to(now) { described_class.compute(now: now) }
+
+      probe_queries = executed_sql.grep(/AS min_id/)
+      expect(probe_queries).not_to be_empty
+      expect(probe_queries).to all(include("MIN(id + 0)"))
+    end
+
     it "caches the computed profile for multiple days and avoids recomputing on subsequent reads" do
       travel_to(now) do
         first = described_class.fetch(now: now)

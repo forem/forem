@@ -148,8 +148,10 @@ module Billboards
         ].uniq
 
         probe_ends.each do |probe_end|
+          # `MIN(id + 0)` disables PostgreSQL's minmax index-scan rewrite, which would otherwise
+          # walk `display_ad_events_pkey` forward from row 1 instead of using the `created_at` BRIN index.
           sql = <<~SQL.squish
-            SELECT MIN(id) AS min_id
+            SELECT MIN(id + 0) AS min_id
             FROM display_ad_events
             WHERE created_at >= #{conn.quote(window_start)}
               AND created_at < #{conn.quote(probe_end)}

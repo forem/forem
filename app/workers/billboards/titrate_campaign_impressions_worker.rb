@@ -30,13 +30,12 @@ module Billboards
       impressions_by_billboard = fetch_recent_impressions(all_billboard_ids, now)
       traffic_multiplier = Billboards::TrafficProfile.multiplier_for(now)
 
-      billboard_updates, campaign_throttle_updates, throttled_rates = compute_updates(
+      billboard_updates, campaign_throttle_updates = compute_updates(
         campaigns, billboards_by_campaign, live_by_campaign, impressions_by_billboard, traffic_multiplier
       )
 
-      batch_update_billboards(billboard_updates, now) if billboard_updates.any?
-      batch_update_campaigns(campaign_throttle_updates, now) if campaign_throttle_updates.any?
-      Billboards::CampaignPacing.write_throttled_campaign_rates(throttled_rates)
+      persist_updates(billboard_updates, campaign_throttle_updates, now)
+      publish_throttle_cache(now)
     rescue ActiveRecord::QueryCanceled => e
       Rails.logger.error("Billboards::TitrateCampaignImpressionsWorker query timeout: #{e.message}")
       raise
@@ -46,6 +45,23 @@ module Billboards
 
     def clear_throttle_cache
       Billboards::CampaignPacing.write_throttled_campaign_rates({})
+    end
+
+    def persist_updates(billboard_updates, campaign_throttle_updates, now)
+      return if billboard_updates.empty? && campaign_throttle_updates.empty?
+
+      ActiveRecord::Base.transaction do
+        batch_update_billboards(billboard_updates, now) if billboard_updates.any?
+        batch_update_campaigns(campaign_throttle_updates, now) if campaign_throttle_updates.any?
+      end
+    end
+
+    def publish_throttle_cache(now)
+      Billboards::CampaignPacing.refresh_throttled_campaign_rates_cache!(now: now)
+    rescue StandardError => e
+      # DB updates already committed atomically; log instead of raising so Sidekiq retries
+      # do not re-apply multiplicative weight adjustments to the same 10-minute window.
+      Rails.logger.error("Billboards::TitrateCampaignImpressionsWorker cache publish failed: #{e.message}")
     end
 
     def partition_live_billboards(campaigns, billboards_by_campaign, now)
@@ -68,7 +84,6 @@ module Billboards
                         traffic_multiplier)
       billboard_updates = []
       campaign_throttle_updates = []
-      throttled_rates = {}
 
       campaigns.each do |campaign|
         live_bbs = live_by_campaign[campaign.id]
@@ -90,10 +105,9 @@ module Billboards
         if (result.throttle_rate - campaign.delivery_throttle_rate.to_f).abs > THROTTLE_RATE_EPSILON
           campaign_throttle_updates << [campaign.id, result.throttle_rate]
         end
-        throttled_rates[campaign.id] = result.throttle_rate if result.throttle_rate < 1.0
       end
 
-      [billboard_updates, campaign_throttle_updates, throttled_rates]
+      [billboard_updates, campaign_throttle_updates]
     end
 
     def active_paced_campaigns(now)
@@ -161,6 +175,11 @@ module Billboards
               updated_at = #{quoted_now}
           FROM (VALUES #{values_sql}) AS v(id, weight, priority)
           WHERE d.id = v.id
+            AND EXISTS (
+              SELECT 1 FROM billboard_campaigns AS c
+              WHERE c.id = d.billboard_campaign_id
+                AND c.ideal_daily_impressions > 0
+            )
         SQL
 
         conn.execute(sql)
@@ -182,6 +201,7 @@ module Billboards
               updated_at = #{quoted_now}
           FROM (VALUES #{values_sql}) AS v(id, delivery_throttle_rate)
           WHERE c.id = v.id
+            AND c.ideal_daily_impressions > 0
         SQL
 
         conn.execute(sql)
