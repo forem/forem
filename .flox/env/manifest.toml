@@ -24,12 +24,10 @@ schema-version = "1.19.0"
 # `ruby.version` = the contents of .ruby-version) once `flox show ruby_3_3`
 # lists that version. Ruby 3.3 reaches end of support at the end of March
 # 2027, after which this line moves to the Ruby series .ruby-version names.
-#
-# PENDING: `flox/ruby_3_3` is not published yet, so this file still names the
-# catalog Ruby, which is too old for .ruby-version. Replace the next line
-# with `ruby.pkg-path = "flox/ruby_3_3"`, run `flox lock-manifest` (or just
-# `flox activate`) and commit .flox/env/manifest.lock.
-ruby.pkg-path = "ruby_3_3"
+# Its own pkg-group because a package from the `flox` catalog cannot share a
+# group with nixpkgs ones.
+ruby.pkg-path = "flox/ruby_3_3"
+ruby.pkg-group = "ruby"
 
 # -- What native gems link against --------------------------------------------
 # Only the `out` (libraries) and `dev` (headers, pkg-config files) outputs;
