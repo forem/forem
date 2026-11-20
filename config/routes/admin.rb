@@ -75,6 +75,7 @@ namespace :admin do
         post "confirm_pending_email"
         patch "unlock_access"
         post "unpublish_all_articles"
+        post "ghostify"
       end
     end
 

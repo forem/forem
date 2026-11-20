@@ -19,6 +19,7 @@ module Settings
     )
     setting :member_label, type: :string, default: "user"
     setting :staff_user_id, type: :integer, default: 1
+    setting :ghost_user_id, type: :integer
     setting :tagline, type: :string
   end
 end
