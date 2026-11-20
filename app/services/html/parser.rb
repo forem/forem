@@ -61,7 +61,7 @@ module Html
 
           if synchronous_detail_detection
             header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
-            img["width"], img["height"] = FastImage.size(src, timeout: 10, http_header: header)
+            img["width"], img["height"] = SafeFastImage.size(src, timeout: 10, http_header: header)
           end
 
           img["loading"] = "lazy"

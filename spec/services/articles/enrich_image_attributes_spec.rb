@@ -48,7 +48,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
 
     it "sets image height when settings are limit" do
       allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
-      allow(FastImage).to receive(:size).and_return([100, 50])
+      allow(SafeFastImage).to receive(:size).and_return([100, 50])
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)
       described_class.call(article)
@@ -57,16 +57,16 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
 
     it "defaults to image height when settings are crop" do
       allow(Settings::UserExperience).to receive_messages(cover_image_fit: "crop", cover_image_height: 680)
-      allow(FastImage).to receive(:size).and_return([100, 50])
+      allow(SafeFastImage).to receive(:size).and_return([100, 50])
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)
       described_class.call(article)
       expect(article.reload.main_image_height).to be 680
     end
 
-    it "falls back to 300 when FastImage times out and cover_image_fit is set to limit" do
+    it "falls back to 300 when SafeFastImage times out and cover_image_fit is set to limit" do
       allow(Settings::UserExperience).to receive_messages(cover_image_fit: "limit", cover_image_height: 2_000)
-      allow(FastImage).to receive(:size).and_return(nil)
+      allow(SafeFastImage).to receive(:size).and_return(nil)
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)
       described_class.call(article)
@@ -253,6 +253,10 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     end
 
     it "reads the image attributes from the stored file's url" do
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with(URI.parse(image_url).hostname, nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
       stub_request(:get, image_url).to_return(status: 200, body: image_bytes)
       article.update_column(:processed_html, "<p><img src=\"/#{image_key}\"></p>")
 
@@ -264,6 +268,15 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
   context "when the body contains remote images" do
     let(:static_image_url) { "https://dummyimage.com/600.jpg" }
     let(:animated_image_url) { "https://i.giphy.com/media/kHTMgZ3PeK6wJsqy2s/source.gif" }
+
+    before do
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      %w[dummyimage.com i.giphy.com via.placeholder.com].each do |host|
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with(host, nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+      end
+    end
 
     it "does not set data-animated to true with a static image" do
       article.update(body_markdown: "![image](#{static_image_url})")
@@ -328,7 +341,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
         file: stored_file,
       )
       allow(ArticleImageUploader).to receive(:new).and_return(uploader)
-      allow(FastImage).to receive(:new).and_return(instance_double(FastImage, size: [100, 100], type: :png))
+      allow(SafeFastImage).to receive(:new).and_return(instance_double(SafeFastImage, size: [100, 100], type: :png))
 
       article.update(
         body_markdown: <<~MD,
@@ -370,6 +383,23 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
       article.update_column(:processed_html, '<p><img src="http://example.com/bad uri with spaces.png"></p>')
 
       expect { described_class.call(article) }.not_to raise_error
+    end
+
+    it "blocks SSRF to private and metadata URLs in processed_html, main_image, and redirects" do
+      metadata_url = "http://169.254.169.254/latest/meta-data/"
+      redirect_url = "https://dummyimage.com/redirect.png"
+      allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
+      stub_request(:get, metadata_url).to_return(status: 200, body: "secret")
+      stub_request(:get, redirect_url).to_return(status: 302, headers: { "Location" => metadata_url })
+
+      article.update_columns(
+        processed_html: %(<p><img src="#{metadata_url}"><img src="#{redirect_url}"></p>),
+        main_image: metadata_url,
+      )
+
+      described_class.call(article)
+
+      expect(a_request(:get, metadata_url)).not_to have_been_made
     end
   end
 end

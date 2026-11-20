@@ -348,18 +348,18 @@ RSpec.describe Billboard do
   end
 
   describe "#process_markdown" do
-    # FastImage.size is called when synchronous_detail_detection: true is passed to Html::Parser#prefix_all_images
+    # SafeFastImage.size is called when synchronous_detail_detection: true is passed to Html::Parser#prefix_all_images
     # which should be the case for Billboard
     # Images::Optimizer is also called with widht
     it "calls Html::Parser#prefix_all_images with parameters" do
       # Html::Parser.new(html).prefix_all_images(prefix_width, synchronous_detail_detection: true).html
       image_url = "https://dummyimage.com/100x100"
-      allow(FastImage).to receive(:size)
+      allow(SafeFastImage).to receive(:size)
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_comments")
       options = { http_header: { "User-Agent" => "#{Settings::Community.community_name} (http://forem.test)" }, timeout: 10 }
-      expect(FastImage).to have_received(:size).with(image_url, options)
+      expect(SafeFastImage).to have_received(:size).with(image_url, options)
       # width is billboard.prefix_width
       expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 100)
       # Images::Optimizer.call(source, width: width)
@@ -367,7 +367,7 @@ RSpec.describe Billboard do
 
     it "uses sidebar width for sidebar location" do
       image_url = "https://dummyimage.com/100x100"
-      allow(FastImage).to receive(:size)
+      allow(SafeFastImage).to receive(:size)
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_sidebar")
@@ -376,7 +376,7 @@ RSpec.describe Billboard do
 
     it "uses post width for feed location" do
       image_url = "https://dummyimage.com/100x100"
-      allow(FastImage).to receive(:size)
+      allow(SafeFastImage).to receive(:size)
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "feed_second")
