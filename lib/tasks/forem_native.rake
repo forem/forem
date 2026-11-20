@@ -86,6 +86,7 @@ namespace :forem_native do
     environment
     benchmark_extractors
     benchmark_comment_tree
+    benchmark_api_comments
     benchmark_story_cards
     benchmark_image_ops
     benchmark_html_postprocess
@@ -1550,6 +1551,155 @@ namespace :forem_native do
         x.report("Rust Magnus (#{label})") { native_report.call(result) }
         x.compare!
       end
+    end
+  end
+
+  desc "Benchmark API comments tree serialization (throughput and allocations)"
+  task benchmark_api_comments: :environment do
+    unless ForemNative::Native.respond_to?(:serialize_api_comments_json)
+      raise "Missing native api comments symbol; rebuild with `bundle exec rake forem_native:compile` first"
+    end
+
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    ai_keys = %w[not_disclosed no_ai some_ai fully_autonomous]
+    labels = [
+      "<p>[deleted]</p>",
+      "<p>[hidden by post author]</p>",
+      "Not disclosed",
+      "No AI used",
+      "Some AI used",
+      "Fully autonomous",
+    ]
+    users = Array.new(12) do |idx|
+      {
+        id: 1_000 + idx,
+        name: "Author #{idx}",
+        username: "author_#{idx}",
+        twitter_username: idx.even? ? "tw_#{idx}" : nil,
+        github_username: "gh_#{idx}",
+        website_url: idx.even? ? "https://example.com/#{idx}" : nil,
+        profile_image: "https://media.dev.to/640/#{idx}.png",
+        profile_image_90: "https://media.dev.to/90/#{idx}.png"
+      }
+    end
+    users_flat = users.flat_map do |u|
+      [
+        u[:id], u[:name], u[:username], u[:twitter_username], u[:github_username],
+        u[:website_url], u[:profile_image], u[:profile_image_90]
+      ]
+    end
+
+    rows = []
+    60.times do |idx|
+      id = 10_000 + idx
+      ancestry = if idx < 10
+                   nil
+                 else
+                   parent = rows[idx - 10]
+                   parent[:ancestry] ? "#{parent[:ancestry]}/#{parent[:id]}" : parent[:id].to_s
+                 end
+      deleted = (idx % 19).zero?
+      hidden = !deleted && (idx % 23).zero?
+      rows << {
+        id: id,
+        ancestry: ancestry,
+        processed_html: "<p>Comment #{idx} with <strong>HTML</strong> &amp; <a href=\"https://dev.to\">link</a></p>",
+        user_idx: deleted || hidden ? -1 : idx % users.size,
+        deleted: deleted,
+        hidden: hidden,
+        created_at_sec: 1_700_000_000 + (idx * 60),
+        ai_disclosure_idx: idx % 4
+      }
+    end
+    comments_flat = rows.flat_map do |r|
+      [
+        r[:id], r[:ancestry], r[:processed_html], r[:user_idx],
+        r[:deleted], r[:hidden], r[:created_at_sec], r[:ai_disclosure_idx]
+      ]
+    end
+
+    legacy_serialize = lambda do
+      by_id = rows.index_by { |r| r[:id] }
+      children_map = Hash.new { |h, k| h[k] = [] }
+      roots = []
+      rows.each do |row|
+        parent_id = row[:ancestry].present? ? row[:ancestry].split("/").last.to_i : nil
+        if parent_id && by_id.key?(parent_id)
+          children_map[parent_id] << row
+        else
+          roots << row
+        end
+      end
+
+      included_ids = []
+      build_node = lambda do |row, depth|
+        included_ids << row[:id]
+        ai_idx = row[:ai_disclosure_idx]
+        node = {
+          "type_of" => "comment",
+          "id_code" => row[:id].to_s(26),
+          "created_at" => Time.at(row[:created_at_sec]).utc.iso8601,
+          "ai_disclosure_level" => ai_keys[ai_idx],
+          "ai_disclosure_label" => labels[2 + ai_idx]
+        }
+        if row[:deleted]
+          node["body_html"] = labels[0]
+          node["user"] = {}
+        elsif row[:hidden]
+          node["body_html"] = labels[1]
+          node["user"] = {}
+        else
+          u = users[row[:user_idx]]
+          node["body_html"] = row[:processed_html]
+          node["user"] = {
+            "name" => u[:name],
+            "username" => u[:username],
+            "twitter_username" => u[:twitter_username],
+            "github_username" => u[:github_username],
+            "user_id" => u[:id],
+            "website_url" => u[:website_url],
+            "profile_image" => u[:profile_image],
+            "profile_image_90" => u[:profile_image_90]
+          }
+        end
+        node["children"] = depth + 1 < 50 ? children_map[row[:id]].map { |c| build_node.call(c, depth + 1) } : []
+        node
+      end
+
+      payload = roots.map { |root| build_node.call(root, 0) }
+      [ActiveSupport::JSON.encode(payload, escape_html_entities: true), included_ids]
+    end
+
+    native_serialize = lambda do
+      ForemNative.serialize_api_comments_json(
+        comments_flat,
+        users_flat,
+        labels,
+        max_depth: 50,
+        single_root: false,
+        root_offset: 0,
+        root_limit: nil,
+        escape_html_entities: true,
+      )
+    end
+
+    raise "API comments benchmark parity failure!" unless native_serialize.call == legacy_serialize.call
+
+    puts "\n=== API Comments Tree Streaming JSON Benchmark (60 nested comments) ==="
+    ruby_mem = MemoryProfiler.report { legacy_serialize.call }
+    rust_mem = MemoryProfiler.report { native_serialize.call }
+    puts "Ruby Legacy allocations (1 run): #{ruby_mem.total_allocated} objects " \
+         "(#{ruby_mem.total_allocated_memsize} bytes)"
+    puts "Rust Magnus allocations (1 run): #{rust_mem.total_allocated} objects " \
+         "(#{rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (60-comment API tree + JSON)") { legacy_serialize.call }
+      x.report("Rust Magnus (60-comment API tree + JSON)") { native_serialize.call }
+      x.compare!
     end
   end
 end
