@@ -105,10 +105,13 @@ run_lane pginit lane_pginit
 # If `flox services` already runs them, use those; otherwise start private
 # copies on this checkout's ports and stop them afterwards so the services
 # can take over.
-started_pg=0 started_redis=0
+started_pg=0 started_redis=0 redis_pid=
 cleanup() {
   [ $started_pg = 1 ] && pg_ctl -D "$PGDATA" -m fast -w stop >/dev/null 2>&1
-  [ $started_redis = 1 ] && redis-cli -p "$REDIS_PORT" shutdown nosave >/dev/null 2>&1
+  if [ $started_redis = 1 ]; then
+    redis-cli -p "$REDIS_PORT" shutdown nosave >/dev/null 2>&1 || kill "$redis_pid" 2>/dev/null
+    wait "$redis_pid" 2>/dev/null
+  fi
   return 0
 }
 trap cleanup EXIT
@@ -119,11 +122,12 @@ if ! pg_isready -q -h 127.0.0.1 -p "$PGPORT"; then
     -o "-k '$FOREM_PGSOCKET' -h 127.0.0.1 -p $PGPORT" start >/dev/null && started_pg=1
 fi
 if ! redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; then
+  # A plain background job, not --daemonize: on Linux runners the daemonized
+  # child died silently after "Redis is starting". Output goes to the log.
   redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
-    --save "" --appendonly no --daemonize yes \
-    --logfile "$B/redis.log" --pidfile "$FOREM_REDIS_DIR/redis.pid" >/dev/null && started_redis=1
-  # --daemonize returns before the server listens; wait for it.
-  for _ in $(seq 1 50); do redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1 && break; sleep 0.1; done
+    --save "" --appendonly no > "$B/redis.log" 2>&1 &
+  redis_pid=$! started_redis=1
+  for _ in $(seq 1 300); do redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1 && break; sleep 0.1; done
   redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1 || fail "redis-server" redis
 fi
 mark servers up
