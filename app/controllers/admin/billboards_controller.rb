@@ -58,6 +58,7 @@ module Admin
       saved = false
       @billboard.with_lock do
         @billboard.assign_attributes(billboard_params)
+        @billboard.lock_affected_campaigns!
         missing = missing_sub_permissions(:save)
         saved = @billboard.save if missing.empty?
       end
@@ -77,6 +78,7 @@ module Admin
       missing = []
       destroyed = false
       @billboard.with_lock do
+        @billboard.lock_affected_campaigns!
         missing = missing_sub_permissions(:destroy)
         destroyed = @billboard.destroy if missing.empty?
       end

@@ -34,6 +34,7 @@ module Api
         missing = []
         @billboard.with_lock do
           @billboard.assign_attributes(permitted_params)
+          @billboard.lock_affected_campaigns!
           missing = BillboardPolicy.new(@user, @billboard).missing_sub_permissions(:save)
           @billboard.save! if missing.empty?
         end
@@ -96,6 +97,7 @@ module Api
                       :custom_display_label, :template, :render_mode, :preferred_article_ids,
                       :exclude_role_names, :target_role_names, :include_subforem_ids, :prefer_paired_with_billboard_id,
                       :expires_at, :exclude_survey_completions, :exclude_survey_ids,
+                      :max_impressions_count, :max_clicks_count, :billboard_campaign_id,
                       # Permitting twice allows both comma-separated string and array values
                       :target_geolocations, target_geolocations: []
       end

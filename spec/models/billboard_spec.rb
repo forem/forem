@@ -1091,35 +1091,35 @@ RSpec.describe Billboard do
     end
   end
 
-  describe "#check_and_handle_expiration" do
+  describe "#check_and_handle_delivery_limits" do
     let(:billboard) { create(:billboard, approved: true, published: true) }
 
     it "does nothing when expires_at is nil" do
       billboard.expires_at = nil
-      expect { billboard.check_and_handle_expiration }.not_to change { billboard.reload.approved }
+      expect { billboard.check_and_handle_delivery_limits }.not_to change { billboard.reload.approved }
     end
 
     it "does nothing when expires_at is in the future" do
       billboard.expires_at = 1.day.from_now
-      expect { billboard.check_and_handle_expiration }.not_to change { billboard.reload.approved }
+      expect { billboard.check_and_handle_delivery_limits }.not_to change { billboard.reload.approved }
     end
 
     it "does nothing when billboard is not approved" do
       billboard.update!(approved: false)
       billboard.expires_at = 1.day.ago
-      expect { billboard.check_and_handle_expiration }.not_to change { billboard.reload.approved }
+      expect { billboard.check_and_handle_delivery_limits }.not_to change { billboard.reload.approved }
     end
 
     it "marks billboard as not approved when expired and currently approved" do
       billboard.update_column(:expires_at, 1.day.ago)
-      expect { billboard.check_and_handle_expiration }.to change { billboard.reload.approved }.from(true).to(false)
+      expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
     end
 
     it "busts caches if the billboard was published and on home page" do
       billboard.update!(placement_area: "feed_first")
       billboard.update_column(:expires_at, 1.day.ago)
       allow(EdgeCache::PurgeByKey).to receive(:call)
-      billboard.check_and_handle_expiration
+      billboard.check_and_handle_delivery_limits
       expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
       expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
     end
@@ -1128,9 +1128,85 @@ RSpec.describe Billboard do
       billboard.update!(placement_area: "sidebar_left")
       billboard.update_column(:expires_at, 1.day.ago)
       allow(EdgeCache::PurgeByKey).to receive(:call)
-      billboard.check_and_handle_expiration
+      billboard.check_and_handle_delivery_limits
       expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
       expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+  end
+
+  describe "delivery caps" do
+    let(:billboard) { create(:billboard, approved: true, published: true) }
+
+    it "takes the billboard down once it reaches its impression cap" do
+      billboard.update_columns(max_impressions_count: 100, impressions_count: 100)
+      expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
+    end
+
+    it "takes the billboard down once it reaches its click cap" do
+      billboard.update_columns(max_clicks_count: 5, clicks_count: 5)
+      expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
+    end
+
+    it "leaves the billboard up while it is under its caps" do
+      billboard.update_columns(max_impressions_count: 100, impressions_count: 99, max_clicks_count: 5, clicks_count: 4)
+      expect { billboard.check_and_handle_delivery_limits }.not_to change { billboard.reload.approved }
+    end
+
+    it "treats a cap of 0 as no cap" do
+      billboard.update_columns(impressions_count: 1_000_000, clicks_count: 1_000)
+      expect { billboard.check_and_handle_delivery_limits }.not_to change { billboard.reload.approved }
+    end
+
+    it "takes the billboard down once its campaign has expired" do
+      campaign = BillboardCampaign.create!(name: "Launch", expires_at: 1.day.ago)
+      billboard.update_column(:billboard_campaign_id, campaign.id)
+      expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
+    end
+
+    it "takes the billboard down once its campaign's billboards together reach the campaign cap" do
+      campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 150)
+      billboard.update_columns(billboard_campaign_id: campaign.id, impressions_count: 100)
+      create(:billboard, billboard_campaign: campaign).update_column(:impressions_count, 50)
+      expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
+    end
+
+    it "does not allow approving a billboard that has reached its cap" do
+      capped = create(:billboard, approved: false, max_clicks_count: 5)
+      capped.update_column(:clicks_count, 5)
+      expect(capped.update(approved: true)).to be(false)
+      expect(capped.errors[:approved])
+        .to include("cannot be set to true once the billboard or its campaign has ended or reached a cap")
+    end
+
+    it "allows approving a capped billboard when its cap is raised in the same save" do
+      capped = create(:billboard, approved: false, max_clicks_count: 5)
+      capped.update_column(:clicks_count, 5)
+      expect(capped.update(approved: true, max_clicks_count: 10)).to be(true)
+    end
+
+    [nil, "", 1.5, 2**31].each do |value|
+      it "rejects a cap of #{value.inspect} with a validation error when approving", :aggregate_failures do
+        draft = create(:billboard, approved: false)
+        expect(draft.update(approved: true, max_impressions_count: value, max_clicks_count: value)).to be(false)
+        expect(draft.errors.attribute_names).to include(:max_impressions_count, :max_clicks_count)
+      end
+    end
+
+    it "counts the billboard being approved toward a campaign it is joining in the same save" do
+      campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 100)
+      draft = create(:billboard, approved: false)
+      draft.update_column(:impressions_count, 100)
+
+      expect(draft.update(approved: true, billboard_campaign: campaign)).to be(false)
+      expect(draft.reload.billboard_campaign_id).to be_nil
+    end
+
+    it "allows joining and approving when the campaign stays under its cap" do
+      campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 101)
+      draft = create(:billboard, approved: false)
+      draft.update_column(:impressions_count, 100)
+
+      expect(draft.update(approved: true, billboard_campaign: campaign)).to be(true)
     end
   end
 

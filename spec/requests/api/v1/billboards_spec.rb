@@ -60,7 +60,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "requires_cookies", "special_behavior", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
-                          "seconds_visible")
+                          "seconds_visible", "max_impressions_count", "max_clicks_count",
+                          "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -84,7 +85,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "priority", "weight", "target_geolocations", "requires_cookies",
                           "special_behavior", "expires_at", "exclude_survey_completions", "exclude_survey_ids",
                           "content_updated_at", "tags_array", "event_id",
-                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible",
+                          "max_impressions_count", "max_clicks_count", "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -167,7 +169,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
-                          "seconds_visible")
+                          "seconds_visible", "max_impressions_count", "max_clicks_count",
+                          "billboard_campaign_id")
       end
 
       it "also accepts target geolocations as an array" do
@@ -454,6 +457,31 @@ RSpec.describe "Api::V1::Billboards" do
         post api_billboards_path, params: billboard_params.to_json, headers: auth_header
 
         expect(response).to have_http_status(:created)
+      end
+    end
+
+    context "with a campaign that has a live billboard" do
+      let(:campaign) { BillboardCampaign.create!(name: "Live", max_impressions_count: 1_000) }
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      before do
+        create(:billboard, approved: true, published: true, billboard_campaign: campaign)
+        draft.update_column(:impressions_count, 900)
+      end
+
+      it "refuses to attach a billboard to the campaign", :aggregate_failures do
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: campaign.id }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to be_nil
+      end
+
+      it "refuses to detach a billboard from the campaign", :aggregate_failures do
+        draft.update_column(:billboard_campaign_id, campaign.id)
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: nil }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to eq(campaign.id)
       end
     end
   end
