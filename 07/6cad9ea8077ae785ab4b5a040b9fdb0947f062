@@ -1,0 +1,18 @@
+config/fastly/snippets/bad_bot_detection.vcl
+  h_f968154a99632d 46-52
+config/initializers/rack_attack.rb
+  h_f968154a99632d 17-20,69-84,108,114-120,273-284
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 49-112,742-834
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "076cad9ea8077ae785ab4b5a040b9fdb0947f062",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
