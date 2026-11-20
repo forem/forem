@@ -633,7 +633,7 @@ pub enum AiPreference {
 }
 
 /// All weight/rate attributes of a `FeedConfig` model used in `FeedConfig#score_sql`.
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct FeedScoreWeights {
     pub feed_success_weight: f64,
     pub comment_score_weight: f64,

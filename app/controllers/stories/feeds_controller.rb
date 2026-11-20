@@ -33,6 +33,7 @@ module Stories
       # Add edge cache headers for signed out users only
       if user_signed_in?
         response.headers["Cache-Control"] = "private, no-store"
+        sync_edge_feed_viewer_state
         return
       end
 
@@ -314,6 +315,20 @@ module Stories
 
         @cached_subforem_logos[subforem_id] ||= Settings::General.logo_png(subforem_id: subforem_id)
       end
+    end
+
+    def sync_edge_feed_viewer_state
+      return unless FeatureFlag.enabled?(:fastly_edge_feed_mirror)
+
+      if EdgeFeed::TokenSigner.configured? &&
+          (cookies[EdgeFeed::TokenSigner::USER_COOKIE_NAME].blank? ||
+           request.headers["X-Forem-Edge-Miss"] == "edge-cookie")
+        EdgeFeed::TokenSigner.set_user_cookie(cookies, user_id: current_user.id, secure: request.ssl?)
+      end
+
+      return unless request.headers["X-Forem-Edge-Miss"] == "user-profile" && EdgeFeed::KvClient.configured?
+
+      EdgeFeed::SyncUserProfileWorker.perform_async(current_user.id)
     end
   end
 end

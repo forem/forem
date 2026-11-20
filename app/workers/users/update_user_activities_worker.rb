@@ -12,6 +12,10 @@ module Users
       activity.user = user
       activity.set_activity
       activity.save!
+
+      return unless FeatureFlag.enabled?(:fastly_edge_feed_mirror) && EdgeFeed::KvClient.configured?
+
+      EdgeFeed::SyncUserProfileWorker.perform_async(user.id)
     end
   end
 end

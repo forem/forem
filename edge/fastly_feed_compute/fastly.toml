@@ -1,0 +1,27 @@
+# Fastly Compute manifest for the Forem Edge Custom Feed Mirror (Proof of Concept)
+# See https://developer.fastly.com/reference/compute/fastly-toml/
+
+authors = ["Forem Engineering"]
+description = "Proof-of-concept Fastly Compute service serving Forem's custom FeedConfig home feed from mirrored Fastly KV Store snapshots"
+language = "rust"
+manifest_version = 3
+name = "forem-edge-feed-compute"
+service_id = ""
+
+[scripts]
+build = "cargo build --bin forem-edge-feed-compute --release --target wasm32-wasip1 --color always"
+
+[local_server]
+  [local_server.backends]
+    [local_server.backends.forem_origin]
+    url = "http://127.0.0.1:3000"
+
+  [local_server.kv_stores]
+    [local_server.kv_stores.forem_feed_mirror]
+    file = "local_kv.json"
+    format = "json"
+
+  [local_server.secret_stores]
+    [local_server.secret_stores.forem_edge_secrets]
+      [local_server.secret_stores.forem_edge_secrets.edge_feed_secret]
+      data = "dev-only-edge-feed-secret-change-in-production"
