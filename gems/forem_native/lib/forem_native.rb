@@ -1140,6 +1140,46 @@ module ForemNative
       Native.validate_and_normalize_feed_events(events)
     end
 
+    # Builds the deduplicated PostgreSQL tuple `IN (...)` predicate for `FeedEvents::BulkUpsert`
+    # timebox lookups without `Array#join` or `sanitize_sql_array` allocations.
+    def feed_events_timebox_lookup_sql(events)
+      return unless Native.respond_to?(:feed_events_timebox_lookup_sql) && events.is_a?(Array)
+
+      Native.feed_events_timebox_lookup_sql(events)
+    end
+
+    # Deduplicates candidate `FeedEvent` Hashes against existing timebox tuples and earlier
+    # batch entries in a single Rust pass, eliminating nested Ruby `Hash`/`Array` allocations.
+    def deduplicate_feed_events(events, existing_tuples)
+      return unless Native.respond_to?(:deduplicate_feed_events) &&
+        events.is_a?(Array) && existing_tuples.is_a?(Array)
+
+      Native.deduplicate_feed_events(events, existing_tuples)
+    end
+
+    # Computes `FeedEvent.article_freshness_multiplier` from UTC epoch float timestamps and
+    # `lookback_days` setting in pure Rust.
+    def article_freshness_multiplier(published_at_epoch, event_time_epoch, lookback_days)
+      return unless Native.respond_to?(:article_freshness_multiplier) && lookback_days.is_a?(Integer)
+      return unless (published_at_epoch.nil? || published_at_epoch.is_a?(Numeric)) &&
+        (event_time_epoch.nil? || event_time_epoch.is_a?(Numeric))
+
+      Native.article_freshness_multiplier(
+        published_at_epoch&.to_f,
+        event_time_epoch&.to_f,
+        lookback_days,
+      )
+    end
+
+    # Aggregates `[impressions_total, score, impression_users]` (or `[0, 0.0]` when no
+    # impressions) for `FeedEvent.calculate_feed_config_counters` in a single Rust pass.
+    def aggregate_feed_config_counters(rows, lookback_days)
+      return unless Native.respond_to?(:aggregate_feed_config_counters) &&
+        rows.is_a?(Array) && lookback_days.is_a?(Integer)
+
+      Native.aggregate_feed_config_counters(rows, lookback_days)
+    end
+
     # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
     # in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
     def billboard_event_create_from_json_sql(json_body, user_id, geolocation, header_user_agent, is_embed, now_time)

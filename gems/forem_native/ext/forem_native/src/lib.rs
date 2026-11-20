@@ -3240,6 +3240,265 @@ fn validate_and_normalize_feed_events(ruby: &Ruby, events_arr: RArray) -> Option
     Some(out)
 }
 
+#[inline]
+fn extract_feed_event_category_code(ruby: &Ruby, val: Value) -> Option<u8> {
+    if let Some(int) = Integer::from_value(val) {
+        let n = int.to_i64().ok()?;
+        return u8::try_from(n).ok().filter(|&c| c <= 4);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        let bytes = unsafe { rstr.as_slice() };
+        return forem_core::feed_events::feed_event_category_code(bytes);
+    }
+    if let Some(sym) = Symbol::from_value(val) {
+        if let Ok(name) = sym.name() {
+            return forem_core::feed_events::feed_event_category_code(name.as_bytes());
+        }
+    }
+    let _ = ruby;
+    None
+}
+
+#[inline]
+fn extract_feed_event_context_code(val: Value) -> Option<u8> {
+    if let Some(rstr) = RString::from_value(val) {
+        let bytes = unsafe { rstr.as_slice() };
+        return forem_core::feed_events::feed_event_context_code(bytes);
+    }
+    if let Some(sym) = Symbol::from_value(val) {
+        if let Ok(name) = sym.name() {
+            return forem_core::feed_events::feed_event_context_code(name.as_bytes());
+        }
+    }
+    None
+}
+
+#[inline]
+fn extract_required_i64(val: Value) -> Option<i64> {
+    Integer::from_value(val)?.to_i64().ok()
+}
+
+#[inline]
+fn hash_get_sym_or_str(hash: RHash, sym: Symbol, str_key: RString) -> Option<Value> {
+    if let Some(v) = hash.get(sym) {
+        return Some(v);
+    }
+    hash.get(str_key)
+}
+
+fn feed_events_timebox_lookup_sql(ruby: &Ruby, events_arr: RArray) -> Option<String> {
+    let items: Vec<Value> = unsafe { events_arr.as_slice() }.to_vec();
+    if items.is_empty() {
+        return None;
+    }
+
+    let sym_article_id = ruby.to_symbol("article_id");
+    let sym_user_id = ruby.to_symbol("user_id");
+    let sym_category = ruby.to_symbol("category");
+    let str_article_id = ruby.str_new("article_id");
+    let str_user_id = ruby.str_new("user_id");
+    let str_category = ruby.str_new("category");
+
+    let mut triples: Vec<(i64, i64, u8)> = Vec::with_capacity(items.len());
+    for item in items {
+        let hash = RHash::from_value(item)?;
+        let article_id =
+            extract_required_i64(hash_get_sym_or_str(hash, sym_article_id, str_article_id)?)?;
+        let user_id = match hash_get_sym_or_str(hash, sym_user_id, str_user_id) {
+            Some(v) => extract_optional_i64(v)?.unwrap_or(0),
+            None => 0,
+        };
+        let category = extract_feed_event_category_code(
+            ruby,
+            hash_get_sym_or_str(hash, sym_category, str_category)?,
+        )?;
+        triples.push((article_id, user_id, category));
+    }
+
+    forem_core::feed_events::feed_events_timebox_lookup_sql(&triples)
+}
+
+fn deduplicate_feed_events(
+    ruby: &Ruby,
+    events_arr: RArray,
+    existing_arr: RArray,
+) -> Option<RArray> {
+    use forem_core::feed_events::{deduplicate_feed_event_indices, FeedEventDedupeKey};
+
+    let events: Vec<Value> = unsafe { events_arr.as_slice() }.to_vec();
+    let existing: Vec<Value> = unsafe { existing_arr.as_slice() }.to_vec();
+
+    let mut existing_keys: Vec<FeedEventDedupeKey> = Vec::with_capacity(existing.len());
+    for row in existing {
+        let row_arr = RArray::from_value(row)?;
+        let cols: Vec<Value> = unsafe { row_arr.as_slice() }.to_vec();
+        if cols.len() != 5 {
+            return None;
+        }
+        let user_id = extract_optional_i64(cols[0])?;
+        let category = extract_feed_event_category_code(ruby, cols[1])?;
+        let article_id = extract_required_i64(cols[2])?;
+        let context_type = extract_feed_event_context_code(cols[3])?;
+        let feed_config_id = extract_optional_i64(cols[4])?;
+        existing_keys.push(FeedEventDedupeKey {
+            user_id,
+            category,
+            article_id,
+            context_type,
+            feed_config_id,
+        });
+    }
+
+    let sym_user_id = ruby.to_symbol("user_id");
+    let sym_category = ruby.to_symbol("category");
+    let sym_article_id = ruby.to_symbol("article_id");
+    let sym_context_type = ruby.to_symbol("context_type");
+    let sym_feed_config_id = ruby.to_symbol("feed_config_id");
+    let str_user_id = ruby.str_new("user_id");
+    let str_category = ruby.str_new("category");
+    let str_article_id = ruby.str_new("article_id");
+    let str_context_type = ruby.str_new("context_type");
+    let str_feed_config_id = ruby.str_new("feed_config_id");
+
+    let mut candidate_keys: Vec<FeedEventDedupeKey> = Vec::with_capacity(events.len());
+    for &item in &events {
+        let hash = RHash::from_value(item)?;
+        let user_id = match hash_get_sym_or_str(hash, sym_user_id, str_user_id) {
+            Some(v) => extract_optional_i64(v)?,
+            None => None,
+        };
+        let category = extract_feed_event_category_code(
+            ruby,
+            hash_get_sym_or_str(hash, sym_category, str_category)?,
+        )?;
+        let article_id =
+            extract_required_i64(hash_get_sym_or_str(hash, sym_article_id, str_article_id)?)?;
+        let context_type = extract_feed_event_context_code(hash_get_sym_or_str(
+            hash,
+            sym_context_type,
+            str_context_type,
+        )?)?;
+        let feed_config_id = match hash_get_sym_or_str(hash, sym_feed_config_id, str_feed_config_id)
+        {
+            Some(v) => extract_optional_i64(v)?,
+            None => None,
+        };
+        candidate_keys.push(FeedEventDedupeKey {
+            user_id,
+            category,
+            article_id,
+            context_type,
+            feed_config_id,
+        });
+    }
+
+    let kept_indices = deduplicate_feed_event_indices(&candidate_keys, &existing_keys);
+    let out = ruby.ary_new_capa(kept_indices.len());
+    for idx in kept_indices {
+        out.push(events[idx]).ok()?;
+    }
+    Some(out)
+}
+
+fn article_freshness_multiplier(
+    published_at_epoch: Option<f64>,
+    event_time_epoch: Option<f64>,
+    lookback_days: i64,
+) -> f64 {
+    forem_core::feed_events::article_freshness_multiplier(
+        published_at_epoch,
+        event_time_epoch,
+        lookback_days,
+    )
+}
+
+#[inline]
+fn extract_epoch_f64(ruby: &Ruby, val: Value) -> Option<Option<f64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    if let Some(fl) = Float::from_value(val) {
+        return Some(Some(fl.to_f64()));
+    }
+    if let Some(int) = Integer::from_value(val) {
+        return Some(Some(int.to_i64().ok()? as f64));
+    }
+    // Reject strings/booleans (e.g. blank strings) so Ruby handles `.blank?`.
+    if RString::from_value(val).is_some()
+        || val.is_kind_of(ruby.class_false_class())
+        || val.is_kind_of(ruby.class_true_class())
+    {
+        return None;
+    }
+    let f: f64 = val.funcall("to_f", ()).ok()?;
+    Some(Some(f))
+}
+
+fn aggregate_feed_config_counters(
+    ruby: &Ruby,
+    rows_arr: RArray,
+    lookback_days: i64,
+) -> Option<RArray> {
+    use forem_core::feed_events::{aggregate_feed_config_counters, FeedConfigCounterRow};
+
+    let raw_rows: Vec<Value> = unsafe { rows_arr.as_slice() }.to_vec();
+    let mut rows: Vec<FeedConfigCounterRow> = Vec::with_capacity(raw_rows.len());
+
+    for raw_row in raw_rows {
+        let row_arr = RArray::from_value(raw_row)?;
+        let cols: Vec<Value> = unsafe { row_arr.as_slice() }.to_vec();
+        if cols.len() != 5 {
+            return None;
+        }
+        let category = if let Some(c) = extract_feed_event_category_code(ruby, cols[0]) {
+            c
+        } else if cols[0].is_nil()
+            || RString::from_value(cols[0]).is_some()
+            || Symbol::from_value(cols[0]).is_some()
+            || Integer::from_value(cols[0]).is_some()
+        {
+            // Unknown category is ignored in Ruby `case category`.
+            255
+        } else {
+            return None;
+        };
+        let user_id = extract_optional_i64(cols[1])?;
+        let article_position = if cols[2].is_nil() {
+            0
+        } else {
+            extract_required_i64(cols[2])?
+        };
+        let event_time_epoch = extract_epoch_f64(ruby, cols[3])?;
+        let published_at_epoch = extract_epoch_f64(ruby, cols[4])?;
+
+        rows.push(FeedConfigCounterRow {
+            category,
+            user_id,
+            article_position,
+            event_time_epoch,
+            published_at_epoch,
+        });
+    }
+
+    let counters = aggregate_feed_config_counters(&rows, lookback_days);
+    let out = match counters.impression_users {
+        Some(users) => {
+            let ary = ruby.ary_new_capa(3);
+            ary.push(counters.impressions_total).ok()?;
+            ary.push(counters.score).ok()?;
+            ary.push(users).ok()?;
+            ary
+        }
+        None => {
+            let ary = ruby.ary_new_capa(2);
+            ary.push(counters.impressions_total).ok()?;
+            ary.push(counters.score).ok()?;
+            ary
+        }
+    };
+    Some(out)
+}
+
 #[allow(clippy::too_many_arguments)]
 fn billboard_event_create_from_json_sql(
     ruby: &Ruby,
@@ -6092,5 +6351,21 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("ahoy_decorate_html", function!(ahoy_decorate_html, 6))?;
     native_mod
         .define_singleton_method("ahoy_decorate_payload", function!(ahoy_decorate_payload, 6))?;
+    native_mod.define_singleton_method(
+        "feed_events_timebox_lookup_sql",
+        function!(feed_events_timebox_lookup_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "deduplicate_feed_events",
+        function!(deduplicate_feed_events, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "article_freshness_multiplier",
+        function!(article_freshness_multiplier, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "aggregate_feed_config_counters",
+        function!(aggregate_feed_config_counters, 2),
+    )?;
     Ok(())
 }
