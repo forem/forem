@@ -1,0 +1,24 @@
+app/queries/articles/api_search_query.rb
+  h_f968154a99632d 4,57-61
+app/services/article_api_index_service.rb
+  h_f968154a99632d 3,77,114,119-122
+spec/queries/articles/api_search_query_spec.rb
+  h_f968154a99632d 92-103
+spec/requests/api/v1/docs/articles_spec.rb
+  h_f968154a99632d 158,164-165,206-207
+spec/services/article_api_index_service_spec.rb
+  h_f968154a99632d 59-87
+swagger/v1/api_v1.json
+  h_f968154a99632d 723,727-728,786,788-790
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f23323b77fd182fe6e615053470747e39f663cf2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
