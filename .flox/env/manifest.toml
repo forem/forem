@@ -18,7 +18,7 @@ schema-version = "1.19.0"
 # Ruby (3.3.14 today). The Flox base catalog stops at ruby_3_3 3.3.12, so Ruby
 # comes from the `flox/ruby_3_3` package, which tracks the 3.3 security
 # releases and, unlike the nixpkgs build, carries no compiler in its closure
-# (42 MiB instead of ~300 MiB).
+# (42 MiB installed instead of about 800 MiB on macOS).
 #
 # SWITCH BACK to the catalog's `ruby_3_3` (`ruby.pkg-path = "ruby_3_3"` plus
 # `ruby.version` = the contents of .ruby-version) once `flox show ruby_3_3`
