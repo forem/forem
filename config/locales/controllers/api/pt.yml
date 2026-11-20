@@ -33,3 +33,6 @@ pt:
         end_before_start: O parâmetro de data 'end' não pode ser anterior a 'start'
         range_too_long: O intervalo de datas não pode exceder %{max} dias
         start_and_end_required: Os parâmetros de data 'start' e 'end' devem ser informados juntos
+      organization_article_reactions_controller:
+        invalid_article_id: "'article_id' deve ser um número inteiro positivo"
+        invalid_since: "'since' deve ser um carimbo de data/hora RFC 3339 com deslocamento UTC"

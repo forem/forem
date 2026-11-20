@@ -37,6 +37,11 @@ class OrganizationPolicy < ApplicationPolicy
   # "duck-typing" on the tests.
   alias analytics? part_of_org?
 
+  def article_reactions?
+    (user.super_admin? || admin_of_org?) &&
+      FeatureFlag.enabled?(:org_article_reactions, FeatureFlag::Actor[record])
+  end
+
   def related_articles?
     analytics? && FeatureFlag.enabled?(:org_related_articles, FeatureFlag::Actor[record])
   end
