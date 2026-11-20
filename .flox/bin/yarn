@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Forem pins Yarn via .yarnrc.yml (yarnPath), so run the committed release with
+# the environment's Node instead of installing a Yarn package (which would
+# bring its own, second Node).
+exec node "$FLOX_ENV_PROJECT/.yarn/releases/yarn-4.1.0.cjs" "$@"

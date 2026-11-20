@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# forem-bootstrap: get a Forem checkout to "contributor ready" as fast as possible.
+#
+#   forem-bootstrap              run every step (safe to re-run; each step is idempotent)
+#   forem-bootstrap --if-needed  exit at once if nothing that matters changed (used by the hook)
+#
+# Ready means: gems and JS packages installed, development database created,
+# schema loaded and seeded, test database loaded, so `flox services start`
+# serves the app and `bin/rspec` runs.
+#
+# Lanes run concurrently:
+#
+#   gems ──────────────┐
+#   js   ──────────────┤ (independent)
+#   pg-init → pg+redis ┴─(waits for gems)─► dev db:  app_initializer:setup   ┐
+#                                          test db: db:create schema:load   ┴► stop temp servers
+#
+# Logs and timings: $FLOX_ENV_CACHE/bootstrap/
+set -uo pipefail
+
+: "${FLOX_ENV_PROJECT:?run inside flox activate}" "${FLOX_ENV_CACHE:?}" "${PGDATA:?}"
+cd "$FLOX_ENV_PROJECT"
+B="$FLOX_ENV_CACHE/bootstrap"; mkdir -p "$B"
+
+now() { perl -MTime::HiRes=time -e 'printf "%.1f", time' 2>/dev/null || date +%s; }
+ncpu() { getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4; }
+
+# Anything that changes what "ready" means goes into the stamp.
+stamp() {
+  {
+    cat Gemfile.lock yarn.lock db/schema.rb 2>/dev/null
+    printf '%s\n' "$GEM_HOME" "$(realpath "$(command -v node)")" "$PGDATA"
+  } | shasum -a 256 | cut -c1-16
+}
+
+{ printf 'stamp %s\n' "$(stamp)"; for t in ruby node bundle initdb; do printf '%s %s\n' "$t" "$(command -v $t)"; done; } > "$B/env.txt"
+
+if [ "${1:-}" = "--if-needed" ] && [ -f "$B/ready" ] && [ "$(cat "$B/ready")" = "$(stamp)" ]; then
+  exit 0
+fi
+
+T0=$(now); : > "$B/timings.tsv"
+mark() { printf '%s\t%s\t%s\n' "$1" "$2" "$(echo "$(now) - $T0" | bc)" >> "$B/timings.tsv"; }
+say()  { printf '  %-10s %s\n' "$1" "$2"; }
+
+echo "forem-bootstrap: preparing this checkout (logs in $B)"
+
+# -- Lane: gems ----------------------------------------------------------------
+# vendor/cache holds every gem in Gemfile.lock, so --local never touches
+# rubygems.org. MAKE runs native-extension builds (sassc, cld3, ...) on all
+# cores. The shared GEM_HOME is guarded by a mkdir lock so checkouts can't race.
+lane_gems() {
+  mark gems start
+  local lock="$GEM_HOME/.forem-bootstrap.lock" waited=0 rc
+  until mkdir "$lock" 2>/dev/null; do sleep 1; waited=$((waited+1)); [ $waited -gt 900 ] && break; done
+  if bundle check >/dev/null 2>&1; then
+    echo "gems already satisfied"; rc=0
+  else
+    MAKE="make -j$(ncpu)" bundle install --local --jobs "$(ncpu)"; rc=$?
+    if [ $rc -ne 0 ]; then   # vendor/cache incomplete: fall back to rubygems.org
+      MAKE="make -j$(ncpu)" bundle install --jobs "$(ncpu)"; rc=$?
+    fi
+  fi
+  rmdir "$lock" 2>/dev/null
+  mark gems end; return $rc
+}
+
+# -- Lane: JS --------------------------------------------------------------------
+# Yarn 4 keeps a global cache (~/.yarn/berry/cache), so later checkouts link
+# instead of download.
+lane_js() {
+  mark js start
+  local rc=0
+  if [ -f node_modules/.yarn-state.yml ] && [ node_modules/.yarn-state.yml -nt yarn.lock ]; then
+    echo "node_modules up to date"
+  else
+    yarn install --immutable; rc=$?
+  fi
+  mark js end; return $rc
+}
+
+# -- Lane: database cluster ------------------------------------------------------
+lane_pginit() {
+  mark pginit start
+  local rc=0
+  if [ ! -s "$PGDATA/PG_VERSION" ]; then
+    initdb -D "$PGDATA" --username="$PGUSER" --auth=trust --no-locale --encoding=UTF8; rc=$?
+  fi
+  mark pginit end; return $rc
+}
+
+run_lane() {  # name fn: run fn in the background, log to file, exit code to file
+  local name=$1 fn=$2
+  ( $fn > "$B/$name.log" 2>&1; echo $? > "$B/$name.rc" ) &
+}
+wait_lane() { while [ ! -f "$B/$1.rc" ]; do sleep 0.2; done; return "$(cat "$B/$1.rc")"; }
+fail() { echo "forem-bootstrap: $1 failed; last lines of $B/$2.log:"; tail -15 "$B/$2.log"; exit 1; }
+
+rm -f "$B"/*.rc
+run_lane gems lane_gems
+run_lane js lane_js
+run_lane pginit lane_pginit
+
+# -- Temporary servers for the database steps -------------------------------------
+# If `flox services` already runs them, use those; otherwise start private
+# copies on this checkout's ports and stop them afterwards so the services
+# can take over.
+started_pg=0 started_redis=0
+cleanup() {
+  [ $started_pg = 1 ] && pg_ctl -D "$PGDATA" -m fast -w stop >/dev/null 2>&1
+  [ $started_redis = 1 ] && redis-cli -p "$REDIS_PORT" shutdown nosave >/dev/null 2>&1
+  return 0
+}
+trap cleanup EXIT
+
+wait_lane pginit || fail "initdb" pginit
+if ! pg_isready -q -h 127.0.0.1 -p "$PGPORT"; then
+  pg_ctl -D "$PGDATA" -l "$B/postgres.log" -w \
+    -o "-k '$FOREM_PGSOCKET' -h 127.0.0.1 -p $PGPORT" start >/dev/null && started_pg=1
+fi
+if ! redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; then
+  redis-server --bind 127.0.0.1 --port "$REDIS_PORT" --dir "$FOREM_REDIS_DIR" \
+    --save "" --appendonly no --daemonize yes >/dev/null && started_redis=1
+fi
+mark servers up
+
+[ -f .env ] || cp .env_sample .env
+
+wait_lane gems || fail "bundle install" gems
+say gems ready
+
+# -- Lanes: databases (dev and test in parallel) ------------------------------------
+lane_devdb() {
+  mark devdb start
+  bin/rails app_initializer:setup forem:setup; local rc=$?
+  mark devdb end; return $rc
+}
+lane_testdb() {
+  mark testdb start
+  RAILS_ENV=test bin/rails db:create db:schema:load; local rc=$?
+  mark testdb end; return $rc
+}
+run_lane devdb lane_devdb
+run_lane testdb lane_testdb
+
+wait_lane js     || fail "yarn install" js
+say js ready
+wait_lane testdb || fail "test database" testdb
+say test-db ready
+wait_lane devdb  || fail "development database" devdb
+say dev-db "ready (seeded)"
+
+stamp > "$B/ready"
+mark total end
+echo "forem-bootstrap: ready in $(echo "$(now) - $T0" | bc) s. Next: flox services start, then open http://localhost:$PORT"

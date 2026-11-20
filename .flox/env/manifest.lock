@@ -22,6 +22,17 @@
         "pkg-path": "imagemagick",
         "pkg-group": "ruby"
       },
+      "libpq": {
+        "pkg-path": "libpq",
+        "pkg-group": "postgres",
+        "systems": [
+          "aarch64-linux"
+        ],
+        "outputs": [
+          "out",
+          "dev"
+        ]
+      },
       "libyaml": {
         "pkg-path": "libyaml",
         "pkg-group": "ruby",
@@ -55,9 +66,7 @@
         "pkg-path": "postgresql_13",
         "pkg-group": "postgres",
         "outputs": [
-          "out",
-          "lib",
-          "dev"
+          "out"
         ]
       },
       "redis": {
@@ -80,25 +89,17 @@
         "pkg-path": "vips",
         "pkg-group": "ruby",
         "outputs": [
-          "bin",
           "out"
         ]
-      },
-      "yarn": {
-        "pkg-path": "yarn",
-        "pkg-group": "node"
       }
     },
     "vars": {
-      "DATABASE_URL": "postgresql://localhost:5432/Forem_development",
-      "DATABASE_URL_TEST": "postgresql://localhost:5432/Forem_test",
+      "BUNDLE_NO_PRUNE": "true",
       "PGGSSENCMODE": "disable",
-      "PGPORT": "5432",
-      "PGUSER": "postgres",
-      "REDIS_URL": "redis://localhost:6379"
+      "PGUSER": "postgres"
     },
     "hook": {
-      "on-activate": "  # Gems (and foreman, which bin/dev installs) go to the Flox cache, never to\n  # the read-only Ruby install or ~/.gem.\n  export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  export PATH=\"$GEM_HOME/bin:$PATH\"\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_PGSOCKET=\"$FLOX_ENV_CACHE/pgsock\"\n  mkdir -p \"$GEM_HOME\" \"$FOREM_PGSOCKET\" \"$FLOX_ENV_CACHE/redis\"\n\n  if [ ! -d \"$PGDATA\" ]; then\n    echo \"→ initializing PostgreSQL 13 cluster\" >&2\n    initdb -D \"$PGDATA\" --username=\"$PGUSER\" --auth=trust --no-locale --encoding=UTF8 >&2\n  fi\n\n  cd \"$FLOX_ENV_PROJECT\"\n  if ! bundle check >/dev/null 2>&1; then\n    echo \"→ bundle install (first run compiles native gems — several minutes)\" >&2\n    BUNDLE_JOBS=8 bundle install >&2   # env var, so nothing is written to .bundle/config\n  fi\n\n  if [ ! -d node_modules ] || [ yarn.lock -nt node_modules ]; then\n    echo \"→ yarn install\" >&2\n    yarn install --immutable >&2 && touch node_modules\n  fi\n\n  if [ ! -f \"$FLOX_ENV_CACHE/.seeded\" ]; then\n    echo \"\" >&2\n    echo \"Next: flox services start   (if you didn't use 'flox activate -s')\" >&2\n    echo \"      bin/setup && touch \\\"\\$FLOX_ENV_CACHE/.seeded\\\"   # creates, migrates and seeds the database\" >&2\n    echo \"      bin/dev                                          # web, sidekiq, js watcher → http://localhost:3000\" >&2\n  fi\n"
+      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_PGSOCKET=\"$FLOX_ENV_CACHE/pgsock\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_PGSOCKET\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
     },
     "options": {
       "systems": [
@@ -108,11 +109,20 @@
       ]
     },
     "services": {
+      "js": {
+        "command": "  cd \"$FLOX_ENV_PROJECT\" && exec yarn build --watch\n"
+      },
       "postgres": {
-        "command": "  exec postgres -D \"$FLOX_ENV_CACHE/postgres\" \\\n    -k \"$FLOX_ENV_CACHE/pgsock\" \\\n    -h 127.0.0.1 -p \"$PGPORT\"\n"
+        "command": "  exec postgres -D \"$PGDATA\" -k \"$FOREM_PGSOCKET\" -h 127.0.0.1 -p \"$PGPORT\"\n"
       },
       "redis": {
-        "command": "  exec redis-server --port 6379 \\\n    --unixsocket \"$FLOX_ENV_CACHE/redis/forem-redis.sock\" \\\n    --dir \"$FLOX_ENV_CACHE/redis\" --save \"\" --appendonly no\n"
+        "command": "  exec redis-server --bind 127.0.0.1 --port \"$REDIS_PORT\" --dir \"$FOREM_REDIS_DIR\" \\\n    --save \"\" --appendonly no\n"
+      },
+      "sidekiq": {
+        "command": "  cd \"$FLOX_ENV_PROJECT\" && exec bundle exec sidekiq\n"
+      },
+      "web": {
+        "command": "  cd \"$FLOX_ENV_PROJECT\" && exec bin/rails server -p \"$PORT\" -b 127.0.0.1\n"
       }
     }
   },
@@ -211,93 +221,35 @@
       "priority": 5
     },
     {
-      "attr_path": "yarn",
+      "attr_path": "libpq",
       "broken": false,
-      "derivation": "/nix/store/46fwzv4c945aikic2djzc15y7k0yp1rd-yarn-1.22.22.drv",
-      "description": "Fast, reliable, and secure dependency management for javascript",
-      "install_id": "yarn",
-      "license": "BSD-2-Clause",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d4f25a3e562008648d45bcf2d70bcc7422cad84e",
-      "name": "yarn-1.22.22",
-      "pname": "yarn",
-      "rev": "d4f25a3e562008648d45bcf2d70bcc7422cad84e",
-      "rev_count": 1117658,
-      "rev_date": "2026-11-11T08:42:49Z",
-      "scrape_date": "2026-11-13T05:52:02.371972Z",
+      "derivation": "/nix/store/hdpbcqydbqijz4mhbdf3jhf9v412fdj1-libpq-18.1.drv",
+      "description": "C application programmer's interface to PostgreSQL",
+      "install_id": "libpq",
+      "license": "PostgreSQL",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c5ae371f1a6a7fd27823bc500d9390b38c05fa55",
+      "name": "libpq-18.1",
+      "pname": "libpq",
+      "rev": "c5ae371f1a6a7fd27823bc500d9390b38c05fa55",
+      "rev_count": 895122,
+      "rev_date": "2025-11-12T20:02:36Z",
+      "scrape_date": "2025-11-14T17:18:49.940437Z",
       "stabilities": [
-        "unstable",
-        "staging"
+        "staging",
+        "unstable"
       ],
       "unfree": false,
-      "version": "1.22.22",
+      "version": "18.1",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/ry31578yn9xja8s847mslpsiczj1gb6j-yarn-1.22.22"
-      },
-      "system": "aarch64-darwin",
-      "group": "node",
-      "priority": 5
-    },
-    {
-      "attr_path": "yarn",
-      "broken": false,
-      "derivation": "/nix/store/5szpbvrblm09z44d0n3ym7l8sczxnvlp-yarn-1.22.22.drv",
-      "description": "Fast, reliable, and secure dependency management for javascript",
-      "install_id": "yarn",
-      "license": "BSD-2-Clause",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d4f25a3e562008648d45bcf2d70bcc7422cad84e",
-      "name": "yarn-1.22.22",
-      "pname": "yarn",
-      "rev": "d4f25a3e562008648d45bcf2d70bcc7422cad84e",
-      "rev_count": 1117658,
-      "rev_date": "2026-11-11T08:42:49Z",
-      "scrape_date": "2026-11-13T06:21:03.628346Z",
-      "stabilities": [
-        "unstable",
-        "staging"
-      ],
-      "unfree": false,
-      "version": "1.22.22",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/jnr7bp564fdf1yfxg4fib0w3dh85c4hs-yarn-1.22.22"
+        "debug": "/nix/store/1kfkcza4k6xhfmjb67jq5ha5ljd38gsg-libpq-18.1-debug",
+        "dev": "/nix/store/2qp5vam4fnj21apgbxl9m9zvs88805g6-libpq-18.1-dev",
+        "out": "/nix/store/6v2w9zc69xaxjvp3kfaqpsx8n2w94xlc-libpq-18.1"
       },
       "system": "aarch64-linux",
-      "group": "node",
-      "priority": 5
-    },
-    {
-      "attr_path": "yarn",
-      "broken": false,
-      "derivation": "/nix/store/h6cazpdg6vcf166rggy317hnwykb7fnk-yarn-1.22.22.drv",
-      "description": "Fast, reliable, and secure dependency management for javascript",
-      "install_id": "yarn",
-      "license": "BSD-2-Clause",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=d4f25a3e562008648d45bcf2d70bcc7422cad84e",
-      "name": "yarn-1.22.22",
-      "pname": "yarn",
-      "rev": "d4f25a3e562008648d45bcf2d70bcc7422cad84e",
-      "rev_count": 1117658,
-      "rev_date": "2026-11-11T08:42:49Z",
-      "scrape_date": "2026-11-13T06:52:55.767515Z",
-      "stabilities": [
-        "unstable",
-        "staging"
-      ],
-      "unfree": false,
-      "version": "1.22.22",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/6av2zf0wgincwnxnc9z4aza67hzv3j59-yarn-1.22.22"
-      },
-      "system": "x86_64-linux",
-      "group": "node",
+      "group": "postgres",
       "priority": 5
     },
     {
