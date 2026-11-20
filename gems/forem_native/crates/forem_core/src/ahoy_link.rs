@@ -624,7 +624,7 @@ fn parse_anchor_open_tag(html: &str, after_a: usize) -> Option<(usize, Vec<Parse
         if bytes[i] == b'/' && i + 1 < len && bytes[i + 1] == b'>' {
             return Some((i + 2, attrs));
         }
-        if bytes[i] == b'<' {
+        if bytes[i] == b'<' || i == ws_start {
             return None;
         }
 
@@ -1132,6 +1132,8 @@ mod tests {
             "<textarea><a href=\"https://dev.to/a\">A</a></textarea>",
             "<a href=\"https://dev.to/a?x=&#64;\">A</a>",
             "<a href='https://dev.to/post\"title=\"x'>Read</a>",
+            "<a data-skip-click=\"true\"href=\"https://dev.to/a\">Skip</a>",
+            "<a title=\"x\"href=\"https://dev.to/a\">A</a>",
         ] {
             assert!(
                 ahoy_decorate_html(
