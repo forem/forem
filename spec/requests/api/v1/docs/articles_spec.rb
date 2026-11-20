@@ -114,7 +114,9 @@ It supports pagination, each page will contain `30` articles by default.
 - **Top / Popularity**:
   - Use `top=N` to return the most popular articles published in the last `N` days (e.g. `top=7` for top articles of the week, `top=30` for top of the month). This parameter can be combined with `tag` to find top articles in a specific niche.
 - **Collections**:
-  - Use `collection_id` to retrieve articles belonging to a specific collection/series, sorted chronologically."
+  - Use `collection_id` to retrieve articles belonging to a specific collection/series, sorted chronologically.
+- **Pagination Limits**:
+  - Unauthenticated requests are limited to `page <= 1000` and a maximum pagination offset (`(page - 1) * per_page`) of `30000`. Provide a valid `api-key` header to paginate deeper."
         operationId "getArticles"
         produces "application/json"
         parameter "$ref": "#/components/parameters/pageParam"
@@ -193,7 +195,7 @@ belonging to the requested collection, ordered by ascending publication date.",
 ### Search Guidance:
 - **q**: The search query term. Matches against article titles, tags, and body content.
 - **top**: Restricts search results to articles published within the last `N` days.
-- **page** & **per_page**: Standard pagination support. Use this to display results sequentially on a search results page."
+- **page** & **per_page**: Standard pagination support. Unauthenticated requests are limited to `page <= 1000` and a maximum pagination offset (`(page - 1) * per_page`) of `30000`; provide a valid `api-key` header to paginate deeper."
         operationId "searchArticles"
         produces "application/json"
         parameter name: :q, in: :query, required: false,
@@ -231,7 +233,7 @@ belonging to the requested collection, ordered by ascending publication date.",
 ### Usage Tips:
 - Bypasses all Forem/DEV feed personalization and popularity algorithms.
 - Ideal for building RSS feeds, chronological timelines, or \"latest posts\" widgets.
-- Supports standard `page` and `per_page` query parameters."
+- Supports standard `page` and `per_page` query parameters. Unauthenticated requests are limited to `page <= 1000` and a maximum pagination offset (`(page - 1) * per_page`) of `30000`; provide a valid `api-key` header to paginate deeper."
         operationId "getLatestArticles"
         produces "application/json"
 

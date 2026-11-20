@@ -7,6 +7,9 @@ module Api
       before_action -> { set_cache_control_headers(1.hour.to_i) }, only: %i[search]
     end
 
+    MAX_UNAUTHENTICATED_PAGE = 1000
+    MAX_UNAUTHENTICATED_OFFSET = 30_000
+
     INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
       id user_id organization_id collection_id
       title description main_image published_at crossposted_at social_image
@@ -351,11 +354,33 @@ module Api
     end
 
     def validate_page_limit
-      return if params[:page].to_i <= 1000
+      page = [params[:page].to_i, 1].max
+      page_limit_exceeded = page > MAX_UNAUTHENTICATED_PAGE
+      offset_limit_exceeded = !page_limit_exceeded &&
+        ((page - 1) * effective_per_page_for_pagination) > MAX_UNAUTHENTICATED_OFFSET
+
+      return unless page_limit_exceeded || offset_limit_exceeded
       return if authenticate_with_api_key
 
-      message = I18n.t("api.v0.articles_controller.page_limit_exceeded")
-      render json: { error: message, status: 401 }, status: :unauthorized
+      response.headers["Cache-Control"] = "no-store"
+      response.headers["Surrogate-Control"] = "no-store"
+      message_key = if page_limit_exceeded
+                      "api.v0.articles_controller.page_limit_exceeded"
+                    else
+                      "api.v0.articles_controller.offset_limit_exceeded"
+                    end
+      render json: { error: I18n.t(message_key), status: 401 }, status: :unauthorized
+    end
+
+    def effective_per_page_for_pagination
+      if action_name == "index" && params[:username].present? && params[:state] == "all" && params[:per_page].blank?
+        return per_page_max
+      end
+
+      requested = params[:per_page].to_i
+      return ArticleApiIndexService::DEFAULT_PER_PAGE unless requested.positive?
+
+      [requested, per_page_max].min
     end
   end
 end
