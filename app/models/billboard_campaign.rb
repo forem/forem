@@ -22,6 +22,7 @@ class BillboardCampaign < ApplicationRecord
     expires_at.present? && expires_at < Time.current
   end
 
+  # Match billboard saves: lock the billboard rows before locking their campaign.
   def with_billboards_locked
     self.class.transaction do
       billboards.order(:id).lock.ids

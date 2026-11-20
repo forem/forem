@@ -4,12 +4,17 @@ require "requests/shared_examples/internal_policy_dependant_request"
 RSpec.describe "/admin/customization/billboard_campaigns" do
   let(:campaign) { BillboardCampaign.create!(name: "Launch week") }
 
+  before { Audit::Subscribe.listen :internal }
+  after { Audit::Subscribe.forget :internal }
+
   it_behaves_like "an InternalPolicy dependant request", Billboard do
     let(:request) { get admin_billboard_campaigns_path }
   end
 
   context "when signed in as a super admin" do
-    before { sign_in create(:user, :super_admin, :without_profile, profile_image: nil) }
+    let(:admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
+
+    before { sign_in admin }
 
     it "lists campaign names and IDs without counting rows or loading billboards", :aggregate_failures do
       BillboardCampaign.insert_all!((1..51).map { |number| { name: "Campaign number #{number}." } })
@@ -47,6 +52,8 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
       expect(response).to redirect_to(edit_admin_billboard_campaign_path(created))
       expect(created).to have_attributes(expires_at: end_date, max_impressions_count: 300, max_clicks_count: 10,
                                          ideal_daily_impressions: 50)
+      expect(AuditLog.last).to have_attributes(user_id: admin.id, slug: "billboard_campaign_create",
+                                               data: include("billboard_campaign_id" => created.id))
 
       follow_redirect!
       expect(response.body).to include("Edit campaign: New campaign",
@@ -61,10 +68,14 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
       expect(response).to redirect_to(edit_admin_billboard_campaign_path(campaign))
       expect(campaign.reload).to have_attributes(max_clicks_count: 25, ideal_daily_impressions: 100,
                                                  delivery_throttle_rate: 1.0)
+      expect(AuditLog.last).to have_attributes(user_id: admin.id, slug: "billboard_campaign_update",
+                                               data: include("billboard_campaign_id" => campaign.id))
     end
 
     it "rejects an invalid cap and renders the edit form again", :aggregate_failures do
-      patch admin_billboard_campaign_path(campaign), params: { billboard_campaign: { max_clicks_count: -1 } }
+      expect do
+        patch admin_billboard_campaign_path(campaign), params: { billboard_campaign: { max_clicks_count: -1 } }
+      end.not_to change(AuditLog, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.body).to include('name="billboard_campaign[max_clicks_count]"')
@@ -91,7 +102,9 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
     it "refuses changes to the limits of a campaign with an approved billboard", :aggregate_failures do
       create(:billboard, billboard_campaign: campaign, approved: true, organization: nil)
 
-      patch admin_billboard_campaign_path(campaign), params: { billboard_campaign: { max_clicks_count: 25 } }
+      expect do
+        patch admin_billboard_campaign_path(campaign), params: { billboard_campaign: { max_clicks_count: 25 } }
+      end.not_to change(AuditLog, :count)
 
       expect(response).to have_http_status(:forbidden)
       expect(campaign.reload.max_clicks_count).to eq(0)

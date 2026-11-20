@@ -13,7 +13,7 @@ fr:
         max_impressions_count: Limite d’impressions
         max_clicks_count: Limite de clics
         ideal_daily_impressions: Objectif quotidien d’impressions
-        campaign_limits: Les limites s’appliquent au total de tous les encarts de la campagne. Saisissez 0 pour supprimer une limite ou désactiver l’objectif quotidien.
+        campaign_limits: Les limites s’appliquent au total de tous les encarts de la campagne. Saisissez 0 pour supprimer une limite ou désactiver l’objectif quotidien. Les limites et les dates de fin sont vérifiées en arrière-plan ; l’enregistrement n’arrête donc pas la diffusion immédiatement.
         billboard_limits: Ces limites s’appliquent uniquement à cet encart. Saisissez 0 pour ne pas fixer de limite.
         delivery_controls: Paramètres de diffusion
         membership_help_html: Laissez ce champ vide si cet encart ne fait partie d’aucune campagne. Retrouvez les identifiants dans la section %{campaigns}.

@@ -39,6 +39,10 @@ module Admin
 
     def respond_to_save(saved, template)
       if saved
+        Audit::Logger.log(:internal, current_user, {
+                            "action" => "billboard_campaign_#{action_name}",
+                            "billboard_campaign_id" => @campaign.id
+                          })
         flash[:success] = t("views.admin.billboard_campaigns.saved")
         redirect_to edit_admin_billboard_campaign_path(@campaign), status: :see_other
       else
