@@ -119,7 +119,7 @@ trap cleanup EXIT
 wait_lane pginit || fail "initdb" pginit
 if ! pg_isready -q -h 127.0.0.1 -p "$PGPORT"; then
   pg_ctl -D "$PGDATA" -l "$B/postgres.log" -w \
-    -o "-k '$FOREM_PGSOCKET' -h 127.0.0.1 -p $PGPORT" start >/dev/null && started_pg=1
+    -o "$FOREM_PG_ARGS" start >/dev/null && started_pg=1
 fi
 if ! redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; then
   # A plain background job, not --daemonize: on Linux runners the daemonized
@@ -138,17 +138,6 @@ mark servers up
 
 wait_lane gems || fail "bundle install" gems
 say gems ready
-
-# gems/forem_native commits prebuilt binaries for arm64-darwin, x86_64-darwin
-# and x86_64-linux. Elsewhere Rails compiles it with cargo on first load, and
-# the two database lanes below would both do that at once. Compile it here.
-if [ "$(uname -sm)" = "Linux aarch64" ]; then
-  mark native start
-  bundle exec ruby -Igems/forem_native/lib -rforem_native \
-    -e 'ForemNative.load_native!' > "$B/native.log" 2>&1 || fail "forem_native compile" native
-  mark native end
-  say native ready
-fi
 
 # -- Lanes: databases (dev and test in parallel) ------------------------------------
 lane_devdb() {

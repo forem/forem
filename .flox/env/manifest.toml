@@ -1,102 +1,117 @@
 schema-version = "1.19.0"
-# Option 3 ("forem-fast"): a Flox environment tuned for time-to-contributor.
+# Flox environment for contributing to Forem: one `flox activate -s` takes a
+# fresh clone to a running, seeded app. See docs/flox.md for the contributor
+# guide; this file explains why each choice below was made.
 #
-# Compared with the first floxified environment (justincastilla/forem 641f8b9;
-# main has since taken the same package cuts):
-#   * about half the download on aarch64-darwin (285 MB vs 621 MB), by
-#     dropping three things that pulled in whole extra toolchains:
-#       - postgresql `dev`  -> LLVM 20 + 21, Clang 21, apple-sdk 14.4, Python 3.13
-#       - catalog `yarn`    -> a second Node (24) just to start Yarn
-#       - vips `bin`        -> Python 3.11 + pycairo for the vipsprofile script
-#   * first activation installs gems, JS packages and both databases in
-#     parallel lanes (.flox/bin/forem-bootstrap) instead of one after another;
-#   * gems install offline from Forem's committed vendor/cache into a cache
-#     shared by every checkout that uses the same Ruby store path, so a second
-#     clone or worktree skips native-gem compiles entirely;
-#   * per-checkout ports so several checkouts can run at once.
+# Nix vocabulary used here, for readers who have not met it:
+#   * a "store path" is an immutable, hash-named directory under /nix/store;
+#     every package version lives in its own, so nothing here touches the
+#     system's Ruby, Node, Postgres or Redis;
+#   * an "output" is one slice of a package (`out` = runtime files, `dev` =
+#     headers); installing only the outputs you need keeps downloads small;
+#   * a "pkg-group" pins packages to one snapshot of the package catalog.
+#     Packages in different groups can be at different snapshots.
 
 [install]
-# -- Ruby and what its native gems link against -------------------------------
-# Gemfile line 5 reads .ruby-version verbatim, so Bundler wants exactly 3.3.0,
-# which lives in an early-2024 catalog snapshot. The libraries native gems
-# compile against share that group so they stay ABI-coherent with Ruby.
+# -- Ruby -------------------------------------------------------------------
+# Gemfile line 5 reads .ruby-version verbatim, so Bundler wants exactly that
+# Ruby (3.3.14 today). The Flox base catalog stops at ruby_3_3 3.3.12, so Ruby
+# comes from the `flox/ruby_3_3` package, which tracks the 3.3 security
+# releases and, unlike the nixpkgs build, carries no compiler in its closure
+# (42 MiB instead of ~300 MiB).
+#
+# SWITCH BACK to the catalog's `ruby_3_3` (`ruby.pkg-path = "ruby_3_3"` plus
+# `ruby.version` = the contents of .ruby-version) once `flox show ruby_3_3`
+# lists that version. Ruby 3.3 reaches end of support at the end of March
+# 2027, after which this line moves to the Ruby series .ruby-version names.
+#
+# PENDING: `flox/ruby_3_3` is not published yet, so this file still names the
+# catalog Ruby, which is too old for .ruby-version. Replace the next line
+# with `ruby.pkg-path = "flox/ruby_3_3"`, run `flox lock-manifest` (or just
+# `flox activate`) and commit .flox/env/manifest.lock.
 ruby.pkg-path = "ruby_3_3"
-ruby.version = "3.3.0"
-ruby.pkg-group = "ruby"
-redis.pkg-path = "redis"
-redis.pkg-group = "ruby"
-# ruby-vips dlopens libvips (the `out` output). The `bin` output only adds the
-# vips CLI and vipsprofile, which drags in a Python 3.11 closure.
-vips.pkg-path = "vips"
-vips.outputs = ["out"]
-vips.pkg-group = "ruby"
-imagemagick.pkg-path = "imagemagick"
-imagemagick.pkg-group = "ruby"
+
+# -- What native gems link against --------------------------------------------
+# Only the `out` (libraries) and `dev` (headers, pkg-config files) outputs;
+# the default outputs add binaries and docs nothing uses.
+# The `openssl` and `psych` gems in Gemfile.lock override the ones bundled with
+# Ruby and compile against these.
 libyaml.pkg-path = "libyaml"
 libyaml.outputs = ["out", "dev"]
-libyaml.pkg-group = "ruby"
 openssl.pkg-path = "openssl"
 openssl.outputs = ["out", "dev"]
-openssl.pkg-group = "ruby"
-# The zlib gem (via metainspector -> faraday-gzip) compiles against zlib.
-# macOS gets it from the SDK; Linux runners have no headers or -lz to offer.
+# Native gems find the two libraries above through pkg-config.
+pkg-config.pkg-path = "pkg-config"
+pkg-config.outputs = ["out"]
+# Linux only. The zlib gem (via metainspector -> faraday-gzip) compiles against
+# zlib. macOS gets it from the SDK; Linux has no headers to offer.
 zlib.pkg-path = "zlib"
 zlib.outputs = ["out", "dev"]
-zlib.pkg-group = "ruby"
 zlib.systems = ["aarch64-linux", "x86_64-linux"]
-pkg-config.pkg-path = "pkg-config"
-pkg-config.pkg-group = "ruby"
+# Linux only. Ruby's closure holds no compiler, so gem builds use this one. On
+# macOS they use the Xcode Command Line Tools compiler; see docs/flox.md.
 gcc.pkg-path = "gcc"
-gcc.pkg-group = "ruby"
+gcc.outputs = ["out"]
 gcc.systems = ["aarch64-linux", "x86_64-linux"]
-cargo.pkg-path = "cargo"
-cargo.pkg-group = "rust"
-cargo.systems = ["aarch64-linux"]
-rustc.pkg-path = "rustc"
-rustc.pkg-group = "rust"
-rustc.systems = ["aarch64-linux"]
-# rb-sys runs bindgen, which dlopens libclang. Without this it finds the
-# host's /usr/lib/llvm-*/libclang, which can't load under Nix's libc.
-libclang.pkg-path = "libclang"
-libclang.outputs = ["lib"]
-libclang.pkg-group = "rust"
-libclang.systems = ["aarch64-linux"]
+
+# -- Redis ----------------------------------------------------------------------
+# docker-compose.yml and CI run Redis 7. Its own pkg-group because 7.x only
+# exists in an older catalog snapshot, and a group shares one snapshot: without
+# the split every other package here would be dragged back to it.
+redis.pkg-path = "redis"
+redis.version = "^7"
+redis.pkg-group = "redis"
 
 # -- PostgreSQL 13 + pgvector ---------------------------------------------------
-# Version from .mise.toml and docker-compose (pgvector/pgvector:pg13).
+# Version from docker-compose.yml and CI (pgvector/pgvector:pg13). Own group
+# because PostgreSQL 13 left nixpkgs after its end of life, so it only exists
+# in a late-2025 snapshot. pgvector must come from the same snapshot: the
+# extension is found through the server's own install tree, and an older
+# pgvector fails with `could not access file "$libdir/vector"`. Forem needs
+# pgvector 0.8.0 or newer (README.md).
 # Only `out`: the pg gem ships prebuilt (with its own libpq) for arm64-darwin,
-# x86_64-darwin and x86_64-linux, so pg_config and headers are dead weight
-# there, and the `dev` output alone pulled ~300 MB of compressed toolchain.
-# aarch64-linux has to compile the pg gem, so it alone gets libpq headers.
+# x86_64-darwin and x86_64-linux, so headers and pg_config are dead weight
+# there, and the `dev` output alone pulled ~300 MB of toolchain.
 postgresql.pkg-path = "postgresql_13"
 postgresql.outputs = ["out"]
 postgresql.pkg-group = "postgres"
 pgvector.pkg-path = "postgresql13Packages.pgvector"
 pgvector.pkg-group = "postgres"
+# aarch64-linux has no prebuilt pg gem in vendor/cache, so it compiles against
+# libpq. See the BUNDLE_BUILD__PG note in the hook.
 libpq.pkg-path = "libpq"
 libpq.outputs = ["out", "dev"]
 libpq.systems = ["aarch64-linux"]
 libpq.pkg-group = "postgres"
 
-# -- JavaScript -------------------------------------------------------------------
-# No Yarn package: .yarnrc.yml pins yarnPath to the committed
-# .yarn/releases/yarn-4.1.0.cjs, so .flox/bin/yarn runs that with this Node.
+# -- JavaScript -----------------------------------------------------------------
+# Version from .nvmrc and package.json `engines`. Update both together. There
+# is no Yarn package: .yarnrc.yml pins yarnPath to the committed
+# .yarn/releases/yarn-4.1.0.cjs, so .flox/bin/yarn runs that with this Node (the
+# catalog's `yarn` brings along a second, newer Node).
 nodejs.pkg-path = "nodejs_22"
-nodejs.version = "22.23.4"       # <- .nvmrc, engines.node ">=22.23.4 <23"
+nodejs.version = "22.23.4"
 nodejs.pkg-group = "node"
 
 [vars]
 PGUSER = "postgres"
-# libpq's GSSAPI probe is not fork-safe on macOS; Puma forks workers.
+# Connect over TCP, never a Unix socket: the Postgres service has its socket
+# turned off (see services.postgres).
+PGHOST = "127.0.0.1"
+# libpq's GSSAPI probe is not fork-safe on macOS and Puma forks workers; without
+# this every web request crashes in PG::Connection#connect_start.
 PGGSSENCMODE = "disable"
 # Bundler re-caches into vendor/cache whenever that directory exists, and by
-# default deletes the gems it doesn't need, which dirties a committed tree
-# (6 stale .gem files today). Don't prune.
+# default deletes the gems it does not need, which dirties a committed tree
+# (six stale .gem files today). Do not prune.
 BUNDLE_NO_PRUNE = "true"
 
 [hook]
 on-activate = '''
   # -- Per-checkout ports (4 consecutive ports derived from the path) --------
+  # Two checkouts hash to different ports, so they can run side by side.
+  # Override any of these before activating: FOREM_PORT, FOREM_PGPORT,
+  # FOREM_REDIS_PORT.
   _crc="$(printf '%s' "$FLOX_ENV_PROJECT" | cksum | awk '{print $1}')"
   _base="$((20000 + (_crc % 9000) * 4))"
   export PORT="${FOREM_PORT:-$_base}"
@@ -114,8 +129,10 @@ on-activate = '''
   export REDIS_RPUSH_URL="$REDIS_URL/4"
 
   export PGDATA="$FLOX_ENV_CACHE/postgres"
-  export FOREM_PGSOCKET="$FLOX_ENV_CACHE/pgsock"
   export FOREM_REDIS_DIR="$FLOX_ENV_CACHE/redis"
+  # No Unix socket: macOS limits socket paths to 104 bytes, which a checkout
+  # nested a few directories deep can exceed. Shared by the service and bootstrap.
+  export FOREM_PG_ARGS="-c unix_socket_directories= -h 127.0.0.1 -p $PGPORT"
 
   # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --
   # Keyed by Ruby's store path, so a different Ruby (or system) never reuses
@@ -131,17 +148,15 @@ on-activate = '''
   # aarch64-linux compiles the pg gem. Point it at this environment's libpq
   # (forem-pg-config), not whatever pg_config the host has on PATH, and link
   # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the
-  # only direct dependency.
+  # only direct dependency. Without this the gem linked the host's libpq and
+  # failed to load with `libgssapi_krb5.so.2: cannot open shared object file`.
   case "$(uname -sm)" in
     "Linux aarch64")
-      export BUNDLE_BUILD__PG="--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed"
-      # gems/forem_native has no committed aarch64-linux binary; cargo builds
-      # it, and rb-sys's bindgen needs this environment's libclang.
-      export LIBCLANG_PATH="$FLOX_ENV/lib" ;;
+      export BUNDLE_BUILD__PG="--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed" ;;
   esac
   export PATH="$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH"
 
-  mkdir -p "$GEM_HOME" "$BUNDLE_APP_CONFIG" "$FOREM_PGSOCKET" "$FOREM_REDIS_DIR"
+  mkdir -p "$GEM_HOME" "$BUNDLE_APP_CONFIG" "$FOREM_REDIS_DIR"
 
   # -- First activation (or a changed lockfile/schema): parallel bootstrap ---
   # Returns almost immediately when nothing changed.
@@ -153,7 +168,8 @@ on-activate = '''
 
 [services.postgres]
 command = '''
-  exec postgres -D "$PGDATA" -k "$FOREM_PGSOCKET" -h 127.0.0.1 -p "$PGPORT"
+  # shellcheck disable=SC2086  # FOREM_PG_ARGS is a word list on purpose
+  exec postgres -D "$PGDATA" $FOREM_PG_ARGS
 '''
 
 [services.redis]
@@ -170,6 +186,8 @@ command = '''
 
 [services.sidekiq]
 command = '''
+  # Flox starts services together; Sidekiq exits if Redis is not up yet.
+  until redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; do sleep 0.5; done
   cd "$FLOX_ENV_PROJECT" && exec bundle exec sidekiq
 '''
 

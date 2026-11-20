@@ -3,33 +3,14 @@
   "manifest": {
     "schema-version": "1.19.0",
     "install": {
-      "cargo": {
-        "pkg-path": "cargo",
-        "pkg-group": "rust",
-        "systems": [
-          "aarch64-linux"
-        ]
-      },
       "gcc": {
         "pkg-path": "gcc",
-        "pkg-group": "ruby",
         "systems": [
           "aarch64-linux",
           "x86_64-linux"
-        ]
-      },
-      "imagemagick": {
-        "pkg-path": "imagemagick",
-        "pkg-group": "ruby"
-      },
-      "libclang": {
-        "pkg-path": "libclang",
-        "pkg-group": "rust",
-        "systems": [
-          "aarch64-linux"
         ],
         "outputs": [
-          "lib"
+          "out"
         ]
       },
       "libpq": {
@@ -45,7 +26,6 @@
       },
       "libyaml": {
         "pkg-path": "libyaml",
-        "pkg-group": "ruby",
         "outputs": [
           "out",
           "dev"
@@ -58,7 +38,6 @@
       },
       "openssl": {
         "pkg-path": "openssl",
-        "pkg-group": "ruby",
         "outputs": [
           "out",
           "dev"
@@ -70,7 +49,9 @@
       },
       "pkg-config": {
         "pkg-path": "pkg-config",
-        "pkg-group": "ruby"
+        "outputs": [
+          "out"
+        ]
       },
       "postgresql": {
         "pkg-path": "postgresql_13",
@@ -81,30 +62,14 @@
       },
       "redis": {
         "pkg-path": "redis",
-        "pkg-group": "ruby"
+        "pkg-group": "redis",
+        "version": "^7"
       },
       "ruby": {
-        "pkg-path": "ruby_3_3",
-        "pkg-group": "ruby",
-        "version": "3.3.0"
-      },
-      "rustc": {
-        "pkg-path": "rustc",
-        "pkg-group": "rust",
-        "systems": [
-          "aarch64-linux"
-        ]
-      },
-      "vips": {
-        "pkg-path": "vips",
-        "pkg-group": "ruby",
-        "outputs": [
-          "out"
-        ]
+        "pkg-path": "ruby_3_3"
       },
       "zlib": {
         "pkg-path": "zlib",
-        "pkg-group": "ruby",
         "systems": [
           "aarch64-linux",
           "x86_64-linux"
@@ -118,10 +83,11 @@
     "vars": {
       "BUNDLE_NO_PRUNE": "true",
       "PGGSSENCMODE": "disable",
+      "PGHOST": "127.0.0.1",
       "PGUSER": "postgres"
     },
     "hook": {
-      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_PGSOCKET=\"$FLOX_ENV_CACHE/pgsock\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  # aarch64-linux compiles the pg gem. Point it at this environment's libpq\n  # (forem-pg-config), not whatever pg_config the host has on PATH, and link\n  # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the\n  # only direct dependency.\n  case \"$(uname -sm)\" in\n    \"Linux aarch64\")\n      export BUNDLE_BUILD__PG=\"--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed\"\n      # gems/forem_native has no committed aarch64-linux binary; cargo builds\n      # it, and rb-sys's bindgen needs this environment's libclang.\n      export LIBCLANG_PATH=\"$FLOX_ENV/lib\" ;;\n  esac\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_PGSOCKET\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
+      "on-activate": "  # -- Per-checkout ports (4 consecutive ports derived from the path) --------\n  # Two checkouts hash to different ports, so they can run side by side.\n  # Override any of these before activating: FOREM_PORT, FOREM_PGPORT,\n  # FOREM_REDIS_PORT.\n  _crc=\"$(printf '%s' \"$FLOX_ENV_PROJECT\" | cksum | awk '{print $1}')\"\n  _base=\"$((20000 + (_crc % 9000) * 4))\"\n  export PORT=\"${FOREM_PORT:-$_base}\"\n  export PGPORT=\"${FOREM_PGPORT:-$((_base + 1))}\"\n  export REDIS_PORT=\"${FOREM_REDIS_PORT:-$((_base + 2))}\"\n  unset _crc _base\n\n  # Exported values win over .env: dotenv-rails never overrides set variables.\n  export APP_DOMAIN=\"localhost:$PORT\"\n  export DATABASE_URL=\"postgresql://127.0.0.1:$PGPORT/Forem_development\"\n  export DATABASE_URL_TEST=\"postgresql://127.0.0.1:$PGPORT/Forem_test\"\n  export REDIS_URL=\"redis://127.0.0.1:$REDIS_PORT\"\n  export REDIS_SESSIONS_URL=\"$REDIS_URL/1\"\n  export REDIS_SIDEKIQ_URL=\"$REDIS_URL/3\"\n  export REDIS_RPUSH_URL=\"$REDIS_URL/4\"\n\n  export PGDATA=\"$FLOX_ENV_CACHE/postgres\"\n  export FOREM_REDIS_DIR=\"$FLOX_ENV_CACHE/redis\"\n  # No Unix socket: macOS limits socket paths to 104 bytes, which a checkout\n  # nested a few directories deep can exceed. Shared by the service and bootstrap.\n  export FOREM_PG_ARGS=\"-c unix_socket_directories= -h 127.0.0.1 -p $PGPORT\"\n\n  # -- Gems: one compiled-gem cache per Ruby build, shared across checkouts --\n  # Keyed by Ruby's store path, so a different Ruby (or system) never reuses\n  # extensions built for another ABI. FOREM_SHARED_GEMS=0 keeps them local.\n  _ruby=\"$(basename \"$(dirname \"$(dirname \"$(realpath \"$FLOX_ENV/bin/ruby\")\")\")\")\"\n  if [ \"${FOREM_SHARED_GEMS:-1}\" = 1 ]; then\n    export GEM_HOME=\"${XDG_CACHE_HOME:-$HOME/.cache}/forem-flox/gems/$_ruby\"\n  else\n    export GEM_HOME=\"$FLOX_ENV_CACHE/gems\"\n  fi\n  unset _ruby\n  export BUNDLE_APP_CONFIG=\"$FLOX_ENV_CACHE/bundle-config\"   # leave .bundle/ alone\n  # aarch64-linux compiles the pg gem. Point it at this environment's libpq\n  # (forem-pg-config), not whatever pg_config the host has on PATH, and link\n  # with --as-needed so libpq (which has its own RUNPATH to Kerberos) is the\n  # only direct dependency. Without this the gem linked the host's libpq and\n  # failed to load with `libgssapi_krb5.so.2: cannot open shared object file`.\n  case \"$(uname -sm)\" in\n    \"Linux aarch64\")\n      export BUNDLE_BUILD__PG=\"--with-pg-config=$FLOX_ENV_PROJECT/.flox/bin/forem-pg-config --with-ldflags=-Wl,--as-needed\" ;;\n  esac\n  export PATH=\"$FLOX_ENV_PROJECT/.flox/bin:$GEM_HOME/bin:$PATH\"\n\n  mkdir -p \"$GEM_HOME\" \"$BUNDLE_APP_CONFIG\" \"$FOREM_REDIS_DIR\"\n\n  # -- First activation (or a changed lockfile/schema): parallel bootstrap ---\n  # Returns almost immediately when nothing changed.\n  if [ \"${FOREM_BOOTSTRAP:-1}\" = 1 ]; then\n    \"$FLOX_ENV_PROJECT/.flox/bin/forem-bootstrap\" --if-needed >&2 || \\\n      echo \"forem-bootstrap failed; logs in $FLOX_ENV_CACHE/bootstrap/\" >&2\n  fi\n"
     },
     "options": {
       "systems": [
@@ -135,13 +101,13 @@
         "command": "  cd \"$FLOX_ENV_PROJECT\" && exec yarn build --watch\n"
       },
       "postgres": {
-        "command": "  exec postgres -D \"$PGDATA\" -k \"$FOREM_PGSOCKET\" -h 127.0.0.1 -p \"$PGPORT\"\n"
+        "command": "  # shellcheck disable=SC2086  # FOREM_PG_ARGS is a word list on purpose\n  exec postgres -D \"$PGDATA\" $FOREM_PG_ARGS\n"
       },
       "redis": {
         "command": "  # Redis 7.2 exits if setlocale() fails; Nix's glibc lacks host locales on Linux.\n  LC_ALL=C exec redis-server --bind 127.0.0.1 --port \"$REDIS_PORT\" --dir \"$FOREM_REDIS_DIR\" \\\n    --save \"\" --appendonly no\n"
       },
       "sidekiq": {
-        "command": "  cd \"$FLOX_ENV_PROJECT\" && exec bundle exec sidekiq\n"
+        "command": "  # Flox starts services together; Sidekiq exits if Redis is not up yet.\n  until redis-cli -p \"$REDIS_PORT\" ping >/dev/null 2>&1; do sleep 0.5; done\n  cd \"$FLOX_ENV_PROJECT\" && exec bundle exec sidekiq\n"
       },
       "web": {
         "command": "  cd \"$FLOX_ENV_PROJECT\" && exec bin/rails server -p \"$PORT\" -b 127.0.0.1\n"
@@ -484,910 +450,660 @@
       "priority": 5
     },
     {
+      "attr_path": "redis",
+      "broken": false,
+      "derivation": "/nix/store/1zk9s2v9jgzwrviqwymzg4g4bzsdyf0j-redis-7.2.7.drv",
+      "description": "Open source, advanced key-value store",
+      "install_id": "redis",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3016b4b15d13f3089db8a41ef937b13a9e33a8df",
+      "name": "redis-7.2.7",
+      "pname": "redis",
+      "rev": "3016b4b15d13f3089db8a41ef937b13a9e33a8df",
+      "rev_count": 823481,
+      "rev_date": "2025-06-30T08:19:38Z",
+      "scrape_date": "2025-08-18T18:33:40.613976Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "7.2.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/z2g5fdrd4bj93fvdp68w84vhp6is7smx-redis-7.2.7"
+      },
+      "system": "aarch64-darwin",
+      "group": "redis",
+      "priority": 5
+    },
+    {
+      "attr_path": "redis",
+      "broken": false,
+      "derivation": "/nix/store/r7sx0pjqbbaz5b02i6yh9xnxx27a9s8y-redis-7.2.7.drv",
+      "description": "Open source, advanced key-value store",
+      "install_id": "redis",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3016b4b15d13f3089db8a41ef937b13a9e33a8df",
+      "name": "redis-7.2.7",
+      "pname": "redis",
+      "rev": "3016b4b15d13f3089db8a41ef937b13a9e33a8df",
+      "rev_count": 823481,
+      "rev_date": "2025-06-30T08:19:38Z",
+      "scrape_date": "2025-08-18T18:42:26.657710Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "7.2.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/0ywa8pnnygsrm8g51wsljn8n7d2myas1-redis-7.2.7"
+      },
+      "system": "aarch64-linux",
+      "group": "redis",
+      "priority": 5
+    },
+    {
+      "attr_path": "redis",
+      "broken": false,
+      "derivation": "/nix/store/ciilcd9md6w44cj0hrhwnkgq8fccgfnd-redis-7.2.7.drv",
+      "description": "Open source, advanced key-value store",
+      "install_id": "redis",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3016b4b15d13f3089db8a41ef937b13a9e33a8df",
+      "name": "redis-7.2.7",
+      "pname": "redis",
+      "rev": "3016b4b15d13f3089db8a41ef937b13a9e33a8df",
+      "rev_count": 823481,
+      "rev_date": "2025-06-30T08:19:38Z",
+      "scrape_date": "2025-08-18T18:58:17.213672Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "7.2.7",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/4wqmskzval5ansj2i0d1bw7rzdzwfm51-redis-7.2.7"
+      },
+      "system": "x86_64-linux",
+      "group": "redis",
+      "priority": 5
+    },
+    {
       "attr_path": "gcc",
       "broken": false,
-      "derivation": "/nix/store/9q0dqfyapzqll7127yxfk6185ryncqx6-gcc-wrapper-13.2.0.drv",
-      "description": "GNU Compiler Collection, version 13.2.0 (wrapper script)",
+      "derivation": "/nix/store/6qzazlrkmhny02c6xqpnbdr432j9p57h-gcc-wrapper-16.2.0.drv",
+      "description": "GNU Compiler Collection, version 16.2.0 (wrapper script)",
       "install_id": "gcc",
       "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "gcc-wrapper-13.2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "gcc-wrapper-16.2.0",
       "pname": "gcc",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T13:06:35.364957Z",
       "stabilities": [
-        "staging",
         "unstable"
       ],
       "unfree": false,
-      "version": "13.2.0",
+      "version": "16.2.0",
       "outputs_to_install": [
         "man",
-        "out"
-      ],
-      "outputs": {
-        "info": "/nix/store/axfvc2w31vrki6d3r2a456wvx6l6vcbk-gcc-wrapper-13.2.0-info",
-        "man": "/nix/store/ra9m9d2319qpfzjbffwm66yyqkjvd7fy-gcc-wrapper-13.2.0-man",
-        "out": "/nix/store/nly6ffl5anzn9yavb7d0i39779nh19yv-gcc-wrapper-13.2.0"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "gcc",
-      "broken": false,
-      "derivation": "/nix/store/nfr6v73vj460p1wfp93v248fizcn1ii6-gcc-wrapper-13.2.0.drv",
-      "description": "GNU Compiler Collection, version 13.2.0 (wrapper script)",
-      "install_id": "gcc",
-      "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "gcc-wrapper-13.2.0",
-      "pname": "gcc",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "13.2.0",
-      "outputs_to_install": [
-        "man",
-        "out"
-      ],
-      "outputs": {
-        "info": "/nix/store/kq3acv19z969fn3c8kaq3mqwnii2arcn-gcc-wrapper-13.2.0-info",
-        "man": "/nix/store/fl2nf58y7r6hzymmrhahbf7gp7c6dv8w-gcc-wrapper-13.2.0-man",
-        "out": "/nix/store/4kwk49k8rc8cg8c387kbbjcrl8i0y693-gcc-wrapper-13.2.0"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "imagemagick",
-      "broken": false,
-      "derivation": "/nix/store/g2amnf414fc4v32ry8wc89cw571ivfay-imagemagick-7.1.1-29.drv",
-      "description": "A software suite to create, edit, compose, or convert bitmap images",
-      "install_id": "imagemagick",
-      "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "imagemagick-7.1.1-29",
-      "pname": "imagemagick",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "7.1.1-29",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/hkygw7k9fzwy4qcpdr8p7g6psghwk4is-imagemagick-7.1.1-29-dev",
-        "doc": "/nix/store/x4d400q3pf9my7a3m05zmdmyxzyw02cf-imagemagick-7.1.1-29-doc",
-        "out": "/nix/store/k62ljmyzrascbmihp1da4p03lvg2dcyq-imagemagick-7.1.1-29"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "imagemagick",
-      "broken": false,
-      "derivation": "/nix/store/14d2rzzcd0zhk3vhry3dd4jwapsg488j-imagemagick-7.1.1-29.drv",
-      "description": "A software suite to create, edit, compose, or convert bitmap images",
-      "install_id": "imagemagick",
-      "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "imagemagick-7.1.1-29",
-      "pname": "imagemagick",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "7.1.1-29",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/f3m60s3b409m409v3gkj2c7assfax0wy-imagemagick-7.1.1-29-dev",
-        "doc": "/nix/store/0pamdmdgldan7nby658dxn93vf0p53fi-imagemagick-7.1.1-29-doc",
-        "out": "/nix/store/4ij8n493gjxzz23clv12axvln18p8cc0-imagemagick-7.1.1-29"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "imagemagick",
-      "broken": false,
-      "derivation": "/nix/store/0x5783lm51wkl272bv9vf3xg9w9176ma-imagemagick-7.1.1-29.drv",
-      "description": "A software suite to create, edit, compose, or convert bitmap images",
-      "install_id": "imagemagick",
-      "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "imagemagick-7.1.1-29",
-      "pname": "imagemagick",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "7.1.1-29",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/kj6h7x6rbnzhjr6b6yminb9jr78y8zvc-imagemagick-7.1.1-29-dev",
-        "doc": "/nix/store/nbsph9yywmmz4ch9pc0b7srxylq5p5b5-imagemagick-7.1.1-29-doc",
-        "out": "/nix/store/v1i37ssr5pwwgdv1cg9d7690zk2ifrm1-imagemagick-7.1.1-29"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "libyaml",
-      "broken": false,
-      "derivation": "/nix/store/wzxwhvih0ckgqk3yivh9i63rldwqvp9k-libyaml-0.2.5.drv",
-      "description": "A YAML 1.1 parser and emitter written in C",
-      "install_id": "libyaml",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "libyaml-0.2.5",
-      "pname": "libyaml",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.2.5",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/31wydvmm06vbz95r7crgk2l03jjm0q27-libyaml-0.2.5-dev",
-        "out": "/nix/store/pfbw5nbkiazsy13k3jf3lys530akqz6w-libyaml-0.2.5"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "libyaml",
-      "broken": false,
-      "derivation": "/nix/store/pb3mn5r8xlhsrsa8c3hiz2m32hpzg21l-libyaml-0.2.5.drv",
-      "description": "A YAML 1.1 parser and emitter written in C",
-      "install_id": "libyaml",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "libyaml-0.2.5",
-      "pname": "libyaml",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.2.5",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/9hhh7yhj1ccsag75hf59zqjl234dbkfx-libyaml-0.2.5-dev",
-        "out": "/nix/store/cc3zql10zshfdxpns1f5q4ivhs2mhapm-libyaml-0.2.5"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "libyaml",
-      "broken": false,
-      "derivation": "/nix/store/0ziimp9637j5ja30sgb7c6cr4nk9vsaz-libyaml-0.2.5.drv",
-      "description": "A YAML 1.1 parser and emitter written in C",
-      "install_id": "libyaml",
-      "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "libyaml-0.2.5",
-      "pname": "libyaml",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.2.5",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/kx4qqmxp54p8rwx65fzcj3bn495fh088-libyaml-0.2.5-dev",
-        "out": "/nix/store/a8l32108nrfbgq3qwffdfdvshjxh7a13-libyaml-0.2.5"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "openssl",
-      "broken": false,
-      "derivation": "/nix/store/b6vm21h9cflc2rb8dm1bs5m7jvzk65k1-openssl-3.0.13.drv",
-      "description": "A cryptographic library that implements the SSL and TLS protocols",
-      "install_id": "openssl",
-      "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "openssl-3.0.13",
-      "pname": "openssl",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "3.0.13",
-      "outputs_to_install": [
-        "bin",
-        "man"
-      ],
-      "outputs": {
-        "bin": "/nix/store/n8xzpnjww9iqlh7h9mdm6kx3lbqkpa50-openssl-3.0.13-bin",
-        "dev": "/nix/store/mwi469vpv30nyi6jdpgj6vdrg5mrxnv9-openssl-3.0.13-dev",
-        "doc": "/nix/store/1y3rf9mvx5hndbjk4pcvahhqa86n1yrn-openssl-3.0.13-doc",
-        "man": "/nix/store/br9syk8hvk3x87aw9qsvjcmbdfagw0qy-openssl-3.0.13-man",
-        "out": "/nix/store/lkyxy6fl4l34b3hw184n197waxs0m26i-openssl-3.0.13"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "openssl",
-      "broken": false,
-      "derivation": "/nix/store/7lkvjgx4ap41zg5k1cm61l16kxza9c3y-openssl-3.0.13.drv",
-      "description": "A cryptographic library that implements the SSL and TLS protocols",
-      "install_id": "openssl",
-      "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "openssl-3.0.13",
-      "pname": "openssl",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "3.0.13",
-      "outputs_to_install": [
-        "bin",
-        "man"
-      ],
-      "outputs": {
-        "bin": "/nix/store/w2q9i0qyr40yn0mjscbbsbvc2fnyasfl-openssl-3.0.13-bin",
-        "debug": "/nix/store/1brrcw0zinz4ysy4lsq594w5wfa3mfxj-openssl-3.0.13-debug",
-        "dev": "/nix/store/rd1mk726jghldm5y31jpbfb7lg92bg9f-openssl-3.0.13-dev",
-        "doc": "/nix/store/nlr8lxfsiim4zj9b7b5isvzh8ahpj0z3-openssl-3.0.13-doc",
-        "man": "/nix/store/shhl839g3da00sz2pkajvscirhk3s640-openssl-3.0.13-man",
-        "out": "/nix/store/fnvggynzw5lxm16v3wh1vza9xxz945va-openssl-3.0.13"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "openssl",
-      "broken": false,
-      "derivation": "/nix/store/sdl2qzd81r9sajslnw725knv36i0yv15-openssl-3.0.13.drv",
-      "description": "A cryptographic library that implements the SSL and TLS protocols",
-      "install_id": "openssl",
-      "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "openssl-3.0.13",
-      "pname": "openssl",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "3.0.13",
-      "outputs_to_install": [
-        "bin",
-        "man"
-      ],
-      "outputs": {
-        "bin": "/nix/store/chsxv0jx2fwhyslf6lm1wfrg42nan4dm-openssl-3.0.13-bin",
-        "debug": "/nix/store/63r67jyphmdym55fx8mzxzl4bgbbkgn4-openssl-3.0.13-debug",
-        "dev": "/nix/store/aqaxrq9jyrjwsnsly12b2xkqmakcsawb-openssl-3.0.13-dev",
-        "doc": "/nix/store/gca0zyl0bliggnf0xnj1lfd75i0494yc-openssl-3.0.13-doc",
-        "man": "/nix/store/21qgvwmp3qb794fc04hl4y40sxln945f-openssl-3.0.13-man",
-        "out": "/nix/store/9xgpmwqw0881kxa9sl498qfmzy7z2ndn-openssl-3.0.13"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "pkg-config",
-      "broken": false,
-      "derivation": "/nix/store/h8l26mzsz3hnk4ynh0rv4prdiijsyx70-pkg-config-wrapper-0.29.2.drv",
-      "description": "A tool that allows packages to find out information about other packages (wrapper script)",
-      "install_id": "pkg-config",
-      "license": "GPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "pkg-config-wrapper-0.29.2",
-      "pname": "pkg-config",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.29.2",
-      "outputs_to_install": [
-        "man",
-        "out"
-      ],
-      "outputs": {
-        "doc": "/nix/store/x4wrynk1lk01bmkn4i2vhc2mgjzr7gh8-pkg-config-wrapper-0.29.2-doc",
-        "man": "/nix/store/af7k5lz0bdvwhyzbjqdgfv5pnqp7n54p-pkg-config-wrapper-0.29.2-man",
-        "out": "/nix/store/3l8pzzkvvihqj5z1bymn5zcsm1a3gmp9-pkg-config-wrapper-0.29.2"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "pkg-config",
-      "broken": false,
-      "derivation": "/nix/store/2xwn4hghkbzgfqc42ak756imfn6f4s3p-pkg-config-wrapper-0.29.2.drv",
-      "description": "A tool that allows packages to find out information about other packages (wrapper script)",
-      "install_id": "pkg-config",
-      "license": "GPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "pkg-config-wrapper-0.29.2",
-      "pname": "pkg-config",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.29.2",
-      "outputs_to_install": [
-        "man",
-        "out"
-      ],
-      "outputs": {
-        "doc": "/nix/store/wrawz739fsziria5w8sdlqd2wamazn14-pkg-config-wrapper-0.29.2-doc",
-        "man": "/nix/store/hqphl7p5sdv1g79i52yd85hhii4r8859-pkg-config-wrapper-0.29.2-man",
-        "out": "/nix/store/v9si32s1fpy731gxyajg3i25j5h3f4rx-pkg-config-wrapper-0.29.2"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "pkg-config",
-      "broken": false,
-      "derivation": "/nix/store/09bs4iiqlddgrj52w5nwwsrrhdxmv96z-pkg-config-wrapper-0.29.2.drv",
-      "description": "A tool that allows packages to find out information about other packages (wrapper script)",
-      "install_id": "pkg-config",
-      "license": "GPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "pkg-config-wrapper-0.29.2",
-      "pname": "pkg-config",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "0.29.2",
-      "outputs_to_install": [
-        "man",
-        "out"
-      ],
-      "outputs": {
-        "doc": "/nix/store/rxgblfda1ay7bp1apa5cmis28lbvx5d0-pkg-config-wrapper-0.29.2-doc",
-        "man": "/nix/store/g3rb85av5z6vav2zgbx1j0c8sdamxz4j-pkg-config-wrapper-0.29.2-man",
-        "out": "/nix/store/39nq7p6jcm9m3xqqm99skwmgsqw4pbbg-pkg-config-wrapper-0.29.2"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "redis",
-      "broken": false,
-      "derivation": "/nix/store/g07l75r3yfnykfmknva6b9ysc1s3bp78-redis-7.2.4.drv",
-      "description": "An open source, advanced key-value store",
-      "install_id": "redis",
-      "license": "BSD-3-Clause",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "redis-7.2.4",
-      "pname": "redis",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "7.2.4",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/zsn8w4yvm5x2m0apy2i0v476ymn9pxh9-redis-7.2.4"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "redis",
-      "broken": false,
-      "derivation": "/nix/store/yliklsnqcvh14grh4jibdf5rw4zsg5px-redis-7.2.4.drv",
-      "description": "An open source, advanced key-value store",
-      "install_id": "redis",
-      "license": "BSD-3-Clause",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "redis-7.2.4",
-      "pname": "redis",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "7.2.4",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/6546c6a206bq0r190346hay9l3ypfagw-redis-7.2.4"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "redis",
-      "broken": false,
-      "derivation": "/nix/store/wmagnyqf0mvqz9079sbgvdid2mzdaiaw-redis-7.2.4.drv",
-      "description": "An open source, advanced key-value store",
-      "install_id": "redis",
-      "license": "BSD-3-Clause",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "redis-7.2.4",
-      "pname": "redis",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "7.2.4",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/ss532kbi9wkznj8n9yx00sf3gh0i2h7w-redis-7.2.4"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "ruby_3_3",
-      "broken": false,
-      "derivation": "/nix/store/glrgmsjx6rbk9hzlg1wqmlc2bd9fn62x-ruby-3.3.0.drv",
-      "description": "An object-oriented language for quick and easy programming",
-      "install_id": "ruby",
-      "license": "Ruby",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "ruby-3.3.0",
-      "pname": "ruby_3_3",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "3.3.0",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "devdoc": "/nix/store/ad7zlahvwsdwpy4rl2j4874zm48r9r52-ruby-3.3.0-devdoc",
-        "out": "/nix/store/v2985rr69yd20k3gpv0h0xfncx7fz7ri-ruby-3.3.0"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "ruby_3_3",
-      "broken": false,
-      "derivation": "/nix/store/d6yd1lfbgjyhvrm7wpwdvi5q86j89q0i-ruby-3.3.0.drv",
-      "description": "An object-oriented language for quick and easy programming",
-      "install_id": "ruby",
-      "license": "Ruby",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "ruby-3.3.0",
-      "pname": "ruby_3_3",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "3.3.0",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "devdoc": "/nix/store/ddkprabv23gcxri2hq18mjivjn98s2md-ruby-3.3.0-devdoc",
-        "out": "/nix/store/sb5npxqnf38ganslr4211lwsdakq7vp9-ruby-3.3.0"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "ruby_3_3",
-      "broken": false,
-      "derivation": "/nix/store/mzh75m113glas7fqi837x7k5yds4xl98-ruby-3.3.0.drv",
-      "description": "An object-oriented language for quick and easy programming",
-      "install_id": "ruby",
-      "license": "Ruby",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "ruby-3.3.0",
-      "pname": "ruby_3_3",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "3.3.0",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "devdoc": "/nix/store/3d7k5b5dwl0iyw86id8w1brrlbrd3szj-ruby-3.3.0-devdoc",
-        "out": "/nix/store/sbwg3visqb0njszbkarj645azj00951m-ruby-3.3.0"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "vips",
-      "broken": false,
-      "derivation": "/nix/store/rvpcj9c4pvm84d40ghk51jii28m103vd-vips-8.15.2.drv",
-      "description": "Image processing system for large images",
-      "install_id": "vips",
-      "license": "LGPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "vips-8.15.2",
-      "pname": "vips",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "8.15.2",
-      "outputs_to_install": [
-        "bin",
-        "man"
-      ],
-      "outputs": {
-        "bin": "/nix/store/rw5lk7lqzghrc6dx7d10dbf6wc7sfkqk-vips-8.15.2-bin",
-        "dev": "/nix/store/5zzkg7mzhsg114dqif75h9wqppg5w8sg-vips-8.15.2-dev",
-        "man": "/nix/store/kalw6sq25brxn7jpsl4gc5bdiw9m6g67-vips-8.15.2-man",
-        "out": "/nix/store/91srjj240p98bx01kiw4xcm738dg38l8-vips-8.15.2"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "vips",
-      "broken": false,
-      "derivation": "/nix/store/5hj04fvk4mxj7j1jfb8xfqkzkq79haf7-vips-8.15.2.drv",
-      "description": "Image processing system for large images",
-      "install_id": "vips",
-      "license": "LGPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "vips-8.15.2",
-      "pname": "vips",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "8.15.2",
-      "outputs_to_install": [
-        "bin",
-        "man"
-      ],
-      "outputs": {
-        "bin": "/nix/store/8a1ma4gzhl16y07iv31ra82izz579zf8-vips-8.15.2-bin",
-        "dev": "/nix/store/9jg1m0vm5azkfvh4nypg5j6d2cfy07q9-vips-8.15.2-dev",
-        "devdoc": "/nix/store/83rlb29ylsb2qrngaca2bmm36p5fbkbc-vips-8.15.2-devdoc",
-        "man": "/nix/store/q36if5vm39fyjb1l5djw7plh5z7ixhhs-vips-8.15.2-man",
-        "out": "/nix/store/z0agnkndsy52l8xzf08spqh7ys3hml5l-vips-8.15.2"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "vips",
-      "broken": false,
-      "derivation": "/nix/store/fb7blnw1vaxfyjwm919cma2va5bf8ga6-vips-8.15.2.drv",
-      "description": "Image processing system for large images",
-      "install_id": "vips",
-      "license": "LGPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "vips-8.15.2",
-      "pname": "vips",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "8.15.2",
-      "outputs_to_install": [
-        "bin",
-        "man"
-      ],
-      "outputs": {
-        "bin": "/nix/store/wbhp9dah474icq2lx9jfzd6fpnfhcg6v-vips-8.15.2-bin",
-        "dev": "/nix/store/bx1ng2s0znxribyfwwyada1xiyjrw6xm-vips-8.15.2-dev",
-        "devdoc": "/nix/store/h1z6rzkn2aay7ps7hdl6xs162i8zfyb8-vips-8.15.2-devdoc",
-        "man": "/nix/store/jrcdj3qvjmwpy5q616nzd1g2gnahcql5-vips-8.15.2-man",
-        "out": "/nix/store/xz37r2vmflymxy2k6vn1d95idxns0av1-vips-8.15.2"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "zlib",
-      "broken": false,
-      "derivation": "/nix/store/w8fsx4lb68f4r7b4x9igdrj1qzrd1lvn-zlib-1.3.1.drv",
-      "description": "Lossless data-compression library",
-      "install_id": "zlib",
-      "license": "Zlib",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "zlib-1.3.1",
-      "pname": "zlib",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "1.3.1",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/jn3ia8c60dh319d6nm0w3dz3gnrrf931-zlib-1.3.1-dev",
-        "out": "/nix/store/6nypjril3rq5y2iac7xj512crwwmaj0n-zlib-1.3.1",
-        "static": "/nix/store/f74qz4zh37k7ila34kpfb504s6s6p80a-zlib-1.3.1-static"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "zlib",
-      "broken": false,
-      "derivation": "/nix/store/fig01ylm8j5ii826ygkwm8rpx7kcj0zc-zlib-1.3.1.drv",
-      "description": "Lossless data-compression library",
-      "install_id": "zlib",
-      "license": "Zlib",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "name": "zlib-1.3.1",
-      "pname": "zlib",
-      "rev": "58a1abdbae3217ca6b702f03d3b35125d88a2994",
-      "rev_count": 617818,
-      "rev_date": "2024-04-27T21:35:43Z",
-      "scrape_date": "2024-06-13T21:39:17Z",
-      "stabilities": [
-        "staging",
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "1.3.1",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "dev": "/nix/store/vi5lphqwg9cj7xkaggvw5n0wqsmwdlq5-zlib-1.3.1-dev",
-        "out": "/nix/store/rrhw8p4hdrbh3pq7p2hlc1z2ixxzcxcb-zlib-1.3.1",
-        "static": "/nix/store/a8f8kkn9s34jwj58m54cm162ny56rsda-zlib-1.3.1-static"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "cargo",
-      "broken": false,
-      "derivation": "/nix/store/1nsn97k369s93g90wkjbirlrhkb9am1p-cargo-1.99.1.drv",
-      "description": "Downloads your Rust project's dependencies and builds your project",
-      "install_id": "cargo",
-      "license": "[ MIT, Apache-2.0 ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "name": "cargo-1.99.1",
-      "pname": "cargo",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.377207Z",
-      "stabilities": [
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "1.99.1",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "out": "/nix/store/5mgvxfka6ypzva3p3jxipf9hscgc3k9r-cargo-1.99.1"
-      },
-      "system": "aarch64-linux",
-      "group": "rust",
-      "priority": 5
-    },
-    {
-      "attr_path": "libclang",
-      "broken": false,
-      "derivation": "/nix/store/88yihpkc5cl9b5mi8c1wz3chhbr12ain-clang-21.1.8.drv",
-      "description": "C language family frontend for LLVM",
-      "install_id": "libclang",
-      "license": "[ NCSA, [ Apache-2.0 LLVM-exception ] ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "name": "clang-21.1.8",
-      "pname": "libclang",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.572072Z",
-      "stabilities": [
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "21.1.8",
-      "outputs_to_install": [
+        "out",
+        "out",
         "out",
         "out"
       ],
       "outputs": {
-        "debug": "/nix/store/293jh0rb259vmd536rkms41mphwybvps-clang-21.1.8-debug",
-        "dev": "/nix/store/1cdxjgb8wxiqk332yi54i6gfc7mnpb6v-clang-21.1.8-dev",
-        "lib": "/nix/store/q0zhygylvp7z5pjg7zpjxmm1h6fv70v0-clang-21.1.8-lib",
-        "out": "/nix/store/8mvc2f47kd29iwmraw3gllzrmdn6wr5v-clang-21.1.8",
-        "python": "/nix/store/dmby864vgfr9d16x8kwgy5yar3nzy66h-clang-21.1.8-python"
+        "info": "/nix/store/k3mycz3pj8f0x463ssxmimimphkpcv5s-gcc-wrapper-16.2.0-info",
+        "man": "/nix/store/bk9imwkja1v548gviyshq4j33987m0cg-gcc-wrapper-16.2.0-man",
+        "out": "/nix/store/6gj4dzcv6gaxh5raqyrq7jmy605qaj3z-gcc-wrapper-16.2.0"
       },
       "system": "aarch64-linux",
-      "group": "rust",
+      "group": "toplevel",
       "priority": 5
     },
     {
-      "attr_path": "rustc",
+      "attr_path": "gcc",
       "broken": false,
-      "derivation": "/nix/store/vhn3rndm83lzxqaa2rhm0h6yk9flwwa5-rustc-wrapper-1.99.1.drv",
-      "description": "Safe, concurrent, practical language (wrapper script)",
-      "install_id": "rustc",
-      "license": "[ MIT, Apache-2.0 ]",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "name": "rustc-wrapper-1.99.1",
-      "pname": "rustc",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.791568Z",
+      "derivation": "/nix/store/m3qx74s69cpbqc9f9b2qr8n56zpd9gr9-gcc-wrapper-16.2.0.drv",
+      "description": "GNU Compiler Collection, version 16.2.0 (wrapper script)",
+      "install_id": "gcc",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "gcc-wrapper-16.2.0",
+      "pname": "gcc",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T14:24:55.632567Z",
       "stabilities": [
         "unstable"
       ],
       "unfree": false,
-      "version": "1.99.1",
+      "version": "16.2.0",
+      "outputs_to_install": [
+        "man",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "info": "/nix/store/q28p8i2c42j09y0sffi6v5fhg0l4nis8-gcc-wrapper-16.2.0-info",
+        "man": "/nix/store/6j71j4f4knh1kl65y1y0gq8378addngh-gcc-wrapper-16.2.0-man",
+        "out": "/nix/store/r5ri78axx1qggkjq3vawywlzglg70b5w-gcc-wrapper-16.2.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "libyaml",
+      "broken": false,
+      "derivation": "/nix/store/ghjjd8jbvxm4cnszvlxszh0zwpi0l3fh-libyaml-0.2.5.drv",
+      "description": "YAML 1.1 parser and emitter written in C",
+      "install_id": "libyaml",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "libyaml-0.2.5",
+      "pname": "libyaml",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T11:55:14.594488Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.2.5",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/br4grq55vrxydm81pgdwz6pb7rgbipss-libyaml-0.2.5-dev",
+        "out": "/nix/store/5sjz5kmb0xyzgbh8qfgkby4093br1by7-libyaml-0.2.5"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "libyaml",
+      "broken": false,
+      "derivation": "/nix/store/rpn41y5xpgk7dcvd3rqk1nh6clmh1z0b-libyaml-0.2.5.drv",
+      "description": "YAML 1.1 parser and emitter written in C",
+      "install_id": "libyaml",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "libyaml-0.2.5",
+      "pname": "libyaml",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T13:06:35.483241Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.2.5",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/jaf686cff352macim8s60wh7qxilh675-libyaml-0.2.5-dev",
+        "out": "/nix/store/0120hrb5l13ynqmf66wz1cd6fnsb4s1y-libyaml-0.2.5"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "libyaml",
+      "broken": false,
+      "derivation": "/nix/store/cdn0hgp60qy2in1jw1vmjzcphnky6igq-libyaml-0.2.5.drv",
+      "description": "YAML 1.1 parser and emitter written in C",
+      "install_id": "libyaml",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "libyaml-0.2.5",
+      "pname": "libyaml",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T14:24:55.805234Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.2.5",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/2wlpnlk88r3y1dir79ibzvhkz446b8bw-libyaml-0.2.5-dev",
+        "out": "/nix/store/15c5vkz8dsk3hrzpvlbc7pp0imgsslky-libyaml-0.2.5"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "openssl",
+      "broken": false,
+      "derivation": "/nix/store/zvnrvgmk8hd3awfpf4pfsj7zpak00s65-openssl-3.5.9.drv",
+      "description": "Cryptographic library that implements the SSL and TLS protocols",
+      "install_id": "openssl",
+      "license": "Apache-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "openssl-3.5.9",
+      "pname": "openssl",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T11:55:14.637342Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.5.9",
+      "outputs_to_install": [
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/68bgiaz10gqpfnvk1vmrj5zsl2dxlv8k-openssl-3.5.9-bin",
+        "dev": "/nix/store/0568rp7whq8ysn4k2a7jranag23grgqn-openssl-3.5.9-dev",
+        "doc": "/nix/store/sbrayzm9j4cxc7n5a5z4bp02y0d6lbqh-openssl-3.5.9-doc",
+        "man": "/nix/store/75vn94xwpjc96v3qid0kdf30gipix0cc-openssl-3.5.9-man",
+        "out": "/nix/store/pnfqc3xvk68sfni9n3j511h1syb26rmy-openssl-3.5.9"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "openssl",
+      "broken": false,
+      "derivation": "/nix/store/96i4q3bf7qhlglkwqz9g8qv9761dqxhl-openssl-3.5.9.drv",
+      "description": "Cryptographic library that implements the SSL and TLS protocols",
+      "install_id": "openssl",
+      "license": "Apache-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "openssl-3.5.9",
+      "pname": "openssl",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T13:06:35.589751Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.5.9",
+      "outputs_to_install": [
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "man",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/1r53ih2yfqw9h9mcbz56b59yxipg0a9c-openssl-3.5.9-bin",
+        "debug": "/nix/store/bdl11qhipvmi8lrhqa4vnvi804z5dpbp-openssl-3.5.9-debug",
+        "dev": "/nix/store/5wzih1n026j37403lyfwmidpa0xvl6al-openssl-3.5.9-dev",
+        "doc": "/nix/store/qq4jlyim6z72pjqky42r144zzhir90yw-openssl-3.5.9-doc",
+        "man": "/nix/store/aakv3bpnadii45ci9h717hww2gjrcbr1-openssl-3.5.9-man",
+        "out": "/nix/store/33r0n37000780rlkipq2zna6yn0aw20f-openssl-3.5.9"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "openssl",
+      "broken": false,
+      "derivation": "/nix/store/r9pwkj2cc9kas4ihynz3znljwmc81x61-openssl-3.5.9.drv",
+      "description": "Cryptographic library that implements the SSL and TLS protocols",
+      "install_id": "openssl",
+      "license": "Apache-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "openssl-3.5.9",
+      "pname": "openssl",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T14:24:55.891992Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.5.9",
+      "outputs_to_install": [
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "bin",
+        "man",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/gvglnxscmvx4mh9my0cy0xgi0l1z6l9s-openssl-3.5.9-bin",
+        "debug": "/nix/store/1p4ymb7zxp7l0awxfq8rj5ld55npqfz1-openssl-3.5.9-debug",
+        "dev": "/nix/store/wps4g7kaj73d2zs53a5cfimw1bnb3c99-openssl-3.5.9-dev",
+        "doc": "/nix/store/k8vhywagkl9qry09ws7w5y0y5i90xcwj-openssl-3.5.9-doc",
+        "man": "/nix/store/93m0p3cd6x015pb45zy19m4x86mwhpac-openssl-3.5.9-man",
+        "out": "/nix/store/lazac5vw20j0pyahzbaxz8z8hyf7m9zf-openssl-3.5.9"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/1qjf489vb8fd41awn89h3xqgxnykgknr-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T11:55:14.910915Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
       "outputs_to_install": [
         "man",
         "out"
       ],
       "outputs": {
-        "doc": "/nix/store/9hbmwm0nkf0sl09jp8s7g0fj1ymsl7la-rustc-wrapper-1.99.1-doc",
-        "man": "/nix/store/jsfrl54g7fdjgn02llgmm9sfizp39a6b-rustc-wrapper-1.99.1-man",
-        "out": "/nix/store/gpba2i84yavbcsj4idsjhsdyzfzff1kd-rustc-wrapper-1.99.1"
+        "doc": "/nix/store/x0igc5n92ngczwgca4nsg4d9yvd91mij-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/14jrzxaa3xbi7n4y83xjs2jwv55hamsv-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/8rqbivyzdx8xkj8k47b07f4089bz32pb-pkg-config-wrapper-0.29.2"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/4166cphavwlq47nvhnbaskdywscz6lif-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T13:06:35.627740Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
+      "outputs_to_install": [
+        "man",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/swpmrxbpqpj98qw9rm779acnbz6llzph-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/sikgbn63hgskh7jn9q94mamh9psjhlll-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/ilg26l78wi5v6nhdn4ffxba1f4yc1h9s-pkg-config-wrapper-0.29.2"
       },
       "system": "aarch64-linux",
-      "group": "rust",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "pkg-config",
+      "broken": false,
+      "derivation": "/nix/store/0z6z4y4slwfzliq82p4h3cy3id3yfzsr-pkg-config-wrapper-0.29.2.drv",
+      "description": "Tool that allows packages to find out information about other packages (wrapper script)",
+      "install_id": "pkg-config",
+      "license": "GPL-2.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "pkg-config-wrapper-0.29.2",
+      "pname": "pkg-config",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T14:24:55.936522Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.29.2",
+      "outputs_to_install": [
+        "man",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/k9a5q1lnaf6qpdklsbdl0bz7b97b660l-pkg-config-wrapper-0.29.2-doc",
+        "man": "/nix/store/gcblgmyk7vdigvn3rp29cb1qd1yk5917-pkg-config-wrapper-0.29.2-man",
+        "out": "/nix/store/s70gz6bvz74c36xigh5m2ab2cqli08cv-pkg-config-wrapper-0.29.2"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ruby_3_3",
+      "broken": false,
+      "derivation": "/nix/store/hfldvqddbdhgxwhyvl94ngjw5861hc9m-ruby-3.3.12.drv",
+      "description": "Object-oriented language for quick and easy programming",
+      "install_id": "ruby",
+      "license": "Ruby",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "ruby-3.3.12",
+      "pname": "ruby_3_3",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T11:55:15.191156Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.12",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "devdoc": "/nix/store/5ngn0szk9k3n6yi594m0g7p6fwiblr35-ruby-3.3.12-devdoc",
+        "out": "/nix/store/vzib8ljgmcg93lyw9f17l89khbkpzh71-ruby-3.3.12"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ruby_3_3",
+      "broken": false,
+      "derivation": "/nix/store/250m6y89x1ilcvm0crwii9h7k4xb9zmm-ruby-3.3.12.drv",
+      "description": "Object-oriented language for quick and easy programming",
+      "install_id": "ruby",
+      "license": "Ruby",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "ruby-3.3.12",
+      "pname": "ruby_3_3",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T13:06:35.735711Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.12",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "devdoc": "/nix/store/yy84v79b3j60jqqzr3rvl0dq407ygp1m-ruby-3.3.12-devdoc",
+        "out": "/nix/store/488cw9cpslfj27kvak2jkb12fnc24s2l-ruby-3.3.12"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ruby_3_3",
+      "broken": false,
+      "derivation": "/nix/store/rrbnas8nr18d8h9w2afm97b96vjxfimk-ruby-3.3.12.drv",
+      "description": "Object-oriented language for quick and easy programming",
+      "install_id": "ruby",
+      "license": "Ruby",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "ruby-3.3.12",
+      "pname": "ruby_3_3",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T14:24:56.111739Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.3.12",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "devdoc": "/nix/store/l4nn7z8c1q9cmi1qbpk2jira4v1gcbaw-ruby-3.3.12-devdoc",
+        "out": "/nix/store/yz7gnvkkvd5wqwxzc9rykfdhnn15zgp8-ruby-3.3.12"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "zlib",
+      "broken": false,
+      "derivation": "/nix/store/96rks4nh46chw3zqq2g96qhxv01x480j-zlib-1.3.2.drv",
+      "description": "Lossless data-compression library",
+      "install_id": "zlib",
+      "license": "Zlib",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "zlib-1.3.2",
+      "pname": "zlib",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T13:06:35.860229Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.3.2",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/743bc92fny9qgsy9bp61y0j0rh639m3d-zlib-1.3.2-dev",
+        "out": "/nix/store/nw9zbfc171gdsali7fcgl6rayfy5ykkx-zlib-1.3.2",
+        "static": "/nix/store/spcmllkf6z3bvx3zpr2qz9k25hpdn76f-zlib-1.3.2-static"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "zlib",
+      "broken": false,
+      "derivation": "/nix/store/zn4yz133jc501l71s5cm873c98zi8brv-zlib-1.3.2.drv",
+      "description": "Lossless data-compression library",
+      "install_id": "zlib",
+      "license": "Zlib",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "name": "zlib-1.3.2",
+      "pname": "zlib",
+      "rev": "09063bd1f2b36fd9fd793c36dfade7bd40a93dfc",
+      "rev_count": 1095516,
+      "rev_date": "2026-10-17T04:10:52Z",
+      "scrape_date": "2026-10-20T14:24:56.242697Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.3.2",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/a76rmqrp6l3w6h9pppfwzb3s6dzi0y4g-zlib-1.3.2-dev",
+        "out": "/nix/store/ji36842higmp6b06hbbpmzbd59g1c07c-zlib-1.3.2",
+        "static": "/nix/store/hka7hr5qp0n92dmfv6gdigcabx9dai9r-zlib-1.3.2-static"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
       "priority": 5
     }
   ]
