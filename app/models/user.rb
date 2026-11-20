@@ -1171,12 +1171,23 @@ class User < ApplicationRecord
 
   # Emits user_roles_updated with the Core trust roles the user holds and when
   # they were read.
-  def track_core_trust_roles!(roles = core_trust_role_names)
-    track!("user_roles_updated", "dev_roles" => roles, "dev_roles_read_at" => Time.current.iso8601(6))
+  def track_core_trust_roles!(snapshot = core_trust_roles_snapshot)
+    read_at, roles = snapshot
+    track!("user_roles_updated", "dev_roles" => roles, "dev_roles_read_at" => read_at.iso8601(6))
   end
 
   def core_trust_role_names
-    roles.where(name: CORE_TRUST_ROLES).distinct.pluck(:name).sort
+    core_trust_roles_snapshot.last
+  end
+
+  # The Core trust roles the user holds, read in one statement with the
+  # database's start time for it. Every commit before that time is in the
+  # reading, so Core can order readings from any process by it: a reading taken
+  # before a revocation committed is always stamped earlier than the reading the
+  # revocation publishes.
+  def core_trust_roles_snapshot
+    held = roles.where(name: CORE_TRUST_ROLES).distinct.select(:name).reorder(:name)
+    User.where(id: id).pick(Arel.sql("statement_timestamp()"), Arel.sql("ARRAY(#{held.to_sql})"))
   end
 
   # Only global (non-resource-scoped) moderation roles emit.
@@ -1190,13 +1201,17 @@ class User < ApplicationRecord
     persisted? && CORE_TRUST_ROLES.include?(role_name.to_s)
   end
 
-  # Emits the trust roles held after a role change when they differ from
-  # `before`, the set held before it (nil when the change could not alter it).
+  # Once every open transaction commits, emits the trust roles held when they
+  # differ from `before`, the set held before the change (nil when the change
+  # could not alter it). Reading after commit keeps a rolled-back change from
+  # ever being published.
   def track_core_trust_roles_change(before)
     return unless before
 
-    current = core_trust_role_names
-    track_core_trust_roles!(current) unless current == before
+    ActiveRecord.after_all_transactions_commit do
+      snapshot = core_trust_roles_snapshot
+      track_core_trust_roles!(snapshot) unless snapshot.last == before
+    end
   end
   private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
           :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,

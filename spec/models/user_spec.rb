@@ -479,6 +479,42 @@ RSpec.describe User do
           .with(anything, "user_roles_updated", anything, hash_including("dev_roles_read_at" => String), anything)
       end
 
+      it "emits only once the surrounding transaction commits" do
+        described_class.transaction do
+          user.add_role(:trusted)
+          expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+            .with(anything, "user_roles_updated", anything, anything, anything)
+        end
+
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[trusted])
+      end
+
+      it "does not emit a change that rolls back" do
+        described_class.transaction do
+          user.add_role(:trusted)
+          raise ActiveRecord::Rollback
+        end
+
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything)
+      end
+
+      it "stamps a reading taken before a revocation earlier than the revocation's, even when it is sent later" do
+        user.add_role(:base_subscriber)
+        stale = user.core_trust_roles_snapshot
+        user.remove_role(:base_subscriber)
+        user.track_core_trust_roles!(stale)
+
+        readings = []
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything).exactly(3).times do |*args|
+            readings << args[3].slice("dev_roles", "dev_roles_read_at")
+          end
+        revocation, late = readings.last(2)
+        expect([revocation["dev_roles"], late["dev_roles"]]).to eq([[], %w[base_subscriber]])
+        expect(Time.zone.parse(late["dev_roles_read_at"])).to be < Time.zone.parse(revocation["dev_roles_read_at"])
+      end
+
       it "does not emit for a role the user already has or one Core does not count" do
         user.add_role(:base_subscriber)
         user.add_role(:base_subscriber)
