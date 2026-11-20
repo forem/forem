@@ -3,6 +3,7 @@ module Stories
     before_action :set_cache_control_headers, only: :index
 
     SIGNED_OUT_RECORD_COUNT = 15
+    MAX_PAGE = 100
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -10,29 +11,35 @@ module Stories
       @tag = Tag.find_by(name: params[:tag].downcase) || not_found
 
       if @tag.alias_for.present?
+        set_surrogate_key_header @tag.record_key, tag_feed_surrogate_key
         redirect_permanently_to("/t/#{@tag.alias_for}")
         return
       end
 
       @page = (params[:page] || 1).to_i
-
-      if user_signed_in?
-        @moderators = User.with_role(:tag_moderator, @tag)
-          .order(badge_achievements_count: :desc)
-          .select(:username, :profile_image, :id)
-      end
+      not_found if @page < 1 || @page > MAX_PAGE
 
       set_number_of_articles(tag: @tag)
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
-      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
+      set_surrogate_key_header @stories.map(&:record_key), @tag.record_key, tag_feed_surrogate_key
       set_cache_control_headers(86_400,
                                 stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
     end
 
     private
+
+    def tag_feed_surrogate_key
+      if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
+        "tag-#{@tag.name}-top-#{params[:timeframe]}"
+      elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+        "tag-#{@tag.name}-latest"
+      else
+        "tag-#{@tag.name}-home"
+      end
+    end
 
     def set_number_of_articles(tag:)
       @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
@@ -41,7 +48,8 @@ module Stories
       return if user_signed_in? || !tag.supported?
 
       @num_published_articles = if tag.requires_approval?
-                                  tag.articles.published.from_subforem.approved.count
+                                  tag.articles.published.from_subforem.approved
+                                    .limit(max_paginated_articles).count
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
                                                     expires_in: 72.hours) do
@@ -55,9 +63,7 @@ module Stories
       stories = Articles::Feeds::Tag.call(tag.name, number_of_articles: number_of_articles, page: page)
 
       stories = stories.approved if tag.requires_approval?
-
-      # NOTE: We want to check if there are any stories regardless of timeframe.
-      not_found unless established?(stories: stories, tag: tag)
+      unfiltered_stories = stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
@@ -69,15 +75,35 @@ module Stories
       # organization (custom domain check); batch those into one query.
       stories = stories.preload(:organization) unless user_signed_in?
       @stories = stories.decorate
-      # articles/_single_story reads public_reaction_categories for every story with
-      # reactions; fetch those cached counts in one round-trip instead of one per story.
+
+      # NOTE: We want to check if there are any stories regardless of timeframe. Any story on
+      # this page is one of those (same tag, approval, subforem and page offset, narrower
+      # filters), so the separate existence query only runs when the page came back empty.
+      not_found if @stories.empty? && !established?(stories: unfiltered_stories, tag: tag)
+
+      # articles/_single_story calls `story.context_notes.first` and reads
+      # public_reaction_categories for every story with reactions; batch-preload
+      # both in single round-trips instead of one query/cache.get per story.
+      ActiveRecord::Associations::Preloader.new(
+        records: @stories.map(&:object), associations: :context_notes, scope: ContextNote.order(:id),
+      ).call
       Article.preload_reaction_counts_for_reactable(
         @stories.map(&:object).select { |story| story.public_reactions_count.positive? },
       )
     end
 
+    # Sidebar pagination clamps `(@num_published_articles.to_f / @number_of_articles).ceil`
+    # to `MAX_PAGE`, so cap the count subquery at that ceiling instead of scanning every
+    # historical tagging on high-volume tags.
     def tagged_count(tag:)
-      tag.articles.published.from_subforem.where(score: Settings::UserExperience.tag_feed_minimum_score..).count
+      tag.articles.published.from_subforem
+        .where(score: Settings::UserExperience.tag_feed_minimum_score..)
+        .limit(max_paginated_articles)
+        .count
+    end
+
+    def max_paginated_articles
+      (@number_of_articles || SIGNED_OUT_RECORD_COUNT) * MAX_PAGE
     end
 
     # Do we have an established tag?  That means it's supported OR we have at least one published story.
@@ -109,8 +135,18 @@ module Stories
         if @page == 1 && !user_signed_in?
           stories = stories.where("published_at > ?", 3.months.ago)
         end
-        stories.order(hotness_score: :desc).with_at_least_home_feed_minimum_score
+        stories.order(hotness_score: :desc).where(home_feed_eligibility_clause)
       end
+    end
+
+    # Same rows as Article.with_at_least_home_feed_minimum_score, but `score + 0` keeps
+    # PostgreSQL from turning the OR into a BitmapOr over the featured/favorited/score
+    # indexes (~500k rows) only to BitmapAnd it with the much smaller tags_array GIN bitmap.
+    def home_feed_eligibility_clause
+      [
+        "articles.featured = TRUE OR articles.favorited_by_user_id IS NOT NULL OR (articles.score + 0) >= ?",
+        Settings::UserExperience.home_feed_minimum_score,
+      ]
     end
   end
 end

@@ -9,7 +9,8 @@ overflow:hidden !important;
 position:absolute !important;
 z-index:-1000 !important;
 top:0 !important;
-right:0 !important
+right:0 !important;
+transition:none !important
 `;
 
 const SIZING_STYLE = [

@@ -53,8 +53,8 @@
     <a href="<%= article.path %>/edit" class="crayons-btn"><%= t("views.dashboard.article.edit.text") %></a>
     <% if manage_view %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--danger"><%= t("views.dashboard.article.delete") %></a>
-      <% if article.profile_pins.any? %>
-        <%= form_for(article.profile_pins.first) do |f| %>
+      <% if article.user_profile_pins.any? %>
+        <%= form_for(article.user_profile_pins.first) do |f| %>
           <button class="crayons-btn crayons-btn--secondary"><%= t("views.dashboard.article.unpin") %></button>
         <% end %>
       <% else %>

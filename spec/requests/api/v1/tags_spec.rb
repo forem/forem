@@ -4,15 +4,8 @@ RSpec.describe "Api::V1::Tags" do
   describe "GET /api/tags" do
     let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
-    it "returns tags" do
-      create(:tag, taggings_count: 10)
-
-      get api_tags_path, headers: headers
-
-      expect(response.parsed_body.size).to eq(1)
-    end
-
-    it "returns tags with the correct json representation" do
+    it "returns tags ordered by descending taggings_count with json representation and surrogate keys",
+       :aggregate_failures do
       badge = create(:badge)
       tag = create(:tag, taggings_count: 10)
       tag_with_badge = create(:tag, taggings_count: 5, badge: badge)
@@ -23,19 +16,12 @@ RSpec.describe "Api::V1::Tags" do
       response_tag_with_badge = response.parsed_body.last
       expect_valid_json_body(response_tag, tag)
       expect_valid_json_body(response_tag_with_badge, tag_with_badge)
+      expect(response.parsed_body.pluck("id")).to eq([tag.id, tag_with_badge.id])
+      expected_key = ["tags", tag.record_key, tag_with_badge.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
 
-    it "orders tags by taggings_count in a descending order" do
-      tag = create(:tag, taggings_count: 10)
-      other_tag = create(:tag, taggings_count: tag.taggings_count + 1)
-
-      get api_tags_path, headers: headers
-
-      expected_result = [other_tag.id, tag.id]
-      expect(response.parsed_body.pluck("id")).to eq(expected_result)
-    end
-
-    it "supports pagination" do
+    it "supports pagination and respects API_PER_PAGE_MAX limit set in ENV variable", :aggregate_failures do
       create_list(:tag, 3)
 
       get api_tags_path, params: { page: 1, per_page: 2 }, headers: headers
@@ -43,33 +29,57 @@ RSpec.describe "Api::V1::Tags" do
 
       get api_tags_path, params: { page: 2, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
-    end
 
-    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
       allow(ApplicationConfig).to receive(:[]).and_return(nil)
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
       allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
-
-      create_list(:tag, 3)
 
       get api_tags_path, params: { per_page: 10 }, headers: headers
       expect(response.parsed_body.count).to eq(2)
     end
 
-    it "sets the correct edge caching surrogate key for all tags" do
-      tag = create(:tag, taggings_count: 10)
+    context "when looking up a tag by name" do
+      let!(:tag) { create(:tag, name: "javascript", taggings_count: 1) }
 
-      get api_tags_path, headers: headers
+      before { create(:tag, name: "ruby", taggings_count: 10) }
 
-      expected_key = ["tags", tag.record_key].to_set
-      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      it "matches the name case-insensitively, sets the surrogate key, and returns empty when missing",
+         :aggregate_failures do
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+        expect_valid_json_body(response.parsed_body.first, tag)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(["tags", tag.record_key].to_set)
+
+        get api_tags_path, params: { name: "JavaScript" }, headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([tag.id])
+
+        get api_tags_path, params: { name: "java" }, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+
+      it "finds an unsupported tag on the root subforem, where the list only has supported tags" do
+        root_subforem = create(:subforem, domain: "root.com", root: true)
+        allow(Subforem).to receive_messages(cached_id_by_domain: root_subforem.id, cached_root_id: root_subforem.id,
+                                            cached_default_id: root_subforem.id)
+        tag.update_column(:supported, false)
+
+        get api_tags_path, headers: headers
+        expect(response.parsed_body.pluck("id")).not_to include(tag.id)
+
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([tag.id])
+      end
     end
   end
 
   describe "GET /api/tags/supported" do
     let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
-    it "returns only supported tags, unpaginated, ordered by taggings_count" do
+    it "returns only supported tags unpaginated, ordered by taggings_count, with edge-cache headers",
+       :aggregate_failures do
       supported = create_list(:tag, 11, supported: true) # rubocop:disable FactoryBot/ExcessiveCreateList
       supported.first.update_column(:taggings_count, 50)
       create(:tag, supported: false, taggings_count: 100)
@@ -80,15 +90,8 @@ RSpec.describe "Api::V1::Tags" do
       expect(response.parsed_body.pluck("id")).to match_array(supported.map(&:id))
       expect(response.parsed_body.first["id"]).to eq(supported.first.id)
       expect_valid_json_body(response.parsed_body.first, supported.first.reload)
-    end
-
-    it "is edge cacheable with a supported tags surrogate key" do
-      tag = create(:tag, supported: true)
-
-      get supported_api_tags_path, headers: headers
-
       expect(response.headers["surrogate-key"].split.to_set)
-        .to eq([Tag::SUPPORTED_TAGS_SURROGATE_KEY, tag.record_key].to_set)
+        .to eq([Tag::SUPPORTED_TAGS_SURROGATE_KEY, *supported.map(&:record_key)].to_set)
       expect(response.headers["surrogate-control"]).to include("max-age")
     end
 
@@ -234,24 +237,23 @@ RSpec.describe "Api::V1::Tags" do
         end.to raise_error(ActiveRecord::RecordNotUnique)
       end
 
-      ["bad-name", "x" * 31, ""].each do |name|
-        it "rejects the invalid name #{name.inspect} with model validation errors" do
+      it "rejects missing or invalid names and invalid update fields without creating a tag or logging",
+         :aggregate_failures do
+        ["bad-name", "x" * 31, "", nil].each do |name|
+          payload = name.nil? ? tag_params.except(:name) : tag_params.merge(name: name)
           expect do
-            post api_tags_path, params: tag_params.merge(name: name).to_json, headers: auth_headers
+            post api_tags_path, params: payload.to_json, headers: auth_headers
           end.not_to change(Tag, :count)
 
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.parsed_body["error"]).to include("Name")
           expect(response.parsed_body).not_to have_key("id")
-          expect(AuditLog.where(slug: "api_tag_create")).not_to exist
         end
-      end
 
-      it "rejects a missing name" do
-        post api_tags_path, params: tag_params.except(:name).to_json, headers: auth_headers
-
+        post api_tags_path, params: tag_params.merge(bg_color_hex: "invalid").to_json, headers: auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body["error"]).to include("Name")
+        expect(Tag.find_by(name: "javascript")).to be_nil
+        expect(AuditLog.where(slug: "api_tag_create")).not_to exist
       end
 
       it "ignores fields outside the allowed list" do
@@ -260,54 +262,26 @@ RSpec.describe "Api::V1::Tags" do
         expect(response).to have_http_status(:created)
         expect(Tag.last).to have_attributes(alias_for: nil, suggested: false)
       end
-
-      it "rejects invalid update fields" do
-        post api_tags_path, params: tag_params.merge(bg_color_hex: "invalid").to_json, headers: auth_headers
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(Tag.find_by(name: "javascript")).to be_nil
-      end
     end
 
-    context "when the user is not an admin" do
-      it "returns unauthorized without creating a tag" do
-        expect do
-          post api_tags_path, params: tag_params.to_json, headers: auth_headers
-        end.not_to change(Tag, :count)
+    it "returns unauthorized without an API key or for non-admin, other-resource admin, or suspended admin users",
+       :aggregate_failures do
+      post api_tags_path, params: tag_params.to_json, headers: v1_headers
+      expect(response).to have_http_status(:unauthorized)
 
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when the user is a single resource admin for another resource" do
-      before { user.add_role(:single_resource_admin, Billboard) }
-
-      it "returns unauthorized" do
+      expect do
         post api_tags_path, params: tag_params.to_json, headers: auth_headers
+      end.not_to change(Tag, :count)
+      expect(response).to have_http_status(:unauthorized)
 
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
+      user.add_role(:single_resource_admin, Billboard)
+      post api_tags_path, params: tag_params.to_json, headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
 
-    context "when no API key is given" do
-      it "returns unauthorized" do
-        post api_tags_path, params: tag_params.to_json, headers: v1_headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when the API key belongs to a suspended admin" do
-      before do
-        user.add_role(:admin)
-        user.add_role(:suspended)
-      end
-
-      it "returns unauthorized" do
-        post api_tags_path, params: tag_params.to_json, headers: auth_headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
+      user.add_role(:admin)
+      user.add_role(:suspended)
+      post api_tags_path, params: tag_params.to_json, headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
     end
 
     context "when the V0 API is used" do
@@ -353,30 +327,21 @@ RSpec.describe "Api::V1::Tags" do
         expect(response.parsed_body).to eq(tag_params.stringify_keys.merge("id" => tag.id, "name" => tag.name))
       end
 
-      it "returns the current values of fields that were not sent" do
+      it "returns the current values of fields that were not sent and ignores unallowed fields", :aggregate_failures do
         tag.update!(wiki_body_markdown: "Existing wiki", context_note_instructions: "Existing note")
 
-        put api_tag_path(tag.id), params: { short_summary: "New summary" }.to_json, headers: auth_headers
+        put api_tag_path(tag.id),
+            params: { name: "renamed", alias_for: "other", short_summary: "New summary" }.to_json,
+            headers: auth_headers
 
+        expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to include(
           "short_summary" => "New summary", "pretty_name" => "Old", "supported" => false,
           "wiki_body_markdown" => "Existing wiki", "context_note_instructions" => "Existing note"
         )
-      end
-
-      it "only changes the fields that are sent" do
-        put api_tag_path(tag.id), params: { short_summary: "New summary" }.to_json, headers: auth_headers
-
-        expect(response).to have_http_status(:ok)
-        expect(tag.reload).to have_attributes(short_summary: "New summary", pretty_name: "Old", supported: false)
-      end
-
-      it "ignores fields outside the allowed list" do
-        put api_tag_path(tag.id), params: { name: "renamed", alias_for: "other", short_summary: "x" }.to_json,
-                                  headers: auth_headers
-
-        expect(response).to have_http_status(:ok)
-        expect(tag.reload).to have_attributes(name: tag.name, alias_for: nil, short_summary: "x")
+        expect(tag.reload).to have_attributes(
+          name: tag.name, alias_for: nil, short_summary: "New summary", pretty_name: "Old", supported: false,
+        )
       end
 
       it "enqueues the tag cache bust, which also purges the supported tags list" do
@@ -430,55 +395,27 @@ RSpec.describe "Api::V1::Tags" do
       end
     end
 
-    context "when the user is a single resource admin for another resource" do
-      before { user.add_role(:single_resource_admin, Billboard) }
+    it "returns unauthorized without an api key or for non-admin, moderator, other-resource, or suspended users",
+       :aggregate_failures do
+      put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: v1_headers
+      expect(response).to have_http_status(:unauthorized)
 
-      it "returns unauthorized" do
-        put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
+      put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
 
-        expect(response).to have_http_status(:unauthorized)
-        expect(tag.reload.pretty_name).to eq("Old")
-      end
-    end
+      user.add_role(:tag_moderator, tag)
+      put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
 
-    context "when the user is a moderator of the tag" do
-      before { user.add_role(:tag_moderator, tag) }
+      user.add_role(:single_resource_admin, Billboard)
+      put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
 
-      it "returns unauthorized" do
-        put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
-
-        expect(response).to have_http_status(:unauthorized)
-        expect(tag.reload.pretty_name).to eq("Old")
-      end
-    end
-
-    context "when the user is not an admin" do
-      it "returns unauthorized" do
-        put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when no api key is given" do
-      it "returns unauthorized" do
-        put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: v1_headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when the api key belongs to a suspended super admin" do
-      before do
-        user.add_role(:super_admin)
-        user.add_role(:suspended)
-      end
-
-      it "returns unauthorized" do
-        put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
+      user.add_role(:super_admin)
+      user.add_role(:suspended)
+      put api_tag_path(tag.id), params: { pretty_name: "Nope" }.to_json, headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(tag.reload.pretty_name).to eq("Old")
     end
 
     context "when the V0 API is used" do
@@ -495,7 +432,176 @@ RSpec.describe "Api::V1::Tags" do
     end
   end
 
+  describe "POST and DELETE /api/tags/:id/moderators" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:tag) { create(:tag, name: "javascript", supported: false) }
+    let(:moderator) { create(:user) }
+    let(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
+    let(:auth_headers) { v1_headers.merge("api-key" => api_secret.secret) }
+
+    def add_moderator(params, headers: auth_headers)
+      post moderators_api_tag_path(tag.id), params: params.to_json, headers: headers
+    end
+
+    def remove_moderator(params, headers: auth_headers)
+      delete moderators_api_tag_path(tag.id), params: params.to_json, headers: headers
+    end
+
+    context "when the user is an admin" do
+      before do
+        user.add_role(:admin)
+        Audit::Subscribe.listen :admin_api
+      end
+
+      after { Audit::Subscribe.forget :admin_api }
+
+      it "adds a moderator by username with the same side effects as the admin tag page", :aggregate_failures do
+        add_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body).to eq(
+          "tag_id" => tag.id, "tag_name" => "javascript", "user_id" => moderator.id, "username" => moderator.username,
+        )
+        expect(tag.tag_moderator_ids).to include(moderator.id)
+        expect(moderator.reload.trusted?).to be(true)
+        expect(tag.reload.supported).to be(true)
+      end
+
+      it "adds a moderator by user id and logs the actor, tag and moderator" do
+        add_moderator({ user_id: moderator.id })
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(user.id)
+        expect(log.slug).to eq("api_tag_moderator_add")
+        expect(log.data).to eq("action" => "api_tag_moderator_add", "tag_id" => tag.id, "user_id" => moderator.id)
+      end
+
+      it "returns unprocessable entity without calling the service or logging when the user is already a moderator" do
+        moderator.add_role(:tag_moderator, tag)
+        allow(TagModerators::Add).to receive(:call)
+
+        add_moderator({ username: moderator.username })
+
+        expect(TagModerators::Add).not_to have_received(:call)
+        expect(AuditLog.count).to eq(0)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to eq("#{moderator.username} is already a moderator of this tag")
+      end
+
+      it "returns not found for unknown username, user id, or tag and 422 when identifier is missing",
+         :aggregate_failures do
+        add_moderator({ username: "nobody-here" })
+        expect(response).to have_http_status(:not_found)
+
+        remove_moderator({ user_id: User.maximum(:id).to_i + 1 })
+        expect(response).to have_http_status(:not_found)
+
+        add_moderator({})
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        unknown_id = Tag.maximum(:id).to_i + 1
+        post moderators_api_tag_path(unknown_id), params: { username: moderator.username }.to_json,
+                                                  headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "removes a moderator and logs the change", :aggregate_failures do
+        moderator.add_role(:tag_moderator, tag)
+
+        remove_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["user_id"]).to eq(moderator.id)
+        expect(tag.tag_moderator_ids).not_to include(moderator.id)
+        expect(AuditLog.last.data).to eq(
+          "action" => "api_tag_moderator_remove", "tag_id" => tag.id, "user_id" => moderator.id,
+        )
+      end
+
+      it "returns unprocessable entity when removing a user who is not a moderator" do
+        remove_moderator({ user_id: moderator.id })
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(AuditLog.count).to eq(0)
+      end
+    end
+
+    context "when the user is a single resource admin for Tag" do
+      before { user.add_role(:single_resource_admin, Tag) }
+
+      it "adds and removes a moderator" do
+        add_moderator({ username: moderator.username })
+        expect(response).to have_http_status(:created)
+
+        remove_moderator({ username: moderator.username })
+        expect(response).to have_http_status(:ok)
+        expect(tag.tag_moderator_ids).not_to include(moderator.id)
+      end
+    end
+
+    context "when the user is a moderator of the tag" do
+      before { user.add_role(:tag_moderator, tag) }
+
+      it "returns unauthorized" do
+        add_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(tag.tag_moderator_ids).not_to include(moderator.id)
+      end
+    end
+
+    context "when the user is a single resource admin for another resource" do
+      before { user.add_role(:single_resource_admin, Billboard) }
+
+      it "returns unauthorized" do
+        moderator.add_role(:tag_moderator, tag)
+
+        remove_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(tag.tag_moderator_ids).to include(moderator.id)
+      end
+    end
+
+    context "when the user is not an admin" do
+      it "returns unauthorized" do
+        add_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when no API key is given" do
+      it "returns unauthorized" do
+        add_moderator({ username: moderator.username }, headers: v1_headers)
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when the V0 API is used" do
+      it "does not route the request" do
+        user.add_role(:admin)
+        v0_headers = { "content-type" => "application/json", "api-key" => api_secret.secret }
+
+        expect do
+          post "/api/tags/#{tag.id}/moderators", params: { username: moderator.username }.to_json, headers: v0_headers
+        end.to raise_error(ActionController::RoutingError)
+      end
+    end
+  end
+
   private
+
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    options[:user] = create(:user) if name == :api_secret && !options.key?(:user) && !options.key?(:user_id)
+    super
+  end
 
   def expect_valid_json_body(body, tag)
     expect(body.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary])

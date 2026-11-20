@@ -14,6 +14,21 @@ RSpec.describe "Admin::Surveys", type: :request do
         get admin_surveys_path
         expect(response).to have_http_status(:success)
       end
+
+      it "batch-preloads poll counts without per-survey N+1 COUNT queries" do
+        create_list(:survey, 3).each { |s| create(:poll, survey: s) }
+        poll_queries = []
+        callback = lambda do |*, payload|
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          poll_queries << payload[:sql] if payload[:sql].include?('FROM "polls"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get admin_surveys_path }
+
+        expect(response).to have_http_status(:success)
+        expect(poll_queries.size).to eq(1)
+      end
     end
 
     context "when logged in as a survey admin" do
@@ -92,6 +107,44 @@ RSpec.describe "Admin::Surveys", type: :request do
       
       expect(response).to have_http_status(:success)
       expect(response.body).to include('Total completions')
+    end
+
+    it "coalesces completion stats and avoids duplicate poll vote/skip/text-response count queries" do
+      create(:poll, survey: survey, type_of: :text_input)
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:name] != "SCHEMA" && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get admin_survey_path(survey) }
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("Poll Results (3)")
+      expect(queries.grep(/FROM "survey_completions"/).size).to eq(1)
+      expect(queries.grep(/FROM "poll_votes"/).size).to eq(1)
+      expect(queries.grep(/FROM "poll_skips"/).size).to eq(1)
+      expect(queries.grep(/COUNT\(\*\).*FROM "polls"/).size).to eq(0)
+      expect(queries.grep(/FROM "poll_text_responses"/).size).to eq(2)
+    end
+  end
+
+  describe "GET /admin/content_manager/surveys/:id/edit" do
+    let(:survey) { create(:survey) }
+
+    before { 3.times { create(:poll, survey: survey, type_of: :single_choice) } }
+
+    it "preloads polls and poll_options without per-poll N+1 queries" do
+      poll_option_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA" || payload[:cached]
+
+        poll_option_queries << payload[:sql] if payload[:sql].include?('FROM "poll_options"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get edit_admin_survey_path(survey) }
+
+      expect(response).to have_http_status(:success)
+      expect(poll_option_queries.size).to eq(1)
     end
   end
 

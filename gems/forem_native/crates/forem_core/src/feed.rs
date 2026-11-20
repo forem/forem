@@ -11,6 +11,7 @@
 //!   primitives to compile `FeedConfig#score_sql` in a single pre-allocated buffer with
 //!   zero intermediate Ruby array/string allocations.
 
+use std::borrow::Cow;
 use std::fmt::Write;
 
 /// A parsed timestamp with UTC epoch seconds, nanosecond subseconds, and the
@@ -631,7 +632,7 @@ pub enum AiPreference {
     HideFullyAutonomous,
 }
 
-/// All 23 weight/rate attributes of a `FeedConfig` model used in `FeedConfig#score_sql`.
+/// All weight/rate attributes of a `FeedConfig` model used in `FeedConfig#score_sql`.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct FeedScoreWeights {
     pub feed_success_weight: f64,
@@ -662,6 +663,7 @@ pub struct FeedScoreWeights {
     pub compellingness_score_weight: f64,
     pub language_match_weight: f64,
     pub randomness_weight: f64,
+    pub published_at_diversity_weight: f64,
 }
 
 /// Pre-extracted user, activity, and request context for `build_feed_config_score_sql`.
@@ -688,6 +690,9 @@ pub struct FeedScoreContext<'a> {
     pub ai_preference: AiPreference,
     pub languages: &'a [String],
     pub random_seed: u32,
+    /// Midpoint (hours) of the effective feed lookback window, used by
+    /// `published_at_diversity_weight` (`FeedConfig#published_at_diversity_half_lookback_hours`).
+    pub published_at_diversity_half_lookback_hours: f64,
 }
 
 #[inline]
@@ -851,6 +856,27 @@ pub fn build_feed_config_score_sql(
             "((1.0 / (1.0 + (EXTRACT(epoch FROM (NOW() - articles.last_comment_at)) / 3600.0))) * ",
         );
         if !write_ruby_float(&mut out, w.comment_recency_weight) {
+            return None;
+        }
+        out.push(')');
+    }
+
+    // 11b. published_at_diversity_weight: U-shaped curve centred on the lookback midpoint
+    if w.published_at_diversity_weight > 0.0 {
+        let half = ctx.published_at_diversity_half_lookback_hours;
+        begin_term(&mut out, &mut has_terms);
+        out.push_str(
+            "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - ",
+        );
+        if !write_ruby_float(&mut out, half) {
+            return None;
+        }
+        out.push_str(") / ");
+        if !write_ruby_float(&mut out, half) {
+            return None;
+        }
+        out.push_str(", 1.0), 2) * ");
+        if !write_ruby_float(&mut out, w.published_at_diversity_weight) {
             return None;
         }
         out.push(')');
@@ -1107,16 +1133,198 @@ pub fn build_feed_config_score_sql(
     }
 }
 
+/// Iterates over the `", "`-delimited segments of `cached_tag_list` with zero heap
+/// allocations while stripping trailing empty segments to match Ruby's
+/// `cached_tag_list.split(", ")` semantics.
+#[inline]
+pub fn iter_cached_tag_list(cached_tag_list: &str) -> impl Iterator<Item = &str> {
+    let mut trimmed = cached_tag_list;
+    while let Some(prefix) = trimmed.strip_suffix(", ") {
+        trimmed = prefix;
+    }
+    let has_items = !trimmed.is_empty();
+    trimmed.split(", ").take_while(move |_| has_items)
+}
+
 /// Splits a `cached_tag_list` string on `", "` while stripping trailing empty segments.
 pub fn split_cached_tag_list(cached_tag_list: &str) -> Vec<&str> {
+    iter_cached_tag_list(cached_tag_list).collect()
+}
+
+/// Canonical flare tag names from `Constants::Tags::FLARE_TAG_NAMES`.
+pub const FLARE_TAG_NAMES: [&str; 13] = [
+    "ama",
+    "anonymous",
+    "challenge",
+    "discuss",
+    "explainlikeimfive",
+    "healthydebate",
+    "help",
+    "jokes",
+    "news",
+    "showdev",
+    "techtalks",
+    "todayilearned",
+    "watercooler",
+];
+
+/// Returns `true` if `tag` is one of the 13 canonical `Constants::Tags::FLARE_TAG_NAMES`.
+#[inline]
+pub fn is_canonical_flare_tag(tag: &str) -> bool {
+    matches!(
+        tag.as_bytes(),
+        b"ama"
+            | b"anonymous"
+            | b"challenge"
+            | b"discuss"
+            | b"explainlikeimfive"
+            | b"healthydebate"
+            | b"help"
+            | b"jokes"
+            | b"news"
+            | b"showdev"
+            | b"techtalks"
+            | b"todayilearned"
+            | b"watercooler"
+    )
+}
+
+/// Returns the first tag in `cached_tag_list` (split on `", "` with Ruby's trailing-empty
+/// stripping) that belongs to `allowed_tags` (or `FLARE_TAG_NAMES` when `allowed_tags` is `None`),
+/// borrowing the matched slice in-place with zero heap allocations.
+///
+/// Mirrors both:
+/// - `Constants::Tags::FLARE_TAG_NAMES.to_set.intersection(cached_tag_list.split(", ")).first`
+///   in `Homepage::FetchTagFlares.articles_tag_flares`
+/// - `FLARE_TAG_IDS_HASH.slice(*article.cached_tag_list_array).first` in `FlareTag#tag_id`
+pub fn match_first_flare_tag<'a, S: AsRef<str>>(
+    cached_tag_list: &'a str,
+    allowed_tags: Option<&[S]>,
+) -> Option<&'a str> {
     if cached_tag_list.is_empty() {
-        return Vec::new();
+        return None;
     }
-    let mut parts: Vec<&str> = cached_tag_list.split(", ").collect();
-    while parts.last() == Some(&"") {
-        parts.pop();
+    match allowed_tags {
+        None => iter_cached_tag_list(cached_tag_list).find(|&tag| is_canonical_flare_tag(tag)),
+        Some(allowed) => {
+            if allowed.is_empty() {
+                return None;
+            }
+            iter_cached_tag_list(cached_tag_list)
+                .find(|&tag| allowed.iter().any(|a| a.as_ref() == tag))
+        }
     }
-    parts
+}
+
+/// Groups `(article_id, cached_tag_list)` pairs by their first matching flare tag,
+/// preserving first-seen tag insertion order and per-tag article ID order to match
+/// `Homepage::FetchTagFlares.articles_tag_flares`.
+pub fn group_articles_by_flare_tag<'a, S: AsRef<str>>(
+    articles: &[(i64, &'a str)],
+    allowed_tags: Option<&[S]>,
+) -> Vec<(&'a str, Vec<i64>)> {
+    let mut groups: Vec<(&'a str, Vec<i64>)> = Vec::new();
+    for &(article_id, cached_tag_list) in articles {
+        if let Some(flare_tag) = match_first_flare_tag(cached_tag_list, allowed_tags) {
+            if let Some(entry) = groups.iter_mut().find(|(name, _)| *name == flare_tag) {
+                entry.1.push(article_id);
+            } else {
+                groups.push((flare_tag, vec![article_id]));
+            }
+        }
+    }
+    groups
+}
+
+/// Configured relevancy lever input for `build_variant_relevancy_score_sql`.
+#[derive(Debug, Clone)]
+pub struct RelevancyLeverInput<'a> {
+    pub user_required: bool,
+    pub select_fragment: &'a str,
+    pub cases: Vec<(i64, f64)>,
+    pub fallback: f64,
+}
+
+/// Writes a single `(CASE <select_fragment>\nWHEN <v> THEN <f>...\nELSE <fallback> END)`
+/// SQL expression into `out`, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+///
+/// Returns `false` if `select_fragment` contains `'?'` or `'\0'`, or if any float falls
+/// outside the standard decimal formatting range.
+pub fn write_relevancy_lever_sql(
+    out: &mut String,
+    select_fragment: &str,
+    cases: &[(i64, f64)],
+    fallback: f64,
+) -> bool {
+    if select_fragment.contains('?') || select_fragment.contains('\0') {
+        return false;
+    }
+    out.push_str("(CASE ");
+    out.push_str(select_fragment);
+    for &(val, factor) in cases {
+        let _ = write!(out, "\nWHEN {val} THEN ");
+        if !write_ruby_float(out, factor) {
+            return false;
+        }
+    }
+    out.push_str("\nELSE ");
+    if !write_ruby_float(out, fallback) {
+        return false;
+    }
+    out.push_str(" END)");
+    true
+}
+
+/// Builds a single `(CASE <select_fragment>\nWHEN <v> THEN <f>...\nELSE <fallback> END)`
+/// SQL expression, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+pub fn build_relevancy_lever_sql(
+    select_fragment: &str,
+    cases: &[(i64, f64)],
+    fallback: f64,
+) -> Option<String> {
+    let mut out = String::with_capacity(select_fragment.len() + cases.len() * 24 + 24);
+    write_relevancy_lever_sql(&mut out, select_fragment, cases, fallback).then_some(out)
+}
+
+/// Compiles the joined `relevance_score_components_as_sql` expression for
+/// `Articles::Feeds::VariantQuery` in a single pre-allocated buffer.
+pub fn build_variant_relevancy_score_sql(
+    levers: &[RelevancyLeverInput<'_>],
+    has_user: bool,
+    minimize_ai: bool,
+) -> Option<String> {
+    const AI_PENALTY_SQL: &str = "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)";
+
+    let mut out = String::with_capacity(levers.len() * 256 + 128);
+    let mut has_components = false;
+
+    for lever in levers {
+        if lever.user_required && !has_user {
+            continue;
+        }
+        if has_components {
+            out.push_str(" * \n");
+        } else {
+            has_components = true;
+        }
+        if !write_relevancy_lever_sql(
+            &mut out,
+            lever.select_fragment,
+            &lever.cases,
+            lever.fallback,
+        ) {
+            return None;
+        }
+    }
+
+    if minimize_ai {
+        if has_components {
+            out.push_str(" * \n");
+        }
+        out.push_str(AI_PENALTY_SQL);
+    }
+
+    Some(out)
 }
 
 /// Scores an article's `cached_tag_list` against a user's followed tags and their point values.
@@ -1593,6 +1801,777 @@ pub fn build_activity_heatmap(
     })
 }
 
+#[inline]
+const fn is_ascii_regex_space(b: u8) -> bool {
+    matches!(b, b' ' | b'\t' | b'\n' | b'\r' | 0x0B | 0x0C)
+}
+
+#[inline]
+const fn is_xml_space_or_delim(b: u8) -> bool {
+    matches!(b, b'>' | b'/' | b' ' | b'\t' | b'\n' | b'\r')
+}
+
+fn skip_xml_tag_close(bytes: &[u8], mut i: usize) -> Option<usize> {
+    let mut quote = 0_u8;
+    while i < bytes.len() {
+        let b = bytes[i];
+        if quote != 0 {
+            if b == quote {
+                quote = 0;
+            }
+        } else if b == b'"' || b == b'\'' {
+            quote = b;
+        } else if b == b'>' {
+            return Some(i);
+        }
+        i += 1;
+    }
+    None
+}
+
+enum XmlOpenTagMatch {
+    NotMatched,
+    Malformed,
+    Matched(usize),
+}
+
+fn match_xml_open_tag(bytes: &[u8], pos: usize, tag: &[u8]) -> XmlOpenTagMatch {
+    let start = pos + 1;
+    let Some(end) = start.checked_add(tag.len()) else {
+        return XmlOpenTagMatch::NotMatched;
+    };
+    if end >= bytes.len() || !bytes[start..end].eq_ignore_ascii_case(tag) {
+        return XmlOpenTagMatch::NotMatched;
+    }
+    if !is_xml_space_or_delim(bytes[end]) {
+        return XmlOpenTagMatch::NotMatched;
+    }
+    match skip_xml_tag_close(bytes, end) {
+        Some(gt) => XmlOpenTagMatch::Matched(gt),
+        None => XmlOpenTagMatch::Malformed,
+    }
+}
+
+fn match_xml_close_tag(bytes: &[u8], pos: usize, tag: &[u8]) -> Option<usize> {
+    let start = pos + 2;
+    let end = start.checked_add(tag.len())?;
+    if end >= bytes.len() || bytes[pos + 1] != b'/' || !bytes[start..end].eq_ignore_ascii_case(tag)
+    {
+        return None;
+    }
+    let mut k = end;
+    while k < bytes.len() && matches!(bytes[k], b' ' | b'\t' | b'\n' | b'\r') {
+        k += 1;
+    }
+    (k < bytes.len() && bytes[k] == b'>').then_some(k)
+}
+
+fn find_subslice(haystack: &[u8], start: usize, needle: &[u8]) -> Option<usize> {
+    haystack
+        .get(start..)?
+        .windows(needle.len())
+        .position(|w| w == needle)
+        .map(|off| start + off)
+}
+
+/// Truncates an RSS (`<item>...</item>`) or Atom (`<entry>...</entry>`) XML feed string
+/// to at most `max_items` items, preserving all non-item XML structure (prolog, channel
+/// metadata, and closing tags). Returns `Cow::Borrowed(xml)` with zero allocations when
+/// the feed already contains `<= max_items` items or has unclosed tags.
+pub fn truncate_feed_xml_items(xml: &str, max_items: usize) -> Cow<'_, str> {
+    if max_items == 0 {
+        return Cow::Borrowed(xml);
+    }
+    let bytes = xml.as_bytes();
+    let mut tag_kind: Option<&'static [u8]> = None;
+    let mut count = 0_usize;
+    let mut excess_ranges: Vec<(usize, usize)> = Vec::new();
+    let mut i = 0;
+
+    while i < bytes.len() {
+        if bytes[i] != b'<' {
+            i += 1;
+            continue;
+        }
+        if bytes[i..].starts_with(b"<!--") {
+            let Some(end) = find_subslice(bytes, i + 4, b"-->") else {
+                return Cow::Borrowed(xml);
+            };
+            i = end + 3;
+            continue;
+        }
+        if bytes[i..].starts_with(b"<![CDATA[") {
+            let Some(end) = find_subslice(bytes, i + 9, b"]]>") else {
+                return Cow::Borrowed(xml);
+            };
+            i = end + 3;
+            continue;
+        }
+
+        let (tk, open_gt) = match tag_kind {
+            Some(tk) => match match_xml_open_tag(bytes, i, tk) {
+                XmlOpenTagMatch::Matched(gt) => (tk, gt),
+                XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                XmlOpenTagMatch::NotMatched => {
+                    i += 1;
+                    continue;
+                }
+            },
+            None => match match_xml_open_tag(bytes, i, b"item") {
+                XmlOpenTagMatch::Matched(gt) => (&b"item"[..], gt),
+                XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                XmlOpenTagMatch::NotMatched => match match_xml_open_tag(bytes, i, b"entry") {
+                    XmlOpenTagMatch::Matched(gt) => (&b"entry"[..], gt),
+                    XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                    XmlOpenTagMatch::NotMatched => {
+                        i += 1;
+                        continue;
+                    }
+                },
+            },
+        };
+        tag_kind = Some(tk);
+        let item_start = i;
+
+        let item_end = if bytes[open_gt - 1] == b'/' {
+            open_gt + 1
+        } else {
+            let mut depth = 1_usize;
+            let mut j = open_gt + 1;
+            let mut close_end = None;
+            while j < bytes.len() {
+                if bytes[j] != b'<' {
+                    j += 1;
+                    continue;
+                }
+                if bytes[j..].starts_with(b"<!--") {
+                    let Some(end) = find_subslice(bytes, j + 4, b"-->") else {
+                        return Cow::Borrowed(xml);
+                    };
+                    j = end + 3;
+                    continue;
+                }
+                if bytes[j..].starts_with(b"<![CDATA[") {
+                    let Some(end) = find_subslice(bytes, j + 9, b"]]>") else {
+                        return Cow::Borrowed(xml);
+                    };
+                    j = end + 3;
+                    continue;
+                }
+                if let Some(cgt) = match_xml_close_tag(bytes, j, tk) {
+                    depth -= 1;
+                    if depth == 0 {
+                        close_end = Some(cgt + 1);
+                        break;
+                    }
+                    j = cgt + 1;
+                    continue;
+                }
+                match match_xml_open_tag(bytes, j, tk) {
+                    XmlOpenTagMatch::Matched(ogt) => {
+                        if bytes[ogt - 1] != b'/' {
+                            depth += 1;
+                        }
+                        j = ogt + 1;
+                        continue;
+                    }
+                    XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                    XmlOpenTagMatch::NotMatched => {}
+                }
+                j += 1;
+            }
+            let Some(ce) = close_end else {
+                return Cow::Borrowed(xml);
+            };
+            ce
+        };
+
+        count += 1;
+        if count > max_items {
+            excess_ranges.push((item_start, item_end));
+        }
+        i = item_end;
+    }
+
+    if excess_ranges.is_empty() {
+        return Cow::Borrowed(xml);
+    }
+
+    let removed_bytes: usize = excess_ranges.iter().map(|(s, e)| e - s).sum();
+    let mut out = String::with_capacity(xml.len().saturating_sub(removed_bytes));
+    let mut cursor = 0;
+    for (start, end) in excess_ranges {
+        out.push_str(&xml[cursor..start]);
+        cursor = end;
+    }
+    out.push_str(&xml[cursor..]);
+    Cow::Owned(out)
+}
+
+fn match_html_block_tag_after_lt(bytes: &[u8], after_lt: usize) -> bool {
+    const TAGS: [&[u8]; 10] = [
+        b"blockquote",
+        b"section",
+        b"figure",
+        b"table",
+        b"div",
+        b"pre",
+        b"ul",
+        b"ol",
+        b"li",
+        b"p",
+    ];
+    let mut i = after_lt;
+    while i < bytes.len() && is_ascii_regex_space(bytes[i]) {
+        i += 1;
+    }
+    let rem = &bytes[i..];
+    if rem.len() >= 3
+        && (rem[0] == b'h' || rem[0] == b'H')
+        && (b'1'..=b'6').contains(&rem[1])
+        && (rem[2] == b'>' || is_ascii_regex_space(rem[2]))
+    {
+        return true;
+    }
+    for tag in TAGS {
+        if rem.len() > tag.len()
+            && rem[..tag.len()].eq_ignore_ascii_case(tag)
+            && (rem[tag.len()] == b'>' || is_ascii_regex_space(rem[tag.len()]))
+        {
+            return true;
+        }
+    }
+    false
+}
+
+/// Checks whether feed item `content` is predominantly HTML rather than Markdown/plain text,
+/// matching `Feeds::AssembleArticleMarkdown#html_content?`:
+/// counts `/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i` matches
+/// vs. `/\n\s*\n/` paragraph breaks in a single zero-allocation pass.
+pub fn feed_html_content(content: &str) -> bool {
+    let bytes = content.as_bytes();
+    let mut block_tag_count = 0_usize;
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'<' && match_html_block_tag_after_lt(bytes, i + 1) {
+            block_tag_count += 1;
+        }
+        i += 1;
+    }
+    if block_tag_count == 0 {
+        return false;
+    }
+
+    let mut paragraph_breaks = 0_usize;
+    let mut j = 0;
+    while j < bytes.len() {
+        if is_ascii_regex_space(bytes[j]) {
+            let mut newlines = 0_usize;
+            while j < bytes.len() && is_ascii_regex_space(bytes[j]) {
+                if bytes[j] == b'\n' {
+                    newlines += 1;
+                }
+                j += 1;
+            }
+            if newlines >= 2 {
+                paragraph_breaks += 1;
+            }
+        } else {
+            j += 1;
+        }
+    }
+
+    block_tag_count > paragraph_breaks
+}
+
+fn match_youtube_liquid_tag(text: &str) -> Option<usize> {
+    let bytes = text.as_bytes();
+    if bytes.len() < 25 || !bytes.starts_with(b"{%") || !is_ascii_regex_space(bytes[2]) {
+        return None;
+    }
+    if !bytes[3..].starts_with(b"youtube") || !is_ascii_regex_space(bytes[10]) {
+        return None;
+    }
+    let inner_start = 11;
+    let mut char_ends: [usize; 19] = [0; 19];
+    let mut count = 0_usize;
+    for (off, ch) in text[inner_start..].char_indices() {
+        if ch == '\n' {
+            break;
+        }
+        count += 1;
+        char_ends[count] = inner_start + off + ch.len_utf8();
+        if count == 18 {
+            break;
+        }
+    }
+    if count < 11 {
+        return None;
+    }
+    for k in (11..=count).rev() {
+        let pos = char_ends[k];
+        if pos + 3 <= bytes.len()
+            && is_ascii_regex_space(bytes[pos])
+            && bytes[pos + 1] == b'%'
+            && bytes[pos + 2] == b'}'
+        {
+            return Some(pos + 3);
+        }
+    }
+    None
+}
+
+/// Fuses the three post-`ReverseMarkdown` normalizations in
+/// `Feeds::AssembleArticleMarkdown#assemble_body_markdown`:
+/// 1. Strips `"```\n\n```"`
+/// 2. Replaces `"&nbsp;"` and `"\u{00A0}"` with `" "`
+/// 3. Unescapes `\_` to `_` inside `/{%\syoutube\s(.{11,18})\s%}/` tags.
+pub fn postprocess_feed_markdown(content: &str) -> Cow<'_, str> {
+    let has_empty_fence = content.contains("```\n\n```");
+    let has_nbsp = content.contains("&nbsp;") || content.contains('\u{00A0}');
+    let has_yt = content.contains("{%") && content.contains("\\_");
+    if !has_empty_fence && !has_nbsp && !has_yt {
+        return Cow::Borrowed(content);
+    }
+
+    let step1: Cow<'_, str> = if has_empty_fence {
+        Cow::Owned(content.replace("```\n\n```", ""))
+    } else {
+        Cow::Borrowed(content)
+    };
+
+    let step2: Cow<'_, str> = if step1.contains("&nbsp;") || step1.contains('\u{00A0}') {
+        let s = step1.as_ref();
+        let bytes = s.as_bytes();
+        let mut out = String::with_capacity(s.len());
+        let mut last = 0;
+        let mut i = 0;
+        while i < bytes.len() {
+            if bytes[i..].starts_with(b"&nbsp;") {
+                out.push_str(&s[last..i]);
+                out.push(' ');
+                i += 6;
+                last = i;
+            } else if bytes[i..].starts_with(&[0xC2, 0xA0]) {
+                out.push_str(&s[last..i]);
+                out.push(' ');
+                i += 2;
+                last = i;
+            } else {
+                i += 1;
+            }
+        }
+        out.push_str(&s[last..]);
+        Cow::Owned(out)
+    } else {
+        step1
+    };
+
+    if !(step2.contains("{%") && step2.contains("\\_")) {
+        return step2;
+    }
+
+    let s = step2.as_ref();
+    let bytes = s.as_bytes();
+    let mut out: Option<String> = None;
+    let mut last = 0;
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'{' {
+            if let Some(tag_len) = match_youtube_liquid_tag(&s[i..]) {
+                let tag = &s[i..i + tag_len];
+                if tag.contains("\\_") {
+                    let buf = out.get_or_insert_with(|| String::with_capacity(s.len()));
+                    buf.push_str(&s[last..i]);
+                    buf.push_str(&tag.replace("\\_", "_"));
+                    i += tag_len;
+                    last = i;
+                    continue;
+                }
+                i += tag_len;
+                continue;
+            }
+        }
+        i += 1;
+    }
+
+    match out {
+        Some(mut buf) => {
+            buf.push_str(&s[last..]);
+            Cow::Owned(buf)
+        }
+        None => step2,
+    }
+}
+
+fn is_clean_url_token(s: &str) -> bool {
+    !s.is_empty() && s.bytes().all(|b| (0x21..0x7F).contains(&b))
+}
+
+fn validate_simple_base_origin(base_url: &str) -> bool {
+    if !is_clean_url_token(base_url) {
+        return false;
+    }
+    let Some(rest) = base_url
+        .strip_prefix("https://")
+        .or_else(|| base_url.strip_prefix("http://"))
+    else {
+        return false;
+    };
+    !rest.is_empty() && !rest.contains(['/', '?', '#'])
+}
+
+fn resolve_simple_feed_path(
+    base_url: &str,
+    feed_source_url: &str,
+    path: &str,
+) -> Option<Option<String>> {
+    if path.starts_with("http://") || path.starts_with("https://") {
+        return Some(None);
+    }
+    if !is_clean_url_token(path)
+        || path.starts_with("//")
+        || path.contains([':', '?', '#', '\\'])
+        || path.split('/').any(|seg| seg == "." || seg == "..")
+    {
+        return None;
+    }
+    if path.starts_with('/') {
+        if !validate_simple_base_origin(base_url) {
+            return None;
+        }
+        let mut joined = String::with_capacity(base_url.len() + path.len());
+        joined.push_str(base_url);
+        joined.push_str(path);
+        return Some(Some(joined));
+    }
+
+    if !is_clean_url_token(feed_source_url) || feed_source_url.contains(['?', '#', '\\']) {
+        return None;
+    }
+    let rest = feed_source_url
+        .strip_prefix("https://")
+        .or_else(|| feed_source_url.strip_prefix("http://"))?;
+    if rest.is_empty() || rest.starts_with('/') {
+        return None;
+    }
+    let scheme_host_offset = feed_source_url.len() - rest.len();
+    let slash_idx = rest.rfind('/')?;
+    let dir_prefix = &feed_source_url[..scheme_host_offset + slash_idx + 1];
+    if dir_prefix[scheme_host_offset..]
+        .split('/')
+        .any(|seg| seg == "." || seg == "..")
+    {
+        return None;
+    }
+    let mut joined = String::with_capacity(dir_prefix.len() + path.len());
+    joined.push_str(dir_prefix);
+    joined.push_str(path);
+    Some(Some(joined))
+}
+
+/// Resolves relative URLs in inline `<img ... src="...">` tags and Markdown `![alt](path)`
+/// image syntax in a single native call, matching
+/// `Feeds::AssembleArticleMarkdown#resolve_relative_image_urls`.
+/// Returns `None` if a relative URL requires Ruby's `URI.join` (dot segments, queries, ...).
+pub fn resolve_feed_markdown_images<'a>(
+    content: &'a str,
+    base_url: &str,
+    feed_source_url: &str,
+) -> Option<Cow<'a, str>> {
+    let has_img = content.contains("<img");
+    let has_md = content.contains("![");
+    if !has_img && !has_md {
+        return Some(Cow::Borrowed(content));
+    }
+
+    let stage1: Cow<'a, str> = if has_img {
+        let bytes = content.as_bytes();
+        let mut out: Option<String> = None;
+        let mut last = 0;
+        let mut i = 0;
+        while i + 5 < bytes.len() {
+            if bytes[i..].starts_with(b"<img") && is_ascii_regex_space(bytes[i + 4]) {
+                let mut k = i + 5;
+                let mut matched = None;
+                while k < bytes.len() && bytes[k] != b'>' {
+                    if bytes[k..].starts_with(b"src=\"") || bytes[k..].starts_with(b"src='") {
+                        let path_start = k + 5;
+                        let rem = &content[path_start..];
+                        if !rem.starts_with("http://") && !rem.starts_with("https://") {
+                            let mut p = path_start;
+                            while p < bytes.len() && bytes[p] != b'"' && bytes[p] != b'\'' {
+                                p += 1;
+                            }
+                            if p > path_start && p < bytes.len() {
+                                matched = Some((path_start, p));
+                                break;
+                            }
+                        }
+                    }
+                    k += 1;
+                }
+                if let Some((path_start, path_end)) = matched {
+                    let path = &content[path_start..path_end];
+                    if let Some(resolved) =
+                        resolve_simple_feed_path(base_url, feed_source_url, path)?
+                    {
+                        let buf =
+                            out.get_or_insert_with(|| String::with_capacity(content.len() + 64));
+                        buf.push_str(&content[last..path_start]);
+                        buf.push_str(&resolved);
+                        buf.push(bytes[path_end] as char);
+                        i = path_end + 1;
+                        last = i;
+                        continue;
+                    }
+                    i = path_end + 1;
+                    continue;
+                }
+            }
+            i += 1;
+        }
+        match out {
+            Some(mut buf) => {
+                buf.push_str(&content[last..]);
+                Cow::Owned(buf)
+            }
+            None => Cow::Borrowed(content),
+        }
+    } else {
+        Cow::Borrowed(content)
+    };
+
+    if !stage1.contains("![") {
+        return Some(stage1);
+    }
+
+    let s = stage1.as_ref();
+    let bytes = s.as_bytes();
+    let mut out: Option<String> = None;
+    let mut last = 0;
+    let mut i = 0;
+    while i + 4 < bytes.len() {
+        if bytes[i] == b'!' && bytes[i + 1] == b'[' {
+            let mut close_br = i + 2;
+            while close_br < bytes.len() && bytes[close_br] != b']' {
+                close_br += 1;
+            }
+            if close_br + 2 < bytes.len() && bytes[close_br + 1] == b'(' {
+                let path_start = close_br + 2;
+                let rem = &s[path_start..];
+                if !rem.starts_with("http://") && !rem.starts_with("https://") {
+                    let mut close_paren = path_start;
+                    while close_paren < bytes.len() && bytes[close_paren] != b')' {
+                        close_paren += 1;
+                    }
+                    if close_paren > path_start && close_paren < bytes.len() {
+                        let path = &s[path_start..close_paren];
+                        if let Some(resolved) =
+                            resolve_simple_feed_path(base_url, feed_source_url, path)?
+                        {
+                            let buf =
+                                out.get_or_insert_with(|| String::with_capacity(s.len() + 64));
+                            buf.push_str(&s[last..path_start]);
+                            buf.push_str(&resolved);
+                            buf.push(')');
+                            i = close_paren + 1;
+                            last = i;
+                            continue;
+                        }
+                        i = close_paren + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+        i += 1;
+    }
+
+    match out {
+        Some(mut buf) => {
+            buf.push_str(&s[last..]);
+            Some(Cow::Owned(buf))
+        }
+        None => Some(stage1),
+    }
+}
+
+/// Formats up to 4 RSS/Atom category tags by stripping spaces and non-alphanumeric
+/// characters and truncating each to 20 characters, matching
+/// `Feeds::AssembleArticleMarkdown#get_tags`.
+/// Returns `None` if any of the first 4 tags contains non-ASCII bytes so Ruby's
+/// `[[:alnum:]]` regex handles Unicode letters identically.
+pub fn format_feed_tags<S: AsRef<str>>(categories: &[S]) -> Option<String> {
+    let take = categories.len().min(4);
+    if take == 0 {
+        return Some(String::new());
+    }
+    for cat in &categories[..take] {
+        if !cat.as_ref().is_ascii() {
+            return None;
+        }
+    }
+    let mut out = String::with_capacity(take * 21);
+    for (idx, cat) in categories[..take].iter().enumerate() {
+        if idx > 0 {
+            out.push(',');
+        }
+        let mut count = 0_usize;
+        for &b in cat.as_ref().as_bytes() {
+            if b.is_ascii_alphanumeric() {
+                out.push(b as char);
+                count += 1;
+                if count == 20 {
+                    break;
+                }
+            }
+        }
+    }
+    Some(out)
+}
+
+#[inline]
+const fn is_email_word_char(b: u8) -> bool {
+    b.is_ascii_alphanumeric() || b == b'_'
+}
+
+#[inline]
+const fn is_email_local_char(b: u8) -> bool {
+    is_email_word_char(b) || matches!(b, b'.' | b'+' | b'-')
+}
+
+#[inline]
+const fn is_email_domain_char(b: u8) -> bool {
+    is_email_word_char(b) || matches!(b, b'.' | b'-')
+}
+
+/// Extracts `(email, name)` from an RSS/Atom author string in a single pass, matching:
+/// - `email = author_string[/[\w.+-]+@[\w.-]+\.\w+/]`
+/// - `name = author_string.sub(/<[^>]+>/, "").strip`
+///
+/// Returns `None` if `author_string` contains non-ASCII bytes.
+pub fn extract_feed_author(author_string: &str) -> Option<(Option<String>, String)> {
+    if !author_string.is_ascii() {
+        return None;
+    }
+    let bytes = author_string.as_bytes();
+    let mut email: Option<String> = None;
+    let mut i = 0;
+    while i < bytes.len() {
+        if is_email_local_char(bytes[i]) {
+            let local_start = i;
+            while i < bytes.len() && is_email_local_char(bytes[i]) {
+                i += 1;
+            }
+            if i < bytes.len() && bytes[i] == b'@' {
+                let dom_start = i + 1;
+                let mut k = dom_start;
+                while k < bytes.len() && is_email_domain_char(bytes[k]) {
+                    k += 1;
+                }
+                let segment = &bytes[dom_start..k];
+                let last_dot = segment.iter().enumerate().rev().find_map(|(d, &b)| {
+                    (b == b'.'
+                        && d > 0
+                        && segment.get(d + 1).is_some_and(|&n| is_email_word_char(n)))
+                    .then_some(d)
+                });
+                if let Some(d) = last_dot {
+                    let tld_len = segment[d + 1..]
+                        .iter()
+                        .take_while(|&&b| is_email_word_char(b))
+                        .count();
+                    email =
+                        Some(author_string[local_start..dom_start + d + 1 + tld_len].to_string());
+                    break;
+                }
+            }
+        } else {
+            i += 1;
+        }
+    }
+
+    let name_untrimmed: Cow<'_, str> = if let Some(lt) = bytes.iter().position(|&b| b == b'<') {
+        if let Some(gt_rel) = bytes[lt + 1..].iter().position(|&b| b == b'>') {
+            if gt_rel > 0 {
+                let gt = lt + 1 + gt_rel;
+                let mut s = String::with_capacity(author_string.len() - (gt - lt + 1));
+                s.push_str(&author_string[..lt]);
+                s.push_str(&author_string[gt + 1..]);
+                Cow::Owned(s)
+            } else {
+                Cow::Borrowed(author_string)
+            }
+        } else {
+            Cow::Borrowed(author_string)
+        }
+    } else {
+        Cow::Borrowed(author_string)
+    };
+
+    let trimmed = name_untrimmed
+        .trim_matches(|c: char| matches!(c as u32, 0x09..=0x0D | 0x20 | 0x00))
+        .to_string();
+    Some((email, trimmed))
+}
+
+#[inline]
+const fn is_rb_path_char(b: u8) -> bool {
+    is_email_word_char(b) || matches!(b, b'/' | b'.' | b'-')
+}
+
+/// Replaces Ruby file/line references matching `/\/[\w\/.-]+\.rb:\d+/` with `"[path]"`
+/// and truncates to 500 characters (`...`), matching `Feeds::Import#sanitize_error`.
+pub fn sanitize_feed_error(message: &str) -> String {
+    let bytes = message.as_bytes();
+    let mut scrubbed = String::with_capacity(message.len().min(512));
+    let mut last = 0;
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'/' {
+            let mut k = i + 1;
+            while k < bytes.len() && is_rb_path_char(bytes[k]) {
+                k += 1;
+            }
+            let path_slice = &bytes[i + 1..k];
+            if let Some(rb_rel) = (0..path_slice.len().saturating_sub(2))
+                .rev()
+                .find(|&p| p > 0 && &path_slice[p..p + 3] == b".rb")
+            {
+                let after_rb = i + 1 + rb_rel + 3;
+                if after_rb + 1 < bytes.len()
+                    && bytes[after_rb] == b':'
+                    && bytes[after_rb + 1].is_ascii_digit()
+                {
+                    let mut d = after_rb + 2;
+                    while d < bytes.len() && bytes[d].is_ascii_digit() {
+                        d += 1;
+                    }
+                    scrubbed.push_str(&message[last..i]);
+                    scrubbed.push_str("[path]");
+                    i = d;
+                    last = i;
+                    continue;
+                }
+            }
+        }
+        i += 1;
+    }
+    scrubbed.push_str(&message[last..]);
+
+    if scrubbed.chars().count() <= 500 {
+        return scrubbed;
+    }
+    let end_byte = scrubbed
+        .char_indices()
+        .nth(497)
+        .map_or(scrubbed.len(), |(idx, _)| idx);
+    scrubbed.truncate(end_byte);
+    scrubbed.push_str("...");
+    scrubbed
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1758,11 +2737,57 @@ mod tests {
             ai_preference: AiPreference::ShowAll,
             languages: &[],
             random_seed: 42,
+            published_at_diversity_half_lookback_hours: 120.0,
         };
         assert_eq!(
             build_feed_config_score_sql(&weights, &ctx).as_deref(),
             Some("(0)")
         );
+    }
+
+    #[test]
+    fn build_score_sql_published_at_diversity_term() {
+        let weights = FeedScoreWeights {
+            published_at_diversity_weight: 6.5,
+            ..FeedScoreWeights::default()
+        };
+        let ctx = FeedScoreContext {
+            recent_pageviews_count: 0,
+            organization_follow_ids: &[],
+            user_follow_ids: &[],
+            tag_names: &[],
+            optimized_tags_query: false,
+            optimized_tags_limit: 20,
+            is_root_subforem: false,
+            subforem_follow_ids: &[],
+            label_names: &[],
+            lookback_window_utc_sec: 0,
+            second_latest_pageview_utc_sec: 0,
+            precomputed_selection_ids: &[],
+            has_activity_store: false,
+            recent_article_ids: &[],
+            published_since_24h_utc_sec: 0,
+            recent_subforem_ids: &[],
+            interest_embedding: &[],
+            published_since_30d_utc_sec: 0,
+            ai_preference: AiPreference::ShowAll,
+            languages: &[],
+            random_seed: 42,
+            published_at_diversity_half_lookback_hours: 24.0,
+        };
+        assert_eq!(
+            build_feed_config_score_sql(&weights, &ctx).as_deref(),
+            Some(
+                "((POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - 24.0) / 24.0, 1.0), 2) * 6.5))"
+            )
+        );
+
+        // Out-of-range floats defer to the Ruby legacy builder.
+        let tiny = FeedScoreWeights {
+            published_at_diversity_weight: 1e-6,
+            ..FeedScoreWeights::default()
+        };
+        assert!(build_feed_config_score_sql(&tiny, &ctx).is_none());
     }
 
     #[test]
@@ -1866,5 +2891,211 @@ mod tests {
         let p = build_activity_heatmap(start, end, &[(start, 1)], &[(start + 1, 2)], &[(end, 3)])
             .unwrap();
         assert_eq!((p.days.len(), p.totals[3], p.max), (3, 6, 3));
+    }
+
+    #[test]
+    fn truncate_feed_xml_items_rss_and_atom() {
+        let rss = "<rss><channel><title>Blog</title><item><title>1</title></item><item><title>2</title></item><item><title>3</title></item></channel></rss>";
+        assert_eq!(
+            truncate_feed_xml_items(rss, 2).as_ref(),
+            "<rss><channel><title>Blog</title><item><title>1</title></item><item><title>2</title></item></channel></rss>"
+        );
+        // Zero-copy when count <= max_items
+        assert!(matches!(truncate_feed_xml_items(rss, 3), Cow::Borrowed(_)));
+        assert!(matches!(truncate_feed_xml_items(rss, 10), Cow::Borrowed(_)));
+
+        // Atom <entry> with attributes and CDATA containing </entry>
+        let atom = "<feed><entry id=\"1\"><content><![CDATA[</entry><entry>]]></content></entry><entry id=\"2\"><title>B</title></entry></feed>";
+        assert_eq!(
+            truncate_feed_xml_items(atom, 1).as_ref(),
+            "<feed><entry id=\"1\"><content><![CDATA[</entry><entry>]]></content></entry></feed>"
+        );
+
+        // Malformed repeated unclosed `<item ` tags must return Borrowed immediately without quadratic scans
+        let malformed = "<item ".repeat(50_000);
+        assert!(matches!(
+            truncate_feed_xml_items(&malformed, 25),
+            Cow::Borrowed(_)
+        ));
+    }
+
+    #[test]
+    fn feed_html_vs_markdown_detection() {
+        assert!(feed_html_content(
+            "<p>First paragraph</p><p>Second paragraph</p>"
+        ));
+        assert!(!feed_html_content(
+            "# Heading\n\nParagraph 1 with <code>inline</code>\n\nParagraph 2"
+        ));
+        assert!(!feed_html_content("Plain text without any tags"));
+        assert!(feed_html_content(
+            "<div><h1>Title</h1>\n\n<p>Body</p></div>"
+        ));
+    }
+
+    #[test]
+    fn postprocess_feed_markdown_all_transforms() {
+        let clean = "Hello world\n\n```ruby\nputs 1\n```";
+        assert!(matches!(postprocess_feed_markdown(clean), Cow::Borrowed(_)));
+
+        let dirty = "Before\n```\n\n```\nMiddle&nbsp;text\u{00A0}here\n{% youtube dQw4w9WgXcQ\\_test %}\nAfter";
+        assert_eq!(
+            postprocess_feed_markdown(dirty).as_ref(),
+            "Before\n\nMiddle text here\n{% youtube dQw4w9WgXcQ_test %}\nAfter"
+        );
+    }
+
+    #[test]
+    fn resolve_feed_markdown_images_root_and_relative() {
+        let base = "https://example.com";
+        let source = "https://example.com/posts/2026/my-post";
+        let md = "Text ![alt](/assets/a.png) and ![rel](images/b.jpg) and <img class=\"x\" src=\"/c.gif\"> and ![abs](https://cdn.example.com/d.png)";
+        assert_eq!(
+            resolve_feed_markdown_images(md, base, source)
+                .unwrap()
+                .as_ref(),
+            "Text ![alt](https://example.com/assets/a.png) and ![rel](https://example.com/posts/2026/images/b.jpg) and <img class=\"x\" src=\"https://example.com/c.gif\"> and ![abs](https://cdn.example.com/d.png)"
+        );
+        // Dot-segments decline to Ruby's URI.join
+        assert!(resolve_feed_markdown_images("![up](../img.png)", base, source).is_none());
+
+        // Lazy `[^>]*?src=` skips empty `src=""` or `src="https://..."` to match subsequent `data-src="/..."`
+        assert_eq!(
+            resolve_feed_markdown_images("<img src=\"\" data-src=\"/img/real.png\">", base, source)
+                .unwrap()
+                .as_ref(),
+            "<img src=\"\" data-src=\"https://example.com/img/real.png\">"
+        );
+    }
+
+    #[test]
+    fn format_feed_tags_and_extract_author_and_sanitize_error() {
+        let cats = [
+            "Ruby on Rails!",
+            "web-dev",
+            "verylongcategorynamethatexceedstwentycharacters",
+            "fourth_tag",
+            "fifth_ignored",
+        ];
+        assert_eq!(
+            format_feed_tags(&cats).as_deref(),
+            Some("RubyonRails,webdev,verylongcategoryname,fourthtag")
+        );
+        assert_eq!(format_feed_tags::<&str>(&[]).as_deref(), Some(""));
+        assert!(format_feed_tags(&["café"]).is_none());
+
+        assert_eq!(
+            extract_feed_author("Jane Doe <jane.doe+rss@example.org>"),
+            Some((
+                Some("jane.doe+rss@example.org".to_string()),
+                "Jane Doe".to_string()
+            ))
+        );
+        assert_eq!(
+            extract_feed_author("Jane Doe (jane@example.com.)"),
+            Some((
+                Some("jane@example.com".to_string()),
+                "Jane Doe (jane@example.com.)".to_string()
+            ))
+        );
+        assert_eq!(
+            extract_feed_author("Jane Doe (jane@example.com-x)"),
+            Some((
+                Some("jane@example.com".to_string()),
+                "Jane Doe (jane@example.com-x)".to_string()
+            ))
+        );
+        assert_eq!(
+            extract_feed_author("  John Smith  "),
+            Some((None, "John Smith".to_string()))
+        );
+
+        let err = "Error in /app/services/feeds/import.rb:42:in `call' and /gems/rss-0.3.rb:12";
+        assert_eq!(
+            sanitize_feed_error(err),
+            "Error in [path]:in `call' and [path]"
+        );
+        let long_err = "x".repeat(600);
+        let sanitized_long = sanitize_feed_error(&long_err);
+        assert_eq!(sanitized_long.len(), 500);
+        assert!(sanitized_long.ends_with("..."));
+    }
+
+    #[test]
+    fn flare_tag_matching_and_grouping() {
+        assert_eq!(match_first_flare_tag::<&str>("", None), None);
+        assert_eq!(
+            match_first_flare_tag::<&str>("javascript, webdev", None),
+            None
+        );
+        assert_eq!(
+            match_first_flare_tag::<&str>("javascript, discuss, ama", None),
+            Some("discuss")
+        );
+        assert_eq!(
+            match_first_flare_tag::<&str>("explainlikeimfive, ama, ", None),
+            Some("explainlikeimfive")
+        );
+
+        let custom = ["ama", "customflare"];
+        assert_eq!(
+            match_first_flare_tag("discuss, customflare, ama", Some(&custom)),
+            Some("customflare")
+        );
+        assert_eq!(
+            match_first_flare_tag::<&str>("ama, discuss", Some(&[])),
+            None
+        );
+
+        let articles = [
+            (10, "ruby, rails"),
+            (20, "webdev, discuss, ama"),
+            (30, "ama, watercooler"),
+            (40, "discuss"),
+        ];
+        assert_eq!(
+            group_articles_by_flare_tag::<&str>(&articles, None),
+            vec![("discuss", vec![20, 40]), ("ama", vec![30])]
+        );
+    }
+
+    #[test]
+    fn relevancy_lever_and_variant_score_sql() {
+        assert_eq!(
+            build_relevancy_lever_sql("articles.comments_count", &[(0, 0.8), (1, 1.0)], 0.95)
+                .as_deref(),
+            Some("(CASE articles.comments_count\nWHEN 0 THEN 0.8\nWHEN 1 THEN 1.0\nELSE 0.95 END)")
+        );
+        // Reject `?` in select_fragment so ActiveRecord raises PreparedStatementInvalid via fallback
+        assert!(build_relevancy_lever_sql("articles.score = ?", &[(0, 1.0)], 1.0).is_none());
+        // Reject scientific notation float out of write_ruby_float range
+        assert!(build_relevancy_lever_sql("articles.score", &[(0, 1e-7)], 1.0).is_none());
+
+        let levers = [
+            RelevancyLeverInput {
+                user_required: false,
+                select_fragment: "articles.comments_count",
+                cases: vec![(0, 0.8)],
+                fallback: 1.0,
+            },
+            RelevancyLeverInput {
+                user_required: true,
+                select_fragment: "COUNT(followed_user.follower_id)",
+                cases: vec![(0, 0.8), (1, 1.0)],
+                fallback: 1.0,
+            },
+        ];
+        assert_eq!(
+            build_variant_relevancy_score_sql(&levers, false, false).as_deref(),
+            Some("(CASE articles.comments_count\nWHEN 0 THEN 0.8\nELSE 1.0 END)")
+        );
+        assert_eq!(
+            build_variant_relevancy_score_sql(&levers, true, true).as_deref(),
+            Some(
+                "(CASE articles.comments_count\nWHEN 0 THEN 0.8\nELSE 1.0 END) * \n\
+                 (CASE COUNT(followed_user.follower_id)\nWHEN 0 THEN 0.8\nWHEN 1 THEN 1.0\nELSE 1.0 END) * \n\
+                 (CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+            )
+        );
     }
 }

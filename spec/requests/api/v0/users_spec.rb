@@ -55,6 +55,19 @@ RSpec.describe "Api::V0::Users" do
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
       expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
     end
+
+    it "hydrates joined profile attributes without querying profiles again" do
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get api_user_path(user.id)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "profiles"/i)).to be_empty
+      expect(queries.grep(/FROM "users_settings"/i)).to be_empty
+    end
   end
 
   describe "GET /api/users/me" do

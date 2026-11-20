@@ -89,8 +89,14 @@
       <% end %>
     </article>
   <% else %>
-    <div id="response-templates-data" class="hidden"></div>
-    <%= javascript_include_tag "commentsDisplay", "favoriteControls", defer: true %>
+    <% if user_signed_in? %>
+      <div id="response-templates-data" class="hidden"></div>
+    <% end %>
+    <% if user_signed_in? && FeatureFlag.enabled?(:community_favorites) %>
+      <%= javascript_include_tag "commentsDisplay", "favoriteControls", defer: true %>
+    <% else %>
+      <%= javascript_include_tag "commentsDisplay", defer: true %>
+    <% end %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary crayons-layout__content s:mx-2 m:mx-4 -mb-1 z-0">
       <% if @commentable %>
         <h1 class="crayons-subtitle-1 mb-4">
@@ -108,7 +114,7 @@
     </header>
   <% end %>
 
-  <% if @root_comment.present? && (@root_comment.depth > 0 && parent = @root_comment.parent) %>
+  <% if (parent = @root_parent_comment) %>
     <div class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary s:mx-1 m:mx-2 -mb-2 z-0">
       <h2 class="crayons-subtitle-2 pb-2">
         <a href="<%= parent.path %>" class="crayons-link">
@@ -145,10 +151,20 @@
         <% end %>
       <% else %>
         <%
-          full_tree = Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?)
+          full_tree = Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?, preload: false)
           total_top_level = full_tree.size
           is_limited = !user_signed_in? && total_top_level > CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED
-          tree_to_render = is_limited ? full_tree.first(CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED).to_h : full_tree
+          tree_to_render = if is_limited
+                             full_tree.first(CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED).to_h
+                           else
+                             full_tree
+                           end
+          unless user_signed_in?
+            tree_to_render = tree_to_render.transform_values do |sub_comments|
+              limit_descendants(sub_comments, CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED)
+            end
+          end
+          Comments::Tree.preload_for_tree(tree_to_render, commentable: @commentable)
         %>
         
         <% if is_limited %>
@@ -161,10 +177,7 @@
 
         <%# Not fragment-cached per thread: this action is edge-cached, so origin renders are mostly edge misses
             and the per-thread fragments hit too rarely to pay for their Redis read + write. %>
-        <% tree_to_render.each do |comment, sub_comments| %>
-          <% limited_sub_comments = user_signed_in? ? sub_comments : limit_descendants(sub_comments, CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED) %>
-          <%= nested_comments(tree: { comment => limited_sub_comments }, commentable: @commentable, is_view_root: true) %>
-        <% end %>
+        <%= nested_comments(tree: tree_to_render, commentable: @commentable, is_view_root: true) %>
       <% end %>
     </div>
 
@@ -190,4 +203,6 @@
 </script>
 <%== TwitterTimelineTag.script %>
 
-<%= render "comments/hide_comments_modal" %>
+<% if user_signed_in? %>
+  <%= render "comments/hide_comments_modal" %>
+<% end %>

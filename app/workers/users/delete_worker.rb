@@ -33,10 +33,13 @@ module Users
       end
     rescue StandardError
       ForemStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user_id}"])
-      Honeybadger.context({ user_id: user_id })
+      Rails.error.set_context(user_id: user_id)
+      if defined?(Honeybadger::Agent) && ApplicationConfig["HONEYBADGER_API_KEY"].present?
+        Honeybadger.context({ user_id: user_id })
+      end
       # Re-raise so Sidekiq retries: every deletion step is safe to re-run, so a
       # retry picks up where a failed (e.g. timed out) attempt left off.
-      # Honeybadger reports the failure once retries are exhausted.
+      # Error tracking reports the failure once retries are exhausted.
       raise
     end
   end

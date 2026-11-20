@@ -1,7 +1,7 @@
 require "capybara/rails"
 require "capybara/rspec"
 
-Capybara.server_host = "0.0.0.0"
+Capybara.server_host = ENV.fetch("CAPYBARA_SERVER_HOST", "0.0.0.0")
 Capybara.app_host = "http://#{ENV.fetch('APP_HOST', `hostname`.strip&.downcase || '0.0.0.0')}"
 Capybara.default_max_wait_time = 10
 Capybara.save_path = ENV.fetch("CAPYBARA_ARTIFACTS", "./tmp/capybara")
@@ -22,11 +22,18 @@ def wait_for_javascript
   finished = false
 
   while Capybara::Helpers.monotonic_time < max_time
-    finished = page.evaluate_script("typeof initializeBaseApp") != "undefined"
+    finished = page.evaluate_script(<<~JS)
+      typeof initializeBaseApp !== "undefined" &&
+        typeof window.Forem !== "undefined" &&
+        typeof window.Forem.initializeEnhancedCommentTextArea === "function" &&
+        Boolean(document.body && document.body.getAttribute("data-page-initialized") === "true") &&
+        (!document.getElementById("comments-container") ||
+          document.getElementById("comments-container").dataset.commentsInitialized === "true")
+    JS
 
     break if finished
 
-    sleep 0.1
+    sleep 0.05
   end
 
   raise "wait_for_javascript timeout" unless finished

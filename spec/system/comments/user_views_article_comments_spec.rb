@@ -2,20 +2,20 @@ require "rails_helper"
 
 RSpec.describe "Visiting article comments" do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user_id: user.id, show_comments: true) }
+  let(:article) { create(:article, user_id: user.id, show_comments: true, with_tags: false, with_main_image: false) }
   let!(:comment) { create(:comment, commentable: article, user: user) }
-  let!(:child_comment) { create(:comment, commentable: article, parent: comment) }
-  let!(:grandchild_comment) { create(:comment, commentable: article, parent: child_comment) }
+  let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
+  let!(:grandchild_comment) { create(:comment, commentable: article, parent: child_comment, user: user) }
 
   context "when viewing the comment tree" do
     before do
-      create(:comment, commentable: article, parent: comment)
-      comments = create_list(:comment, 3, commentable: article)
-      create(:comment, commentable: article, parent: comments.sample)
+      create(:comment, commentable: article, parent: comment, user: user)
+      comments = create_list(:comment, 3, commentable: article, user: user)
+      create(:comment, commentable: article, parent: comments.sample, user: user)
       sign_in user
     end
 
-    it "displays all comments, child comments, and grandchild comments", :aggregate_failures do
+    it "displays all comments and root-filtered comment subtrees", :aggregate_failures do
       visit "#{article.path}/comments"
 
       expect(page).to have_css(".single-comment-node", visible: :visible, count: 8)
@@ -25,9 +25,7 @@ RSpec.describe "Visiting article comments" do
         visible: :visible,
         count: 1,
       )
-    end
 
-    it "displays related, child, and grandchild comments when root is specified", :aggregate_failures do
       visit "#{article.path}/comments/#{comment.id.to_s(26)}"
 
       expect(page).to have_css(".single-comment-node", visible: :visible, count: 4)
@@ -41,18 +39,16 @@ RSpec.describe "Visiting article comments" do
   end
 
   context "when looking into comment links" do
-    it "uses the permalink for signed in users" do
-      sign_in user
-      visit article.path
-      date_link = find("#comment-node-#{grandchild_comment.id} a.comment-date")
-      expect(date_link[:href]).to end_with(grandchild_comment.path)
-    end
-
-    it "uses an anchor tag instead of permalink for signed out users" do
+    it "uses an anchor tag for signed out users and the permalink for signed in users", :aggregate_failures do
       visit article.path
       date_link = find("#comment-node-#{grandchild_comment.id} a.comment-date")
       expected_path = "#{article.path}#comment-#{grandchild_comment.id_code}"
       expect(date_link[:href]).to end_with(expected_path)
+
+      sign_in user
+      visit article.path
+      date_link = find("#comment-node-#{grandchild_comment.id} a.comment-date")
+      expect(date_link[:href]).to end_with(grandchild_comment.path)
     end
   end
 end

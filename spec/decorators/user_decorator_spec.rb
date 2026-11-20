@@ -72,6 +72,26 @@ RSpec.describe UserDecorator, type: :decorator do
     end
   end
 
+  describe "#assigned_color" do
+    it "maps each user id onto the same ten-color palette as before" do
+      legacy_palette = [
+        { bg: "#19063A", text: "#dce9f3" }, { bg: "#0D4D4B", text: "#fdf9f3" },
+        { bg: "#010C1F", text: "#aebcd5" }, { bg: "#d7dee2", text: "#022235" },
+        { bg: "#161616", text: "#66e2d5" }, { bg: "#1c0bba", text: "#c9d2dd" },
+        { bg: "#093656", text: "#ffffff" }, { bg: "#61122f", text: "#ffffff" },
+        { bg: "#2e0338", text: "#ffffff" }, { bg: "#080E3B", text: "#ffffff" }
+      ]
+
+      (0..25).each do |id|
+        expect(build(:user, id: id).decorate.assigned_color).to eq(legacy_palette[id % 10])
+      end
+    end
+
+    it "falls back to a palette color for users without an id" do
+      expect(described_class::ASSIGNED_COLORS).to include(build(:user, id: nil).decorate.assigned_color)
+    end
+  end
+
   describe "#config_body_class" do
     it "creates proper body class with defaults" do
       expected_result = %W[
@@ -116,6 +136,18 @@ RSpec.describe UserDecorator, type: :decorator do
         ten-x-hacker-theme
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
+    end
+
+    it "creates proper body class with system theme" do
+      user.setting.config_theme = "system_theme"
+      expected_result = %W[
+        system-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
+        trusted-status-#{user.trusted?} community-leader-status-#{user.community_leader?}
+        #{user.setting.config_navbar}-header
+      ].join(" ")
+      expect(user.decorate.config_body_class).to eq(expected_result)
+      expect(user.decorate.config_body_class).not_to include("ten-x-hacker-theme")
     end
 
     it "works with static navbar" do
@@ -243,6 +275,24 @@ RSpec.describe UserDecorator, type: :decorator do
       it "returns an empty array" do
         allow(decorated_user).to receive(:user_activity).and_return(nil)
         expect(decorated_user.ordered_subforems).to eq([])
+      end
+    end
+
+    context "when Subforem.disabled_by_env? is true" do
+      it "returns an empty array without loading user_activity" do
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+        expect(decorated_user.ordered_subforems).to eq([])
+        expect(decorated_user).not_to have_received(:user_activity)
+      end
+    end
+
+    context "when no discoverable subforems exist" do
+      it "returns an empty array without loading user_activity" do
+        allow(Subforem).to receive(:cached_discoverable_ids).and_return([])
+
+        expect(decorated_user.ordered_subforems).to eq([])
+        expect(decorated_user).not_to have_received(:user_activity)
       end
     end
   end

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Redirects authentication using Referer" do
   let(:article) { build(:article) }
   let(:user) do
-    create(:user, :with_identity, identities: [:twitter])
+    create(:user, :without_profile, :with_identity, identities: [:twitter], profile_image: nil)
   end
 
   let(:login_link) { "Log in" }
@@ -20,35 +20,33 @@ RSpec.describe "Redirects authentication using Referer" do
   end
 
   context "when a valid referer is available" do
-    it "redirects back to the main feed (root path)" do
+    it "redirects back to the main feed or article page", :aggregate_failures do
       visit root_path
-      click_link(login_link, match: :first)
+      click_on(login_link, match: :first)
       click_on(sign_in_link, match: :first)
 
       expect(page).to have_current_path("/", ignore_query: true)
-    end
 
-    it "redirects back to an article page" do
+      Capybara.reset_sessions!
+      Warden::Manager._on_request.clear
       visit "/#{article.slug}"
-      click_link(login_link, match: :first)
+      click_on(login_link, match: :first)
       click_on(sign_in_link, match: :first)
 
       expect(page).to have_current_path("/#{article.slug}", ignore_query: true)
     end
   end
 
-  context "when no referer is available" do
-    it "redirects back to the main feed as default" do
+  context "when no referer or an external referer is provided" do
+    it "redirects back to the main feed as default", :aggregate_failures do
       Capybara.current_session.driver.header "Referer", ""
       visit sign_up_path
       click_on(sign_in_link, match: :first)
 
       expect(page).to have_current_path("/", ignore_query: true)
-    end
-  end
 
-  context "when the referer is from an external host" do
-    it "redirects back to the main feed as default" do
+      Capybara.reset_sessions!
+      Warden::Manager._on_request.clear
       Capybara.current_session.driver.header "Referer", "https://example.com"
       visit sign_up_path
       click_on(sign_in_link, match: :first)

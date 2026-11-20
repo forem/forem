@@ -314,6 +314,24 @@ RSpec.describe "Api::V1::Organizations" do
     end
   end
 
+  describe "GET /api/organizations/:organization_id_or_slug/listings" do
+    let(:organization) { create(:organization) }
+
+    it "returns 404 if the organization is not found" do
+      get "/api/organizations/invalid-id-or-username/listings", headers: headers
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns an empty array when looking up by the organization's ID or username" do
+      [organization.id, organization.username].each do |identifier|
+        get "/api/organizations/#{identifier}/listings", headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+    end
+  end
+
   describe "GET /api/organizations/:organization_id_or_slug/articles" do
     let(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }

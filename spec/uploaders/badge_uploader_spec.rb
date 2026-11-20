@@ -18,7 +18,6 @@ describe BadgeUploader, type: :uploader do
   let!(:uploader) { described_class.new(badge, :badge_image) }
 
   before do
-    described_class.include CarrierWave::MiniMagick # needed for processing
     described_class.enable_processing = true
   end
 

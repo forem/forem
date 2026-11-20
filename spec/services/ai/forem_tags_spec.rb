@@ -1,9 +1,14 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength, RSpec/AnyInstance, RSpec/LetSetup, RSpec/MultipleExpectations, RSpec/VerifiedDoubles, Style/Send
 RSpec.describe Ai::ForemTags do
   let(:subforem) { create(:subforem) }
   let(:brain_dump) { "A community focused on web development and programming" }
   let(:service) { described_class.new(subforem.id, brain_dump) }
+
+  before do
+    allow(service).to receive(:sleep)
+  end
 
   describe "#upsert!" do
     context "when AI call succeeds on first attempt" do
@@ -26,9 +31,11 @@ RSpec.describe Ai::ForemTags do
         allow(Ai::Base).to receive(:new).and_return(double(call: mock_ai_response))
       end
 
-      it "creates tags and relationships successfully" do
+      it "creates lowercase tags and relationships successfully", :aggregate_failures do
         expect { service.upsert! }.to change(Tag, :count).by(10)
           .and change(TagSubforemRelationship, :count).by(10)
+
+        expect(Tag.pluck(:name)).to all(match(/^[a-z0-9]+$/))
 
         tag = Tag.find_by(name: "webdev")
         expect(tag).to be_present
@@ -38,11 +45,6 @@ RSpec.describe Ai::ForemTags do
         relationship = TagSubforemRelationship.find_by(tag: tag, subforem: subforem)
         expect(relationship).to be_present
         expect(relationship.supported).to be true
-      end
-
-      it "converts tag names to lowercase" do
-        service.upsert!
-        expect(Tag.pluck(:name)).to all(match(/^[a-z0-9]+$/))
       end
     end
 
@@ -68,14 +70,11 @@ RSpec.describe Ai::ForemTags do
         allow(Rails.logger).to receive(:warn)
       end
 
-      it "retries and eventually succeeds" do
+      it "retries, logs warning messages for failed attempts, and eventually succeeds", :aggregate_failures do
         expect { service.upsert! }.to change(Tag, :count).by(2)
           .and change(TagSubforemRelationship, :count).by(2)
-      end
 
-      it "logs warning messages for failed attempts" do
-        service.upsert!
-        # The retry logic logs warnings for each failed attempt
+        expect(service).to have_received(:sleep).with(1).twice
         expect(Rails.logger).to have_received(:warn).with("Attempt 1 failed to generate tags: API Error")
         expect(Rails.logger).to have_received(:warn).with("Attempt 2 failed to generate tags: API Error")
       end
@@ -87,8 +86,9 @@ RSpec.describe Ai::ForemTags do
         allow(Rails.logger).to receive(:error)
       end
 
-      it "logs error and returns without creating tags" do
+      it "logs error and returns without creating tags", :aggregate_failures do
         expect { service.upsert! }.not_to change(Tag, :count)
+        expect(service).to have_received(:sleep).with(1).twice
         expect(Rails.logger).to have_received(:error).with("Failed to generate tags after 3 attempts")
       end
     end
@@ -446,3 +446,4 @@ RSpec.describe Ai::ForemTags do
     end
   end
 end
+# rubocop:enable Layout/LineLength, RSpec/AnyInstance, RSpec/LetSetup, RSpec/MultipleExpectations, RSpec/VerifiedDoubles, Style/Send

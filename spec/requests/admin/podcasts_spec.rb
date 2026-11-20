@@ -27,6 +27,58 @@ RSpec.describe "/admin/content_manager/podcasts" do
       expect(response.body).to include(CGI.escapeHTML(no_eps_podcast.title))
       expect(response.body).to include(CGI.escapeHTML(podcast.title))
     end
+
+    it "counts podcasts without a grouped episodes join and preloads owners without N+1 queries" do
+      second_owner = create(:user)
+      create(:podcast_ownership, podcast: podcast, owner: user)
+      create(:podcast_ownership, podcast: no_eps_podcast, owner: second_owner)
+
+      queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        next if payload[:name] == "SCHEMA" || payload[:cached]
+
+        queries << payload[:sql]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get admin_podcasts_path
+      end
+
+      expect(response).to be_successful
+      expect(response.body).to include("@#{user.username}", "@#{second_owner.username}")
+
+      grouped_join_queries = queries.grep(/LEFT OUTER JOIN "podcast_episodes".*GROUP BY/i)
+      expect(grouped_join_queries).to be_empty
+
+      ownership_queries = queries.grep(/FROM "podcast_ownerships"|JOIN "podcast_ownerships"/i)
+      expect(ownership_queries.size).to eq(1)
+    end
+  end
+
+  describe "GET /admin/content_manager/podcasts/:id/edit" do
+    it "loads the podcast and owners without duplicate queries" do
+      create(:podcast_ownership, podcast: podcast, owner: user)
+
+      queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        next if payload[:name] == "SCHEMA" || payload[:cached]
+
+        queries << payload[:sql]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get edit_admin_podcast_path(podcast)
+      end
+
+      expect(response).to be_successful
+      expect(response.body).to include("@#{user.username}")
+
+      podcast_find_queries = queries.grep(/SELECT "podcasts"\.\* FROM "podcasts" WHERE "podcasts"\."id" =/i)
+      expect(podcast_find_queries.size).to eq(1)
+
+      ownership_queries = queries.grep(/INNER JOIN "podcast_ownerships"/i)
+      expect(ownership_queries.size).to eq(1)
+    end
   end
 
   describe "Adding owner" do

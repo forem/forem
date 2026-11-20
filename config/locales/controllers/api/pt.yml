@@ -20,6 +20,8 @@ pt:
         redis_not_connected: Redis NÃO conectado!
       listings_controller:
         no_credit: Créditos disponíveis insuficientes
+      mobile_auth_controller:
+        email_not_verified: O endereço de e-mail não foi verificado
     v1:
       images_controller:
         image_required: Um arquivo 'image' é obrigatório (multipart/form-data)

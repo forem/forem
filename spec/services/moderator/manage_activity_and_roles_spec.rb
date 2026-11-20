@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
-  let(:user) { create(:user) }
-  let(:admin) { create(:user, :super_admin) }
+  let(:user) { create(:user, profile_image: nil) }
+  let(:admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
   def manage_roles_for(user, user_status:, note: "Test note", acting_as: admin)
     described_class.handle_user_roles(
@@ -133,7 +133,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   end
 
   it "allows a regular admin (not super admin) to assign a community leader role" do
-    regular_admin = create(:user, :admin)
+    regular_admin = create(:user, :admin, :without_profile, profile_image: nil)
     manage_roles_for(user, user_status: "Community Leader Level 1", acting_as: regular_admin)
     expect(user.community_leader_level_1?).to be true
   end
@@ -151,13 +151,19 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   end
 
   describe "Rack::Attack cache invalidation optimization" do
-    before do
+    def stub_cache_delete
       cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
       allow(Rails).to receive(:cache) { cache_db }
 
       allow(Rails.cache).to receive(:delete)
       allow(Rails.cache).to receive(:delete)
         .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+    end
+
+    before do
+      admin
+      user
+      stub_cache_delete
     end
 
     it "clears Rack::Attack cache if assigned admin role to user" do
@@ -171,8 +177,9 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
         .with(Rack::Attack::ADMIN_API_CACHE_KEY)
     end
 
-    it "doesn't Rack::Attack cache if assigned non-admin role to user" do
+    it "doesn't clear Rack::Attack cache if assigned non-admin role to user" do
       user.add_role(:comment_suspended)
+      stub_cache_delete
       described_class.handle_user_roles(
         admin: admin,
         user: user,
@@ -182,10 +189,20 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       expect(Rails.cache).not_to have_received(:delete)
         .with(Rack::Attack::ADMIN_API_CACHE_KEY)
     end
+
+    it "clears Rack::Attack cache when an admin role is revoked" do
+      user.add_role(:admin)
+      stub_cache_delete
+
+      user.remove_role(:admin)
+
+      expect(Rails.cache).to have_received(:delete)
+        .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+    end
   end
 
   describe "removes reports when adding the spam role" do
-    let(:spam_user) { create(:user) }
+    let(:spam_user) { create(:user, profile_image: nil) }
     let(:spam_article) { create(:article, user: spam_user, with_tags: false) }
     let!(:report) do
       create(:feedback_message, category: "spam", status: "Open", reported_url: URL.url(spam_article.path))
@@ -202,7 +219,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   end
 
   describe "confirms flag reactions when adding the spam role" do
-    let(:spam_user) { create(:user) }
+    let(:spam_user) { create(:user, profile_image: nil) }
     let(:spam_article) { create(:article, user: spam_user, with_tags: false) }
     let(:flag) do
       create(:reaction, category: "vomit", status: "valid", reactable: spam_article, user: admin)
@@ -240,7 +257,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
 
   describe "removes notifications when adding the spam role" do
     let(:nice_article) { create(:article, user: user, with_tags: false) }
-    let(:spam_user) { create(:user) }
+    let(:spam_user) { create(:user, profile_image: nil) }
     let(:spam_article) { create(:article, user: spam_user, with_tags: false) }
     let(:spam_follow) { create(:follow, follower: spam_user, followable: user) }
     let(:spam_comment) { create(:comment, user: spam_user, commentable: nice_article) }

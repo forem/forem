@@ -36,6 +36,11 @@ RSpec.describe "Community", :proper_status do
     end
 
     context "when ranking popular community members" do
+      before do
+        allow(Settings::General).to receive(:mascot_user_id).and_return(nil)
+        allow(Settings::Community).to receive(:staff_user_id).and_return(nil)
+      end
+
       it "ranks an author with community reactions above a high-volume author with no reactions" do
         quality_author = create(:user, registered: true)
         spam_author = create(:user, registered: true)

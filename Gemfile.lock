@@ -112,8 +112,9 @@ GEM
       json (>= 1.5.1)
     amazing_print (2.0.0)
     analytics-ruby (2.5.0)
-    ancestry (4.3.3)
+    ancestry (5.1.0)
       activerecord (>= 5.2.6)
+      logger
     anyway_config (2.3.0)
       ruby-next-core (>= 0.14.0)
     ast (2.4.2)
@@ -283,7 +284,8 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
-    excon (0.104.0)
+    excon (1.8.0)
+      logger
     execjs (2.9.1)
     exifr (1.5.1)
     factory_bot (6.4.5)
@@ -359,9 +361,9 @@ GEM
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
-    fog-core (2.3.0)
+    fog-core (2.6.0)
       builder
-      excon (~> 0.71)
+      excon (~> 1.0)
       formatador (>= 0.2, < 2.0)
       mime-types
     fog-json (1.2.0)
@@ -454,7 +456,7 @@ GEM
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    httpclient (2.9.0)
+    httpclient (2.10.0)
       mutex_m
     hypershield (0.6.1)
       activerecord (>= 7.2)
@@ -508,7 +510,7 @@ GEM
       activesupport (>= 4.2)
     jwt (2.10.3)
       base64
-    kamal (2.11.0)
+    kamal (2.12.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
       bcrypt_pbkdf (~> 1.0)
@@ -829,6 +831,8 @@ GEM
       actionpack (>= 5)
       redis-rack (>= 2.1.0, < 4)
       redis-store (>= 1.1.0, < 2)
+    redis-client (0.31.0)
+      connection_pool
     redis-prescription (2.6.0)
     redis-rack (3.0.0)
       rack-session (>= 0.2.0)
@@ -1062,8 +1066,8 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (> 5, < 6)
-    strong_migrations (1.8.0)
-      activerecord (>= 5.2)
+    strong_migrations (2.8.0)
+      activerecord (>= 7.2)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
     terser (1.2.2)
@@ -1153,7 +1157,7 @@ DEPENDENCIES
   algoliasearch-rails (~> 2.3)
   amazing_print (~> 2.0)
   analytics-ruby (~> 2.5)
-  ancestry (~> 4.2)
+  ancestry (~> 5.1)
   better_errors (~> 2.9)
   blazer (~> 2.6)
   bootsnap (>= 1.1.0)
@@ -1181,6 +1185,7 @@ DEPENDENCIES
   easy_translate (~> 0.5.1)
   email_validator (~> 2.2)
   erb_lint (~> 0.9)
+  excon (~> 1.8.0)
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.2)
   faker (~> 3.5)
@@ -1204,7 +1209,7 @@ DEPENDENCIES
   honeycomb-beeline (~> 2.11.0)
   html_truncator (~> 0.4)
   httparty (~> 0.24)
-  httpclient (~> 2.9.0)
+  httpclient (~> 2.10.0)
   hypershield (~> 0.6.1)
   i18n-js (~> 3.9.2)
   i18n-tasks (~> 1.0.11)
@@ -1215,7 +1220,7 @@ DEPENDENCIES
   jsbundling-rails (~> 1.2)
   jsonapi-serializer (~> 2.2)
   jwt (= 2.10.3)
-  kamal (~> 2.3)
+  kamal (~> 2.12)
   kaminari (~> 1.2)
   katex (~> 0.9.0)
   knapsack_pro (~> 5.1)
@@ -1225,7 +1230,6 @@ DEPENDENCIES
   logtail-rails (~> 0.2.12)
   memory_profiler (~> 1.0)
   metainspector (~> 5.12)
-  mini_magick (~> 4.13)
   nakayoshi_fork (~> 0.0.4)
   neighbor (~> 0.5.2)
   nokogiri (~> 1.18)
@@ -1261,10 +1265,10 @@ DEPENDENCIES
   redcarpet (~> 3.5)
   redis (~> 4.7.1)
   redis-actionpack (~> 5.5.0)
+  redis-client (~> 0.31.0)
   request_store (~> 1.7)
   reverse_markdown (~> 2.1)
   rolify (~> 6.0)
-  rouge (~> 4.7)
   rpush (~> 9.2)
   rpush-redis (~> 1.2)
   rspec-rails (~> 6.0, >= 6.0.3)
@@ -1297,7 +1301,7 @@ DEPENDENCIES
   sterile (~> 1.0)
   stripe (~> 5.55)
   stripe-ruby-mock (= 3.1.0.rc3)
-  strong_migrations (~> 1.7)
+  strong_migrations (~> 2.8)
   terser (~> 1.1)
   test-prof (~> 1.6)
   timecop (~> 0.9)
@@ -1315,7 +1319,7 @@ DEPENDENCIES
   zonebie (~> 0.6.1)
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.3.14p208
 
 BUNDLED WITH
    2.4.17

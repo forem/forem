@@ -98,6 +98,36 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("----")
   end
 
+  it "renders deeply nested lists without dropping text" do
+    # Redcarpet drops text at nesting levels >= 5 (16+ spaces)
+    # 17 spaces + marker + text
+    markdown = "                 * Deeply nested list item"
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("Deeply nested list item")
+  end
+
+  it "does not rewrite list-shaped lines inside fenced code blocks" do
+    markdown = <<~MARKDOWN
+      ```
+                   * This should remain untouched
+      ```
+    MARKDOWN
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("             * This should remain untouched")
+  end
+
+  it "does not merge following line when list marker has no trailing text" do
+    markdown = <<~MARKDOWN
+                   * 
+    Next line
+    MARKDOWN
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("Next line")
+    expect(output).not_to include(" * Next line")
+  end
+
+
+
   it "correctly renders escaped code blocks with more than 3 backticks" do
     # This is the reproduction case from issue #17991
     # Input: ```` ```javascript ````
@@ -287,6 +317,62 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(
         links.any? { |link| link.ancestors("ul").size == 5 }
       ).to be(true)
+    end
+
+    it "renders ten-level nested lists without dropping the deeply nested item text" do
+      # Redcarpet drops link text once list nesting reaches level 5 (16+ spaces
+      # of indentation). Parser#finalize works around this by rewriting the
+      # markdown links on those deeply nested lines into raw <a> HTML. This
+      # fixture builds a genuine ten-level list WITH its parent items, so the
+      # whole tree renders as list elements rather than an indented code block.
+      labels = %w[one two three four five six seven eight nine ten]
+      nested_list = labels.each_with_index.map do |label, index|
+        indent = " " * (index * 4)
+        "#{indent}- The [#{label}](https://dev.to/) list:"
+      end.join("\n")
+
+      test = generate_and_parse_markdown("#{nested_list}\n")
+      doc = Nokogiri::HTML.fragment(test)
+
+      # No deeply nested line should have been swallowed into a code block.
+      expect(doc.css("pre")).to be_empty
+
+      links = doc.css('a[href="https://dev.to/"]')
+
+      # All ten link texts must survive, including the deeper-than-fifth entries
+      # that are flattened by the normalization step.
+      expect(links.map(&:text)).to match_array(labels)
+
+      # Every item renders as a list element (either a true <li>, or, for the
+      # flattened deep levels, inside the list structure rather than a code block).
+      expect(doc.css("li").size).to be >= 5
+      expect(doc.css("ul, ol").size).to be >= 5
+
+      # The levels deeper than five are the ones the disconnected helper fails to
+      # cover: assert their text specifically survived the finalize pipeline.
+      %w[six seven eight nine ten].each do |deep_label|
+        expect(links.map(&:text)).to include(deep_label)
+      end
+    end
+
+    it "preserves indentation beyond the nested-list cutoff inside fenced code blocks" do
+      # The deeply-nested-list workaround targets lines indented 16+ spaces.
+      # Content inside fenced code blocks must be left untouched even when it is
+      # indented past that cutoff. We build the fixture without a squiggly
+      # heredoc (`<<~`) on purpose: `<<~` strips common leading whitespace, which
+      # would dedent the body below 16 spaces and hide any regression that
+      # truncates indentation above the cutoff.
+      deep_indent = " " * 20
+      markdown = "```\n#{deep_indent}deeply indented code line\n```\n"
+
+      output = generate_and_parse_markdown(markdown)
+      code = Nokogiri::HTML.fragment(output).at_css("pre code")
+
+      expect(code).to be_present
+      # The full 20-space indentation must survive verbatim.
+      expect(code.text).to include("#{deep_indent}deeply indented code line")
+      # The markdown link normalization must not have rewritten anything here.
+      expect(output).not_to include("<a href")
     end
 
     it "renders tel links correctly" do
@@ -1011,6 +1097,80 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
 
       expect(img_output).not_to include("onerror")
       expect(span_output).not_to include("onclick")
+    end
+
+    it "post-processes canonical rendered articles without Nokogiri DOM parsing when no images or alerts are present",
+       :aggregate_failures do
+      markdown = <<~MARKDOWN
+        Hello :joy: [GitHub](https://github.com/forem)
+
+        ```ruby
+        puts "hi"
+        ```
+      MARKDOWN
+
+      # Warm the fullscreen action SVG cache once before observing finalize_html DOM/XML parses.
+      generate_and_parse_markdown("```ruby\n1\n```")
+      output = generate_and_parse_markdown(markdown)
+      expect(output).to include("😂", 'target="_blank"', "js-code-highlight", "js-fullscreen-code-action")
+
+      canonical_html = <<~HTML
+        <p>Hello :joy: <a href="https://github.com/forem">GitHub</a></p>
+        <div class="highlight"><pre class="highlight ruby"><code>puts "hi"
+        </code></pre></div>
+      HTML
+
+      allow(Nokogiri).to receive(:HTML).and_call_original
+      allow(Nokogiri::HTML).to receive(:parse).and_call_original
+      allow(Nokogiri::HTML).to receive(:fragment).and_call_original
+      allow(Nokogiri::HTML4::Document).to receive(:parse).and_call_original
+      allow(Nokogiri::HTML4::DocumentFragment).to receive(:parse).and_call_original
+      allow(Nokogiri::XML::Document).to receive(:parse).and_call_original
+
+      finalized = described_class.new(markdown).__send__(
+        :finalize_html,
+        canonical_html,
+        { width: 800, synchronous_detail_detection: false },
+      )
+
+      expect(Nokogiri).not_to have_received(:HTML)
+      expect(Nokogiri::HTML).not_to have_received(:parse)
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(Nokogiri::HTML4::Document).not_to have_received(:parse)
+      expect(Nokogiri::HTML4::DocumentFragment).not_to have_received(:parse)
+      expect(Nokogiri::XML::Document).not_to have_received(:parse)
+      expect(finalized).to include("😂", 'target="_blank"', "js-code-highlight", "js-fullscreen-code-action")
+    end
+
+    it "prefixes and probes images only once when native postprocessing declines", :aggregate_failures do
+      image_url = "https://dummyimage.com/100x100"
+      allow(FastImage).to receive(:size).and_return([100, 100])
+      allow(Images::Optimizer).to receive(:call).and_return(image_url)
+
+      html = "<ul><li><br></li></ul>\n<p><img src=\"#{image_url}\" alt=\"img\"></p>\n"
+      output = described_class.new("").__send__(
+        :finalize_html,
+        html,
+        { width: 800, synchronous_detail_detection: true },
+      )
+
+      expect(FastImage).to have_received(:size).once
+      expect(Images::Optimizer).to have_received(:call).once
+      expect(output).not_to include("<br>")
+      expect(output).to include("article-body-image-wrapper", 'loading="lazy"')
+    end
+
+    it "resolves mentions formed after list linebreak removal", :aggregate_failures do
+      user = create(:user, username: "alice")
+      html = "<ul>\n<li>@ali<br>ce</li>\n</ul>\n"
+      output = described_class.new("").__send__(
+        :finalize_html,
+        html,
+        { width: 800, synchronous_detail_detection: false },
+      )
+
+      expect(output).not_to include("<br>")
+      expect(output).to include("<a class=\"mentioned-user\"", "/#{user.username}\">@#{user.username}</a>")
     end
   end
 end

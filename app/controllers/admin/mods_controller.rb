@@ -14,7 +14,7 @@ module Admin
       @mods = Admin::ModeratorsQuery.call(
         relation: User.select(INDEX_ATTRIBUTES),
         options: permitted_params,
-      ).page(params[:page]).per(50)
+      ).page(params[:page]).per(50).without_count.load
     end
 
     def update

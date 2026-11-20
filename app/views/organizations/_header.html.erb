@@ -1,6 +1,6 @@
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
-    <%= @organization_json_ld.to_json.html_safe %>
+    <%= structured_data_json(@organization_json_ld).html_safe %>
   </script>
 <% end %>
 <style>
@@ -258,7 +258,7 @@
       org_pages = @organization.ordered_pages.to_a
       showcase_page = @organization.main_page
       showcase_title = showcase_page.title.presence || t("views.organizations.showcase")
-      custom_pages = org_pages.reject { |page| page == showcase_page }
+      custom_pages = org_pages.reject { |page| page == showcase_page || !page.show_in_navigation? }
       
       showcase_path = is_custom_domain ? "/" : "/#{@organization.slug}"
       all_posts_path = is_custom_domain ? "/?mode=all-posts" : "/#{@organization.slug}?mode=all-posts"

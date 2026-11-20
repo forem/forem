@@ -7,6 +7,7 @@ require "sidekiq/transaction_safe_rescue"
 require "sidekiq/throttled"
 require "sidekiq/memory_killer"
 require "sidekiq/request_store_middleware"
+require "sidekiq/boot_memory_trimmer"
 
 module Sidekiq
   module Cron
@@ -52,7 +53,13 @@ Sidekiq.configure_server do |config|
   # Adjust Sidekiq's internal concurrency
   config.concurrency = sidekiq_concurrency if config.respond_to?(:concurrency=)
 
+  # Keep web-only code (controllers, policies, serializers) autoloadable but out of the boot-time
+  # eager load. This runs during initializers, before Rails eager loads the app.
+  Sidekiq::BootMemoryTrimmer.skip_eager_loading_web_only_code!
+
   config.on(:startup) do
+    Sidekiq::BootMemoryTrimmer.release_bootsnap_load_path_cache!
+
     # Disconnect the default Rails pool (which booted at 5 from RAILS_MAX_THREADS)
     ActiveRecord::Base.connection_pool.disconnect!
 

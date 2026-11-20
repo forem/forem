@@ -249,6 +249,14 @@
       <% end %>
     </div>
 
+    <div class="crayons-field crayons-field--checkbox">
+      <%= form.check_box :allow_articles, class: "crayons-checkbox" %>
+      <%= form.label :allow_articles, class: "crayons-field__label" do %>
+        <%= t("views.admin.events.form.allow_articles") %>
+        <p class="crayons-field__description"><%= t("views.admin.events.form.allow_articles_description") %></p>
+      <% end %>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="crayons-field">
         <%= form.label :page_id, "Delegated Page", class: "crayons-field__label" do %>

@@ -16,10 +16,38 @@ export function getActiveOrganizationId() {
   return activeTab.dataset.organizationId || null;
 }
 
+export function registerOrgMenuDismissHandlers() {
+  if (window._analyticsOrgMenuListenersRegistered) return;
+  window._analyticsOrgMenuListenersRegistered = true;
+
+  document.addEventListener('click', (event) => {
+    document
+      .querySelectorAll('details[data-analytics-org-menu][open]')
+      .forEach((menu) => {
+        if (!menu.contains(event.target)) {
+          menu.removeAttribute('open');
+        }
+      });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      document
+        .querySelectorAll('details[data-analytics-org-menu][open]')
+        .forEach((menu) => {
+          menu.removeAttribute('open');
+          const summary = menu.querySelector('summary');
+          if (summary) summary.focus();
+        });
+    }
+  });
+}
+
 function initDashboard() {
   // Guard: only run on analytics pages (script re-executes on every InstantClick navigation)
   if (!document.getElementById('week-button')) return;
 
+  registerOrgMenuDismissHandlers();
   initCharts({ organizationId: getActiveOrganizationId() });
 }
 

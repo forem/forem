@@ -48,6 +48,13 @@ class Geolocation
   # Whether an ISO 3166 code (e.g. "US-CA") falls within any of the given codes. A country
   # covers all of its regions ("US" covers "US-CA"), but a region doesn't cover its country.
   def self.code_covered_by?(code, geo_codes)
+    native = ForemNative.geolocation_code_covered_by?(code, geo_codes)
+    return native unless native.nil?
+
+    legacy_code_covered_by?(code, geo_codes)
+  end
+
+  def self.legacy_code_covered_by?(code, geo_codes)
     code = code.to_s.strip.upcase
     return false if code.empty?
 
@@ -56,6 +63,7 @@ class Geolocation
       geo.present? && (code == geo || code.start_with?("#{geo}#{ISO3166_SEPARATOR}"))
     end
   end
+  private_class_method :legacy_code_covered_by?
 
   def self.parse(code, separator:)
     return if code.blank?

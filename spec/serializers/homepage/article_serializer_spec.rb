@@ -64,5 +64,39 @@ RSpec.describe Homepage::ArticleSerializer, type: :serializer do
       expect(article_queries.size).to eq(1)
       expect(article_queries.first).not_to include('LEFT OUTER JOIN "reactions"')
     end
+
+    it "preloads only required user and organization columns instead of SELECT *" do
+      other_article = create(
+        :article,
+        user: create(:user),
+        organization: create(:organization),
+      )
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        queries << sql if (sql.include?('FROM "users"') || sql.include?('FROM "organizations"')) && !payload[:cached]
+      end
+
+      response = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        response = described_class.serialized_collection_from(
+          relation: Article.where(id: [article.id, other_article.id]).order(:id),
+        )
+      end
+
+      expect(queries.size).to eq(2)
+      expect(queries).to all(exclude('SELECT "users".*', 'SELECT "organizations".*'))
+      expect(response.size).to eq(2)
+      expect(response.first[:user]).to eq(
+        name: user.name,
+        profile_image_90: user.profile_image_90,
+        username: user.username,
+      )
+      expect(response.first[:organization]).to eq(
+        name: organization.name,
+        profile_image_90: organization.profile_image_90,
+        slug: organization.slug,
+      )
+    end
   end
 end

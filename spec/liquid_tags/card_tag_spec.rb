@@ -21,5 +21,16 @@ RSpec.describe CardTag, type: :liquid_tag do
       expect(rendered).to include("Hello")
       expect(rendered).to include("heyhey")
     end
+
+    it "sanitizes unpermitted HTML in the card body while preserving safe markup" do
+      unsafe_body = '<p>Safe</p><script>alert(1)</script>' \
+                    '<img src="x" onerror="alert(1)"><a href="javascript:alert(1)">bad</a>'
+      rendered = generate_details_liquid(unsafe_body).render
+
+      expect(rendered).to include("<p>Safe</p>")
+      expect(rendered).not_to include("<script")
+      expect(rendered).not_to include("onerror")
+      expect(rendered).not_to include("javascript:")
+    end
   end
 end

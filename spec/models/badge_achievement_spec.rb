@@ -219,4 +219,16 @@ RSpec.describe BadgeAchievement do
       end
     end
   end
+
+  describe "#send_email_notification" do
+    it "does not raise when user has no notification_setting" do
+      user = create(:user)
+      user.notification_setting.delete
+      user.reload
+
+      expect do
+        create(:badge_achievement, user: user, badge: badge)
+      end.not_to raise_error
+    end
+  end
 end

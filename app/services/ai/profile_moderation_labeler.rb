@@ -6,6 +6,7 @@ module Ai
   # When the :profile_moderation function is set to Jev (see Ai::FunctionConfig), the label
   # is composed in #label_from_jev from narrow TypeSafe Noul questions.
   class ProfileModerationLabeler
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
     VERSION = "1.1".freeze
@@ -38,7 +39,7 @@ module Ai
     def initialize(user, ai_client: nil)
       @user = user
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
-      @use_jev = ai_client.nil? && @selection.jev?
+      @use_jev = ai_client.nil? && @selection.decision?
       return if @use_jev
 
       @ai_client = ai_client || Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_user: user)
@@ -65,7 +66,7 @@ module Ai
     # --- Jev (TypeSafe System One) ---
 
     def label_via_jev
-      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @user)
+      client = @selection.decision_client(wrapper: self, affected_user: @user)
       label_from_jev(client.evaluate(state: jev_state, questions: jev_questions))
     end
 
@@ -175,9 +176,7 @@ module Ai
     end
 
     def default_community_description
-      default_subforem_id = Subforem.cached_default_id
-      Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id) ||
-        Settings::Community.community_description(subforem_id: default_subforem_id)
+      resolve_community_description(Subforem.cached_default_id)
     end
 
     def recent_articles_context
@@ -204,9 +203,7 @@ module Ai
 
     def build_prompt
       # Use default subforem instructions/community description for context
-      default_subforem_id = Subforem.cached_default_id
-      community_description = Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id) ||
-        Settings::Community.community_description(subforem_id: default_subforem_id)
+      community_description = default_community_description
 
       recent_articles = @user.articles.published.order(published_at: :desc).limit(2)
       articles_context = if recent_articles.any?

@@ -34,7 +34,14 @@ module Settings
       inclusion: { in: NEW_USER_STATUSES }
     }
     setting :providers, type: :array, default: %w[]
+    setting :captcha_provider, type: :string, default: "recaptcha", validates: {
+      inclusion: { in: Captcha::PROVIDERS.keys }
+    }
     setting :require_captcha_for_email_password_registration, type: :boolean, default: false
+    setting :hcaptcha_site_key, type: :string
+    setting :hcaptcha_secret_key, type: :string
+    setting :turnstile_site_key, type: :string
+    setting :turnstile_secret_key, type: :string
     setting :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
     setting :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
 

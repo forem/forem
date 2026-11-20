@@ -1,0 +1,59 @@
+<% title t("views.dashboard.embed_pages.heading") %>
+
+<div id="index-container">
+  <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
+    <%= render("dashboards/header_and_action", page_title: t("views.dashboard.embed_pages.heading"), dashboard_state: "embed_pages") %>
+
+    <div class="crayons-layout__content mb-5" id="user-dashboard">
+      <div class="crayons-card crayons-card--content-rows">
+        <div class="flex items-start justify-between flex-wrap gap-3">
+          <div class="flex-1">
+            <h2 class="crayons-subtitle-1"><%= t("views.dashboard.embed_pages.section_heading") %></h2>
+            <p class="color-base-60 fs-s mt-1 mb-0"><%= t("views.dashboard.embed_pages.section_description") %></p>
+          </div>
+          <%= link_to t("views.dashboard.embed_pages.new_button"), new_dashboard_embed_page_path, class: "crayons-btn shrink-0" %>
+        </div>
+
+        <% if @embed_pages.any? %>
+          <div class="grid gap-4 mt-4">
+            <% @embed_pages.each do |embed_page| %>
+              <%
+                embed_suffix = embed_page.slug.split("/").last
+                embed_url = URL.url("/#{current_user.username}/embed/#{embed_suffix}")
+              %>
+              <div class="crayons-card crayons-card--secondary p-4 flex items-start justify-between gap-4" data-testid="user-embed-page">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h3 class="crayons-subtitle-2"><%= embed_page.title %></h3>
+                    <span class="crayons-tag crayons-tag--monochrome fs-xs">
+                      <%= t("views.organization_settings.pages.embed_only_badge") %>
+                    </span>
+                  </div>
+                  <p class="fs-s color-base-60 mb-2"><%= embed_page.description %></p>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <code class="crayons-code fs-xs">{% embed <%= embed_url %> %}</code>
+                    <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s"
+                            onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent.trim());
+                                     this.textContent='Copied!';
+                                     setTimeout(function(){this.textContent='<%= j t("views.organization_settings.lead_forms.copy_embed") %>';}.bind(this), 1500);">
+                      <%= t("views.organization_settings.lead_forms.copy_embed") %>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                  <%= link_to t("views.organization_settings.pages.edit"), edit_dashboard_embed_page_path(embed_page), class: "crayons-btn crayons-btn--secondary crayons-btn--xs" %>
+                  <%= button_to t("views.organization_settings.lead_forms.delete"), dashboard_embed_page_path(embed_page), method: :delete, data: { confirm: t("views.dashboard.embed_pages.confirm_delete") }, class: "crayons-btn crayons-btn--danger crayons-btn--xs" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="p-8 text-center color-base-60">
+            <p class="mb-4"><%= t("views.dashboard.embed_pages.empty") %></p>
+            <%= link_to t("views.dashboard.embed_pages.new_button"), new_dashboard_embed_page_path, class: "crayons-btn" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>

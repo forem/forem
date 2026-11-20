@@ -85,6 +85,7 @@ pt:
   ai_image_generations_controller:
     prompt_required: Prompt de imagem é obrigatório
     generation_failed: Falha ao gerar imagem. Por favor, tente novamente.
+    generation_refused: Não é possível gerar uma imagem a partir deste prompt. Tente descrevê-lo de outra forma.
     timeout: A geração da imagem expirou. Por favor, tente novamente.
     unexpected_error: Ocorreu um erro inesperado ao gerar a imagem.
   image_uploads_controller:
@@ -100,6 +101,9 @@ pt:
     account_switch_expired: "Esta tentativa de login expirou. Tente entrar novamente."
     log_in_error: 'Erro de login: %{e}'
     username_taken: nome de usuário já foi usado
+  organization_invitations_controller:
+    accepted: Você entrou em %{organization_name}.
+    declined: Você recusou o convite para participar de %{organization_name}.
   organizations_controller:
     secret_updated: Seu segredo da organização foi atualizado
     deletion_scheduled: 'Sua organização: "%{organization_name}" exclusão está agendada. Você será notificado quando for excluída.'
@@ -134,6 +138,7 @@ pt:
     not_upserted_successfully: Não inserido com sucesso
   registrations_controller:
     error:
+      captcha: Você deve concluir a verificação CAPTCHA.
       recaptcha: Você deve completar o recaptcha ✅
       domain: não está incluído nos domínios permitidos.
   response_templates_controller:

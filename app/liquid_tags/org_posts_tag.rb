@@ -20,7 +20,6 @@ class OrgPostsTag < LiquidTagBase
 
   def render(_context)
     articles = @organization.articles.published
-      .includes(:subforem)
       .limited_column_select
 
     articles = articles.where("public_reactions_count >= ?", @min_reactions) if @min_reactions

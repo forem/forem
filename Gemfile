@@ -17,7 +17,7 @@ gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 5.5" # Tracking analytics for Rails
 gem "algoliasearch-rails", "~> 2.3" # Algolia Search API Client
 gem "analytics-ruby", "~> 2.5" # Segment-compatible analytics client; used by Trackers::CustomerioCdp pointed at cdp.customer.io
-gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
+gem "ancestry", "~> 5.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 3.1" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -33,6 +33,7 @@ gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 5.6", require: false # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
+gem "excon", "~> 1.8.0"
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 4.0" # A feed fetching and parsing library
@@ -45,11 +46,11 @@ gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
-gem "honeybadger", "~> 5.1" # Used for tracking application errors
+gem "honeybadger", "~> 5.1", require: false # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.11.0", require: false # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.24" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
+gem "httpclient", "~> 2.10.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
@@ -63,7 +64,6 @@ gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "logtail-rails", "~> 0.2.12", require: false # Ships Rails logs to Better Stack when BETTERSTACK_SOURCE_TOKEN is set (see lib/betterstack/log_device.rb and config/initializers/betterstack.rb before upgrading)
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
-gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.18" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 10.0" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
@@ -94,13 +94,13 @@ gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML pars
 
 gem "redis", "~> 4.7.1" # Redis ruby client
 gem "redis-actionpack", "~> 5.5.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "redis-client", "~> 0.31.0", require: false # RESP3 invalidations for the optional local cache daemon
 gem "rpush", "~> 9.2" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
 gem "request_store", "~> 1.7" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
-gem "rouge", "~> 4.7" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
@@ -115,7 +115,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.55" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
+gem "strong_migrations", "~> 2.8" # Catch unsafe migrations
 gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
@@ -141,7 +141,7 @@ group :development do
   gem "yard", "~> 0.9" # Documentation format
   gem "yard-activerecord", "~> 0.0" # Yard extension for ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0" # Yard extension for ActiveRecord::Concern
-  gem "kamal", "~> 2.3"
+  gem "kamal", "~> 2.12"
 end
 
 group :development, :test do

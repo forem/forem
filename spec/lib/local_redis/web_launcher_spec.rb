@@ -1,0 +1,114 @@
+require "spec_helper"
+require "open3"
+require "json"
+require "rbconfig"
+require_relative "../../support/local_redis_servers"
+require_relative "../../../lib/local_redis/web"
+
+RSpec.describe LocalRedis::Web do
+  include_context "with real Redis"
+
+  let(:servers) { LocalRedisServers.new }
+  let(:socket) { File.join(servers.directory, "launcher.sock") }
+  let(:local_url) { "unix://#{socket}" }
+  let(:process_state) { {} }
+  # bin/web and the bundle stubs below only need the standard library.
+  # Keep RUBYOPT in the environment for override assertions, but skip loading it.
+  let(:web_command) { [RbConfig.ruby, "--disable=gems,rubyopt", "bin/web"] }
+
+  after do
+    if process_state[:pid]
+      Process.kill("TERM", process_state[:pid])
+      Process.waitpid(process_state[:pid])
+    end
+  rescue Errno::ESRCH, Errno::ECHILD
+    nil
+  ensure
+    servers.close
+  end
+
+  it "starts a bounded private LFU Redis without TCP or persistence" do
+    env = { "LOCAL_REDIS_URL" => local_url, "LOCAL_REDIS_MAXMEMORY" => "16mb" }
+    process_state[:pid] = Process.spawn(env, RbConfig.ruby, "bin/redis-local-server", out: File::NULL, err: File::NULL)
+    client = Redis.new(url: local_url, timeout: 0.1, reconnect_attempts: 0)
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 5
+    loop do
+      client.ping
+      break
+    rescue Redis::BaseError
+      raise "Launcher did not create a Redis socket" if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+      sleep 0.02
+    end
+    expect(client.config(:get, "maxmemory")).to eq("maxmemory" => (16 * 1024 * 1024).to_s)
+    expect(client.config(:get, "maxmemory-policy")).to eq("maxmemory-policy" => "allkeys-lfu")
+    expect(client.config(:get, "port")).to eq("port" => "0")
+    expect(client.config(:get, "save")).to eq("save" => "")
+    expect(client.config(:get, "appendonly")).to eq("appendonly" => "no")
+    expect(File.stat(socket).mode & 0o777).to eq(0o700)
+  ensure
+    client&.close
+  end
+
+  it "rejects an unlimited memory budget" do
+    env = { "LOCAL_REDIS_URL" => local_url, "LOCAL_REDIS_MAXMEMORY" => "0" }
+    _stdout, stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/redis-local-server")
+    expect(status).not_to be_success
+    expect(stderr).to include("must be a positive byte count")
+    expect(File.exist?(socket)).to be(false)
+  end
+
+  it "executes the original Puma command when local caching is disabled" do
+    shim = File.join(servers.directory, "bundle")
+    File.write(shim, "#!#{RbConfig.ruby} --disable=gems,rubyopt\nrequire 'json'\nputs JSON.generate(ARGV)\nexit 23\n")
+    File.chmod(0o700, shim)
+    env = { "LOCAL_REDIS_URL" => "", "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}" }
+    stdout, _stderr, status = Open3.capture3(env, *web_command)
+    expect(JSON.parse(stdout)).to eq(["exec", "puma", "-C", "config/puma.rb"])
+    expect(status.exitstatus).to eq(23)
+
+    container_command = File.read("Containerfile")[/^CMD (\[.*\])$/, 1]
+    args = JSON.parse(container_command).drop_while { |arg| arg != "bin/web" }.drop(1)
+    stdout, _stderr, status = Open3.capture3(env, *web_command, *args)
+    expect(JSON.parse(stdout)).to eq(%w[exec rails server -b 0.0.0.0 -p 3000])
+    expect(status.exitstatus).to eq(23)
+  end
+
+  it "applies opt-in WEB_* runtime overrides when executing Puma directly" do
+    shim = File.join(servers.directory, "bundle")
+    File.write(
+      shim,
+      "#!#{RbConfig.ruby} --disable=gems,rubyopt\nrequire 'json'\n" \
+      "payload = { 'argv' => ARGV, 'malloc_limit' => ENV['RUBY_GC_MALLOC_LIMIT'], 'rubyopt' => ENV['RUBYOPT'] }\n" \
+      "puts JSON.generate(payload)\nexit 0\n",
+    )
+    File.chmod(0o700, shim)
+    env = {
+      "LOCAL_REDIS_URL" => "",
+      "RUBYOPT" => "-W0 --yjit-disable --yjit-exec-mem-size=128",
+      "WEB_RUBY_GC_MALLOC_LIMIT" => "67108864",
+      "WEB_YJIT_EXEC_MEM_SIZE" => "256",
+      "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}"
+    }
+    stdout, _stderr, status = Open3.capture3(env, *web_command)
+    payload = JSON.parse(stdout)
+    expect(status).to be_success
+    expect(payload["argv"]).to eq(["exec", "puma", "-C", "config/puma.rb"])
+    expect(payload["malloc_limit"]).to eq("67108864")
+    expect(payload["rubyopt"]).to end_with("-W0 --yjit-disable --yjit-exec-mem-size=256")
+  end
+
+  it "rejects a source socket alias before executing redis-server" do
+    directory_alias = File.join(servers.directory, "alias")
+    File.symlink(servers.directory, directory_alias)
+    shim = File.join(servers.directory, "redis-server")
+    File.write(shim, "#!#{RbConfig.ruby}\nputs 'server started'\n")
+    File.chmod(0o700, shim)
+    env = { "LOCAL_REDIS_URL" => local_url, "REDISCLOUD_URL" => "unix://#{directory_alias}/launcher.sock",
+            "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}" }
+    stdout, stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/redis-local-server")
+    expect(status).not_to be_success
+    expect(stderr).to include("separate")
+    expect(stdout).not_to include("server started")
+  end
+end

@@ -136,6 +136,16 @@ RSpec.describe Tag do
     end
   end
 
+  it "purges edge-cached tag lists when a tag is created, but not on update" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    tag.save!
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("tags").once
+
+    tag.update!(short_summary: "Updated")
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("tags").once
+  end
+
   it "delete tag-colors server cache on save" do
     allow(Rails.cache).to receive(:delete)
     tag.save

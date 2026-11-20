@@ -1,0 +1,17 @@
+<div class="fs-sm py-2 flex items-center" data-testid="gem-history-entry">
+  <div class="mr-3 relative">
+    <img class="crayons-avatar h-8 w-8" style="height: 30px; width: 30px;" src="<%= @gem_given_by.profile_image_90 %>" width="25" height="25" alt="">
+    <img class="crayons-avatar absolute -right-1 -bottom-1 border-base-inverted" style="height: 20px; width: 20px;" src="/assets/gem.svg" width="16" height="16" alt="">
+  </div>
+  <div class="flex-1 flex items-center justify-between">
+    <div>
+      <strong><%= t("views.stats.gem") %></strong>
+      <%= t("views.stats.by") %> <a href="<%= URL.user(@gem_given_by) %>" class="fw-bold"><%= @gem_given_by.name %></a>
+    </div>
+    <% if @gem_given_at %>
+      <div class="fs-xs">
+        <%= I18n.l(@gem_given_at, format: @gem_given_at.year == Time.current.year ? :short : :short_with_yy) %>
+      </div>
+    <% end %>
+  </div>
+</div>

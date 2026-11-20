@@ -23,9 +23,12 @@ class AiChatsController < ApplicationController
                    end
 
     result = chat_service.generate_response(user_message)
-    response_markdown = result[:response]
+    response_markdown = result[:response].to_s
 
-    rendered_html = MarkdownProcessor::Parser.new(response_markdown, user: current_user).evaluate_markdown
+    rendered_html = if response_markdown.present?
+                      MarkdownProcessor::Parser.new(response_markdown, user: current_user).evaluate_markdown
+                    end
+    rendered_html = "<p>I couldn't generate a response right now. Please try again.</p>\n" if rendered_html.blank?
 
     render json: {
       message: rendered_html,

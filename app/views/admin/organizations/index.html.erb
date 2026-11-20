@@ -7,7 +7,12 @@
   </div>
 <% end %>
 
-<%= paginate @organizations %>
+<nav class="admin-pagination flex gap-2 fs-s items-center">
+  <% if @organizations.current_page > 1 %>
+    <%= link_to t("views.pagination.aria_previous"), admin_organizations_path(search: params[:search], page: (@organizations.current_page - 1 if @organizations.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+  <% end %>
+  <%= link_to_next_page @organizations, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>
 
 <table class="crayons-table" width="100%">
   <thead>
@@ -44,4 +49,9 @@
   </tbody>
 </table>
 
-<%= paginate @organizations %>
+<nav class="admin-pagination flex gap-2 fs-s items-center">
+  <% if @organizations.current_page > 1 %>
+    <%= link_to t("views.pagination.aria_previous"), admin_organizations_path(search: params[:search], page: (@organizations.current_page - 1 if @organizations.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+  <% end %>
+  <%= link_to_next_page @organizations, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>

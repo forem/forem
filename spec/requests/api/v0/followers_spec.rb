@@ -70,6 +70,27 @@ RSpec.describe "Api::V0::FollowersController" do
         result = response.parsed_body.pluck("id")
         expect(result).to eq(follows)
       end
+
+      it "filters by blocked = false to align with the composite followable_blocked_and_created_at index",
+         :aggregate_failures do
+        blocked_follower = create(:user)
+        create(:follow, follower: blocked_follower, followable: user, blocked: true)
+
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get api_followers_users_path, headers: headers
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.pluck("user_id")).to eq([follower.id])
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to match(/"follows"\."blocked" = (FALSE|\$\d+)/)
+      end
     end
   end
 end

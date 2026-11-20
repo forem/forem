@@ -15,6 +15,7 @@ class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
   before_action :set_agent_sessions_count
+  before_action :set_embed_pages_count
 
   layout false, only: :sidebar
 
@@ -64,6 +65,7 @@ class DashboardsController < ApplicationController
   def sidebar
     @user = current_user
     @organizations = @user.admin_organizations
+    @collections_count = collections_count(@user)
     @action = params[:state]
     @posts_count = posts_count_for(@user)
   end
@@ -94,8 +96,16 @@ class DashboardsController < ApplicationController
 
   def followers
     fetch_and_authorize_user
+    # Filtering `blocked: false` aligns the query with
+    # `index_follows_on_followable_blocked_and_created_at` instead of scanning
+    # `index_follows_on_created_at`, and `.load` avoids a separate EXISTS query
+    # when the view checks `@follows.any?`.
     @follows = Follow.non_suspended("User", @user.id)
-      .includes(:follower).order(created_at: :desc).limit(follows_limit)
+      .where(blocked: false)
+      .includes(:follower)
+      .order(created_at: :desc)
+      .limit(follows_limit)
+      .load
     @collections_count = collections_count(@user)
   end
 
@@ -178,15 +188,29 @@ class DashboardsController < ApplicationController
     @agent_sessions_count = current_user.agent_sessions_count
   end
 
+  def set_embed_pages_count
+    @embed_pages_count = current_user.can_manage_embed_pages? ? current_user.pages.embed_html.count : 0
+  end
+
   def follows_for(user:, type:, order_by: :created_at)
-    user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)
+    user.follows_by_type(type).order(follows_order(order_by)).includes(:followable).limit(follows_limit).load
   end
 
   def follows_for_tag(user:, order_by: :created_at, explicit_points: (0...))
-    user.follows_by_type("ActsAsTaggableOn::Tag").order(order_by => :desc)
+    user.follows_by_type("ActsAsTaggableOn::Tag").order(follows_order(order_by))
       .where(explicit_points: explicit_points)
       .includes(:followable)
       .limit(follows_limit)
+      .load
+  end
+
+  # Express `created_at` ordering as `(follows.created_at + INTERVAL '0 seconds') DESC`
+  # so Postgres drives `follower_id` lookups via `fk_follows` instead of walking
+  # `index_follows_on_created_at` backwards across the full `follows` table.
+  def follows_order(order_by)
+    return Arel.sql("(follows.created_at + INTERVAL '0 seconds') DESC") if order_by == :created_at
+
+    { order_by => :desc }
   end
 
   def set_source

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AiChatsController, type: :controller do
+RSpec.describe AiChatsController do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
@@ -67,9 +67,40 @@ RSpec.describe AiChatsController, type: :controller do
         post :create, params: { message: "hi" }, format: :json
 
         expect(response).to be_successful
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["message"]).to eq("<p>AI Reply</p>\n")
         expect(json["history"]).to be_an(Array)
+      end
+
+      it "routes editor context requests to Ai::EditorHelperService with article_state" do
+        editor_service = instance_double(Ai::EditorHelperService)
+        allow(Ai::EditorHelperService).to receive(:new).and_return(editor_service)
+        reply_payload = {
+          response: "Remove the hyphen in `react-native`.",
+          history: [
+            { role: "user", text: "What is wrong with my tags?" },
+            { role: "assistant", text: "Remove the hyphen in `react-native`." },
+          ]
+        }
+        allow(editor_service)
+          .to receive(:generate_response)
+          .with("What is wrong with my tags?")
+          .and_return(reply_payload)
+
+        post :create, params: {
+          message: "What is wrong with my tags?",
+          chat_context: "editor",
+          article_state: { title: "My Draft", tags: "react-native", body: "## Hello" }
+        }, format: :json
+
+        expect(response).to be_successful
+        json = response.parsed_body
+        expect(json["message"]).to include("<code>react-native</code>")
+        expect(Ai::EditorHelperService).to have_received(:new).with(
+          user,
+          history: [],
+          article_state: hash_including("title" => "My Draft", "tags" => "react-native"),
+        )
       end
 
       it "returns error if message is blank" do

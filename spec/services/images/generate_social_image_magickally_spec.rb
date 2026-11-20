@@ -1,24 +1,22 @@
 require "rails_helper"
 
 RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, profile_image: nil) }
   let(:default_subforem) { create(:subforem, domain: "default.test") }
   let(:custom_subforem) { create(:subforem, domain: "custom.test") }
-  let!(:article) { create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem) }
-  let!(:article_with_custom_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: custom_subforem) }
-  let!(:article_without_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: nil) }
+  let(:article) { create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem) }
+  let(:article_with_custom_subforem) do
+    create(:article, user_id: user.id, with_main_image: false, subforem: custom_subforem)
+  end
+  let(:article_without_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: nil) }
   let(:organization) { create(:organization) }
-  let!(:second_article) { create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false, subforem: custom_subforem) }
+  let(:second_article) do
+    create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false,
+                     subforem: custom_subforem)
+  end
   let(:default_logo_url) { "https://example.com/default_logo.png" }
   let(:custom_logo_url) { "https://example.com/custom_logo.png" }
   let(:generated_image) { "https://example.com/og.png" }
-
-  before do
-    allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-    allow(Settings::General).to receive(:resized_logo).and_return(nil)
-    allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
-    allow(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
-  end
 
   # rubocop:disable Style/Send
   # rubocop:disable Layout/LineLength
@@ -35,19 +33,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates the image with the author's brand color" do
-        described_class.call(article)
-        expect(generator).to have_received(:generate_image).with(article, user.setting.brand_color1).once
-      end
-
-      it "stores the generated image on the article" do
-        described_class.call(article)
-        expect(article.reload.social_image).to eq("https://example.com/og.png")
-      end
-
-      it "busts article cache" do
+      it "generates the image with the author's brand color, stores it, and busts article cache", :aggregate_failures do
         allow(EdgeCache::BustArticle).to receive(:call)
+
         described_class.call(article)
+
+        expect(generator).to have_received(:generate_image).with(article, user.setting.brand_color1).once
+        expect(article.reload.social_image).to eq("https://example.com/og.png")
         expect(EdgeCache::BustArticle).to have_received(:call).with(article)
       end
 
@@ -129,25 +121,16 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         end
       end
 
-      context "when MiniMagick throws an error" do
-        it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
-          allow(generator).to receive(:generate_image).and_raise(MiniMagick::Error.new("`convert` failed with status: 15"))
-          allow(Rails.logger).to receive(:warn)
-          allow(Rails.error).to receive(:report)
-
-          described_class.call(article)
-
-          expect(Rails.logger).to have_received(:warn).with(/SIGTERM/)
-          expect(Rails.error).not_to have_received(:report)
-        end
-
-        it "alerts Honeybadger for other MiniMagick errors" do
-          error = MiniMagick::Error.new("`convert` failed with status: 1")
+      context "when image generation raises an unexpected error" do
+        it "logs and reports the error" do
+          error = StandardError.new("unexpected render failure")
           allow(generator).to receive(:generate_image).and_raise(error)
+          allow(Rails.logger).to receive(:error)
           allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
+          expect(Rails.logger).to have_received(:error).with(error)
           expect(Rails.error).to have_received(:report).with(error)
         end
       end
@@ -157,22 +140,23 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:generator) { described_class.new(user) }
 
       before do
+        article
+        article_with_custom_subforem
+        article_without_subforem
+        second_article
         allow(described_class).to receive(:new).and_return(generator)
         allow(generator).to receive(:generate_image).and_return(generated_image)
+        allow(EdgeCache::BustUser).to receive(:call)
       end
 
-      it "generates the user profile image and an image for each published article without an organization or cover" do
+      it "generates and stores images for the user profile and eligible articles and busts user edge cache", :aggregate_failures do
         described_class.call(user)
+
         expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
         [article, article_with_custom_subforem, article_without_subforem].each do |art|
           expect(generator).to have_received(:generate_image).with(art, user.setting.brand_color1)
         end
         expect(generator).not_to have_received(:generate_image).with(second_article, anything)
-      end
-
-      it "stores the generated image on the user profile and articles and busts user edge cache" do
-        allow(EdgeCache::BustUser).to receive(:call)
-        described_class.call(user)
         expect(user.reload.social_image).to eq("https://example.com/og.png")
         expect(article.reload.social_image).to eq("https://example.com/og.png")
         expect(EdgeCache::BustUser).to have_received(:call).with(user)
@@ -189,6 +173,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       it "generates only the user profile image without regenerating their articles" do
         allow(EdgeCache::BustUser).to receive(:call)
+        article
         described_class.call(user.profile)
         expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
         expect(generator).not_to have_received(:generate_image).with(article, anything)
@@ -201,19 +186,17 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:generator) { described_class.new(organization) }
 
       before do
+        second_article
         allow(described_class).to receive(:new).and_return(generator)
         allow(generator).to receive(:generate_image).and_return(generated_image)
+        allow(EdgeCache::BustOrganization).to receive(:call)
       end
 
-      it "generates the organization profile image and article images with the organization's color" do
+      it "generates and stores images on the organization and article and busts organization edge cache", :aggregate_failures do
         described_class.call(organization)
+
         expect(generator).to have_received(:generate_image).with(organization, organization.bg_color_hex).once
         expect(generator).to have_received(:generate_image).with(second_article, organization.bg_color_hex).once
-      end
-
-      it "stores the generated image on the organization and article and busts organization edge cache" do
-        allow(EdgeCache::BustOrganization).to receive(:call)
-        described_class.call(organization)
         expect(organization.reload.social_image).to eq("https://example.com/og.png")
         expect(second_article.reload.social_image).to eq("https://example.com/og.png")
         expect(EdgeCache::BustOrganization).to have_received(:call).with(organization, organization.slug)
@@ -224,11 +207,15 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:image) { double(destroy!: nil) }
 
       before do
+        article
+        article_with_custom_subforem
+        article_without_subforem
+        second_article
         create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem)
         RSpec::Mocks.space.proxy_for(Settings::General).reset
         allow(Settings::General).to receive(:resized_logo).and_return(nil)
         allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-        allow(MiniMagick::Image).to receive(:open).and_return(double)
+        allow(ForemNative).to receive(:social_image_open).and_return(double)
         allow_any_instance_of(described_class).to receive_messages(render_quote: image, render_text: image, draw_background: image, generate_magickally: "https://www.example.com")
       end
 
@@ -242,13 +229,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(Settings::General).to have_received(:logo_png).with(subforem_id: custom_subforem.id).once
       end
 
-      it "still opens fresh MiniMagick images for each article" do
+      it "still opens fresh image canvases for each article" do
         allow(Settings::General).to receive(:logo_png).and_return(default_logo_url)
 
         described_class.call(user)
 
         # logo, author image, and mask for each of the 4 eligible articles
-        expect(MiniMagick::Image).to have_received(:open).at_least(12).times
+        expect(ForemNative).to have_received(:social_image_open).at_least(12).times
       end
     end
   end
@@ -274,9 +261,9 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     before do
       generator.instance_variable_set(:@user, user)
       allow(generator).to receive(:read_files) do
-        generator.instance_variable_set(:@logo_image, MiniMagick::Image.open(Rails.root.join("spec/fixtures/files/podcast.png").to_s))
-        generator.instance_variable_set(:@author_image, MiniMagick::Image.open(Rails.root.join("spec/fixtures/files/800x600.png").to_s))
-        generator.instance_variable_set(:@rounded_mask, MiniMagick::Image.open(Images::ROUNDED_MASK_PATH))
+        generator.instance_variable_set(:@logo_image, ForemNative.social_image_open(Rails.root.join("spec/fixtures/files/podcast.png").to_s))
+        generator.instance_variable_set(:@author_image, ForemNative.social_image_open(Rails.root.join("spec/fixtures/files/800x600.png").to_s))
+        generator.instance_variable_set(:@rounded_mask, ForemNative.social_image_open(Images::ROUNDED_MASK_PATH))
       end
       allow(generator).to receive(:upload_result) do |result|
         written << [result.width, result.height]
@@ -284,31 +271,23 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       end
     end
 
-    it "renders a 1200x627 image with ImageMagick" do
+    it "renders a 1200x627 image, quotes the opening of the article, and destroys image canvases", :aggregate_failures do
+      allow(generator).to receive(:render_quote).and_call_original
+
       expect(generator.send(:generate_image, article, "#3b49df")).to eq("https://example.com/1.png")
       expect(written).to eq([[1200, 627]])
-    end
-
-    it "quotes the opening of the article" do
-      allow(generator).to receive(:render_quote).and_call_original
-      generator.send(:generate_image, article, nil)
       expect(generator).to have_received(:render_quote).with(Images::SocialImageQuote.call(article))
-    end
-
-    it "cleans up intermediate and opened tempfiles after rendering" do
-      generator.send(:generate_image, article, "#3b49df")
-
       %i[@logo_image @author_image @rounded_mask].each do |ivar|
-        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+        expect(generator.instance_variable_get(ivar)).to be_destroyed
       end
     end
 
-    it "renders a 1200x627 profile card image for a User and cleans up tempfiles" do
+    it "renders a 1200x627 profile card image for a User and destroys image canvases" do
       user.profile.update_columns(summary: "Builds distributed systems and writes about Postgres.", location: "Austin, TX", website_url: "https://example.dev")
       expect(generator.send(:generate_image, user, "#0f766e")).to eq("https://example.com/1.png")
       expect(written).to eq([[1200, 627]])
       %i[@logo_image @author_image @rounded_mask].each do |ivar|
-        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+        expect(generator.instance_variable_get(ivar)).to be_destroyed
       end
     end
 
@@ -320,7 +299,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#render_text" do
-    let(:generator) { described_class.new(article) }
+    let(:generator) { described_class.new(nil) }
 
     it "does not let a leading @ read a file into the image" do
       file = Tempfile.new(["secret", ".txt"])
@@ -345,7 +324,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#palette_for" do
-    let(:generator) { described_class.new(article) }
+    let(:generator) { described_class.new(nil) }
 
     it "uses a default palette, chosen by the seed, when the color is unset" do
       %w[#000000 #111212].push(nil, "", "not-a-color").each do |color|
@@ -374,7 +353,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#accent_color" do
-    let(:generator) { described_class.new(article) }
+    let(:generator) { described_class.new(nil) }
 
     it "uses the first dark color in the palette" do
       expect(generator.send(:accent_color, %w[#fff23a #12004a #3333ff])).to eq("#12004a")
@@ -387,7 +366,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#display_name" do
-    let(:generator) { described_class.new(article) }
+    let(:user) { build_stubbed(:user, profile_image: nil) }
+    let(:generator) { described_class.new(nil) }
 
     it "turns stylized Unicode letters into plain ones the fonts can render" do
       expect(generator.send(:display_name, "\u{1D413}\u{1D421}\u{1D41E} \u{1D40B}\u{1D41A}\u{1D433}\u{1D432}")).to eq("The Lazy")
@@ -405,7 +385,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#meta_line" do
-    let(:generator) { described_class.new(article) }
+    let(:article) { Article.new(published: true, published_at: Time.current) }
+    let(:generator) { described_class.new(nil) }
 
     it "shows the date and reading time" do
       article.reading_time = 7
@@ -419,7 +400,9 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#profile_bio" do
-    let(:generator) { described_class.new(user) }
+    let(:user) { User.new(profile: Profile.new) }
+    let(:organization) { Organization.new }
+    let(:generator) { described_class.new(nil) }
 
     it "returns the cleaned and word-boundary truncated bio when present" do
       user.profile.summary = "word " * 50
@@ -454,7 +437,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#profile_meta_line" do
-    let(:generator) { described_class.new(user) }
+    let(:user) { User.new(created_at: Time.current, profile: Profile.new) }
+    let(:generator) { described_class.new(nil) }
 
     it "joins present location, cleaned website url, and joined date" do
       user.profile.location = "Austin, TX"
@@ -472,7 +456,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#profile_brand_color" do
-    let(:generator) { described_class.new(user) }
+    let(:generator) { described_class.new(nil) }
     let(:palette) { generator.send(:palette_for, nil, 1) }
 
     it "uses the accent color when brand color is unset" do
@@ -490,7 +474,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#escape_text" do
-    let(:generator) { described_class.new(article) }
+    let(:generator) { described_class.new(nil) }
 
     it "escapes backslashes before other characters" do
       expect(generator.send(:escape_text, 'a\\b')).to eq('a\\\\b')
@@ -515,69 +499,109 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   end
 
   describe "#add_profile_image" do
-    let(:generator) { described_class.new(article) }
-    let(:result_image) { double(MiniMagick::Image) }
-    let(:author_image) { double(MiniMagick::Image) }
-    let(:rounded_mask) { double(MiniMagick::Image) }
+    let(:generator) { described_class.new(nil) }
+    let(:result_image) { double("SocialCanvas") }
+    let(:author_image) { double("SocialCanvas") }
+    let(:rounded_mask) { double("SocialCanvas") }
 
     before do
-      allow(result_image).to receive_messages(composite: result_image, combine_options: result_image)
-      allow(author_image).to receive(:collapse!)
-      allow(author_image).to receive(:format)
-      allow(author_image).to receive(:resize)
-      allow(rounded_mask).to receive(:resize)
+      allow(ForemNative).to receive(:social_image_add_profile_image).and_return(result_image)
 
       generator.instance_variable_set(:@author_image, author_image)
       generator.instance_variable_set(:@rounded_mask, rounded_mask)
     end
 
-    it "adds the profile image and rounded mask after collapsing animation frames" do
-      generator.send(:add_profile_image, result_image)
-      expect(author_image).to have_received(:collapse!)
-      expect(author_image).to have_received(:format).with("png")
-      expect(author_image).to have_received(:resize).with("64x64!")
-      expect(rounded_mask).to have_received(:resize).with("64x64")
-      expect(result_image).to have_received(:composite).twice
+    it "adds the profile image and rounded mask" do
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+      expect(ForemNative).to have_received(:social_image_add_profile_image).with(result_image, author_image, rounded_mask)
     end
 
-    it "gracefully rescues a Timeout::Error, reports it, and returns the image without an avatar" do
-      allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
+    it "returns the image unchanged when there is no author image" do
+      generator.instance_variable_set(:@author_image, nil)
+
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+      expect(ForemNative).not_to have_received(:social_image_add_profile_image)
+    end
+
+    it "gracefully rescues a Timeout::Error, logs a warning without reporting, and returns the image without an avatar" do
+      allow(ForemNative).to receive(:social_image_add_profile_image).and_raise(Timeout::Error)
+      allow(Rails.logger).to receive(:warn)
       allow(Rails.error).to receive(:report)
 
       expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
-      expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
-      expect(author_image).not_to have_received(:resize)
-      expect(result_image).not_to have_received(:composite)
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed/)
+      expect(Rails.error).not_to have_received(:report)
+    end
+
+    it "gracefully rescues a corrupt avatar ArgumentError, logs a warning without reporting, and returns the image without an avatar" do
+      error = ArgumentError.new("failed to decode image: corrupt PNG chunk")
+      allow(ForemNative).to receive(:social_image_add_profile_image).and_raise(error)
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.error).to receive(:report)
+
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed:.*corrupt PNG chunk/)
+      expect(Rails.error).not_to have_received(:report)
+    end
+  end
+
+  describe "#add_profile_card_avatar" do
+    let(:generator) { described_class.new(nil) }
+    let(:result_image) { double("SocialCanvas", destroy!: nil) }
+    let(:author_image) { double("SocialCanvas") }
+    let(:rounded_mask) { double("SocialCanvas") }
+
+    before do
+      allow(ForemNative).to receive(:social_image_add_profile_card_avatar).and_return(result_image)
+
+      generator.instance_variable_set(:@author_image, author_image)
+      generator.instance_variable_set(:@rounded_mask, rounded_mask)
+    end
+
+    it "returns the image unchanged when there is no author image" do
+      generator.instance_variable_set(:@author_image, nil)
+
+      expect(generator.send(:add_profile_card_avatar, result_image)).to eq(result_image)
+      expect(ForemNative).not_to have_received(:social_image_add_profile_card_avatar)
+    end
+
+    it "logs a warning for avatar processing errors without reporting and returns the image without an avatar" do
+      error = ArgumentError.new("failed to composite profile avatar")
+      allow(ForemNative).to receive(:social_image_add_profile_card_avatar).and_raise(error)
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.error).to receive(:report)
+
+      expect(generator.send(:add_profile_card_avatar, result_image)).to eq(result_image)
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed/)
+      expect(Rails.error).not_to have_received(:report)
     end
   end
 
   describe "#add_logo" do
-    let(:generator) { described_class.new(article) }
-    let(:result_image) { double(MiniMagick::Image) }
-    let(:logo_image) { double(MiniMagick::Image) }
+    let(:generator) { described_class.new(nil) }
+    let(:result_image) { double("SocialCanvas") }
+    let(:logo_image) { double("SocialCanvas") }
 
     before do
-      allow(result_image).to receive(:composite).and_return(result_image)
-      allow(logo_image).to receive(:resize)
+      allow(ForemNative).to receive(:social_image_add_logo).and_return(result_image)
       generator.instance_variable_set(:@logo_image, logo_image)
     end
 
     it "scales the logo to the window's title bar and adds it" do
-      generator.send(:add_logo, result_image)
-      expect(logo_image).to have_received(:resize).with("x#{described_class::LOGO_HEIGHT}")
-      expect(result_image).to have_received(:composite).with(logo_image)
+      expect(generator.send(:add_logo, result_image)).to eq(result_image)
+      expect(ForemNative).to have_received(:social_image_add_logo).with(result_image, logo_image)
     end
 
     it "does not add a logo when there is none" do
       generator.instance_variable_set(:@logo_image, nil)
       expect(generator.send(:add_logo, result_image)).to eq(result_image)
-      expect(result_image).not_to have_received(:composite)
+      expect(ForemNative).not_to have_received(:social_image_add_logo)
     end
   end
 
   describe "#upload_result" do
-    let(:generator) { described_class.new(article) }
-    let(:result_image) { double(MiniMagick::Image) }
+    let(:generator) { described_class.new(nil) }
+    let(:result_image) { double("SocialCanvas") }
     let(:tempfile) { instance_double(Tempfile, path: "/tmp/output.png") }
     let(:uploader) { instance_double(ArticleImageUploader) }
 
@@ -585,8 +609,6 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       allow(Tempfile).to receive(:new).and_return(tempfile)
       allow(tempfile).to receive(:close)
       allow(tempfile).to receive(:unlink)
-      allow(result_image).to receive(:combine_options)
-      allow(result_image).to receive(:format)
       allow(result_image).to receive(:write)
       allow(ArticleImageUploader).to receive(:new).and_return(uploader)
       allow(uploader).to receive(:store!)
@@ -596,7 +618,6 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     it "writes an 8-bit PNG, uploads it, then cleans up the tempfile" do
       expect(generator.send(:upload_result, result_image)).to eq "http://example.com/social_image.png"
 
-      expect(result_image).to have_received(:format).with("png")
       expect(Tempfile).to have_received(:new).with(["output", ".png"])
       expect(result_image).to have_received(:write).with(tempfile.path)
       expect(uploader).to have_received(:store!).with(tempfile)
@@ -609,35 +630,40 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     let(:instance) { described_class.new(article) }
 
     before do
-      allow(MiniMagick::Image).to receive(:open)
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      allow(Settings::General).to receive(:resized_logo).and_return(nil)
+      allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
+      allow(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
+      allow(ForemNative).to receive(:social_image_open)
       instance.instance_variable_set(:@user, article.user)
     end
 
     it "opens the logo, author image, and rounded mask" do
+      allow(article.user).to receive(:profile_image_90).and_return(Images::Profile::BACKUP_LINK)
       instance.send(:read_files, article)
-      expect(MiniMagick::Image).to have_received(:open).with(default_logo_url)
-      expect(MiniMagick::Image).to have_received(:open).with(Images::Profile::BACKUP_LINK)
-      expect(MiniMagick::Image).to have_received(:open).with(Images::ROUNDED_MASK_PATH)
+      expect(ForemNative).to have_received(:social_image_open).with(default_logo_url)
+      expect(ForemNative).to have_received(:social_image_open).with(Images::Profile::BACKUP_LINK)
+      expect(ForemNative).to have_received(:social_image_open).with(Images::ROUNDED_MASK_PATH)
     end
 
     it "prefers the community's horizontal header logo" do
       allow(Settings::General).to receive(:resized_logo).with(subforem_id: default_subforem.id).and_return("https://example.com/header_logo.png")
       instance.send(:read_files, article)
-      expect(MiniMagick::Image).to have_received(:open).with("https://example.com/header_logo.png")
-      expect(MiniMagick::Image).not_to have_received(:open).with(default_logo_url)
+      expect(ForemNative).to have_received(:social_image_open).with("https://example.com/header_logo.png")
+      expect(ForemNative).not_to have_received(:social_image_open).with(default_logo_url)
     end
 
     context "with custom subforem" do
       it "uses the custom subforem logo" do
         instance.send(:read_files, article_with_custom_subforem)
-        expect(MiniMagick::Image).to have_received(:open).with(custom_logo_url)
+        expect(ForemNative).to have_received(:social_image_open).with(custom_logo_url)
       end
     end
 
     context "without subforem" do
       it "falls back to default subforem logo" do
         instance.send(:read_files, article_without_subforem)
-        expect(MiniMagick::Image).to have_received(:open).with(default_logo_url)
+        expect(ForemNative).to have_received(:social_image_open).with(default_logo_url)
       end
     end
 
@@ -645,7 +671,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       it "does not attempt to open the logo image" do
         allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return("")
         instance.send(:read_files, article)
-        expect(MiniMagick::Image).not_to have_received(:open).with("")
+        expect(ForemNative).not_to have_received(:social_image_open).with("")
         expect(instance.instance_variable_get(:@logo_image)).to be_nil
       end
     end
@@ -663,14 +689,41 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(Settings::General).to have_received(:logo_png).with(subforem_id: custom_subforem.id).once
       end
 
-      it "still creates fresh MiniMagick image objects each time" do
-        allow(MiniMagick::Image).to receive(:open) { |path| double("MiniMagick::Image for #{path}") }
+      it "still creates fresh image canvas objects each time" do
+        allow(ForemNative).to receive(:social_image_open) { |path| double("SocialCanvas for #{path}") }
 
         instance.send(:read_files, article)
         first_logo = instance.instance_variable_get(:@logo_image)
         instance.send(:read_files, article)
 
         expect(instance.instance_variable_get(:@logo_image)).not_to equal(first_logo)
+      end
+    end
+
+    context "when the author profile image cannot be decoded" do
+      before do
+        allow(article.user).to receive(:profile_image_90).and_return("https://example.com/corrupt_avatar.png")
+      end
+
+      it "logs a warning, sets @author_image to nil, and does not report an error" do
+        allow(ForemNative).to receive(:social_image_open).with("https://example.com/corrupt_avatar.png").and_raise(
+          ArgumentError.new("failed to decode image: improper image header"),
+        )
+        allow(Rails.logger).to receive(:warn)
+        allow(Rails.error).to receive(:report)
+
+        instance.send(:read_files, article)
+
+        expect(instance.instance_variable_get(:@author_image)).to be_nil
+        expect(Rails.logger).to have_received(:warn).with(/Profile image open failed/)
+        expect(Rails.error).not_to have_received(:report)
+      end
+
+      it "re-raises non-ArgumentError fetch exceptions such as OpenURI::HTTPError" do
+        http_error = OpenURI::HTTPError.new("503 Service Unavailable", StringIO.new)
+        allow(ForemNative).to receive(:social_image_open).with("https://example.com/corrupt_avatar.png").and_raise(http_error)
+
+        expect { instance.send(:read_files, article) }.to raise_error(OpenURI::HTTPError)
       end
     end
   end

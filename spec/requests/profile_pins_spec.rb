@@ -13,11 +13,18 @@ RSpec.describe "ProfilePins" do
   before { sign_in user }
 
   describe "POST /profile_pins" do
-    it "creates a pin" do
+    it "creates a pin and busts only the user's profile details surrogate key", :aggregate_failures do
+      article
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+
       post "/profile_pins", params: {
         profile_pin: { pinnable_id: article.id }
       }
       expect(ProfilePin.last.pinnable_id).to eq(article.id)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(
+        user.profile_details_record_key,
+        fallback_paths: user.profile_cache_bust_paths,
+      )
     end
 
     it "allows only five pins" do
@@ -36,6 +43,25 @@ RSpec.describe "ProfilePins" do
       profile_pin = create(:profile_pin, pinnable: article, profile: user)
       put "/profile_pins/#{profile_pin.id}"
       expect(ProfilePin.all.size).to eq(0)
+    end
+  end
+
+  describe "when the user is spam-flagged or suspended" do
+    %i[spam suspended].each do |role|
+      it "forbids pinning and unpinning for #{role} users", :aggregate_failures do
+        profile_pin = create(:profile_pin, pinnable: article, profile: user)
+        user.add_role(role)
+
+        expect do
+          post "/profile_pins", params: { profile_pin: { pinnable_id: article2.id } }
+        end.not_to change(ProfilePin, :count)
+        expect(response).to have_http_status(:forbidden)
+
+        expect do
+          put "/profile_pins/#{profile_pin.id}"
+        end.not_to change(ProfilePin, :count)
+        expect(response).to have_http_status(:forbidden)
+      end
     end
   end
 end

@@ -1,16 +1,9 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { SnackbarItem } from './SnackbarItem';
+import { snackbarItems, addSnackbarItem } from './addSnackbarItem';
 
-let snackbarItems = [];
-
-export function addSnackbarItem(snackbarItem) {
-  if (!Array.isArray(snackbarItem.actions)) {
-    snackbarItem.actions = []; // eslint-disable-line no-param-reassign
-  }
-
-  snackbarItems.push(snackbarItem);
-}
+export { addSnackbarItem };
 
 export class Snackbar extends Component {
   state = {
@@ -53,7 +46,7 @@ export class Snackbar extends Component {
   }
 
   initializePolling() {
-    const { pollingTime, lifespan } = this.props;
+    const { pollingTime = 300, lifespan = 5 } = this.props;
 
     this.pollingId = setInterval(() => {
       if (snackbarItems.length > 0) {
@@ -64,7 +57,7 @@ export class Snackbar extends Component {
           lifespan,
         }));
 
-        snackbarItems = [];
+        snackbarItems.length = 0;
 
         this.updateSnackbarItems(newSnacks);
 
@@ -164,11 +157,6 @@ export class Snackbar extends Component {
     );
   }
 }
-
-Snackbar.defaultProps = {
-  lifespan: 5,
-  pollingTime: 300,
-};
 
 Snackbar.displayName = 'Snackbar';
 

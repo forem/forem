@@ -16,6 +16,7 @@ RSpec.describe "/admin/settings/ai_functions" do
         settings_ai_functions: {
           function_models: {
             article_spam_check: "jev",
+            phishing_signup_check: "gemini_decision",
             comment_spam_check: "default",
             article_summary: "gemini_lite"
           }
@@ -24,15 +25,26 @@ RSpec.describe "/admin/settings/ai_functions" do
 
       expect(response).to have_http_status(:ok)
       expect(Settings::AiFunctions.global_function_models)
-        .to eq("article_spam_check" => "jev", "article_summary" => "gemini_lite")
+        .to eq(
+          "article_spam_check" => "jev",
+          "phishing_signup_check" => "gemini_decision",
+          "article_summary" => "gemini_lite",
+        )
       expect(Ai::FunctionConfig.jev?(:article_spam_check)).to be(true)
+      expect(Ai::FunctionConfig.decision?(:phishing_signup_check)).to be(true)
     end
 
     it "drops options a function does not support" do
       sign_in super_admin
 
       post admin_settings_ai_functions_path, params: {
-        settings_ai_functions: { function_models: { article_summary: "jev", article_spam_check: "bogus" } }
+        settings_ai_functions: {
+          function_models: {
+            article_summary: "jev",
+            context_note: "gemini_decision",
+            article_spam_check: "bogus"
+          }
+        }
       }
 
       expect(response).to have_http_status(:ok)
@@ -43,12 +55,15 @@ RSpec.describe "/admin/settings/ai_functions" do
       sign_in super_admin
 
       post admin_settings_ai_functions_path, params: {
-        settings_ai_functions: { spam_escalation_threshold: "0.5", function_models: { spam_escalation: "jev" } }
+        settings_ai_functions: {
+          spam_escalation_threshold: "0.5",
+          function_models: { spam_escalation: "gemini_decision" }
+        }
       }
 
       expect(response).to have_http_status(:ok)
       expect(Settings::AiFunctions.global_spam_escalation_threshold).to eq(0.5)
-      expect(Ai::FunctionConfig.jev?(:spam_escalation)).to be(true)
+      expect(Ai::FunctionConfig.decision?(:spam_escalation)).to be(true)
     end
 
     it "saves the appeal auto-unflag threshold globally even when subforem_id is set" do
@@ -120,6 +135,7 @@ RSpec.describe "/admin/settings/ai_functions" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("AI Models")
       expect(response.body).to include("settings_ai_functions[function_models][content_moderation]")
+      expect(response.body).to include("Gemini Decision: #{Ai::GeminiDecision::Client::DEFAULT_MODEL}")
       expect(response.body).to include("TypeSafe Jev: #{Ai::TypeSafe::Client::DEFAULT_MODEL}")
       expect(response.body).to include("settings_ai_functions[function_models][spam_escalation]")
       expect(response.body).to include("settings_ai_functions[spam_escalation_threshold]")

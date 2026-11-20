@@ -9,7 +9,7 @@ class FeedbackMessagesController < ApplicationController
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
 
-    recaptcha_enabled = ReCaptcha::CheckEnabled.call(current_user)
+    recaptcha_enabled = Captcha::CheckEnabled.call(current_user)
     if (!recaptcha_enabled || recaptcha_verified?) && !rate_limit? && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
@@ -21,7 +21,8 @@ class FeedbackMessagesController < ApplicationController
       rate_limiter.track_limit_by_action(:feedback_message_creation)
 
       if user_signed_in?
-        Rails.cache.fetch("#{current_user.cache_key}/feedback-response-sent-at", expires_in: 24.hours) do
+        Rails.cache.fetch("#{current_user.cache_key}/feedback-response-sent-at",
+                          expires_in: 24.hours, local_cache: false) do
           NotifyMailer.with(email_to: current_user.email).feedback_response_email.deliver_later
           Time.current
         end
@@ -55,8 +56,7 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
-    recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
-    params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
+    Captcha.provider.verify(context: self, action: "abuse_report")
   end
 
   def feedback_message_params

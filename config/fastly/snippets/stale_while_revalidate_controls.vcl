@@ -4,11 +4,15 @@ sub vcl_fetch {
   }
 
   # Cache error responses briefly to protect origin from repeated error traffic,
-  # but NEVER cache errors for API routes. API error responses (401, 429, etc.)
-  # are per-request and per-user (keyed by the api-key header which is not part
-  # of the Fastly cache key). Caching them causes valid authenticated requests
-  # to receive stale error responses from other users or rate-limit windows.
-  if (beresp.status >= 400 && !(req.url ~ "^/api")) {
+  # but NEVER cache errors for API routes, 429 rate-limit responses, or
+  # explicitly uncacheable (`private` / `no-store`) responses.
+  # Snippets created via FastlyConfig::Snippets run as `type: "init"` before
+  # `#FASTLY fetch`, which overwrites `beresp.ttl` with the service Default TTL
+  # when `Surrogate-Control` / `Cache-Control` lacks `max-age` (such as Rails's
+  # `PublicExceptions` 404 page). Setting `Surrogate-Control = "max-age=30"`
+  # keeps `#FASTLY fetch` at 30s and gets stripped automatically on delivery.
+  if (beresp.status >= 400 && beresp.status != 429 && !(req.url ~ "^/api") && (!beresp.http.Cache-Control || beresp.http.Cache-Control !~ "(private|no-store)")) {
+    set beresp.http.Surrogate-Control = "max-age=30";
     set beresp.ttl = 30s;
     set beresp.cacheable = true;
   }

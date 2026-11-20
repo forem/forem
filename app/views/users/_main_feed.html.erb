@@ -8,15 +8,15 @@
       </h3>
     </header>
     <div class="p-4 pb-2 pt-3">
-      <%= render partial: "articles/single_story", collection: @pinned_stories, as: :story, locals: { featured: false } %>
+      <%= render_story_cards(@pinned_stories, featured: false) %>
     </div>
   </div>
 <% end %>
 <% if @stories.present? %>
-  <%= render "articles/single_story", story: @stories.first, featured: false %>
+  <%= render_story_card(@stories.first, featured: false) %>
   <%= render "users/comments_section" if user_signed_in? && @comments.present? %>
   <%= render "users/comments_locked_cta" if !user_signed_in? && @user.comments_count.positive? %>
-  <%= render partial: "articles/single_story", collection: @stories[1, @stories.size], as: :story, locals: { featured: false } %>
+  <%= render_story_cards(@stories[1, @stories.size], featured: false) %>
   <div class="placeholder-div"></div>
 <% else %>
   <%= render "users/comments_section" if user_signed_in? && @comments.present? %>

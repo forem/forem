@@ -5,7 +5,7 @@ RSpec.describe "UserShow" do
     create(
       :profile,
       :with_DEV_info,
-      user: create(:user, :without_profile),
+      user: create(:user, :without_profile, profile_image: nil),
     )
   end
   let(:user) { profile.user }
@@ -16,13 +16,10 @@ RSpec.describe "UserShow" do
       FeatureFlag.enable(:subscriber_icon)
     end
 
-    it "returns a 200 status when navigating to the user's page" do
+    it "returns 200 and renders the proper JSON-LD for an unauthenticated visitor", :aggregate_failures do
       get user.path
       expect(response).to have_http_status(:ok)
-    end
-
-    it "renders the proper JSON-LD for a user" do
-      get user.path
+      expect(response.body).to include("application/ld+json")
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)
       expect(response_json).to include(
@@ -52,31 +49,22 @@ RSpec.describe "UserShow" do
       expect(response_json.key?("email")).to be(false)
     end
 
-    it "includes a subscription icon if user is subscribed" do
-      user.add_role("base_subscriber")
-      get user.path
-      expect(response.body).to include('class="subscription-icon"')
-    end
-
-    it "does not include a subscription icon if user is not subscribed" do
-      get user.path
-      expect(response.body).not_to include('class="subscription-icon"')
-    end
-
     context "when rendering the icons next to the profile name" do
       let(:title) { Nokogiri::HTML(response.body).at(".js-username-container h1") }
 
       after { FeatureFlag.remove(:community_favorites) }
 
-      it "does not render an icon wrapper when the user has no icons" do
+      it "does not render a subscription icon or icon wrapper when the user has no icons", :aggregate_failures do
         get user.path
+        expect(response.body).not_to include('class="subscription-icon"')
         expect(title).not_to be_nil
         expect(title.at_css("span.ml-2")).to be_nil
       end
 
-      it "wraps a subscription icon in a spaced span" do
+      it "includes and wraps a subscription icon in a spaced span when subscribed", :aggregate_failures do
         user.add_role("base_subscriber")
         get user.path
+        expect(response.body).to include('class="subscription-icon"')
         expect(title.at_css("span.ml-2 .subscription-icon")).not_to be_nil
       end
 
@@ -94,7 +82,7 @@ RSpec.describe "UserShow" do
     end
 
     it "does not render a key if no value is given" do
-      incomplete_user = create(:user)
+      incomplete_user = create(:user, profile_image: nil)
       get incomplete_user.path
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)
@@ -103,35 +91,13 @@ RSpec.describe "UserShow" do
       expect(response_json.value?("")).to be(false)
     end
 
-    context "when user signed in" do
-      before do
-        sign_in user
-        get user.path
-      end
+    it "does not render json ld for internal navigation or signed-in users", :aggregate_failures do
+      get "#{user.path}?i=i"
+      expect(response.body).not_to include("application/ld+json")
 
-      it "does not render json ld" do
-        expect(response.body).not_to include "application/ld+json"
-      end
-    end
-
-    context "when user not signed in" do
-      before do
-        get user.path
-      end
-
-      it "does not render json ld" do
-        expect(response.body).to include "application/ld+json"
-      end
-    end
-
-    context "when user not signed in but internal nav triggered" do
-      before do
-        get "#{user.path}?i=i"
-      end
-
-      it "does not render json ld" do
-        expect(response.body).not_to include "application/ld+json"
-      end
+      sign_in user
+      get user.path
+      expect(response.body).not_to include("application/ld+json")
     end
   end
 
@@ -150,7 +116,7 @@ RSpec.describe "UserShow" do
     end
 
     context "when user **is** signed in **and** trusted" do
-      let(:trusted) { create(:user, :trusted) }
+      let(:trusted) { create(:user, :trusted, :without_profile, profile_image: nil) }
 
       before do
         sign_in trusted
@@ -169,13 +135,6 @@ RSpec.describe "UserShow" do
     let!(:other_subforem)   { create(:subforem, domain: "other.com") }
 
     context "when user is 'inactive' in the current subforem" do
-      before do
-        # Ensure user has no pinned stories, no stories, no comments
-        user.articles.delete_all
-        user.profile_pins.delete_all
-        user.comments.delete_all
-      end
-
       after do
         RequestStore.store[:default_subforem_id] = nil
         RequestStore.store[:subforem_id] = nil
@@ -192,7 +151,7 @@ RSpec.describe "UserShow" do
 
     context "when user has pinned stories, stories, or comments for the subforem" do
       before do
-        create(:article, user: user, subforem: other_subforem)
+        create(:article, user: user, subforem: other_subforem, with_tags: false)
       end
 
       after do
@@ -210,7 +169,7 @@ RSpec.describe "UserShow" do
 
     context "when the user has pinned stories, stories, or comments for the default subforem" do
       before do
-        create(:article, user: user, subforem: default_subforem)
+        create(:article, user: user, subforem: default_subforem, with_tags: false)
       end
 
       after do
@@ -229,9 +188,47 @@ RSpec.describe "UserShow" do
   end
 
   describe "profile query optimizations" do
-    it "queries member_organizations only once when rendering the sidebar" do
+    it "queries member_organizations only once when rendering the sidebar", :aggregate_failures do
       org = create(:organization)
+      admin_org = create(:organization)
+      guest_org = create(:organization)
+      pending_org = create(:organization)
       create(:organization_membership, user: user, organization: org, type_of_user: "member")
+      create(:organization_membership, user: user, organization: admin_org, type_of_user: "admin")
+      create(:organization_membership, user: user, organization: guest_org, type_of_user: "guest")
+      create(:organization_membership, user: user, organization: pending_org, type_of_user: "pending")
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      member_relation = nil
+      admin_relation = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        member_relation = user.member_organizations
+        admin_relation = user.admin_organizations
+      end
+      expect(queries).to be_empty
+      expect(member_relation).to contain_exactly(org, admin_org)
+      expect(admin_relation).to contain_exactly(admin_org)
+
+      queries.clear
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(0)
+      expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/).size).to eq(1)
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css("a[href='/#{org.slug}'] h4, a[href='/#{admin_org.slug}'] h4").map(&:text))
+        .to contain_exactly(org.name, admin_org.name)
+      expect(doc.css("a[href='/#{guest_org.slug}'], a[href='/#{pending_org.slug}']")).to be_empty
+    end
+
+    it "loads signed-in profile comments via user_id index without heavy columns", :aggregate_failures do
+      article = create(:article, user: user, with_tags: false)
+      comment = create(:comment, user: user, commentable: article)
+      sign_in user
+
       queries = []
       callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
 
@@ -240,9 +237,39 @@ RSpec.describe "UserShow" do
       end
 
       expect(response).to have_http_status(:ok)
-      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(1)
-      expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/).size).to eq(1)
-      expect(Nokogiri::HTML(response.body).at_css("a[href='/#{org.slug}'] h4")&.text).to eq(org.name)
+      expect(response.body).to include(article.title)
+      expect(queries.grep(/SELECT 1 AS one FROM "comments"/i)).to be_empty
+
+      comment_select_queries = queries.grep(/SELECT "comments"\."id".*FROM "comments" INNER JOIN articles/i)
+      expect(comment_select_queries.size).to eq(1)
+      expect(comment_select_queries.first).to include("(comments.created_at + INTERVAL '0 seconds') DESC")
+      expect(comment_select_queries.first).not_to include('"body_markdown"')
+      expect(comment_select_queries.first).not_to include('"semantic_embedding"')
+
+      loaded_comment = controller.instance_variable_get(:@comments).first
+      expect(loaded_comment.id).to eq(comment.id)
+      expect(loaded_comment.has_attribute?(:body_markdown)).to be(false)
+      expect(loaded_comment.association(:commentable)).to be_loaded
+      expect(loaded_comment.commentable.has_attribute?(:body_markdown)).to be(false)
+      expect(loaded_comment.commentable.has_attribute?(:processed_html)).to be(false)
+    end
+
+    it "skips the profile comments fetch query when user_profile_comments_count is zero", :aggregate_failures do
+      article = create(:article, user: user, with_tags: false)
+      create(:comment, user: user, commentable: article)
+      article.update_column(:published, false)
+      sign_in user
+
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/SELECT COUNT\(\*\) FROM "comments"/i).size).to eq(1)
+      expect(queries.grep(/SELECT "comments"\..*FROM "comments"/i)).to be_empty
     end
   end
 end

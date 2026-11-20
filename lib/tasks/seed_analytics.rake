@@ -154,12 +154,12 @@ namespace :db do
           )
 
           # Reactions — ensure multiple reactions per user for realistic unique_reactors stats
-          other_users.each do |reactor|
+          other_users.each_with_index do |reactor, idx|
             # ~50% of users react with ALL categories (power users)
             # ~30% react with 2-3 categories
-            # ~20% skip this article
+            # ~20% skip this article (unless no reactions have been created yet and this is the last reactor)
             roll = rand(10)
-            next if roll > 7
+            next if roll > 7 && !(rx_count.zero? && idx == other_users.size - 1)
 
             num_categories = roll < 5 ? reaction_categories.size : rand(2..3)
             reaction_categories.sample(num_categories).each do |category|
@@ -176,7 +176,7 @@ namespace :db do
 
           # Comments
           (0...days_back).each do |days_ago|
-            next if rand(3) > 0
+            next if rand(3).positive? && !(cm_count.zero? && days_ago == days_back - 1)
 
             comment = Comment.create!(
               user_id: other_users.sample.id,

@@ -5,14 +5,14 @@ module Ai
   # Admins choose a model option per function in Settings::AiFunctions. Resolution:
   #   1. Use the configured option when the function allows it and its API key is present.
   #   2. Otherwise use "default": the function's built-in Gemini behavior, unchanged. For
-  #      Jev-only functions (see Ai::FunctionRegistry) "default" means the function is off.
+  #      decision-only functions (see Ai::FunctionRegistry) "default" means the function is off.
   #
   # With nothing configured every function resolves to "default", so behavior is identical
   # to before this config existed.
   #
   # @example
   #   selection = Ai::FunctionConfig.selection_for(:article_spam_check)
-  #   selection.jev?                    # => true when Jev is selected and TYPESAFE_API_KEY is set
+  #   selection.decision?               # => true when Gemini Decision or TypeSafe Jev is selected
   #   selection.gemini_model(fallback)  # => overridden Gemini model, or the fallback
   module FunctionConfig
     Option = Struct.new(:key, :provider, :jev_only, keyword_init: true)
@@ -21,21 +21,42 @@ module Ai
       "default" => Option.new(key: "default", provider: :gemini, jev_only: false),
       "gemini_pro" => Option.new(key: "gemini_pro", provider: :gemini, jev_only: false),
       "gemini_lite" => Option.new(key: "gemini_lite", provider: :gemini, jev_only: false),
+      "gemini_decision" => Option.new(key: "gemini_decision", provider: :gemini_decision, jev_only: true),
       "jev" => Option.new(key: "jev", provider: :typesafe, jev_only: true)
     }.freeze
 
     Selection = Struct.new(:function, :option, :provider, :model, keyword_init: true) do
+      def decision?
+        provider == :typesafe || provider == :gemini_decision
+      end
+
       def jev?
         provider == :typesafe
+      end
+
+      def gemini_decision?
+        provider == :gemini_decision
       end
 
       def gemini?
         provider == :gemini
       end
 
+      # Builds the structured Decisions client (Gemini Decision 1 or TypeSafe Jev) for this selection.
+      def decision_client(**options)
+        case provider
+        when :gemini_decision
+          Ai::GeminiDecision::Client.new(model: model, **options)
+        when :typesafe
+          Ai::TypeSafe::Client.new(model: model, **options)
+        else
+          raise ArgumentError, "Selection #{option.inspect} for #{function} is not a decision model"
+        end
+      end
+
       # The Gemini model to call: the admin override, else the function's own default.
       def gemini_model(builtin_model = Ai::Base::DEFAULT_MODEL)
-        model || builtin_model
+        gemini? && model ? model : builtin_model
       end
     end
 
@@ -60,6 +81,10 @@ module Ai
         option_available?(selection_for(function_key).option)
       end
 
+      def decision?(function_key)
+        selection_for(function_key).decision?
+      end
+
       def jev?(function_key)
         selection_for(function_key).jev?
       end
@@ -74,17 +99,19 @@ module Ai
       def options_for(function)
         function = Ai::FunctionRegistry.fetch(function) unless function.is_a?(Ai::FunctionRegistry::Function)
         return [] unless function.configurable?
-        return %w[default jev] if function.jev_only?
+        if function.jev_only?
+          return OPTIONS.values.filter_map { |option| option.key if option.key == "default" || option.jev_only }
+        end
 
         OPTIONS.values.filter_map { |option| option.key if function.jev? || !option.jev_only }
       end
 
-      # "Off" (the default of a Jev-only function) needs no key.
+      # "Off" (the default of a decision-only function) needs no key.
       def option_available?(option_key, function = nil)
         return true if option_key.to_s == "default" && function&.jev_only?
 
         case OPTIONS[option_key.to_s]&.provider
-        when :gemini then Ai::Base::DEFAULT_KEY.present?
+        when :gemini, :gemini_decision then Ai::Base::DEFAULT_KEY.present?
         when :typesafe then Ai::TypeSafe::Client::DEFAULT_KEY.present?
         else false
         end
@@ -95,13 +122,14 @@ module Ai
         when "default" then function&.jev_only? ? "Off" : "Default (built-in Gemini behavior)"
         when "gemini_pro" then "Gemini: #{Ai::Base::DEFAULT_MODEL}"
         when "gemini_lite" then "Gemini: #{Ai::Base::DEFAULT_LITE_MODEL}"
+        when "gemini_decision" then "Gemini Decision: #{Ai::GeminiDecision::Client::DEFAULT_MODEL}"
         when "jev" then "TypeSafe Jev: #{Ai::TypeSafe::Client::DEFAULT_MODEL}"
         end
       end
 
       def missing_key_for(option_key)
         case OPTIONS[option_key.to_s]&.provider
-        when :gemini then "GEMINI_API_KEY"
+        when :gemini, :gemini_decision then "GEMINI_API_KEY"
         when :typesafe then "TYPESAFE_API_KEY"
         end
       end
@@ -134,6 +162,7 @@ module Ai
         model = case option_key
                 when "gemini_pro" then Ai::Base::DEFAULT_MODEL
                 when "gemini_lite" then Ai::Base::DEFAULT_LITE_MODEL
+                when "gemini_decision" then Ai::GeminiDecision::Client::DEFAULT_MODEL
                 when "jev" then Ai::TypeSafe::Client::DEFAULT_MODEL
                 end
 

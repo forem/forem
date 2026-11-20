@@ -11,10 +11,12 @@ RSpec.describe "Challenge event layout", :js do
     event.update!(body_markdown: "![Challenge illustration](#{event.cover_image.url})")
   end
 
-  [1440, 375].each do |width|
-    it "contains wide cover and markdown images within a #{width}px viewport" do
+  it "contains wide cover and markdown images at desktop and mobile widths", :aggregate_failures do
+    page.current_window.resize_to(1440, 1000)
+    visit event_path(event.event_name_slug, event.event_variation_slug)
+
+    [1440, 375].each do |width|
       page.current_window.resize_to(width, 1000)
-      visit event_path(event.event_name_slug, event.event_variation_slug)
 
       expect(page).to have_css(".event-show-layout img", count: 2)
       page.evaluate_script(<<~JS)

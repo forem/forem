@@ -38,6 +38,10 @@ RSpec.describe FeedConfig, type: :model do
   end
 
   describe "#score_sql" do
+    around do |example|
+      Timecop.freeze(Time.current) { example.run }
+    end
+
     context "when tag_follow_weight is positive and tag count configs present" do
       before do
         feed_config.tag_follow_weight      = 6.0
@@ -398,6 +402,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.follow_status_weight          = 23.0
       feed_config.ai_disclosure_matching_weight = 24.0
       feed_config.autonomous_ai_penalty_weight  = 25.0
+      feed_config.published_at_diversity_weight = 26.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -441,6 +446,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.follow_status_weight).to eq(23.0 * 1.1)
       expect(clone.ai_disclosure_matching_weight).to eq(24.0 * 1.1)
       expect(clone.autonomous_ai_penalty_weight).to eq(25.0 * 1.1)
+      expect(clone.published_at_diversity_weight).to eq(26.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -472,6 +478,7 @@ RSpec.describe FeedConfig, type: :model do
         "follow_status_weight",
         "ai_disclosure_matching_weight",
         "autonomous_ai_penalty_weight",
+        "published_at_diversity_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",
@@ -484,7 +491,10 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
-      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
+      feed_config.update_columns(
+        feed_impressions_count: 250, feed_success_score: 1.45,
+        feed_impression_users_count: 10, feed_repeat_visits_count: 6
+      )
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -492,8 +502,9 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_tag_count_max).to eq(6)
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
-      expect(clone.feed_impressions_count).to eq(0)
-      expect(clone.feed_success_score).to eq(0.0)
+      expect(clone).to have_attributes(
+        feed_impressions_count: 0, feed_impression_users_count: 0, feed_repeat_visits_count: 0, feed_success_score: 0.0,
+      )
       expect(clone.archived).to be(false)
     end
 
@@ -560,6 +571,30 @@ RSpec.describe FeedConfig, type: :model do
       min_clamped_clone = feed_config.create_slightly_modified_clone!
       expect(min_clamped_clone.semantic_candidate_limit).to eq(described_class::MIN_SEMANTIC_CANDIDATE_LIMIT)
     end
+
+    it "keeps feed_lookback_hours unchanged at 0 when feed_lookback_hours is not set" do
+      feed_config.update!(feed_lookback_hours: 0)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.feed_lookback_hours).to eq(0)
+    end
+
+    it "mutates feed_lookback_hours by +/- 10% clamped to 1..max_feed_lookback_hours when set" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      feed_config.update!(feed_lookback_hours: 100)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.feed_lookback_hours).to eq(110)
+
+      # Clamps at the hard setting ceiling (10 days = 240 hours)
+      feed_config.update!(feed_lookback_hours: 230)
+      max_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(max_clamped_clone.feed_lookback_hours).to eq(240)
+
+      # Clamps at minimum 1 hour
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(0.9)
+      feed_config.update!(feed_lookback_hours: 1)
+      min_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(min_clamped_clone.feed_lookback_hours).to eq(described_class::MIN_FEED_LOOKBACK_HOURS)
+    end
   end
 
   describe "validations and targeting_bucket" do
@@ -593,6 +628,66 @@ RSpec.describe FeedConfig, type: :model do
 
       config.semantic_candidate_limit = 1001
       expect(config).not_to be_valid
+    end
+
+    it "defaults feed_lookback_hours to 0 and caps effective_feed_lookback_hours at the hard setting" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      config = described_class.new
+      expect(config.feed_lookback_hours).to eq(0)
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(240)
+
+      config.feed_lookback_hours = 72
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(72)
+
+      # Cannot look back further than the hard setting (10 days = 240 hours)
+      config.feed_lookback_hours = 500
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(240)
+
+      config.feed_lookback_hours = -1
+      expect(config).not_to be_valid
+    end
+
+    it "defaults published_at_diversity_weight to 0.0, normalizes blanks, and rejects negatives" do
+      config = described_class.new
+      expect(config.published_at_diversity_weight).to eq(0.0)
+      expect(config).to be_valid
+
+      config.published_at_diversity_weight = ""
+      expect(config.published_at_diversity_weight).to eq(0.0)
+      expect(config).to be_valid
+
+      config.published_at_diversity_weight = nil
+      expect(config.published_at_diversity_weight).to eq(0.0)
+
+      config.published_at_diversity_weight = -0.5
+      expect(config).not_to be_valid
+    end
+
+    it "centres published_at_diversity_half_lookback_hours on the effective lookback window" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      config = described_class.new
+      expect(config.published_at_diversity_half_lookback_hours).to eq(120.0)
+
+      config.feed_lookback_hours = 49
+      expect(config.published_at_diversity_half_lookback_hours).to eq(24.5)
+
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(0)
+      config.feed_lookback_hours = 0
+      expect(config.published_at_diversity_half_lookback_hours)
+        .to eq(described_class::DEFAULT_FEED_LOOKBACK_DAYS * 12.0)
+    end
+
+    it "resolves max_feed_lookback_hours against Subforem.cached_default_id when RequestStore is empty" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      Settings::UserExperience.set_feed_lookback_days(5, subforem_id: default_subforem.id)
+
+      expect(described_class.max_feed_lookback_hours).to eq(120)
     end
   end
 
@@ -697,6 +792,22 @@ RSpec.describe FeedConfig, type: :model do
   describe ".archive_stale_configs!" do
     before do
       stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 3)
+    end
+
+    it "keeps an assigned config active until its 60-hour window expires" do
+      Timecop.freeze do
+        config = create(:feed_config, created_at: 3.days.ago)
+        create(:feed_config_assignment, feed_config: config, expires_at: 60.hours.from_now)
+        stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 0)
+
+        described_class.archive_stale_configs!
+        expect(config.reload).not_to be_archived
+
+        Timecop.freeze(60.hours.from_now) do
+          described_class.archive_stale_configs!
+          expect(config.reload).to be_archived
+        end
+      end
     end
 
     it "archives configs outside the top limit that are older than 2 days" do
@@ -913,6 +1024,10 @@ RSpec.describe FeedConfig, type: :model do
     let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
+    # Both SQL builders embed Time.current at one-second precision. Freeze time so a
+    # second boundary between the two calls cannot make identical SQL compare unequal.
+    around { |example| Timecop.freeze { example.run } }
+
     it "includes semantic embedding calculation when activity store has a vector" do
       user_activity = create(:user_activity, user: user)
       # Simulating a pgvector array using standard ruby array to test the sql string generation
@@ -975,6 +1090,61 @@ RSpec.describe FeedConfig, type: :model do
       end
     end
 
+    context "when published_at_diversity_weight is positive" do
+      let(:diversity_fragment) do
+        lambda do |half, weight|
+          "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - #{half}) / " \
+            "#{half}, 1.0), 2) * #{weight})"
+        end
+      end
+
+      before do
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+        feed_config.published_at_diversity_weight = 6.5
+      end
+
+      it "centres the U-shaped term on the global lookback midpoint by default" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include(diversity_fragment.call(120.0, 6.5))
+        expect(sql).to eq(feed_config.__send__(:legacy_score_sql, user))
+      end
+
+      it "centres the U-shaped term on the per-config feed_lookback_hours midpoint" do
+        feed_config.feed_lookback_hours = 48
+        sql = feed_config.score_sql(user)
+        expect(sql).to include(diversity_fragment.call(24.0, 6.5))
+        expect(sql).to eq(feed_config.__send__(:legacy_score_sql, user))
+        expect(feed_config.base_score_sql(user)).to include(diversity_fragment.call(24.0, 6.5))
+      end
+
+      it "is emitted by the native Rust kernel itself, identical to legacy_score_sql" do
+        feed_config.feed_lookback_hours = 49
+        feed_config.recency_weight = 7.0
+        feed_config.score_weight = 3.0
+
+        native_sql = ForemNative.feed_config_score_sql(*feed_config.__send__(:native_score_sql_payload, user))
+
+        expect(native_sql).not_to be_nil
+        expect(native_sql).to include(diversity_fragment.call(24.5, 6.5))
+        expect(native_sql).to eq(feed_config.__send__(:legacy_score_sql, user))
+      end
+
+      it "uses the 10-day default window when the lookback setting is zero" do
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(0)
+        sql = feed_config.score_sql(user)
+        expect(sql).to include(diversity_fragment.call(120.0, 6.5))
+      end
+    end
+
+    context "when published_at_diversity_weight is zero" do
+      before { feed_config.published_at_diversity_weight = 0.0 }
+
+      it "does not include the published_at diversity SQL expression" do
+        expect(feed_config.score_sql(user)).not_to include("POWER(LEAST(ABS(")
+        expect(feed_config.__send__(:legacy_score_sql, user)).not_to include("POWER(LEAST(ABS(")
+      end
+    end
+
     context "when comparing native Rust kernel with legacy_score_sql" do
       it "produces identical SQL across all scoring weights and activity signals" do
         now = Time.utc(2026, 4, 18, 12, 0, 0)
@@ -1026,6 +1196,8 @@ RSpec.describe FeedConfig, type: :model do
           randomness_weight: 8.0,
           ai_disclosure_matching_weight: 12.0,
           autonomous_ai_penalty_weight: 25.0,
+          published_at_diversity_weight: 6.5,
+          feed_lookback_hours: 49,
           recent_tag_count_min: 2,
           recent_tag_count_max: 2,
           all_time_tag_count_min: 2,
@@ -1033,11 +1205,16 @@ RSpec.describe FeedConfig, type: :model do
         )
         allow(full_config).to receive(:rand).with(2..2).and_return(2)
         allow(full_config).to receive(:rand).with(10_000).and_return(424)
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
 
         native_sql = full_config.score_sql(user)
         legacy_sql = full_config.__send__(:legacy_score_sql, user)
 
         expect(native_sql).to eq(legacy_sql)
+        expect(native_sql).to include(
+          "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - 24.5) / 24.5, " \
+          "1.0), 2) * 6.5)",
+        )
 
         native_base_sql = full_config.base_score_sql(user)
         legacy_base_sql = full_config.__send__(:legacy_score_sql, user, include_semantic: false)
@@ -1066,6 +1243,17 @@ RSpec.describe FeedConfig, type: :model do
         expect(zero_weight_config.base_score_sql(user)).to include("(articles.score * 2.0)")
         expect(zero_weight_config.base_score_sql(user)).not_to include("semantic_embedding")
       end
+    end
+  end
+
+  describe "#repeat_visit_score_multiplier" do
+    it "returns 1.0 for standard buckets and 1.5 for feed_power_user" do
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_ALL).repeat_visit_score_multiplier)
+        .to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_CASUAL_USER)
+        .repeat_visit_score_multiplier).to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_POWER_USER)
+        .repeat_visit_score_multiplier).to eq(1.5)
     end
   end
 end

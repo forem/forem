@@ -4,6 +4,12 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
   let(:user) { create(:user) }
   let(:second_user) { create(:user) }
 
+  before do
+    allow(FeedEvents::FeedbackWorker).to receive(:perform_async) do |ids|
+      FeedEvents::FeedbackWorker.new.perform(ids)
+    end
+  end
+
   def feed_event(**attributes)
     build(:feed_event, **attributes).attributes
   end
@@ -45,7 +51,7 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
       described_class.call(events_with_config)
 
       expect(FeedEvent).to have_received(:bulk_update_counters_by_feed_config_id).with(
-        Array.new(articles.size, feed_config.id),
+        [feed_config.id],
       )
     end
   end
@@ -70,7 +76,7 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
       allow(FeedEvent).to receive(:bulk_update_counters_by_article_id)
       described_class.call(feed_events_data)
       expect(FeedEvent).to have_received(:bulk_update_counters_by_article_id).with(satisfy do |arg|
-                                                                                     arg.is_a?(Array) && arg.length == 5
+                                                                                     arg.is_a?(Array) && arg.length == 8
                                                                                    end)
     end
   end
@@ -157,7 +163,7 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
       [
         feed_event(article_id: article.id, user_id: user.id, category: :impression),
         feed_event(article_id: deleted_article.id, user_id: user.id, category: :impression),
-        feed_event(article_id: article.id, user_id: deleted_user.id, category: :impression)
+        feed_event(article_id: article.id, user_id: deleted_user.id, category: :impression),
       ]
     end
 
@@ -169,30 +175,97 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
     it "filters them out to prevent foreign key violations" do
       expect { described_class.call(feed_events_data, timebox: nil) }.to change(FeedEvent, :count).by(1)
       expect(FeedEvent.pluck(:article_id, :user_id, :category)).to contain_exactly(
-        [article.id, user.id, "impression"]
+        [article.id, user.id, "impression"],
       )
     end
   end
 
-  context "when there is only one valid item but its article gets concurrently deleted" do
+  context "with one event" do
     let(:article) { create(:article) }
-    let(:feed_event_data) do
-      [
-        feed_event(article_id: article.id, user_id: user.id, category: :impression)
-      ]
+    let(:data) { [feed_event(article: article, user: user, category: :impression)] }
+
+    it "suppresses an existing impression within the window" do
+      create(:feed_event, article: article, user: user, category: :impression)
+      expect { described_class.call(data) }.not_to change(FeedEvent, :count)
     end
 
-    it "safely ignores the foreign key violation in the single-event path" do
-      # Simulate a concurrent delete exactly as find_or_create_by runs by stubbing the relation chain
-      relation = instance_double(ActiveRecord::Relation)
-      where_chain = instance_double(ActiveRecord::QueryMethods::WhereChain)
-      allow(FeedEvent).to receive(:where).and_return(where_chain)
-      allow(where_chain).to receive(:not).and_return(relation)
-      allow(relation).to receive(:create_with).and_return(relation)
-      allow(relation).to receive(:find_or_create_by).and_raise(ActiveRecord::InvalidForeignKey)
-      
-      expect { described_class.call(feed_event_data) }.not_to raise_error
-      expect(relation).to have_received(:find_or_create_by)
+    it "records a new impression after the window" do
+      create(:feed_event, article: article, user: user, category: :impression, created_at: 6.minutes.ago)
+      expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
+    end
+
+    it "supports disabling the timebox" do
+      create(:feed_event, article: article, user: user, category: :impression)
+      expect { described_class.call(data, timebox: nil) }.to change(FeedEvent, :count).by(1)
+    end
+
+    it "does not allow another context to suppress a home impression" do
+      create(:feed_event, article: article, user: user, category: :impression, context_type: "sidebar")
+      expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
+    end
+
+    it "attributes a new exposure to a different config within the same surface" do
+      first_config = create(:feed_config)
+      second_config = create(:feed_config)
+      create(:feed_event, article: article, user: user, feed_config: first_config)
+      data.first["feed_config_id"] = second_config.id
+      expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
+      expect(second_config.reload.feed_impressions_count).to eq(1)
+    end
+
+    it "keeps accepted event IDs idempotent beyond the timebox" do
+      data.first["event_id"] = SecureRandom.uuid
+      described_class.call(data)
+      Timecop.travel(6.minutes.from_now) do
+        expect { described_class.call(data) }.not_to change(FeedEvent, :count)
+      end
+    end
+
+    it "remembers a suppressed event ID after the timebox expires" do
+      create(:feed_event, article: article, user: user, category: :impression)
+      data.first["event_id"] = SecureRandom.uuid
+      expect { described_class.call(data) }.not_to change(FeedEvent, :count)
+      Timecop.travel(6.minutes.from_now) do
+        expect { described_class.call(data) }.not_to change(FeedEvent, :count)
+      end
+    end
+
+    it "rolls back the delivery receipt when storing the event fails" do
+      data.first["event_id"] = SecureRandom.uuid
+      allow(FeedEvent).to receive(:insert_all).and_raise(ActiveRecord::StatementInvalid)
+      expect { described_class.call(data) }.to raise_error(ActiveRecord::StatementInvalid)
+      expect(FeedEventReceipt.exists?(id: data.first["event_id"])).to be(false)
+      allow(FeedEvent).to receive(:insert_all).and_call_original
+      expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
+    end
+
+    it "retries a foreign-key race instead of acknowledging a lost event" do
+      attempts = 0
+      allow(FeedEvent).to receive(:insert_all).and_wrap_original do |original, *args, **kwargs|
+        attempts += 1
+        raise ActiveRecord::InvalidForeignKey if attempts == 1
+
+        original.call(*args, **kwargs)
+      end
+      expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
+    end
+  end
+
+  it "preserves impressions from different contexts within the same batch" do
+    article = create(:article)
+    events = %w[home sidebar].map do |context|
+      feed_event(article: article, user: user, category: :impression, context_type: context)
+    end
+    expect { described_class.call(events) }.to change(FeedEvent, :count).by(2)
+  end
+
+  it "deduplicates retried multi-event batches after the timebox" do
+    events = create_list(:article, 2).map do |article|
+      feed_event(article: article, user: user, category: :impression, event_id: SecureRandom.uuid)
+    end
+    described_class.call(events)
+    Timecop.travel(6.minutes.from_now) do
+      expect { described_class.call(events) }.not_to change(FeedEvent, :count)
     end
   end
 
@@ -249,6 +322,128 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
           [second_article.id, user.id, "impression"],
         )
       end
+    end
+  end
+
+  context "with feed config feedback", :throttled_call do
+    it "spawns from batched engagement after recording the exposure that proves a config" do
+      article = create(:article)
+      config = create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT - 1)
+      attributes = { article_id: article.id, user_id: user.id, category: "impression",
+                     context_type: "email", feed_config_id: config.id, article_position: 1,
+                     created_at: 6.minutes.ago, updated_at: 6.minutes.ago }
+      FeedEvent.insert_all(Array.new(FeedConfig::LOW_IMPRESSION_COUNT - 1) { attributes })
+      events = %w[click impression].map do |category|
+        attributes.except(:created_at, :updated_at).merge(category: category, event_id: SecureRandom.uuid)
+      end
+      expect { described_class.call(events) }.to change(FeedConfig, :count).by(1)
+      expect(config.reload.feed_impressions_count).to eq(FeedConfig::LOW_IMPRESSION_COUNT)
+      expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_DIGEST)
+      Timecop.travel(6.minutes.from_now) do
+        expect { described_class.call(events) }.not_to change(FeedConfig, :count)
+      end
+    end
+
+    it "retains the home-click spawning restriction for mixed batches" do
+      article = create(:article)
+      config = create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT)
+      events = %w[impression click].map do |category|
+        feed_event(article: article, user: user, feed_config: config, category: category)
+      end
+      expect { described_class.call(events) }.not_to change(FeedConfig, :count)
+    end
+  end
+
+  context "with deferred feedback" do
+    it "reports enqueue failures without losing accepted data or requesting storage replay" do
+      article = create(:article)
+      id = SecureRandom.uuid
+      error = RuntimeError.new("queue unavailable")
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async).and_raise(error)
+      allow(Rails.error).to receive(:report)
+      expect do
+        described_class.call([feed_event(article: article, user: user, event_id: id)])
+      end.to change(FeedEvent, :count).by(1)
+      expect(FeedEventReceipt.exists?(id: id)).to be(true)
+      expect(Rails.error).to have_received(:report).with(error,
+                                                         context: hash_including(worker: "FeedEvents::FeedbackWorker",
+                                                                                 feed_event_ids: kind_of(Array)))
+    end
+
+    it "does not let slow scoring roll back accepted events or receipts" do
+      article = create(:article)
+      id = SecureRandom.uuid
+      events = [feed_event(article: article, user: user, event_id: id)]
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async).and_call_original
+      Sidekiq::Testing.fake! do
+        FeedEvents::FeedbackWorker.clear
+        described_class.call(events)
+        ids = FeedEvents::FeedbackWorker.jobs.last.fetch("args").first
+        allow(FeedEvent).to receive(:bulk_update_counters_by_article_id).and_raise(ActiveRecord::QueryCanceled)
+        expect { FeedEvents::FeedbackWorker.new.perform(ids) }.to raise_error(ActiveRecord::QueryCanceled)
+        expect(FeedEvent.exists?(event_id: id)).to be(true)
+        expect(FeedEventReceipt.exists?(id: id)).to be(true)
+        expect { described_class.call(events) }.not_to change(FeedEvents::FeedbackWorker.jobs, :size)
+        FeedEvents::FeedbackWorker.clear
+      end
+    end
+  end
+
+  context "with concurrent ingestion" do
+    self.use_transactional_tests = false
+
+    let!(:concurrent_user) { create(:user) }
+    let!(:concurrent_articles) { create_list(:article, 2, user: concurrent_user, with_tags: false) }
+
+    after do
+      concurrent_articles.each(&:destroy!)
+      concurrent_user.destroy!
+    end
+
+    it "enqueues feedback only after a caller's transaction commits" do
+      observed_ids = nil
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async) do |ids|
+        expect(FeedEvent.connection.transaction_open?).to be(false)
+        observed_ids = ids
+      end
+      FeedEvent.transaction do
+        described_class.call([feed_event(article: concurrent_articles.first, user: concurrent_user)])
+        expect(observed_ids).to be_nil
+      end
+      expect(observed_ids.size).to eq(1)
+    end
+
+    it "does not enqueue feedback for a rolled-back outer transaction" do
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async)
+      FeedEvent.transaction do
+        described_class.call([feed_event(article: concurrent_articles.first, user: concurrent_user)])
+        raise ActiveRecord::Rollback
+      end
+      expect(FeedEvents::FeedbackWorker).not_to have_received(:perform_async)
+    end
+
+    it "suppresses duplicates across database connections" do
+      # Widen the read/insert race. Without the user lock both connections would
+      # see no recent events before either inserts its batch.
+      service = Class.new(described_class) do
+        private
+
+        def find_existing_events_within_timebox(&block)
+          super
+          sleep 0.1
+        end
+      end
+      data = concurrent_articles.map do |article|
+        { article_id: article.id, user_id: concurrent_user.id, category: :impression,
+          context_type: "home", article_position: 1 }
+      end
+      threads = Array.new(2) do
+        Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection { service.call(data) }
+        end
+      end
+      threads.each(&:value)
+      expect(FeedEvent.where(user_id: concurrent_user.id).count).to eq(2)
     end
   end
 end

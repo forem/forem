@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Visiting collections" do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
   let!(:collection1_with_articles) { create(:collection, :with_articles, user: user) }
   let!(:collection2_with_articles) { create(:collection, :with_articles, user: user) }
 
@@ -13,15 +13,13 @@ RSpec.describe "Visiting collections" do
     visit user_series_path(user.username)
   end
 
-  it "shows all collections with articles", :aggregate_failures do
+  it "shows collections with articles and hides collections without articles", :aggregate_failures do
     [collection1_with_articles, collection2_with_articles].each do |collection|
       expect(page.body).to have_link("#{collection.slug} (#{collection.articles.published.size} Part Series)")
     end
-  end
 
-  it "does not show collections without articles", :aggregate_failures do
     [collection1_without_articles, collection2_without_articles].each do |collection|
-      expect(page.body).not_to have_link("#{collection.slug} (#{collection.articles.published.size} Part Series)")
+      expect(page.body).to have_no_link("#{collection.slug} (#{collection.articles.published.size} Part Series)")
     end
   end
 end

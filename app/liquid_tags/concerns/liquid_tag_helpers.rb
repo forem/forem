@@ -45,6 +45,10 @@ module LiquidTagHelpers
     )
   end
 
+  def sanitize_block_content(html)
+    ActionController::Base.helpers.sanitize(html, scrubber: DetailsTag::EmbedFriendlyScrubber.new)
+  end
+
   def validate_url!(url, option_name = "url", allow_blank: true)
     if url.blank?
       return if allow_blank

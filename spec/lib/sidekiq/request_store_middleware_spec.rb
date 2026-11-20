@@ -19,6 +19,7 @@ RSpec.describe Sidekiq::RequestStoreMiddleware do
     end
 
     it "starts the job with a fresh store, dropping anything a previous job left behind" do
+      allow(Subforem).to receive(:cached_default_id).and_return(nil)
       RequestStore.store[:subforem_id] = 123
       RequestStore.store["settings/community"] = { "community_name" => "Stale" }
 
@@ -26,6 +27,23 @@ RSpec.describe Sidekiq::RequestStoreMiddleware do
       run_job { seen = RequestStore.store.dup }
 
       expect(seen).to eq({})
+    end
+
+    it "seeds default_subforem_id from Subforem.cached_default_id when available" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      Settings::UserExperience.set_feed_strategy("large_forem_experimental", subforem_id: nil)
+      Settings::UserExperience.set_feed_strategy("configured", subforem_id: default_subforem.id)
+
+      seen_default_id = nil
+      seen_strategy = nil
+      run_job do
+        seen_default_id = RequestStore.store[:default_subforem_id]
+        seen_strategy = Settings::UserExperience.feed_strategy
+      end
+
+      expect(seen_default_id).to eq(default_subforem.id)
+      expect(seen_strategy).to eq("configured")
     end
 
     it "marks the store active only while the job runs" do

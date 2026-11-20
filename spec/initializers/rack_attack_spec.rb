@@ -231,6 +231,35 @@ describe Rack, ".attack", throttle: true, type: :request do
         valid_responses.each { |r| expect(r).not_to eq(429) }
       end
     end
+
+    it "throttles /api/related_articles including locale-prefixed paths", :aggregate_failures do
+      api_secret = create(:api_secret)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..30).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get "/locale/en/api/related_articles",
+              params: { organization_id: 0, q: "ruby" },
+              headers: {
+                "Accept" => "application/vnd.forem.api-v1+json",
+                "HTTP_FASTLY_CLIENT_IP" => "10.0.1.#{i}",
+                "api-key" => api_secret.secret
+              }
+        end
+        Timecop.travel(start_time + 46.seconds)
+        throttled_response = get "/locale/en/api/related_articles",
+                                 params: { organization_id: 0, q: "ruby" },
+                                 headers: {
+                                   "Accept" => "application/vnd.forem.api-v1+json",
+                                   "HTTP_FASTLY_CLIENT_IP" => "10.0.1.99",
+                                   "api-key" => api_secret.secret
+                                 }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
   end
 
   describe "api_throttle" do
@@ -482,6 +511,78 @@ describe Rack, ".attack", throttle: true, type: :request do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         # Admin users bypass throttling, so no Honeycomb calls expected
         expect(Honeycomb).to have_received(:add_field).with("user_api_key", admin_api_key.secret).exactly(10).times
+      end
+    end
+
+    it "throttles PATCH api page updates by API key and IP for non-admin org credentials, including path variants",
+       :aggregate_failures do
+      organization = create(:organization)
+      FeatureFlag.add(:org_readme)
+      FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
+      org_admin_one = create(:user).tap do |u|
+        create(:organization_membership, user: u, organization: organization, type_of_user: "admin")
+      end
+      org_admin_two = create(:user).tap do |u|
+        create(:organization_membership, user: u, organization: organization, type_of_user: "admin")
+      end
+      embed_page = create(:page, organization: organization, template: "embed_html", body_markdown: nil,
+                                 body_html: "<p>v1</p>", slug: "#{organization.slug}/embed/widget")
+      key_one = create(:api_secret, user: org_admin_one)
+      key_two = create(:api_secret, user: org_admin_two)
+      base_headers = { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+      params = { body_html: "<p>v2</p>" }.to_json
+
+      Timecop.freeze do
+        first = patch api_page_path(embed_page.id),
+                      params: params,
+                      headers: base_headers.merge("api-key" => key_one.secret, "HTTP_FASTLY_CLIENT_IP" => "10.1.0.1")
+        # Same API key from a different IP hits api_write_key_throttle
+        key_throttled = patch api_page_path(embed_page.id),
+                              params: params,
+                              headers: base_headers.merge("api-key" => key_one.secret,
+                                                          "HTTP_FASTLY_CLIENT_IP" => "10.1.0.2")
+        # Different API key from the same IP hits api_write_throttle
+        ip_throttled = patch api_page_path(embed_page.id),
+                             params: params,
+                             headers: base_headers.merge("api-key" => key_two.secret,
+                                                         "HTTP_FASTLY_CLIENT_IP" => "10.1.0.1")
+        # Locale-prefixed and double-slash variants are also caught by the throttle
+        locale_throttled = patch "/locale/en/api/pages/#{embed_page.id}",
+                                 params: params,
+                                 headers: base_headers.merge("api-key" => key_one.secret,
+                                                             "HTTP_FASTLY_CLIENT_IP" => "10.1.0.3")
+        slash_throttled = patch "//api/pages/#{embed_page.id}",
+                                params: params,
+                                headers: base_headers.merge("api-key" => key_one.secret,
+                                                            "HTTP_FASTLY_CLIENT_IP" => "10.1.0.4")
+
+        expect(first).to eq(200)
+        expect(key_throttled).to eq(429)
+        expect(ip_throttled).to eq(429)
+        expect(locale_throttled).to eq(429)
+        expect(slash_throttled).to eq(429)
+      end
+    ensure
+      FeatureFlag.disable(:org_readme, FeatureFlag::Actor[organization])
+    end
+
+    it "keeps site admin API keys exempt from PATCH throttling" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+      page = create(:page)
+      admin_headers = {
+        "api-key" => admin_api_key.secret,
+        "content-type" => "application/json",
+        "Accept" => "application/vnd.forem.api-v1+json",
+        "HTTP_FASTLY_CLIENT_IP" => "10.1.0.5"
+      }
+      params = { title: "Updated" }.to_json
+
+      Timecop.freeze do
+        responses = Array.new(3).map do
+          patch api_page_path(page.id), params: params, headers: admin_headers
+        end
+
+        expect(responses).to all(eq(200))
       end
     end
   end

@@ -52,9 +52,11 @@ class DigestMailer < ApplicationMailer
   end
 
   def user_follows_any_subforems?
+    default_subforem_id = Subforem.cached_default_id
+    return false if Subforem.disabled_by_env? || default_subforem_id.nil?
+
     user_activity = @user.user_activity
     followed_subforem_ids = user_activity&.alltime_subforems || []
-    default_subforem_id = Subforem.cached_default_id
 
     # Check if user follows any subforems OR has a custom onboarding subforem
     followed_subforem_ids.any? ||

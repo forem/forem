@@ -19,7 +19,9 @@ RSpec.describe "api/v1/images" do
     allow(Settings::RateLimit).to receive_messages(api_image_upload: upload_limit, api_ai_image_generation: generation_limit)
     stub_const("AI_AVAILABLE", ai_available)
     allow(Ai::ArticleImageGenerator).to receive(:call)
-      .and_return("https://dev-to-uploads.s3.amazonaws.com/uploads/articles/generated.png")
+      .and_return(Ai::ArticleImageGenerator::Result.new(
+                    url: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/generated.png",
+                  ))
   end
 
   path "/api/images" do

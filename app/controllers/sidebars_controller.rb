@@ -23,24 +23,28 @@ class SidebarsController < ApplicationController
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
-    order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC") # Determined via field test
-    @active_discussions = Article.published.from_subforem
+    viewed_ids = recently_viewed_article_ids
+    # Determined via field test
+    order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC")
+
+    base_scope = Article.published.from_subforem
       .where("published_at > ?", 1.week.ago)
-      .where("comments_count > ?", 0)
       .with_at_least_home_feed_minimum_score
-      .cached_tagged_with_any(tag_names)
-      .where(language: languages)
-      .or(Article.featured.published.from_subforem.where("published_at > ?", 1.week.ago)
-        .with_at_least_home_feed_minimum_score)
-      .or(Article.where(id: recently_viewed_article_ids).published.from_subforem
-        .where("published_at > ?", 1.week.ago)
-        .where("comments_count > ?", 1)
-          .with_at_least_home_feed_minimum_score)
-      .or(Article.published.from_subforem
-        .where("published_at > ?", 1.week.ago)
-        .where("comments_count >= ?", 15)
-        .where("comment_score >= ?", 25)
-        .with_at_least_home_feed_minimum_score)
+
+    relation = base_scope.featured
+      .or(base_scope.where("comments_count >= ?", 15).where("comment_score >= ?", 25))
+    if tag_names.present? || ENV["OPTIMIZED_TAGGABLE_QUERY"] != "true"
+      relation = base_scope
+        .where("comments_count > ?", 0)
+        .cached_tagged_with_any(tag_names)
+        .where(language: languages)
+        .or(relation)
+    end
+    if viewed_ids.present?
+      relation = relation.or(base_scope.where(id: viewed_ids).where("comments_count > ?", 1))
+    end
+
+    @active_discussions = relation
       .order(order)
       .limit(ACTIVE_DISCUSSION_LIMIT)
       .pluck(:path, :title, :comments_count, :created_at, :subforem_id)

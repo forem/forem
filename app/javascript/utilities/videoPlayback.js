@@ -14,7 +14,7 @@
 /* eslint no-useless-escape: 0 */
 /* global jwplayer */
 
-import ahoy from 'ahoy.js';
+import { ahoy } from './ahoy/client';
 
 export function initializeVideoPlayback() {
   let currentTime = '0';

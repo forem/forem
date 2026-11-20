@@ -147,4 +147,53 @@ describe ArticlesHelper do
       expect(helper.has_vid?(article)).to be(true)
     end
   end
+
+  describe "#should_show_updated_on?" do
+    let(:article) do
+      build(
+        :article,
+        published_from_feed: false,
+        published_at: 1.hour.ago,
+        edited_at: Time.current,
+      ).tap { |a| a.published = true }
+    end
+
+    it "returns false when not published" do
+      article.published = false
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns false when published from feed" do
+      article.published_from_feed = true
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns false when edited_at is missing" do
+      article.edited_at = nil
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns false when published_at is missing" do
+      article.published_at = nil
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+
+    it "returns true when edited_at is after published_at on the same day" do
+      article.published_at = Time.current.beginning_of_day + 1.hour
+      article.edited_at = article.published_at + 10.minutes
+      expect(helper.should_show_updated_on?(article)).to be true
+    end
+
+    it "returns true when edited_at is after published_at on a later day" do
+      article.published_at = 1.day.ago
+      article.edited_at = Time.current
+      expect(helper.should_show_updated_on?(article)).to be true
+    end
+
+    it "returns false when edited_at is before or equal to published_at" do
+      article.published_at = Time.current
+      article.edited_at = 1.day.ago
+      expect(helper.should_show_updated_on?(article)).to be false
+    end
+  end
 end

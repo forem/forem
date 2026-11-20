@@ -1,17 +1,28 @@
 module Homepage
   class ArticleSerializer < ApplicationSerializer
+    USER_ATTRIBUTES = %i[id name profile_image username].freeze
+    ORGANIZATION_ATTRIBUTES = %i[id name profile_image slug].freeze
+
     # @param relation [ActiveRecord::Relation<Article>]
     #
     # @return [Hash]
     def self.serialized_collection_from(relation:)
-      articles = relation.preload(:user, :organization).load
+      articles = relation.load
+      article_records = articles.to_a
+
+      ActiveRecord::Associations::Preloader.new(
+        records: article_records, associations: :user, scope: User.select(USER_ATTRIBUTES),
+      ).call
+      ActiveRecord::Associations::Preloader.new(
+        records: article_records, associations: :organization, scope: Organization.select(ORGANIZATION_ATTRIBUTES),
+      ).call
 
       # Unfortunately the FlareTag class sends one SQL query per each article,
       # as we want to optimize by loading them in one query, we're using a different class
       tag_flares = Homepage::FetchTagFlares.call(articles)
 
       # One cache round-trip for every article's :public_reaction_categories
-      Article.preload_reaction_counts_for_reactable(articles.to_a)
+      Article.preload_reaction_counts_for_reactable(article_records)
 
       new(articles, params: { tag_flares: tag_flares }, is_collection: true)
         .serializable_hash[:data]
@@ -40,7 +51,7 @@ module Homepage
     attribute :published_at_int, ->(article) { article.published_at.to_i }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
-    
+
     # Only include special title methods for status articles
     attribute :title_finalized_for_feed, if: proc { |article| article.type_of == "status" }
     attribute :title_for_metadata, if: proc { |article| article.type_of == "status" }
@@ -60,7 +71,7 @@ module Homepage
 
       {
         name: organization.name,
-        profile_image_90: article.organization.profile_image_90,
+        profile_image_90: organization.profile_image_90,
         slug: organization.slug
       }
     end

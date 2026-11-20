@@ -80,7 +80,7 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         expect(article.reload.clickbait_score).to eq(0)
       end
 
-      it "generates and applies tags when conditions are met" do
+      it "generates and applies tags when conditions are met without re-enqueuing HandleSpamWorker" do
         # Set up article to meet tag generation criteria
         article.update_columns(score: 5)
 
@@ -100,11 +100,31 @@ RSpec.describe Articles::HandleSpamWorker, type: :worker do
         allow(Spam::Handler).to receive(:handle_article!)
         allow(article).to receive(:update_score)
         allow(article).to receive(:update_column)
+        allow(described_class).to receive(:perform_async)
 
         worker.perform(article.id)
 
         expect(article.reload.cached_tag_list).to include("javascript")
         expect(article.reload.cached_tag_list).to include("webdev")
+        expect(described_class).not_to have_received(:perform_async)
+      end
+
+      it "does not re-enqueue HandleSpamWorker on non-content updates after automod_label is assigned" do
+        article.update_columns(automod_label: "okay_and_on_topic", published_at: 10.seconds.ago)
+        allow(described_class).to receive(:perform_async)
+
+        article.update!(tag_list: "ruby, rails")
+
+        expect(described_class).not_to have_received(:perform_async)
+      end
+
+      it "does not enqueue HandleSpamWorker for future-scheduled articles until published" do
+        scheduled_article = create(:article, published: true, published_at: 2.days.from_now)
+        allow(described_class).to receive(:perform_async)
+
+        scheduled_article.update!(title: "Updated Scheduled Title")
+
+        expect(described_class).not_to have_received(:perform_async)
       end
     end
 

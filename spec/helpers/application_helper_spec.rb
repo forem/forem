@@ -867,6 +867,15 @@ RSpec.describe ApplicationHelper do
 
       expect(helper.subforem_aware_sign_up_url(path)).to eq("http://#{root_subforem.domain}/enter?state=new-user")
     end
+
+    it "returns the path unchanged without querying subforems when Subforem.disabled_by_env? is true" do
+      RequestStore.store[:subforem_id] = other_subforem.id
+      allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+      allow(Subforem).to receive(:cached_root_domain)
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(path)
+      expect(Subforem).not_to have_received(:cached_root_domain)
+    end
   end
 
   describe "#main_stylesheets_fingerprint" do

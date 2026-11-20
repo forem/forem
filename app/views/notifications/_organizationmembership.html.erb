@@ -1,0 +1,41 @@
+<% json_data = notification.json_data %>
+<% invitation = json_data["organization_invitation"] %>
+<% organization_link = link_to(json_data["organization"]["name"], json_data["organization"]["path"], class: "crayons-link fw-bold") %>
+<div class="crayons-card notification">
+  <% if json_data["user"].present? %>
+    <%= render "notifications/shared/profile_pic", json_data: json_data %>
+  <% else %>
+    <div class="relative self-start">
+      <a class="crayons-logo crayons-logo--l m:crayons-logo--xl" href="<%= json_data["organization"]["path"] %>" tabindex="-1" aria-hidden="true">
+        <img alt="<%= json_data["organization"]["name"] %> logo" class="crayons-logo__image" src="<%= json_data["organization"]["profile_image_90"] %>" width="48" height="48">
+      </a>
+    </div>
+  <% end %>
+
+  <div class="notification__content">
+    <header class="mb-4">
+      <h2 class="fs-base fw-normal">
+        <% if json_data["user"].present? %>
+          <% user_link = link_to(json_data["user"]["name"], json_data["user"]["path"], class: "crayons-link fw-bold") %>
+          <%= t("views.notifications.organization_invitation.invited_by_html", user: user_link, org: organization_link) %>
+        <% else %>
+          <%= t("views.notifications.organization_invitation.invited_html", org: organization_link) %>
+        <% end %>
+      </h2>
+      <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at, scope: :"datetime.distance_in_words_ago" %></small></p>
+    </header>
+
+    <% case invitation["status"] %>
+    <% when "pending" %>
+      <p class="mb-4 color-base-70"><%= t("views.notifications.organization_invitation.pending") %></p>
+      <div class="flex gap-2">
+        <%= button_to t("views.notifications.organization_invitation.accept"), accept_organization_invitation_path(invitation["id"]),
+                      method: :patch, class: "crayons-btn crayons-btn--s" %>
+        <%= button_to t("views.notifications.organization_invitation.decline"), decline_organization_invitation_path(invitation["id"]),
+                      method: :patch, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+      </div>
+    <% when "accepted" %>
+      <p class="color-base-60"><%= t("views.notifications.organization_invitation.joined") %></p>
+    <% end %>
+  </div>
+</div>

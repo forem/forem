@@ -11,7 +11,8 @@ module Admin
       grouped_posts = Article.where(published_at: period).group("DATE(published_at)").size
       grouped_comments = Comment.where(created_at: period).group("DATE(created_at)").size
       grouped_reactions = Reaction.where(created_at: period).group("DATE(created_at)").size
-      grouped_users = User.where(registered_at: period).group("DATE(registered_at)").size
+      grouped_users = User.where("created_at >= ?", period.begin).where(registered_at: period)
+        .group("DATE(registered_at)").size
 
       days_range = @length.downto(1)
       posts_values = days_range.map { |n| grouped_posts[n.days.ago.to_date] || 0 }
@@ -26,7 +27,8 @@ module Admin
          comments_values],
         ["Reactions", reactions_values.sum, Reaction.where(created_at: previous_period).size,
          reactions_values],
-        ["New members", new_members_values.sum, User.where(registered_at: previous_period).size,
+        ["New members", new_members_values.sum,
+         User.where("created_at >= ?", previous_period.begin).where(registered_at: previous_period).size,
          new_members_values],
       ]
     end

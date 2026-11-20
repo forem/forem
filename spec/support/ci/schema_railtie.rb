@@ -12,6 +12,10 @@ if ENV["CI"] && !defined?(CiSchemaRailtie)
 
   class CiSchemaRailtie < Rails::Railtie
     config.after_initialize do
+      if defined?(KnapsackPro::RepositoryAdapters::GitAdapter)
+        KnapsackPro::RepositoryAdapters::GitAdapter.prepend(CiKnapsackProSkipShallowFetch)
+      end
+
       ActiveRecord::Base.with_connection do |conn|
         next if conn.data_source_exists?("schema_migrations")
 
@@ -51,7 +55,4 @@ if ENV["CI"] && !defined?(CiSchemaRailtie)
     KnapsackPro::Adapters::RSpecAdapter.singleton_class.prepend(CiKnapsackProForkedDetector)
   end
 
-  if defined?(KnapsackPro::RepositoryAdapters::GitAdapter)
-    KnapsackPro::RepositoryAdapters::GitAdapter.prepend(CiKnapsackProSkipShallowFetch)
-  end
 end

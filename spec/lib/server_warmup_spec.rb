@@ -595,16 +595,16 @@ RSpec.describe ServerWarmup, type: :lib do
 
   describe ".start_preboot_keepalive! and traffic executor hook" do
     it "periodically refreshes database, Redis connections, and Flipper cache until stopped" do
-      refresh_count = 0
-      allow(described_class).to receive(:warm_database_connections!) { refresh_count += 1 }
+      refresh_completed = Queue.new
+      allow(described_class).to receive(:warm_database_connections!)
       allow(described_class).to receive(:warm_redis_cache_connection!)
-      allow(described_class).to receive(:warm_flipper_cache!)
+      allow(described_class).to receive(:warm_flipper_cache!) { refresh_completed << true }
 
       described_class.start_preboot_keepalive!(duration_seconds: 2, interval_seconds: 0.02)
-      sleep 0.06
+      Timeout.timeout(1) { refresh_completed.pop }
       described_class.stop_preboot_keepalive!
 
-      expect(refresh_count).to be >= 1
+      expect(described_class).to have_received(:warm_database_connections!).at_least(:once)
       expect(described_class).to have_received(:warm_redis_cache_connection!).at_least(:once)
       expect(described_class).to have_received(:warm_flipper_cache!).at_least(:once)
       expect(described_class.traffic_received?).to be(false)

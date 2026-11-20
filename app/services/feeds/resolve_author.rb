@@ -21,33 +21,62 @@ module Feeds
       @author_string ||= item.try(:author)&.strip
     end
 
+    def extracted_email_and_name
+      return @extracted_email_and_name if defined?(@extracted_email_and_name)
+
+      @extracted_email_and_name =
+        ForemNative.extract_feed_author(author_string) || [
+          author_string[/[\w.+-]+@[\w.-]+\.\w+/],
+          author_string.sub(/<[^>]+>/, "").strip,
+        ]
+    end
+
     # Scope author lookup to users who could legitimately own articles for this
     # feed source: organization members when an org is set, otherwise only the
     # feed owner themselves.
     def eligible_users
       @eligible_users ||= if feed_source.organization_id.present?
-                             feed_source.organization.active_users
-                           else
-                             User.where(id: feed_source.user_id)
-                           end
+                            feed_source.organization.active_users
+                          else
+                            User.where(id: feed_source.user_id)
+                          end
+    end
+
+    def preloaded_owner
+      return if feed_source.organization_id.present?
+      return unless feed_source.association(:user).loaded?
+
+      feed_source.user
     end
 
     def find_by_email
-      return unless author_string.present?
+      return if author_string.blank?
 
       # Extract email from formats like "Name <email@example.com>" or plain "email@example.com"
-      email = author_string[/[\w.+-]+@[\w.-]+\.\w+/]
+      email, = extracted_email_and_name
       return unless email
+
+      if (owner = preloaded_owner)
+        return owner if owner.email == email
+
+        return
+      end
 
       eligible_users.find_by(email: email)
     end
 
     def find_by_name
-      return unless author_string.present?
+      return if author_string.blank?
 
       # Strip email if present (e.g., "John Doe <john@example.com>" → "John Doe")
-      name = author_string.sub(/<[^>]+>/, "").strip
+      _, name = extracted_email_and_name
       return if name.blank?
+
+      if (owner = preloaded_owner)
+        return owner if owner.name == name
+
+        return
+      end
 
       eligible_users.find_by(name: name)
     end

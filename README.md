@@ -1,23 +1,10 @@
 <div align="center">
-  <br>
   <h1>Forem 🌱</h1>
   <strong>For Empowering Community</strong>
 </div>
 <br>
 <p align="center">
-  <a href="https://github.com/forem/forem/actions/workflows/ci.yml">
-    <img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="Build Status">
-  </a>
-  <a href="https://github.com/forem/forem/actions/workflows/cd.yml">
-    <img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="Build Status">
-  </a>
-  <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
-  <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
-    <img src="https://img.shields.io/github/issues/forem/forem/ready%20for%20dev" alt="GitHub issues ready for dev">
-  </a>
-  <a href="https://gitpod.io/#https://github.com/forem/forem">
-    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
-  </a>
+  <a href="https://github.com/forem/forem/actions/workflows/ci.yml"><img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a><a href="https://github.com/forem/forem/actions/workflows/cd.yml"><img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="Build Status"></a><img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity"><a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22"><img src="https://img.shields.io/github/issues/forem/forem/ready%20for%20dev" alt="GitHub issues ready for dev"></a>
 </p>
 
 Welcome to the [Forem](https://forem.com) codebase, the platform that powers
@@ -48,7 +35,7 @@ within our community. ❤️
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Deployment with Kamal (Beta)](#deployment-with-kamal-beta)
+- [Deployment with Kamal 2](#deployment-with-kamal-2)
 - [Vulnerability Disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -60,38 +47,37 @@ We welcome pull requests on any issue, regardless of its current status, if it p
 
 **All pull requests should include appropriate tests.** Our current focus is primarily on backend-related regression tests, while frontend changes may require more extensive user review.
 
-We welcome AI-assisted pull requests but will turn away "slop"—all submissions must maintain high standards of code quality and meaningful utility.
+We welcome AI-assisted pull requests but will turn away "slop" — all submissions must maintain high standards of code quality and meaningful utility.
 
-🤖 AI Agents should check out `AGENTS.md` for more instructions. For specific IDEs and environments, Forem also synchronizes these rules across `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md`.
+> 🤖 **AI Agents:** Check out `AGENTS.md` for more instructions. Forem also synchronizes these rules across `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md` for specific IDEs and environments.
 
 Please also check out the [Contributing to Forem guide](https://developers.forem.com/contributing-guide/forem) for more detailed guidelines.
 
+
 ## Getting Started
 
-This section provides a high-level quick start guide. If you're looking for a
-more thorough installation guide (for example
-[with macOS](https://developers.forem.com/getting-started/installation/mac)),
-you'll want to refer to our complete
-[Developer Documentation](https://developers.forem.com/).
+This section provides a high-level quick start guide. If you're looking for a more thorough installation guide (for example [with macOS](https://developers.forem.com/getting-started/installation/mac)), you'll want to refer to our complete [Developer Documentation](https://developers.forem.com/).
 
-We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
-transitioning to a [Preact](https://preactjs.com/)-first frontend.
+We run on a [Rails](https://rubyonrails.org/) backend, and we are currently transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
-**Prerequisites Note**: Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app. 
+> **Prerequisites Note:** Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app.
+>
+> To install `pgvector`:
+> - **macOS (Homebrew):** `brew install pgvector`
+> - **Linux (Debian/Ubuntu):** `sudo apt install postgresql-15-pgvector` (adjust `15` to match your installed PostgreSQL version), or compile from source following the [pgvector installation guide](https://github.com/pgvector/pgvector#installation).
+>
+> Providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the embeddings is completely optional; if omitted, the app will continue to function normally without semantic recommendations.
 
-To install `pgvector`:
-- **macOS (Homebrew)**: `brew install pgvector`
-- **Linux (Debian/Ubuntu)**: `sudo apt install postgresql-15-pgvector` (adjust `15` to match your installed PostgreSQL version), or compile from source following the [pgvector installation guide](https://github.com/pgvector/pgvector#installation).
+A more complete overview of our stack is available in [our docs](https://developers.forem.com/technical-overview/stack).
 
-However, providing a Gemini API key (`GEMINI_API_KEY`) to actually generate the embeddings is completely optional; if omitted, the app will continue to function normally without semantic recommendations.
+### Launching in a Cloud Dev Environment
 
-A more complete overview of our stack is available in
-[our docs](https://developers.forem.com/technical-overview/stack).
+> [!important]
+> Ona (formerly Gitpod) is closed to new signups, so it is no longer a recommended route for new contributors.
 
-To **launch Forem in Gitpod**, please navigate to
-[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
+- **GitHub Codespaces:** From your fork, choose **Code → Codespaces → Create codespace**. The repository's devcontainer (`.devcontainer/`) starts PostgreSQL and Redis for you; run `bin/setup` once it opens, then `bin/startup`.
+- **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension and run `bin/setup`, then `bin/startup`, in its terminal. Without VS Code, run `npx @devcontainers/cli up --workspace-folder .` (it returns to your host shell), then `npx @devcontainers/cli exec --workspace-folder . bin/setup` and `npx @devcontainers/cli exec --workspace-folder . bin/startup`. The devcontainer uses host networking; on Docker Desktop (4.34 or newer) turn on **Settings → Resources → Network → Enable host networking**, or the app will not be reachable at `localhost:3000`. On Linux, PostgreSQL and Redis bind host ports 5432 and 6379, so stop any host PostgreSQL or Redis service on those ports first.
 
-To **launch Forem in Ona** (formerly Gitpod), the project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
 
 ### Installation Documentation
 
@@ -104,47 +90,51 @@ Please see our installation guides:
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com). Please note that while the documentation is a great place to start, some parts may be out of date as the project evolves.
 
-## Deployment with Kamal (Beta)
+## Deployment with Kamal 2
 
-Forem is equipped with [Kamal 2](https://kamal-deploy.org/) to allow you to easily deploy the application to any cloud provider or bare metal server.
+Forem is preconfigured with [Kamal 2](https://kamal-deploy.org/) (`v2.12+`) for zero-downtime deployments to bare-metal servers, DigitalOcean Droplets, Hetzner, AWS, GCP, or multi-node clusters.
 
-For a comprehensive guide, including cloud provider setups (AWS, DigitalOcean, Hetzner, GCP), secrets management, and Forem-specific production gotchas, see the [Kamal Deployment Guide](docs/kamal-deployment.md).
+For the full end-to-end walkthrough — including destination profiles (`managed`, `cluster`, `edge`, `staging`), S3/Spaces/R2 object storage, registry/builder options, backups, and cloud gotchas — see the [Kamal Deployment Guide](docs/kamal-deployment.md).
 
 ### Prerequisites
 
-Before deploying, ensure you have:
-1. SSH access to your target server(s).
-2. Docker installed on your local machine and target server(s).
-3. A Docker container registry account (e.g., GitHub Container Registry, Docker Hub).
+1. SSH access to your target Linux server(s) (Ubuntu 22.04/24.04 or Debian recommended).
+2. Docker + Buildx installed on your local machine (Kamal installs Docker on target servers automatically during `setup`).
+3. A domain name pointed at your server (or use `-d staging` for raw-IP HTTP testing).
 
-### Configuration
+### Quickstart (Single Server / DigitalOcean Droplet)
 
-1. **Deployment Configuration**: Open [config/deploy.yml](config/deploy.yml) and update:
-   - Your registry username/credentials.
-   - Your domain name in the `proxy` section.
-2. **Environment & Secrets Configuration**: Set the following environment variables on your local machine:
-   - `KAMAL_WEB_IP` / `KAMAL_JOB_IP` / `KAMAL_DB_IP` / `KAMAL_REDIS_IP`: The IP addresses of your servers (default to `192.168.0.1`).
-   - `KAMAL_REGISTRY_PASSWORD`: Access token for your Docker container registry.
-   - `RAILS_MASTER_KEY`: Your Rails master key.
-   - `DATABASE_URL`: Connection string for PostgreSQL. This is always required. If you are using the Kamal postgres accessory, set it to the accessory hostname (e.g. `postgresql://postgres:password@forem-postgres:5432/forem_production`).
-   - `POSTGRES_PASSWORD`: Root password for the PostgreSQL accessory (if using it).
+1. **Copy the environment template** and fill in your server IP, domain, and generated secrets:
 
-### Deploying the Application
+   ```bash
+   cp .env.kamal.example .env.kamal
+   # Set KAMAL_HOST, APP_DOMAIN, SECRET_KEY_BASE (`openssl rand -hex 64`), and POSTGRES_PASSWORD
+   ```
 
-Run the following commands to set up and deploy the application:
+2. **Load your environment and verify the configuration**:
 
-```bash
-# 1. Verify your configuration is valid
-bundle exec kamal config
+   ```bash
+   set -a && source .env.kamal && set +a
+   bundle exec kamal config
+   ```
 
-# 2. Boot accessories, build & push the docker image, and deploy the application
-bundle exec kamal setup
+3. **Run initial setup and deploy** (uses Kamal's built-in `localhost:5555` registry, `pgvector/pgvector:pg16`, `redis:7-alpine`, Let's Encrypt HTTPS, persistent `forem_uploads`, and automatic DB initialization):
 
-# 3. Subsequent deploys (rolling updates)
-bundle exec kamal deploy
-```
+   ```bash
+   # Initial server bootstrap, accessories, build, DB setup, and app boot
+   bundle exec kamal setup
 
-For more options, refer to the [Kamal documentation](https://kamal-deploy.org/docs/).
+   # Subsequent rolling deploys
+   bundle exec kamal deploy
+   ```
+
+4. **Optional hosting profiles** via Kamal destinations (`-d`):
+   - `bundle exec kamal setup -d managed` — Managed PostgreSQL (`pgvector`) + Managed Redis/Valkey + Object Storage
+   - `bundle exec kamal setup -d cluster` — Multi-node `web` + `job` fleet behind a Load Balancer
+   - `bundle exec kamal setup -d edge` — Single node behind Cloudflare Proxy, Fastly, or a Load Balancer
+   - `bundle exec kamal setup -d staging` — Raw-IP / VM preview over HTTP without DNS/TLS
+
+For day-2 operations (`bundle exec kamal console`, `logs`, `dbc`, `migrate`), provider-specific guides, and troubleshooting, refer to [docs/kamal-deployment.md](docs/kamal-deployment.md) and the [Kamal documentation](https://kamal-deploy.org/docs/).
 
 
 ## Vulnerability Disclosure

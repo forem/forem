@@ -1,10 +1,14 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import postscribe from 'postscribe';
-import moment from 'moment';
+import {
+  parseArticleDate,
+  formatHHmm,
+  formatYYYYMMDD,
+} from './dateHelpers';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
-import { embedGists } from '../utilities/gist';
+import { embedGists, loadPostScribe } from '../utilities/gist';
+import { initializePageEmbedFullscreen } from '../utilities/pageEmbedFullscreen';
 import {
   submitArticle,
   previewArticle,
@@ -49,10 +53,17 @@ const LINT_OPTIONS = {
 export class ArticleForm extends Component {
   // Scripts inserted via innerHTML won't execute, so we use this handler to
   // make the Asciinema player work in previews.
-  static handleAsciinemaPreview() {
-    const els = document.getElementsByClassName('ltag_asciinema');
+  static async handleAsciinemaPreview() {
+    const els = Array.from(document.getElementsByClassName('ltag_asciinema'));
+    if (els.length === 0) {
+      return;
+    }
+    const postscribe = await loadPostScribe();
     for (let i = 0; i < els.length; i += 1) {
       const el = els[i];
+      if (!el.firstElementChild) {
+        continue;
+      }
       const script = el.removeChild(el.firstElementChild);
       postscribe(el, script.outerHTML);
     }
@@ -196,9 +207,9 @@ export class ArticleForm extends Component {
     this.publishedAtWas = '';
 
     if (this.article.published_at) {
-      this.publishedAtWas = moment(this.article.published_at);
-      this.publishedAtTime = this.publishedAtWas.format('HH:mm');
-      this.publishedAtDate = this.publishedAtWas.format('YYYY-MM-DD');
+      this.publishedAtWas = parseArticleDate(this.article.published_at);
+      this.publishedAtTime = formatHHmm(this.publishedAtWas);
+      this.publishedAtDate = formatYYYYMMDD(this.publishedAtWas);
     }
 
     this.state = {
@@ -256,21 +267,48 @@ export class ArticleForm extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.localStoreContent);
+    this.syncEditorStateForAssistant();
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.localStoreContent);
+    delete window.__foremEditorState;
   }
 
   componentDidUpdate() {
+    this.syncEditorStateForAssistant();
     const { previewResponse } = this.state;
 
     if (previewResponse?.processed_html) {
       embedGists(this.formElement);
       this.constructor.handleAsciinemaPreview();
       this.constructor.handleAgentSessionPreview();
+      initializePageEmbedFullscreen(this.formElement);
     }
   }
+
+  syncEditorStateForAssistant = () => {
+    const currentState = { ...this.state };
+    window.__foremEditorState = {
+      id: currentState.id,
+      version: currentState.version,
+      title: currentState.title,
+      tags: currentState.tagList,
+      body: currentState.bodyMarkdown,
+      published: currentState.published,
+      published_at_date: currentState.publishedAtDate,
+      published_at_time: currentState.publishedAtTime,
+      canonical_url: currentState.canonicalUrl,
+      series: currentState.series,
+      main_image: currentState.mainImage,
+      video_source_url: currentState.videoSourceUrl,
+      organization_id: currentState.organizationId,
+      ai_disclosure_level: currentState.aiDisclosureLevel,
+      preview_showing: currentState.previewShowing,
+      errors: currentState.errors,
+      markdown_lint_errors: currentState.markdownLintErrors,
+    };
+  };
 
   localStoreContent = () => {
     if (sessionStorage.getItem('isSigningOut') === 'true') {

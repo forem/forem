@@ -5,7 +5,25 @@ RSpec.describe AnalyticsService, type: :service do
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, published: true) }
 
-  before do
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    elsif name == :follow && !options.key?(:follower) && !options.key?(:follower_id)
+      options[:follower] = create(:user)
+    elsif name == :reaction && !options.key?(:user) && !options.key?(:user_id)
+      options[:user] = create(:user)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    Array.new(amount) { create(name, *traits, **options) }
+  end
+
+  around do |example|
     # We use Zonebie to fortify the code and spot time zone related problems but in this
     # particular case it can make these tests fail because,
     # for example, "2019-07-21T23:57:12-12:00" is the 22th in UTC, and since
@@ -15,19 +33,14 @@ RSpec.describe AnalyticsService, type: :service do
     # For this reason data created on "2019-07-21T23:57:12-12:00" will appear on the 22nd in the DB
     # and hence never be selected by the Analytics engine
     # In the meantime for a lack of a better solution, we force this tests to run at midday in UTC
-    Timecop.freeze("2019-04-01T12:00:00Z")
     # Pin Time.zone for the duration of the spec too: the service clamps
     # start_date to the owner's `registered_at.beginning_of_day` evaluated in
     # Time.zone, so a Zonebie-set zone ahead of UTC (e.g. Pacific/Apia at
     # UTC+13) shifts the floor to the next calendar day and lops 2019-04-01
     # off every bucketed assertion below.
-    @original_time_zone = Time.zone
-    Time.zone = "UTC"
-  end
-
-  after do
-    Timecop.return
-    Time.zone = @original_time_zone if @original_time_zone
+    Timecop.freeze("2019-04-01T12:00:00Z") do
+      Time.use_zone("UTC") { example.run }
+    end
   end
 
   def format_date(datetime)
@@ -36,12 +49,10 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "initialization" do
-    it "raises an error if start date is invalid" do
-      expect { described_class.new(user, start_date: "2000-") }.to raise_error(ArgumentError)
-    end
-
-    it "raises an error if end date is invalid" do
-      expect { described_class.new(user, end_date: "2000-") }.to raise_error(ArgumentError)
+    it "raises an error if start date or end date is invalid", :aggregate_failures do
+      stubbed_user = build_stubbed(:user)
+      expect { described_class.new(stubbed_user, start_date: "2000-") }.to raise_error(ArgumentError)
+      expect { described_class.new(stubbed_user, end_date: "2000-") }.to raise_error(ArgumentError)
     end
 
     it "raises an error if an article does not belong to the user" do
@@ -51,7 +62,7 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     it "clamps start_date to the owner's registration date when an earlier date is requested" do
-      late_user = create(:user, registered_at: Time.zone.parse("2020-06-01"))
+      late_user = build_stubbed(:user, registered_at: Time.zone.parse("2020-06-01"))
       service = described_class.new(late_user, start_date: "2015-01-01", end_date: "2020-06-30")
       # Weekly bucketing kicks in here (range > 180 days), so the first bucket
       # is the Monday of the week containing the registration date, not 2015.
@@ -59,7 +70,7 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     it "leaves start_date unchanged when it is after the owner's registration" do
-      early_user = create(:user, registered_at: Time.zone.parse("2018-01-01"))
+      early_user = build_stubbed(:user, registered_at: Time.zone.parse("2018-01-01"))
       service = described_class.new(early_user, start_date: "2019-04-01", end_date: "2019-04-04")
       expect(service.grouped_by_day.keys.first).to eq("2019-04-01")
     end
@@ -100,12 +111,13 @@ RSpec.describe AnalyticsService, type: :service do
 
   describe "adaptive bucketing" do
     it "uses daily buckets when the range is within DAILY_HISTORY_DAYS" do
-      service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04")
+      stubbed_user = build_stubbed(:user, registered_at: Time.current)
+      service = described_class.new(stubbed_user, start_date: "2019-04-01", end_date: "2019-04-04")
       expect(service.grouped_by_day.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
     end
 
     it "uses weekly buckets for old data and daily buckets for the most recent DAILY_HISTORY_DAYS" do
-      long_user = create(:user, registered_at: Time.zone.parse("2018-01-01"))
+      long_user = build_stubbed(:user, registered_at: Time.zone.parse("2018-01-01"))
       Timecop.freeze("2020-04-01T12:00:00Z") do
         service = described_class.new(long_user, start_date: "2019-04-01", end_date: "2020-04-01")
         keys = service.grouped_by_day.keys
@@ -123,9 +135,15 @@ RSpec.describe AnalyticsService, type: :service do
   describe "#totals" do
     let(:analytics_service) { described_class.new(user) }
 
-    it "returns totals stats for comments, reactions, follows and page views" do
+    it "returns the stats structure and zero totals when there is no activity", :aggregate_failures do
       totals = analytics_service.totals
       expect(totals.keys.to_set).to eq(%i[comments reactions follows page_views].to_set)
+      expect(totals[:comments].keys).to eq(%i[total])
+      expect(totals[:comments]).to eq(total: 0)
+      expect(totals[:follows].keys).to eq(%i[total])
+      expect(totals[:follows]).to eq(total: 0)
+      expect(totals[:page_views].keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
+      expect(totals[:page_views]).to eq(total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0)
     end
 
     it "returns totals stats for an org" do
@@ -134,19 +152,14 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "comments stats" do
-      it "returns stats" do
-        stats = analytics_service.totals[:comments]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of comments" do
-        create(:comment, commentable: article, score: 1)
+        create(:comment, commentable: article, user: user, score: 1)
         expected_stats = { total: 1 }
         expect(analytics_service.totals[:comments]).to eq(expected_stats)
       end
 
       it "returns zero as total if there are no scored comments" do
-        create(:comment, commentable: article, score: 0)
+        create(:comment, commentable: article, user: user, score: 0)
         expected_stats = { total: 0 }
         expect(analytics_service.totals[:comments]).to eq(expected_stats)
       end
@@ -155,112 +168,58 @@ RSpec.describe AnalyticsService, type: :service do
     describe "reactions stats" do
       before { Reaction.where(reactable: article).delete_all }
 
-      it "returns stats" do
-        stats = described_class.new(user).totals[:reactions]
-        expect(stats.keys).to eq(%i[total like readinglist unicorn exploding_head raised_hands fire unique_reactors])
-      end
-
-      it "returns the total number of reactions" do
-        create(:reaction, reactable: article)
-        expect(analytics_service.totals[:reactions][:total]).to eq(1)
-      end
-
-      it "returns zero as total if there are no public category reactions" do
-        reaction = create(:reaction, reactable: article)
+      it "returns zeroed stats when there are no public category reactions", :aggregate_failures do
+        expect(described_class.new(user).totals[:reactions]).to eq(
+          total: 0, like: 0, readinglist: 0, unicorn: 0,
+          exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0
+        )
+        reaction = create(:reaction, reactable: article, user: user)
         reaction.update_columns(category: "thumbsdown")
         expect(analytics_service.totals[:reactions][:total]).to eq(0)
       end
 
-      it "returns the number of like reactions" do
-        create(:reaction, reactable: article, category: :like)
-        expect(analytics_service.totals[:reactions][:like]).to eq(1)
-      end
+      it "returns the number of reactions by category and zeroes for absent categories", :aggregate_failures do
+        create(:reaction, reactable: article, category: :like, user: user)
+        expect(described_class.new(user).totals[:reactions]).to eq(
+          total: 1, like: 1, readinglist: 0, unicorn: 0,
+          exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 1
+        )
 
-      it "returns zero as the number of like reactions" do
-        create(:reaction, reactable: article, category: :unicorn)
-        expect(analytics_service.totals[:reactions][:like]).to eq(0)
-      end
+        Reaction.where(reactable: article).delete_all
+        create(:reaction, reactable: article, category: :unicorn, user: user)
+        expect(described_class.new(user).totals[:reactions]).to include(total: 1, like: 0, readinglist: 0, unicorn: 1)
 
-      it "returns the number of readinglist reactions" do
-        create(:reaction, reactable: article, category: :readinglist)
-        expect(analytics_service.totals[:reactions][:readinglist]).to eq(1)
-      end
-
-      it "returns zero as the number of readinglist reactions" do
-        create(:reaction, reactable: article, category: :unicorn)
-        expect(analytics_service.totals[:reactions][:readinglist]).to eq(0)
-      end
-
-      it "returns the number of unicorn reactions" do
-        create(:reaction, reactable: article, category: :unicorn)
-        expect(analytics_service.totals[:reactions][:unicorn]).to eq(1)
-      end
-
-      it "returns zero as the number of unicorn reactions" do
-        create(:reaction, reactable: article, category: :like)
-        expect(analytics_service.totals[:reactions][:unicorn]).to eq(0)
-      end
-
-      it "returns the number of exploding_head reactions" do
-        create(:reaction, reactable: article, category: :exploding_head)
-        expect(analytics_service.totals[:reactions][:exploding_head]).to eq(1)
-      end
-
-      it "returns the number of raised_hands reactions" do
-        create(:reaction, reactable: article, category: :raised_hands)
-        expect(analytics_service.totals[:reactions][:raised_hands]).to eq(1)
-      end
-
-      it "returns the number of fire reactions" do
-        create(:reaction, reactable: article, category: :fire)
-        expect(analytics_service.totals[:reactions][:fire]).to eq(1)
+        %i[readinglist exploding_head raised_hands fire].each do |category|
+          create(:reaction, reactable: article, category: category, user: user)
+        end
+        expect(analytics_service.totals[:reactions]).to eq(
+          total: 5, like: 0, readinglist: 1, unicorn: 1,
+          exploding_head: 1, raised_hands: 1, fire: 1, unique_reactors: 1
+        )
       end
 
       it "returns the number of unique reactors" do
-        user2 = create(:user)
+        user2 = create(:user, :without_profile, profile_image: nil)
         create(:reaction, reactable: article, category: :like, user: user)
         create(:reaction, reactable: article, category: :unicorn, user: user)
         create(:reaction, reactable: article, category: :like, user: user2)
         expect(analytics_service.totals[:reactions][:unique_reactors]).to eq(2)
       end
-
-      it "returns zero unique reactors when there are no reactions" do
-        expect(analytics_service.totals[:reactions][:unique_reactors]).to eq(0)
-      end
     end
 
     describe "follows stats" do
-      it "returns stats" do
-        stats = analytics_service.totals[:follows]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of follows" do
         create(:follow, followable: user)
         expected_stats = { total: 1 }
         expect(analytics_service.totals[:follows]).to eq(expected_stats)
       end
-
-      it "returns zero as total if there are no follows" do
-        expected_stats = { total: 0 }
-        expect(analytics_service.totals[:follows]).to eq(expected_stats)
-      end
     end
 
     describe "page views stats" do
-      it "returns stats" do
-        stats = analytics_service.totals[:page_views]
-        expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
-      end
-
       it "returns the total number of page views from ArticleActivity" do
-        create(:page_view, article: article, counts_for_number_of_views: 1)
+        create(:page_view, user: user, article: article, counts_for_number_of_views: 1)
         ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         expect(analytics_service.totals[:page_views][:total]).to eq(1)
-      end
-
-      it "returns zero as total if there are no page views" do
-        expect(analytics_service.totals[:page_views][:total]).to eq(0)
       end
 
       it "returns the average read time in seconds" do
@@ -269,20 +228,12 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.totals[:page_views][:average_read_time_in_seconds]).to eq(30)
       end
 
-      it "returns zero as the average read time in seconds without views" do
-        expect(analytics_service.totals[:page_views][:average_read_time_in_seconds]).to eq(0)
-      end
-
       it "returns the total read time in seconds" do
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 15, counts_for_number_of_views: 1)
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 45, counts_for_number_of_views: 1)
         ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         # average read time * total_views = 30 * 2 = 60
         expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(60)
-      end
-
-      it "returns zero as the total read time in seconds with no page views" do
-        expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(0)
       end
     end
   end
@@ -310,16 +261,23 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "#grouped_by_day" do
-    it "returns stats grouped by day" do
+    it "returns the daily stats structure and zero totals when there is no activity", :aggregate_failures do
       stats = described_class.new(
         user, start_date: "2019-04-01", end_date: "2019-04-04"
       ).grouped_by_day
       expect(stats.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
-    end
+      stats.each_value do |day|
+        expect(day.keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
+        expect(day[:comments].keys).to eq(%i[total])
+        expect(day[:comments]).to eq(total: 0)
+        expect(day[:follows].keys).to eq(%i[total])
+        expect(day[:follows]).to eq(total: 0)
+      end
 
-    it "returns stats for comments, reactions, follows and page views for a specific day" do
       stats = described_class.new(user, start_date: "2019-04-01").grouped_by_day
       expect(stats["2019-04-01"].keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
+      expect(stats["2019-04-01"][:follows].keys).to eq(%i[total])
+      expect(stats["2019-04-01"][:follows]).to eq(total: 0)
     end
 
     it "returns stats for an org" do
@@ -331,14 +289,8 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "comments stats on a specific day" do
-      it "returns stats" do
-        analytics_service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04")
-        stats = analytics_service.grouped_by_day["2019-04-01"][:comments]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of comments" do
-        comment = create(:comment, commentable: article, score: 1)
+        comment = create(:comment, commentable: article, user: user, score: 1)
         expected_stats = { total: 1 }
         date = format_date(comment.created_at)
         analytics_service = described_class.new(user, start_date: date)
@@ -346,7 +298,7 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns zero as total if there are no scored comments" do
-        comment = create(:comment, commentable: article, score: 0)
+        comment = create(:comment, commentable: article, user: user, score: 0)
         expected_stats = { total: 0 }
         date = format_date(comment.created_at)
         analytics_service = described_class.new(user, start_date: date)
@@ -357,71 +309,37 @@ RSpec.describe AnalyticsService, type: :service do
     describe "reactions stats on a specific day" do
       before { Reaction.where(reactable: article).delete_all }
 
-      it "returns stats" do
-        analytics_service = described_class.new(user, start_date: "2019-04-01")
-        stats = analytics_service.grouped_by_day["2019-04-01"][:reactions]
+      it "returns zeroed stats when there are no public category reactions", :aggregate_failures do
+        stats = described_class.new(user, start_date: "2019-04-01").grouped_by_day["2019-04-01"][:reactions]
         expect(stats.keys).to eq(%i[total like readinglist unicorn exploding_head raised_hands fire unique_reactors])
-      end
-
-      it "returns the total number of reactions" do
-        reaction = create(:reaction, reactable: article)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:total]).to eq(1)
-      end
-
-      it "returns zero as total if there are no public category reactions" do
-        reaction = create(:reaction, reactable: article)
+        reaction = create(:reaction, reactable: article, user: user)
         reaction.update_columns(category: "thumbsdown")
         date = format_date(reaction.created_at)
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:reactions][:total]).to eq(0)
       end
 
-      it "returns the number of like reactions" do
-        reaction = create(:reaction, reactable: article, category: :like)
+      it "returns the number of reactions by category and zeroes for absent categories", :aggregate_failures do
+        reaction = create(:reaction, reactable: article, category: :like, user: user)
         date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:like]).to eq(1)
-      end
+        expect(described_class.new(user, start_date: date).grouped_by_day[date][:reactions]).to include(
+          total: 1, like: 1, readinglist: 0, unicorn: 0,
+        )
 
-      it "returns zero as the number of like reactions" do
-        reaction = create(:reaction, reactable: article, category: :unicorn)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:like]).to eq(0)
-      end
+        Reaction.where(reactable: article).delete_all
+        create(:reaction, reactable: article, category: :unicorn, user: user)
+        expect(described_class.new(user, start_date: date).grouped_by_day[date][:reactions]).to include(
+          total: 1, like: 0, readinglist: 0, unicorn: 1,
+        )
 
-      it "returns the number of readinglist reactions" do
-        reaction = create(:reaction, reactable: article, category: :readinglist)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:readinglist]).to eq(1)
-      end
-
-      it "returns zero as the number of readinglist reactions" do
-        reaction = create(:reaction, reactable: article, category: :unicorn)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:readinglist]).to eq(0)
-      end
-
-      it "returns the number of unicorn reactions" do
-        reaction = create(:reaction, reactable: article, category: :unicorn)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:unicorn]).to eq(1)
-      end
-
-      it "returns zero as the number of unicorn reactions" do
-        reaction = create(:reaction, reactable: article, category: :like)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:unicorn]).to eq(0)
+        create(:reaction, reactable: article, category: :readinglist, user: user)
+        expect(described_class.new(user, start_date: date).grouped_by_day[date][:reactions]).to include(
+          total: 2, like: 0, readinglist: 1, unicorn: 1,
+        )
       end
 
       it "returns unique reactors per day" do
-        user2 = create(:user)
+        user2 = create(:user, :without_profile, profile_image: nil)
         create(:reaction, reactable: article, category: :like, user: user)
         reaction = create(:reaction, reactable: article, category: :unicorn, user: user)
         create(:reaction, reactable: article, category: :like, user: user2)
@@ -432,24 +350,11 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "follows stats for a specific day" do
-      it "returns stats" do
-        analytics_service = described_class.new(user, start_date: "2019-04-01")
-        stats = analytics_service.grouped_by_day["2019-04-01"][:follows]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of follows" do
         follow = create(:follow, followable: user)
         date = format_date(follow.created_at)
         analytics_service = described_class.new(user, start_date: date)
         expected_stats = { total: 1 }
-        expect(analytics_service.grouped_by_day[date][:follows]).to eq(expected_stats)
-      end
-
-      it "returns zero as total if there are no follows" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expected_stats = { total: 0 }
         expect(analytics_service.grouped_by_day[date][:follows]).to eq(expected_stats)
       end
 
@@ -478,10 +383,11 @@ RSpec.describe AnalyticsService, type: :service do
     describe "page views stats for a specific day" do
       before { PageView.where(article: article).delete_all }
 
-      it "returns stats" do
+      it "returns the page view stats structure and zero totals when there are no views", :aggregate_failures do
         analytics_service = described_class.new(user, start_date: "2019-04-01")
         stats = analytics_service.grouped_by_day["2019-04-01"][:page_views]
         expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
+        expect(stats).to eq(total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0)
       end
 
       it "returns the total number of page views from counts_for_number_of_views" do
@@ -490,12 +396,6 @@ RSpec.describe AnalyticsService, type: :service do
         ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(5)
-      end
-
-      it "returns zero as total if there are no page views" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(0)
       end
 
       it "returns the average read time in seconds" do
@@ -507,13 +407,6 @@ RSpec.describe AnalyticsService, type: :service do
           :page_views][:average_read_time_in_seconds]).to eq(30)
       end
 
-      it "returns zero as the average read time in seconds without views" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][
-          :page_views][:average_read_time_in_seconds]).to eq(0)
-      end
-
       it "returns the total read time in seconds" do
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 15)
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 45)
@@ -522,13 +415,6 @@ RSpec.describe AnalyticsService, type: :service do
         # average read time (30) * total_views (2)
         expect(analytics_service.grouped_by_day[date][
           :page_views][:total_read_time_in_seconds]).to eq(60)
-      end
-
-      it "returns zero as the total read time in seconds with no page views" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][
-          :page_views][:total_read_time_in_seconds]).to eq(0)
       end
 
       it "works correctly if the page views contain nil in time_tracked_in_seconds" do
@@ -571,37 +457,26 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.referrers[:domains]).to be_empty
       end
 
-      it "returns the domains ordered by number of views" do
-        other_url = Faker::Internet.url
+      it "returns the domains ordered by number of views and respects top limit", :aggregate_failures do
+        other_url = Faker::Internet.url(host: "forem.dev")
         create_list(:page_view, 2, user: user, article: article, referrer: other_url)
         top_url = Faker::Internet.url
         create_list(:page_view, 3, user: user, article: article, referrer: top_url, counts_for_number_of_views: 10)
 
-        expected_result = [
-          { domain: Addressable::URI.parse(top_url).domain, count: 30 },
-          { domain: Addressable::URI.parse(other_url).domain, count: 2 },
-        ]
-        expect(analytics_service.referrers[:domains]).to eq(expected_result)
+        top_entry = { domain: Addressable::URI.parse(top_url).domain, count: 30 }
+        other_entry = { domain: Addressable::URI.parse(other_url).domain, count: 2 }
+        expect(analytics_service.referrers[:domains]).to eq([top_entry, other_entry])
+        expect(analytics_service.referrers(top: 1)[:domains]).to eq([top_entry])
       end
 
       it "returns 20 domains at most by default" do
-        21.times do |n|
-          create(:page_view, user: user, article: article, referrer: "http://fakeurl#{n}.com")
-        end
+        now = Time.current
+        PageView.insert_all!(
+          Array.new(21) do |n|
+            { user_id: user.id, article_id: article.id, domain: "fakeurl#{n}.com", created_at: now, updated_at: now }
+          end,
+        )
         expect(analytics_service.referrers[:domains].size).to eq(20)
-      end
-
-      it "returns the most visited domain if asked for only one result" do
-        top_url = Faker::Internet.url
-        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
-        # Faker url's generate colliding domain names about 1 to two times in 10,000
-        # Faker domains never end in ".dev" so this is a safe choice
-        other_url = Faker::Internet.url(host: "forem.dev")
-        create_list(:page_view, 2, user: user, article: article, referrer: other_url)
-
-        top_domain = Addressable::URI.parse(top_url).domain
-        result = analytics_service.referrers(top: 1)[:domains]
-        expect(result).to eq([{ domain: top_domain, count: 3 }])
       end
     end
   end
@@ -611,71 +486,43 @@ RSpec.describe AnalyticsService, type: :service do
     let(:contributor) { create(:user) }
 
     it "returns an empty array when there are no articles" do
-      other_user = create(:user)
-      service = described_class.new(other_user)
-      expect(service.top_contributors).to eq([])
+      expect(described_class.new(build_stubbed(:user)).top_contributors).to eq([])
     end
 
-    it "excludes self-reactions from results" do
+    it "excludes self-interactions, readinglist reactions, and comments with score <= 0" do
       create(:reaction, reactable: article, category: :like, user: user)
-      expect(analytics_service.top_contributors).to eq([])
-    end
-
-    it "excludes readinglist reactions" do
       create(:reaction, reactable: article, category: :readinglist, user: contributor)
-      expect(analytics_service.top_contributors).to eq([])
-    end
-
-    it "includes non-readinglist reactions from other users" do
-      create(:reaction, reactable: article, category: :like, user: contributor)
-      result = analytics_service.top_contributors
-      expect(result.length).to eq(1)
-      expect(result.first[:username]).to eq(contributor.username)
-      expect(result.first[:reactions_count]).to eq(1)
-      expect(result.first[:comments_count]).to eq(0)
-      expect(result.first[:score]).to eq(1)
-    end
-
-    it "weights comments at 6x" do
-      create(:comment, commentable: article, user: contributor, score: 1)
-      result = analytics_service.top_contributors
-      expect(result.first[:comments_count]).to eq(1)
-      expect(result.first[:score]).to eq(6)
-    end
-
-    it "excludes comments with score <= 0" do
       create(:comment, commentable: article, user: contributor, score: 0)
-      expect(analytics_service.top_contributors).to eq([])
-    end
-
-    it "excludes self-comments" do
       create(:comment, commentable: article, user: user, score: 1)
       expect(analytics_service.top_contributors).to eq([])
     end
 
-    it "combines reactions and comments for the same user" do
-      create(:reaction, reactable: article, category: :like, user: contributor)
-      create(:comment, commentable: article, user: contributor, score: 1)
+    it "includes reactions, weights comments at 6x, combines both, and returns profile data", :aggregate_failures do
+      reaction = create(:reaction, reactable: article, category: :like, user: contributor)
       result = analytics_service.top_contributors
       expect(result.length).to eq(1)
-      expect(result.first[:reactions_count]).to eq(1)
-      expect(result.first[:comments_count]).to eq(1)
-      expect(result.first[:score]).to eq(7) # 1 + 6
+      expect(result.first).to include(
+        :user_id, :name, :profile_image,
+        username: contributor.username, reactions_count: 1, comments_count: 0, score: 1
+      )
+
+      create(:comment, commentable: article, user: contributor, score: 1)
+      combined = analytics_service.top_contributors
+      expect(combined.length).to eq(1)
+      expect(combined.first).to include(reactions_count: 1, comments_count: 1, score: 7)
+
+      reaction.destroy!
+      comment_only = analytics_service.top_contributors
+      expect(comment_only.first).to include(reactions_count: 0, comments_count: 1, score: 6)
     end
 
-    it "respects the limit parameter" do
-      3.times { |i| create(:reaction, reactable: article, category: :like, user: create(:user)) }
-      result = analytics_service.top_contributors(limit: 2)
-      expect(result.length).to eq(2)
-    end
-
-    it "orders by score descending" do
-      user_a = create(:user)
+    it "orders by score descending and respects the limit parameter", :aggregate_failures do
       user_b = create(:user)
-      create(:reaction, reactable: article, category: :like, user: user_a)
+      create(:reaction, reactable: article, category: :like, user: contributor)
       create(:comment, commentable: article, user: user_b, score: 1) # score 6
       result = analytics_service.top_contributors
-      expect(result.first[:username]).to eq(user_b.username)
+      expect(result.pluck(:username)).to eq([user_b.username, contributor.username])
+      expect(analytics_service.top_contributors(limit: 1).pluck(:username)).to eq([user_b.username])
     end
 
     it "works with organization owner" do
@@ -688,10 +535,18 @@ RSpec.describe AnalyticsService, type: :service do
       expect(result.first[:username]).to eq(contributor.username)
     end
 
-    it "returns profile data for each contributor" do
+    it "uses preloaded article_ids instead of embedding an articles subquery" do
       create(:reaction, reactable: article, category: :like, user: contributor)
-      result = analytics_service.top_contributors.first
-      expect(result).to include(:user_id, :username, :name, :profile_image, :reactions_count, :comments_count, :score)
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?("UNION ALL")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        analytics_service.top_contributors
+      end
+
+      expect(queries.first).not_to include('SELECT "articles"."id" FROM "articles"')
     end
   end
 
@@ -699,83 +554,43 @@ RSpec.describe AnalyticsService, type: :service do
     let(:analytics_service) { described_class.new(user) }
     let(:follower) { create(:user) }
 
-    before do
-      create(:follow, follower: follower, followable: user, blocked: false)
-    end
-
     it "returns zero ratio when user has no followers" do
       other_user = create(:user)
       create(:article, user: other_user, published: true)
       service = described_class.new(other_user)
-      result = service.follower_engagement
-      expect(result).to eq({ total_followers: 0, engaged_followers: 0, ratio: 0.0 })
+      expect(service.follower_engagement).to eq({ total_followers: 0, engaged_followers: 0, ratio: 0.0 })
     end
 
-    it "returns zero engaged when follower has not interacted" do
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(1)
-      expect(result[:engaged_followers]).to eq(0)
-      expect(result[:ratio]).to eq(0.0)
-    end
+    it "excludes unengaged, readinglist, low-score comment, blocked-follower, and non-follower activity",
+       :aggregate_failures do
+      article
+      create(:follow, follower: follower, followable: user, blocked: false)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 0, ratio: 0.0)
 
-    it "counts a follower who reacted" do
-      create(:reaction, reactable: article, category: :like, user: follower)
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(1)
-      expect(result[:engaged_followers]).to eq(1)
-      expect(result[:ratio]).to eq(100.0)
-    end
-
-    it "counts a follower who commented" do
-      create(:comment, commentable: article, user: follower, score: 1)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(1)
-    end
-
-    it "counts a follower with both reaction and comment only once" do
-      create(:reaction, reactable: article, category: :like, user: follower)
-      create(:comment, commentable: article, user: follower, score: 1)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(1)
-    end
-
-    it "excludes readinglist reactions" do
-      create(:reaction, reactable: article, category: :readinglist, user: follower)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(0)
-    end
-
-    it "excludes low-score comments" do
-      create(:comment, commentable: article, user: follower, score: 0)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(0)
-    end
-
-    it "excludes blocked followers" do
       blocked_follower = create(:user)
       create(:follow, follower: blocked_follower, followable: user, blocked: true)
+      create(:reaction, reactable: article, category: :readinglist, user: follower)
+      create(:comment, commentable: article, user: follower, score: 0)
       create(:reaction, reactable: article, category: :like, user: blocked_follower)
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(1) # only the non-blocked follower
+      create(:reaction, reactable: article, category: :like, user: create(:user))
+
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 0, ratio: 0.0)
     end
 
-    it "does not count non-followers" do
-      non_follower = create(:user)
-      create(:reaction, reactable: article, category: :like, user: non_follower)
-      result = analytics_service.follower_engagement
-      expect(result[:engaged_followers]).to eq(0)
-    end
+    it "counts followers who reacted or commented once and calculates ratio with multiple followers",
+       :aggregate_failures do
+      create(:follow, follower: follower, followable: user, blocked: false)
+      comment = create(:comment, commentable: article, user: follower, score: 1)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 1, ratio: 100.0)
 
-    it "calculates correct ratio with multiple followers" do
-      follower2 = create(:user)
-      follower3 = create(:user)
-      create(:follow, follower: follower2, followable: user, blocked: false)
-      create(:follow, follower: follower3, followable: user, blocked: false)
       create(:reaction, reactable: article, category: :like, user: follower)
-      result = analytics_service.follower_engagement
-      expect(result[:total_followers]).to eq(3)
-      expect(result[:engaged_followers]).to eq(1)
-      expect(result[:ratio]).to eq(33.3)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 1, ratio: 100.0)
+
+      comment.destroy!
+      expect(analytics_service.follower_engagement).to eq(total_followers: 1, engaged_followers: 1, ratio: 100.0)
+
+      create_list(:follow, 2, followable: user, blocked: false)
+      expect(analytics_service.follower_engagement).to eq(total_followers: 3, engaged_followers: 1, ratio: 33.3)
     end
 
     it "works with organization owner" do

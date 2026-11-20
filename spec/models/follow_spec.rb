@@ -107,9 +107,10 @@ RSpec.describe Follow do
         expect(result.map(&:follower)).not_to include(trusted_then_suspended)
       end
 
-      it "uses a NOT EXISTS anti-join against users_roles instead of LEFT JOIN + DISTINCT" do
+      it "uses a NOT EXISTS anti-join against users_roles with role_id expression guard", :aggregate_failures do
         sql = described_class.non_suspended(user_2.class.name, user_2.id).to_sql
         expect(sql).to include("NOT EXISTS")
+        expect(sql).to include("INNER JOIN roles ON roles.id = (users_roles.role_id + 0)")
         expect(sql).not_to include("LEFT JOIN")
         expect(sql).not_to include("DISTINCT")
       end

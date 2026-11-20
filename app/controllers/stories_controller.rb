@@ -16,6 +16,25 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[body_markdown semantic_embedding reading_list_document].freeze
+  # ArticleDecorator#long_markdown? only checks whether body_markdown is non-blank and > 900 chars;
+  # compute that boolean in SQL so article show never transfers the full Markdown payload.
+  # Match Rails' Unicode whitespace explicitly, independent of PostgreSQL collation.
+  # Keep database work bounded: OCTET_LENGTH reads the TOAST header without detoasting, and the
+  # length/non-blank checks inspect only a (threshold + 1)-character prefix slice. The full value
+  # is scanned only when that whole prefix is whitespace.
+  LONG_MARKDOWN_NON_BLANK = "'[^\t\n\v\f\r \u0085\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005" \
+                            "\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000]'".freeze
+  LONG_MARKDOWN_PREFIX =
+    "SUBSTRING(articles.body_markdown FROM 1 FOR #{ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1})".freeze
+  LONG_MARKDOWN_PROJECTION = Arel.sql(
+    "CASE WHEN COALESCE(OCTET_LENGTH(articles.body_markdown), 0) <= #{ArticleDecorator::LONG_MARKDOWN_THRESHOLD} " \
+    "THEN FALSE WHEN CHAR_LENGTH(#{LONG_MARKDOWN_PREFIX}) <= #{ArticleDecorator::LONG_MARKDOWN_THRESHOLD} THEN FALSE " \
+    "WHEN #{LONG_MARKDOWN_PREFIX} ~ #{LONG_MARKDOWN_NON_BLANK} THEN TRUE " \
+    "ELSE articles.body_markdown ~ #{LONG_MARKDOWN_NON_BLANK} END",
+    retryable: true,
+  ).as("long_markdown")
+  UNRENDERED_COMMENT_COLUMNS = %w[body_markdown semantic_embedding].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
   before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
@@ -46,17 +65,20 @@ class StoriesController < ApplicationController
     not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
 
     @article = Article.includes(user: %i[profile setting roles])
+      .select(*(Article.column_names - UNRENDERED_ARTICLE_COLUMNS), LONG_MARKDOWN_PROJECTION)
       .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
-      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      if @article.subforem_id.present? && !Subforem.disabled_by_env?
+        RequestStore.store[:subforem_id] = @article.subforem_id
+      end
       begin
         handle_article_show
       ensure
         RequestStore.store[:subforem_id] = previous_subforem_id
       end
     elsif FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) &&
-          (@org_page = @organization.pages.find_by(slug: "#{@organization.slug}/#{params[:slug]}"))
+        (@org_page = @organization.pages.non_embed_html.find_by(slug: "#{@organization.slug}/#{params[:slug]}"))
       params[:page_suffix] = params[:slug]
       handle_organization_index
       return if performed?
@@ -69,7 +91,11 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    if (@article = Article.includes(:organization, user: %i[profile setting roles]).find_by(path: path)&.decorate)
+    # Story cards still need the serialized author/organization snapshots.
+    # The page never reads the embedding or search document, so skip those payloads.
+    if (@article = Article.includes(:organization, user: %i[profile setting roles])
+        .select(*(Article.column_names - UNRENDERED_ARTICLE_COLUMNS), LONG_MARKDOWN_PROJECTION)
+        .find_by(path: path)&.decorate)
       handle_article_show
     # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
     elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)
@@ -77,7 +103,7 @@ class StoriesController < ApplicationController
     elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
-    elsif (@page = Page.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
+    elsif (@page = Page.non_embed_html.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
       handle_page_display
     else
       not_found
@@ -146,7 +172,8 @@ class StoriesController < ApplicationController
                 .where.not(username: potential_username)
                 .order(profile_updated_at: :desc)
                 .first
-    if @user&.articles&.find_by(slug: params[:slug])
+    # Only existence matters here, so probe the (slug, user_id) index instead of hydrating the full row.
+    if @user&.articles&.exists?(slug: params[:slug])
       set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
@@ -160,7 +187,7 @@ class StoriesController < ApplicationController
       handle_user_index
     elsif (@organization = Organization.find_by(slug: params[:username]))
       handle_organization_index
-    elsif (@page = Page.find_by(slug: params[:username], is_top_level_path: true))
+    elsif (@page = Page.non_embed_html.find_by(slug: params[:username], is_top_level_path: true))
       if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
         handle_page_display
       else
@@ -174,6 +201,9 @@ class StoriesController < ApplicationController
   end
 
   def handle_page_display
+    not_found if @page.embed_html?
+    set_surrogate_key_header "show-page-#{@page.slug}", @page.organization&.record_key
+
     redirect_page_if_different_subforem
     return if performed?
 
@@ -185,7 +215,6 @@ class StoriesController < ApplicationController
     end
 
     @story_show = true
-    set_surrogate_key_header "show-page-#{@page.slug}"
 
     if @page.template == "json"
       render json: @page.body_json
@@ -202,12 +231,22 @@ class StoriesController < ApplicationController
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
 
-    set_surrogate_key_header "main_app_home_page"
+    set_base_index_surrogate_keys
     set_cache_control_headers(60,
                               stale_while_revalidate: 60,
                               stale_if_error: 86_400)
 
     render template: "articles/index"
+  end
+
+  def set_base_index_surrogate_keys
+    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+      set_surrogate_key_header "main_app_home_page", "stories-top-#{params[:timeframe]}", *@stories&.map(&:record_key)
+    elsif params[:timeframe].in?([Timeframe::LATEST_TIMEFRAME, "latest_less_filtered"])
+      set_surrogate_key_header "main_app_home_page", "stories-latest", *@stories&.map(&:record_key)
+    else
+      set_surrogate_key_header "main_app_home_page"
+    end
   end
 
   def pinned_article
@@ -223,12 +262,15 @@ class StoriesController < ApplicationController
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes
       .reachable.order(published_at: :desc).page(params[:page]).per(30)
-    set_surrogate_key_header "podcast_episodes"
+    set_surrogate_key_header "podcast_episodes", @podcast.record_key, "podcasts/#{@podcast.slug}",
+                             *@podcast_episodes.map(&:record_key)
     render template: "podcast_episodes/index"
   end
 
   def handle_organization_index
     @user = @organization
+    set_surrogate_key_header @organization.record_key
+
     redirect_if_organization_view_param
     return if performed?
 
@@ -240,25 +282,34 @@ class StoriesController < ApplicationController
     @org_page = nil
     if params[:page_suffix].present?
       if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
-        @org_page = @organization.pages.find_by(slug: "#{@organization.slug}/#{params[:page_suffix]}")
+        @org_page = @organization.pages.non_embed_html.find_by(slug: "#{@organization.slug}/#{params[:page_suffix]}")
       end
       not_found if @org_page.nil?
     elsif has_readme && params[:mode] != "all-posts"
       @org_page = main_page
     end
     is_readme = @org_page.present?
+    set_surrogate_key_header @organization.record_key, ("show-page-#{@org_page.slug}" if is_readme)
+    @pinned_stories = if is_readme
+                        Article.none
+                      else
+                        @organization.articles.published.from_subforem.full_posts
+                          .where(id: @organization.profile_pins.select(:pinnable_id))
+                          .limited_column_select.order(published_at: :desc).decorate
+                      end
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .limited_column_select
+      .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(8))
     unless is_readme
-      preload_context_notes(@stories)
-      preload_reaction_counts(@stories)
+      preload_context_notes(@pinned_stories + @stories)
+      preload_reaction_counts(@pinned_stories + @stories)
     end
     @organization_article_index = !is_readme
 
     # Anti-spam/visibility guard: apply for both README and non-README views
     user_score = @organization.active_users.sum(:score)
-    if !user_signed_in? && user_score.negative? && @stories.sum(&:score) <= 0
+    if !user_signed_in? && user_score.negative? && (@pinned_stories + @stories).sum(&:score) <= 0
       not_found
     end
 
@@ -296,7 +347,6 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_organization_json_ld
-    set_surrogate_key_header @organization.record_key
 
     @cover_image_url = @organization.cover_image_url if @organization.cover_image.present?
 
@@ -323,6 +373,8 @@ class StoriesController < ApplicationController
     if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
       not_found
     end
+    set_surrogate_key_header(*@user.profile_cache_keys)
+
     assign_user_comments
     assign_user_stories
     @list_of = "articles"
@@ -336,14 +388,13 @@ class StoriesController < ApplicationController
 
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
-    set_surrogate_key_header(*@user.profile_cache_keys)
     set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"
   end
 
   def handle_podcast_show
-    set_surrogate_key_header @episode.record_key
+    set_surrogate_key_header @episode.record_key, @podcast.record_key, "podcasts/#{@podcast.slug}"
     @episode = @episode.decorate
     @podcast_episode_show = true
     @comments_to_show_count = 25
@@ -361,23 +412,32 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_user
-    return unless @comments.none? &&
+    return if Subforem.disabled_by_env?
+    return if RequestStore.store[:default_subforem_id].blank?
+    return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+      @comments.none? &&
       @pinned_stories.none? &&
-      @stories.none? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+      @stories.none?
 
-    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
-    redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
+    default_domain = RequestStore.store[:default_subforem_domain] || Subforem.cached_default_domain
+    return if default_domain.blank?
+
+    redirect_to URL.url(@user.username, default_domain), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if Subforem.disabled_by_env?
+    return if RequestStore.store[:default_subforem_id].blank?
     return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
-    return unless @stories.none? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+      @pinned_stories.none? &&
+      @stories.none?
 
-    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
-    redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
+    default_domain = RequestStore.store[:default_subforem_domain] || Subforem.cached_default_domain
+    return if default_domain.blank?
+
+    redirect_to URL.url(@organization.slug, default_domain), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_appropriate
@@ -398,7 +458,7 @@ class StoriesController < ApplicationController
       response.headers["Expires"] = "0"
     else
       user_keys = @article.user&.profile_identity_cache_keys
-      set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+      set_surrogate_key_header(@article.record_key, *user_keys, @article.organization&.record_key)
     end
 
     redirect_if_appropriate
@@ -470,6 +530,8 @@ class StoriesController < ApplicationController
 
     if @article.collection
       @collection = @article.collection
+      # Collection#path reads collection.user.username; reuse the already-loaded author when it matches.
+      @collection.association(:user).target = @user if @collection.user_id == @user.id
 
       # we need to make sure that articles that were cross posted after their
       # original publication date appear in the correct order in the collection,
@@ -483,7 +545,6 @@ class StoriesController < ApplicationController
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     @comments_to_show_count = 10 unless user_signed_in?
     set_article_json_ld unless internal_navigation? || user_signed_in?
-    assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
     @context_note = @article.context_notes.first
   end
@@ -511,12 +572,6 @@ class StoriesController < ApplicationController
     (!@article.published || @article.scheduled?) && params[:preview] != @article.password
   end
 
-  def assign_co_authors
-    return if @article.co_author_ids.blank?
-
-    @co_author_ids = User.find(@article.co_author_ids)
-  end
-
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
@@ -525,12 +580,20 @@ class StoriesController < ApplicationController
 
     @user_profile_comments = user_profile_comments
     @user_profile_comments_count = @user_profile_comments.count
-    return unless user_signed_in?
+    return unless user_signed_in? && @user_profile_comments_count.positive?
 
+    # Force index_comments_on_user_id instead of a backward scan on index_comments_on_created_at
+    # across the entire comments table when fetching a user's recent profile comments.
     @comments = @user_profile_comments
-      .order(created_at: :desc)
-      .includes(commentable: [:podcast])
+      .select(Comment.column_names - UNRENDERED_COMMENT_COLUMNS)
+      .order(Arel.sql("(comments.created_at + INTERVAL '0 seconds') DESC"))
       .limit(comment_count)
+      .to_a
+    ActiveRecord::Associations::Preloader.new(
+      records: @comments,
+      associations: :commentable,
+      scope: Article.select(:id, :title, :published),
+    ).call
   end
 
   def user_profile_comments
@@ -545,11 +608,13 @@ class StoriesController < ApplicationController
     @stories = []
     return unless @user.articles_count.positive?
 
+    # Profile stories are full posts only, and the story card reads processed_html just for
+    # status posts (Article#body_preview), so skip loading that large column for up to 60 rows.
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
-      .limited_column_select
+      .minimal_feed_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
-      .limited_column_select
+      .minimal_feed_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
     preload_context_notes(@pinned_stories + @stories)
@@ -581,8 +646,11 @@ class StoriesController < ApplicationController
     )
   end
 
+  # users/_github_repositories_area only reads these columns, so skip the large
+  # YAML-serialized info_hash blob (and the rest of the row) when loading repos.
   def assign_user_github_repositories
     @github_repositories = @user.github_repos.featured
+      .select(:id, :name, :description, :url, :language, :stargazers_count, :fork)
   end
 
   def assign_podcasts
@@ -792,7 +860,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_organization_to_custom_domain_if_needed
-    return if user_signed_in?
+    return if user_signed_in? || embedded_view?
     return if @organization.custom_domain.blank?
     return if request.host&.downcase == @organization.custom_domain&.downcase
     return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))

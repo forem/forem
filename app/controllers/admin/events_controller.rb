@@ -78,6 +78,7 @@ module Admin
         :primary_stream_url,
         :published,
         :elevated,
+        :allow_articles,
         :start_time,
         :end_time,
         :type_of,

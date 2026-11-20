@@ -203,6 +203,14 @@ RSpec.describe URL, type: :lib do
       RequestStore.store[:user_signed_in] = nil
       RequestStore.store[:custom_domain_org] = nil
     end
+
+    it "uses the default app domain instead of an inactive subforem domain when Subforem.disabled_by_env? is true" do
+      inactive_subforem = create(:subforem, domain: "inactive.dev.to")
+      subforem_article = build(:article, path: "/username1/slug", subforem_id: inactive_subforem.id)
+      allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+      expect(described_class.article(subforem_article)).to eq("https://dev.to/username1/slug")
+    end
   end
 
   describe ".comment" do

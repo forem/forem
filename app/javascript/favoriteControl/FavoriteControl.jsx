@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { Icon, Modal, ButtonNew as Button } from '@crayons';
 import FavoriteSVG from '@images/favorite.svg';
 import FavoriteFilledSVG from '@images/favorite-filled.svg';
@@ -79,7 +79,27 @@ const Tooltip = ({ label }) => (
 );
 
 /**
- * Control for marking content as favorite.
+ * Control for marking content as favorite (a "gem").
+ *
+ * Clicking the control opens a confirmation dialog first. The gem is only
+ * awarded, through the existing favorite request, once the user confirms.
+ *
+ * The `label*` and `modal*` props, not listed below, are translated copy for
+ * the control and its result dialogs.
+ *
+ * @param {object} props
+ * @param {object|null} props.currentUser The signed-in user, or null for visitors.
+ * @param {'article'|'comment'|'dropdown'} [props.variant] Where the control is rendered.
+ * @param {'Article'|'Comment'} props.favoritableType The kind of content being favorited.
+ * @param {number|string} props.favoritableId The id of the content being favorited.
+ * @param {number|string} props.favoritableUserId The id of the content's author.
+ * @param {boolean|string} props.favorited Whether the content is already a favorite.
+ * @param {number|string} props.favoritedByUserId The id of the user who favorited it.
+ * @param {string} [props.confirmTitle] Title of the confirmation dialog. Defaults
+ *   to wording for a post or a comment, depending on `favoritableType`.
+ * @param {string} [props.confirmBody] Description shown in the confirmation dialog.
+ * @param {string} [props.confirmSubmit] Label of the button that awards the gem.
+ * @param {string} [props.confirmCancel] Label of the button that closes the dialog.
  */
 export const FavoriteControl = ({
   currentUser,
@@ -92,6 +112,14 @@ export const FavoriteControl = ({
   labelFavorite = 'Pick as gem',
   labelFavorited = 'Picked as gem',
   labelFavoritedByYou = 'Picked as gem by you',
+  confirmTitle = favoritableType === 'Comment'
+    ? 'Give this comment a Gem?'
+    : 'Give this post a Gem?',
+  confirmBody = favoritableType === 'Comment'
+    ? 'Are you sure you want to give this comment a Gem?'
+    : 'Are you sure you want to give this post a Gem?',
+  confirmSubmit = 'Give Gem',
+  confirmCancel = 'Cancel',
   modalTitle = 'Gem Picked!',
   modalBody = "You've picked this as a community gem!",
   modalRemainingZero = 'You have no more gems left to give out today.',
@@ -110,6 +138,10 @@ export const FavoriteControl = ({
     initialFavoritedByUserId ? Number(initialFavoritedByUserId) : null,
   );
   const [submitting, setSubmitting] = useState(false);
+  // State updates are applied asynchronously, so a ref is what actually keeps
+  // two rapid confirm clicks from sending two requests.
+  const submittingRef = useRef(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showExhaustedModal, setShowExhaustedModal] = useState(false);
   const [remainingAllowance, setRemainingAllowance] = useState(null);
@@ -220,6 +252,72 @@ export const FavoriteControl = ({
     );
   };
 
+  /**
+   * Closes the confirmation dialog without awarding a gem (Cancel, the close
+   * button, Escape and, before submitting, a backdrop click).
+   *
+   * Dismissing is ignored while a request is in flight, otherwise the dialog
+   * could disappear while the gem is still being awarded.
+   */
+  const closeConfirmModal = () => {
+    if (submittingRef.current) {
+      return;
+    }
+    setShowConfirmModal(false);
+  };
+
+  /**
+   * Renders the dialog that asks the user to confirm giving the gem, with a
+   * "Give Gem" and a "Cancel" action. Both are disabled while the request is
+   * in flight.
+   *
+   * @returns {import('preact').VNode|null} The dialog, or null while it is closed.
+   */
+  const renderConfirmModal = () => {
+    if (!showConfirmModal) {
+      return null;
+    }
+
+    // The article page mounts more than one control (variant) for the same
+    // article, so the variant is part of the id to keep each dialog's unique.
+    const descriptionId = `favorite-confirm-description-${variant}-${favoritableType}-${favoritableId}`;
+
+    return (
+      <Modal
+        title={confirmTitle}
+        describedBy={descriptionId}
+        onClose={closeConfirmModal}
+        // A click outside deactivates the focus trap, so it can't stay enabled
+        // while the dialog refuses to close: focus would escape a visible,
+        // aria-modal dialog.
+        backdropDismissible={!submitting}
+        size="small"
+      >
+        <div class="text-center grid gap-7" data-testid="gem-confirm-modal-content">
+          <p id={descriptionId} class="fs-base fw-bold m-0">
+            {confirmBody}
+          </p>
+          <div class="flex justify-center gap-2">
+            <Button
+              variant="primary"
+              disabled={submitting}
+              onClick={submitFavorite}
+            >
+              {confirmSubmit}
+            </Button>
+            <Button
+              variant="secondary"
+              disabled={submitting}
+              onClick={closeConfirmModal}
+            >
+              {confirmCancel}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
   if (favorited) {
     const label = favoritedByCurrentUser ? labelFavoritedByYou : labelFavorited;
     if (variant === 'dropdown') {
@@ -273,14 +371,34 @@ export const FavoriteControl = ({
     return null;
   }
 
-  const onClick = async () => {
-    if (submitting) return;
+  /**
+   * Click handler for the gem button. It only asks for confirmation: nothing
+   * is sent, and no allowance is spent, until the user confirms in the dialog.
+   * Users with no allowance left see the "Out of Gems" modal instead.
+   */
+  const onClick = () => {
+    if (submittingRef.current) return;
 
     if (currentUser?.favorite_allowance != null && currentUser.favorite_allowance <= 0) {
       setShowExhaustedModal(true);
       return;
     }
 
+    setShowConfirmModal(true);
+  };
+
+  /**
+   * Awards the gem through the existing favorite request, once the user has
+   * confirmed. Ignores repeated calls while a request is already in flight.
+   * Whatever the outcome (success, error or no allowance), the confirmation
+   * dialog is closed afterwards.
+   *
+   * @returns {Promise<void>}
+   */
+  const submitFavorite = async () => {
+    if (submittingRef.current) return;
+
+    submittingRef.current = true;
     setSubmitting(true);
     try {
       const response = await makeFavorite({ favoritableId, favoritableType });
@@ -313,7 +431,11 @@ export const FavoriteControl = ({
         window.top.addSnackbarItem({ message: error, addCloseButton: true });
       }
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
+      // Whatever the outcome (success, error, exhausted allowance), the
+      // confirmation has been answered, so the dialog always closes here.
+      setShowConfirmModal(false);
     }
   };
 
@@ -330,6 +452,7 @@ export const FavoriteControl = ({
           <span class="fw-bold">{labelFavorite}</span>
           <FavoriteIcon variant={variant} />
         </button>
+        {renderConfirmModal()}
         {renderSuccessModal()}
         {renderExhaustedModal()}
       </Fragment>
@@ -348,6 +471,7 @@ export const FavoriteControl = ({
         <FavoriteIcon variant={variant} />
         <Tooltip label={labelFavorite} />
       </button>
+      {renderConfirmModal()}
       {renderSuccessModal()}
       {renderExhaustedModal()}
     </Fragment>

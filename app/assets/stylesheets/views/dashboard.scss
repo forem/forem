@@ -62,6 +62,64 @@
   text-align: left;
 }
 
+// ---------------------------------------------------------------------------
+// Consolidated Organization Analytics menu in the dashboard sidebar
+// (app/views/dashboards/_actions.html.erb)
+// ---------------------------------------------------------------------------
+.dashboard-sidebar-orgs {
+  &__trigger {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    justify-content: space-between;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--su-1);
+    margin-left: auto;
+  }
+
+  &__chevron {
+    color: var(--base-60);
+    transition: transform 150ms ease;
+    flex-shrink: 0;
+  }
+
+  &[open] &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &__list {
+    margin: var(--su-1) 0 var(--su-2) var(--su-3);
+    padding-left: var(--su-2);
+    border-left: 2px solid var(--base-20);
+    max-height: 260px;
+    overflow-y: auto;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: var(--su-2);
+    font-size: var(--fs-s);
+    padding: var(--su-1) var(--su-2);
+  }
+
+  &__avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+}
+
 
 // ---------------------------------------------------------------------------
 // Activity heatmap (rendered at top of /dashboard/analytics by
@@ -71,8 +129,9 @@
 // ---------------------------------------------------------------------------
 .dashboard-heatmap {
   background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: var(--su-4);
+  border-radius: var(--radius-auto);
+  box-shadow: 0 0 0 1px var(--card-border);
+  padding: var(--su-4) var(--su-5);
   margin: var(--su-4) var(--su-5);
 
   &__header {

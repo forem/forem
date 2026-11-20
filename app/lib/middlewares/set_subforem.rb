@@ -18,7 +18,12 @@ module Middlewares
       
       # Cache the current subforem's domain for URL generation
       if RequestStore.store[:subforem_id].present?
-        RequestStore.store[:subforem_domain] = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+        RequestStore.store[:subforem_domain] =
+          if RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] || Subforem.disabled_by_env?
+            RequestStore.store[:default_subforem_domain]
+          else
+            Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+          end
       end
 
       # Call Rails (or next middleware) to get the response
@@ -40,11 +45,13 @@ module Middlewares
 
           if subdomain
             # Remove your session cookie (or any other cookie) from subdomain
-            Rack::Utils.delete_cookie_header!(
-              headers,
-              ApplicationConfig["SESSION_KEY"],
-              domain: request.host
-            )
+            if ApplicationConfig["SESSION_KEY"].present?
+              Rack::Utils.delete_cookie_header!(
+                headers,
+                ApplicationConfig["SESSION_KEY"],
+                domain: request.host,
+              )
+            end
 
             # Also remove 'remember_user_token' or other cookies if needed
             Rack::Utils.delete_cookie_header!(
@@ -62,8 +69,9 @@ module Middlewares
       headers.delete("X-Frame-Options")
       unless headers["Content-Security-Policy"]&.include?("frame-ancestors")
         allowed_domains = (Subforem.cached_all_domains + [Settings::General.app_domain]).compact.uniq
-        csp_value = "frame-ancestors " + allowed_domains.map { |d| "https://#{d}" }.join(" ")
-        headers["Content-Security-Policy"] = csp_value
+        origins = allowed_domains.map { |d| "https://#{d}" }
+        origins.unshift("'self'") if Rails.env.development?
+        headers["Content-Security-Policy"] = "frame-ancestors #{origins.join(' ')}"
       end
 
       [status, headers, body]

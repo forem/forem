@@ -405,7 +405,10 @@ class SubforemsController < ApplicationController
     Rails.cache.delete("navigation_links")
     Rails.cache.delete("navigation_links-true-#{@subforem.id}")
     Rails.cache.delete("navigation_links-false-#{@subforem.id}")
-    EdgeCache::Bust.call("/async_info/navigation_links")
+    EdgeCache::PurgeByKey.call(
+      ["navigation_links", "navigation_links-#{@subforem.id}"],
+      fallback_paths: "/async_info/navigation_links",
+    )
   end
 
   def render_forbidden

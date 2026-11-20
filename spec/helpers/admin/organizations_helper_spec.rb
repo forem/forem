@@ -18,10 +18,13 @@ describe Admin::OrganizationsHelper do
     context "when there are credits associated to an organization" do
       before { allow(helper).to receive(:current_user).and_return(super_admin) }
 
-      it "returns the appropriate error messsage" do
+      it "returns the appropriate error message without loading the credits association" do
         Credit.add_to(organization, 10)
+        allow(organization).to receive(:credits).and_call_original
+
         error_message = helper.deletion_modal_error_message(organization)
         expect(error_message).to eq("You cannot delete an organization that has associated credits.")
+        expect(organization).not_to have_received(:credits)
       end
     end
   end

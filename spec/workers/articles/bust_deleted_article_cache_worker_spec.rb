@@ -37,17 +37,17 @@ RSpec.describe Articles::BustDeletedArticleCacheWorker, type: :worker do
     end
 
     it "busts the tag pages of a recently published deleted article" do
-      allow(EdgeCache::BustArticle).to receive(:call).and_call_original
-      cache_bust = instance_double(EdgeCache::Bust, call: nil)
-      allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-
       attributes = described_class.attributes_for(article)
       article.delete
+      allow(EdgeCache::BustArticle).to receive(:call).and_call_original
+      allow(EdgeCache::PurgeByKey).to receive(:call)
 
       described_class.new.perform(attributes)
 
-      expect(cache_bust).to have_received(:call).with("/t/ruby/latest")
-      expect(cache_bust).to have_received(:call).with("/t/rails/latest")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).once do |keys, fallback_paths:|
+        expect(keys).to include(article.record_key, "tag-ruby-latest", "tag-rails-latest")
+        expect(fallback_paths).to include(article.path, "/t/ruby/latest", "/t/rails/latest")
+      end
     end
 
     it "ignores unexpected attributes" do

@@ -34,7 +34,7 @@ class Article < ApplicationRecord
   # admin_update was added as a hack to bypass published_at validation when admin is updating
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
-  attr_accessor :publish_under_org, :admin_update
+  attr_accessor :publish_under_org, :admin_update, :skip_autovomits
   attr_writer :series, :labels
   attr_accessor :body_url
 
@@ -44,6 +44,7 @@ class Article < ApplicationRecord
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+  belongs_to :event, optional: true
 
   belongs_to :organization, optional: true
   belongs_to :user
@@ -80,6 +81,13 @@ class Article < ApplicationRecord
   TRACKABLE_UPDATE_KEYS = %w[
     title body_markdown cached_tag_list main_image description canonical_url
     edited_at collection_id subforem_id
+  ].freeze
+
+  EMBED_CARD_CHANGE_ATTRIBUTES = %w[
+    title user_id organization_id published cached_tag_list published_at main_image reading_time
+  ].freeze
+  EMBED_MEMBERSHIP_CHANGE_ATTRIBUTES = %w[
+    published organization_id cached_tag_list published_at
   ].freeze
 
   # Filter out anything that isn't a word, space, punctuation mark,
@@ -216,6 +224,8 @@ class Article < ApplicationRecord
   #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :delete_all
+  has_many :user_profile_pins, -> { where(profile_type: "User") }, as: :pinnable, inverse_of: :pinnable,
+                                                                     class_name: "ProfilePin"
   # `dependent: :destroy` because in RatingVote we're relying on
   #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
@@ -318,6 +328,7 @@ class Article < ApplicationRecord
   validate :restrict_type_based_on_role
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
+  validate :validate_event_assignment, if: :validating_event_assignment?
   validate :validate_tag
   validate :validate_video
   validate :user_mentions_in_markdown
@@ -326,6 +337,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_belong_to_organization,
            unless: -> { co_author_ids.blank? || organization_id.blank? }
+  validate :validate_hidden_billboard_locations, if: :will_save_change_to_hidden_billboard_locations?
 
   before_validation :extract_url_from_status_title, if: :status?
   before_validation :set_markdown_from_body_url, if: :body_url?
@@ -344,6 +356,7 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_save :detect_language
+  before_save :reserve_hourly_mention_capacity
   before_create :create_password
   after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
   after_update :withdraw_pending_co_author_invitations, if: lambda {
@@ -354,11 +367,13 @@ class Article < ApplicationRecord
   }
   before_destroy :before_destroy_actions, prepend: true
 
+  after_save :commit_hourly_mention_reservation
   after_save :create_conditional_autovomits
   after_save :bust_cache
   after_save :collection_cleanup
   after_save :generate_social_image
   after_save :generate_context_notes
+  after_rollback :release_hourly_mention_reservation
 
   after_update_commit :notify_co_author_changes, if: proc { |article|
     article.published? && article.saved_change_to_co_author_ids?
@@ -371,6 +386,9 @@ class Article < ApplicationRecord
   }
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
+  }
+  after_update_commit :remove_stale_organization_pin, if: proc { |article|
+    article.saved_change_to_organization_id?
   }
 
   begin
@@ -386,11 +404,12 @@ class Article < ApplicationRecord
   after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :detect_code_block_languages,
                on: %i[create update]
 
-  after_update_commit :update_dependent_embeds_if_key_info_changed
+  after_commit :update_dependent_embeds_if_needed, on: %i[create update destroy]
 
   after_update_commit :regenerate_summary_if_content_changed
 
   after_commit :recompile_organization_pages, on: %i[create update destroy]
+  after_commit :purge_previous_event_cache, on: :update, if: :saved_change_to_event_id?
 
   after_save :cleanup_memberships_if_unpublished,
              if: -> { saved_change_to_published? && published_before_last_save && !published? }
@@ -443,6 +462,17 @@ class Article < ApplicationRecord
   DISALLOWED_TSQUERY_CHARACTERS = /['?\\:‘’ʻʼ"\u0000]/
   MAX_SEARCH_TSQUERY_TERMS = 10
   MIN_PREFIX_SEARCH_TERM_LENGTH = 3
+  # Common English stopwords that appear in nearly every article's `'simple'` tsvector.
+  # In multi-word queries, stripping these (unless the query is all stopwords) avoids
+  # intersecting huge low-selectivity GIN posting trees on `reading_list_document`.
+  SEARCH_STOPWORDS = Set.new(
+    %w[
+      a about an and are as at be but by can do for from had has have how i if
+      in into is it its my no not of on or our out so than that the their them
+      then there these they this to up was we were what when where which who
+      why will with would you your
+    ],
+  ).freeze
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
@@ -453,9 +483,15 @@ class Article < ApplicationRecord
   # 1. `pg_search` wraps each term in SQL `unaccent(...)` (which is `STABLE`), preventing
   #    PostgreSQL from constant-folding the `tsquery` and inspecting `pg_statistic` lexeme
   #    frequencies. Pre-unaccenting in Ruby produces a single `IMMUTABLE` `to_tsquery` call.
-  # 2. 1-2 character prefix wildcards (e.g. `'i':*`, `'de':*`) force GIN index scans to
-  #    expand and merge hundreds of thousands of dictionary entries upfront.
-  # 3. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
+  # 2. Prefix wildcards (`:*`) force PostgreSQL GIN (`startScanEntry` -> `collectMatchBitmap`)
+  #    to scan every matching dictionary entry and materialize a combined TIDBitmap upfront
+  #    before intersecting terms, which overflows `work_mem` into lossy heap rechecks (`pg_toast`
+  #    decompression) on multi-word queries. We only use `:*` on single-token searches with
+  #    at least 3 alphanumeric characters.
+  # 3. Splitting on non-alphanumeric characters prevents `to_tsquery` from turning hyphenated,
+  #    underscored, or plus-separated tokens (e.g. `OPENAI_API_KEY`, `bevy-where-was-i`) into
+  #    `<->` phrase operators, which GIN cannot verify without lossy heap rechecks.
+  # 4. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
   #    lets callers that `.reorder(...)`, `.count`, or `.exists?` skip de-TOASTing
   #    `reading_list_document` for `ts_rank`.
   scope :search_articles, lambda { |term|
@@ -471,17 +507,22 @@ class Article < ApplicationRecord
       .downcase
       .gsub(DISALLOWED_TSQUERY_CHARACTERS, " ")
 
-    tokens = normalized
-      .split
-      .grep(/[[:alnum:]]/)
+    raw_tokens = normalized
+      .scan(/[[:alnum:]]+/)
       .uniq
-      .first(MAX_SEARCH_TSQUERY_TERMS)
 
-    return if tokens.empty?
+    return if raw_tokens.empty?
 
+    tokens = if raw_tokens.many?
+               non_stopwords = raw_tokens.reject { |token| SEARCH_STOPWORDS.include?(token) }
+               (non_stopwords.presence || raw_tokens).first(MAX_SEARCH_TSQUERY_TERMS)
+             else
+               raw_tokens
+             end
+
+    use_prefix = raw_tokens.one? && tokens.first.length >= MIN_PREFIX_SEARCH_TERM_LENGTH
     query_expression = tokens.map do |token|
-      alnum_length = token.gsub(/[^[:alnum:]]/, "").length
-      prefix_suffix = alnum_length >= MIN_PREFIX_SEARCH_TERM_LENGTH ? ":*" : ""
+      prefix_suffix = use_prefix ? ":*" : ""
       "' #{token} '#{prefix_suffix}"
     end.join(" & ")
 
@@ -516,15 +557,32 @@ class Article < ApplicationRecord
     favorited_by_user_id.present?
   end
 
+  # Returns the associated event only when it is publicly visible as connected
+  # (published, allows articles, and has started). Admins may pre-tag an article
+  # before start_time, but it must not appear connected beforehand.
+  def visible_event(at = Time.current)
+    return if event_id.blank?
+    return unless event&.published? && event.articles_visible?(at)
+
+    event
+  end
+
+  def event_visible?(at = Time.current)
+    visible_event(at).present?
+  end
+
   scope :from_subforem, lambda { |subforem_id = nil|
-    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+    return where(nil) if Subforem.disabled_by_env?
 
     subforem_id ||= RequestStore.store[:subforem_id]
-    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+    default_subforem_id = RequestStore.store[:default_subforem_id]
+    if subforem_id.nil? && default_subforem_id.nil? && Subforem.cached_default_id.nil?
+      where(nil)
+    elsif subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # Includes articles with no subforem or subforem_id in Subforem.cached_discoverable_ids
       where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil] + Subforem.cached_discoverable_ids)
-    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+    elsif [0, default_subforem_id].include?(subforem_id.to_i)
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, default_subforem_id.to_i])
     else
       # where(subforem_id: subforem_id)
       where("articles.subforem_id = ?", subforem_id)
@@ -541,14 +599,15 @@ class Article < ApplicationRecord
   }
 
   def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 1.hour)
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env?
     cache_key = [
       "admin-published-with",
       tag_name,
-      subforem_id || "all",
+      effective_subforem_id || "all",
     ].join(":")
 
     Rails.cache.fetch(cache_key, expires_in: expires_in) do
-      scope = subforem_id ? from_subforem(subforem_id) : all
+      scope = effective_subforem_id ? from_subforem(effective_subforem_id) : all
       scope.admin_published_with(tag_name).first
     end
   end
@@ -660,7 +719,7 @@ class Article < ApplicationRecord
 
   scope :with_video, lambda {
                        published
-                         .where.not(video: [nil, ""])
+                         .where("articles.video > ''")
                          .where("score > ?", -4)
                      }
 
@@ -1182,7 +1241,8 @@ class Article < ApplicationRecord
                       calculated_comment_score
                     end
 
-    score_changed_flag = score_changed? || self.comment_score != comment_score
+    article_score_changed = score_changed?
+    score_changed_flag = article_score_changed || self.comment_score != comment_score
 
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
@@ -1193,6 +1253,13 @@ class Article < ApplicationRecord
     trigger_freeform_context_note_generation
     trigger_summary_generation
     trigger_semantic_embedding_generation if score_changed_flag
+    return unless article_score_changed && published?
+
+    Articles::UpdateDependentEmbedsWorker.schedule_for_score_change(
+      id,
+      organization_id: organization_id,
+      cached_tag_list: cached_tag_list,
+    )
   end
 
   def eligible_for_semantic_embedding?
@@ -1260,6 +1327,25 @@ class Article < ApplicationRecord
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end
 
+  def hidden_billboard_locations=(value)
+    if value.nil?
+      super([])
+    elsif value.is_a?(Array)
+      cleaned = value.filter_map { |loc| loc.to_s.strip.presence }.uniq
+      known, unknown = cleaned.partition { |loc| Billboard::POST_PLACEMENTS.include?(loc) }
+      super((Billboard::POST_PLACEMENTS & known) + unknown)
+    else
+      super
+    end
+  end
+
+  def billboard_location_hidden?(placement_area)
+    return false unless has_attribute?(:hidden_billboard_locations)
+
+    locations = hidden_billboard_locations
+    locations.is_a?(Array) && locations.include?(placement_area.to_s)
+  end
+
   def plain_html
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.search(".highlight__panel").each(&:remove)
@@ -1302,6 +1388,8 @@ class Article < ApplicationRecord
     return unless content_renderer
 
     result = content_renderer.process_article
+    return if LiquidEmbedReference.semantically_equal_html?(result.processed_html, processed_html)
+
     update_column(:processed_html, result.processed_html)
   rescue ContentRenderer::ContentParsingError => e
     Rails.logger.warn("Article #{id} evaluate_and_update_column_from_markdown failed: #{e.class}: #{ErrorMessages::Clean.call(e.message)}")
@@ -1730,6 +1818,46 @@ class Article < ApplicationRecord
     errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
 
+  def validating_event_assignment?
+    has_event = event_id.present? || (association(:event).loaded? && event.present?)
+    has_event && (new_record? || will_save_change_to_event_id?)
+  end
+
+  def validate_event_assignment
+    if event.nil?
+      errors.add(:event_id, I18n.t("models.article.event_not_found"))
+      return
+    end
+
+    unless event.allow_articles?
+      errors.add(:event_id, I18n.t("models.article.event_articles_disabled"))
+      return
+    end
+
+    return if event.accepting_articles?(as_admin: acting_as_event_admin?)
+
+    errors.add(:event_id, I18n.t("models.article.event_not_accepting_articles"))
+  end
+
+  def acting_as_event_admin?
+    return true if admin_update
+
+    user.present? && (
+      user.administrative_access_to?(resource: Event) ||
+      (event.present? && user.administrative_access_to?(resource: event))
+    )
+  end
+
+  def purge_previous_event_cache
+    previous_event_id = saved_change_to_event_id.first
+    return if previous_event_id.blank?
+
+    previous_event = Event.select(:id, :event_name_slug, :event_variation_slug).find_by(id: previous_event_id)
+    return unless previous_event
+
+    EdgeCache::PurgeByKeyWorker.perform_async(previous_event.record_key, [previous_event.path])
+  end
+
   def validate_co_authors
     return if co_author_ids.exclude?(user_id)
 
@@ -1794,15 +1922,95 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
   end
 
+  def validate_hidden_billboard_locations
+    unless hidden_billboard_locations.is_a?(Array)
+      errors.add(:hidden_billboard_locations, I18n.t("models.article.invalid_hidden_billboard_locations"))
+      return
+    end
+
+    invalid_locations = hidden_billboard_locations - Billboard::POST_PLACEMENTS
+    return if invalid_locations.empty?
+
+    errors.add(
+      :hidden_billboard_locations,
+      I18n.t("models.article.invalid_hidden_billboard_locations_list", locations: invalid_locations.join(", ")),
+    )
+  end
+
+  # Validates per-article and hourly @-mention rate limits based on the author's trust tier.
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= Settings::RateLimit.mention_creation
+    if mentions_count > Settings::RateLimit.mention_creation
+      errors.add(:base,
+                 I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+      return
+    end
 
-    errors.add(:base,
-               I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+    return unless mentions_count.positive? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    max_for_user = user.rate_limiter.max_mentions_per_post
+    if other_mentioned_usernames.size > max_for_user
+      errors.add(:base, I18n.t("models.article.mention_too_many", count: max_for_user))
+      return
+    end
+
+    return unless published?
+    return unless user.rate_limiter.mention_rate_limit_reached?(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+
+    errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
+  end
+
+  # Atomically reserves hourly mention capacity under a user lock before saving a published article.
+  def reserve_hourly_mention_capacity
+    @hourly_mention_reservation = nil
+    return unless published?
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+    return unless processed_html.present? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    reservation = user.rate_limiter.reserve_mentions!(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+    if reservation.nil?
+      errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
+      throw(:abort)
+    end
+
+    @hourly_mention_reservation = reservation
+  end
+
+  # Records the article's persisted ID against the hourly mention cache after save.
+  def commit_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.record_notifiable_mentions(self, @hourly_mention_reservation[:count])
+    @hourly_mention_reservation = nil
+  end
+
+  # Releases any reserved hourly mention capacity if the save transaction rolls back.
+  def release_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.release_mentions(@hourly_mention_reservation, notifiable: self)
+    @hourly_mention_reservation = nil
   end
 
   def create_slug
@@ -1873,8 +2081,15 @@ class Article < ApplicationRecord
   end
 
   def bust_cache(destroying: false)
-    purge
-    async_bust
+    if !destroying && saved_change_to_hidden_billboard_locations?
+      ActiveRecord.after_all_transactions_commit do
+        purge
+        async_bust(destroying: destroying)
+      end
+    else
+      purge
+      async_bust(destroying: destroying)
+    end
     touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
@@ -1907,18 +2122,43 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
+    return if skip_autovomits
     return unless published
-    return unless saved_change_to_body_markdown? ||
-                  saved_change_to_title? ||
-                  saved_change_to_published? ||
-                  published_at > 1.minute.ago
+    content_or_initial_publish_changed =
+      saved_change_to_body_markdown? ||
+      saved_change_to_title? ||
+      saved_change_to_published? ||
+      (published_at.present? && published_at > 1.minute.ago && !scheduled? && no_moderation_label?)
+    return unless content_or_initial_publish_changed
 
     # Enqueue after commit so the worker sees the saved article (and its published state).
     ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
-  def async_bust
-    Articles::BustCacheWorker.perform_async(id)
+  def async_bust(destroying: false)
+    if destroying
+      enqueue_deleted_article_cache_bust
+    else
+      Articles::BustCacheWorker.perform_async(id)
+    end
+  end
+
+  def enqueue_deleted_article_cache_bust
+    delay = BustCacheBaseWorker::AFTER_COMMIT_DELAY
+    Articles::BustDeletedArticleCacheWorker.perform_in(
+      delay,
+      Articles::BustDeletedArticleCacheWorker.attributes_for(self),
+    )
+    return unless published && (in_home_page_hot_articles? || decorate.discussion?)
+
+    EdgeCache::PurgeByKeyWorker.perform_in(delay, *Users::DeleteArticles::HOME_PAGE_PURGE_ARGS)
+  end
+
+  def in_home_page_hot_articles?
+    self.class.published.order(hotness_score: :desc)
+      .limit(Users::DeleteArticles::HOME_PAGE_ARTICLES_COUNT)
+      .ids
+      .include?(id)
   end
 
   def touch_collection
@@ -1952,6 +2192,17 @@ class Article < ApplicationRecord
     return if published_at.blank?
 
     self.published_at = nil if published_at > 5.years.from_now
+  end
+
+  # When an article's organization changes (or is cleared), any Organization-type
+  # ProfilePin pointing at it is pinning a post the org no longer has. Remove it so
+  # it stops counting toward that org's 5-pin cap and doesn't linger on its page.
+  def remove_stale_organization_pin
+    old_organization_id = organization_id_before_last_save
+    return if old_organization_id.blank?
+
+    ProfilePin.where(profile_type: "Organization", profile_id: old_organization_id,
+                      pinnable_type: "Article", pinnable_id: id).delete_all
   end
 
   def recompile_organization_pages
@@ -2068,7 +2319,9 @@ class Article < ApplicationRecord
     return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
     return unless admin_published_user?
 
-    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    if subforem_id.present?
+      self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    end
     self.class.bust_cached_admin_published_with("welcome")
   end
 
@@ -2141,19 +2394,40 @@ class Article < ApplicationRecord
     normalized_body == normalized_expected
   end
 
-  def update_dependent_embeds_if_key_info_changed
-    return if destroyed?
-    
-    # We only care about fields that affect the visual liquid embed card
-    if saved_change_to_title? ||
-       saved_change_to_user_id? ||
-       saved_change_to_organization_id? ||
-       saved_change_to_published? ||
-       saved_change_to_cached_tag_list? ||
-       saved_change_to_published_at? ||
-       saved_change_to_main_image?
-      Articles::UpdateDependentEmbedsWorker.perform_async(id)
+  def update_dependent_embeds_if_needed
+    if destroyed? || previously_new_record?
+      return unless published?
+
+      Articles::UpdateDependentEmbedsWorker.schedule_for_article_change(
+        id,
+        organization_ids: [organization_id].compact,
+        tag_names: [cached_tag_list].compact_blank,
+        membership_changed: true,
+      )
+      return
     end
+
+    return unless article_embed_key_info_changed?
+    return unless published? || published_before_last_save
+
+    org_ids, tag_lists, membership_changed = build_article_embed_change_context
+    Articles::UpdateDependentEmbedsWorker.schedule_for_article_change(
+      id,
+      organization_ids: org_ids,
+      tag_names: tag_lists,
+      membership_changed: membership_changed,
+    )
+  end
+
+  def article_embed_key_info_changed?
+    saved_changes.keys.intersect?(EMBED_CARD_CHANGE_ATTRIBUTES)
+  end
+
+  def build_article_embed_change_context
+    org_ids = [organization_id_before_last_save, organization_id].compact.uniq
+    tag_lists = [cached_tag_list_before_last_save, cached_tag_list].compact_blank.uniq
+    membership_changed = saved_changes.keys.intersect?(EMBED_MEMBERSHIP_CHANGE_ATTRIBUTES)
+    [org_ids, tag_lists, membership_changed]
   end
 
   def notify_co_author_changes

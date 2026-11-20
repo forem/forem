@@ -1,6 +1,23 @@
 require "rails_helper"
 
 RSpec.describe "Sitemaps" do
+  let(:user) { create(:user) }
+
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:user] ||= user
+      options[:with_tags] = false unless options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    end
+    super
+  end
+
+  def create_list(name, amount, *traits, **options)
+    Array.new(amount) { create(name, *traits, **options) }
+  end
+
   describe "GET /sitemap-*" do
     it "renders xml file" do
       get "/sitemap-Mar-2011.xml"
@@ -51,7 +68,8 @@ RSpec.describe "Sitemaps" do
       end
 
       it "renders multiple posts pages if enough posts", :aggregate_failures do
-        create_list(:article, 13, score: 10)
+        stub_const("SitemapsController::RESULTS_LIMIT", 1)
+        create_list(:article, 2, score: 10)
         get "/sitemap-index.xml"
         expect(response.body).not_to include("sitemap-posts.xml")
         expect(response.body).to include("sitemap-posts-0.xml")
@@ -61,118 +79,86 @@ RSpec.describe "Sitemaps" do
     end
 
     context "with posts in param" do
-      before do
-        create_list(:article, 8, score: 10)
-      end
+      it "paginates posts sitemaps and sets recent surrogate control", :aggregate_failures do
+        stub_const("SitemapsController::RESULTS_LIMIT", 1)
+        first_post = create(:article, :past, score: 10, past_published_at: 1.minute.ago)
+        second_post = create(:article, :past, score: 10, past_published_at: 2.minutes.ago)
 
-      it "renders most recent posts if /sitemap-posts", :aggregate_failures do
         get "/sitemap-posts.xml"
-        expect(response.body).to include(Article.order("published_at DESC").first.path)
-        expect(response.body).not_to include(Article.order("published_at DESC").last.path)
-      end
+        expect(response.body).to include(first_post.path)
+        expect(response.body).not_to include(second_post.path)
 
-      it "renders second page if /sitemap-posts-1", :aggregate_failures do
         get "/sitemap-posts-1.xml"
-        expect(response.body).not_to include(Article.order("published_at DESC").first.path)
-        expect(response.body).to include(Article.order("published_at DESC").last.path)
-      end
+        expect(response.body).not_to include(first_post.path)
+        expect(response.body).to include(second_post.path)
 
-      it "renders first page if /sitemap-posts-randomn0tnumber", :aggregate_failures do
         get "/sitemap-posts-randomn0tnumber.xml"
-        expect(response.body).to include(Article.order("published_at DESC").first.path)
-        expect(response.body).not_to include(Article.order("published_at DESC").last.path)
-      end
+        expect(response.body).to include(first_post.path)
+        expect(response.body).not_to include(second_post.path)
 
-      it "renders empty if /sitemap-posts-2", :aggregate_failures do
-        # no posts this far down.
         get "/sitemap-posts-2.xml"
-        expect(response.body).not_to include(Article.order("published_at DESC").first.path)
-        expect(response.body).not_to include(Article.order("published_at DESC").last.path)
+        expect(response.body).not_to include(first_post.path, second_post.path)
+        expect(response.header["Surrogate-Control"]).to include("8640")
       end
 
       it "renders not found if over max offset" do
         expect { get "/sitemap-posts-251.xml" }.to raise_error(ActiveRecord::RecordNotFound)
       end
-
-      it "renders 'recent' version of surrogate control" do
-        get "/sitemap-posts-2.xml"
-        expect(response.header["Surrogate-Control"]).to include("8640")
-      end
     end
 
     context "with tags in param" do
-      before do
-        create_list(:tag, 8)
-        Tag.find_each do |tag|
-          tag.update_column(:hotness_score, rand(100_000))
-        end
-      end
+      it "paginates hottest tags across sitemap pages", :aggregate_failures do
+        stub_const("SitemapsController::RESULTS_LIMIT", 1)
+        top_tag = create(:tag)
+        second_tag = create(:tag)
+        top_tag.update_column(:hotness_score, 200)
+        second_tag.update_column(:hotness_score, 100)
 
-      it "renders hottest tags if /sitemap-tags", :aggregate_failures do
         get "/sitemap-tags.xml"
-        expect(response.body).to include(Tag.order("hotness_score DESC").first.name)
-        expect(response.body).not_to include(Tag.order("hotness_score DESC").last.name)
-      end
+        expect(response.body).to include(top_tag.name)
+        expect(response.body).not_to include(second_tag.name)
 
-      it "renders second page if /sitemap-tags-1", :aggregate_failures do
         get "/sitemap-tags-1.xml"
-        expect(response.body).not_to include(Tag.order("hotness_score DESC").first.name)
-        expect(response.body).to include(Tag.order("hotness_score DESC").last.name)
-      end
+        expect(response.body).not_to include(top_tag.name)
+        expect(response.body).to include(second_tag.name)
 
-      it "renders first page if /sitemap-tags-randomn0tnumber", :aggregate_failures do
         get "/sitemap-tags-randomn0tnumber.xml"
-        expect(response.body).to include(Tag.order("hotness_score DESC").first.name)
-        expect(response.body).not_to include(Tag.order("hotness_score DESC").last.name)
-      end
+        expect(response.body).to include(top_tag.name)
+        expect(response.body).not_to include(second_tag.name)
 
-      it "renders empty if /sitemap-tags-2", :aggregate_failures do
-        # no posts this far down.
         get "/sitemap-tags-2.xml"
-        expect(response.body).not_to include(Tag.order("hotness_score DESC").first.name)
-        expect(response.body).not_to include(Tag.order("hotness_score DESC").last.name)
+        expect(response.body).not_to include(top_tag.name, second_tag.name)
       end
     end
 
     context "with users in param" do
-      before do
-        create_list(:user, 8)
-        User.find_each do |user|
-          user.update_column(:comments_count, rand(100_000))
-        end
-      end
+      it "paginates top users across sitemap pages", :aggregate_failures do
+        stub_const("SitemapsController::RESULTS_LIMIT", 1)
+        top_user = create(:user, comments_count: 200)
+        second_user = create(:user, comments_count: 100)
 
-      it "renders hottest tags if /sitemap-users", :aggregate_failures do
         get "/sitemap-users.xml"
-        expect(response.body).to include(User.order("comments_count DESC").first.username)
-        expect(response.body).not_to include(User.order("comments_count DESC").last.username)
-      end
+        expect(response.body).to include(top_user.username)
+        expect(response.body).not_to include(second_user.username)
 
-      it "renders second page if /sitemap-users-1", :aggregate_failures do
         get "/sitemap-users-1.xml"
-        expect(response.body).not_to include(User.order("comments_count DESC").first.username)
-        expect(response.body).to include(User.order("comments_count DESC").last.username)
-      end
+        expect(response.body).not_to include(top_user.username)
+        expect(response.body).to include(second_user.username)
 
-      it "renders first page if /sitemap-users-randomn0tnumber", :aggregate_failures do
         get "/sitemap-users-randomn0tnumber.xml"
-        expect(response.body).to include(User.order("comments_count DESC").first.username)
-        expect(response.body).not_to include(User.order("comments_count DESC").last.username)
-      end
+        expect(response.body).to include(top_user.username)
+        expect(response.body).not_to include(second_user.username)
 
-      it "renders empty if /sitemap-users-2", :aggregate_failures do
-        # no posts this far down.
         get "/sitemap-users-2.xml"
-        expect(response.body).not_to include(User.order("comments_count DESC").first.username)
-        expect(response.body).not_to include(User.order("comments_count DESC").last.username)
+        expect(response.body).not_to include(top_user.username, second_user.username)
       end
     end
   end
 
   context "when requested on a custom domain organization" do
     let(:organization) { create(:organization, custom_domain: "blog.mlh.com") }
-    let!(:org_article) { create(:article, organization: organization, score: 10) }
-    let!(:other_article) { create(:article, score: 10) }
+    let(:org_article) { create(:article, organization: organization, score: 10) }
+    let(:other_article) { create(:article, score: 10) }
 
     before do
       allow(Settings::General).to receive(:app_domain).and_return("forem.com")
@@ -192,6 +178,8 @@ RSpec.describe "Sitemaps" do
 
     describe "GET /sitemap-posts.xml" do
       it "renders the posts sitemap with only the organization's articles using the custom domain paths" do
+        org_article
+        other_article
         get "http://blog.mlh.com/sitemap-posts.xml"
 
         expect(response.body).to include("http://blog.mlh.com/#{org_article.slug}")

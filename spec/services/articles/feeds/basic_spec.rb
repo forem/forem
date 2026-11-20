@@ -37,6 +37,17 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
 
       expect(reaction_queries).to be_empty
     end
+
+    it "does not load comment collections before the renderer selects previews" do
+      create(:comment, commentable: hot_story, score: 20)
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+
+      result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { feed.feed.to_a }
+
+      expect(result).to include(hot_story)
+      expect(queries).to be_empty
+    end
   end
 
   context "with a user" do

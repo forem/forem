@@ -53,6 +53,18 @@ RSpec.describe NavigationLink do
           .to contain_exactly(link_subforem_1, link_subforem_2, link_no_subforem)
       end
     end
+
+    context "when Subforem.disabled_by_env? is true" do
+      before do
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+      end
+
+      it "returns all records without adding a subforem_id condition" do
+        relation = described_class.from_subforem(1)
+        expect(relation.where_clause).to be_empty
+        expect(relation).to contain_exactly(link_subforem_1, link_subforem_2, link_no_subforem)
+      end
+    end
   end
 
   describe ".create_or_update_by_identity" do

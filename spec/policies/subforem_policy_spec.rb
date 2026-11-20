@@ -1,13 +1,15 @@
 require "rails_helper"
 
 RSpec.describe SubforemPolicy do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:super_admin) { create(:user, :without_profile, :super_admin, profile_image: nil) }
+  let(:super_moderator) { create(:user, :without_profile, :super_moderator, profile_image: nil) }
   let(:subforem) { create(:subforem, domain: "test-policy.com") }
   let(:policy) { described_class.new(user, subforem) }
 
   describe "#index?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.index?).to be true
@@ -33,7 +35,7 @@ RSpec.describe SubforemPolicy do
 
   describe "#edit?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.edit?).to be true
@@ -59,7 +61,7 @@ RSpec.describe SubforemPolicy do
 
   describe "#update?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.update?).to be true
@@ -85,7 +87,7 @@ RSpec.describe SubforemPolicy do
 
   describe "#admin?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.admin?).to be true
@@ -101,7 +103,7 @@ RSpec.describe SubforemPolicy do
 
   describe "#create_page?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.create_page?).to be true
@@ -109,7 +111,7 @@ RSpec.describe SubforemPolicy do
     end
 
     context "when user is a super moderator" do
-      let(:user) { create(:user, :super_moderator) }
+      let(:user) { super_moderator }
 
       it "returns true" do
         expect(policy.create_page?).to be true
@@ -135,7 +137,7 @@ RSpec.describe SubforemPolicy do
 
   describe "#update_page?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.update_page?).to be true
@@ -143,7 +145,7 @@ RSpec.describe SubforemPolicy do
     end
 
     context "when user is a super moderator" do
-      let(:user) { create(:user, :super_moderator) }
+      let(:user) { super_moderator }
 
       it "returns true" do
         expect(policy.update_page?).to be true
@@ -169,7 +171,7 @@ RSpec.describe SubforemPolicy do
 
   describe "#destroy_page?" do
     context "when user is a super admin" do
-      let(:user) { create(:user, :super_admin) }
+      let(:user) { super_admin }
 
       it "returns true" do
         expect(policy.destroy_page?).to be true
@@ -177,7 +179,7 @@ RSpec.describe SubforemPolicy do
     end
 
     context "when user is a super moderator" do
-      let(:user) { create(:user, :super_moderator) }
+      let(:user) { super_moderator }
 
       it "returns true" do
         expect(policy.destroy_page?).to be true

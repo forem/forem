@@ -14,8 +14,12 @@ RSpec.describe "Api::V0::Videos" do
        :aggregate_failures do
       video_article = create_article
       create_article(published: false)
+      create_article(video: "")
       create(:article, user: user)
       create_article(score: -4)
+
+      expect(Article.with_video.to_sql).to include("articles.video > ''")
+      expect(Article.with_video.to_sql).not_to include("IS NULL")
 
       get api_videos_path
 

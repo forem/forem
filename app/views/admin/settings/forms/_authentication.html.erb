@@ -106,11 +106,19 @@
                                   },
                                   class: "crayons-checkbox mt-2" %>
                   <div>
-                    <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration", model: Settings::Authentication %>
+                    <%= admin_config_label :require_captcha_for_email_password_registration, t("lib.constants.settings.authentication.require_recaptcha.label"), model: Settings::Authentication %>
                     <%= admin_config_description Constants::Settings::Authentication.details[:require_captcha_for_email_password_registration][:description] %>
                   </div>
                 </div>
                 <div id="recaptchaContainer" class="ml-7 <%= Settings::Authentication.require_captcha_for_email_password_registration ? "grid gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                  <div class="crayons-field">
+                    <%= admin_config_label :captcha_provider, t("lib.constants.settings.authentication.captcha_provider.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:captcha_provider][:description] %>
+                    <%= f.select :captcha_provider,
+                                 Captcha::PROVIDERS.map { |key, provider| [provider.label, key] },
+                                 { selected: Settings::Authentication.captcha_provider },
+                                 class: "crayons-select" %>
+                  </div>
                   <div class="crayons-field">
                     <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key", model: Settings::Authentication %>
                     <%= admin_config_description Constants::Settings::Authentication.details[:recaptcha_site_key][:description] %>
@@ -126,6 +134,38 @@
                                      class: "crayons-textfield",
                                      value: Settings::Authentication.recaptcha_secret_key,
                                      placeholder: Constants::Settings::Authentication.details[:recaptcha_secret_key][:placeholder] %>
+                  </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :turnstile_site_key, t("lib.constants.settings.authentication.turnstile_site.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:turnstile_site_key][:description] %>
+                    <%= f.text_field :turnstile_site_key,
+                                     class: "crayons-textfield",
+                                     value: Settings::Authentication.turnstile_site_key,
+                                     placeholder: Constants::Settings::Authentication.details[:turnstile_site_key][:placeholder] %>
+                  </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :turnstile_secret_key, t("lib.constants.settings.authentication.turnstile_secret.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:turnstile_secret_key][:description] %>
+                    <%= f.text_field :turnstile_secret_key,
+                                     class: "crayons-textfield",
+                                     value: Settings::Authentication.turnstile_secret_key,
+                                     placeholder: Constants::Settings::Authentication.details[:turnstile_secret_key][:placeholder] %>
+                  </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :hcaptcha_site_key, t("lib.constants.settings.authentication.hcaptcha_site.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:hcaptcha_site_key][:description] %>
+                    <%= f.text_field :hcaptcha_site_key,
+                                     class: "crayons-textfield",
+                                     value: Settings::Authentication.hcaptcha_site_key,
+                                     placeholder: Constants::Settings::Authentication.details[:hcaptcha_site_key][:placeholder] %>
+                  </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :hcaptcha_secret_key, t("lib.constants.settings.authentication.hcaptcha_secret.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:hcaptcha_secret_key][:description] %>
+                    <%= f.password_field :hcaptcha_secret_key,
+                                         class: "crayons-textfield",
+                                         value: Settings::Authentication.hcaptcha_secret_key,
+                                         placeholder: Constants::Settings::Authentication.details[:hcaptcha_secret_key][:placeholder] %>
                   </div>
                 </div>
                 <div class="crayons-btn-actions">

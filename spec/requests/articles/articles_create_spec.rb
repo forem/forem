@@ -1,7 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "ArticlesCreate" do
-  let(:user) { create(:user, :org_member) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:user_org) do
+    org = create(:organization)
+    create(:organization_membership, user: user, organization: org, type_of_user: "member")
+    org
+  end
   let(:template) { file_fixture("article_published.txt").read }
   let(:new_title) { "NEW TITLE #{rand(100)}" }
 
@@ -34,7 +39,7 @@ RSpec.describe "ArticlesCreate" do
   end
 
   it "creates article with front matter params and org" do
-    user_org_id = user.organizations.first.id
+    user_org_id = user_org.id
     post "/articles", params: {
       article: {
         body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
@@ -46,8 +51,8 @@ RSpec.describe "ArticlesCreate" do
   end
 
   it "does not allow a non-org-admin to set co-authors from the editor" do
-    organization = user.organizations.first
-    co_author = create(:user)
+    organization = user_org
+    co_author = create(:user, :without_profile, profile_image: nil)
     create(:organization_membership, user: co_author, organization: organization)
 
     post "/articles", params: {
@@ -63,9 +68,9 @@ RSpec.describe "ArticlesCreate" do
   end
 
   it "allows an org admin to set co-authors from the editor" do
-    organization = user.organizations.first
+    organization = user_org
     user.organization_memberships.find_by(organization: organization).update!(type_of_user: "admin")
-    co_author = create(:user)
+    co_author = create(:user, :without_profile, profile_image: nil)
     create(:organization_membership, user: co_author, organization: organization)
 
     post "/articles", params: {
@@ -81,7 +86,7 @@ RSpec.describe "ArticlesCreate" do
   end
 
   describe "co-author invitations" do
-    let(:follower) { create(:user) }
+    let(:follower) { create(:user, :without_profile, profile_image: nil) }
 
     before { follower.follow(user) }
 

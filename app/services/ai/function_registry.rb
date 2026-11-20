@@ -5,13 +5,14 @@ module Ai
   #
   # `jev: true` marks functions whose job is a judgment: a yes/no call, picking one
   # option from a known set, or placing content on a scale. Those map directly onto
-  # TypeSafe System One primitives (Noul, Choice, Score) and have a Jev implementation.
+  # Decisions / System One primitives (Noul, Choice, Score) and can run on either
+  # Gemini Decision 1 (`gemini-decision-1`) or TypeSafe Jev.
   #
   # Functions that write text (summaries, copy, chat replies, trend names) stay on
-  # generative models: System One models return typed judgments, not prose.
+  # generative models: decision models return typed judgments, not prose.
   #
-  # `jev_only: true` marks functions that exist only as a Jev pass and have no Gemini
-  # behavior. Their "default" option means the function is off.
+  # `jev_only: true` marks functions that exist only as a structured decision pass and have no
+  # generative Gemini prompt. Their "default" option means the function is off.
   #
   # `configurable: false` marks functions whose model cannot be swapped safely at runtime
   # (e.g. embeddings, where a different model would invalidate every stored vector).
@@ -20,10 +21,12 @@ module Ai
       def jev?
         jev
       end
+      alias_method :decision?, :jev?
 
       def jev_only?
         jev_only
       end
+      alias_method :decision_only?, :jev_only?
 
       def configurable?
         configurable
@@ -52,6 +55,10 @@ module Ai
         description: "Sends articles and comments without links to the spam checks above when they look like " \
                      "spam, such as Telegram or WhatsApp contacts written as text (Ai::SpamEscalationCheck). " \
                      "Off keeps link-only escalation." },
+      { key: :phishing_signup_check, group: :moderation, jev: true,
+        name: "Low-trust signup & impersonation spam check",
+        description: "Decides whether a low-trust account is trying to get people to sign up, log in, or verify " \
+                     "an account, especially while impersonating the platform or staff (Ai::PhishingSignupCheck)." },
       { key: :profile_moderation, group: :moderation, jev: true,
         name: "Profile moderation label",
         description: "Flags clear and obvious spam or abuse in new profiles (Ai::ProfileModerationLabeler)." },
@@ -97,7 +104,7 @@ module Ai
         description: "Picks a syntax-highlighting language for unlabeled code blocks " \
                      "(Articles::DetectCodeBlockLanguages)." },
       { key: :semantic_search_reranking, group: :classification, jev: true, jev_only: true,
-        name: "Semantic search Jev re-ranking",
+        name: "Semantic search decision re-ranking",
         description: "Re-ranks top semantic search shortlist candidates against the user query " \
                      "(Ai::SearchReranker). Off keeps lexical + vector hybrid pre-ranking." },
       # Text generation
@@ -136,7 +143,8 @@ module Ai
                      "changing it requires re-embedding stored vectors." },
       { key: :image_generation, group: :fixed, jev: false, configurable: false,
         name: "Image generation",
-        description: "Generates cover and profile images (Ai::ImageGenerator) with a dedicated image model." },
+        description: "Generates cover and profile images (Ai::ImageGenerator) with a dedicated image model. " \
+                     "Set with GEMINI_IMAGE_MODEL and GEMINI_IMAGE_FALLBACK_MODEL." },
     ].map { |attrs| Function.new(configurable: true, jev_only: false, **attrs).freeze }.index_by(&:key).freeze
 
     class UnknownFunctionError < ArgumentError; end

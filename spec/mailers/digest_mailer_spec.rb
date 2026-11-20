@@ -80,6 +80,18 @@ RSpec.describe DigestMailer do
       expect(email.body.encoded).to include("href=\"#{URL.article(article)}?context=digest")
     end
 
+    it "renders custom domain URLs for org articles queried via DIGEST_ARTICLE_COLUMNS select" do
+      org = create(:organization, custom_domain: "blog.example.com")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(org))
+      org_article = create(:article, organization: org)
+      partial_article = Article.select(EmailDigestArticleCollector::DIGEST_ARTICLE_COLUMNS).find(org_article.id)
+
+      email = described_class.with(user: user, articles: [partial_article]).digest_email
+
+      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}blog.example.com/#{org_article.slug}?context=digest"
+      expect(email.body.encoded).to include(CGI.escape(expected_url))
+    end
+
     it "renders valid href URLs for organization articles in digest email" do
       org = create(:organization)
       org_article = create(:article, organization: org, title: "Org Article Title")

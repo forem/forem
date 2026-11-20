@@ -20,7 +20,7 @@ import EmbedIcon from '@images/lightning.svg';
 import UnderlineIcon from '@images/underline.svg';
 import StrikethroughIcon from '@images/strikethrough.svg';
 import DividerIcon from '@images/divider.svg';
-import { Icon } from '@crayons';
+import { Icon } from '@crayons/Icons';
 
 const ORDERED_LIST_ITEM_REGEX = /^\d+\.\s+.*/;
 const MARKDOWN_LINK_REGEX =

@@ -145,10 +145,13 @@ RSpec.describe Users::DeleteWorker, type: :worker do
       end
 
       it "records the failure" do
+        allow(Rails.error).to receive(:set_context).and_call_original
+
         expect { worker.perform(user.id, true) }.to raise_error(ActiveRecord::QueryCanceled)
 
         expect(ForemStatsClient).to have_received(:count)
           .with("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
+        expect(Rails.error).to have_received(:set_context).with(user_id: user.id)
       end
 
       it "doesn't create a gdpr-delete record or notify the user" do

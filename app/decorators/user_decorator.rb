@@ -18,6 +18,35 @@ class UserDecorator < ApplicationDecorator
     },
   ].freeze
 
+  # Built once rather than on every #assigned_color call: enriched_colors reads it twice per
+  # profile card, and profile cards render for every comment author on an article page.
+  ASSIGNED_COLORS = ([
+    {
+      bg: "#19063A",
+      text: "#dce9f3"
+    },
+    {
+      bg: "#0D4D4B",
+      text: "#fdf9f3"
+    },
+    {
+      bg: "#010C1F",
+      text: "#aebcd5"
+    },
+    {
+      bg: "#d7dee2",
+      text: "#022235"
+    },
+    {
+      bg: "#161616",
+      text: "#66e2d5"
+    },
+    {
+      bg: "#1c0bba",
+      text: "#c9d2dd"
+    },
+  ].map(&:freeze) | WHITE_TEXT_COLORS).freeze
+
   DEFAULT_PROFILE_SUMMARY = -> { I18n.t("stories_controller.404_bio_not_found") }
 
   # The relevant attribute names for cached tags.  These are the attributes that we'll make
@@ -73,12 +102,16 @@ class UserDecorator < ApplicationDecorator
   end
 
   def ordered_subforems
+    return [] if Subforem.disabled_by_env?
+
+    all_subforem_ids = Subforem.cached_discoverable_ids
+    return [] if all_subforem_ids.empty?
+
     activity_store = user_activity
     return [] unless activity_store
 
     recent_subforem_ids = activity_store.recent_subforems.compact
     followed_subforem_ids = activity_store.alltime_subforems.compact
-    all_subforem_ids = Subforem.cached_discoverable_ids
     ordered = ForemNative.order_subforem_ids(recent_subforem_ids, followed_subforem_ids, all_subforem_ids)
     return ordered if ordered
 
@@ -108,7 +141,7 @@ class UserDecorator < ApplicationDecorator
     ]
 
     # Add subforem moderator status for current subforem
-    if RequestStore.store[:subforem_id].present?
+    if !Subforem.disabled_by_env? && RequestStore.store[:subforem_id].present?
       current_subforem_domain = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
       if current_subforem_domain
         is_subforem_moderator = any_admin? || moderator_for_subforems.include?(current_subforem_domain)
@@ -126,34 +159,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def assigned_color
-    colors = [
-      {
-        bg: "#19063A",
-        text: "#dce9f3"
-      },
-      {
-        bg: "#0D4D4B",
-        text: "#fdf9f3"
-      },
-      {
-        bg: "#010C1F",
-        text: "#aebcd5"
-      },
-      {
-        bg: "#d7dee2",
-        text: "#022235"
-      },
-      {
-        bg: "#161616",
-        text: "#66e2d5"
-      },
-      {
-        bg: "#1c0bba",
-        text: "#c9d2dd"
-      },
-    ]
-    colors |= WHITE_TEXT_COLORS
-    colors[(id || rand(100)) % 10]
+    ASSIGNED_COLORS[(id || rand(100)) % 10]
   end
 
   # returns true if the user has been suspended and has no content

@@ -11,10 +11,10 @@ module Api
       per_page_max = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
       num = [per_page, per_page_max].min
 
-      @tags = Tag.select(ATTRIBUTES_FOR_SERIALIZATION)
-        .from_subforem
-        .order(taggings_count: :desc)
-        .page(page).per(num)
+      tags = Tag.select(ATTRIBUTES_FOR_SERIALIZATION)
+      # An exact name lookup finds the tag whether or not it is supported.
+      tags = params.key?(:name) ? tags.where(name: params[:name].to_s.downcase) : tags.from_subforem
+      @tags = tags.order(taggings_count: :desc).page(page).per(num)
 
       set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
     end
@@ -33,6 +33,8 @@ module Api
     private
 
     def supported_tags_scope
+      return Tag.supported if Subforem.disabled_by_env?
+
       subforem_id = RequestStore.store[:subforem_id]
       if subforem_id.present? && subforem_id != RequestStore.store[:root_subforem_id]
         Tag.joins(:subforem_relationships)

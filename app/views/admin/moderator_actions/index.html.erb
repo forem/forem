@@ -7,7 +7,12 @@
   <% end %>
 </div>
 
-<%= paginate @moderator_actions %>
+<nav class="admin-pagination flex gap-2 fs-s items-center">
+  <% if @moderator_actions.current_page > 1 %>
+    <%= link_to t("views.pagination.aria_previous"), admin_moderator_actions_path(q: params[:q]&.to_unsafe_h, page: (@moderator_actions.current_page - 1 if @moderator_actions.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+  <% end %>
+  <%= link_to_next_page @moderator_actions, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>
 
 <table class="crayons-table" width="100%">
   <thead>
@@ -34,4 +39,9 @@
   </tbody>
 </table>
 
-<%= paginate @moderator_actions %>
+<nav class="admin-pagination flex gap-2 fs-s items-center">
+  <% if @moderator_actions.current_page > 1 %>
+    <%= link_to t("views.pagination.aria_previous"), admin_moderator_actions_path(q: params[:q]&.to_unsafe_h, page: (@moderator_actions.current_page - 1 if @moderator_actions.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+  <% end %>
+  <%= link_to_next_page @moderator_actions, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>

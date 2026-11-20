@@ -4,21 +4,7 @@ module Users
     before_action :authenticate_user!
     after_action :verify_authorized
 
-    ALLOWED_PARAMS = %i[email_badge_notifications
-                        email_comment_notifications
-                        email_community_mod_newsletter
-                        email_digest_periodic
-                        email_follower_notifications
-                        email_membership_newsletter
-                        email_mention_notifications
-                        email_newsletter
-                        email_tag_mod_newsletter
-                        email_unread_notifications
-                        mobile_comment_notifications
-                        mobile_mention_notifications
-                        mod_roundrobin_notifications
-                        reaction_notifications
-                        welcome_notifications].freeze
+    ALLOWED_PARAMS = Users::NotificationSetting::BOOLEAN_ATTRIBUTES
     ONBOARDING_ALLOWED_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 
     def update
@@ -45,7 +31,14 @@ module Users
     end
 
     def users_notification_setting_params
-      params.require(:users_notification_setting).permit(ALLOWED_PARAMS)
+      raw_params = params.require(:users_notification_setting)
+      raise ActionController::ParameterMissing, :users_notification_setting unless raw_params.respond_to?(:permit)
+
+      boolean_type = ActiveModel::Type::Boolean.new
+      raw_params.permit(ALLOWED_PARAMS).to_h.transform_values do |value|
+        cast = boolean_type.cast(value)
+        cast.nil? ? false : cast
+      end
     end
   end
 end

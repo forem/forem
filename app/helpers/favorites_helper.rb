@@ -1,5 +1,12 @@
 module FavoritesHelper
-  # Emits the mount node for the Preact FavoriteControl with initial server-rendered markup
+  # Emits the mount node for the Preact FavoriteControl with initial server-rendered markup.
+  # The node also carries the translated copy for the control, including the
+  # confirmation dialog shown before a gem is given.
+  #
+  # @param favoritable [Article, Comment] the content the gem is given to
+  # @param variant [Symbol] where the control is rendered (+:article+, +:dropdown+ or +:comment+)
+  # @return [ActiveSupport::SafeBuffer, nil] the mount node, or nil when the
+  #   +community_favorites+ feature flag is disabled
   def favorite_control_tag(favoritable, variant: :article)
     return unless FeatureFlag.enabled?(:community_favorites)
 
@@ -7,6 +14,7 @@ module FavoritesHelper
 
     favorited = favoritable.favorited_by_user_id.present?
     label = favorited ? t("favorites.favorited") : t("favorites.favorite")
+    confirm_copy = favorite_confirm_copy(favoritable)
 
     inner_content = case variant.to_sym
                     when :article
@@ -85,6 +93,10 @@ module FavoritesHelper
         label_favorite: t("favorites.favorite"),
         label_favorited: t("favorites.favorited"),
         label_favorited_by_you: t("favorites.favorited_by_you"),
+        confirm_title: confirm_copy[:title],
+        confirm_body: confirm_copy[:body],
+        confirm_submit: t("favorites.confirm.submit"),
+        confirm_cancel: t("favorites.confirm.cancel"),
         modal_title: t("favorites.modal.title"),
         modal_body: t("favorites.modal.body"),
         modal_remaining_zero: t("favorites.modal.remaining_zero"),
@@ -98,6 +110,21 @@ module FavoritesHelper
       },
     ) do
       inner_content
+    end
+  end
+
+  private
+
+  # Wording for the dialog shown before a gem is given, so the user is told
+  # whether they're about to give it to a post or to a comment.
+  #
+  # @param favoritable [Article, Comment] the content the gem is given to
+  # @return [Hash{Symbol => String}] the translated +:title+ and +:body+ of the dialog
+  def favorite_confirm_copy(favoritable)
+    if favoritable.is_a?(Comment)
+      { title: t("favorites.confirm.title_comment"), body: t("favorites.confirm.body_comment") }
+    else
+      { title: t("favorites.confirm.title_article"), body: t("favorites.confirm.body_article") }
     end
   end
 end

@@ -6,7 +6,9 @@ RSpec.describe ArticleDecorator, type: :decorator do
     article.decorate
   end
 
-  let(:article) { build(:article) }
+  # The article factory otherwise creates its author even with the build strategy.
+  let(:user) { build_stubbed(:user) }
+  let(:article) { build(:article, user: user) }
   let(:published_article) { create_article(published: true) }
   let(:organization) { build(:organization) }
 
@@ -81,38 +83,38 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.processed_canonical_url).to eq(expected_url)
     end
+  end
 
-    context "when article belongs to an organization with a custom domain" do
-      let(:organization) { create(:organization, custom_domain: "blog.example.com") }
-      let(:article) { create(:article, organization: organization) }
+  describe "#processed_canonical_url for an organization with a custom domain" do
+    let(:organization) { create(:organization, custom_domain: "blog.example.com") }
+    let(:article) { create(:article, organization: organization) }
 
-      context "when the org_custom_domain feature flag is enabled" do
-        before do
-          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
-        end
-
-        it "returns the custom domain URL" do
-          article.canonical_url = ""
-          expected_url = "#{ApplicationConfig['APP_PROTOCOL']}blog.example.com/#{article.slug}"
-          expect(article.decorate.processed_canonical_url).to eq(expected_url)
-        end
-
-        it "returns the custom user override canonical URL if present" do
-          article.canonical_url = "http://google.com"
-          expect(article.decorate.processed_canonical_url).to eq("http://google.com")
-        end
+    context "when the org_custom_domain feature flag is enabled" do
+      before do
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
       end
 
-      context "when the org_custom_domain feature flag is disabled" do
-        before do
-          FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
-        end
+      it "returns the custom domain URL" do
+        article.canonical_url = ""
+        expected_url = "#{ApplicationConfig['APP_PROTOCOL']}blog.example.com/#{article.slug}"
+        expect(article.decorate.processed_canonical_url).to eq(expected_url)
+      end
 
-        it "returns the default app domain URL" do
-          article.canonical_url = ""
-          expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
-          expect(article.decorate.processed_canonical_url).to eq(expected_url)
-        end
+      it "returns the custom user override canonical URL if present" do
+        article.canonical_url = "http://google.com"
+        expect(article.decorate.processed_canonical_url).to eq("http://google.com")
+      end
+    end
+
+    context "when the org_custom_domain feature flag is disabled" do
+      before do
+        FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      end
+
+      it "returns the default app domain URL" do
+        article.canonical_url = ""
+        expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+        expect(article.decorate.processed_canonical_url).to eq(expected_url)
       end
     end
   end
@@ -279,6 +281,8 @@ RSpec.describe ArticleDecorator, type: :decorator do
   end
 
   describe "#permit_adjacent_sponsors" do
+    let(:user) { create(:user) }
+
     it "returns true if there is a no user id" do
       expect(described_class.new(nil).permit_adjacent_sponsors?).to be(true)
     end

@@ -59,6 +59,23 @@ RSpec.describe "Custom Domain Redirects", type: :request do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "tags the not-found redirect with the organization surrogate key so article busts purge it" do
+      host! "blog.example.com"
+      get "/non-existent-post"
+
+      expect(response.headers["Surrogate-Key"].to_s.split).to include(organization.record_key)
+    end
+
+    it "tags the redirect served to logged-out visitors of an org draft so publishing purges it" do
+      draft = create(:unpublished_article, organization: organization)
+
+      host! "blog.example.com"
+      get "/#{draft.slug}"
+
+      expect(response).to redirect_to("http://forem.com/#{draft.slug}")
+      expect(response.headers["Surrogate-Key"].to_s.split).to include(organization.record_key)
+    end
+
     it "redirects non-profile and non-article pages (like /enter) to the main app domain" do
       host! "blog.example.com"
       get "/enter"

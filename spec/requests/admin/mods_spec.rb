@@ -61,6 +61,33 @@ RSpec.describe "/admin/moderation/mods" do
       get "#{admin_mods_path}?state=potential"
       expect(response.body).not_to include(moderator.username)
     end
+
+    it "uses countless pagination without executing COUNT(*) or duplicate existence queries" do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries << payload[:sql] unless payload[:name] == "SCHEMA"
+      end
+
+      get admin_mods_path(state: "potential")
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+
+      expect(response).to have_http_status(:ok)
+      mod_queries = queries.select { |sql| sql.include?("NOT EXISTS") }
+      expect(mod_queries.size).to eq(1)
+      expect(queries.none? { |sql| sql.match?(/SELECT COUNT\(\*\) FROM "users"/i) }).to be(true)
+      expect(queries.none? { |sql| sql.match?(/SELECT 1 AS one FROM "users"/i) }).to be(true)
+    end
+
+    it "renders previous and next page links and handles nil last_comment_at" do
+      regular_user.update_column(:last_comment_at, nil)
+
+      get admin_mods_path(state: "potential", page: 2)
+      expect(response).to have_http_status(:ok)
+
+      get admin_mods_path(state: "potential")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(regular_user.username)
+    end
   end
 
   describe "PUT /admin/moderation/mods" do

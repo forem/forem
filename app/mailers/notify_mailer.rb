@@ -395,6 +395,8 @@ class NotifyMailer < ApplicationMailer
   # action runs, and gem_received_email has no recipient param. Brand the email
   # for the community where the gem was given, falling back to the author's.
   def use_favoritable_subforem_context
+    return if Subforem.disabled_by_env?
+
     subforem_id = @comment ? @favoritable.commentable.try(:subforem_id) : @favoritable.subforem_id
     @subforem_id = subforem_id || @user.onboarding_subforem_id || @subforem_id
     @subforem_domain = determine_subforem_domain(@subforem_id)

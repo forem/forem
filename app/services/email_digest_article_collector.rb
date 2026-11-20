@@ -5,8 +5,8 @@ class EmailDigestArticleCollector
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
   RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
   CLICK_LOOKBACK = 30
-  DIGEST_ARTICLE_COLUMNS = %i[id title description path cached_user cached_tag_list
-                              subforem_id organization_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
+  DIGEST_ARTICLE_COLUMNS = %i[id title description path slug cached_user cached_tag_list subforem_id
+                              organization_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
 
   # Personalized email digests require a higher minimum score than the home feed
   # to ensure that the content sent in emails is of higher quality.
@@ -25,7 +25,7 @@ class EmailDigestArticleCollector
       return [] unless @force_send || should_receive_email?
 
       if FeatureFlag.enabled?(:personalized_email_digests) &&
-          Settings::UserExperience.feed_strategy == "configured"
+          Settings::UserExperience.feed_strategy(subforem_id: default_subforem_id) == "configured"
 
         variant = field_test(:personalized_email_digests_ab_test, participant: @user)
 
@@ -44,7 +44,8 @@ class EmailDigestArticleCollector
     return false if last_email_sent > 18.hours.ago
     return true if last_email_clicked?
 
-    email_sent_within_lookback_period = last_email_sent >= Settings::General.periodic_email_digest.days.ago
+    email_sent_within_lookback_period =
+      last_email_sent >= Settings::General.periodic_email_digest(subforem_id: default_subforem_id).days.ago
     return false if email_sent_within_lookback_period && !recent_tracked_click?
 
     true
@@ -53,7 +54,7 @@ class EmailDigestArticleCollector
   private
 
   # rubocop:disable Metrics/PerceivedComplexity
-  def legacy_articles
+  def legacy_articles(cutoff = @configured_cutoff_date || cutoff_date)
     order = Arel.sql("(((score + comment_score) * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
     articles = if @user.cached_followed_tag_names.any?
                  # Set subforem context for followed subforems or default
@@ -63,7 +64,7 @@ class EmailDigestArticleCollector
                    .select(*DIGEST_ARTICLE_COLUMNS)
                    .published
                    .full_posts
-                   .where("published_at > ?", cutoff_date)
+                   .where("published_at > ?", cutoff)
                    .where(email_digest_eligible: true)
                    .not_authored_by(@user.id)
                    .where("score > ?", 8)
@@ -82,7 +83,7 @@ class EmailDigestArticleCollector
                                     Article.select(*DIGEST_ARTICLE_COLUMNS)
                                       .published
                                       .full_posts
-                                      .where("published_at > ?", cutoff_date)
+                                      .where("published_at > ?", cutoff)
                                       .where(email_digest_eligible: true)
                                       .not_authored_by(@user.id)
                                       .where("score > ?", 11)
@@ -94,7 +95,7 @@ class EmailDigestArticleCollector
                                     Article.select(*DIGEST_ARTICLE_COLUMNS)
                                       .published
                                       .full_posts
-                                      .where("published_at > ?", cutoff_date)
+                                      .where("published_at > ?", cutoff)
                                       .where(email_digest_eligible: true)
                                       .not_authored_by(@user.id)
                                       .where("score > ?", 11)
@@ -112,7 +113,7 @@ class EmailDigestArticleCollector
         articles_query = Article.select(*DIGEST_ARTICLE_COLUMNS)
           .published
           .full_posts
-          .where("published_at > ?", cutoff_date)
+          .where("published_at > ?", cutoff)
           .where(email_digest_eligible: true)
           .where("score > ?", 11)
       else
@@ -126,7 +127,7 @@ class EmailDigestArticleCollector
         articles_query = Article.select(*DIGEST_ARTICLE_COLUMNS)
           .published
           .full_posts
-          .where("published_at > ?", cutoff_date)
+          .where("published_at > ?", cutoff)
           .where(email_digest_eligible: true)
           .where("score > ?", 11)
           .where(subforem_id: fallback_subforem_ids)
@@ -160,13 +161,16 @@ class EmailDigestArticleCollector
     )
     return unless feed_config
 
+    @configured_cutoff_date = personalized_cutoff_date(feed_config)
     set_subforem_context
 
+    minimum_score = Settings::UserExperience.home_feed_minimum_score(subforem_id: default_subforem_id) +
+      MINIMUM_SCORE_OFFSET
     filtered_scope = Article
       .published
       .full_posts
-      .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + MINIMUM_SCORE_OFFSET)
-      .where("published_at > ?", cutoff_date)
+      .where("score >= ?", minimum_score)
+      .where("published_at > ?", @configured_cutoff_date)
       .where(email_digest_eligible: true)
       .not_authored_by(@user.id)
 
@@ -221,10 +225,16 @@ class EmailDigestArticleCollector
   end
 
   def set_subforem_context
+    default_subforem_id = Subforem.cached_default_id
+    if Subforem.disabled_by_env? || default_subforem_id.nil?
+      @subforem_ids = []
+      @skip_subforem_filtering = true
+      return
+    end
+
     # Get user's followed subforems from UserActivity
     user_activity = @user.user_activity
     followed_subforem_ids = user_activity&.alltime_subforems || []
-    default_subforem_id = Subforem.cached_default_id
 
     # Check if user has a custom onboarding subforem (not nil and not default)
     has_custom_onboarding = @user.onboarding_subforem_id.present? &&
@@ -274,6 +284,20 @@ class EmailDigestArticleCollector
     return a_few_days_ago unless last_email_sent
 
     [a_few_days_ago, (last_email_sent - 18.hours)].max
+  end
+
+  def personalized_cutoff_date(feed_config)
+    hard_cutoff = cutoff_date
+    global_lookback_days = Settings::UserExperience.feed_lookback_days(subforem_id: default_subforem_id).to_i
+    global_cutoff = global_lookback_days.positive? ? global_lookback_days.days.ago.utc : hard_cutoff
+    config_hours = feed_config.respond_to?(:feed_lookback_hours) ? feed_config.feed_lookback_hours.to_i : 0
+    return hard_cutoff unless config_hours.positive?
+
+    [config_hours.hours.ago.utc, global_cutoff, hard_cutoff].max
+  end
+
+  def default_subforem_id
+    RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
   end
 
   def user_has_followings?

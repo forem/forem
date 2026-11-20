@@ -1,6 +1,7 @@
 /* eslint-env jest, node */
 import 'jest-axe/extend-expect';
 import './app/assets/javascripts/lib/xss';
+import './app/assets/javascripts/utilities/timeAgo';
 
 global.setImmediate = global.setTimeout;
 

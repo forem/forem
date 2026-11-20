@@ -5,6 +5,11 @@ class OrganizationMembership < ApplicationRecord
   belongs_to :user
   belongs_to :organization
 
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
+
+  # The user who sent the invitation, used to personalize the invitee's notification. Not persisted.
+  attr_accessor :invited_by
+
   USER_TYPES = %w[admin member guest pending].freeze
 
   validates :type_of_user, presence: true
@@ -16,6 +21,9 @@ class OrganizationMembership < ApplicationRecord
   after_create  :update_user_organization_info_updated_at
   after_update  :update_user_organization_info_updated_at, if: :saved_change_to_type_of_user?
   after_destroy :update_user_organization_info_updated_at
+
+  after_create_commit :send_invitation_notification, if: :pending?
+  after_update_commit :update_invitation_notification, if: :invitation_answered?
 
   after_commit :bust_cache
   after_commit :recompile_organization_pages
@@ -35,6 +43,23 @@ class OrganizationMembership < ApplicationRecord
 
   private
 
+  # Queues the invitee's notification for a new pending membership.
+  def send_invitation_notification
+    Notification.send_organization_invitation_notification(self, invited_by&.id)
+  end
+
+  # @return [Boolean] whether a pending invitation was just accepted
+  def invitation_answered?
+    saved_change_to_type_of_user? && saved_change_to_type_of_user.first == "pending" && !pending?
+  end
+
+  # Covers every way an invitation can be accepted (notification, email link), so the invitee's
+  # notification never keeps offering a decision that was already made.
+  # Refreshes the invitee's notification so it shows the outcome instead of the buttons.
+  def update_invitation_notification
+    Notifications::OrganizationInvitations::Update.call(self)
+  end
+
   def generate_invitation_token
     self.invitation_token = SecureRandom.urlsafe_base64(32)
   end
@@ -53,8 +78,7 @@ class OrganizationMembership < ApplicationRecord
   end
 
   def bust_cache
-    BustCachePathWorker.perform_async(organization.path.to_s)
-    EdgeCache::PurgeByKey.call(organization.path.to_s)
+    EdgeCache::PurgeByKeyWorker.perform_async(organization.record_key, organization.path.to_s)
   rescue StandardError => e
     Rails.logger.error("Failed to purge organization cache for #{organization.id}: #{e.class} - #{e.message}")
   end

@@ -1,5 +1,6 @@
 /* global userData */
 import { isBotUserAgent } from '@utilities/isBot';
+import { maybeLoadEventSignupButtons } from '@utilities/eventSignupButtonsLoader';
 // This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
 export function initializeBillboardVisibility() {
   const billboards = document.querySelectorAll('[data-display-unit]');
@@ -159,6 +160,7 @@ export function observeBillboards() {
   // Billboards render asynchronously, so one may arrive after its placement
   // area was already revealed on this page.
   revealPendingBillboardPlacements();
+  maybeLoadEventSignupButtons();
 
   const observer = createImpressionObserver();
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {

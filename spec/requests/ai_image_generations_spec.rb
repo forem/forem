@@ -145,7 +145,7 @@ RSpec.describe "AiImageGenerations" do
         expect(response).to have_http_status(:ok)
         # Check that the aesthetic instructions were included in the prompt
         expect(Ai::ImageGenerator).to have_received(:new).with(
-          /Style to use if not otherwise contradicted previously: #{aesthetic}/,
+          /Style to use if not otherwise contradicted by the request: #{aesthetic}/,
           anything
         )
       end
@@ -166,7 +166,7 @@ RSpec.describe "AiImageGenerations" do
         expect(response).to have_http_status(:ok)
         # Check that only the safety prompt was added, not any aesthetic instructions
         expect(Ai::ImageGenerator).to have_received(:new).with(
-          /^#{Regexp.escape(valid_params[:prompt])}\.\n\nDo not under any circumstances/,
+          /^Generate an image of: #{Regexp.escape(valid_params[:prompt])}\.\n\nDo not under any circumstances/,
           anything
         )
       end
@@ -199,7 +199,7 @@ RSpec.describe "AiImageGenerations" do
         expect(response).to have_http_status(:ok)
         # Should fall back to default subforem's aesthetic
         expect(Ai::ImageGenerator).to have_received(:new).with(
-          /Style to use if not otherwise contradicted previously: #{Regexp.escape(default_aesthetic)}/,
+          /Style to use if not otherwise contradicted by the request: #{Regexp.escape(default_aesthetic)}/,
           anything
         )
       end
@@ -225,6 +225,16 @@ RSpec.describe "AiImageGenerations" do
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to eq(I18n.t("ai_image_generations_controller.generation_failed"))
+      end
+
+      it "asks the user to rephrase when the model refuses the prompt" do
+        generator = instance_double(Ai::ImageGenerator, generate: nil, failure_reason: :refused)
+        allow(Ai::ImageGenerator).to receive(:new).and_return(generator)
+
+        post "/ai_image_generations", headers: headers, params: valid_params.to_json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to eq(I18n.t("ai_image_generations_controller.generation_refused"))
       end
 
       it "handles timeout errors gracefully" do

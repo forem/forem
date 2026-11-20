@@ -201,6 +201,22 @@ module Settings
             default: "This is a premium feature. Contact our partnerships team to learn more."
     setting :org_features_cta_url, type: :string
 
+    # High-water mark (ISO8601 date string) for Badges::AwardContributorFromGithub.
+    # It records the most recent "merged before" date the job has already scanned
+    # for candidate PR authors. Hourly runs only scan merged PRs from this date
+    # forward, then advance it, so the job never re-reads the full repo history.
+    # Blank means "not yet backfilled" - the rake task does the one-time full
+    # history walk and sets this; until then, hourly runs fall back to a short
+    # recent window so a fresh instance still works.
+    setting :github_contributor_prs_scanned_through, type: :string, default: ""
+
+    # User ids (as strings) whose per-user merged-PR search in
+    # Badges::AwardContributorFromGithub has not completed yet - e.g. the run ran
+    # out of Search API budget after awarding them a baseline badge. Hourly runs
+    # retry these before applying the "already holds a badge" skip, and an id is
+    # removed only once its search completes (or can no longer change anything).
+    setting :github_contributor_pending_pr_search_user_ids, type: :array, default: %w[]
+
     def self.algolia_search_enabled?
       algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
     end

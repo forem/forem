@@ -159,5 +159,24 @@ RSpec.describe "/admin" do
       json = response.parsed_body
       expect(json["period"]).to eq(7)
     end
+
+    it "caches stats per period to avoid repeating aggregate count queries", :aggregate_failures do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      stats_service = instance_double(Admin::StatsData, call: {
+                                        published_posts: 4,
+                                        comments: 9,
+                                        public_reactions: 12,
+                                        new_users: 3,
+                                        period: 7
+                                      })
+      allow(Admin::StatsData).to receive(:new).with(7).and_return(stats_service)
+
+      get admin_stats_path
+      get admin_stats_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["published_posts"]).to eq(4)
+      expect(Admin::StatsData).to have_received(:new).with(7).once
+    end
   end
 end

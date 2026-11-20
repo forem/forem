@@ -12,8 +12,10 @@ class CommunityController < ApplicationController
     # Get current subforem
     subforem_id = RequestStore.store[:subforem_id]
     root_subforem_id = RequestStore.store[:root_subforem_id]
-    @current_subforem = Subforem.find_by(id: subforem_id) if subforem_id
-    @is_root_subforem = subforem_id.present? && subforem_id == root_subforem_id
+    unless Subforem.disabled_by_env?
+      @current_subforem = Subforem.find_by(id: subforem_id) if subforem_id
+      @is_root_subforem = subforem_id.present? && subforem_id == root_subforem_id
+    end
     
     if @is_root_subforem
       # For root subforem: Show discoverable subforems instead of tags
@@ -68,7 +70,7 @@ class CommunityController < ApplicationController
       .limit(8)
     
     # Get key pages for this subforem
-    @key_pages = Page.where(subforem_id: RequestStore.store[:subforem_id]).where(is_top_level_path: true).limit(6)
+    @key_pages = Page.from_subforem.where(is_top_level_path: true).limit(6)
     
     # Get welcome article if it exists
     @welcome_article = Article.cached_admin_published_with("welcome", subforem_id: RequestStore.store[:subforem_id]) ||

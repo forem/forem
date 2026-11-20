@@ -2,9 +2,21 @@ require "rails_helper"
 
 RSpec.describe Articles::Updater, type: :service do
   let(:user) { create(:user) }
-  let!(:article) { create(:article, user: user) }
+  let(:article) { create(:article, user: user) }
   let(:attributes) { { body_markdown: "sample" } }
   let(:draft) { create(:article, user: user, published: false, published_at: nil) }
+
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    elsif %i[unpublished_article published_article].include?(name)
+      options[:tag_list] = "" unless options.key?(:tag_list)
+    end
+    super
+  end
 
   before do
     allow(ENV).to receive(:[]).and_call_original
@@ -12,10 +24,11 @@ RSpec.describe Articles::Updater, type: :service do
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
   end
 
-  it "updates an article" do
-    described_class.call(user, article, attributes)
-    article.reload
-    expect(article.body_markdown).to eq("sample")
+  it "updates an article and returns a decorated success result", :aggregate_failures do
+    result = described_class.call(user, article, attributes)
+    expect(result.success).to be true
+    expect(result.article).to be_a(ArticleDecorator)
+    expect(article.reload.body_markdown).to eq("sample")
   end
 
   it "sets a collection" do
@@ -105,13 +118,7 @@ RSpec.describe Articles::Updater, type: :service do
   end
 
   describe "result" do
-    it "returns success when saved" do
-      result = described_class.call(user, article, attributes)
-      expect(result.success).to be true
-      expect(result.article).to be_a(ArticleDecorator)
-    end
-
-    it "returns not success when not saved" do
+    it "returns not success when not saved", :aggregate_failures do
       invalid_attributes = { body_markdown: nil }
       result = described_class.call(user, article, invalid_attributes)
       expect(result.success).to be false
@@ -154,92 +161,64 @@ RSpec.describe Articles::Updater, type: :service do
     end
 
     context "when an article is being updated (published => published)" do
-      it "doesn't update published_at" do
+      it "doesn't update published_at and delegates to Mentions::CreateAll to create mentions", :aggregate_failures do
+        allow(Mentions::CreateAll).to receive(:call)
         attributes[:published] = true
         article.update_column(:published_at, past_time)
-        described_class.call(user, article, attributes)
-        article.reload
-        expect(article.published_at).to be_within(1.second).of(past_time)
-      end
 
-      it "delegates to the Mentions::CreateAll service to create mentions" do
-        allow(Mentions::CreateAll).to receive(:call)
         described_class.call(user, article, attributes)
+
+        expect(article.reload.published_at).to be_within(1.second).of(past_time)
         expect(Mentions::CreateAll).to have_received(:call).with(article)
       end
     end
 
     context "when an article is being republished" do
-      it "doesn't update past published_at" do
+      it "doesn't update past published_at even when a new published_at is passed via params or frontmatter",
+         :aggregate_failures do
         draft.update_column(:published_at, past_time)
-        attributes[:published] = true
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published).to be true
+        described_class.call(user, draft, attributes.merge(published: true))
+        expect(draft.reload.published).to be true
         expect(draft.published_at).to be_within(1.second).of(past_time)
-      end
 
-      it "doesn't update future published_at" do
-        draft.update_column(:published_at, future_time)
-        attributes[:published] = true
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published).to be true
-        expect(draft.published_at).to be_within(1.second).of(future_time)
-      end
-
-      it "updates future published_at if new published_at is passed" do
-        draft.update_column(:published_at, future_time)
-        attributes[:published] = true
-        new_published_at = 1.day.from_now
-        attributes[:published_at] = new_published_at
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published).to be true
-        expect(draft.published_at).to be_within(1.minute).of(new_published_at)
-      end
-
-      it "doesn't update past published_at if new published_at is passed" do
-        draft.update_column(:published_at, past_time)
-        attributes[:published] = true
-        new_published_at = 1.day.from_now
-        attributes[:published_at] = new_published_at
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published).to be true
+        draft.update_column(:published, false)
+        described_class.call(user, draft, attributes.merge(published: true, published_at: 1.day.from_now))
+        expect(draft.reload.published).to be true
         expect(draft.published_at).to be_within(1.second).of(past_time)
-      end
 
-      it "doesn't update published at when it is passed from frontmatter" do
-        draft.update_columns(published_at: past_time)
+        draft.update_column(:published, false)
         published_at = 10.days.from_now.strftime("%d/%m/%Y %H:%M %z")
         body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
         \n---\n\nHey this is the article"
-        attributes = { body_markdown: body_markdown }
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published_at).to be_within(1.second).of(past_time)
+        described_class.call(user, draft, { body_markdown: body_markdown })
+        expect(draft.reload.published_at).to be_within(1.second).of(past_time)
       end
 
-      it "doesn't update published_at when published_at is passed and an article was exported" do
-        draft.update_columns(published_at: past_time, published_from_feed: true)
-        new_time = 10.days.from_now
-        attributes[:published_at] = new_time
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published_at).to be_within(1.second).of(past_time)
+      it "preserves future published_at unless a new published_at is passed", :aggregate_failures do
+        draft.update_column(:published_at, future_time)
+        described_class.call(user, draft, attributes.merge(published: true))
+        expect(draft.reload.published).to be true
+        expect(draft.published_at).to be_within(1.second).of(future_time)
+
+        draft.update_column(:published, false)
+        new_published_at = 1.day.from_now
+        described_class.call(user, draft, attributes.merge(published: true, published_at: new_published_at))
+        expect(draft.reload.published).to be true
+        expect(draft.published_at).to be_within(1.minute).of(new_published_at)
       end
 
-      it "doesn't update published_at when published_at is passed (from frontmatter) and an article was exported" do
+      it "doesn't update published_at for exported articles when published_at is passed via params or frontmatter",
+         :aggregate_failures do
         draft.update_columns(published_at: past_time, published_from_feed: true)
         new_time = 10.days.from_now
+        described_class.call(user, draft, attributes.merge(published_at: new_time))
+        expect(draft.reload.published_at).to be_within(1.second).of(past_time)
+
         new_pub_at = new_time.strftime("%d/%m/%Y %H:%M %z")
         body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{new_pub_at}\ndescription:\ntags: heytag
         \n---\n\nHey this is the article"
-        frontmatter_attributes = { body_markdown: body_markdown }
-        described_class.call(user, draft, frontmatter_attributes)
-        draft.reload
-        expect(draft.published_at).to be_within(1.second).of(past_time)
+        described_class.call(user, draft, { body_markdown: body_markdown })
+        expect(draft.reload.published_at).to be_within(1.second).of(past_time)
       end
     end
 
@@ -252,66 +231,45 @@ description:\ntags: heytag\n---\n\nHey this is the article"
         create(:article, user: user, body_markdown: markdown)
       end
 
-      it "doesn't remove published_at when it's not passed" do
-        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag
+      it "doesn't remove published_at when omitted or passed in frontmatter", :aggregate_failures do
+        body_without_date = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag
         \n---\n\nHey this is the article"
-        described_class.call(user, f_article, { body_markdown: body_markdown })
-        f_article.reload
-        expect(f_article.published_at).to be_within(1.minute).of(published_at)
-      end
+        described_class.call(user, f_article, { body_markdown: body_without_date })
+        expect(f_article.reload.published_at).to be_within(1.minute).of(published_at)
 
-      it "doesn't remove published_at when it's passed" do
-        body_markdown = "---\ntitle: Title\npublished: false\n
+        f_article.update_column(:published, true)
+        body_with_date = "---\ntitle: Title\npublished: false\n
         published_at: #{published_at_str}\ndescription:\ntags: heytag\n---\n\nHey this is the article"
-        described_class.call(user, f_article, { body_markdown: body_markdown })
-        f_article.reload
-        expect(f_article.published_at).to be_within(1.minute).of(published_at)
+        described_class.call(user, f_article, { body_markdown: body_with_date })
+        expect(f_article.reload.published_at).to be_within(1.minute).of(published_at)
       end
     end
 
     context "when an article is being unpublished" do
       before { attributes[:published] = false }
 
-      it "doesn't update published_at" do
+      it "preserves published_at, skips new notifications/mentions, and removes preexisting notifications",
+         :aggregate_failures do
         published_at = 1.day.ago
         article.update_column(:published_at, published_at)
-        described_class.call(user, article, attributes)
-        article.reload
-        expect(article.published_at).to be_within(1.second).of(published_at)
-      end
-
-      it "doesn't send any notifications" do
-        sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
-          described_class.call(user, article, attributes)
-        end
-      end
-
-      it "doesn't delegate to the Mentions::CreateAll service to create mentions" do
-        allow(Mentions::CreateAll).to receive(:call)
-        described_class.call(user, article, attributes)
-        expect(Mentions::CreateAll).not_to have_received(:call).with(article)
-      end
-
-      it "destroys the preexisting notifications" do
-        allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
-        described_class.call(user, article, attributes)
-        attrs = { notifiable_ids: article.id, notifiable_type: "Article", action: "Published" }
-        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(attrs)
-        # expect(ContextNotification).to have_received(:delete_all)
-      end
-
-      it "destroys preexisting co-author notifications" do
-        allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
-        described_class.call(user, article, attributes)
-        attrs = { notifiable_ids: article.id, notifiable_type: "Article", action: "CoAuthor" }
-        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(attrs)
-      end
-
-      it "destroys the preexisting context notifications" do
         create(:context_notification, context: article, action: "Published")
+        allow(Mentions::CreateAll).to receive(:call)
+        allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
+
         expect do
-          described_class.call(user, article, attributes)
+          sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+            described_class.call(user, article, attributes)
+          end
         end.to change(ContextNotification, :count).by(-1)
+
+        expect(article.reload.published_at).to be_within(1.second).of(published_at)
+        expect(Mentions::CreateAll).not_to have_received(:call).with(article)
+        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(
+          notifiable_ids: article.id, notifiable_type: "Article", action: "Published",
+        )
+        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(
+          notifiable_ids: article.id, notifiable_type: "Article", action: "CoAuthor",
+        )
       end
     end
 
@@ -319,8 +277,7 @@ description:\ntags: heytag\n---\n\nHey this is the article"
       it "doesn't update published_at" do
         attributes[:published] = false
         described_class.call(user, draft, attributes)
-        article.reload
-        expect(draft.published_at).to be_nil
+        expect(draft.reload.published_at).to be_nil
       end
     end
 
@@ -367,36 +324,18 @@ description:\ntags: heytag\n---\n\nHey this is the article"
     end
   end
 
-  context "when publishing a previously unpublished article" do
-    let(:attributes) { { published: true } }
-    let(:markdown) { "body text here, no frontmatter" }
+  describe "user segment refresh on publish state changes" do
     let(:unpublished) { create(:unpublished_article, user: user) }
 
-    it "refreshes user segments" do
-      described_class.call(user, unpublished, attributes)
-      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
-    end
-  end
-
-  context "when unpublished a previously published article" do
-    let(:attributes) { { published: false } }
-    let(:markdown) { "body text here, no frontmatter" }
-    let(:published) { create(:published_article, :past, user: user) }
-
-    it "does not refresh user segments" do
-      described_class.call(user, published, attributes)
+    it "refreshes user segments only when transitioning from unpublished to published", :aggregate_failures do
+      described_class.call(user, unpublished, { published_at: 5.days.from_now })
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
-    end
-  end
 
-  context "when setting published_at for a previously unpublished article" do
-    let(:attributes) { { published_at: 5.days.from_now } }
-    let(:markdown) { "body text here, no frontmatter" }
-    let(:unpublished) { create(:unpublished_article, user: user) }
+      described_class.call(user, unpublished, { published: true })
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id).once
 
-    it "does not refresh user segments" do
-      described_class.call(user, unpublished, attributes)
-      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+      described_class.call(user, unpublished, { published: false })
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).once
     end
   end
 
@@ -404,24 +343,40 @@ description:\ntags: heytag\n---\n\nHey this is the article"
     before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
 
     let(:checklist_user) { create(:user) }
-    let!(:draft) { create(:article, user: checklist_user, published: false, published_at: nil) }
+    let(:draft) { create(:article, user: checklist_user, published: false, published_at: nil) }
 
-    it "completes made_first_post when a draft is published" do
+    it "completes made_first_post only when a draft is published by a user registered within 28 days",
+       :aggregate_failures do
+      described_class.call(checklist_user, draft, { body_markdown: "updated content" })
+      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
+
       described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
       expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_present
     end
 
-    it "does not complete made_first_post when a draft is updated but not published" do
-      described_class.call(checklist_user, draft, { body_markdown: "updated content" })
-      expect(checklist_user.onboarding_checklist.reload.items["made_first_post"]).to be_nil
-    end
-
     it "does not query or complete made_first_post if the user registered more than 28 days ago" do
       checklist_user.update_column(:registered_at, 29.days.ago)
-      # Assert database is not hit for checklist
-      expect(checklist_user).not_to receive(:onboarding_checklist)
-      
+      allow(checklist_user).to receive(:onboarding_checklist)
+
       described_class.call(checklist_user, draft, { body_markdown: "updated content", published: true })
+
+      expect(checklist_user).not_to have_received(:onboarding_checklist)
+    end
+  end
+
+  describe "deadlock retry on update" do
+    it "retries updating the article when ActiveRecord::Deadlocked is raised" do
+      attempts = 0
+      allow(article).to receive(:update).and_wrap_original do |original, *args|
+        attempts += 1
+        raise ActiveRecord::Deadlocked, "PG::TRDeadlockDetected" if attempts == 1
+
+        original.call(*args)
+      end
+
+      result = described_class.call(user, article, attributes)
+      expect(result.success).to be(true)
+      expect(attempts).to eq(2)
     end
   end
 end

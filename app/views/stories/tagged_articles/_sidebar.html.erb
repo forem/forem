@@ -29,21 +29,24 @@
           </section>
         <% end %>
       <% end %>
-      <% if user_signed_in? && @moderators.present? %>
-        <section class="crayons-card crayons-card--secondary crayons-layout__content org-sidebar-widget mb-4">
-          <header class="crayons-card__header">
-            <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.mods") %></h3>
-          </header>
-          <div class="org-sidebar-widget-body">
-            <% @moderators.each do |user| %>
-              <div class="org-sidebar-widget-user-pic">
-                <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
-                </a>
-              </div>
-            <% end %>
-          </div>
-        </section>
+      <% if user_signed_in? %>
+        <% @moderators ||= @tag.tag_moderators.order(badge_achievements_count: :desc).select(:username, :profile_image, :id) %>
+        <% if @moderators.present? %>
+          <section class="crayons-card crayons-card--secondary crayons-layout__content org-sidebar-widget mb-4">
+            <header class="crayons-card__header">
+              <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.mods") %></h3>
+            </header>
+            <div class="org-sidebar-widget-body">
+              <% @moderators.each do |user| %>
+                <div class="org-sidebar-widget-user-pic">
+                  <a href="/<%= user.username %>" title="<%= user.username %>">
+                    <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
+                  </a>
+                </div>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
       <% end %>
       <div class="sidebar-data">
         <% if user_signed_in? %>
@@ -72,7 +75,7 @@
             </a>
           </div>
         <% elsif @tag.supported? %>
-          <% number_of_pages = [(@num_published_articles.to_f / @number_of_articles).ceil, 1].max %>
+          <% number_of_pages = [(@num_published_articles.to_f / @number_of_articles).ceil, 1].max.clamp(1, Stories::TaggedArticlesController::MAX_PAGE) %>
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
           <hr />
           <div class="olderposts-header fs-base fw-medium"><%= t("views.tags.sidebar.older", tag: @tag.name) %></div>
@@ -84,7 +87,7 @@
                   <a href="<%= tag_url(@tag, n) %>" class="olderposts-pagenumber"><%= n %></a>
               <% end %>
             <% end %>
-            <% if @page == 1 && number_of_pages > 100 %>
+            <% if @page == 1 && number_of_pages >= Stories::TaggedArticlesController::MAX_PAGE %>
               <div>
                 …<a href="<%= tag_url(@tag, 75) %>" class="olderposts-pagenumber">75</a>
                 …<a href="<%= tag_url(@tag, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>

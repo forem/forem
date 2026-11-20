@@ -20,6 +20,10 @@
         aspect-ratio: 1 / 1;
         background-color: var(--body-bg);
 
+        body.dark-theme & {
+          background-color: var(--base-80);
+        }
+
         .badge-image {
           object-fit: contain;
           width: 70%;
