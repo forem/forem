@@ -243,6 +243,23 @@ describe OpenGraph, :vcr, type: :service do
       expect(result).to be_nil
       expect(a_request(:any, "ftp://internal.example/file")).not_to have_been_made
     end
+
+    it "pins the resolved IP via SafeHttp::PinnedConnectionAdapter to prevent DNS rebinding" do
+      allow(HTTParty).to receive(:get).and_call_original
+      stub_request(:get, public_url).to_return(status: 200, body: "<html></html>")
+
+      result = instance.__send__(:safe_fetch_html, public_url)
+
+      expect(result).to eq("<html></html>")
+      expect(HTTParty).to have_received(:get).with(
+        public_url,
+        hash_including(
+          follow_redirects: false,
+          connection_adapter: SafeHttp::PinnedConnectionAdapter,
+          connection_adapter_options: { pinned_address: "203.0.113.10" },
+        ),
+      )
+    end
   end
 
   describe "#preferred_desc" do

@@ -109,6 +109,26 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
 
+  context "when both HEAD and fallback GET return 405 Method Not Allowed" do
+    let(:link) { "https://takeonrules.com/always-405" }
+
+    before do
+      allow(described_class).to receive(:validate_link).and_call_original
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with("takeonrules.com", nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+      stub_request(:head, link).to_return(status: 405)
+      stub_request(:get, link).to_return(status: 405)
+    end
+
+    it "raises an error without recursing past the GET fallback" do
+      expect do
+        described_class.validate_link(input: link)
+      end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
+      expect(described_class).to have_received(:validate_link).twice
+    end
+  end
+
   it "repeats validation when link returns redirect", :vcr do
     link = "https://bit.ly/hoagintake"
 
@@ -344,11 +364,12 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         
         # Stub DNS resolution
         allow(Addrinfo).to receive(:getaddrinfo).with("example.com", nil, nil, :STREAM)
-          .and_return([double(ip_address: "93.184.216.34")])
+          .and_return([double(ip_address: "203.0.113.34")])
         
-        # Mock the HTTP object to verify timeouts are set
+        # Mock the HTTP object to verify timeouts and IP pinning are set
         http_mock = instance_double(Net::HTTP)
-        allow(Net::HTTP).to receive(:new).and_return(http_mock)
+        allow(Net::HTTP).to receive(:new).with("example.com", 443, nil).and_return(http_mock)
+        allow(http_mock).to receive(:ipaddr=).with("203.0.113.34")
         allow(http_mock).to receive(:use_ssl=)
         allow(http_mock).to receive(:open_timeout=).with(10)
         allow(http_mock).to receive(:read_timeout=).with(15)
@@ -356,6 +377,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         
         described_class.validate_link(input: link)
         
+        expect(http_mock).to have_received(:ipaddr=).with("203.0.113.34")
         expect(http_mock).to have_received(:open_timeout=).with(10)
         expect(http_mock).to have_received(:read_timeout=).with(15)
       end
@@ -372,8 +394,9 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         # Mock HTTP request to capture User-Agent
         http_mock = instance_double(Net::HTTP)
         request_mock = instance_double(Net::HTTP::Head)
-        allow(Net::HTTP).to receive(:new).and_return(http_mock)
+        allow(Net::HTTP).to receive(:new).with("example.com", 443, nil).and_return(http_mock)
         allow(Net::HTTP::Head).to receive(:new).and_return(request_mock)
+        allow(http_mock).to receive(:ipaddr=)
         allow(http_mock).to receive(:use_ssl=)
         allow(http_mock).to receive(:open_timeout=)
         allow(http_mock).to receive(:read_timeout=)

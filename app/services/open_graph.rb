@@ -90,62 +90,25 @@ class OpenGraph
     end
   end
 
-  # Fetches the HTML for a URL, manually following redirects and re-validating
-  # every Location header against the SSRF guard before issuing the next request.
-  # This prevents an attacker from using a redirect to bypass the private_ip? check
-  # that is applied during validate_link (which only guards the initial HEAD request).
-  def safe_fetch_html(url, hops_remaining: MAX_REDIRECT_HOPS)
-    if hops_remaining.negative?
-      Rails.logger.warn("[OpenGraph] Too many redirects fetching Open Graph metadata for #{url}")
-      return
-    end
-
-    uri = parse_safe_http_uri(url)
-    return unless uri
-
-    response = HTTParty.get(
+  # Fetches the HTML for a URL via SafeHttp, which validates every hop against
+  # the SSRF guard, pins each hop to its resolved IP to prevent DNS rebinding,
+  # and disables proxy discovery.
+  def safe_fetch_html(url)
+    response = SafeHttp.get(
       url,
-      follow_redirects: false,
+      max_redirects: MAX_REDIRECT_HOPS,
       timeout: 15,
       headers: { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" },
     )
+    return if response&.redirection?
 
-    return response&.body unless response&.redirection?
-
-    location = response.headers["location"]
-    return if location.blank?
-
-    # Resolve relative redirects against the current URL.
-    next_url = begin
-      URI.join(url, location).to_s
-    rescue URI::Error
-      location
-    end
-
-    next_uri = parse_safe_http_uri(next_url)
-    return unless next_uri
-
-    safe_fetch_html(next_url, hops_remaining: hops_remaining - 1)
-  end
-
-  def parse_safe_http_uri(url)
-    uri = begin
-      URI.parse(url)
-    rescue URI::Error
-      nil
-    end
-
-    if uri.blank? || %w[http https].exclude?(uri.scheme)
-      Rails.logger.warn("[OpenGraph] Blocked invalid or non-HTTP URL: #{url}")
-      return
-    end
-
-    if UnifiedEmbed::Tag.private_ip?(uri.host)
-      Rails.logger.warn("[OpenGraph] Blocked request to private/internal host: #{uri.host}")
-      return
-    end
-
-    uri
+    response&.body
+  rescue SafeHttp::TooManyRedirectsError
+    Rails.logger.warn("[OpenGraph] Too many redirects fetching Open Graph metadata")
+    nil
+  rescue SafeHttp::BlockedUrlError
+    Rails.logger.warn("[OpenGraph] Blocked unsafe URL while fetching Open Graph metadata")
+    nil
   end
 
   def group(data)

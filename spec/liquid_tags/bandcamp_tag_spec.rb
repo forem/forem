@@ -19,11 +19,18 @@ RSpec.describe BandcampTag, type: :liquid_tag do
     end
 
     before do
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      %w[caribouband.bandcamp.com failartist.bandcamp.com attacker.bandcamp.com].each do |host|
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with(host, nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+      end
+
       allow(HTTParty).to receive(:get).and_call_original
 
       allow(HTTParty).to receive(:get)
         .with(album_url_caribou, anything)
-        .and_return(instance_double(HTTParty::Response, success?: true, code: 200, body: <<~HTML
+        .and_return(instance_double(HTTParty::Response, success?: true, code: 200, try: false, body: <<~HTML
           <html><head>
             <meta name="bc-page-properties" content='{"item_type":"album","item_id":#{album_id_caribou}}'>
           </head></html>
@@ -32,7 +39,7 @@ RSpec.describe BandcampTag, type: :liquid_tag do
 
       allow(HTTParty).to receive(:get)
         .with(track_url_caribou, anything)
-        .and_return(instance_double(HTTParty::Response, success?: true, code: 200, body: <<~HTML
+        .and_return(instance_double(HTTParty::Response, success?: true, code: 200, try: false, body: <<~HTML
           <html><head>
             <meta name="bc-page-properties" content='{"item_type":"track","item_id":#{track_id_caribou_track},"album_id":#{album_id_caribou_for_track}}'>
           </head></html>
@@ -41,7 +48,7 @@ RSpec.describe BandcampTag, type: :liquid_tag do
 
       allow(HTTParty).to receive(:get)
         .with(fetch_failure_url, anything)
-        .and_return(instance_double(HTTParty::Response, success?: false, code: 404))
+        .and_return(instance_double(HTTParty::Response, success?: false, code: 404, try: false))
     end
 
     context "with a valid Bandcamp album URL" do
@@ -87,6 +94,44 @@ RSpec.describe BandcampTag, type: :liquid_tag do
       it "returns an error message" do
         output = generate_liquid_output(fetch_failure_url)
         expect(output).to include("Could not get sufficient embed data")
+      end
+    end
+
+    context "with SSRF protection" do
+      let(:redirecting_url) { "https://attacker.bandcamp.com/album/custom-domain" }
+      let(:metadata_url) { "http://169.254.169.254/latest/meta-data/" }
+      let(:loopback_url) { "http://127.0.0.1:8080/internal" }
+
+      it "blocks redirects to cloud metadata endpoints without requesting them" do
+        stub_request(:get, redirecting_url).to_return(status: 302, headers: { "Location" => metadata_url })
+        stub_request(:get, metadata_url).to_return(status: 200, body: "metadata")
+
+        output = generate_liquid_output(redirecting_url)
+
+        expect(output).to include("Could not get sufficient embed data")
+        expect(a_request(:get, metadata_url)).not_to have_been_made
+      end
+
+      it "blocks redirects to loopback addresses without requesting them" do
+        stub_request(:get, redirecting_url).to_return(status: 301, headers: { "Location" => loopback_url })
+        stub_request(:get, loopback_url).to_return(status: 200, body: "internal")
+
+        output = generate_liquid_output(redirecting_url)
+
+        expect(output).to include("Could not get sufficient embed data")
+        expect(a_request(:get, loopback_url)).not_to have_been_made
+      end
+
+      it "blocks a Bandcamp hostname resolving to a private IP" do
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with("attacker.bandcamp.com", nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "10.0.0.5")])
+        stub_request(:get, redirecting_url)
+
+        output = generate_liquid_output(redirecting_url)
+
+        expect(output).to include("Could not get sufficient embed data")
+        expect(a_request(:get, redirecting_url)).not_to have_been_made
       end
     end
   end
