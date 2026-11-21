@@ -34,6 +34,13 @@ module Admin
       last_moderation_notification last_notification_activity
     ].freeze
 
+    INDEX_ATTRIBUTES = (
+      ATTRIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY + %i[profile_image unspent_credits_count created_at]
+    ).freeze
+    USERS_PER_PAGE = 50
+    ORGANIZATIONS_FILTER_LIMIT = 100
+    MAX_PAGINATED_USERS = 10_000
+
     MODROLE_ACTIONS_TO_POLICIES = {
       user_status: :toggle_suspension_status?,
       unpublish_all_articles: :unpublish_all_articles?
@@ -696,22 +703,48 @@ new_email = user_params[:email].to_s.strip.presence
 
     private
 
+    # Prepares bounded user records, pagination counts, and filter organizations for the HTML index.
     def index_for_html
-      @users = Admin::UsersQuery.call(
-        relation: User.registered,
+      base_relation = User.registered
+      if params[:role].present?
+        base_relation = base_relation.where(id: User.with_role(params[:role], :any).select(:id))
+      end
+
+      users_scope = Admin::UsersQuery.call(
+        relation: base_relation,
         search: params[:search],
-        role: params[:role],
-        roles: params[:roles],
-        statuses: params[:statuses],
+        roles: params[:role].present? ? nil : params[:roles],
+        statuses: params[:role].present? ? nil : params[:statuses],
         joining_start: params[:joining_start],
         joining_end: params[:joining_end],
         date_format: params[:date_format],
         organizations: params[:organizations],
-      ).preload(:roles).page(params[:page]).per(50)
+      ).except(:distinct)
+
+      @users = users_scope.select(INDEX_ATTRIBUTES).preload(:roles, :organizations)
+        .page(params[:page]).per(USERS_PER_PAGE)
+      @users.load
+      unless (@users.current_page == 1 && @users.empty?) || (@users.any? && @users.length < @users.limit_value)
+        bounded_count = users_scope.except(:select, :order).limit(MAX_PAGINATED_USERS).count
+        @users.instance_variable_set(:@total_count, bounded_count)
+      end
 
       @organization_limit = 3
-      @organizations = Organization.order(name: :desc)
-      @earliest_join_date = User.first.registered_at.to_s
+      @organizations = load_filter_organizations
+      @organizations_by_id = @organizations.index_by { |org| org.id.to_s }
+      @earliest_join_date = User.order(:id).pick(:registered_at).to_s
+    end
+
+    # Returns up to ORGANIZATIONS_FILTER_LIMIT organizations plus any active organization filter selections.
+    def load_filter_organizations
+      orgs = Organization.select(:id, :name).order(name: :desc).limit(ORGANIZATIONS_FILTER_LIMIT).to_a
+      selected_ids = Array(params[:organizations]).map(&:to_s).compact_blank
+      return orgs if selected_ids.empty?
+
+      missing_ids = selected_ids - orgs.map { |org| org.id.to_s }
+      return orgs if missing_ids.empty?
+
+      orgs.concat(Organization.select(:id, :name).where(id: missing_ids).order(name: :desc).to_a)
     end
 
     def index_for_json

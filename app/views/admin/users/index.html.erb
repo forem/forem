@@ -51,7 +51,7 @@
                   </div>
                 </dl>
                 <div>
-                  <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations.first(@organization_limit), org_count: user.organizations.size %>
                 </div>
               </div>
             </article>
@@ -91,7 +91,7 @@
             </p>
           </td>
           <td>
-            <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
+            <%= render "admin/users/index/organizations", organizations: user.organizations.first(@organization_limit), org_count: user.organizations.size %>
           </td>
           <td>
             <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>

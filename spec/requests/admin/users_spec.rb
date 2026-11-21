@@ -75,6 +75,52 @@ RSpec.describe "/admin/member_manager/users" do
         get admin_users_path
         expect(filter_indicator).to be_nil
       end
+
+      it "preloads user organizations, bounds filter modal organizations, and avoids DISTINCT/N+1 queries",
+         :aggregate_failures do
+        stub_const("Admin::UsersController::ORGANIZATIONS_FILTER_LIMIT", 1)
+        stub_const("Admin::UsersController::USERS_PER_PAGE", 1)
+        org_a = create(:organization, name: "Alpha Org")
+        org_z = create(:organization, name: "Zulu Org")
+        create(:organization_membership, user: user, organization: org_a)
+        create(:organization_membership, user: admin, organization: org_z)
+
+        queries = []
+        subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+          next if payload[:name] == "SCHEMA"
+
+          queries << payload[:sql]
+        end
+
+        ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+          get admin_users_path, params: { organizations: [org_a.id.to_s, org_z.id.to_s] }
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(org_a.name), CGI.escapeHTML(org_z.name))
+
+        per_user_org_queries = queries.select do |sql|
+          sql.include?('FROM "organizations" INNER JOIN "organization_memberships"')
+        end
+        expect(per_user_org_queries).to be_empty
+
+        distinct_user_queries = queries.grep(/SELECT DISTINCT "users"|COUNT\(DISTINCT "users"\."id"\)/)
+        expect(distinct_user_queries).to be_empty
+
+        bounded_count_queries = queries.grep(/SELECT COUNT\(\*\) FROM \(SELECT 1 AS one FROM "users".*LIMIT/)
+        expect(bounded_count_queries.size).to eq(1)
+
+        user_list_queries = queries.select do |sql|
+          sql.include?('FROM "users"') &&
+            sql.include?('FROM "organization_memberships"') &&
+            sql.include?('ORDER BY "users"."created_at" DESC')
+        end
+        expect(user_list_queries).not_to be_empty
+        expect(user_list_queries.join(" ")).not_to include('"users".*', "encrypted_password", "secret")
+
+        org_filter_queries = queries.select { |sql| sql.include?('ORDER BY "organizations"."name" DESC') }
+        expect(org_filter_queries).to all(include('SELECT "organizations"."id", "organizations"."name"'))
+      end
     end
   end
 

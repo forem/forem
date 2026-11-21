@@ -1,6 +1,7 @@
 <% if organizations.any? %>
-    <figure class="crayons-hover-tooltip crayons-hover-tooltip--right p-1 border-solid border-1 border-base-20 radius-default bg-base-inverted w-fit" data-tooltip="<%= organization_tooltip(organizations.pluck(:name), org_count, imposed_limit: @organization_limit) %>">
-      <figcaption class="screen-reader-only"><%= organization_tooltip(organizations.pluck(:name), org_count, imposed_limit: @organization_limit) %></figcaption>
+    <% tooltip = organization_tooltip(organizations.map(&:name), org_count, imposed_limit: @organization_limit) %>
+    <figure class="crayons-hover-tooltip crayons-hover-tooltip--right p-1 border-solid border-1 border-base-20 radius-default bg-base-inverted w-fit" data-tooltip="<%= tooltip %>">
+      <figcaption class="screen-reader-only"><%= tooltip %></figcaption>
       <% organizations.each_with_index do |organization, index| %>
           <img src="<%= organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= organization.name %>" class="crayons-logo crayons-logo--l border-solid border-2 border-base-0 <%= index.positive? ? "-ml-4" : "" %>">
       <% end %>
