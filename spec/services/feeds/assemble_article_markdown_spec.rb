@@ -180,6 +180,17 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
 
   context "when parsing Medium posts with gist iframes" do
     let(:feed_source_url) { "https://medium.com/@author/my-post" }
+    let(:item_url) { "https://medium.com/@author/my-post" }
+    let(:item) do
+      instance_double(
+        Feedjira::Parser::RSSEntry,
+        title: title,
+        categories: %w[tag1 tag2 tag3 tag4 tag5],
+        published: "2020-12-20",
+        content: content,
+        url: item_url,
+      )
+    end
     let(:content) do
       <<~HTML
         <p>Before iframe</p>
@@ -196,11 +207,11 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
       end
 
       it "does not make outbound network requests to resolve gist iframes" do
-        allow(HTTParty).to receive(:head)
+        allow(SafeHttp).to receive(:head)
 
         body = feeds_assemble_article_markdown.call
         expect(body).not_to include("{% gist")
-        expect(HTTParty).not_to have_received(:head)
+        expect(SafeHttp).not_to have_received(:head)
       end
     end
 
@@ -216,21 +227,63 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
       end
 
       it "refuses to make HTTP requests to unauthorized hosts" do
-        allow(HTTParty).to receive(:head)
+        allow(SafeHttp).to receive(:head)
 
         feeds_assemble_article_markdown.call
-        expect(HTTParty).not_to have_received(:head)
+        expect(SafeHttp).not_to have_received(:head)
+      end
+    end
+
+    context "when a medium.com iframe link redirects to an internal address (redirect SSRF)" do
+      it "blocks the redirect target without issuing a request to it" do
+        internal_url = "http://169.254.169.254/latest/meta-data/"
+        allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with("medium.com", nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+        stub_request(:head, "https://medium.com/media/123/href")
+          .to_return(status: 302, headers: { "Location" => internal_url })
+        stub_request(:head, internal_url).to_return(status: 200)
+
+        body = feeds_assemble_article_markdown.call
+
+        expect(body).not_to include("{% gist")
+        expect(a_request(:head, "https://medium.com/media/123/href")).to have_been_made.once
+        expect(a_request(:head, internal_url)).not_to have_been_made
+      end
+    end
+
+    context "when a medium.com iframe link redirects to a GitHub gist" do
+      it "converts the iframe into a gist liquid tag" do
+        gist_url = "https://gist.github.com/author/abcdef"
+        allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with("medium.com", nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with("gist.github.com", nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "203.0.113.11")])
+        stub_request(:head, "https://medium.com/media/123/href")
+          .to_return(status: 302, headers: { "Location" => gist_url })
+        stub_request(:head, gist_url).to_return(status: 200)
+
+        body = feeds_assemble_article_markdown.call
+
+        expect(body).to include("{% gist #{gist_url} %}")
+        expect(a_request(:head, "https://medium.com/media/123/href")).to have_been_made.once
+        expect(a_request(:head, gist_url)).to have_been_made.once
       end
     end
 
     context "when feed host is not medium.com" do
       let(:feed_source_url) { "https://evil-medium.com/posts/1" }
+      let(:item_url) { "https://evil-medium.com/posts/1" }
 
       it "does not process gist iframes for non-medium domains" do
-        allow(HTTParty).to receive(:head)
+        allow(SafeHttp).to receive(:head)
 
         feeds_assemble_article_markdown.call
-        expect(HTTParty).not_to have_received(:head)
+        expect(SafeHttp).not_to have_received(:head)
       end
     end
   end

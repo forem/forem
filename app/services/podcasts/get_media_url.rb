@@ -7,6 +7,7 @@ module Podcasts
       SystemCallError,
       URI::InvalidURIError,
       OpenSSL::SSL::SSLError,
+      SafeHttp::Error,
     ].freeze
 
     TIMEOUT = 20
@@ -45,7 +46,7 @@ module Podcasts
 
     def url_reachable?(url)
       url = Addressable::URI.parse(url).normalize.to_s
-      HTTParty.head(url, timeout: TIMEOUT).code == 200
+      SafeHttp.head(url, timeout: TIMEOUT).code == 200
     rescue *HANDLED_ERRORS
       false
     end

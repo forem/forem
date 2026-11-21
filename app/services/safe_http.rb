@@ -1,5 +1,5 @@
-# Issues GET requests to user-supplied URLs only when every hop resolves to a
-# public address.
+# Issues GET and HEAD requests to user-supplied URLs only when every hop resolves
+# to a public address.
 #
 # HTTParty follows redirects on its own, so checking just the first URL is not
 # enough: a public host can redirect to an internal one. SafeHttp disables
@@ -15,6 +15,7 @@
 class SafeHttp
   MAX_REDIRECTS = 5
   ALLOWED_SCHEMES = %w[http https].freeze
+  PROXY_OPTIONS = %i[http_proxyaddr http_proxyport http_proxyuser http_proxypass].freeze
 
   Error = Class.new(HTTParty::Error)
   BlockedUrlError = Class.new(Error)
@@ -22,9 +23,15 @@ class SafeHttp
 
   # Connects to the pinned address instead of resolving the hostname again.
   # Net::HTTP keeps using the hostname for the Host header, TLS SNI and
-  # certificate verification.
+  # certificate verification. Disables proxy discovery so traffic cannot be
+  # routed around the validated IP.
   class PinnedConnectionAdapter < HTTParty::ConnectionAdapter
     def connection
+      if PROXY_OPTIONS.any? { |key| options[key].present? }
+        raise BlockedUrlError, "Proxy options are not supported by SafeHttp"
+      end
+
+      options[:http_proxyaddr] = nil
       http = super
       pinned_address = options.dig(:connection_adapter_options, :pinned_address)
       http.ipaddr = pinned_address if pinned_address
@@ -42,6 +49,21 @@ class SafeHttp
   # @raise [BlockedUrlError] when a URL is not http(s) or resolves to a non-public address
   # @raise [TooManyRedirectsError] when more than max_redirects redirects are encountered
   def self.get(url, max_redirects: MAX_REDIRECTS, validate_url: nil, **options, &block)
+    request(:get, url, max_redirects: max_redirects, validate_url: validate_url, **options, &block)
+  end
+
+  # @param url [String] the URL to probe
+  # @param max_redirects [Integer] how many redirects to follow before giving up
+  # @param validate_url [#call, nil] optional predicate checked against each URL before fetching
+  # @param options [Hash] passed through to HTTParty.head (follow_redirects is always false)
+  # @return [HTTParty::Response] the final, non-redirect response
+  # @raise [BlockedUrlError] when a URL is not http(s) or resolves to a non-public address
+  # @raise [TooManyRedirectsError] when more than max_redirects redirects are encountered
+  def self.head(url, max_redirects: MAX_REDIRECTS, validate_url: nil, **options)
+    request(:head, url, max_redirects: max_redirects, validate_url: validate_url, **options)
+  end
+
+  def self.request(method, url, max_redirects:, validate_url:, **options, &block)
     current_url = url.to_s
     # Cookies set by redirect responses in this chain, keyed by the host that set them.
     cookie_jars = {}
@@ -51,7 +73,12 @@ class SafeHttp
 
       uri, address = validate!(current_url)
 
-      response = HTTParty.get(current_url, **request_options(options, address, cookie_jars[uri.hostname]), &block)
+      response = HTTParty.public_send(
+        method,
+        current_url,
+        **request_options(options, address, cookie_jars[uri.hostname]),
+        &block
+      )
       return response unless response.try(:redirection?)
 
       location = response.headers["location"]
@@ -63,6 +90,7 @@ class SafeHttp
 
     raise TooManyRedirectsError, "Too many redirects fetching #{url}"
   end
+  private_class_method :request
 
   # @return [Array(URI::Generic, String)] the parsed URI and the address to connect to
   def self.validate!(url)
@@ -104,8 +132,13 @@ class SafeHttp
   private_class_method :resolve_addresses
 
   def self.request_options(options, address, cookie_jar)
+    if PROXY_OPTIONS.any? { |key| options[key].present? }
+      raise BlockedUrlError, "Proxy options are not supported by SafeHttp"
+    end
+
     request_options = options.merge(
       follow_redirects: false,
+      http_proxyaddr: nil,
       connection_adapter: PinnedConnectionAdapter,
       connection_adapter_options: { pinned_address: address },
     )

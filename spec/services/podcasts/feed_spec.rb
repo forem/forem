@@ -101,8 +101,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
       options = { timeout: Podcasts::GetMediaUrl::TIMEOUT }
       error = Errno::ECONNREFUSED
       allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast", **safe_http_options).and_raise(error)
-      allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3", options).and_raise(error)
-      allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3", options).and_raise(error)
+      allow(SafeHttp).to receive(:head).with("http://podcast.example.com/ep1.mp3", **options).and_raise(error)
+      allow(SafeHttp).to receive(:head).with("https://podcast.example.com/ep1.mp3", **options).and_raise(error)
 
       episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
       sidekiq_perform_enqueued_jobs { described_class.new(unpodcast).get_episodes }
