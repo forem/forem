@@ -2,18 +2,16 @@
 module ValidRequest
   extend ActiveSupport::Concern
 
-  # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
   def valid_request_origin?
     # This manually does what it was supposed to do on its own.
     # We were getting this issue:
     # HTTP Origin header (https://dev.to) didn't match request.base_url (http://dev.to)
     # Not sure why, but once we work it out, we can delete this method.
     # We are at least secure for now.
-    return if Rails.env.test?
+    return true if Rails.env.test?
 
     evaluate_request_origin
   end
-  # rubocop:enable Style/ReturnNilInPredicateMethodDefinition
 
   def evaluate_request_origin
     referer = request.referer
