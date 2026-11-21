@@ -90,6 +90,25 @@ RSpec.describe "Search", :proper_status do
       expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(page: 2, per_page: nil))
     end
 
+    it "ignores non-scalar sort_direction params instead of raising NoMethodError", :aggregate_failures do
+      allow(Homepage::FetchArticles).to receive(:call).and_return([])
+
+      get search_feed_content_path(homepage_params.merge(sort_direction: { nested: "desc" }))
+
+      expect(response).to have_http_status(:ok)
+      expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(sort_direction: nil))
+
+      get search_feed_content_path(homepage_params.merge(sort_direction: ["desc"]))
+
+      expect(response).to have_http_status(:ok)
+      expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(sort_direction: nil)).twice
+
+      get search_feed_content_path(homepage_params.merge(sort_direction: "ASC"))
+
+      expect(response).to have_http_status(:ok)
+      expect(Homepage::FetchArticles).to have_received(:call).with(hash_including(sort_direction: "ASC"))
+    end
+
     it "parses published_at correctly", :aggregate_failures do
       article = create(:article, user: authorized_user, with_tags: false)
       get search_feed_content_path(homepage_params.merge(published_at: { gte: article.published_at.iso8601 }))
