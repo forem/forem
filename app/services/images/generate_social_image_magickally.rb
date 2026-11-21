@@ -112,14 +112,15 @@ module Images
       when User
         @user = @resource
         update_user_social_image(generate_image(@user, @user.setting.brand_color1))
-        @resource.articles.published.where(organization_id: nil, main_image: nil).find_each do |article|
+        @resource.articles.published.where(organization_id: nil, main_image: nil, video_thumbnail_url: [nil, ""])
+          .find_each do |article|
           article.update_column(:social_image, generate_image(article, @user.setting.brand_color1))
         end
       else # Organization
         @user = @resource
         @resource.update_column(:social_image, generate_image(@resource, @user.bg_color_hex))
         EdgeCache::BustOrganization.call(@resource, @resource.slug)
-        @resource.articles.published.where(main_image: nil).find_each do |article|
+        @resource.articles.published.where(main_image: nil, video_thumbnail_url: [nil, ""]).find_each do |article|
           article.update_column(:social_image, generate_image(article, @user.bg_color_hex))
         end
       end
