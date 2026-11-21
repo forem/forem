@@ -1,0 +1,16 @@
+app/services/authentication/authenticator.rb
+  h_f968154a99632d 288-292,295-296,300,304-311
+spec/services/authentication/authenticator_spec.rb
+  h_f968154a99632d 1156,1158,1161,1183-1184,1186,1189-1190,1202-1205,1211-1213,1215,1230,1244,1250,1254-1283,1287-1289,1291,1306-1331,1337-1338,1340
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6114bd77b2fca6ce82dbe08a5c94d2d3f46291f7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
