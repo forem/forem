@@ -13,6 +13,12 @@ module Authentication
   # 3. return the current user if a user is given (already logged in scenario)
   class Authenticator
     MAX_RETRIES = 1
+    SYNTHETIC_USERNAME_FIELDS = %i[
+      apple_username
+      facebook_username
+      google_oauth2_username
+    ].freeze
+    private_constant :SYNTHETIC_USERNAME_FIELDS
 
     # @api public
     #
@@ -249,15 +255,10 @@ module Authentication
       suspended_user = Users::SuspendedUsername.previously_suspended?(username)
       raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
-      existing_user = User.find_by(
-        provider.user_username_field => username,
-      )
-      return existing_user if existing_user && provider.user_username_field != :apple_username
-
       User.new.tap do |user|
         user.assign_attributes(normalize_user_data(provider.new_user_data))
         ensure_profile_image(user)
-        user.apple_username = available_apple_username(user.apple_username) if existing_user
+        resolve_colliding_provider_username(user)
         user.assign_attributes(default_user_fields)
         user.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
 
@@ -284,12 +285,41 @@ module Authentication
       user.profile_image = Images::ProfileImageGenerator.call
     end
 
-    def available_apple_username(base_username)
+    # Resolve collisions on provider username columns so signup and subsequent
+    # sign-ins succeed without hitting unique indexes or overwriting another
+    # account's handle. Synthetic columns (Apple/Facebook/Google) truncate and
+    # are disambiguated with a numeric suffix; external handles preserve their
+    # previous value or stay unset until available.
+    def resolve_colliding_provider_username(user)
+      field = provider.user_username_field
+      return if user.persisted? && !user.will_save_change_to_attribute?(field)
+
+      provider_username = user.public_send(field).presence
+      return unless provider_username && provider_username_taken?(user, field, provider_username)
+
+      replacement = colliding_provider_username_replacement(user, field, provider_username)
+      user.public_send(:"#{field}=", replacement)
+    end
+
+    def colliding_provider_username_replacement(user, field, provider_username)
+      previous_username = user.persisted? ? user.attribute_in_database(field) : nil
+      return previous_username if previous_username.present?
+      return available_provider_username(field, provider_username) if SYNTHETIC_USERNAME_FIELDS.include?(field)
+
+      nil
+    end
+
+    def provider_username_taken?(user, field, provider_username)
+      scope = user.persisted? ? User.where.not(id: user.id) : User.all
+      scope.exists?(field => provider_username)
+    end
+
+    def available_provider_username(field, base_username)
       suffix = 1
       loop do
         suffix_str = "_#{suffix}"
         candidate = "#{base_username[0...(25 - suffix_str.length)]}#{suffix_str}"
-        return candidate unless User.exists?(apple_username: candidate)
+        return candidate unless User.exists?(field => candidate)
 
         suffix += 1
       end
@@ -322,6 +352,7 @@ module Authentication
           model.assign_attributes(provider.existing_user_data)
         end
 
+        resolve_colliding_provider_username(model)
         ensure_profile_image(model)
         update_profile_updated_at(model)
 

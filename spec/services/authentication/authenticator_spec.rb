@@ -1070,16 +1070,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         end
       end
 
-      first_find = true
-      allow(User).to receive(:find_by).and_wrap_original do |original, *args|
-        if first_find && args.first == { github_username: auth_payload.info.nickname }
-          first_find = false
-          nil
-        else
-          original.call(*args)
-        end
-      end
-
       first_save = true
       allow(User).to receive(:new).and_wrap_original do |original, *args|
         user_instance = original.call(*args)
@@ -1134,16 +1124,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         end
       end
 
-      first_find = true
-      allow(User).to receive(:find_by).and_wrap_original do |original, *args|
-        if first_find && args.first == { github_username: auth_payload.info.nickname }
-          first_find = false
-          nil
-        else
-          original.call(*args)
-        end
-      end
-
       authenticated_user = service.call
 
       expect(authenticated_user).to eq(concurrent_user)
@@ -1164,6 +1144,209 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       tags = hash_including(tags: array_including("error:ActiveRecord::RecordNotUnique"))
       expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags).once
+    end
+  end
+
+  describe "colliding provider usernames" do
+    let(:long_display_name) { "Alexandria Montgomery-Smith" }
+
+    it "does not match an existing user by colliding google_oauth2_username when uid and email do not match",
+       :aggregate_failures do
+      auth_payload = OmniAuth.config.mock_auth[:google_oauth2].deep_dup
+      auth_payload.uid = "google-new-uid-999"
+      auth_payload.info.name = long_display_name
+      auth_payload.info.email = "new-google@example.com"
+
+      colliding_username = Authentication::Providers::GoogleOauth2.new(auth_payload).user_nickname
+      existing_user = create(:user, email: "existing-google@example.com", google_oauth2_username: colliding_username)
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).not_to eq(existing_user)
+      expect(authenticated_user.google_oauth2_username).to be_present
+      expect(authenticated_user.google_oauth2_username).not_to eq(colliding_username)
+      expect(Identity.find_by(provider: "google_oauth2", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      expect(existing_user.identities.where(provider: "google_oauth2")).to be_empty
+
+      disambiguated_username = authenticated_user.google_oauth2_username
+      expect(described_class.call(auth_payload)).to eq(authenticated_user)
+      expect(authenticated_user.reload.google_oauth2_username).to eq(disambiguated_username)
+      expect(existing_user.reload.google_oauth2_username).to eq(colliding_username)
+    end
+
+    it "does not match an existing user by colliding facebook_username when uid and email do not match",
+       :aggregate_failures do
+      auth_payload = OmniAuth.config.mock_auth[:facebook].deep_dup
+      auth_payload.uid = "facebook-new-uid-999"
+      auth_payload.extra.raw_info.id = "facebook-new-uid-999"
+      auth_payload.info.name = long_display_name
+      auth_payload.info.email = "new-facebook@example.com"
+
+      colliding_username = Authentication::Providers::Facebook.new(auth_payload).user_nickname
+      existing_user = create(:user, email: "existing-facebook@example.com", facebook_username: colliding_username)
+      create(:user, email: "other-facebook@example.com", facebook_username: long_display_name)
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).not_to eq(existing_user)
+      expect(authenticated_user.facebook_username).to be_present
+      expect(authenticated_user.facebook_username).not_to eq(colliding_username)
+      expect(Identity.find_by(provider: "facebook", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      expect(existing_user.identities.where(provider: "facebook")).to be_empty
+
+      disambiguated_username = authenticated_user.facebook_username
+      expect(described_class.call(auth_payload)).to eq(authenticated_user)
+      expect(authenticated_user.reload.facebook_username).to eq(disambiguated_username)
+    end
+
+    it "does not match an existing user by colliding github_username when uid and email do not match",
+       :aggregate_failures do
+      auth_payload = OmniAuth.config.mock_auth[:github].deep_dup
+      auth_payload.uid = "github-new-uid-999"
+      auth_payload.info.nickname = "shared_gh_handle"
+      auth_payload.info.email = "new-github@example.com"
+
+      existing_user = create(:user, email: "existing-github@example.com", github_username: "shared_gh_handle")
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).not_to eq(existing_user)
+      expect(authenticated_user.github_username).to be_nil
+      expect(Identity.find_by(provider: "github", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      expect(existing_user.identities.where(provider: "github")).to be_empty
+
+      reauthenticated_user = described_class.call(auth_payload)
+      expect(reauthenticated_user).to eq(authenticated_user)
+      expect(reauthenticated_user.reload.github_username).to be_nil
+      expect(existing_user.reload.github_username).to eq("shared_gh_handle")
+    end
+
+    it "preserves an existing user's github_username when a refreshed handle collides with another user",
+       :aggregate_failures do
+      other_user = create(:user, email: "other-github@example.com", github_username: "taken_gh_handle")
+      auth_payload = OmniAuth.config.mock_auth[:github].deep_dup
+      auth_payload.uid = "github-linked-uid-123"
+      auth_payload.info.nickname = "original_gh_handle"
+      auth_payload.info.email = "linked-github@example.com"
+
+      linked_user = described_class.call(auth_payload)
+      expect(linked_user.github_username).to eq("original_gh_handle")
+
+      linked_user.update_column(:profile_updated_at, 2.years.ago)
+      auth_payload.info.nickname = "taken_gh_handle"
+      reauthenticated_user = described_class.call(auth_payload)
+
+      expect(reauthenticated_user).to eq(linked_user)
+      expect(reauthenticated_user.reload.github_username).to eq("original_gh_handle")
+      expect(reauthenticated_user.profile_updated_at).to be < 1.year.ago
+      expect(other_user.reload.github_username).to eq("taken_gh_handle")
+    end
+
+    it "skips collision lookups on returning sign-ins when the provider username is unchanged" do
+      auth_payload = OmniAuth.config.mock_auth[:github].deep_dup
+      auth_payload.uid = "github-unchanged-uid-123"
+      auth_payload.info.nickname = "unchanged_gh_handle"
+      auth_payload.info.email = "unchanged-github@example.com"
+
+      linked_user = described_class.call(auth_payload)
+      service = described_class.new(auth_payload)
+      allow(service).to receive(:provider_username_taken?).and_call_original
+
+      expect(service.call).to eq(linked_user)
+      expect(service).not_to have_received(:provider_username_taken?)
+    end
+
+    it "disambiguates a colliding apple_username when linking Apple to an existing account",
+       :aggregate_failures do
+      create(:user, email: "other-apple@example.com", apple_username: "alex")
+      existing_user = create(:user, email: "existing-apple@example.com", apple_username: nil)
+
+      auth_payload = OmniAuth.config.mock_auth[:apple].deep_dup
+      auth_payload.uid = "apple-linked-uid-123"
+      auth_payload.info.email = existing_user.email
+      auth_payload.info.first_name = "Alex"
+
+      authenticated_user = described_class.call(auth_payload)
+
+      expect(authenticated_user).to eq(existing_user)
+      expect(authenticated_user.reload.apple_username).to eq("alex_1")
+    end
+
+    it "does not match an existing user by colliding twitter_username when uid and email do not match",
+       :aggregate_failures do
+      auth_payload = OmniAuth.config.mock_auth[:twitter].deep_dup
+      auth_payload.uid = "twitter-new-uid-999"
+      auth_payload.info.nickname = "shared_tw_handle"
+      auth_payload.info.email = "new-twitter@example.com"
+
+      existing_user = create(:user, email: "existing-twitter@example.com", twitter_username: "shared_tw_handle")
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).not_to eq(existing_user)
+      expect(authenticated_user.twitter_username).to be_nil
+      expect(Identity.find_by(provider: "twitter", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      expect(existing_user.identities.where(provider: "twitter")).to be_empty
+
+      reauthenticated_user = described_class.call(auth_payload)
+      expect(reauthenticated_user).to eq(authenticated_user)
+      expect(reauthenticated_user.reload.twitter_username).to be_nil
+      expect(existing_user.reload.twitter_username).to eq("shared_tw_handle")
+    end
+
+    it "does not match an existing user by colliding forem_username when uid and email do not match",
+       :aggregate_failures do
+      auth_payload = OmniAuth.config.mock_auth[:forem].deep_dup
+      auth_payload.uid = "forem-new-uid-999"
+      auth_payload.info.user_nickname = "shared_forem_handle"
+      auth_payload.info.email = "new-forem@example.com"
+
+      existing_user = create(:user, email: "existing-forem@example.com", forem_username: "shared_forem_handle")
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).not_to eq(existing_user)
+      expect(authenticated_user.forem_username).to be_nil
+      expect(Identity.find_by(provider: "forem", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      expect(existing_user.identities.where(provider: "forem")).to be_empty
+
+      reauthenticated_user = described_class.call(auth_payload)
+      expect(reauthenticated_user).to eq(authenticated_user)
+      expect(reauthenticated_user.reload.forem_username).to be_nil
+      expect(existing_user.reload.forem_username).to eq("shared_forem_handle")
+    end
+
+    it "does not match an existing user by colliding mlh_username when uid and email do not match",
+       :aggregate_failures do
+      auth_payload = OmniAuth.config.mock_auth[:mlh].deep_dup
+      auth_payload.uid = "mlh-new-uid-999"
+      auth_payload.info.email = "shared_mlh@example.org"
+
+      existing_user = create(:user, email: "existing-mlh@example.com", mlh_username: "shared_mlh")
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).not_to eq(existing_user)
+      expect(Identity.find_by(provider: "mlh", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      expect(existing_user.identities.where(provider: "mlh")).to be_empty
     end
   end
 end
