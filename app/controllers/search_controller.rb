@@ -251,7 +251,12 @@ class SearchController < ApplicationController
   def remove_invalid_sort_directions
     return unless params.key?(:sort_direction)
 
-    direction = params[:sort_direction].downcase.to_sym
-    params.delete(:sort_direction) unless direction.in?(VALID_SORT_DIRECTIONS)
+    value = params[:sort_direction]
+    if value.is_a?(String) || value.is_a?(Symbol)
+      direction = value.downcase.to_sym
+      params.delete(:sort_direction) unless direction.in?(VALID_SORT_DIRECTIONS)
+    else
+      params.delete(:sort_direction)
+    end
   end
 end
