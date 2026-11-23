@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :ahoy_decorate_payload
+  LATEST_NATIVE_SYMBOL = :serialize_api_articles_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -1180,6 +1180,53 @@ module ForemNative
       Native.aggregate_feed_config_counters(rows, lookback_days)
     end
 
+    # Encodes an integer ID in base 26 matching `Integer#to_s(26)` (e.g. `Comment#id_code_generated`).
+    def encode_base26_id(id)
+      return unless Native.respond_to?(:encode_base26_id)
+      return unless valid_i64_integer?(id)
+
+      Native.encode_base26_id(id)
+    end
+
+    # Formats UTC epoch seconds as `YYYY-MM-DDTHH:MM:SSZ` matching `Time.at(sec).utc.iso8601`.
+    # Returns `nil` for timestamps outside years `0000..=9999`.
+    def format_utc_iso8601(epoch_secs)
+      return unless Native.respond_to?(:format_utc_iso8601)
+      return unless valid_i64_integer?(epoch_secs)
+
+      Native.format_utc_iso8601(epoch_secs)
+    end
+
+    # Builds the nested API comment tree from flat comment & deduplicated user buffers, applies
+    # `max_depth` pruning and optional root pagination, and streams the Jbuilder-equivalent JSON
+    # payload plus included comment IDs `[json_string, included_ids]` in a single Rust pass.
+    def serialize_api_comments_json(
+      comments_flat,
+      users_flat,
+      labels,
+      max_depth:,
+      single_root: false,
+      root_offset: 0,
+      root_limit: nil,
+      escape_html_entities: true
+    )
+      return unless Native.respond_to?(:serialize_api_comments_json)
+      return unless comments_flat.is_a?(Array) && users_flat.is_a?(Array) && labels.is_a?(Array)
+      return unless valid_i64_integer?(max_depth) && valid_i64_integer?(root_offset)
+      return unless root_limit.nil? || valid_i64_integer?(root_limit)
+
+      Native.serialize_api_comments_json(
+        comments_flat,
+        users_flat,
+        labels,
+        max_depth,
+        single_root ? true : false,
+        root_offset,
+        root_limit,
+        escape_html_entities ? true : false,
+      )
+    end
+
     # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
     # in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
     def billboard_event_create_from_json_sql(json_body, user_id, geolocation, header_user_agent, is_embed, now_time)
@@ -1852,6 +1899,28 @@ module ForemNative
       Native.ahoy_decorate_payload(payload, app_domain, token, campaign, secret_token, external_base_url)
     end
 
+    # Formats a UTC Unix epoch timestamp into Forem's English `readable_publish_date`
+    # (`"%b %-e"` in `current_year`, `"%b %-d '%y"` otherwise). Returns `nil` when out of range.
+    def format_readable_publish_date(epoch_secs, current_year)
+      return unless Native.respond_to?(:format_readable_publish_date)
+      return unless valid_i64_integer?(epoch_secs) && valid_i64_integer?(current_year)
+
+      Native.format_readable_publish_date(epoch_secs, current_year)
+    end
+
+    # Single-pass streaming JSON serializer for `/api/articles` (v0 & v1).
+    # Accepts flat article, user, organization, flare-tag, base-URL, and config Arrays
+    # and returns the encoded JSON String, or `nil` when any entry falls outside the
+    # strict fast-path domain and should fall back to Ruby.
+    def serialize_api_articles_json(articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, config)
+      return unless Native.respond_to?(:serialize_api_articles_json)
+      return unless articles_flat.is_a?(Array) && users_flat.is_a?(Array) &&
+        orgs_flat.is_a?(Array) && flare_tags_flat.is_a?(Array) &&
+        base_urls.is_a?(Array) && config.is_a?(Array)
+
+      Native.serialize_api_articles_json(articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, config)
+    end
+
     private
 
     def coerce_social_canvas(image)
@@ -1906,6 +1975,10 @@ module ForemNative
       defined?(ForemNative::Native) && (!require_symbol || Native.respond_to?(require_symbol)) ? true : false
     rescue LoadError
       require_candidate_binary(require_symbol: require_symbol)
+    end
+
+    def valid_i64_integer?(value)
+      value.is_a?(Integer) && value >= -2**63 && value < 2**63
     end
   end
 end

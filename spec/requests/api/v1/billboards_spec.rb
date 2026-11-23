@@ -56,13 +56,31 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "page_id", "counts_tabulated_at",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "prefer_paired_with_billboard_id", "custom_display_label", "template", "render_mode",
-                          "preferred_article_ids", "priority", "weight", "target_geolocations",
+                          "isolate_content", "preferred_article_ids", "priority", "weight", "target_geolocations",
                           "requires_cookies", "special_behavior", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
                           "seconds_visible", "max_impressions_count", "max_clicks_count",
                           "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
+        expect(response.parsed_body["isolate_content"]).to be(false)
+      end
+
+      it "accepts isolate_content when creating and updating a billboard", :aggregate_failures do
+        post api_billboards_path,
+             params: billboard_params.merge(render_mode: "raw", isolate_content: true).to_json,
+             headers: auth_header
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body["isolate_content"]).to be(true)
+
+        billboard_id = response.parsed_body["id"]
+        put api_billboard_path(billboard_id),
+            params: { isolate_content: false }.to_json,
+            headers: auth_header
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["isolate_content"]).to be(false)
       end
 
       it "also accepts target geolocations as an array" do
@@ -81,7 +99,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id", "prefer_paired_with_billboard_id",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
-                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
+                          "custom_display_label", "template", "render_mode", "isolate_content",
+                          "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies",
                           "special_behavior", "expires_at", "exclude_survey_completions", "exclude_survey_ids",
                           "content_updated_at", "tags_array", "event_id",
@@ -165,7 +184,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids", "requires_cookies", "page_id",
                           "audience_segment_type", "audience_segment_id", "special_behavior",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
-                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
+                          "custom_display_label", "template", "render_mode", "isolate_content",
+                          "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",

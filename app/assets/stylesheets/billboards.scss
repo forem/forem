@@ -52,6 +52,14 @@
   max-width: 100%;
 }
 
+:where(.billboard-shadow-host) {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  isolation: isolate;
+  contain: layout style;
+}
+
 :where(
   .crayons-bb--plain,
   .text-styles--billboard:not(.popover-billboard__content)

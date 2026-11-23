@@ -528,6 +528,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                                      description: "Locations to show this billboard in (blank means it will be shown in all locations). Specified as a comma-separated list or array of ISO 3166-2 country and optionally region codes)" },
               display_to: { type: :string, enum: Billboard.display_tos.keys, default: "all",
                             description: "Potentially limits visitors to whom the ad is visible" },
+              render_mode: { type: :string, enum: Billboard.render_modes.keys, default: "forem_markdown",
+                             description: "Controls whether body_markdown is rendered as Forem Markdown or raw HTML" },
+              isolate_content: { type: :boolean, default: false,
+                                 description: "When true for raw billboards, wraps content in an open Shadow DOM and scoped JS sandbox" },
               type_of: { type: :string, enum: Billboard.type_ofs.keys, default: "in_house",
                          description: <<~DESCRIBE
                            Types of the billboards:

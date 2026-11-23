@@ -34,4 +34,21 @@ RSpec.describe PodcastTag, type: :liquid_tag do
       generate_podcast_liquid_tag("https://dev.to/toolsday/hardware/test/2")
     end.to raise_error(StandardError)
   end
+
+  it "raises error for an unpublished podcast" do
+    unpublished_podcast = create(:podcast, published: false)
+    episode = create(:podcast_episode, podcast: unpublished_podcast)
+
+    expect do
+      generate_podcast_liquid_tag("/#{unpublished_podcast.slug}/#{episode.slug}")
+    end.to raise_error(StandardError)
+  end
+
+  it "raises error for an unreachable podcast episode" do
+    unreachable_episode = create(:podcast_episode, podcast: podcast, reachable: false)
+
+    expect do
+      generate_podcast_liquid_tag("/#{podcast.slug}/#{unreachable_episode.slug}")
+    end.to raise_error(StandardError)
+  end
 end

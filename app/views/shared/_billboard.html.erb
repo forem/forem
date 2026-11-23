@@ -35,6 +35,13 @@
     min-width: 0;
     max-width: 100%;
   }
+  :where(.billboard-shadow-host) {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    isolation: isolate;
+    contain: layout style;
+  }
   :where(.crayons-bb--plain, .text-styles--billboard:not(.popover-billboard__content)) {
     overflow-x: clip;
     overflow-clip-margin: 4px;
@@ -71,7 +78,7 @@
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of_display %>">
-      <%= billboard.processed_html_final.html_safe %>
+      <%= billboard_body_html(billboard) %>
   </div>
 <% elsif billboard.placement_area.start_with?("feed_") %>
   <div class="crayons-story crayons-story__billboard bb-placement js-billboard"
@@ -97,7 +104,7 @@
       </div>
       <div class="crayons-story__indention-billboard">
         <div class="text-styles text-styles--billboard">
-          <%= billboard.processed_html_final.html_safe %>
+          <%= billboard_body_html(billboard) %>
         </div>
       </div>
     </div>
@@ -122,7 +129,7 @@
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
-      <%= billboard.processed_html_final.html_safe %>
+      <%= billboard_body_html(billboard) %>
     </div>
   </div>
 <% elsif billboard.placement_area == "post_fixed_bottom" || billboard.placement_area == "page_fixed_bottom" %>
@@ -155,7 +162,7 @@
       </button>
     </div>
     <div class="popover-billboard__content text-styles text-styles--billboard">
-      <%= billboard.processed_html_final.html_safe %>
+      <%= billboard_body_html(billboard) %>
     </div>
     <% if billboard.special_behavior == "persistent" && billboard.minimized_processed_html.present? %>
       <template class="js-minimized-template">
@@ -171,7 +178,7 @@
           data-type-of="<%= billboard.type_of_display %>">
           <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
           <div class="p-1 pt-3 text-styles text-styles--billboard">
-            <%= billboard.minimized_processed_html.html_safe %>
+            <%= billboard_body_html(billboard, billboard.minimized_processed_html) %>
           </div>
         </div>
       </template>
@@ -200,7 +207,7 @@
       <% end %>
     </div>
     <div class="p-1 pt-3 text-styles text-styles--billboard <%= "long-bb-body" if long_bb %>">
-      <%= billboard.processed_html_final.html_safe %>
+      <%= billboard_body_html(billboard) %>
     </div>
     <% if long_bb %>
       <div class="long-bb-bottom"></div>
@@ -224,7 +231,7 @@
     data-type-of="<%= billboard.type_of_display %>">
     <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
     <div class="p-1 pt-3 text-styles text-styles--billboard">
-      <%= billboard.processed_html_final.html_safe %>
+      <%= billboard_body_html(billboard) %>
     </div>
   </div>
 <% end %>

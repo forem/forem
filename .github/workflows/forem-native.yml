@@ -18,6 +18,8 @@ on:
       - "app/controllers/feed_config_visits_controller.rb"
       - "app/controllers/notifications/counts_controller.rb"
       - "app/controllers/reactions_controller.rb"
+      - "app/controllers/concerns/api/articles_controller.rb"
+      - "app/controllers/concerns/api/comments_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/helpers/agent_sessions_helper.rb"
       - "app/helpers/application_helper.rb"
@@ -55,6 +57,12 @@ on:
       - "spec/models/geolocation_spec.rb"
       - "spec/models/feed_config_spec.rb"
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
+      - "spec/requests/api/v0/articles_spec.rb"
+      - "spec/requests/api/v0/comments_spec.rb"
+      - "spec/requests/api/v1/articles_spec.rb"
+      - "spec/requests/api/v1/comments_spec.rb"
+      - "spec/requests/api/v1/docs/articles_spec.rb"
+      - "spec/requests/api/v1/docs/comments_spec.rb"
       - "spec/requests/billboards_spec.rb"
       - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
@@ -172,6 +180,16 @@ jobs:
             svg_png = ForemNative.image_convert_to_png("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><defs><symbol id=\"s\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" fill=\"#3b49df\"/></symbol></defs><use href=\"#s\" width=\"24\" height=\"24\"/></svg>", reject_blank: true)
             raise "Unexpected image_convert_to_png!" unless ForemNative.image_inspect(svg_png)[:width] == 24
             raise "Unexpected aggregate_transcript_redactions!" unless ForemNative.aggregate_transcript_redactions([{ "metadata" => { "redactions" => [{ "name" => "Home", "count" => 2 }] } }]) == { "Home" => 2 }
+            raise "Unexpected encode_base26_id!" unless ForemNative.encode_base26_id(1000) == "1cc"
+            raise "Unexpected format_utc_iso8601!" unless ForemNative.format_utc_iso8601(0) == "1970-01-01T00:00:00Z"
+            api_comments_res = ForemNative.serialize_api_comments_json([1000, nil, "<p>hi</p>", 0, false, false, 0, 0], [1, "Ada", "ada", nil, nil, nil, nil, nil], ["<p>[deleted]</p>", "<p>[hidden]</p>", "Not disclosed", "No AI", "Some AI", "Fully autonomous"], max_depth: 50)
+            raise "Unexpected serialize_api_comments_json!" unless api_comments_res.is_a?(Array) && api_comments_res[0].include?("\"id_code\":\"1cc\"") && api_comments_res[1] == [1000]
+            raise "Expected invalid ancestor segment to return nil!" unless ForemNative.serialize_api_comments_json([1000, "0/42", "<p>hi</p>", 0, false, false, 0, 0], [1, "Ada", "ada", nil, nil, nil, nil, nil], ["<p>[deleted]</p>", "<p>[hidden]</p>", "Not disclosed", "No AI", "Some AI", "Fully autonomous"], max_depth: 50).nil?
+            raise "Unexpected format_readable_publish_date!" unless ForemNative.format_readable_publish_date(1_772_409_600, 2026) == "Mar 2"
+            api_articles_cfg = [2026, "https://dev.to/social.png", 420, "crop", false, 1, "media2.dev.to", "cdn-cgi", "Not disclosed", "No AI", "Some AI", "Fully autonomous", true]
+            api_articles_row = [101, 0, -1, 0, "/ada/hi", nil, "Hi", "Desc", "https://img.example/c.png", nil, nil, "ruby", "hi", "/ada/hi", nil, 0, 0, 1, 1, "en", true, 0, 1_772_323_200, nil, nil, 1_772_323_200, nil, true]
+            api_articles_res = ForemNative.serialize_api_articles_json(api_articles_row, [1, "Ada", "ada", nil, nil, nil, nil, nil], [], [], ["https://dev.to"], api_articles_cfg)
+            raise "Unexpected serialize_api_articles_json!" unless api_articles_res.is_a?(String) && api_articles_res.include?("width=1200,height=627")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

@@ -148,6 +148,39 @@ RSpec.describe NavigationLink do
       expect(navigation_link).not_to be_valid
     end
 
+    it "rejects icons with unsupported elements or event attributes" do
+      [
+        "<svg onload='1'></svg>",
+        "<svg ><script>1</script></svg>",
+        "<svg ><foreignObject><img src='x'></foreignObject></svg>",
+        "<svg ><a xlink:href='javascript:void(0)'><rect width='10' height='10'/></a></svg>",
+        "<svg xmlns='http://www.w3.org/2000/svg'></svg><script>1</script><svg >",
+        "<svg ><animate attributeName='fill' to='red'/></svg>",
+        "<svg ><style>svg{fill:red}</style></svg>",
+        "<svg ><use href='https://example.com/icon.svg#x'/></svg>",
+        "<svg ><path fill='url(https://example.com/p)' d='M0 0'/></svg>",
+        "<svg xmlns='http://www.w3.org/2000/svg' fill='java&#x09;script:alert(1)'></svg>",
+        "<svg xmlns='http://www.w3.org/2000/svg' xml:base='https://example.com/'><path d='M0 0'/></svg>",
+        "<svg xmlns='http://www.w3.org/2000/svg' data-controller='x' data-action='click->x#y'><path d='M0 0'/></svg>",
+      ].each do |invalid_icon|
+        navigation_link.icon = invalid_icon
+        expect(navigation_link).not_to be_valid
+      end
+    end
+
+    it "allows icons with supported vector elements and local fragment references" do
+      navigation_link.icon = <<~SVG.strip
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <defs>
+            <clipPath id="clip0"><rect width="24" height="24"/></clipPath>
+            <linearGradient id="paint0_linear_1:2"><stop offset="0" stop-color="#000"/></linearGradient>
+          </defs>
+          <g clip-path="url('#clip0')"><path d="M0 0h24v24H0z" fill="url(#paint0_linear_1:2)"/></g>
+        </svg>
+      SVG
+      expect(navigation_link).to be_valid
+    end
+
     context "when validating the URL" do
       it "does not allow invalid URLs" do
         navigation_link.url = "test"
@@ -250,6 +283,26 @@ RSpec.describe NavigationLink do
     it "returns default icon when neither icon nor image was provided" do
       link = create(:navigation_link, icon: nil, image: nil)
       expect(link.icon_display).to eq(described_class.default_icon_svg)
+    end
+  end
+
+  describe "#sanitized_icon" do
+    it "strips unsupported elements and attributes when rendering" do
+      raw_icon = "<svg viewBox='0 0 24 24' onload='1'><script>1</script><path d='M0 0'/></svg>"
+      link = build(:navigation_link, icon: raw_icon)
+      sanitized = link.sanitized_icon
+
+      expect(sanitized).to be_html_safe
+      expect(sanitized).to include('viewBox="0 0 24 24"')
+      expect(sanitized).to include('d="M0 0"')
+      expect(sanitized).not_to include("onload")
+      expect(sanitized).not_to include("<script")
+    end
+
+    it "returns an empty safe string when icon is blank" do
+      link = build(:navigation_link, icon: nil)
+      expect(link.sanitized_icon).to eq("")
+      expect(link.sanitized_icon).to be_html_safe
     end
   end
 end

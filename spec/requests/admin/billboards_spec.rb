@@ -87,6 +87,7 @@ RSpec.describe "/admin/customization/billboards" do
 
       it "shows the campaign assignment and individual cap fields" do
         get edit_admin_billboard_path(billboard.id)
+        expect(response.body).to include("isolate_content")
 
         expect(response.body).to include('name="billboard_campaign_id"', 'name="max_impressions_count"',
                                          'name="max_clicks_count"')
