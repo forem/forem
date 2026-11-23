@@ -92,6 +92,7 @@ module Billboards
 
       # Exclude paused promotional billboards - apply after type_of_ads to ensure it's not overridden
       @filtered_billboards = exclude_paused_promotional_billboards
+      @filtered_billboards = exclude_throttled_campaign_billboards
 
       # Apply survey completion filtering if user is signed in
       return unless @user_signed_in && ApplicationConfig["SKIP_SURVEY_COMPLETION_FILTERING"] != "yes"
@@ -108,6 +109,7 @@ module Billboards
 
       @filtered_billboards = @filtered_billboards.where(Arel.sql(where_sql))
       apply_non_inlineable_org_post_filters! if @organization_id.present?
+      @filtered_billboards = exclude_throttled_campaign_billboards
       @filtered_billboards = @filtered_billboards.order(success_rate: :desc)
     end
 
@@ -271,6 +273,16 @@ module Billboards
       # Exclude billboards from paused organizations, but include those with no organization
       # Use a single WHERE clause - this pattern matches user_targeting_ads for consistency
       @filtered_billboards.where("organization_id IS NULL OR organization_id NOT IN (?)", valid_paused_ids)
+    end
+
+    def exclude_throttled_campaign_billboards
+      excluded_campaign_ids = Billboards::CampaignPacing.excluded_campaign_ids
+      return @filtered_billboards if excluded_campaign_ids.empty?
+
+      @filtered_billboards.where(
+        "billboard_campaign_id IS NULL OR billboard_campaign_id NOT IN (?)",
+        excluded_campaign_ids,
+      )
     end
 
     def placement_area_ads

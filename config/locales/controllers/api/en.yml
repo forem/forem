@@ -7,6 +7,7 @@ en:
         start_missing: Required 'start' parameter is missing
       articles_controller:
         must_be_json: article param must be a JSON object. You provided article as a %{type}
+        offset_limit_exceeded: Pagination offset limited to 30000 without an API key
         page_limit_exceeded: Page depth limited to 1000 without an API key
       follows_controller:
         followed:
@@ -29,3 +30,7 @@ en:
         prompt_too_long: The 'prompt' must be %{max} characters or fewer
         invalid_aspect_ratio: "'aspect_ratio' must be one of: %{valid}"
         generation_unavailable: AI image generation is not available on this Forem
+      organization_article_analytics_controller:
+        end_before_start: Date parameter 'end' must not be before 'start'
+        range_too_long: Date range must not exceed %{max} days
+        start_and_end_required: Date parameters 'start' and 'end' must be provided together

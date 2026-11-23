@@ -1,0 +1,32 @@
+<h1 class="crayons-title mb-4"><%= t("views.admin.billboard_campaigns.title") %></h1>
+
+<div class="flex flex-wrap gap-2 mb-4">
+  <%= link_to t("views.admin.billboard_campaigns.back_to_billboards"), admin_billboards_path, class: "crayons-btn crayons-btn--secondary" %>
+  <%= link_to t("views.admin.billboard_campaigns.new"), new_admin_billboard_campaign_path, class: "crayons-btn" %>
+</div>
+
+<% if @campaigns.empty? %>
+  <p><%= t("views.admin.billboard_campaigns.empty") %></p>
+<% else %>
+  <table class="crayons-table w-100">
+    <thead>
+      <tr>
+        <th scope="col"><%= t("views.admin.billboard_campaigns.id") %></th>
+        <th scope="col"><%= t("views.admin.billboard_campaigns.name") %></th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @campaigns.each do |campaign| %>
+        <tr>
+          <td><%= campaign.id %></td>
+          <td><%= link_to campaign.name, edit_admin_billboard_campaign_path(campaign) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<nav class="admin-pagination flex gap-2 fs-s items-center" aria-label="<%= t("views.admin.billboard_campaigns.title") %>">
+  <%= link_to_previous_page @campaigns, t("views.pagination.aria_previous"), class: "c-link c-link--block" %>
+  <%= link_to_next_page @campaigns, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>

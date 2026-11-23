@@ -20,10 +20,32 @@ class CommentTag < LiquidTagBase
   end
 
   def find_comment(id_code)
-    Comment.find_by(id_code: id_code)
+    comment = Comment.find_by(id_code: id_code)
+    return unless visible_comment?(comment)
+
+    comment
   end
 
   private
+
+  def visible_comment?(comment)
+    return false unless comment
+    return false if comment.deleted? || comment.hidden_by_commentable_user?
+    return false if comment.score.to_i < Comment::HIDE_THRESHOLD
+
+    commentable_visible?(comment.commentable)
+  end
+
+  def commentable_visible?(commentable)
+    case commentable
+    when Article
+      commentable.published? && commentable.published_at.present? && !commentable.scheduled?
+    when PodcastEpisode
+      commentable.reachable? && commentable.podcast&.published? == true
+    else
+      false
+    end
+  end
 
   def parse_id_code(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)

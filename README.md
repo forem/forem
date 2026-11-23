@@ -35,7 +35,7 @@ within our community. ❤️
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Deployment with Kamal (Beta)](#deployment-with-kamal-beta)
+- [Deployment with Kamal 2](#deployment-with-kamal-2)
 - [Vulnerability Disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -72,10 +72,12 @@ A more complete overview of our stack is available in [our docs](https://develop
 
 ### Launching in a Cloud Dev Environment
 
+> [!important]
+> Ona (formerly Gitpod) is closed to new signups, so it is no longer a recommended route for new contributors.
+
 - **GitHub Codespaces:** From your fork, choose **Code → Codespaces → Create codespace**. The repository's devcontainer (`.devcontainer/`) starts PostgreSQL and Redis for you; run `bin/setup` once it opens, then `bin/startup`.
 - **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension and run `bin/setup`, then `bin/startup`, in its terminal. Without VS Code, run `npx @devcontainers/cli up --workspace-folder .` (it returns to your host shell), then `npx @devcontainers/cli exec --workspace-folder . bin/setup` and `npx @devcontainers/cli exec --workspace-folder . bin/startup`. The devcontainer uses host networking; on Docker Desktop (4.34 or newer) turn on **Settings → Resources → Network → Enable host networking**, or the app will not be reachable at `localhost:3000`. On Linux, PostgreSQL and Redis bind host ports 5432 and 6379, so stop any host PostgreSQL or Redis service on those ports first.
 
-Ona (formerly Gitpod) is closed to new signups, so it is no longer a recommended route for new contributors.
 
 ### Installation Documentation
 

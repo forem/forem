@@ -109,9 +109,11 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def co_author_name_and_path
-    User.select(:name, :username).where(id: co_author_ids).in_order_of(:id, co_author_ids).map do |user|
-      %(<a href="#{user.path}" class="crayons-link">#{user.name}</a>)
-    end.to_sentence
+    helpers = ActionController::Base.helpers
+    links = User.select(:name, :username).where(id: co_author_ids).in_order_of(:id, co_author_ids).map do |user|
+      helpers.link_to(user.name, user.path, class: "crayons-link")
+    end
+    helpers.to_sentence(links)
   end
 
   # Used in determining when to bust additional routes for an Article's comments

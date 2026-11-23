@@ -13,6 +13,23 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
   end
 
   describe "#perform_update" do
+    context "when the tabulation reaches the billboard's click cap" do
+      let!(:billboard) do
+        create(:billboard, approved: true, published: true, max_clicks_count: 2, clicks_count: 0,
+                           impressions_count: 0, counts_tabulated_at: nil)
+      end
+
+      before do
+        create(:billboard_event, billboard: billboard, category: "click", counts_for: 2, created_at: now - 1.hour)
+      end
+
+      it "takes the billboard down in the same run" do
+        travel_to(now) { worker.perform(billboard.id) }
+
+        expect(billboard.reload).to have_attributes(clicks_count: 2, approved: false)
+      end
+    end
+
     context "when the billboard has never been tabulated before" do
       let!(:billboard) { create(:billboard, impressions_count: 0, clicks_count: 0, seconds_visible: 0, counts_tabulated_at: nil) }
 

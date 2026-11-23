@@ -1144,7 +1144,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
 
     it "prefixes and probes images only once when native postprocessing declines", :aggregate_failures do
       image_url = "https://dummyimage.com/100x100"
-      allow(FastImage).to receive(:size).and_return([100, 100])
+      allow(SafeFastImage).to receive(:size).and_return([100, 100])
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
 
       html = "<ul><li><br></li></ul>\n<p><img src=\"#{image_url}\" alt=\"img\"></p>\n"
@@ -1154,7 +1154,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
         { width: 800, synchronous_detail_detection: true },
       )
 
-      expect(FastImage).to have_received(:size).once
+      expect(SafeFastImage).to have_received(:size).once
       expect(Images::Optimizer).to have_received(:call).once
       expect(output).not_to include("<br>")
       expect(output).to include("article-body-image-wrapper", 'loading="lazy"')

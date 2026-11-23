@@ -101,8 +101,11 @@
       }
     }
 
-    .editor-toolbar {
-      display: none;
+    // The reply form's action buttons carry a bottom margin (`mb-4`) that is
+    // meant for the full-width article comment form. Inside the compact
+    // notification card it leaves dead space below the buttons, so drop it.
+    .comment-form__buttons {
+      margin-bottom: 0;
     }
   }
 

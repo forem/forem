@@ -652,7 +652,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\nBy default it will return featured, published articles ordered by descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.\n\n### Query Parameter Usage Tips:\n- **Filtering by Tags**:\n  - Use `tag` to filter articles containing a single exact tag (e.g. `tag=discuss`).\n  - Use `tags` to retrieve articles containing *any* of the comma-separated list of tags (e.g. `tags=javascript,css`).\n  - Use `tags_exclude` to filter out articles containing any of the comma-separated list of tags (e.g. `tags_exclude=node,java`).\n- **Filtering by User / Organization**:\n  - Use `username` to retrieve articles belonging to a specific User or Organization. Articles are returned in reverse chronological publication order.\n- **State Options**:\n  - Use `state=fresh` to fetch fresh articles.\n  - Use `state=rising` to fetch rising/trending articles.\n  - Combine `state=all` with `username` to fetch up to `1000` articles (both published and unpublished) from that user/organization in a single page.\n- **Top / Popularity**:\n  - Use `top=N` to return the most popular articles published in the last `N` days (e.g. `top=7` for top articles of the week, `top=30` for top of the month). This parameter can be combined with `tag` to find top articles in a specific niche.\n- **Collections**:\n  - Use `collection_id` to retrieve articles belonging to a specific collection/series, sorted chronologically.",
+        "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\nBy default it will return featured, published articles ordered by descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.\n\n### Query Parameter Usage Tips:\n- **Filtering by Tags**:\n  - Use `tag` to filter articles containing a single exact tag (e.g. `tag=discuss`).\n  - Use `tags` to retrieve articles containing *any* of the comma-separated list of tags (e.g. `tags=javascript,css`).\n  - Use `tags_exclude` to filter out articles containing any of the comma-separated list of tags (e.g. `tags_exclude=node,java`).\n- **Filtering by User / Organization**:\n  - Use `username` to retrieve articles belonging to a specific User or Organization. Articles are returned in reverse chronological publication order.\n- **State Options**:\n  - Use `state=fresh` to fetch fresh articles.\n  - Use `state=rising` to fetch rising/trending articles.\n  - Combine `state=all` with `username` to fetch up to `1000` articles (both published and unpublished) from that user/organization in a single page.\n- **Top / Popularity**:\n  - Use `top=N` to return the most popular articles published in the last `N` days (e.g. `top=7` for top articles of the week, `top=30` for top of the month). This parameter can be combined with `tag` to find top articles in a specific niche.\n- **Collections**:\n  - Use `collection_id` to retrieve articles belonging to a specific collection/series, sorted chronologically.\n- **Pagination Limits**:\n  - Unauthenticated requests are limited to `page <= 1000` and a maximum pagination offset (`(page - 1) * per_page`) of `30000`. Provide a valid `api-key` header to paginate deeper.",
         "operationId": "getArticles",
         "parameters": [
           {
@@ -720,11 +720,12 @@
             "name": "top",
             "in": "query",
             "required": false,
-            "description": "Using this parameter will allow the client to return the most popular articles\nin the last `N` days.\n`top` indicates the number of days since publication of the articles returned.\nThis param can be used in conjuction with `tag`.",
+            "description": "Using this parameter will allow the client to return the most popular articles\nin the last `N` days (clamped to a maximum of `730` days).\n`top` indicates the number of days since publication of the articles returned.\nThis param can be used in conjuction with `tag`.",
             "schema": {
               "type": "integer",
               "format": "int32",
-              "minimum": 1
+              "minimum": 1,
+              "maximum": 730
             },
             "example": 2
           },
@@ -766,7 +767,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to search for articles.\n\n### Search Guidance:\n- **q**: The search query term. Matches against article titles, tags, and body content.\n- **top**: Restricts search results to articles published within the last `N` days.\n- **page** & **per_page**: Standard pagination support. Use this to display results sequentially on a search results page.",
+        "description": "This endpoint allows the client to search for articles.\n\n### Search Guidance:\n- **q**: The search query term. Matches against article titles, tags, and body content.\n- **top**: Restricts search results to articles published within the last `N` days.\n- **page** & **per_page**: Standard pagination support. Unauthenticated requests are limited to `page <= 1000` and a maximum pagination offset (`(page - 1) * per_page`) of `30000`; provide a valid `api-key` header to paginate deeper.",
         "operationId": "searchArticles",
         "parameters": [
           {
@@ -782,9 +783,11 @@
             "name": "top",
             "in": "query",
             "required": false,
-            "description": "Restricts search results to articles published within the last `N` days.",
+            "description": "Restricts search results to articles published within the last `N` days (clamped to a maximum of `730` days).",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 730
             }
           },
           {
@@ -832,7 +835,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to retrieve a list of articles ordered strictly by descending publication date.\n\n### Usage Tips:\n- Bypasses all Forem/DEV feed personalization and popularity algorithms.\n- Ideal for building RSS feeds, chronological timelines, or \"latest posts\" widgets.\n- Supports standard `page` and `per_page` query parameters.",
+        "description": "This endpoint allows the client to retrieve a list of articles ordered strictly by descending publication date.\n\n### Usage Tips:\n- Bypasses all Forem/DEV feed personalization and popularity algorithms.\n- Ideal for building RSS feeds, chronological timelines, or \"latest posts\" widgets.\n- Supports standard `page` and `per_page` query parameters. Unauthenticated requests are limited to `page <= 1000` and a maximum pagination offset (`(page - 1) * per_page`) of `30000`; provide a valid `api-key` header to paginate deeper.",
         "operationId": "getLatestArticles",
         "parameters": [
           {
@@ -2026,6 +2029,147 @@
           "204": {
             "description": "no content"
           }
+        }
+      }
+    },
+    "/api/billboard_campaigns": {
+      "get": {
+        "summary": "Billboard campaigns",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Retrieve a paginated list of billboard campaigns. Requires Billboard admin privileges.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BillboardCampaign"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a billboard campaign",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Create a billboard campaign to group billboards under shared delivery caps, an optional end date,\n        and an automated `ideal_daily_impressions` titration target.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "A billboard campaign",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillboardCampaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillboardCampaign"
+              }
+            }
+          },
+          "description": "Billboard campaign parameters."
+        }
+      }
+    },
+    "/api/billboard_campaigns/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "The ID of the billboard campaign.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "summary": "A billboard campaign",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Retrieve a single billboard campaign by ID. Requires Billboard admin privileges.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillboardCampaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a billboard campaign",
+        "tags": [
+          "billboard_campaigns"
+        ],
+        "description": "Update a billboard campaign's name, caps, end date, or `ideal_daily_impressions` titration target.\n        Modifying a campaign that governs an approved or Event-owned billboard requires the `modify_approved`\n        Billboard sub-permission.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillboardCampaign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "403": {
+            "description": "missing sub-permissions"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillboardCampaign"
+              }
+            }
+          },
+          "description": "Billboard campaign parameters."
         }
       }
     },
@@ -3716,7 +3860,7 @@
           "analytics"
         ],
         "operationId": "getOrganizationArticleAnalytics",
-        "description": "Requires the org_article_analytics organization feature and active membership. Members and admins can export published organization posts with stored lifetime counters. This includes article identifiers, URLs, page views, public reactions and comments. Counters are eventual lifetime totals, not date-range analytics. updated_at describes the article and is not a cursor for metric changes. Results use the current subforem and ID order. Page size is capped at 100 and page depth at 1000. Independent posts that mention the organization are excluded. Responses are never cached.",
+        "description": "Requires the org_article_analytics organization feature and active membership. Members and admins can export published organization posts with stored lifetime counters. This includes article identifiers, URLs, page views, public reactions and comments. Counters are eventual lifetime totals. updated_at describes the article and is not a cursor for metric changes. Results use the current subforem and ID order. Page size is capped at 100 and page depth at 1000. Pass start and end together (YYYY-MM-DD, UTC, inclusive, at most 90 days) to add a daily series to each article with page views, comments and reactions by category, including reading list saves (counts only). reactions.total includes saves, as in the historical analytics endpoint. Days without activity are returned with zero counts. Daily values come from eventual rollups, so recent days may still be revised. An article whose rollup has not been built yet returns zeros for every day even if it had activity, and its past days can change once the rollup is first populated. Independent posts that mention the organization are excluded. Responses are never cached.",
         "parameters": [
           {
             "name": "organization_id",
@@ -3747,6 +3891,28 @@
               "maximum": 100,
               "default": 30
             }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "First day of the daily series (YYYY-MM-DD). Requires end.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "description": "Last day of the daily series (YYYY-MM-DD), at most 89 days after start. Requires start.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-31"
           }
         ],
         "responses": {
@@ -3806,6 +3972,66 @@
                       },
                       "comments_count": {
                         "type": "integer"
+                      },
+                      "daily": {
+                        "type": "array",
+                        "description": "Present only when start and end are given.",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "date",
+                            "page_views",
+                            "comments",
+                            "reactions"
+                          ],
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "page_views": {
+                              "type": "integer"
+                            },
+                            "comments": {
+                              "type": "integer"
+                            },
+                            "reactions": {
+                              "type": "object",
+                              "required": [
+                                "total",
+                                "like",
+                                "readinglist",
+                                "unicorn",
+                                "exploding_head",
+                                "raised_hands",
+                                "fire"
+                              ],
+                              "properties": {
+                                "total": {
+                                  "type": "integer"
+                                },
+                                "like": {
+                                  "type": "integer"
+                                },
+                                "readinglist": {
+                                  "type": "integer"
+                                },
+                                "unicorn": {
+                                  "type": "integer"
+                                },
+                                "exploding_head": {
+                                  "type": "integer"
+                                },
+                                "raised_hands": {
+                                  "type": "integer"
+                                },
+                                "fire": {
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -3815,6 +4041,29 @@
           },
           "401": {
             "description": "Organization membership or feature access required"
+          },
+          "422": {
+            "description": "Invalid date range",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "status"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 422
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Organization not found"
@@ -8402,6 +8651,20 @@
             "default": "all",
             "description": "Potentially limits visitors to whom the ad is visible"
           },
+          "render_mode": {
+            "type": "string",
+            "enum": [
+              "forem_markdown",
+              "raw"
+            ],
+            "default": "forem_markdown",
+            "description": "Controls whether body_markdown is rendered as Forem Markdown or raw HTML"
+          },
+          "isolate_content": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true for raw billboards, wraps content in an open Shadow DOM and scoped JS sandbox"
+          },
           "type_of": {
             "type": "string",
             "enum": [
@@ -8417,6 +8680,58 @@
           "name",
           "body_markdown",
           "placement_area"
+        ]
+      },
+      "BillboardCampaign": {
+        "description": "Groups billboards that share delivery caps, an end date, and ideal daily impression pacing",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the BillboardCampaign"
+          },
+          "name": {
+            "type": "string",
+            "description": "The campaign name (required)"
+          },
+          "organization_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Optional organization that owns the campaign"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp when the campaign expires and its billboards are taken down"
+          },
+          "max_impressions_count": {
+            "type": "integer",
+            "description": "Total impression cap across the campaign's billboards (0 means no cap)"
+          },
+          "max_clicks_count": {
+            "type": "integer",
+            "description": "Total click cap across the campaign's billboards (0 means no cap)"
+          },
+          "ideal_daily_impressions": {
+            "type": "integer",
+            "description": "Target daily impressions for automated 10-minute titration (0 disables pacing)"
+          },
+          "delivery_throttle_rate": {
+            "type": "number",
+            "description": "Current automated pass-through delivery rate (0.0 to 1.0) managed by the titration worker"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "Segment": {

@@ -66,8 +66,8 @@ module Middlewares
       end
 
       # Set Content-Security-Policy header to allow embedding in iframes for all subforems
-      headers.delete("X-Frame-Options")
       unless headers["Content-Security-Policy"]&.include?("frame-ancestors")
+        headers.delete("X-Frame-Options")
         allowed_domains = (Subforem.cached_all_domains + [Settings::General.app_domain]).compact.uniq
         origins = allowed_domains.map { |d| "https://#{d}" }
         origins.unshift("'self'") if Rails.env.development?

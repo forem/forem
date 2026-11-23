@@ -163,4 +163,29 @@ RSpec.describe Article do
       )
     end
   end
+
+  describe "event schema constraints and indexes" do
+    it "has a valid partial composite index for event article feeds" do
+      index = ActiveRecord::Base.connection.indexes(:articles).detect do |idx|
+        idx.name == "index_articles_on_event_id_published_hotness_published_at"
+      end
+
+      expect(index).to be_present
+      expect(index).to be_valid
+      expect(index.using).to eq(:btree)
+      expect(index.columns).to eq(%w[event_id published hotness_score published_at])
+      expect(index.orders).to eq("hotness_score" => :desc, "published_at" => :desc)
+      expect(index.where).to eq("(event_id IS NOT NULL)")
+    end
+
+    it "has a validated foreign key from articles.event_id to events" do
+      fk = ActiveRecord::Base.connection.foreign_keys(:articles).detect do |key|
+        key.to_table == "events" && key.column == "event_id"
+      end
+
+      expect(fk).to be_present
+      expect(fk).to be_validated
+      expect(fk.on_delete).to eq(:nullify)
+    end
+  end
 end

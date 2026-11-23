@@ -198,5 +198,43 @@ RSpec.describe "Api::V0::Comments" do
         expect(hidden_child["children"]).not_to be_empty
       end
     end
+
+    it "matches the Jbuilder fallback on V0 index and show with identical headers and JSON",
+       :aggregate_failures do
+      expect(ForemNative.available?).to be(true)
+      allow(ForemNative).to receive(:serialize_api_comments_json).and_call_original
+
+      build_comment_tree
+      child_comment.update!(deleted: true)
+
+      get api_comments_path(a_id: article.id)
+      native_index_body = response.body
+      native_index_keys = response.headers["surrogate-key"].split.to_set
+      native_index_warning = response.headers["Warning"]
+
+      get api_comment_path(root_comment.id_code_generated)
+      native_show_body = response.body
+      native_show_keys = response.headers["surrogate-key"].split.to_set
+      expect(ForemNative).to have_received(:serialize_api_comments_json).twice
+
+      allow(ForemNative).to receive(:available?).and_return(false)
+
+      get api_comments_path(a_id: article.id)
+      expect(response.body).to eq(native_index_body)
+      expect(response.headers["surrogate-key"].split.to_set).to eq(native_index_keys)
+      expect(response.headers["Warning"]).to eq(native_index_warning)
+
+      get api_comment_path(root_comment.id_code_generated)
+      expect(response.body).to eq(native_show_body)
+      expect(response.headers["surrogate-key"].split.to_set).to eq(native_show_keys)
+    end
+
+    it "preserves unsupported format rejection on V0 comments index" do
+      build_comment_tree
+
+      expect do
+        get api_comments_path(a_id: article.id, format: :xml)
+      end.to raise_error(ActionController::UnknownFormat)
+    end
   end
 end

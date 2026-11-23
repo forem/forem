@@ -1,0 +1,21 @@
+pt:
+  views:
+    admin:
+      billboard_campaigns:
+        title: Campanhas de anúncios
+        new: Nova campanha
+        edit: "Editar campanha: %{name}"
+        back_to_billboards: Voltar aos anúncios
+        empty: Ainda não há campanhas de anúncios.
+        id: ID da campanha
+        name: Nome da campanha
+        expires_at: Data de término da campanha
+        max_impressions_count: Limite de impressões
+        max_clicks_count: Limite de cliques
+        ideal_daily_impressions: Meta diária de impressões
+        campaign_limits: Os limites se aplicam ao total de todos os anúncios da campanha. Use 0 para remover um limite ou desativar a meta diária. Os limites e as datas de término são verificados em segundo plano, então salvar não interrompe a veiculação imediatamente.
+        billboard_limits: Estes limites se aplicam apenas a este anúncio. Use 0 para não definir um limite.
+        delivery_controls: Configurações de veiculação
+        membership_help_html: Deixe em branco se este anúncio não pertencer a uma campanha. Consulte os IDs em %{campaigns}.
+        save: Salvar campanha
+        saved: Campanha salva.

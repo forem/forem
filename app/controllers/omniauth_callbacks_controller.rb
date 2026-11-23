@@ -199,24 +199,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if (external_return = Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"]))
         sign_in(@user, event: :authentication)
         redirect_to external_return, allow_other_host: true
-      elsif ApplicationConfig["AUTH_TEST_USER_IDS"].present? && ApplicationConfig["AUTH_TEST_USER_IDS"].split(",").include?(@user.id.to_s)
-        token = generate_auth_token(@user)
-        test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
-        redirect_to "#{test_path}?jwt=#{token}"
-      elsif (auth_payload["provider"].to_s.include?("google") && %w[navbar_basic profile].exclude?(cta_variant)) || user_agent == "ForemWebView/1" || @user.email&.start_with?("bendhalpern")
-          # Generate the token the app will use.
-        # (Replace the following with your actual token generation logic.)
-        token = generate_auth_token(@user)
-
-
-  
-  
-        # Render a minimal HTML page that redirects via a custom scheme.
-        test_path = ApplicationConfig["AUTH_TEST_USER_REDIRECT_PATH"] || "/menu"
-        redirect_to "#{test_path}?jwt=#{token}"
       else
-
-
         # Standard behavior for non-mobile requests.
         sign_in_and_redirect(@user, event: :authentication)
       end
@@ -317,13 +300,5 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Try request.origin first, then fallback to referer.
     origin = request.origin.presence || request.referer
     origin && origin.start_with?(trusted_origin)
-  end
-
-  def generate_auth_token(user)
-    payload = {
-      user_id: user.id,
-      exp: 5.minutes.from_now.to_i # Token expires in 5 minutes
-    }
-    JWT.encode(payload, Rails.application.secret_key_base)
   end
 end

@@ -40,10 +40,15 @@ module Admin
     def create
       @billboard = Billboard.new(billboard_params)
       @billboard.creator = current_user
-      missing = missing_sub_permissions(:save)
+      missing = []
+      saved = Billboard.transaction do
+        @billboard.lock_affected_campaigns!
+        missing = missing_sub_permissions(:save)
+        @billboard.save if missing.empty?
+      end
       return render_missing_sub_permissions(:new, missing) if missing.any?
 
-      if @billboard.save
+      if saved
         flash[:success] = I18n.t("admin.billboards_controller.created")
         redirect_to edit_admin_billboard_path(@billboard.id)
       else
@@ -58,6 +63,7 @@ module Admin
       saved = false
       @billboard.with_lock do
         @billboard.assign_attributes(billboard_params)
+        @billboard.lock_affected_campaigns!
         missing = missing_sub_permissions(:save)
         saved = @billboard.save if missing.empty?
       end
@@ -77,6 +83,7 @@ module Admin
       missing = []
       destroyed = false
       @billboard.with_lock do
+        @billboard.lock_affected_campaigns!
         missing = missing_sub_permissions(:destroy)
         destroyed = @billboard.destroy if missing.empty?
       end
@@ -98,8 +105,9 @@ module Admin
                     :published, :approved, :name, :display_to, :tag_list, :type_of, :color,
                     :exclude_article_ids, :audience_segment_id, :priority, :browser_context,
                     :exclude_role_names, :target_role_names, :include_subforem_ids,
-                    :render_mode, :template, :custom_display_label, :requires_cookies, :expires_at,
-                    :special_behavior, :minimized_body_markdown)
+                    :render_mode, :isolate_content, :template, :custom_display_label, :requires_cookies, :expires_at,
+                    :special_behavior, :minimized_body_markdown, :billboard_campaign_id,
+                    :max_impressions_count, :max_clicks_count)
     end
 
     def authorize_admin

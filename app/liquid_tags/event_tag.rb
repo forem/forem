@@ -17,7 +17,7 @@ class EventTag < LiquidTagBase
     cleaned = ActionController::Base.helpers.strip_tags(markup).strip
 
     if cleaned =~ /\A\d+\z/
-      @event = Event.find_by(id: cleaned)
+      @event = Event.published.find_by(id: cleaned)
     else
       match = cleaned.match(REGISTRY_REGEXP)
       # Fallback to matching simple relative path e.g. "google-cloud-live/june-30-2026"
@@ -26,9 +26,9 @@ class EventTag < LiquidTagBase
       end
 
       if match
-        @event = Event.find_by(
+        @event = Event.published.find_by(
           event_name_slug: match[:event_name_slug],
-          event_variation_slug: match[:event_variation_slug]
+          event_variation_slug: match[:event_variation_slug],
         )
       end
     end

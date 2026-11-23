@@ -130,24 +130,22 @@ module CommunityBots
     end
 
     def set_default_profile_image
-      @bot_user.remote_profile_image_url = Settings::General.logo_png(subforem_id: @subforem_id)
+      @bot_user.profile_image = Images::ProfileImageGenerator.call
       @bot_user.save!
-
-      # If the file doesn't exist, just leave the profile image blank
     end
 
     def download_logo_as_file(logo_url)
-      require "open-uri"
       require "tempfile"
 
       begin
-        # Download the logo
-        downloaded_image = URI.open(logo_url)
+        # Download the logo via SafeHttp to block local file reads, private IPs, and unsafe redirects
+        response = SafeHttp.get(logo_url, timeout: 10)
+        return unless response.success?
 
         # Create a temp file with the correct extension
         tempfile = Tempfile.new(["bot_logo", ".png"])
         tempfile.binmode
-        tempfile.write(downloaded_image.read)
+        tempfile.write(response.body)
         tempfile.rewind
 
         # Create a file object that can be used by the uploader

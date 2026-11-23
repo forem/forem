@@ -50,6 +50,14 @@ RSpec.describe ForemTag do
       expect(described_class.determine_klass(episode_url)).to eq(PodcastTag)
     end
 
+    it "returns LinkTag rather than PodcastTag for an unpublished podcast" do
+      unpublished_podcast = create(:podcast, published: false)
+      episode = create(:podcast_episode, podcast: unpublished_podcast)
+      episode_url = "#{URL.url}/#{unpublished_podcast.slug}/#{episode.slug}"
+
+      expect(described_class.determine_klass(episode_url)).to eq(LinkTag)
+    end
+
     it "returns TagTag if link starts with URL.url/t/" do
       tag_url = "#{URL.url}/t/#{tag.name}"
 

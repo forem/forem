@@ -7,6 +7,6 @@
     };
 
     // Send the message to the parent window
-    window.parent.postMessage(data, '*');
+    window.parent.postMessage(data, <%= raw ERB::Util.json_escape((@target_origin || request.base_url).to_json) %>);
   })();
 </script>

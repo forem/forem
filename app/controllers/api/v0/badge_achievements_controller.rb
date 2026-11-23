@@ -5,7 +5,7 @@ module Api
 
       before_action :authenticate_with_api_key_or_current_user!
       before_action :require_admin
-      skip_before_action :verify_authenticity_token
+      skip_csrf_unless_cookie_authenticated
     end
   end
 end

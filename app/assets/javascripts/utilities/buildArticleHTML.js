@@ -483,7 +483,7 @@ function buildArticleHTML(article, currentUserId = null) {
         aria-labelledby="article-link-${article.id}"
         class="crayons-story__hidden-navigation-link"
       >
-        ${filterXSS(article.type_of === 'status' && article.title_finalized ? article.title_finalized : article.title)}
+        ${filterXSS(article.type_of === 'status' && article.title_for_metadata ? article.title_for_metadata : article.title)}
       </a>
     `;
 
@@ -507,7 +507,7 @@ function buildArticleHTML(article, currentUserId = null) {
             <div class="crayons-story__indention">
               <h3 class="crayons-story__title crayons-story__title-${article.type_of}">
                 <a href="${article.path}" id="article-link-${article.id}">
-                  ${filterXSS(article.type_of === 'status' && article.title_finalized_for_feed ? article.title_finalized_for_feed : article.title)}
+                  ${article.type_of === 'status' && article.title_finalized_for_feed ? article.title_finalized_for_feed : filterXSS(article.title)}
                 </a>
               </h3>\
               ${article.type_of !== 'status' ? `<div class="crayons-story__tags">${tagString}</div>` : ''}\

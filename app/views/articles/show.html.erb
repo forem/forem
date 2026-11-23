@@ -179,7 +179,7 @@
                         <span><%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %></span>
                       <% end %>
                       <% if @article.co_author_ids.present? %>
-                        <span><%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %></span>
+                        <span><%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path) %></span>
                       <% end %>
 
                       <% if should_show_updated_on?(@article) %>

@@ -15,7 +15,7 @@
           <div class="admin-navigation-links">
             <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
               <div class="crayons-icon crayons-icon--default">
-                  <%= link[:icon].html_safe %>
+                  <%= link.sanitized_icon %>
               </div>
               <%= link[:name] %><span class="js-reading-list-count c-indicator"></span>
             </a>
@@ -43,7 +43,7 @@
           <div class="admin-navigation-links">
             <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
               <div class="crayons-icon crayons-icon--default">
-                  <%= link[:icon].html_safe %>
+                  <%= link.sanitized_icon %>
               </div>
               <%= link[:name] %><span class="js-reading-list-count c-indicator"></span>
             </a>

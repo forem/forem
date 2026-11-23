@@ -3,6 +3,17 @@ require "rails_helper"
 RSpec.describe Organizations::VerifyLinkback, type: :service do
   let(:organization) { create(:organization, url: "https://example.com", slug: "myorg") }
 
+  # SafeHttp resolves each host before fetching; pin the public test hosts so
+  # these examples don't depend on live DNS.
+  before do
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    %w[example.com blog.example.com].each do |host|
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with(host, nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+    end
+  end
+
   describe ".call" do
     context "when verification_url is blank" do
       it "returns failure" do
@@ -118,6 +129,59 @@ RSpec.describe Organizations::VerifyLinkback, type: :service do
         result = described_class.call(organization)
         expect(result.success?).to be false
         expect(result.error).to include("Could not connect")
+      end
+    end
+
+    describe "non-public destinations" do
+      it "blocks a verification URL pointing to a private or link-local IP" do
+        internal_url = "http://169.254.169.254/latest/meta-data/"
+        organization.update_columns(url: "http://169.254.169.254", verification_url: internal_url)
+        stub_request(:get, internal_url).to_return(status: 200, body: "ami-id")
+
+        result = described_class.call(organization)
+
+        expect(result.success?).to be false
+        expect(result.error).to eq("Verification URL is not allowed")
+        expect(a_request(:get, internal_url)).not_to have_been_made
+      end
+
+      it "blocks a verification URL whose hostname resolves to a private IP" do
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .with("internal.example", nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "10.0.0.5")])
+        organization.update_columns(url: "https://internal.example", verification_url: "https://internal.example/about")
+        stub_request(:get, "https://internal.example/about").to_return(status: 403, body: "Forbidden")
+
+        result = described_class.call(organization)
+
+        expect(result.success?).to be false
+        expect(result.error).to eq("Verification URL is not allowed")
+        expect(a_request(:get, "https://internal.example/about")).not_to have_been_made
+      end
+
+      it "does not follow a redirect to a private address or report its status" do
+        internal_url = "http://169.254.169.254/latest/meta-data/"
+        organization.update_column(:verification_url, "https://example.com/about")
+        stub_request(:get, "https://example.com/about")
+          .to_return(status: 302, headers: { "Location" => internal_url })
+        stub_request(:get, internal_url).to_return(status: 404, body: "Not Found")
+
+        result = described_class.call(organization)
+
+        expect(result.success?).to be false
+        expect(result.error).to eq("Verification URL is not allowed")
+        expect(a_request(:get, internal_url)).not_to have_been_made
+      end
+
+      it "returns failure when redirects exceed the limit" do
+        organization.update_column(:verification_url, "https://example.com/about")
+        stub_request(:get, "https://example.com/about")
+          .to_return(status: 302, headers: { "Location" => "https://example.com/about" })
+
+        result = described_class.call(organization)
+
+        expect(result.success?).to be false
+        expect(result.error).to include("too many redirects")
       end
     end
   end

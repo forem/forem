@@ -6,7 +6,7 @@ module Api
 
       self.api_action = true
 
-      skip_before_action :verify_authenticity_token
+      skip_before_action :verify_authenticity_token, unless: :cookie_authenticated_request?
 
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
@@ -178,6 +178,18 @@ module Api
         # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
         secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
         api_secret.user if secure_secret
+      end
+
+      def cookie_authenticated_request?
+        return false if request.get? || request.head?
+
+        session_authenticated_user?
+      end
+
+      def session_authenticated_user?
+        return request.env["warden"].authenticate(scope: :user).present? if request.env["warden"]
+
+        current_user.present?
       end
     end
   end

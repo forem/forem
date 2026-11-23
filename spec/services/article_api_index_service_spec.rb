@@ -56,5 +56,34 @@ RSpec.describe ArticleApiIndexService do
       expect(relation.to_a).to eq([older_hot, newer_cold])
       expect(relation.to_a).not_to include(unpublished, future_scheduled, other_tag)
     end
+
+    it "clamps top to MAX_TOP_DAYS when combined with a tag", :aggregate_failures do
+      within_window = create(:article, :past, tags: tag_name, past_published_at: 700.days.ago)
+      outside_window = create(:article, :past, tags: tag_name, past_published_at: 800.days.ago)
+
+      results = described_class.new(tag: tag_name, top: 1500).get.to_a
+
+      expect(results).to include(within_window)
+      expect(results).not_to include(outside_window)
+    end
+  end
+
+  describe "#get with top" do
+    it "clamps top to MAX_TOP_DAYS", :aggregate_failures do
+      within_window = create(:article, :past, past_published_at: 700.days.ago)
+      outside_window = create(:article, :past, past_published_at: 800.days.ago)
+
+      results = described_class.new(top: 1500).get.to_a
+
+      expect(results).to include(within_window)
+      expect(results).not_to include(outside_window)
+    end
+
+    it "clamps extreme positive and negative top values without raising", :aggregate_failures do
+      within_window = create(:article, :past, past_published_at: 10.days.ago)
+
+      expect(described_class.new(top: 999_999_999).get.to_a).to include(within_window)
+      expect(described_class.new(top: -999_999_999).get.to_a).to be_empty
+    end
   end
 end

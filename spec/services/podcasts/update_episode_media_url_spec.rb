@@ -3,6 +3,15 @@ require "rails_helper"
 RSpec.describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
   let(:podcast) { create(:podcast) }
 
+  before do
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    %w[example.com audio.simplecast.com].each do |host|
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with(host, nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+    end
+  end
+
   it "updates media_url from http to https" do
     http_url = "http://example.com/1.mp3"
     https_url = "https://example.com/1.mp3"
@@ -19,8 +28,8 @@ RSpec.describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
     http_url = "http://example.com/1.mp3"
     https_url = "https://example.com/1.mp3"
     options = { timeout: Podcasts::GetMediaUrl::TIMEOUT }
-    allow(HTTParty).to receive(:head).with(http_url, options).and_raise(Errno::ECONNREFUSED)
-    allow(HTTParty).to receive(:head).with(https_url, options).and_raise(Errno::ECONNREFUSED)
+    allow(SafeHttp).to receive(:head).with(http_url, **options).and_raise(Errno::ECONNREFUSED)
+    allow(SafeHttp).to receive(:head).with(https_url, **options).and_raise(Errno::ECONNREFUSED)
 
     episode = create(:podcast_episode, podcast: podcast, media_url: http_url)
     described_class.call(episode, http_url)

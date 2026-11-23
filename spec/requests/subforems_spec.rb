@@ -553,6 +553,21 @@ RSpec.describe "Subforems" do
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.created"))
       end
+
+      it "rejects navigation links with unsupported SVG icon markup" do
+        invalid_icon_params = {
+          navigation_link: valid_params[:navigation_link].merge(
+            icon: "<svg xmlns='http://www.w3.org/2000/svg' onload='1'><script>1</script></svg>",
+          )
+        }
+
+        expect do
+          post create_navigation_link_subforem_path(subforem), params: invalid_icon_params
+        end.not_to change { NavigationLink.count }
+
+        expect(response).to redirect_to(manage_subforem_path)
+        expect(flash[:error]).to be_present
+      end
     end
 
     context "when user is not authorized" do

@@ -56,12 +56,31 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "page_id", "counts_tabulated_at",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "prefer_paired_with_billboard_id", "custom_display_label", "template", "render_mode",
-                          "preferred_article_ids", "priority", "weight", "target_geolocations",
+                          "isolate_content", "preferred_article_ids", "priority", "weight", "target_geolocations",
                           "requires_cookies", "special_behavior", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
-                          "seconds_visible")
+                          "seconds_visible", "max_impressions_count", "max_clicks_count",
+                          "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
+        expect(response.parsed_body["isolate_content"]).to be(false)
+      end
+
+      it "accepts isolate_content when creating and updating a billboard", :aggregate_failures do
+        post api_billboards_path,
+             params: billboard_params.merge(render_mode: "raw", isolate_content: true).to_json,
+             headers: auth_header
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body["isolate_content"]).to be(true)
+
+        billboard_id = response.parsed_body["id"]
+        put api_billboard_path(billboard_id),
+            params: { isolate_content: false }.to_json,
+            headers: auth_header
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["isolate_content"]).to be(false)
       end
 
       it "also accepts target geolocations as an array" do
@@ -80,11 +99,13 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id", "prefer_paired_with_billboard_id",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
-                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
+                          "custom_display_label", "template", "render_mode", "isolate_content",
+                          "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies",
                           "special_behavior", "expires_at", "exclude_survey_completions", "exclude_survey_ids",
                           "content_updated_at", "tags_array", "event_id",
-                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible",
+                          "max_impressions_count", "max_clicks_count", "billboard_campaign_id")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -163,11 +184,13 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids", "requires_cookies", "page_id",
                           "audience_segment_type", "audience_segment_id", "special_behavior",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
-                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
+                          "custom_display_label", "template", "render_mode", "isolate_content",
+                          "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
                           "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
                           "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
-                          "seconds_visible")
+                          "seconds_visible", "max_impressions_count", "max_clicks_count",
+                          "billboard_campaign_id")
       end
 
       it "also accepts target geolocations as an array" do
@@ -323,13 +346,14 @@ RSpec.describe "Api::V1::Billboards" do
       end
 
       it "refuses to approve or publish it and leaves it unchanged", :aggregate_failures do
+        original_name = draft.name
         put api_billboard_path(draft.id), params: { name: "Renamed", approved: true }.to_json, headers: auth_header
         expect(response).to have_http_status(:forbidden)
 
         put api_billboard_path(draft.id), params: { published: true }.to_json, headers: auth_header
         expect(response).to have_http_status(:forbidden)
 
-        expect(draft.reload).to have_attributes(name: draft.name, approved: false, published: false)
+        expect(draft.reload).to have_attributes(name: original_name, approved: false, published: false)
       end
     end
 
@@ -453,6 +477,31 @@ RSpec.describe "Api::V1::Billboards" do
         post api_billboards_path, params: billboard_params.to_json, headers: auth_header
 
         expect(response).to have_http_status(:created)
+      end
+    end
+
+    context "with a campaign that has a live billboard" do
+      let(:campaign) { BillboardCampaign.create!(name: "Live", max_impressions_count: 1_000) }
+      let(:draft) { create(:billboard, approved: false, published: false) }
+
+      before do
+        create(:billboard, approved: true, published: true, billboard_campaign: campaign)
+        draft.update_column(:impressions_count, 900)
+      end
+
+      it "refuses to attach a billboard to the campaign", :aggregate_failures do
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: campaign.id }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to be_nil
+      end
+
+      it "refuses to detach a billboard from the campaign", :aggregate_failures do
+        draft.update_column(:billboard_campaign_id, campaign.id)
+        put api_billboard_path(draft.id), params: { billboard_campaign_id: nil }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:forbidden)
+        expect(draft.reload.billboard_campaign_id).to eq(campaign.id)
       end
     end
   end

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :navigation_link do
     name { "#{Faker::Book.title} #{rand(1000)}" }
     url  { "#{Faker::Internet.url}/#{rand(1000)}" }
-    icon { "<svg xmlns='http://www.w3.org/2000/svg'/></svg>" }
+    icon { '<svg xmlns="http://www.w3.org/2000/svg"></svg>' }
 
     trait :without_url_normalization do
       after(:build) do |navigation_link|

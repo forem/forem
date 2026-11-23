@@ -36,14 +36,33 @@ module Api
           @user = ::Authentication::Authenticator.call(auth_payload)
           
           if @user&.persisted?
+            response.headers["Cache-Control"] = "no-store"
+            response.headers["Surrogate-Control"] = "no-store"
+
             # Ensure the user passes the AuthPassController `user_not_signed_out?` validation
             @user.update_tracked_fields!(request)
             @user.save(validate: false)
 
             bypass_sign_in(@user)
-            
-            payload = { user_id: @user.id, exp: 30.days.from_now.to_i }
-            jwt_token = JWT.encode(payload, Rails.application.secret_key_base)
+            @user.remember_me!
+
+            custom_domain = root_domain(request.host)
+            remember_cookie_values = Devise::Controllers::Rememberable.cookie_values.merge(
+              domain: custom_domain,
+              value: @user.class.serialize_into_cookie(@user),
+              expires: @user.remember_expires_at,
+            )
+            cookies.signed["remember_user_token"] = remember_cookie_values
+
+            cookies[:forem_user_signed_in] = {
+              value: "true",
+              domain: custom_domain == "localhost" ? nil : ".#{custom_domain}",
+              httponly: true,
+              secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
+              expires: 2.years.from_now
+            }
+
+            jwt_token = Authentication::AuthToken.encode_mobile_api(@user)
             
             session_cookie_options = Rails.application.config.session_options.slice(:domain, :secure, :same_site)
             

@@ -168,6 +168,84 @@ RSpec.describe "Api::V1::Comments" do
           "created_at" => root_comment.created_at.utc.iso8601,
         )
       end
+
+      it "scopes surrogate-key headers to returned paginated comments and matches Jbuilder fallback",
+         :aggregate_failures do
+        expect(ForemNative.available?).to be(true)
+        allow(ForemNative).to receive(:serialize_api_comments_json).and_call_original
+
+        child_comment.update!(deleted: true)
+        grandchild_comment.update!(hidden_by_commentable_user: true)
+
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        expect(ForemNative).to have_received(:serialize_api_comments_json).once
+        native_body = response.parsed_body
+        native_keys = response.headers["surrogate-key"].split.to_set
+
+        expected_keys = [
+          article.record_key, "comments",
+          root_comment.record_key, child_comment.record_key,
+          grandchild_comment.record_key, great_grandchild_comment.record_key
+        ].to_set
+        expect(native_body.size).to eq(1)
+        expect(native_keys).to eq(expected_keys)
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        expect(response.parsed_body).to eq(native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+      end
+
+      it "only loads authors for the selected page when paginating", :aggregate_failures do
+        off_page_user = create(:user)
+        create(:comment, commentable: article, user: off_page_user)
+
+        allow(Images::Profile).to receive(:call).and_call_original
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+        # Only the single on-page author's two sizes (640 and 90) are resolved
+        expect(Images::Profile).to have_received(:call).twice
+      end
+
+      it "disables the paginated author mask and matches Jbuilder when ancestry prefixes are inconsistent",
+         :aggregate_failures do
+        expect(ForemNative.available?).to be(true)
+        second_root = article.comments.roots.order(:id).second
+        inconsistent_user = create(:user)
+        inconsistent_child = create(:comment, commentable: article, user: inconsistent_user)
+        inconsistent_child.update_column(:ancestry, "#{root_comment.id}/#{second_root.id}")
+
+        get api_comments_path(a_id: article.id, page: 2, per_page: 1), headers: headers
+        expect(response).to have_http_status(:ok)
+        native_body = response.parsed_body
+        native_keys = response.headers["surrogate-key"].split.to_set
+
+        expect(native_body.first["id_code"]).to eq(second_root.id_code_generated)
+        expect(native_body.first["children"].pluck("id_code")).to include(inconsistent_child.id_code_generated)
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get api_comments_path(a_id: article.id, page: 2, per_page: 1), headers: headers
+        expect(response.parsed_body).to eq(native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+      end
+
+      it "falls back to legacy Kaminari parsing for non-digit-prefixed per_page values", :aggregate_failures do
+        get api_comments_path(a_id: article.id, page: 1, per_page: "+2"), headers: headers
+        expect(response).to have_http_status(:ok)
+        # Kaminari ignores "+2" and uses its default page size (25), returning all 4 roots
+        expect(response.parsed_body.size).to eq(4)
+      end
+
+      it "falls back to Jbuilder when a stored ai_disclosure_level enum value cannot be decoded",
+         :aggregate_failures do
+        root_comment.update_column(:ai_disclosure_level, 2)
+
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first["ai_disclosure_level"]).to be_nil
+      end
     end
   end
 
@@ -242,6 +320,35 @@ RSpec.describe "Api::V1::Comments" do
         expect(hidden_child["user"]).to be_empty
         expect(hidden_child["children"]).not_to be_empty
       end
+    end
+
+    it "matches the Jbuilder fallback response body, media type, and surrogate keys for nested subtrees",
+       :aggregate_failures do
+      expect(ForemNative.available?).to be(true)
+      allow(ForemNative).to receive(:serialize_api_comments_json).and_call_original
+
+      user.profile.update_column(:website_url, "  https://example.com/dev  ")
+      build_comment_tree
+      root_comment.update!(ai_disclosure_level: :fully_autonomous)
+      child_comment.update!(deleted: true)
+      grandchild_comment.update!(hidden_by_commentable_user: true)
+
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+      expect(ForemNative).to have_received(:serialize_api_comments_json).once
+      native_body = response.parsed_body
+      native_raw = response.body
+      native_media_type = response.media_type
+      native_keys = response.headers["surrogate-key"].split.to_set
+
+      expect(native_body.dig("user", "website_url")).to eq("https://example.com/dev")
+
+      allow(ForemNative).to receive(:available?).and_return(false)
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+
+      expect(response.media_type).to eq(native_media_type)
+      expect(response.parsed_body).to eq(native_body)
+      expect(response.body).to eq(native_raw)
+      expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
     end
   end
 

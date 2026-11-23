@@ -90,7 +90,7 @@ RSpec.describe BillboardPolicy, type: :policy do
     end
 
     %i[body_markdown name placement_area display_to type_of creator_id organization_id expires_at
-       target_geolocations tag_list render_mode template].each do |attribute|
+       target_geolocations tag_list render_mode isolate_content template].each do |attribute|
       it "needs modify_approved to change #{attribute}" do
         value = {
           body_markdown: "Changed after approval",
@@ -104,6 +104,7 @@ RSpec.describe BillboardPolicy, type: :policy do
           target_geolocations: "US-WA",
           tag_list: "ruby",
           render_mode: "raw",
+          isolate_content: true,
           template: "plain"
         }.fetch(attribute)
         billboard.public_send(:"#{attribute}=", value)
@@ -192,6 +193,74 @@ RSpec.describe BillboardPolicy, type: :policy do
 
   it "needs nothing to delete an unapproved billboard" do
     expect(missing(create(:billboard, approved: false, published: true), :destroy)).to be_empty
+  end
+
+  describe "moving a billboard between campaigns" do
+    let(:live_campaign) { BillboardCampaign.create!(name: "Live", max_impressions_count: 1_000) }
+    let(:quiet_campaign) { BillboardCampaign.create!(name: "Quiet", max_impressions_count: 1_000) }
+    let(:draft) { create(:billboard, approved: false, published: false) }
+
+    before do
+      create(:billboard, approved: true, published: true, billboard_campaign: live_campaign)
+      create(:billboard, approved: false, published: false, billboard_campaign: quiet_campaign)
+    end
+
+    it "needs modify_approved to join a campaign with a live billboard" do
+      draft.billboard_campaign = live_campaign
+
+      expect(missing(draft)).to eq(%w[modify_approved])
+    end
+
+    it "needs modify_approved to leave a campaign with a live billboard" do
+      draft.update_column(:billboard_campaign_id, live_campaign.id)
+      draft.billboard_campaign = nil
+
+      expect(missing(draft)).to eq(%w[modify_approved])
+    end
+
+    it "needs modify_approved for an approved member taken down while leaving" do
+      member = create(:billboard, approved: true, published: true, billboard_campaign: live_campaign)
+      member.assign_attributes(approved: false, billboard_campaign: nil)
+
+      expect(missing(member)).to eq(%w[modify_approved])
+    end
+
+    it "counts an Event-owned sibling as live" do
+      create(:billboard, approved: false, event: create(:event), billboard_campaign: quiet_campaign)
+      draft.billboard_campaign = quiet_campaign
+
+      expect(missing(draft)).to eq(%w[modify_approved])
+    end
+
+    it "needs nothing to move between campaigns with no live billboard" do
+      other_quiet = BillboardCampaign.create!(name: "Other quiet")
+      draft.update_column(:billboard_campaign_id, quiet_campaign.id)
+      draft.billboard_campaign = other_quiet
+
+      expect(missing(draft)).to be_empty
+    end
+
+    it "needs modify_approved to delete a member of a campaign with a live billboard" do
+      draft.update_column(:billboard_campaign_id, live_campaign.id)
+
+      expect(missing(draft.reload, :destroy)).to eq(%w[modify_approved])
+    end
+
+    it "needs nothing to delete a member of a campaign with no live billboard" do
+      draft.update_column(:billboard_campaign_id, quiet_campaign.id)
+
+      expect(missing(draft.reload, :destroy)).to be_empty
+    end
+
+    context "with modify_approved" do
+      let(:allowed) { %w[modify_approved] }
+
+      it "can join a campaign with a live billboard" do
+        draft.billboard_campaign = live_campaign
+
+        expect(missing(draft)).to be_empty
+      end
+    end
   end
 
   context "when the grant allows every clause" do

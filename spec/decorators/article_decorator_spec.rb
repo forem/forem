@@ -454,4 +454,32 @@ RSpec.describe ArticleDecorator, type: :decorator do
       end
     end
   end
+
+  describe "#co_author_name_and_path" do
+    it "HTML-escapes co-author names to prevent stored XSS", :aggregate_failures do
+      xss_payload = '<img src=x onerror="alert(1)">'
+      co_author = create(:user, name: xss_payload)
+      article = create_article(published: true, co_author_ids: [co_author.id])
+
+      result = article.co_author_name_and_path
+
+      expect(result).to be_html_safe
+      expect(result).not_to include(xss_payload)
+      expect(result).to include(ERB::Util.html_escape(xss_payload))
+      expect(result).to include(%(href="#{co_author.path}"))
+    end
+
+    it "preserves co_author_ids order and formats multiple co-authors as a sentence" do
+      first = create(:user, name: "Alice & Co")
+      second = create(:user, name: "Bob")
+      article = create_article(published: true, co_author_ids: [second.id, first.id])
+
+      result = article.co_author_name_and_path
+
+      expect(result).to eq(
+        %(<a class="crayons-link" href="#{second.path}">Bob</a> and ) +
+        %(<a class="crayons-link" href="#{first.path}">Alice &amp; Co</a>),
+      )
+    end
+  end
 end

@@ -23,7 +23,11 @@ module IncomingWebhooks
     private
 
     def valid_secret?
-      params[:secret] == Settings::General.mailchimp_incoming_webhook_secret
+      expected_secret = Settings::General.mailchimp_incoming_webhook_secret
+      provided_secret = params[:secret]
+      return false if expected_secret.blank? || !provided_secret.is_a?(String) || provided_secret.blank?
+
+      ActiveSupport::SecurityUtils.secure_compare(provided_secret, expected_secret)
     end
 
     def email_type

@@ -1,6 +1,7 @@
 module Articles
   class ApiSearchQuery
     DEFAULT_PER_PAGE = 30
+    MAX_TOP_DAYS = 730
 
     def self.call(...)
       new(...).call
@@ -53,7 +54,11 @@ module Articles
     end
 
     def top_articles
-      @articles.where("published_at > ?", top.to_i.days.ago)
+      @articles.where("published_at > ?", top_days.days.ago)
+    end
+
+    def top_days
+      top.to_i.clamp(0, MAX_TOP_DAYS)
     end
 
     def published_articles_with_users_and_organizations

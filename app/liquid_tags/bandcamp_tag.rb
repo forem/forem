@@ -97,7 +97,7 @@ class BandcampTag < LiquidTagBase
       "User-Agent" => "Forem/1.0 (EmbedFetcher; BandcampTag; +#{ENV['APP_DOMAIN'] || 'http://localhost:3000'})",
       "Accept" => "text/html,application/xhtml+xml"
     }
-    response = HTTParty.get(page_url, headers: headers, timeout: 10)
+    response = SafeHttp.get(page_url, headers: headers, timeout: 10)
 
     unless response.success?
       Rails.logger.error "[BandcampTag] HTTP fetch failed for #{page_url}. Status: #{response.code}"
@@ -171,6 +171,9 @@ class BandcampTag < LiquidTagBase
 
     Rails.logger.warn "[BandcampTag] Could not extract sufficient IDs for #{page_url} using any method. Final data: #{ids.inspect}"
     ids[:item_id] ? ids : nil
+  rescue SafeHttp::Error
+    Rails.logger.warn "[BandcampTag] Blocked unsafe URL while fetching Bandcamp page data"
+    nil
   rescue HTTParty::Error, SocketError, Net::OpenTimeout, Net::ReadTimeout, StandardError => e
     Rails.logger.error "[BandcampTag] HTTP/Network/Parsing error for #{page_url}: #{e.class} - #{e.message}"
     nil

@@ -8,6 +8,7 @@ import {
 } from '../packs/billboardAfterRenderActions';
 import { observeFeedElements } from '../packs/feedEvents';
 import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
+import { cleanupBillboardShadowHostsIn } from '../utilities/billboardShadowDom';
 
 /* global userData */
 const frontPageFeedPathNames = new Map([
@@ -100,6 +101,7 @@ function renderSidebar() {
       .fetch('/sidebars/home')
       .then((res) => res.text())
       .then((response) => {
+        cleanupBillboardShadowHostsIn(sidebarContainer);
         sidebarContainer.innerHTML = response;
         initializeBillboardVisibility();
         observeBillboards();

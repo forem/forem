@@ -13,8 +13,8 @@ class VideoStatesController < ApplicationController
     rescue StandardError => e
       Rails.error.report(e)
     end
-    message_json = JSON.parse(request_json[:Message], symbolize_names: true)
-    @article = Article.find_by(video_code: message_json[:input][:key])
+    video_code = extract_video_code(request_json)
+    @article = video_code ? Article.find_by(video_code: video_code) : nil
 
     if @article
       @article.update(video_state: "COMPLETED") # Only is called on completion
@@ -29,7 +29,24 @@ class VideoStatesController < ApplicationController
 
   private
 
+  def extract_video_code(request_json)
+    return unless request_json.is_a?(Hash) && request_json[:Message].is_a?(String)
+
+    message_json = JSON.parse(request_json[:Message], symbolize_names: true)
+    return unless message_json.is_a?(Hash) && message_json[:input].is_a?(Hash)
+
+    video_code = message_json[:input][:key]
+    video_code.is_a?(String) && video_code.present? ? video_code : nil
+  rescue JSON::ParserError => e
+    Rails.error.report(e)
+    nil
+  end
+
   def valid_key
-    params[:key] == Settings::General.video_encoder_key
+    expected_key = Settings::General.video_encoder_key
+    provided_key = params[:key]
+    return false if expected_key.blank? || !provided_key.is_a?(String) || provided_key.blank?
+
+    ActiveSupport::SecurityUtils.secure_compare(provided_key, expected_key)
   end
 end
