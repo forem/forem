@@ -1,0 +1,14 @@
+gems/forem_native/crates/forem_core/src/api_comments.rs
+  h_f968154a99632d 245-253,256,260-270,272-281,283-285,287-301,303-363,367,497,506,836-878
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f49fdd3ac6431572df84957171298f30d0c8e5a5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
