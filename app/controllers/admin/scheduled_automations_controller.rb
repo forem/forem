@@ -39,13 +39,10 @@ module Admin
     end
 
     def update
-      # Recalculate next run time if frequency or config changed
-      frequency_changed = automation_params[:frequency] != @automation.frequency
-      config_changed = automation_params[:frequency_config] != @automation.frequency_config
-
       if @automation.update(automation_params)
-        # Recalculate next run time if scheduling changed
-        if frequency_changed || config_changed
+        # Recalculate the next run only when the saved schedule changed. Checking after save
+        # compares normalized values, so the form's string params ("0" vs 0) are not a change.
+        if @automation.saved_change_to_frequency? || @automation.saved_change_to_frequency_config?
           @automation.update!(next_run_at: @automation.calculate_next_run_time)
         end
 

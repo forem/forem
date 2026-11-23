@@ -27,20 +27,19 @@ class ApplicationMetalController < ActionController::Metal
   helper_method :client_geolocation
 
   def current_user_by_token
-    auth_header = request.headers["Authorization"]
-    return unless auth_header || params[:jwt]
-
-    if auth_header.present? && auth_header.start_with?("Bearer ")
-      token = auth_header.split.last
-      payload = decode_auth_token(token)
-    elsif params[:jwt].present?
-      token = params[:jwt]
-      payload = decode_auth_token(token)
+    token = Authentication::AuthToken.extract_bearer_token(request.headers["Authorization"])
+    if token.blank? && (request.post? || request.put? || request.patch?)
+      body_jwt = request.request_parameters["jwt"]
+      token = body_jwt if body_jwt.is_a?(String) && body_jwt.present?
     end
+    return unless token
+
+    payload = decode_auth_token(token)
     return unless payload && payload["user_id"]
+    return if payload["purpose"] == Authentication::AuthToken::AUTH_PASS_PURPOSE
 
     user = User.find_by(id: payload["user_id"])
-    return unless user
+    return unless user && Authentication::AuthToken.valid_for_user?(payload, user)
 
     @current_user = user
     @token_authenticated = true

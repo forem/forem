@@ -29,9 +29,12 @@ module Api
     def authenticate_with_token
       return if request.local?
 
-      key = request.headers["health-check-token"]
-
-      return if key == Settings::General.health_check_token
+      expected_token = Settings::General.health_check_token
+      provided_token = request.headers["health-check-token"]
+      if expected_token.present? && provided_token.is_a?(String) &&
+          ActiveSupport::SecurityUtils.secure_compare(provided_token, expected_token)
+        return
+      end
 
       error_unauthorized
     end

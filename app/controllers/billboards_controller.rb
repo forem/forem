@@ -183,7 +183,7 @@ class BillboardsController < ApplicationController
     Billboard.select(
       :id, :organization_id, :placement_area, :processed_html, :minimized_processed_html,
       :impressions_count, :success_rate, :priority, :weight, :preferred_article_ids,
-      :template, :custom_display_label, :type_of, :special_behavior, :dismissal_sku,
+      :template, :render_mode, :isolate_content, :custom_display_label, :type_of, :special_behavior, :dismissal_sku,
       :page_id, :browser_context, :color, :content_updated_at
     )
   end

@@ -22,7 +22,7 @@ module SubPermissions
 
     def validate
       return [error(:not_configurable)] unless SubPermissions.configurable?(resource_type)
-      return [error(:malformed)] unless @raw.is_a?(Hash) && @raw.keys.sort == KEYS
+      return [error(:malformed)] unless @raw.is_a?(Hash) && @raw.keys.all?(String) && @raw.keys.sort == KEYS
       return [error(:unsupported_version)] unless @raw["version"] == SubPermissions::VERSION
 
       allow = @raw["allow"]

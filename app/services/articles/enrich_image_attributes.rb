@@ -1,5 +1,7 @@
 module Articles
   module EnrichImageAttributes
+    INSPECTION_BUDGET_SECONDS = 30
+
     IMAGES_IN_LIQUID_TAGS_SELECTORS = [
       ".liquid-comment img", # CommentTag
       ".ltag-github-readme-tag img", # GithubReadmeTag
@@ -24,7 +26,11 @@ module Articles
       parsed_html, images = extract_enrichable_images(processed_html)
       return unless images.any? || article.main_image
 
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + INSPECTION_BUDGET_SECONDS
       images.each do |img|
+        remaining = [deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC), 10].min
+        break if remaining <= 0
+
         src = img.attr("src")
         next if src.blank?
 
@@ -34,31 +40,40 @@ module Articles
           next
         end
 
-        image = if parsed_src.relative?
-                  retrieve_image_from_uploader_store(src)
-                else
-                  src
-                end
+        img_properties = inspect_image(src, parsed_src, fast_image_headers, timeout: remaining)
+        next unless img_properties
 
-        next if image.blank?
-
-        img_properties = FastImage.new(image, timeout: 10, http_header: fast_image_headers)
         img["width"], img["height"] = img_properties.size
         img["data-animated"] = true if img_properties.type == :gif
       end
 
       updated_html = images.any? ? parsed_html.to_html : processed_html
+      main_image_timeout = [deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC), 15].min
       article.update_columns(
         processed_html: updated_html,
-        main_image_height: resolve_main_image_height(article, fast_image_headers),
+        main_image_height: resolve_main_image_height(article, fast_image_headers, timeout: main_image_timeout),
       )
     end
 
-    def self.resolve_main_image_height(article, fast_image_headers)
+    def self.inspect_image(src, parsed_src, fast_image_headers, timeout: 10)
+      if parsed_src.relative?
+        image, is_local_file = retrieve_image_from_uploader_store(src)
+        return if image.blank?
+
+        return SafeFastImage.from_file(image) if is_local_file
+
+        return SafeFastImage.new(image, timeout: timeout, http_header: fast_image_headers)
+      end
+
+      SafeFastImage.new(src, timeout: timeout, http_header: fast_image_headers)
+    end
+    private_class_method :inspect_image
+
+    def self.resolve_main_image_height(article, fast_image_headers, timeout: 15)
       return 500 if article.main_image&.include?("ytimg.com") # Hardcoded for 1000/500
 
       if article.main_image && Settings::UserExperience.cover_image_fit(subforem_id: article.subforem_id) == "limit"
-        main_image_size = FastImage.size(article.main_image, timeout: 15, http_header: fast_image_headers)
+        main_image_size = SafeFastImage.size(article.main_image, timeout: timeout, http_header: fast_image_headers)
         return (main_image_size[1].to_f / main_image_size[0]) * 1000 if main_image_size
       end
 
@@ -92,11 +107,15 @@ module Articles
       uploader = ArticleImageUploader.new
       uploader.retrieve_from_store!(filename)
 
-      return unless uploader.file.exists?
+      return [nil, false] unless uploader.file.exists?
 
-      # Local storage yields a SanitizedFile whose path FastImage can read directly, but
-      # remote (fog) storage has no local file, so hand FastImage the stored image's URL.
-      uploader.file.is_a?(CarrierWave::SanitizedFile) ? uploader.file.file : uploader.url
+      # Local storage yields a SanitizedFile whose path SafeFastImage.from_file can read directly,
+      # but remote (fog) storage has no local file, so hand SafeFastImage the stored image's URL.
+      if uploader.file.is_a?(CarrierWave::SanitizedFile)
+        [uploader.file.file, true]
+      else
+        [uploader.url, false]
+      end
     end
     private_class_method :retrieve_image_from_uploader_store
 

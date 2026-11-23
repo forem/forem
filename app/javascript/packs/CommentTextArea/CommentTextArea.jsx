@@ -129,7 +129,10 @@ const EmojiPickerButton = ({ textAreaId }) => {
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
-  const contextData = document.getElementById('comments-container')?.dataset;
+  const contextData = (
+    document.getElementById('comments-container') ||
+    document.getElementById('notifications-container')
+  )?.dataset;
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
@@ -181,10 +184,19 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
         replaceElement={vanillaTextArea}
         fetchSuggestions={(username) => {
           const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
+          // Prefer the comment-page context; otherwise (e.g. notification
+          // reply forms) fall back to the form's own commentable fields.
+          const form = (textAreaRef.current || vanillaTextArea)?.closest?.(
+            'form',
+          );
           const params = {
             username,
-            context_type: contextData?.['commentableType'],
-            context_id: contextData?.['commentableId'],
+            context_type:
+              contextData?.['commentableType'] ||
+              form?.querySelector('[name="comment[commentable_type]"]')?.value,
+            context_id:
+              contextData?.['commentableId'] ||
+              form?.querySelector('[name="comment[commentable_id]"]')?.value,
           };
           
           if (priorityUserIds.length) {

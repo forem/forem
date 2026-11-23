@@ -193,7 +193,11 @@ module Feeds
         next unless %r{medium\.com/media/.+/href}.match?(possible_link)
         next unless medium_host?(possible_link)
 
-        real_link = HTTParty.head(possible_link).request.last_uri.to_s
+        real_link = begin
+          SafeHttp.head(possible_link, timeout: 10).request.last_uri.to_s
+        rescue SafeHttp::Error
+          next
+        end
         return nil unless real_link.include?("gist.github.com")
 
         iframe.name = "p"

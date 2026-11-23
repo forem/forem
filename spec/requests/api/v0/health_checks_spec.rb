@@ -12,11 +12,46 @@ RSpec.describe "HealthCheck" do
       get app_api_health_checks_path
       expect(response).to have_http_status(:unauthorized)
     end
+
+    it "returns unauthorized for remote requests when health_check_token is unconfigured (nil)" do
+      allow(Settings::General).to receive(:health_check_token).and_return(nil)
+      allow_any_instance_of(ActionDispatch::Request).to receive(:remote_addr).and_return("192.0.2.1") # rubocop:disable RSpec/AnyInstance
+      get app_api_health_checks_path
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns unauthorized for remote requests when health_check_token is blank and header is empty" do
+      allow(Settings::General).to receive(:health_check_token).and_return("")
+      allow_any_instance_of(ActionDispatch::Request).to receive(:remote_addr).and_return("192.0.2.1") # rubocop:disable RSpec/AnyInstance
+      get app_api_health_checks_path, headers: { "health-check-token" => "" }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns unauthorized for remote API v1 requests when health_check_token is unconfigured (nil)" do
+      allow(Settings::General).to receive(:health_check_token).and_return(nil)
+      allow_any_instance_of(ActionDispatch::Request).to receive(:remote_addr).and_return("192.0.2.1") # rubocop:disable RSpec/AnyInstance
+      get app_api_health_checks_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+      expect(response).to have_http_status(:unauthorized)
+    end
   end
 
   describe "GET /api/health_checks/app" do
     it "returns json success" do
       get app_api_health_checks_path, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["message"]).to eq("App is up!")
+    end
+
+    it "returns json success for remote requests with a valid token" do
+      allow_any_instance_of(ActionDispatch::Request).to receive(:remote_addr).and_return("192.0.2.1") # rubocop:disable RSpec/AnyInstance
+      get app_api_health_checks_path, headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["message"]).to eq("App is up!")
+    end
+
+    it "returns json success for remote API v1 requests with a valid token" do
+      allow_any_instance_of(ActionDispatch::Request).to receive(:remote_addr).and_return("192.0.2.1") # rubocop:disable RSpec/AnyInstance
+      get app_api_health_checks_path, headers: headers.merge("Accept" => "application/vnd.forem.api-v1+json")
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body["message"]).to eq("App is up!")
     end

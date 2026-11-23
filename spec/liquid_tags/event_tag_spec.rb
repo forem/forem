@@ -56,5 +56,23 @@ RSpec.describe EventTag, type: :liquid_tag do
       expect(liquid_tag).to include("Sign Up")
       expect(liquid_tag).not_to include("I'm Interested")
     end
+
+    it "raises StandardError for an unpublished event looked up by ID or slugs" do
+      draft_event = create(
+        :event,
+        :unpublished,
+        title: "Upcoming Draft Event",
+        event_name_slug: "draft-event",
+        event_variation_slug: "aug-2026",
+      )
+
+      expect do
+        Liquid::Template.parse("{% event #{draft_event.id} %}").render
+      end.to raise_error(StandardError, /Event not found/)
+
+      expect do
+        Liquid::Template.parse("{% event draft-event/aug-2026 %}").render
+      end.to raise_error(StandardError, /Event not found/)
+    end
   end
 end

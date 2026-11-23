@@ -8,9 +8,17 @@ vcr_option = {
 RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
   let(:feed_url) { "http://softwareengineeringdaily.com/feed/podcast/" }
   let(:podcast) { create(:podcast, feed_url: feed_url) }
-  let(:httparty_options) { { limit: 7 } }
+  let(:safe_http_options) { { max_redirects: 7 } }
 
   before do
+    # SafeHttp resolves each host before fetching; pin the public test hosts so
+    # these examples don't depend on live DNS.
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    %w[softwareengineeringdaily.com podcast.example.com].each do |host|
+      allow(Addrinfo).to receive(:getaddrinfo)
+        .with(host, nil, nil, :STREAM)
+        .and_return([instance_double(Addrinfo, ip_address: "203.0.113.10")])
+    end
     podcast
   end
 
@@ -27,8 +35,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "sets reachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
-                                            httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast",
+                                            **safe_http_options).and_raise(Errno::ECONNREFUSED)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
@@ -36,7 +44,7 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "sets reachable when hitting ip issue" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast", **safe_http_options).and_raise(
         Errno::EHOSTUNREACH,
       )
       described_class.new(unpodcast).get_episodes(limit: 2)
@@ -45,17 +53,43 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "sets reachable when there redirection is too deep" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(
-        HTTParty::RedirectionTooDeep, "too deep"
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast", **safe_http_options).and_raise(
+        SafeHttp::TooManyRedirectsError, "too deep"
       )
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
     end
 
+    it "blocks a feed URL pointing to a private or link-local IP" do
+      internal_url = "http://169.254.169.254/latest/meta-data/"
+      unpodcast.update_column(:feed_url, internal_url)
+      stub_request(:get, internal_url).to_return(status: 200, body: "ami-id")
+
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("is not reachable")
+      expect(a_request(:get, internal_url)).not_to have_been_made
+    end
+
+    it "does not follow a redirect to a private address" do
+      internal_url = "http://10.0.0.5/admin"
+      stub_request(:get, un_feed_url).to_return(status: 302, headers: { "Location" => internal_url })
+      stub_request(:get, internal_url).to_return(status: 200, body: "secret")
+
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("is not reachable")
+      expect(a_request(:get, internal_url)).not_to have_been_made
+    end
+
     it "schedules the update url jobs when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
-                                            httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast",
+                                            **safe_http_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
 
       expect do
@@ -66,9 +100,9 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     it "re-checks episodes urls when setting as unreachable" do
       options = { timeout: Podcasts::GetMediaUrl::TIMEOUT }
       error = Errno::ECONNREFUSED
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(error)
-      allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3", options).and_raise(error)
-      allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3", options).and_raise(error)
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast", **safe_http_options).and_raise(error)
+      allow(SafeHttp).to receive(:head).with("http://podcast.example.com/ep1.mp3", **options).and_raise(error)
+      allow(SafeHttp).to receive(:head).with("https://podcast.example.com/ep1.mp3", **options).and_raise(error)
 
       episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
       sidekiq_perform_enqueued_jobs { described_class.new(unpodcast).get_episodes }
@@ -79,8 +113,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
 
     it "doesn't re-check episodes reachable if the podcast was unreachable" do
       unpodcast.update_column(:reachable, false)
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
-                                            httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast",
+                                            **safe_http_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
@@ -93,8 +127,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
 
     it "sets ssl_failed" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
-                                            httparty_options).and_raise(OpenSSL::SSL::SSLError)
+      allow(SafeHttp).to receive(:get).with("http://podcast.example.com/podcast",
+                                            **safe_http_options).and_raise(OpenSSL::SSL::SSLError)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false

@@ -35,6 +35,7 @@ RSpec.describe SubPermissions::Config do
     "an array" => %w[approve],
     "JSON null stored as a value" => "null",
     "symbol keys" => { version: 1, allow: %w[approve] },
+    "mixed string and symbol keys" => { "version" => 1, :allow => %w[approve] },
     "a missing version" => { "allow" => %w[approve] },
     "a missing allow list" => { "version" => 1 },
     "an unknown key" => { "version" => 1, "allow" => %w[approve], "deny" => %w[publish] },

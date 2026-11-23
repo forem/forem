@@ -7385,4 +7385,784 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Ahoy email link tracking kernels" do
+    require "addressable/uri"
+    require "base64"
+    require "cgi"
+    require "nokogiri"
+    require "openssl"
+
+    let(:secret_token) { "forem_test_ahoy_secret_token_32bytes" }
+    let(:app_domain) { "dev.to" }
+    let(:external_base) { "https://dev.to/ahoy/click" }
+
+    let(:legacy_signature) do
+      lambda do |secret, token, campaign, url|
+        data = [token, campaign, url].map { |v| Base64.strict_encode64(v.to_s) }.join("|")
+        Base64.urlsafe_encode64(OpenSSL::HMAC.digest("SHA256", secret, data), padding: false)
+      end
+    end
+
+    let(:legacy_decorate_url) do
+      lambda do |href, domain, token, campaign, secret, ext_base|
+        uri = begin
+          Addressable::URI.heuristic_parse(href.to_s)
+        rescue StandardError
+          nil
+        end
+        next nil unless uri&.absolute? && %w[http https].include?(uri.scheme)
+        next nil if href.to_s.match?(/unsubscribe/i)
+        next nil if href.to_s.include?("ahoy_click=true")
+        next nil if uri.host == domain && uri.path.to_s.start_with?("/ahoy/")
+
+        sig = legacy_signature.call(secret, token, campaign, href)
+        if uri.host == domain
+          tracking_params = {
+            "ahoy_click" => true,
+            "t" => token,
+            "s" => sig,
+            "u" => CGI.escape(href),
+            "c" => campaign
+          }.reject { |_k, v| v.nil? || v.to_s.empty? }
+          uri.query_values = (uri.query_values(Array) || []) + tracking_params.to_a
+          port_part = uri.port ? ":#{uri.port}" : ""
+          url = "#{uri.scheme}://#{uri.host}#{port_part}#{uri.path}"
+          url += "?#{uri.query}" if uri.query && uri.query != ""
+          url
+        else
+          params = []
+          params << "c=#{CGI.escape(campaign)}" unless campaign.nil?
+          params << "s=#{CGI.escape(sig)}"
+          params << "t=#{CGI.escape(token)}"
+          params << "u=#{CGI.escape(href)}"
+          "#{ext_base}?#{params.join('&')}"
+        end
+      end
+    end
+
+    let(:legacy_decorate_html) do
+      lambda do |html, domain, token, campaign, secret, ext_base|
+        doc = Nokogiri::HTML::DocumentFragment.parse(html)
+        doc.css("a[href]").each do |link|
+          if link["data-skip-click"]
+            link.remove_attribute("data-skip-click")
+            next
+          end
+          decorated = legacy_decorate_url.call(link["href"], domain, token, campaign, secret, ext_base)
+          link["href"] = decorated if decorated
+        end
+        doc.to_s.gsub("&amp;", "&")
+      end
+    end
+
+    it "matches AhoyEmail::Utils.signature across edge cases and 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      edge_cases = [
+        ["short", "tok", "", "https://dev.to/ben/post"],
+        ["a" * 100, "token_with_unicode_🚀", "digest-2026", "https://dev.to/search?q=100%25%20ruby&x=café"],
+        [secret_token, "", "", ""],
+        [secret_token, "abc123", "spring 2026", "https://example.com/a?b=1&c=2#frag"],
+      ]
+      edge_cases.each do |secret, tok, camp, url|
+        expect(described_class.ahoy_signature(secret, tok, camp, url))
+          .to eq(legacy_signature.call(secret, tok, camp, url))
+      end
+
+      alphabet = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + %w[- _ . ~ / ? & = % + : # café 🚀]
+      1_000.times do |i|
+        secret = Array.new(rng.rand(1..96)) { alphabet.sample(random: rng) }.join
+        tok = Array.new(rng.rand(0..40)) { alphabet.sample(random: rng) }.join
+        camp = rng.rand(3).zero? ? "" : Array.new(rng.rand(1..24)) { alphabet.sample(random: rng) }.join
+        url = "https://dev.to/#{Array.new(rng.rand(0..60)) { alphabet.sample(random: rng) }.join}"
+        expect(described_class.ahoy_signature(secret, tok, camp, url))
+          .to eq(legacy_signature.call(secret, tok, camp, url)), "iteration #{i}"
+      end
+    end
+
+    it "matches legacy URL decoration across internal, external, skip, plain-text, and out-of-domain inputs" do
+      # Out-of-domain inputs return nil so Ruby falls back cleanly
+      [
+        "example.com",
+        "dev.to/ben/post",
+        "  https://dev.to/ben/post  ",
+        "https://user:pass@example.com/post",
+        "https://dev.to/post?bad=%ZZ",
+        "https://dev.to/post?a=1&&b=2",
+      ].each do |out_of_domain|
+        expect(
+          described_class.ahoy_decorate_url(out_of_domain, app_domain, "tok", nil, secret_token, external_base),
+        ).to be_nil, "expected nil for #{out_of_domain.inspect}"
+      end
+
+      # External URL without external_base_url returns nil (defer to Ruby url_for)
+      expect(
+        described_class.ahoy_decorate_url("https://example.com/post", app_domain, "tok", nil, secret_token, nil),
+      ).to be_nil
+
+      # Guaranteed unchanged/skipped inputs return false (no Ruby fallback needed)
+      [
+        "",
+        "Ben Halpern",
+        "A post you might like",
+        "A post you might like.",
+        "1.5 minutes read",
+        "mailto:yo@example.com",
+        "javascript:alert(1)",
+        "/relative/path.html",
+        "#section.1",
+        "https://dev.to/email_subscriptions/unsubscribe?ut=xyz",
+        "https://dev.to/post?ahoy_click=true&t=old&s=sig&u=x",
+        "https://dev.to/ahoy/click?t=old&s=sig&u=https%3A%2F%2Fexample.com",
+      ].each do |unchanged|
+        expect(
+          described_class.ahoy_decorate_url(unchanged, app_domain, "tok", nil, secret_token, external_base),
+        ).to be(false), "expected false for #{unchanged.inspect}"
+      end
+
+      # 1,000 randomized differential URLs
+      rng = Random.new(424_242)
+      hosts = ["dev.to", "dev.to:3000", "DEV.TO", "example.com", "github.com", "sub.example.org:8443"]
+      paths = ["", "/", "/ben/some-post", "/search", "/ahoy/click", "/email_subscriptions/unsubscribe", "/ben/café"]
+      queries = [
+        nil,
+        "",
+        "context=digest",
+        "q=100%25%20ruby&sort=top",
+        "a+b=hello+world&b=foo%20bar&c+d&bare&empty=",
+        "bb=42&tag=ruby&tag=rust",
+        "ahoy_click=true&t=old",
+      ]
+      campaigns = [nil, "", "digest", "weekly digest 2026"]
+
+      # Explicit edge cases: literal `+` in query keys and empty token preserving existing `t`
+      [
+        ["https://dev.to/search?a+b=one+two&c+d", "tok123", nil],
+        ["https://dev.to/post?t=original", "", nil],
+      ].each do |href, tok, camp|
+        native = described_class.ahoy_decorate_url(href, app_domain, tok, camp, secret_token, external_base)
+        expected = legacy_decorate_url.call(href, app_domain, tok, camp, secret_token, external_base)
+        expect(native).to eq(expected), "href=#{href.inspect} tok=#{tok.inspect}"
+      end
+
+      1_000.times do |i|
+        scheme = %w[http https HTTP HTTPS].sample(random: rng)
+        host = hosts.sample(random: rng)
+        path = paths.sample(random: rng)
+        query = queries.sample(random: rng)
+        frag = rng.rand(4).zero? ? "#section-#{rng.rand(1..9)}" : ""
+        href = "#{scheme}://#{host}#{path}#{query ? "?#{query}" : ''}#{frag}"
+        tok = "tok_#{rng.rand(10_000)}_#{['a', 'b c', 'x~y'].sample(random: rng)}"
+        camp = campaigns.sample(random: rng)
+
+        native = described_class.ahoy_decorate_url(href, app_domain, tok, camp, secret_token, external_base)
+        expected = legacy_decorate_url.call(href, app_domain, tok, camp, secret_token, external_base)
+        actual = native == false ? nil : native
+        expect(actual).to eq(expected), "iteration #{i}: href=#{href.inspect} camp=#{camp.inspect}"
+      end
+    end
+
+    it "rewrites HTML fragments identically to the Ruby reference" do
+      html_cases = [
+        %(<div><a href="https://dev.to/ben/some-post?context=digest">Read</a></div>),
+        %(<a href="https://dev.to/sponsor?bb=42">Ad</a>),
+        %(<a href="https://dev.to/ben/post" data-skip-click="true">Skip</a>),
+        %(<a href="https://dev.to/ben/post" data-skip-click>Skip bool</a>),
+        %(<p>Hello &amp; welcome <a href="https://dev.to/ben/post?a=1&amp;b=2">here</a> and <a href="https://example.com/x">there</a></p>),
+        %(<article><p>No anchors here</p></article>),
+        %(<img alt="Example: <a href='https://dev.to/post'>">),
+        %(<a href='https://dev.to/ben/single-quoted'>Read</a>),
+      ]
+
+      html_cases.each do |html|
+        actual = described_class.ahoy_decorate_html(html, app_domain, "tok123", "digest", secret_token, external_base)
+        expected = legacy_decorate_html.call(html, app_domain, "tok123", "digest", secret_token, external_base)
+        actual_doc = Nokogiri::HTML::DocumentFragment.parse(actual)
+        expected_doc = Nokogiri::HTML::DocumentFragment.parse(expected)
+        actual_anchors = actual_doc.css("a[href]").map { |a| a.attributes.transform_values(&:value) }
+        expected_anchors = expected_doc.css("a[href]").map { |a| a.attributes.transform_values(&:value) }
+        expect(actual_anchors).to eq(expected_anchors), "html=#{html.inspect}"
+        expect(actual).not_to include("data-skip-click")
+      end
+
+      [
+        %(<!-- <a href="https://dev.to/a">A</a> -->),
+        %(<textarea><a href="https://dev.to/a">A</a></textarea>),
+        %(<a href='https://dev.to/post"title="injected'>Read</a>),
+      ].each do |deferred_html|
+        expect(
+          described_class.ahoy_decorate_html(
+            deferred_html,
+            app_domain, "tok", nil, secret_token, external_base
+          ),
+        ).to be_nil, "expected nil for #{deferred_html.inspect}"
+      end
+    end
+
+    it "rewrites nested Customer.io payloads in a single FFI crossing" do
+      payload = {
+        "subject" => "Your weekly DEV digest.",
+        "name" => "Ben",
+        "count" => 42,
+        "unsubscribe_url" => "https://dev.to/email_subscriptions/unsubscribe?ut=xyz",
+        "articles" => [
+          {
+            "title" => "1.5 minutes read: Rust in Forem",
+            "url" => "https://dev.to/ben/rust-in-forem?context=digest",
+            "smart_summary" => %(<p>Check out <a href="https://dev.to/ben/rust-in-forem">this post</a> and <a href="https://example.com/docs">docs</a>.</p>)
+          },
+        ],
+        "billboards_html" => {
+          "first" => %(<a href="https://dev.to/sponsor?bb=42">Sponsor</a>)
+        }
+      }
+      result = described_class.ahoy_decorate_payload(payload, app_domain, "tok123", nil, secret_token, external_base)
+      expected_sponsor = legacy_decorate_url.call(
+        "https://dev.to/sponsor?bb=42", app_domain, "tok123", nil, secret_token, external_base
+      )
+      expect(result["subject"]).to equal(payload["subject"])
+      expect(result["name"]).to equal(payload["name"])
+      expect(result["count"]).to eq(42)
+      expect(result["unsubscribe_url"]).to equal(payload["unsubscribe_url"])
+      expect(result["articles"][0]["url"]).to eq(
+        legacy_decorate_url.call(payload["articles"][0]["url"], app_domain, "tok123", nil, secret_token, external_base),
+      )
+      expect(
+        Nokogiri::HTML::DocumentFragment.parse(result["billboards_html"]["first"]).at_css("a")["href"],
+      ).to eq(expected_sponsor)
+    end
+
+    it "defers identity hashes and stays safe across GC compaction during payload walks" do
+      identity_hash = {}.compare_by_identity
+      identity_hash[+"url"] = "https://dev.to/ben/first"
+      identity_hash[+"url"] = "https://dev.to/ben/second"
+      expect(
+        described_class.ahoy_decorate_payload(identity_hash, app_domain, "tok123", nil, secret_token, external_base),
+      ).to be_nil
+
+      large_payload = {
+        "items" => Array.new(64) do |idx|
+          { "k#{idx}" => "https://dev.to/ben/post-#{idx}", "ext" => "https://example.com/p/#{idx}" }
+        end
+      }
+      GC.compact if GC.respond_to?(:compact)
+      compacted_result = described_class.ahoy_decorate_payload(
+        large_payload, app_domain, "tok123", nil, secret_token, external_base
+      )
+      expect(compacted_result["items"].size).to eq(64)
+      expect(compacted_result["items"].last["k63"]).to include("ahoy_click=true")
+    end
+  end
+
+  describe "FeedEvents ingestion, deduplication & FeedConfig counter scoring kernels" do
+    let(:categories) { %w[impression click reaction comment extended_pageview] }
+    let(:category_map) { categories.each_with_index.to_h }
+    let(:contexts) { %w[home search tag email sidebar] }
+
+    let(:legacy_timebox_sql) do
+      lambda do |events|
+        return if events.empty?
+
+        seen = {}
+        tuples = []
+        events.each do |ev|
+          article_id = ev[:article_id] || ev["article_id"]
+          user_id = ev[:user_id] || ev["user_id"] || 0
+          cat = ev[:category] || ev["category"]
+          cat_code = cat.is_a?(Integer) ? cat : category_map[cat.to_s]
+          key = [article_id, user_id, cat_code]
+          next if seen[key]
+
+          seen[key] = true
+          tuples << "(#{article_id},#{user_id},#{cat_code})"
+        end
+        "(article_id, COALESCE(user_id, 0), category) IN (#{tuples.join(',')})"
+      end
+    end
+
+    let(:legacy_deduplicate) do
+      lambda do |events, existing_tuples|
+        recent = Hash.new { |u, uid| u[uid] = Hash.new { |c, cat| c[cat] = {} } }
+        existing_tuples.each do |user_id, category, article_id, context_type, feed_config_id|
+          recent[user_id][category.to_s][[article_id, context_type.to_s, feed_config_id]] = true
+        end
+
+        events.filter_map do |ev|
+          uid = ev[:user_id]
+          cat = ev[:category].to_s
+          key = [ev[:article_id], ev[:context_type].to_s, ev[:feed_config_id]]
+          next if recent[uid][cat][key]
+
+          recent[uid][cat][key] = true
+          ev
+        end
+      end
+    end
+
+    let(:legacy_freshness) do
+      lambda do |published_at, event_time, lookback_setting|
+        return 1.0 if published_at.nil? || event_time.nil?
+
+        age_in_hours = (event_time.to_f - published_at.to_f) / 3600.0
+        return 1.5 if age_in_hours <= 12.0
+
+        lookback_days = lookback_setting.positive? ? lookback_setting : 10
+        lookback_hours = lookback_days * 24.0
+        return 1.0 if age_in_hours >= lookback_hours || lookback_hours <= 12.0
+
+        decay_window = lookback_hours - 12.0
+        progress = (age_in_hours - 12.0) / decay_window
+        raw_decay = 1.0 / (1.0 + (4.0 * progress))
+        min_decay = 1.0 / (1.0 + 4.0)
+        normalized_decay = (raw_decay - min_decay) / (1.0 - min_decay)
+        1.0 + (0.5 * normalized_decay)
+      end
+    end
+
+    let(:legacy_aggregate_counters) do
+      lambda do |rows, lookback_setting|
+        impressions_total = 0
+        impressions_users = Set.new
+        clicks_score = 0.0
+        best_freshness = { "reaction" => {}, "comment" => {}, "extended_pageview" => {} }
+
+        rows.each do |category, user_id, position, event_time, published_at|
+          cat = category.is_a?(Integer) ? categories[category] : category.to_s
+          case cat
+          when "impression"
+            impressions_total += 1
+            impressions_users.add(user_id)
+          when "click"
+            clicks_score += ((2.0 / 3)**(position.to_i - 1)) *
+              legacy_freshness.call(published_at, event_time, lookback_setting)
+          when "reaction", "comment", "extended_pageview"
+            freshness = legacy_freshness.call(published_at, event_time, lookback_setting)
+            user_scores = best_freshness[cat]
+            user_scores[user_id] = freshness if user_scores[user_id].nil? || freshness > user_scores[user_id]
+          end
+        end
+
+        next [0, 0.0] if impressions_total.zero?
+
+        reactions_score = best_freshness["reaction"].values.sum * 6 * 2
+        comments_score = best_freshness["comment"].values.sum * 12 * 2
+        pageviews_score = best_freshness["extended_pageview"].values.sum
+        score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / impressions_users.size
+        [impressions_total, score, impressions_users.size]
+      end
+    end
+
+    it "builds deduplicated feed_events_timebox_lookup_sql across edge cases and 1,000 randomized batches" do
+      expect(described_class.feed_events_timebox_lookup_sql([])).to be_nil
+      expect(described_class.feed_events_timebox_lookup_sql("not-an-array")).to be_nil
+      # Out-of-domain and malformed inputs return nil for parameterized Ruby fallback
+      expect(described_class.feed_events_timebox_lookup_sql([Object.new])).to be_nil
+      expect(described_class.feed_events_timebox_lookup_sql([{ article_id: "123", user_id: 1, category: "click" }]))
+        .to be_nil
+      expect(
+        described_class.feed_events_timebox_lookup_sql([{ article_id: 1, user_id: "1) OR 1=1--", category: "click" }]),
+      ).to be_nil
+      expect(described_class.feed_events_timebox_lookup_sql([{ article_id: 1, user_id: 1, category: "bogus" }]))
+        .to be_nil
+
+      # Both symbol-keyed and string-keyed hashes, plus nil user_id coalesced to 0
+      mixed = [
+        { article_id: 10, user_id: nil, category: "impression" },
+        { "article_id" => 10, "user_id" => nil, "category" => :impression },
+        { article_id: 11, user_id: 42, category: 1 },
+      ]
+      expect(described_class.feed_events_timebox_lookup_sql(mixed)).to eq(
+        "(article_id, COALESCE(user_id, 0), category) IN ((10,0,0),(11,42,1))",
+      )
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        batch = Array.new(rng.rand(1..20)) do
+          {
+            article_id: rng.rand(1..15),
+            user_id: rng.rand(3).zero? ? nil : rng.rand(1..5),
+            category: categories.sample(random: rng)
+          }
+        end
+        expect(described_class.feed_events_timebox_lookup_sql(batch))
+          .to eq(legacy_timebox_sql.call(batch)), "iteration #{i}"
+      end
+    end
+
+    it "deduplicates feed events identically to Ruby nested hashes across edge cases and 1,000 randomized batches" do
+      expect(described_class.deduplicate_feed_events([], [])).to eq([])
+      expect(described_class.deduplicate_feed_events([Object.new], [])).to be_nil
+      expect(described_class.deduplicate_feed_events([], [[1, "impression"]])).to be_nil
+      expect(described_class.deduplicate_feed_events([{ article_id: 1, category: "bad", context_type: "home" }], []))
+        .to be_nil
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        existing = Array.new(rng.rand(0..15)) do
+          [
+            rng.rand(3).zero? ? nil : rng.rand(1..4),
+            categories.sample(random: rng),
+            rng.rand(1..8),
+            contexts.sample(random: rng),
+            rng.rand(3).zero? ? nil : rng.rand(1..3),
+          ]
+        end
+        events = Array.new(rng.rand(1..25)) do |idx|
+          {
+            article_id: rng.rand(1..8),
+            user_id: rng.rand(3).zero? ? nil : rng.rand(1..4),
+            article_position: idx + 1,
+            category: categories.sample(random: rng),
+            context_type: contexts.sample(random: rng),
+            feed_config_id: rng.rand(3).zero? ? nil : rng.rand(1..3),
+            event_id: nil
+          }
+        end
+
+        actual = described_class.deduplicate_feed_events(events, existing)
+        expected = legacy_deduplicate.call(events, existing)
+        expect(actual).to eq(expected), "iteration #{i}"
+        # Preserves original Hash object identity (zero Hash cloning)
+        actual.each_with_index do |h, idx|
+          expect(h).to equal(expected[idx])
+        end
+      end
+    end
+
+    it "computes article_freshness_multiplier identically to Ruby across boundaries and 1,000 randomized inputs" do
+      base = 1_700_000_000.0
+      expect(described_class.article_freshness_multiplier(nil, base, 10)).to eq(1.0)
+      expect(described_class.article_freshness_multiplier(base, nil, 10)).to eq(1.0)
+      expect(described_class.article_freshness_multiplier("bad", base, 10)).to be_nil
+      expect(described_class.article_freshness_multiplier(base - 3600.0, base, 10)).to eq(1.5)
+      expect(described_class.article_freshness_multiplier(base - (12 * 3600.0), base, 10)).to eq(1.5)
+      expect(described_class.article_freshness_multiplier(base - (10 * 86_400.0), base, 10)).to eq(1.0)
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        event_ts = base + rng.rand(0.0..100_000.0)
+        age_secs = rng.rand(-3_600.0..(15 * 86_400.0))
+        pub_ts = rng.rand(10).zero? ? nil : event_ts - age_secs
+        lookback = [-5, 0, 1, 5, 10, 14, 30].sample(random: rng)
+
+        expect(described_class.article_freshness_multiplier(pub_ts, event_ts, lookback))
+          .to eq(legacy_freshness.call(pub_ts, event_ts, lookback)), "iteration #{i}"
+      end
+    end
+
+    it "aggregates feed config counters identically to Ruby across Time/Float rows and 1,000 randomized datasets" do
+      expect(described_class.aggregate_feed_config_counters([], 10)).to eq([0, 0.0])
+      expect(described_class.aggregate_feed_config_counters([[1, 2]], 10)).to be_nil
+      expect(described_class.aggregate_feed_config_counters([["click", 1, 1, "", 1_700_000_000.0]], 10)).to be_nil
+
+      # Verify compatibility with Ruby Time objects in addition to float epochs
+      now = Time.utc(2026, 11, 20, 12, 0, 0)
+      time_rows = [
+        ["impression", 1, 1, now, now - 3600],
+        ["click", 1, 2, now, now - (3 * 86_400)],
+        ["reaction", 1, 1, now, now - (5 * 86_400)],
+        ["comment", nil, 1, now, nil],
+      ]
+      expect(described_class.aggregate_feed_config_counters(time_rows, 10))
+        .to eq(legacy_aggregate_counters.call(time_rows, 10))
+
+      rng = Random.new(424_242)
+      base = 1_700_000_000.0
+      1_000.times do |i|
+        lookback = [0, 5, 10, 20].sample(random: rng)
+        rows = Array.new(rng.rand(0..40)) do
+          event_ts = base + rng.rand(0.0..50_000.0)
+          pub_ts = rng.rand(6).zero? ? nil : event_ts - rng.rand(0.0..(14 * 86_400.0))
+          [
+            categories.sample(random: rng),
+            rng.rand(5).zero? ? nil : rng.rand(1..12),
+            rng.rand(10).zero? ? nil : rng.rand(1..15),
+            event_ts,
+            pub_ts,
+          ]
+        end
+
+        expect(described_class.aggregate_feed_config_counters(rows, lookback))
+          .to eq(legacy_aggregate_counters.call(rows, lookback)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe "API Comments Streaming JSON Kernels" do
+    let(:ai_keys) { %w[not_disclosed no_ai some_ai fully_autonomous] }
+    let(:labels) do
+      [
+        "<p>[deleted]</p>",
+        "<p>[hidden by post author]</p>",
+        "Not disclosed",
+        "No AI",
+        "Some AI",
+        "Fully autonomous",
+      ]
+    end
+
+    let(:legacy_serialize_api_comments) do
+      lambda do |rows, users, labels_arr, max_depth:, single_root:, root_offset:, root_limit:, escape_html:|
+        return ["[]", []] if !single_root && (max_depth <= 0 || rows.empty?)
+        return if single_root && (max_depth <= 0 || rows.empty?)
+
+        by_id = rows.index_by { |r| r[:id] }
+        children_map = Hash.new { |h, k| h[k] = [] }
+        roots = []
+
+        rows.each do |row|
+          anc = row[:ancestry]
+          parent_id = anc.present? ? anc.split("/").last.to_i : nil
+          if parent_id && by_id.key?(parent_id)
+            children_map[parent_id] << row
+          else
+            roots << row
+          end
+        end
+
+        included_ids = []
+        build_node = lambda do |row, depth|
+          included_ids << row[:id]
+          ai_idx = row[:ai_disclosure_idx]
+          node = {
+            "type_of" => "comment",
+            "id_code" => row[:id].to_s(26),
+            "created_at" => row[:created_at_sec] ? Time.at(row[:created_at_sec]).utc.iso8601 : nil,
+            "ai_disclosure_level" => ai_keys[ai_idx],
+            "ai_disclosure_label" => labels_arr[2 + ai_idx]
+          }
+
+          if row[:deleted]
+            node["body_html"] = labels_arr[0]
+            node["user"] = {}
+          elsif row[:hidden]
+            node["body_html"] = labels_arr[1]
+            node["user"] = {}
+          else
+            u = users[row[:user_idx]]
+            node["body_html"] = row[:processed_html]
+            node["user"] = {
+              "name" => u[:name],
+              "username" => u[:username],
+              "twitter_username" => u[:twitter_username],
+              "github_username" => u[:github_username],
+              "user_id" => u[:id],
+              "website_url" => u[:website_url],
+              "profile_image" => u[:profile_image],
+              "profile_image_90" => u[:profile_image_90]
+            }
+          end
+
+          node["children"] = if depth + 1 < max_depth
+                               children_map[row[:id]].map { |child| build_node.call(child, depth + 1) }
+                             else
+                               []
+                             end
+          node
+        end
+
+        payload = if single_root
+                    return if roots.size != 1
+
+                    build_node.call(roots.first, 0)
+                  else
+                    slice = roots[root_offset..] || []
+                    slice = slice.first(root_limit) if root_limit
+                    slice.map { |root| build_node.call(root, 0) }
+                  end
+
+        json = ActiveSupport::JSON.encode(payload, escape_html_entities: escape_html)
+        [json, included_ids]
+      end
+    end
+
+    it "encodes base26 IDs identically to Integer#to_s(26) across edge cases and 1,000 random values" do
+      [0, 1, 25, 26, 1000, -1, -1000, (2**62) - 1, -(2**62)].each do |val|
+        expect(described_class.encode_base26_id(val)).to eq(val.to_s(26))
+      end
+      expect(described_class.encode_base26_id(2**63)).to be_nil
+      expect(described_class.encode_base26_id("1000")).to be_nil
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        val = rng.rand(-10_000_000_000..10_000_000_000)
+        expect(described_class.encode_base26_id(val)).to eq(val.to_s(26)), "iteration #{i}"
+      end
+    end
+
+    it "formats UTC ISO-8601 timestamps identically to Time#utc.iso8601 across boundaries and 1,000 random values" do
+      [
+        0,
+        -1,
+        951_782_400,    # 2000-02-29T00:00:00Z
+        1_709_251_199,  # 2024-02-29T23:59:59Z
+        1_709_251_200,  # 2024-03-01T00:00:00Z
+        -2_203_977_600, # 1900-02-28T00:00:00Z
+        253_402_300_799, # 9999-12-31T23:59:59Z
+      ].each do |sec|
+        expect(described_class.format_utc_iso8601(sec)).to eq(Time.at(sec).utc.iso8601)
+      end
+
+      expect(described_class.format_utc_iso8601(253_402_300_800)).to be_nil
+      expect(described_class.format_utc_iso8601(-62_167_219_201)).to be_nil
+      expect(described_class.format_utc_iso8601("now")).to be_nil
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        sec = rng.rand(-2_000_000_000..4_102_444_800)
+        expect(described_class.format_utc_iso8601(sec))
+          .to eq(Time.at(sec).utc.iso8601), "iteration #{i}"
+      end
+    end
+
+    it "returns nil for out-of-domain inputs in serialize_api_comments_json", :aggregate_failures do
+      valid_user = [1, "Ada", "ada", nil, nil, nil, "https://img/640", "https://img/90"]
+      # Bad stride
+      expect(described_class.serialize_api_comments_json([1, 2], valid_user, labels, max_depth: 50)).to be_nil
+      # Missing user index
+      bad_user_row = [10, nil, "<p>hi</p>", 5, false, false, 1_700_000_000, 0]
+      expect(described_class.serialize_api_comments_json(bad_user_row, valid_user, labels, max_depth: 50)).to be_nil
+      # Malformed ancestry (including non-positive or overflowing ancestor segments)
+      %w[bad/path 0/42 9223372036854775808/42].each do |bad_ancestry|
+        bad_ancestry_row = [10, bad_ancestry, "<p>hi</p>", 0, false, false, 1_700_000_000, 0]
+        expect(described_class.serialize_api_comments_json(bad_ancestry_row, valid_user, labels, max_depth: 50))
+          .to be_nil
+      end
+      # Oversized 64-bit pagination/depth options (must return nil instead of raising RangeError)
+      valid_row = [10, nil, "<p>hi</p>", 0, false, false, 1_700_000_000, 0]
+      expect(described_class.serialize_api_comments_json(valid_row, valid_user, labels, max_depth: 2**63)).to be_nil
+      expect(
+        described_class.serialize_api_comments_json(valid_row, valid_user, labels, max_depth: 50, root_offset: 2**63),
+      ).to be_nil
+      expect(
+        described_class.serialize_api_comments_json(valid_row, valid_user, labels, max_depth: 50, root_limit: 2**63),
+      ).to be_nil
+      # Duplicate comment IDs
+      dup_rows = [
+        10, nil, "<p>a</p>", 0, false, false, 1_700_000_000, 0,
+        10, nil, "<p>b</p>", 0, false, false, 1_700_000_001, 0
+      ]
+      expect(described_class.serialize_api_comments_json(dup_rows, valid_user, labels, max_depth: 50)).to be_nil
+      # Empty or multi-root in single_root mode
+      expect(
+        described_class.serialize_api_comments_json([], valid_user, labels, max_depth: 50, single_root: true),
+      ).to be_nil
+      multi_root_rows = [
+        10, nil, "<p>a</p>", 0, false, false, 1_700_000_000, 0,
+        11, nil, "<p>b</p>", 0, false, false, 1_700_000_001, 0
+      ]
+      expect(
+        described_class.serialize_api_comments_json(
+          multi_root_rows, valid_user, labels, max_depth: 50, single_root: true
+        ),
+      ).to be_nil
+      # Disconnected 2-node cycle alongside a valid root must return nil in both modes
+      cyclic_rows = [
+        10, nil, "<p>root</p>", 0, false, false, 1_700_000_000, 0,
+        20, "30", "<p>a</p>", 0, false, false, 1_700_000_001, 0,
+        30, "20", "<p>b</p>", 0, false, false, 1_700_000_002, 0
+      ]
+      expect(described_class.serialize_api_comments_json(cyclic_rows, valid_user, labels, max_depth: 50)).to be_nil
+      expect(
+        described_class.serialize_api_comments_json(cyclic_rows, valid_user, labels, max_depth: 50, single_root: true),
+      ).to be_nil
+    end
+
+    it "matches the Ruby reference bit-for-bit across 1,000 randomized comment trees" do
+      rng = Random.new(424_242)
+      html_samples = [
+        "<p>Hello world!</p>",
+        "<p>Quotes \"here\" &amp; <a href=\"https://dev.to\">link</a></p>",
+        "<p>Unicode 🚀 日本語 café \u2028 line \u2029 para</p>",
+        "<pre><code>a \\ b\nc\td</code></pre>",
+        "",
+        nil,
+      ]
+      name_samples = ["Ada Lovelace", "Grace \"Hopper\"", "Renée 🚀", nil]
+
+      1_000.times do |i|
+        user_count = rng.rand(1..4)
+        users = Array.new(user_count) do |u_idx|
+          {
+            id: 100 + u_idx,
+            name: name_samples.sample(random: rng),
+            username: "user_#{u_idx}",
+            twitter_username: rng.rand(2).zero? ? "tw_#{u_idx}" : nil,
+            github_username: rng.rand(2).zero? ? "gh_#{u_idx}" : nil,
+            website_url: rng.rand(2).zero? ? "https://example.com/#{u_idx}" : nil,
+            profile_image: "https://media.dev.to/640/#{u_idx}.png",
+            profile_image_90: "https://media.dev.to/90/#{u_idx}.png"
+          }
+        end
+        users_flat = users.flat_map do |u|
+          [
+            u[:id], u[:name], u[:username], u[:twitter_username], u[:github_username],
+            u[:website_url], u[:profile_image], u[:profile_image_90]
+          ]
+        end
+
+        row_count = rng.rand(0..20)
+        single_root = row_count.positive? && rng.rand(4).zero?
+        rows = []
+        base_id = 1_000 + (i * 100)
+        row_count.times do |idx|
+          id = base_id + idx
+          ancestry = if rows.empty? || (!single_root && rng.rand(3).zero?)
+                       # Occasionally give a subtree root an external parent ancestry (like Comment.subtree_of)
+                       rng.rand(4).zero? ? "7/8" : nil
+                     else
+                       parent = rows.sample(random: rng)
+                       parent[:ancestry] ? "#{parent[:ancestry]}/#{parent[:id]}" : parent[:id].to_s
+                     end
+          deleted = rng.rand(7).zero?
+          hidden = rng.rand(7).zero?
+          rows << {
+            id: id,
+            ancestry: ancestry,
+            processed_html: html_samples.sample(random: rng),
+            user_idx: deleted || hidden ? -1 : rng.rand(0...user_count),
+            deleted: deleted,
+            hidden: hidden,
+            created_at_sec: rng.rand(8).zero? ? nil : rng.rand(1_500_000_000..1_800_000_000),
+            ai_disclosure_idx: rng.rand(0..3)
+          }
+        end
+
+        comments_flat = rows.flat_map do |r|
+          [
+            r[:id], r[:ancestry], r[:processed_html], r[:user_idx],
+            r[:deleted], r[:hidden], r[:created_at_sec], r[:ai_disclosure_idx]
+          ]
+        end
+
+        max_depth = single_root ? rng.rand(1..6) : rng.rand(0..6)
+        root_offset = single_root ? 0 : rng.rand(0..4)
+        root_limit = single_root || rng.rand(2).zero? ? nil : rng.rand(1..5)
+        escape_html = rng.rand(2).zero?
+
+        actual = described_class.serialize_api_comments_json(
+          comments_flat,
+          users_flat,
+          labels,
+          max_depth: max_depth,
+          single_root: single_root,
+          root_offset: root_offset,
+          root_limit: root_limit,
+          escape_html_entities: escape_html,
+        )
+        expected = legacy_serialize_api_comments.call(
+          rows,
+          users,
+          labels,
+          max_depth: max_depth,
+          single_root: single_root,
+          root_offset: root_offset,
+          root_limit: root_limit,
+          escape_html: escape_html,
+        )
+
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

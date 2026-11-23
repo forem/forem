@@ -1,4 +1,6 @@
 class TagAdjustmentsController < ApplicationController
+  before_action :authenticate_user!
+  after_action :verify_authorized
   after_action only: %i[create destroy] do
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
@@ -30,8 +32,9 @@ class TagAdjustmentsController < ApplicationController
       authorize(User, :moderation_routes?)
       @tag_adjustment = tag_adjustment
       @moderatable = article
+      current_user.roles.load
       @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
-      @adjustments = TagAdjustment.where(article_id: article.id)
+      @adjustments = TagAdjustment.where(article_id: article.id).includes(:tag)
       @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
       @allowed_to_adjust = @moderatable.instance_of?(Article) && (current_user.any_admin? || @tag_moderator_tags.any?)
       respond_to do |format|
@@ -45,9 +48,9 @@ class TagAdjustmentsController < ApplicationController
   end
 
   def destroy
-    authorize User, :moderation_routes?
-
     adjustment = TagAdjustment.find(params[:id])
+    authorize adjustment
+
     adjustment.destroy
 
     @article = Article.find(adjustment.article_id)

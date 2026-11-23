@@ -25,6 +25,21 @@ module Api
 
       rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
 
+      # Skips CSRF verification for non-cookie requests (e.g. API-key or unauthenticated callers)
+      # while keeping Rails' verify_authenticity_token enforced whenever a browser session cookie
+      # is present. Combines action filtering and the cookie check into a single `if:` predicate
+      # because Rails' `skip_before_action` with both `only:` and `unless:` registers them as
+      # separate skip conditions (causing `only:` actions to bypass CSRF unconditionally).
+      def self.skip_csrf_unless_cookie_authenticated(only: nil)
+        if only
+          allowed_actions = Array(only).map(&:to_s).freeze
+          skip_before_action :verify_authenticity_token,
+                             if: -> { allowed_actions.include?(action_name) && !cookie_authenticated_request? }
+        else
+          skip_before_action :verify_authenticity_token, unless: :cookie_authenticated_request?
+        end
+      end
+
       protected
 
       def error_unprocessable_entity(message)
@@ -123,6 +138,18 @@ module Api
         # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
         secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
         api_secret.user if secure_secret
+      end
+
+      def cookie_authenticated_request?
+        return false if request.get? || request.head?
+
+        session_authenticated_user?
+      end
+
+      def session_authenticated_user?
+        return request.env["warden"].authenticate(scope: :user).present? if request.env["warden"]
+
+        current_user.present?
       end
     end
   end

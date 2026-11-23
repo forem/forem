@@ -162,6 +162,27 @@ RSpec.describe SafeHttp, type: :service do
       expect(http.ipaddr).to eq("203.0.113.10")
       expect(http.use_ssl?).to be(true)
     end
+
+    it "disables environment proxy discovery on the pinned connection" do
+      original_proxy = ENV.fetch("http_proxy", nil)
+      ENV["http_proxy"] = "http://proxy.internal:8080"
+      options = { connection_adapter_options: { pinned_address: "203.0.113.10" } }
+      http = described_class::PinnedConnectionAdapter.call(URI("http://feeds.example/rss"), options)
+
+      expect(http.proxy?).to be(false)
+      expect(http.proxy_from_env?).to be(false)
+      expect(http.ipaddr).to eq("203.0.113.10")
+    ensure
+      ENV["http_proxy"] = original_proxy
+    end
+
+    it "rejects explicit proxy options" do
+      stub_request(:head, public_url)
+
+      expect { described_class.head(public_url, http_proxyaddr: "proxy.internal") }
+        .to raise_error(described_class::BlockedUrlError)
+      expect(a_request(:head, public_url)).not_to have_been_made
+    end
   end
 
   describe "cookies set during redirects" do
@@ -201,5 +222,56 @@ RSpec.describe SafeHttp, type: :service do
   it "raises errors that callers rescuing HTTParty::Error already handle" do
     expect(described_class::BlockedUrlError.ancestors).to include(HTTParty::Error)
     expect(described_class::TooManyRedirectsError.ancestors).to include(HTTParty::Error)
+  end
+
+  describe ".head" do
+    it "returns the response for a public URL" do
+      stub_request(:head, public_url).to_return(status: 200)
+
+      expect(described_class.head(public_url).code).to eq(200)
+    end
+
+    it "follows redirects to public hosts" do
+      stub_request(:head, public_url).to_return(status: 302, headers: { "Location" => "https://other.example/feed" })
+      stub_request(:head, "https://other.example/feed").to_return(status: 200)
+
+      response = described_class.head(public_url)
+
+      expect(response.code).to eq(200)
+      expect(response.request.last_uri.to_s).to eq("https://other.example/feed")
+    end
+
+    it "blocks internal addresses without requesting them" do
+      internal_url = "http://169.254.169.254/latest/meta-data/"
+      stub_request(:head, internal_url)
+
+      expect { described_class.head(internal_url) }.to raise_error(described_class::BlockedUrlError)
+      expect(a_request(:head, internal_url)).not_to have_been_made
+    end
+
+    it "blocks a redirect to an internal address without requesting it" do
+      internal_url = "http://127.0.0.1:8080/admin"
+      stub_request(:head, public_url).to_return(status: 302, headers: { "Location" => internal_url })
+      stub_request(:head, internal_url)
+
+      expect { described_class.head(public_url) }.to raise_error(described_class::BlockedUrlError)
+      expect(a_request(:head, internal_url)).not_to have_been_made
+    end
+
+    it "connects to the pinned address that was validated" do
+      stub_request(:head, public_url).to_return(status: 200)
+      allow(HTTParty).to receive(:head).and_call_original
+
+      described_class.head(public_url)
+
+      expect(HTTParty).to have_received(:head).with(
+        public_url,
+        hash_including(
+          follow_redirects: false,
+          connection_adapter: described_class::PinnedConnectionAdapter,
+          connection_adapter_options: { pinned_address: "203.0.113.10" },
+        ),
+      )
+    end
   end
 end

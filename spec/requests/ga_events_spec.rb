@@ -109,6 +109,40 @@ RSpec.describe "GaEvents", vcr: vcr_option do
         }.stringify_keys
         expect(tracking_service).to have_received(:track_event).with("page_view", expected_params)
       end
+
+      it "treats a non-string referrer as nil instead of raising in MetalTelemetryFastPath", :aggregate_failures do
+        sidekiq_perform_enqueued_jobs do
+          post "/fallback_activity_recorder", params: {
+            document_title: "Example", path: "/example", user_language: "en", referrer: { url: "https://example.com/" }
+          }.to_json
+        end
+
+        expect(response).to have_http_status(:ok)
+        expected_params = {
+          page_title: "Example", page_location: nil, page_path: "/example", user_id: nil,
+          user_language: "en", referrer: nil, user_agent: nil, viewport_size: nil,
+          screen_resolution: nil, document_encoding: nil, data_source: "web"
+        }.stringify_keys
+        expect(tracking_service).to have_received(:track_event).with("page_view", expected_params)
+      end
+
+      it "treats a non-string referrer as nil when deferred to GaEventsController", :aggregate_failures do
+        allow(ForemNative).to receive(:match_metal_telemetry_route).and_return([:unknown, nil])
+
+        sidekiq_perform_enqueued_jobs do
+          post "/fallback_activity_recorder", params: {
+            document_title: "Example", path: "/example", user_language: "en", referrer: { url: "https://example.com/" }
+          }.to_json
+        end
+
+        expect(response).to have_http_status(:ok)
+        expected_params = {
+          page_title: "Example", page_location: nil, page_path: "/example", user_id: nil,
+          user_language: "en", referrer: nil, user_agent: nil, viewport_size: nil,
+          screen_resolution: nil, document_encoding: nil, data_source: "web"
+        }.stringify_keys
+        expect(tracking_service).to have_received(:track_event).with("page_view", expected_params)
+      end
     end
   end
 end

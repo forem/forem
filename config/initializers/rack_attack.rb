@@ -14,6 +14,10 @@ module Rack
       \A(?:/locale/[^/]+)?/api/(?:v\d+/)?
       (?:(?:articles|users|concepts)/(?:semantic_)?search|related_articles)(?:\.json)?\z
     }x
+    API_USERS_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?users(?:/|\.[^/.?]+|\z)}
+    SEARCH_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/search(?:/|\.[^/.?]+|\z)}
+    SEARCH_PAGE_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/search(?:\.[^/.?]+)?\z}
+    NEW_ARTICLE_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/new(?:/[^/]+)?(?:\.[^/.?]+)?\z}
     MAGIC_LINK_CREATE_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links(?:\.[^/.?]+)?\z}
     MAGIC_LINK_SHOW_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links/(?!new(?:\.[^/.?]+)?\z)[^/]+\z}
 
@@ -62,6 +66,22 @@ module Rack
         (put? || patch? || post? || delete?) && normalized_path.match?(API_PATH_REGEX)
       end
 
+      def api_users_read?
+        (get? || head?) && normalized_path.match?(API_USERS_PATH_REGEX)
+      end
+
+      def search_endpoint?
+        normalized_path.match?(SEARCH_PATH_REGEX)
+      end
+
+      def search_page?
+        normalized_path.match?(SEARCH_PAGE_PATH_REGEX)
+      end
+
+      def new_article_page?
+        (get? || head?) && normalized_path.match?(NEW_ARTICLE_PATH_REGEX)
+      end
+
       def magic_link_create?
         post? && normalized_path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
       end
@@ -85,13 +105,19 @@ module Rack
     end
 
     throttle("search_throttle", limit: 4, period: 1) do |request|
-      if request.path.starts_with?("/search/") && !user_signed_in?(request)
+      if request.search_endpoint? && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
     throttle("search_throttle_signed_in", limit: 20, period: 1) do |request|
-      if request.path.starts_with?("/search/") && user_signed_in?(request)
+      if request.search_endpoint? && user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("search_page_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+      if request.search_page? && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
@@ -240,6 +266,18 @@ module Rack
 
     throttle("calendar_throttle", limit: 20, period: 1.minute) do |request|
       if request.path.chomp("/") == "/calendar"
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("new_article_throttle", limit: 10, period: 1.minute) do |request|
+      if request.new_article_page? && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_users_throttle_per_minute", limit: 10, period: 1.minute) do |request|
+      if request.api_users_read? && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end

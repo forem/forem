@@ -46,6 +46,18 @@ class MemoryFirstCache
       convert_type(computed, return_type)
     end
 
+    # Atomically write a value to Redis (L2) and update the local in-process memory cache (L1)
+    # without deleting the Redis key first.
+    def write(redis_key, value, memory_expires_in: DEFAULT_MEMORY_EXPIRES_IN, redis_expires_in: nil)
+      if redis_expires_in
+        Rails.cache.write(redis_key, value, expires_in: redis_expires_in)
+      else
+        Rails.cache.write(redis_key, value)
+      end
+      memory_store.write(memory_key_for(redis_key), value, expires_in: memory_expires_in)
+      value
+    end
+
     # Delete a key from both memory and Redis caches
     def delete(redis_key)
       memory_store.delete(memory_key_for(redis_key))

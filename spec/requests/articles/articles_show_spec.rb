@@ -478,7 +478,7 @@ RSpec.describe "ArticlesShow" do
       end
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(collection.path, co_author.path, co_author.name)
+      expect(response.body).to include(collection.path, co_author.path, CGI.escapeHTML(co_author.name))
       expect(user_queries.size).to eq(2)
       expect(user_queries.count { |sql| sql.include?('SELECT "users".*') }).to eq(1)
       expect(user_queries.count { |sql| sql.include?('SELECT "users"."name", "users"."username"') }).to eq(1)
@@ -495,6 +495,22 @@ RSpec.describe "ArticlesShow" do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(collection.path)
+    end
+
+    it "escapes HTML in co-author names to prevent stored XSS", :aggregate_failures do
+      xss_payload = '<img src=x onerror="alert(1)">'
+      co_author = create(:user, name: xss_payload)
+      article.update_columns(co_author_ids: [co_author.id])
+
+      get article.path
+
+      expect(response).to have_http_status(:ok)
+      expect(doc.css("img[onerror]")).to be_empty
+      expect(response.body).not_to include(xss_payload)
+
+      co_author_link = doc.at_css(%(a.crayons-link[href="#{co_author.path}"]))
+      expect(co_author_link).to be_present
+      expect(co_author_link.text).to eq(xss_payload)
     end
   end
 end

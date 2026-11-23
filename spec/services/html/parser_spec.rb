@@ -91,10 +91,20 @@ RSpec.describe Html::Parser, type: :service do
       end
 
       it "detects height and width" do
-        allow(FastImage).to receive(:size).and_return([100, 200])
+        allow(SafeFastImage).to receive(:size).and_return([100, 200])
         html = "<img src='https://image.com/image.jpg'>"
         parsed_html = described_class.new(html).prefix_all_images(width: 350, synchronous_detail_detection: true).html
         expect(parsed_html).to include("height=\"200\"")
+      end
+
+      it "blocks SSRF to internal metadata URLs during synchronous_detail_detection" do
+        metadata_url = "http://169.254.169.254/latest/meta-data/"
+        stub_request(:get, metadata_url).to_return(status: 200, body: "secret")
+        html = "<img src='#{metadata_url}'>"
+
+        described_class.new(html).prefix_all_images(width: 350, synchronous_detail_detection: true)
+
+        expect(a_request(:get, metadata_url)).not_to have_been_made
       end
     end
   end

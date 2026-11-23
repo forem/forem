@@ -14,7 +14,7 @@
       <%= form.label :icon, class: "crayons-field__label" %>
       <p class="crayons-field__description">An SVG icon should be uploaded</p>
       <div data-svg-icon-upload-target="svgIconPreview" class="<%= form.object[:id].nil? ? "" : "pb-3" %>" style="width: 48px;">
-        <%= form.object[:icon]&.html_safe %>
+        <%= form.object.sanitized_icon %>
       </div>
       <%= form.hidden_field :icon, "data-svg-icon-upload-target": "svgIconContent" %>
 

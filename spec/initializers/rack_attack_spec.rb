@@ -46,6 +46,70 @@ describe Rack, ".attack", throttle: true, type: :request do
         expect(throttled_response).to eq(429)
       end
     end
+
+    it "throttles signed-out /search and /search.json after 4 requests per second", :aggregate_failures do
+      Timecop.freeze do
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+        valid_responses = [
+          get("/search", params: { q: "ruby" }, headers: headers),
+          get("/search", params: { q: "rails" }, headers: headers),
+          get("/search/", params: { q: "ruby" }, headers: headers),
+          get("/search", params: { q: "forem" }, headers: headers),
+        ]
+        throttled_response = get "/search.json", params: { q: "ruby" }, headers: headers
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
+
+    it "throttles signed-out /search after 30 requests per minute", :aggregate_failures do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+
+        valid_responses = (1..30).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get "/search", params: { q: "ruby" }, headers: headers
+        end
+        Timecop.travel(start_time + 46.seconds)
+        throttled_response = get "/search", params: { q: "ruby" }, headers: headers
+        new_ip_response = get "/search", params: { q: "ruby" }, headers: { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.2" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "does not throttle signed-in users on /search after 30 requests per minute" do
+      sign_in create(:user)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+
+        responses = (1..32).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get "/search", params: { q: "ruby" }, headers: headers
+        end
+
+        responses.each { |r| expect(r).not_to eq(429) }
+      end
+    end
+
+    it "does not match unrelated paths starting with /search" do
+      create(:user, username: "searching")
+
+      Timecop.freeze do
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+        responses = Array.new(6).map do
+          get "/searching", headers: headers
+        end
+
+        responses.each { |r| expect(r).not_to eq(429) }
+      end
+    end
   end
 
   describe "search_feed_content_throttle" do
@@ -671,6 +735,99 @@ describe Rack, ".attack", throttle: true, type: :request do
 
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
+      end
+    end
+  end
+
+  describe "new_article_throttle" do
+    it "throttles signed-out /new and /new/:template after 10 requests per minute per IP", :aggregate_failures do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          path = i.even? ? "/new/loggin" : "/new"
+          get path, headers: headers
+        end
+        Timecop.travel(start_time + 11.seconds)
+        throttled_response = get "/new", headers: headers
+        new_ip_response = get "/new", headers: { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.2" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "does not throttle signed-in users on /new" do
+      sign_in create(:user)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+
+        responses = (1..12).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/new", headers: headers
+        end
+
+        responses.each { |r| expect(r).not_to eq(429) }
+      end
+    end
+
+    it "does not match unrelated paths starting with /new" do
+      create(:user, username: "newbie")
+
+      Timecop.freeze do
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+
+        responses = Array.new(12).map do
+          get "/newbie", headers: headers
+        end
+
+        responses.each { |r| expect(r).not_to eq(429) }
+      end
+    end
+  end
+
+  describe "api_users_throttle_per_minute" do
+    let!(:target_user) { create(:user) }
+
+    it "throttles signed-out GET /api/users/* after 10 requests per minute per IP", :aggregate_failures do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1" }
+
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + (i * 2).seconds)
+          get "/api/users/by_username", params: { url: target_user.username }, headers: headers
+        end
+        Timecop.travel(start_time + 25.seconds)
+        throttled_response = get "/api/users/by_username", params: { url: target_user.username }, headers: headers
+        new_ip_response = get "/api/users/by_username",
+                              params: { url: target_user.username },
+                              headers: { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.2" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "does not apply the 10/min signed-out limit to authenticated API key requests" do
+      api_secret = create(:api_secret)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "192.0.2.1", "api-key" => api_secret.secret }
+
+        responses = (1..12).map do |i|
+          Timecop.travel(start_time + (i * 2).seconds)
+          get "/api/users/by_username", params: { url: target_user.username }, headers: headers
+        end
+
+        responses.each { |r| expect(r).not_to eq(429) }
       end
     end
   end

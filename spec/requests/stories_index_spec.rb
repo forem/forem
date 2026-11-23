@@ -137,10 +137,10 @@ RSpec.describe "StoriesIndex" do
         expect(response).not_to redirect_to("http://default.example.com/")
       end
 
-      it "keeps jwt login without emitting a cross-domain auth_pass/iframe for signed-out default domain visitors" do
+      it "does not emit URL jwt login or a cross-domain auth_pass/iframe for signed-out default domain visitors" do
         allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
         get "http://default.example.com"
-        expect(response.body).to include("authenticateUser(paramToken)")
+        expect(response.body).not_to include("authenticateUser(paramToken)")
         expect(response.body).not_to include("/auth_pass/iframe")
       end
 

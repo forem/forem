@@ -21,11 +21,10 @@ module Organizations
         return fail!("Verification URL must be on the same domain as your website URL")
       end
 
-      response = HTTParty.get(
+      response = SafeHttp.get(
         verification_url,
         timeout: 15,
         headers: { "User-Agent" => "Forem Organization Verification Bot" },
-        follow_redirects: true,
       )
 
       unless response.success?
@@ -42,13 +41,21 @@ module Organizations
       end
 
       if found
-        organization.update_columns(verified: true, verified_at: Time.current,
-                                    verification_status: Organization::VERIFICATION_STATUS_SUCCESS, verification_error: nil,
-                                    baseline_score: Settings::UserExperience.index_minimum_score.to_i)
-        Result.new("success?": true, error: nil)
+        organization.update_columns(
+          verified: true,
+          verified_at: Time.current,
+          verification_status: Organization::VERIFICATION_STATUS_SUCCESS,
+          verification_error: nil,
+          baseline_score: Settings::UserExperience.index_minimum_score.to_i,
+        )
+        Result.new(success?: true, error: nil)
       else
         fail!("No link to your organization page was found on the verification URL")
       end
+    rescue SafeHttp::BlockedUrlError
+      fail!("Verification URL is not allowed")
+    rescue SafeHttp::TooManyRedirectsError
+      fail!("Could not reach the verification URL (too many redirects)")
     rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, SocketError => e
       fail!("Could not connect to the verification URL: #{e.message}")
     rescue StandardError => e
@@ -60,8 +67,11 @@ module Organizations
     attr_reader :organization
 
     def fail!(message)
-      organization.update_columns(verification_status: Organization::VERIFICATION_STATUS_FAILED, verification_error: message)
-      Result.new("success?": false, error: message)
+      organization.update_columns(
+        verification_status: Organization::VERIFICATION_STATUS_FAILED,
+        verification_error: message,
+      )
+      Result.new(success?: false, error: message)
     end
 
     def normalize_url(url)

@@ -115,6 +115,7 @@ module Admin
         else
           user.public_send(mutation, role_name)
         end
+        log_role_change(user: user, mutation: mutation, role_name: role_name, resource_class: resource_class)
         flash[:success] = "#{success_verb} #{params[:role_name]} #{preposition} #{user.username}"
       else
         flash[:error] = "Invalid user or role" # rubocop:disable Rails/I18nLocaleTexts
@@ -129,6 +130,16 @@ module Admin
 
     def build_sub_permissions_config
       params[:restricted] == "1" ? SubPermissions.build(allow: allow_param) : nil
+    end
+
+    def log_role_change(user:, mutation:, role_name:, resource_class:)
+      audit_payload = {
+        "action" => mutation == :add_role ? "grant_role" : "revoke_role",
+        "target_user_id" => user.id,
+        "role_name" => role_name,
+        "resource_type" => resource_class&.name
+      }
+      Audit::Logger.log(:internal, current_user, audit_payload)
     end
 
     def log_sub_permissions_update(user:, resource_type:, config:)
@@ -156,6 +167,7 @@ module Admin
     end
 
     def assignable?(role_name, resource_type, resource_class)
+      return current_user.super_admin? if GLOBAL_ADMIN_ROLE_NAMES.include?(role_name)
       return true unless role_name == SubPermissions::ROLE_NAME
       return current_user.super_admin? if resource_type.blank?
 

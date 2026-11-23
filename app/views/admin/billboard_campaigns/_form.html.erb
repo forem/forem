@@ -1,0 +1,28 @@
+<div class="crayons-card p-6">
+  <%= form_with model: [:admin, @campaign], local: true, class: "flex flex-col gap-4" do |form| %>
+    <div class="crayons-field">
+      <%= form.label :name, t("views.admin.billboard_campaigns.name"), class: "crayons-field__label" %>
+      <%= form.text_field :name, class: "crayons-textfield", required: true %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :expires_at, t("views.admin.billboard_campaigns.expires_at"), class: "crayons-field__label" %>
+      <%= form.datetime_local_field :expires_at, step: 1, class: "crayons-textfield" %>
+    </div>
+
+    <p id="campaign-delivery-help" class="crayons-field__description"><%= t("views.admin.billboard_campaigns.campaign_limits") %></p>
+    <div class="grid l:grid-cols-3 gap-4">
+      <% %i[max_impressions_count max_clicks_count ideal_daily_impressions].each do |attribute| %>
+        <div class="crayons-field">
+          <%= form.label attribute, t("views.admin.billboard_campaigns.#{attribute}"), class: "crayons-field__label" %>
+          <%= form.number_field attribute, min: 0, max: BillboardCampaign::MAX_CAP, required: true, class: "crayons-textfield", aria: { describedby: "campaign-delivery-help" } %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <%= form.submit t("views.admin.billboard_campaigns.save"), class: "crayons-btn" %>
+      <%= link_to t("views.admin.billboard_campaigns.title"), admin_billboard_campaigns_path, class: "crayons-btn crayons-btn--secondary" %>
+    </div>
+  <% end %>
+</div>

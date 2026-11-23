@@ -180,7 +180,7 @@
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>" data-preact-runtime-src="<%= asset_path("preactRuntime.js") %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" id="setup-banner" aria-live="polite">
-      <%== flash[:global_notice] %>
+      <%= flash[:global_notice] %>
     </div>
   <% end %>
   <div id="page-content-inner" data-internal-nav="<%= internal_navigation? %>" data-viewable-id="<%= @viewable_for_tracking&.id %>" data-viewable-type="<%= @viewable_for_tracking&.class&.name %>">

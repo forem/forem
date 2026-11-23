@@ -7,6 +7,7 @@ class Billboard < ApplicationRecord
   belongs_to :audience_segment, optional: true
   belongs_to :page, optional: true
   belongs_to :event, optional: true
+  belongs_to :billboard_campaign, optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
@@ -103,7 +104,12 @@ class Billboard < ApplicationRecord
   validates :body_markdown, presence: true
   validates :minimized_body_markdown, presence: true, if: :persistent?
   validates :organization, presence: true, if: :community?
+  validates :billboard_campaign, presence: true,
+                                 if: -> { billboard_campaign_id.present? && will_save_change_to_billboard_campaign_id? }
   validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
+  validates :max_impressions_count, :max_clicks_count,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0,
+                            less_than_or_equal_to: BillboardCampaign::MAX_CAP }
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
@@ -113,7 +119,8 @@ class Billboard < ApplicationRecord
            :valid_manual_audience_segment,
            :validate_tag,
            :validate_geolocations,
-           :validate_expiration_approval
+           :validate_expiration_approval,
+           :validate_delivery_cap_approval
 
   before_validation :process_markdown
   before_save :update_exclude_article_ids
@@ -416,6 +423,26 @@ class Billboard < ApplicationRecord
     errors.add(:approved, "cannot be set to true if billboard has expired")
   end
 
+  def validate_delivery_cap_approval
+    return unless approved? && will_save_change_to_approved?
+    return unless over_cap? || billboard_campaign&.expired? || billboard_campaign&.over_cap?(self)
+
+    errors.add(:approved, "cannot be set to true once the billboard or its campaign has ended or reached a cap")
+  end
+
+  def delivery_limit_reached?
+    (expires_at.present? && expires_at < Time.current) || over_cap? ||
+      billboard_campaign&.expired? || billboard_campaign&.over_cap?(self)
+  end
+
+  def over_cap?
+    cap_reached?(max_impressions_count, impressions_count) || cap_reached?(max_clicks_count, clicks_count)
+  end
+
+  def cap_reached?(cap, count)
+    cap.to_i.positive? && count.to_i >= cap.to_i
+  end
+
   def audience_segment_type
     @audience_segment_type ||= audience_segment&.type_of
   end
@@ -560,8 +587,16 @@ class Billboard < ApplicationRecord
     0 # Just to allow this to repond to .score for abuse reports
   end
 
-  def check_and_handle_expiration
-    return unless expires_at.present? && expires_at < Time.current && approved?
+  # Locks the campaigns this save or destroy moves the billboard out of or into, so the campaign
+  # checks in BillboardPolicy can't race a sibling's approval. Call inside the billboard's row lock.
+  def lock_affected_campaigns!
+    ids = [billboard_campaign_id, attribute_in_database(:billboard_campaign_id)].compact.uniq
+    BillboardCampaign.where(id: ids).order(:id).lock.ids if ids.any?
+  end
+
+  # Takes the billboard down once it, or its campaign, has expired or reached a delivery cap.
+  def check_and_handle_delivery_limits
+    return unless approved? && delivery_limit_reached?
 
     update_column(:approved, false)
     if current_markdown_has_liquid_tag?
@@ -599,7 +634,8 @@ class Billboard < ApplicationRecord
 
   def update_content_updated_at_if_needed
     # Only update content_updated_at when content-related fields change
-    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode]
+    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode
+                        isolate_content]
     
     return unless content_fields.any? { |field| will_save_change_to_attribute?(field) }
     
@@ -673,7 +709,8 @@ class Billboard < ApplicationRecord
   def should_bust_home_page_cache?
     return false unless HOME_PAGE_PLACEMENTS.include?(placement_area) || HOME_PAGE_PLACEMENTS.include?(placement_area_before_last_save)
 
-    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode]
+    content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode
+                        isolate_content]
 
     was_active = approved_before_last_save && published_before_last_save
     is_active = approved && published

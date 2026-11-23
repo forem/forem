@@ -88,6 +88,17 @@ RSpec.describe SubPermissions do
       expect(grant_row(user, "Article").sub_permissions).to be_nil
     end
 
+    it "restricts the user's grants on every matching class-wide role row" do
+      duplicate_role = Role.create!(name: "single_resource_admin", resource_type: "Billboard")
+      UserRole.create!(user: user, role: duplicate_role)
+
+      described_class.update_grant(user: user, resource_type: "Billboard",
+                                   sub_permissions: described_class.build(allow: []))
+
+      expect(UserRole.where(user_id: user.id).pluck(:sub_permissions)).to all(eq({ "version" => 1, "allow" => [] }))
+      expect(user.reload.sub_permission?(resource: Billboard, clause: "approve")).to be(false)
+    end
+
     it "reports failure, not success, when the update matches no grant row" do
       revoked = create(:user)
       revoked.add_role(:single_resource_admin, Billboard)

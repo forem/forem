@@ -36,6 +36,20 @@ RSpec.describe "OrganizationInvitations" do
       end
     end
 
+    context "when the organization name contains HTML characters" do
+      let(:organization) { create(:organization, name: "Acme <b>Labs</b> & Co") }
+
+      before { sign_in invitee }
+
+      it "escapes the organization name in the global notice banner", :aggregate_failures do
+        patch accept_organization_invitation_path(membership)
+        follow_redirect!
+
+        expect(response.body).to include("You joined Acme &lt;b&gt;Labs&lt;/b&gt; &amp; Co.")
+        expect(response.body).not_to include("You joined Acme <b>Labs</b> & Co.")
+      end
+    end
+
     it "does not let another user answer the invitation", :aggregate_failures do
       sign_in create(:user)
 
@@ -60,6 +74,18 @@ RSpec.describe "OrganizationInvitations" do
         .and change(Notification, :count).by(-1)
 
       expect(response).to redirect_to(notifications_path)
+    end
+
+    context "when the organization name contains HTML characters" do
+      let(:organization) { create(:organization, name: "Acme <b>Labs</b> & Co") }
+
+      it "escapes the organization name in the global notice banner", :aggregate_failures do
+        patch decline_organization_invitation_path(membership)
+        follow_redirect!
+
+        expect(response.body).to include("You declined the invitation to join Acme &lt;b&gt;Labs&lt;/b&gt; &amp; Co.")
+        expect(response.body).not_to include("You declined the invitation to join Acme <b>Labs</b> & Co.")
+      end
     end
   end
 
