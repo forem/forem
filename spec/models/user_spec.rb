@@ -515,6 +515,22 @@ RSpec.describe User do
         expect(Time.zone.parse(late["dev_roles_read_at"])).to be < Time.zone.parse(revocation["dev_roles_read_at"])
       end
 
+      it "takes a fresh reading even with the query cache on" do
+        first, second = described_class.cache { Array.new(2) { user.core_trust_roles_snapshot.first } }
+
+        expect(second).to be > first
+      end
+
+      it "emits nothing when the user is deleted before the change commits" do
+        described_class.transaction do
+          user.add_role(:trusted)
+          user.destroy!
+        end
+
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything)
+      end
+
       it "does not emit for a role the user already has or one Core does not count" do
         user.add_role(:base_subscriber)
         user.add_role(:base_subscriber)

@@ -1172,22 +1172,27 @@ class User < ApplicationRecord
   # Emits user_roles_updated with the Core trust roles the user holds and when
   # they were read.
   def track_core_trust_roles!(snapshot = core_trust_roles_snapshot)
+    return unless snapshot
+
     read_at, roles = snapshot
     track!("user_roles_updated", "dev_roles" => roles, "dev_roles_read_at" => read_at.iso8601(6))
   end
 
   def core_trust_role_names
-    core_trust_roles_snapshot.last
+    core_trust_roles_snapshot&.last
   end
 
   # The Core trust roles the user holds, read in one statement with the
   # database's start time for it. Every commit before that time is in the
   # reading, so Core can order readings from any process by it: a reading taken
   # before a revocation committed is always stamped earlier than the reading the
-  # revocation publishes.
+  # revocation publishes. Read past the query cache, which would otherwise hand
+  # back an earlier reading with its earlier time. Nil once the user is gone.
   def core_trust_roles_snapshot
     held = roles.where(name: CORE_TRUST_ROLES).distinct.select(:name).reorder(:name)
-    User.where(id: id).pick(Arel.sql("statement_timestamp()"), Arel.sql("ARRAY(#{held.to_sql})"))
+    User.uncached do
+      User.where(id: id).pick(Arel.sql("statement_timestamp()"), Arel.sql("ARRAY(#{held.to_sql})"))
+    end
   end
 
   # Only global (non-resource-scoped) moderation roles emit.
@@ -1210,7 +1215,7 @@ class User < ApplicationRecord
 
     ActiveRecord.after_all_transactions_commit do
       snapshot = core_trust_roles_snapshot
-      track_core_trust_roles!(snapshot) unless snapshot.last == before
+      track_core_trust_roles!(snapshot) if snapshot && snapshot.last != before
     end
   end
   private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
