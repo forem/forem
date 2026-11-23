@@ -1,6 +1,12 @@
 /* global userData */
 import { isBotUserAgent } from '@utilities/isBot';
 import { maybeLoadEventSignupButtons } from '@utilities/eventSignupButtonsLoader';
+import {
+  mountBillboardShadowHosts,
+  findClosestInEventPath,
+} from '../utilities/billboardShadowDom';
+
+const billboardClickHandlers = new WeakMap();
 // This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
 export function initializeBillboardVisibility() {
   const billboards = document.querySelectorAll('[data-display-unit]');
@@ -21,12 +27,18 @@ export function initializeBillboardVisibility() {
 }
 
 export function executeBBScripts(el) {
+  mountBillboardShadowHosts(el);
+
   const scriptElements = el.getElementsByTagName('script');
   let originalElement, copyElement, parentNode, nextSibling, i;
 
   for (i = 0; i < scriptElements.length; i++) {
     originalElement = scriptElements[i];
-    if (!originalElement) {
+    if (
+      !originalElement ||
+      originalElement.hasAttribute?.('data-billboard-shadow-bootstrap') ||
+      originalElement.hasAttribute?.('data-billboard-script')
+    ) {
       continue;
     }
     copyElement = document.createElement('script');
@@ -166,8 +178,13 @@ export function observeBillboards() {
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
     const currentPath = window.location.pathname;
     observer.observe(ad);
-    ad.removeEventListener('click', trackAdClick, false);
-    ad.addEventListener('click', () => trackAdClick(ad, event, currentPath));
+    const existingHandler = billboardClickHandlers.get(ad);
+    if (existingHandler) {
+      ad.removeEventListener('click', existingHandler, false);
+    }
+    const clickHandler = (e) => trackAdClick(ad, e, currentPath);
+    billboardClickHandlers.set(ad, clickHandler);
+    ad.addEventListener('click', clickHandler);
   });
 }
 
@@ -256,7 +273,7 @@ function startPollingBillboard(adBox) {
 }
 
 function trackAdClick(adBox, event, currentPath) {
-  if (!event.target.closest("a")) {
+  if (!findClosestInEventPath(event, 'a')) {
     return;
   }
 

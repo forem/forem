@@ -6,6 +6,10 @@ import {
 } from './billboardAfterRenderActions';
 import { syncAnonymousVisitor } from '../utilities/anonymousVisitor';
 import { isEmbeddedBrowserContext } from '../utilities/runtime';
+import {
+  cleanupBillboardShadowHostsIn,
+  cleanupDisconnectedBillboardSandboxes,
+} from '../utilities/billboardShadowDom';
 
 // Primary and secondary placements share a group (e.g. post_sidebar and
 // post_sidebar_secondary). Randomize their order so neither is always on top.
@@ -124,6 +128,7 @@ async function generateBillboard(element) {
             sidebarContainer = ensurePersistentMinimizedBillboardContainer();
           }
           if (template && sidebarContainer) {
+            cleanupBillboardShadowHostsIn(sidebarContainer);
             sidebarContainer.innerHTML = template.innerHTML;
             sidebarContainer.classList.remove('hidden');
             executeBBScripts(sidebarContainer);
@@ -132,11 +137,13 @@ async function generateBillboard(element) {
             setupBillboardInteractivity();
           }
         }
+        cleanupBillboardShadowHostsIn(element);
         element.style.display = 'none';
         element.innerHTML = '';
         return;
       }
 
+      cleanupBillboardShadowHostsIn(element);
       element.innerHTML = '';
       element.appendChild(generatedElement);
 
@@ -173,11 +180,13 @@ async function generateBillboard(element) {
               sidebarContainer = ensurePersistentMinimizedBillboardContainer();
             }
             if (template && sidebarContainer) {
+              cleanupBillboardShadowHostsIn(sidebarContainer);
               sidebarContainer.innerHTML = template.innerHTML;
               sidebarContainer.classList.remove('hidden');
               executeBBScripts(sidebarContainer);
             }
           }
+          cleanupBillboardShadowHostsIn(element);
           element.style.display = 'none';
           element.innerHTML = '';
         }
@@ -265,9 +274,11 @@ if (!window._billboardChangeRegistered) {
 if (window.InstantClick && !window._billboardChangeRegistered) {
   window.InstantClick.on('change', () => {
     cleanupStaleLiveStreamIntervals();
+    cleanupDisconnectedBillboardSandboxes();
 
     const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
     if (sidebarContainer) {
+      cleanupBillboardShadowHostsIn(sidebarContainer);
       sidebarContainer.remove();
     }
 
