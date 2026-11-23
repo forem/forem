@@ -1,0 +1,18 @@
+app/controllers/concerns/api/comments_controller.rb
+  h_f968154a99632d 124-127,163-164,170,175,177,183,186,190-202
+gems/forem_native/crates/forem_core/src/api_comments.rs
+  h_f968154a99632d 435-442,835-865
+spec/requests/api/v1/comments_spec.rb
+  h_f968154a99632d 212-233
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d92e24d86f1bfe4a7f2527c2e9f3b85e7b7fa11f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
