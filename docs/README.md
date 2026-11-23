@@ -20,6 +20,7 @@ For platform-wide guides, getting started tutorials, and API references, please 
 - **[Delegated API Access](delegated_access.md)** - Specification for short-lived RFC 9068 access-token JWTs from trusted delegation services without shared secrets.
 
 ### 📋 Features & Workflows
+- **[Billboards: Architecture, Authoring & Programmatic API Guide](billboards.md)** - Source of truth for Forem Billboards: placement areas, targeting, caching, campaign caps & ideal daily impressions pacing, opt-in Shadow DOM & JS sandbox isolation (`isolate_content`), light/dark mode authoring DSL, and REST API workflows.
 - **[Survey Resubmission Feature](survey_resubmission.md)** - Specification, configuration, and model lifecycle methods for the survey resubmission mechanism.
 
 ### ⚡ Performance & Optimizations

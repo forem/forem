@@ -87,6 +87,7 @@ namespace :forem_native do
     benchmark_extractors
     benchmark_comment_tree
     benchmark_api_comments
+    benchmark_api_articles
     benchmark_story_cards
     benchmark_image_ops
     benchmark_html_postprocess
@@ -1699,6 +1700,166 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (60-comment API tree + JSON)") { legacy_serialize.call }
       x.report("Rust Magnus (60-comment API tree + JSON)") { native_serialize.call }
+      x.compare!
+    end
+  end
+
+  desc "Benchmark Api::ArticlesController#index streaming JSON serialization (Rust vs Legacy Ruby)"
+  task benchmark_api_articles: :environment do
+    require "addressable/template"
+    require "addressable/uri"
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    ai_keys = %w[not_disclosed no_ai some_ai fully_autonomous].freeze
+    ai_labels = ["Not disclosed", "Human written", "AI assisted", "Fully autonomous"].freeze
+    cutoff_time = Time.utc(2026, 3, 1, 0, 0, 0)
+
+    users = Array.new(15) do |u|
+      {
+        id: 100 + u, name: "Author #{u}", username: "author_#{u}",
+        twitter_username: u.even? ? "tw_#{u}" : nil, github_username: "gh_#{u}",
+        website_url: u.even? ? "https://example.com/#{u}" : nil,
+        profile_image: "https://media2.dev.to/640/#{u}.png",
+        profile_image_90: "https://media2.dev.to/90/#{u}.png"
+      }
+    end
+    users_flat = users.flat_map do |u|
+      [
+        u[:id], u[:name], u[:username], u[:twitter_username], u[:github_username],
+        u[:website_url], u[:profile_image], u[:profile_image_90]
+      ]
+    end
+
+    orgs = Array.new(4) do |o|
+      {
+        name: "Org #{o}", username: "org_#{o}", slug: "org-#{o}",
+        profile_image: "https://media2.dev.to/org640/#{o}.png",
+        profile_image_90: "https://media2.dev.to/org90/#{o}.png"
+      }
+    end
+    orgs_flat = orgs.flat_map { |o| [o[:name], o[:username], o[:slug], o[:profile_image], o[:profile_image_90]] }
+
+    flare_tags = [
+      { match_name: "discuss", name: "discuss", bg_color_hex: "#71EA8B", text_color_hex: "#FFFFFF" },
+      { match_name: "watercooler", name: "watercooler", bg_color_hex: "#D0ECFF", text_color_hex: "#130074" },
+    ]
+    flare_tags_flat = flare_tags.flat_map { |f| [f[:match_name], f[:name], f[:bg_color_hex], f[:text_color_hex]] }
+    base_urls = ["https://dev.to"]
+    cfg = [2026, "https://dev.to/assets/default-social.png", 420, "crop", false, 1, "media2.dev.to", "cdn-cgi",
+           *ai_labels, true]
+
+    rows = Array.new(30) do |i|
+      published_at = Time.at(1_772_409_600 + (i * 3600)).utc
+      slug = "rust-native-article-#{i}"
+      path = "/author_#{i % 15}/#{slug}"
+      {
+        id: 50_000 + i, user_idx: i % 15, org_idx: (i % 5).zero? ? i % 4 : -1,
+        base_url_idx: 0, url_path: path, collection_id: (i % 4).zero? ? 12 : nil,
+        title: "Accelerating Rails & Rust APIs ##{i} <2026>",
+        description: "End-to-end streaming JSON serialization benchmark entry #{i}.",
+        main_image: "https://img.example.com/cover-#{i}.png", social_image: nil,
+        video_thumbnail_url: nil,
+        cached_tag_list: (i % 3).zero? ? "ruby, discuss, rust" : "ruby, rails, performance",
+        slug: slug, path: path, canonical_url: nil, comments_count: i * 2,
+        public_reactions_count: i * 10, reading_time: 5, subforem_id: 1, language: "en",
+        published: true, ai_disclosure_idx: i % 4,
+        created_at: published_at - 600, edited_at: nil, crossposted_at: nil,
+        published_at: published_at, last_comment_at: published_at + 1200
+      }
+    end
+    articles_flat = rows.flat_map do |r|
+      [
+        r[:id], r[:user_idx], r[:org_idx], r[:base_url_idx], r[:url_path],
+        r[:collection_id], r[:title], r[:description], r[:main_image], r[:social_image],
+        r[:video_thumbnail_url], r[:cached_tag_list], r[:slug], r[:path], r[:canonical_url],
+        r[:comments_count], r[:public_reactions_count], r[:reading_time], r[:subforem_id],
+        r[:language], r[:published], r[:ai_disclosure_idx], r[:created_at].tv_sec,
+        r[:edited_at]&.tv_sec, r[:crossposted_at]&.tv_sec, r[:published_at].tv_sec,
+        r[:last_comment_at].tv_sec, r[:published_at] > cutoff_time
+      ]
+    end
+
+    cf_template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+    legacy_serialize = lambda do
+      entries = rows.map do |r|
+        u = users[r[:user_idx]]
+        article_url = Addressable::URI.parse(base_urls[r[:base_url_idx]]).join(r[:url_path]).normalize.to_s
+        cover_url = cf_template.expand(
+          domain: "media2.dev.to", directory: "cdn-cgi",
+          options: { width: 1000, height: 420, fit: "cover", gravity: "auto", format: "auto" },
+          src: r[:main_image]
+        ).to_s
+        social_url = cf_template.expand(
+          domain: "media2.dev.to", directory: "cdn-cgi",
+          options: { width: 1200, height: 627, fit: "cover", gravity: "auto", format: "auto" },
+          src: r[:main_image]
+        ).to_s
+        tag_list = r[:cached_tag_list].split(", ")
+        entry = {
+          "type_of" => "article", "id" => r[:id], "title" => r[:title], "description" => r[:description],
+          "readable_publish_date" => r[:published_at].strftime("%b %-e"), "slug" => r[:slug],
+          "path" => r[:path], "url" => article_url, "comments_count" => r[:comments_count],
+          "public_reactions_count" => r[:public_reactions_count], "collection_id" => r[:collection_id],
+          "published_timestamp" => r[:published_at].iso8601, "language" => r[:language],
+          "subforem_id" => r[:subforem_id], "ai_disclosure_level" => ai_keys[r[:ai_disclosure_idx]],
+          "ai_disclosure_label" => ai_labels[r[:ai_disclosure_idx]],
+          "positive_reactions_count" => r[:public_reactions_count], "cover_image" => cover_url,
+          "social_image" => social_url, "canonical_url" => article_url,
+          "created_at" => r[:created_at].iso8601, "edited_at" => nil, "crossposted_at" => nil,
+          "published_at" => r[:published_at].iso8601, "last_comment_at" => r[:last_comment_at].iso8601,
+          "reading_time_minutes" => r[:reading_time], "tag_list" => tag_list, "tags" => r[:cached_tag_list],
+          "user" => {
+            "name" => u[:name], "username" => u[:username], "twitter_username" => u[:twitter_username],
+            "github_username" => u[:github_username], "user_id" => u[:id], "website_url" => u[:website_url],
+            "profile_image" => u[:profile_image], "profile_image_90" => u[:profile_image_90]
+          }
+        }
+        if r[:org_idx] >= 0
+          o = orgs[r[:org_idx]]
+          entry["organization"] = {
+            "name" => o[:name], "username" => o[:username], "slug" => o[:slug],
+            "profile_image" => o[:profile_image], "profile_image_90" => o[:profile_image_90]
+          }
+        end
+        ft = tag_list.lazy.filter_map { |t| flare_tags.detect { |f| f[:match_name] == t } }.first
+        if ft
+          entry["flare_tag"] = {
+            "name" => ft[:name], "bg_color_hex" => ft[:bg_color_hex], "text_color_hex" => ft[:text_color_hex]
+          }
+        end
+        entry
+      end
+      ActiveSupport::JSON.encode(entries, escape_html_entities: true)
+    end
+
+    native_serialize = lambda do
+      ForemNative.serialize_api_articles_json(
+        articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+      )
+    end
+
+    raise "API articles benchmark parity failure!" unless native_serialize.call == legacy_serialize.call
+
+    puts "\n=== API Articles Index Streaming JSON Benchmark (30 articles, serializer-only on prepared fixtures) ==="
+    puts "Note: Excludes controller queries, payload construction, profile-image lookup, and fallback."
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust heap allocations)."
+    ruby_mem = MemoryProfiler.report { legacy_serialize.call }
+    rust_mem = MemoryProfiler.report { native_serialize.call }
+    puts "Ruby Legacy Ruby-heap allocations (1 run): #{ruby_mem.total_allocated} objects " \
+         "(#{ruby_mem.total_allocated_memsize} bytes)"
+    puts "Rust Magnus Ruby-heap allocations (1 run): #{rust_mem.total_allocated} objects " \
+         "(#{rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (30-article API index JSON)") { legacy_serialize.call }
+      x.report("Rust Magnus (30-article API index JSON)") { native_serialize.call }
       x.compare!
     end
   end

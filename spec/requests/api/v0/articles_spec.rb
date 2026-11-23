@@ -550,6 +550,47 @@ RSpec.describe "Api::V0::Articles" do
         get api_articles_path, params: { per_page: 10 }
         expect(response.parsed_body.count).to eq(2)
       end
+
+      it "matches the Jbuilder fallback bit-for-bit on V0 index including headers", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          expect(ForemNative.available?).to be(true)
+          native_results = []
+          allow(ForemNative).to receive(:serialize_api_articles_json).and_wrap_original do |original, *args|
+            original.call(*args).tap { |result| native_results << result }
+          end
+
+          org = create(:organization)
+          article.user.profile.update_column(:website_url, "  https://example.com/author  ")
+          article.update!(organization: org, ai_disclosure_level: :some_ai, crossposted_at: 2.days.ago)
+
+          get api_articles_path
+          expect(native_results.length).to eq(1)
+          expect(native_results.first).to be_a(String)
+          native_body = response.body
+          native_keys = response.headers["surrogate-key"].split.to_set
+          native_warning = response.headers["Warning"]
+
+          allow(ForemNative).to receive(:available?).and_return(false)
+          get api_articles_path
+          expect(response.body).to eq(native_body)
+          expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+          expect(response.headers["Warning"]).to eq(native_warning)
+        end
+      end
+
+      it "preserves unsupported format rejection on V0 articles index" do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          expect do
+            get api_articles_path(format: :xml)
+          end.to raise_error(ActionController::UnknownFormat)
+        end
+      end
     end
   end
 

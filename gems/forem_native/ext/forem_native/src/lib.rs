@@ -5990,6 +5990,180 @@ fn serialize_api_comments_json(
     Some(out)
 }
 
+fn format_readable_publish_date(
+    ruby: &Ruby,
+    epoch_secs: i64,
+    current_year: i64,
+) -> Option<RString> {
+    let formatted =
+        forem_core::api_articles::format_readable_publish_date(epoch_secs, current_year)?;
+    Some(ruby.str_new(&formatted))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn serialize_api_articles_json(
+    ruby: &Ruby,
+    articles_flat: RArray,
+    users_flat: RArray,
+    orgs_flat: RArray,
+    flare_tags_flat: RArray,
+    base_urls_arr: RArray,
+    config_arr: RArray,
+) -> Option<RString> {
+    use forem_core::api_articles::{
+        ApiArticleFlareTag, ApiArticleOrganization, ApiArticleRow, ApiArticleUser,
+        ApiArticlesConfig, ImageOptimizerMode,
+    };
+
+    let json = {
+        // SAFETY: No Ruby VM calls or allocations happen inside this block while
+        // borrowed `RArray` / `RString` slices are live.
+        unsafe {
+            let articles_slice = articles_flat.as_slice();
+            let users_slice = users_flat.as_slice();
+            let orgs_slice = orgs_flat.as_slice();
+            let flare_tags_slice = flare_tags_flat.as_slice();
+            let base_urls_slice = base_urls_arr.as_slice();
+            let config_slice = config_arr.as_slice();
+
+            if articles_slice.len() % 28 != 0
+                || users_slice.len() % 8 != 0
+                || orgs_slice.len() % 5 != 0
+                || flare_tags_slice.len() % 4 != 0
+                || config_slice.len() != 13
+            {
+                return None;
+            }
+
+            let current_year = Integer::from_value(config_slice[0])?.to_i64().ok()?;
+            let main_social_image = borrow_req_utf8_str(config_slice[1])?;
+            let cover_image_height = Integer::from_value(config_slice[2])?.to_i64().ok()?;
+            let cover_image_fit = borrow_req_utf8_str(config_slice[3])?;
+            let is_development = config_slice[4].to_bool();
+            let optimizer_mode = match Integer::from_value(config_slice[5])?.to_i64().ok()? {
+                0 => ImageOptimizerMode::Passthrough,
+                1 => ImageOptimizerMode::Cloudflare,
+                _ => return None,
+            };
+            let cloudflare_domain = borrow_opt_utf8_str(config_slice[6])?;
+            let cloudflare_directory = borrow_req_utf8_str(config_slice[7])?;
+            let ai_disclosure_labels = [
+                borrow_req_utf8_str(config_slice[8])?,
+                borrow_req_utf8_str(config_slice[9])?,
+                borrow_req_utf8_str(config_slice[10])?,
+                borrow_req_utf8_str(config_slice[11])?,
+            ];
+            let escape_html_entities = config_slice[12].to_bool();
+
+            let config = ApiArticlesConfig {
+                current_year,
+                main_social_image,
+                cover_image_height,
+                cover_image_fit,
+                is_development,
+                optimizer_mode,
+                cloudflare_domain,
+                cloudflare_directory,
+                ai_disclosure_labels,
+                escape_html_entities,
+            };
+
+            let mut base_urls = Vec::with_capacity(base_urls_slice.len());
+            for &val in base_urls_slice {
+                base_urls.push(borrow_req_utf8_str(val)?);
+            }
+
+            let mut users = Vec::with_capacity(users_slice.len() / 8);
+            for chunk in users_slice.chunks_exact(8) {
+                let id = Integer::from_value(chunk[0])?.to_i64().ok()?;
+                users.push(ApiArticleUser {
+                    id,
+                    name: borrow_opt_utf8_str(chunk[1])?,
+                    username: borrow_opt_utf8_str(chunk[2])?,
+                    twitter_username: borrow_opt_utf8_str(chunk[3])?,
+                    github_username: borrow_opt_utf8_str(chunk[4])?,
+                    website_url: borrow_opt_utf8_str(chunk[5])?,
+                    profile_image: borrow_opt_utf8_str(chunk[6])?,
+                    profile_image_90: borrow_opt_utf8_str(chunk[7])?,
+                });
+            }
+
+            let mut orgs = Vec::with_capacity(orgs_slice.len() / 5);
+            for chunk in orgs_slice.chunks_exact(5) {
+                orgs.push(ApiArticleOrganization {
+                    name: borrow_opt_utf8_str(chunk[0])?,
+                    username: borrow_opt_utf8_str(chunk[1])?,
+                    slug: borrow_opt_utf8_str(chunk[2])?,
+                    profile_image: borrow_opt_utf8_str(chunk[3])?,
+                    profile_image_90: borrow_opt_utf8_str(chunk[4])?,
+                });
+            }
+
+            let mut flare_tags = Vec::with_capacity(flare_tags_slice.len() / 4);
+            for chunk in flare_tags_slice.chunks_exact(4) {
+                flare_tags.push(ApiArticleFlareTag {
+                    match_name: borrow_req_utf8_str(chunk[0])?,
+                    name: borrow_opt_utf8_str(chunk[1])?,
+                    bg_color_hex: borrow_opt_utf8_str(chunk[2])?,
+                    text_color_hex: borrow_opt_utf8_str(chunk[3])?,
+                });
+            }
+
+            let mut rows = Vec::with_capacity(articles_slice.len() / 28);
+            for chunk in articles_slice.chunks_exact(28) {
+                let id = Integer::from_value(chunk[0])?.to_i64().ok()?;
+                let user_idx = Integer::from_value(chunk[1])?.to_i64().ok()?;
+                let org_idx = Integer::from_value(chunk[2])?.to_i64().ok()?;
+                let base_url_idx = Integer::from_value(chunk[3])?.to_i64().ok()?;
+                let ai_raw = Integer::from_value(chunk[21])?.to_i64().ok()?;
+                let ai_disclosure_idx = u8::try_from(ai_raw).ok()?;
+
+                rows.push(ApiArticleRow {
+                    id,
+                    user_idx,
+                    org_idx,
+                    base_url_idx,
+                    url_path: borrow_opt_utf8_str(chunk[4])?,
+                    collection_id: extract_optional_i64(chunk[5])?,
+                    title: borrow_opt_utf8_str(chunk[6])?,
+                    description: borrow_opt_utf8_str(chunk[7])?,
+                    main_image: borrow_opt_utf8_str(chunk[8])?,
+                    social_image: borrow_opt_utf8_str(chunk[9])?,
+                    video_thumbnail_url: borrow_opt_utf8_str(chunk[10])?,
+                    cached_tag_list: borrow_opt_utf8_str(chunk[11])?,
+                    slug: borrow_opt_utf8_str(chunk[12])?,
+                    path: borrow_opt_utf8_str(chunk[13])?,
+                    canonical_url: borrow_opt_utf8_str(chunk[14])?,
+                    comments_count: extract_optional_i64(chunk[15])?,
+                    public_reactions_count: extract_optional_i64(chunk[16])?,
+                    reading_time: extract_optional_i64(chunk[17])?,
+                    subforem_id: extract_optional_i64(chunk[18])?,
+                    language: borrow_opt_utf8_str(chunk[19])?,
+                    published: chunk[20].to_bool(),
+                    ai_disclosure_idx,
+                    created_at_sec: extract_optional_i64(chunk[22])?,
+                    edited_at_sec: extract_optional_i64(chunk[23])?,
+                    crossposted_at_sec: extract_optional_i64(chunk[24])?,
+                    published_at_sec: extract_optional_i64(chunk[25])?,
+                    last_comment_at_sec: extract_optional_i64(chunk[26])?,
+                    social_image_large: chunk[27].to_bool(),
+                });
+            }
+
+            forem_core::api_articles::serialize_api_articles_json(
+                &rows,
+                &users,
+                &orgs,
+                &flare_tags,
+                &base_urls,
+                &config,
+            )
+        }
+    }?;
+
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -6512,6 +6686,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_api_comments_json",
         function!(serialize_api_comments_json, 8),
+    )?;
+    native_mod.define_singleton_method(
+        "format_readable_publish_date",
+        function!(format_readable_publish_date, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_articles_json",
+        function!(serialize_api_articles_json, 6),
     )?;
     Ok(())
 }
