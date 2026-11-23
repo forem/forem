@@ -9,17 +9,6 @@
           "aarch64-darwin"
         ]
       },
-      "gcc": {
-        "pkg-path": "gcc",
-        "version": "16.2.0",
-        "systems": [
-          "aarch64-linux",
-          "x86_64-linux"
-        ],
-        "outputs": [
-          "out"
-        ]
-      },
       "glibcLocalesUtf8": {
         "pkg-path": "glibcLocalesUtf8",
         "pkg-group": "postgres",
@@ -643,102 +632,6 @@
       "priority": 5
     },
     {
-      "attr_path": "ruby_3_3",
-      "broken": false,
-      "derivation": "/nix/store/bpcnhxxyn217lx3ws37kicy2c66c4h7m-ruby-3.3.14.drv",
-      "description": "Object-oriented language for quick and easy programming",
-      "install_id": "ruby",
-      "license": "Ruby",
-      "locked_url": "https://github.com/flox/floxenvs?rev=d7588275d77c9610b96bc47e81f190fa383f6d30",
-      "name": "ruby-3.3.14",
-      "pname": "ruby",
-      "rev": "d7588275d77c9610b96bc47e81f190fa383f6d30",
-      "rev_count": 32297,
-      "rev_date": "2026-11-20T19:12:36Z",
-      "scrape_date": "2026-11-20T19:20:55.669301Z",
-      "stabilities": [
-        "unstable",
-        "stable",
-        "staging"
-      ],
-      "unfree": false,
-      "version": "3.3.14",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "devdoc": "/nix/store/xyxpmvrbqwx6bgjmc7a8nimg7f5s34nf-ruby-3.3.14-devdoc",
-        "out": "/nix/store/mk4i31qgmqakbr4qclx54x83iymr1h28-ruby-3.3.14"
-      },
-      "system": "aarch64-darwin",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "ruby_3_3",
-      "broken": false,
-      "derivation": "/nix/store/ddzd9hdmc431mvr0wi1sy42pdfgzafsd-ruby-3.3.14.drv",
-      "description": "Object-oriented language for quick and easy programming",
-      "install_id": "ruby",
-      "license": "Ruby",
-      "locked_url": "https://github.com/flox/floxenvs?rev=d7588275d77c9610b96bc47e81f190fa383f6d30",
-      "name": "ruby-3.3.14",
-      "pname": "ruby",
-      "rev": "d7588275d77c9610b96bc47e81f190fa383f6d30",
-      "rev_count": 32297,
-      "rev_date": "2026-11-20T19:12:36Z",
-      "scrape_date": "2026-11-20T19:20:55.669301Z",
-      "stabilities": [
-        "unstable",
-        "stable",
-        "staging"
-      ],
-      "unfree": false,
-      "version": "3.3.14",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "devdoc": "/nix/store/a5vr63mgl9zr9w3y88c7zilfaj7mdny3-ruby-3.3.14-devdoc",
-        "out": "/nix/store/qsdlqff4l7bxi8hslff27gz8bkk50ryd-ruby-3.3.14"
-      },
-      "system": "aarch64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
-      "attr_path": "ruby_3_3",
-      "broken": false,
-      "derivation": "/nix/store/ihl796dsrnmrf2j7amnp0klq4bbjllh0-ruby-3.3.14.drv",
-      "description": "Object-oriented language for quick and easy programming",
-      "install_id": "ruby",
-      "license": "Ruby",
-      "locked_url": "https://github.com/flox/floxenvs?rev=d7588275d77c9610b96bc47e81f190fa383f6d30",
-      "name": "ruby-3.3.14",
-      "pname": "ruby",
-      "rev": "d7588275d77c9610b96bc47e81f190fa383f6d30",
-      "rev_count": 32297,
-      "rev_date": "2026-11-20T19:12:36Z",
-      "scrape_date": "2026-11-20T19:20:55.669303Z",
-      "stabilities": [
-        "unstable",
-        "stable",
-        "staging"
-      ],
-      "unfree": false,
-      "version": "3.3.14",
-      "outputs_to_install": [
-        "out"
-      ],
-      "outputs": {
-        "devdoc": "/nix/store/112zrx932fmkhr6n8haqn882zf1rpiln-ruby-3.3.14-devdoc",
-        "out": "/nix/store/ap3z2l0mfqzsmfxvsplnspydsgg1rzr1-ruby-3.3.14"
-      },
-      "system": "x86_64-linux",
-      "group": "ruby",
-      "priority": 5
-    },
-    {
       "attr_path": "clang",
       "broken": false,
       "derivation": "/nix/store/n0k13qc2s1jjaz3nx7n50zfngwmbd78c-clang-wrapper-21.1.8.drv",
@@ -766,74 +659,6 @@
         "out": "/nix/store/g8ygy4cj8gizpf47cpycr64fpkimchc8-clang-wrapper-21.1.8"
       },
       "system": "aarch64-darwin",
-      "group": "toplevel",
-      "priority": 5
-    },
-    {
-      "attr_path": "gcc",
-      "broken": false,
-      "derivation": "/nix/store/fhwgr7lr7f5c5vk598zgkh5gqqblkjy8-gcc-wrapper-16.2.0.drv",
-      "description": "GNU Compiler Collection, version 16.2.0 (wrapper script)",
-      "install_id": "gcc",
-      "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
-      "name": "gcc-wrapper-16.2.0",
-      "pname": "gcc",
-      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
-      "rev_count": 1124497,
-      "rev_date": "2026-11-19T10:51:41Z",
-      "scrape_date": "2026-11-21T06:14:30.253620Z",
-      "stabilities": [
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "16.2.0",
-      "outputs_to_install": [
-        "man",
-        "out",
-        "out",
-        "out"
-      ],
-      "outputs": {
-        "info": "/nix/store/hj3agghz1n3mywjhy7821d4l3h7k2qnz-gcc-wrapper-16.2.0-info",
-        "man": "/nix/store/zbz8pf21y0pvkgn3c6i3n6rn383paz52-gcc-wrapper-16.2.0-man",
-        "out": "/nix/store/mqg95s149wr7az0xbn6d6s45m76pzz8n-gcc-wrapper-16.2.0"
-      },
-      "system": "aarch64-linux",
-      "group": "toplevel",
-      "priority": 5
-    },
-    {
-      "attr_path": "gcc",
-      "broken": false,
-      "derivation": "/nix/store/5vla1bqz412yx13nj4r2565b7cf9xsw4-gcc-wrapper-16.2.0.drv",
-      "description": "GNU Compiler Collection, version 16.2.0 (wrapper script)",
-      "install_id": "gcc",
-      "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
-      "name": "gcc-wrapper-16.2.0",
-      "pname": "gcc",
-      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
-      "rev_count": 1124497,
-      "rev_date": "2026-11-19T10:51:41Z",
-      "scrape_date": "2026-11-21T06:43:09.307665Z",
-      "stabilities": [
-        "unstable"
-      ],
-      "unfree": false,
-      "version": "16.2.0",
-      "outputs_to_install": [
-        "man",
-        "out",
-        "out",
-        "out"
-      ],
-      "outputs": {
-        "info": "/nix/store/mrxy6g9p9p08lnv74dh269ynsfgyrawg-gcc-wrapper-16.2.0-info",
-        "man": "/nix/store/2m6rwm4jbybjcxzmrhjy7i1wz1lli268-gcc-wrapper-16.2.0-man",
-        "out": "/nix/store/ii6p6kc1brz3vycqg88q4zb4xd2dmqwp-gcc-wrapper-16.2.0"
-      },
-      "system": "x86_64-linux",
       "group": "toplevel",
       "priority": 5
     },
@@ -1345,6 +1170,102 @@
       },
       "system": "x86_64-linux",
       "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ruby_3_3",
+      "broken": false,
+      "derivation": "/nix/store/aaahska7xwhgvzkjkphrqlg9hix20m8x-ruby-3.3.14.drv",
+      "description": "Object-oriented language for quick and easy programming",
+      "install_id": "ruby",
+      "license": "Ruby",
+      "locked_url": "https://github.com/flox/floxenvs?rev=a6f4fcb9a909b777d438ab2ef8c926db0432e907",
+      "name": "ruby-3.3.14",
+      "pname": "ruby",
+      "rev": "a6f4fcb9a909b777d438ab2ef8c926db0432e907",
+      "rev_count": 32462,
+      "rev_date": "2026-11-23T20:32:10Z",
+      "scrape_date": "2026-11-23T20:46:36.005591Z",
+      "stabilities": [
+        "unstable",
+        "stable",
+        "staging"
+      ],
+      "unfree": false,
+      "version": "3.3.14",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "devdoc": "/nix/store/ikpx3fyny9cc41qjhicapzb2hynqjpwq-ruby-3.3.14-devdoc",
+        "out": "/nix/store/h3ks4rjcxvh72pllp3642i9jiryn03dr-ruby-3.3.14"
+      },
+      "system": "aarch64-darwin",
+      "group": "ruby",
+      "priority": 5
+    },
+    {
+      "attr_path": "ruby_3_3",
+      "broken": false,
+      "derivation": "/nix/store/hghz0hv2890cvwl6q7nymw0m112yygs4-ruby-3.3.14.drv",
+      "description": "Object-oriented language for quick and easy programming",
+      "install_id": "ruby",
+      "license": "Ruby",
+      "locked_url": "https://github.com/flox/floxenvs?rev=a6f4fcb9a909b777d438ab2ef8c926db0432e907",
+      "name": "ruby-3.3.14",
+      "pname": "ruby",
+      "rev": "a6f4fcb9a909b777d438ab2ef8c926db0432e907",
+      "rev_count": 32462,
+      "rev_date": "2026-11-23T20:32:10Z",
+      "scrape_date": "2026-11-23T20:46:36.005592Z",
+      "stabilities": [
+        "unstable",
+        "stable",
+        "staging"
+      ],
+      "unfree": false,
+      "version": "3.3.14",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "devdoc": "/nix/store/lc4mzbw4kjh2cw4p5h004gdzf5a0pjls-ruby-3.3.14-devdoc",
+        "out": "/nix/store/vznqd2sgw8i3ib7i6d73bin1rh074dai-ruby-3.3.14"
+      },
+      "system": "aarch64-linux",
+      "group": "ruby",
+      "priority": 5
+    },
+    {
+      "attr_path": "ruby_3_3",
+      "broken": false,
+      "derivation": "/nix/store/jy21nb2wwkjpv6aa6aa1a5js94br6xh3-ruby-3.3.14.drv",
+      "description": "Object-oriented language for quick and easy programming",
+      "install_id": "ruby",
+      "license": "Ruby",
+      "locked_url": "https://github.com/flox/floxenvs?rev=a6f4fcb9a909b777d438ab2ef8c926db0432e907",
+      "name": "ruby-3.3.14",
+      "pname": "ruby",
+      "rev": "a6f4fcb9a909b777d438ab2ef8c926db0432e907",
+      "rev_count": 32462,
+      "rev_date": "2026-11-23T20:32:10Z",
+      "scrape_date": "2026-11-23T20:46:36.005592Z",
+      "stabilities": [
+        "unstable",
+        "stable",
+        "staging"
+      ],
+      "unfree": false,
+      "version": "3.3.14",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "devdoc": "/nix/store/3lswj5ziy3dzvc107vjxa8f7j0rs0dc2-ruby-3.3.14-devdoc",
+        "out": "/nix/store/cmz411g77lk36c4ym8k7hqxkca4fps9b-ruby-3.3.14"
+      },
+      "system": "x86_64-linux",
+      "group": "ruby",
       "priority": 5
     }
   ]

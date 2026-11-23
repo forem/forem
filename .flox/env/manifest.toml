@@ -6,8 +6,9 @@ schema-version = "1.19.0"
 
 [install]
 # Gemfile reads .ruby-version verbatim and the Flox catalog stops at ruby_3_3
-# 3.3.12, so Ruby comes from `flox/ruby_3_3`, which tracks 3.3 security releases
-# and has no compiler in its closure (42 MiB, not ~800 MiB on macOS). Switch back
+# 3.3.12, so Ruby comes from `flox/ruby_3_3`, which tracks 3.3 security releases.
+# On Linux it compiles native gems with the gcc it was built with; on macOS it
+# has no compiler in its closure (42 MiB, not ~800 MiB). Switch back
 # to the catalog's `ruby_3_3` with `ruby.version` = .ruby-version once
 # `flox show ruby_3_3` lists it. Ruby 3.3 reaches end of support at the end of
 # March 2027. Own group: a `flox` catalog package cannot share one with nixpkgs.
@@ -24,15 +25,6 @@ pkg-config.outputs = ["out"]
 # The zlib gem compiles against it; Nix's Apple SDK has no zlib.h.
 zlib.pkg-path = "zlib"
 zlib.outputs = ["out", "dev"]
-# Linux only: Ruby's closure has no compiler (macOS: `clang` below).
-# libruby is linked against the C library of the snapshot `flox/ruby_3_3` was
-# built from (glibc 2.44, gcc 16.2.0), and a gcc on an older glibc cannot link
-# it (`undefined reference to cosh@GLIBC_2.44`). Move this version when the Ruby
-# package moves to another nixpkgs snapshot.
-gcc.pkg-path = "gcc"
-gcc.outputs = ["out"]
-gcc.version = "16.2.0"
-gcc.systems = ["aarch64-linux", "x86_64-linux"]
 # mkmf runs `make`; a minimal Linux install may not have it, and macOS's is a
 # Command Line Tools shim.
 gnumake.pkg-path = "gnumake"

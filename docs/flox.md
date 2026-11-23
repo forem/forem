@@ -74,9 +74,8 @@ commit the manifest and `.flox/env/manifest.lock`. `flox upgrade <group>` moves
 a package group forward.
 
 - **Ruby (`.ruby-version`):** comes from `flox/ruby_3_3`; switch back to the
-  catalog's `ruby_3_3` once `flox show ruby_3_3` lists the version. On Linux,
-  `gcc.version` must stay on the Ruby package's nixpkgs snapshot (see the
-  manifest).
+  catalog's `ruby_3_3` once `flox show ruby_3_3` lists the version.
+  `flox upgrade ruby` picks up a rebuilt package.
 - **Node (`.nvmrc`):** change `nodejs.version` and `package.json` `engines` to match.
 - **PostgreSQL:** `postgresql.pkg-path` and `pgvector.pkg-path` (CI and
   `docker-compose.yml` use 13).
