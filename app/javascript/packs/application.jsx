@@ -17,6 +17,11 @@ import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
 import { revealBillboardPlacement } from './billboardAfterRenderActions';
+import {
+  mountBillboardShadowHost,
+  mountBillboardShadowHosts,
+  cleanupDisconnectedBillboardSandboxes,
+} from '../utilities/billboardShadowDom';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -91,6 +96,8 @@ window.Forem = {
   showModal: showWindowModal,
   closeModal: () => closeWindowModal(),
   revealBillboardPlacement,
+  mountBillboardShadowHost,
+  mountBillboardShadowHosts,
   Runtime,
 };
 
@@ -133,8 +140,10 @@ if (document.location.pathname.startsWith('/dashboard')) {
 }
 
 maybeInitializeMediaPlayback();
+mountBillboardShadowHosts(document);
 maybeLoadEventSignupButtons();
 document.ready.then(() => {
+  mountBillboardShadowHosts(document);
   initializeSlides();
 });
 function updateSearchPlaceholder() {
@@ -160,6 +169,8 @@ InstantClick.on('change', () => {
   }
 
   maybeInitializeMediaPlayback();
+  cleanupDisconnectedBillboardSandboxes();
+  mountBillboardShadowHosts(document);
   maybeLoadEventSignupButtons();
   initializeSlides();
   trackCreateAccountClicks('sidebar-wrapper-left');
@@ -171,7 +182,11 @@ InstantClick.on('change', () => {
   updateSearchPlaceholder();
 });
 
-InstantClick.on('restore', updateSearchPlaceholder);
+InstantClick.on('restore', () => {
+  cleanupDisconnectedBillboardSandboxes();
+  mountBillboardShadowHosts(document);
+  updateSearchPlaceholder();
+});
 
 // Initialize data-runtime context to the body data-attribute
 document.body.dataset.runtime = window.Forem.Runtime.currentContext();

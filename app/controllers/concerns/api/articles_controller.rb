@@ -38,21 +38,59 @@ module Api
     ].freeze
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
+    INDEX_PLUCK_COLUMNS = %i[
+      id user_id organization_id collection_id
+      title description main_image published_at crossposted_at social_image
+      cached_tag_list slug path canonical_url comments_count
+      public_reactions_count created_at edited_at last_comment_at published
+      video_thumbnail_url reading_time subforem_id language ai_disclosure_level
+    ].freeze
+    private_constant :INDEX_PLUCK_COLUMNS
+
+    USER_INDEX_COLUMNS = %i[
+      id name username twitter_username github_username profile_image
+    ].freeze
+    private_constant :USER_INDEX_COLUMNS
+
+    ORG_INDEX_COLUMNS = %i[
+      id name username slug profile_image custom_domain
+    ].freeze
+    private_constant :ORG_INDEX_COLUMNS
+
+    AI_DISCLOSURE_INDICES = {
+      "not_disclosed" => 0,
+      :not_disclosed => 0,
+      0 => 0,
+      "no_ai" => 1,
+      :no_ai => 1,
+      1 => 1,
+      "some_ai" => 2,
+      :some_ai => 2,
+      3 => 2,
+      "fully_autonomous" => 3,
+      :fully_autonomous => 3,
+      5 => 3
+    }.freeze
+    private_constant :AI_DISCLOSURE_INDICES
+
     def index
       if invalid_tags_present?
         render json: { error: "Not Found", status: 404 }, status: :not_found
         return
       end
 
-      @articles = ArticleApiIndexService.new(params).get
-      @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-
-      surrogate_keys = [Article.table_key, *@articles.map(&:record_key)]
-      if params[:tag].is_a?(String) && params[:top].present?
-        tag_name = params[:tag].downcase.strip
-        surrogate_keys << "api-articles-tag-#{tag_name}-top" if tag_name.match?(/\A[a-z0-9_-]+\z/)
+      relation = ArticleApiIndexService.new(params).get
+      if native_index_serializable?(relation)
+        rows = relation.except(:includes).pluck(*INDEX_PLUCK_COLUMNS)
+        json_body = serialize_articles_index_natively(rows)
+        if json_body
+          set_index_surrogate_keys(rows.map(&:first))
+          render json: json_body
+          return
+        end
       end
-      set_surrogate_key_header(*surrogate_keys)
+
+      legacy_index(relation)
     end
 
     def show
@@ -196,6 +234,232 @@ module Api
     end
 
     private
+
+    def legacy_index(relation)
+      @articles = relation.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+      set_index_surrogate_keys(@articles.map(&:id))
+    end
+
+    def set_index_surrogate_keys(article_ids)
+      prefix = "#{Article.table_key}/"
+      surrogate_keys = [Article.table_key]
+      article_ids.each { |id| surrogate_keys << "#{prefix}#{id}" }
+      if params[:tag].is_a?(String) && params[:top].present?
+        tag_name = params[:tag].downcase.strip
+        surrogate_keys << "api-articles-tag-#{tag_name}-top" if tag_name.match?(/\A[a-z0-9_-]+\z/)
+      end
+      set_surrogate_key_header(*surrogate_keys)
+    end
+
+    def native_index_serializable?(relation)
+      ForemNative.available? &&
+        relation.is_a?(ActiveRecord::Relation) &&
+        (request.format.json? || request.format.api_v0? || request.format.api_v1?) &&
+        I18n.locale == :en &&
+        Time.zone&.tzinfo&.name == "Etc/UTC" &&
+        !Images::Optimizer.imgproxy_enabled? &&
+        !Images::Optimizer.cloudinary_enabled?
+    end
+
+    def serialize_articles_index_natively(rows)
+      return "[]" if rows.empty?
+
+      users_flat, user_idx_by_id = native_index_users_payload(rows)
+      return unless users_flat
+
+      orgs_flat, org_idx_by_id, org_custom_domains = native_index_orgs_payload(rows)
+      articles_flat, base_urls = native_index_articles_payload(rows, user_idx_by_id, org_idx_by_id, org_custom_domains)
+      return unless articles_flat
+
+      ForemNative.serialize_api_articles_json(
+        articles_flat,
+        users_flat,
+        orgs_flat,
+        native_index_flare_tags_payload(rows),
+        base_urls,
+        native_index_config,
+      )
+    end
+
+    def native_index_users_payload(rows)
+      user_ids = rows.filter_map { |row| row[1] }.uniq
+      return if user_ids.empty?
+
+      users_by_id = User.where(id: user_ids).select(*USER_INDEX_COLUMNS).index_by(&:id)
+      websites_by_user_id = Profile.where(user_id: user_ids).pluck(:user_id, :website_url).to_h
+
+      users_flat = []
+      user_idx_by_id = {}
+      user_ids.each do |uid|
+        user = users_by_id[uid]
+        return nil unless user
+
+        website = websites_by_user_id[uid]
+        processed_website = website.present? ? website.to_s.strip : nil
+        user_idx_by_id[uid] = users_flat.size / 8
+        users_flat.push(
+          user.id,
+          user.name,
+          user.username,
+          user.twitter_username,
+          user.github_username,
+          processed_website,
+          user.profile_image_url_for(length: 640),
+          user.profile_image_url_for(length: 90),
+        )
+      end
+
+      [users_flat, user_idx_by_id]
+    end
+
+    def native_index_orgs_payload(rows)
+      org_ids = rows.filter_map { |row| row[2] }.uniq
+      return [[], {}, {}] if org_ids.empty?
+
+      orgs_by_id = Organization.where(id: org_ids).select(*ORG_INDEX_COLUMNS).index_by(&:id)
+      allow_custom_domain = !(RequestStore.store[:user_signed_in] && RequestStore.store[:custom_domain_org].blank?)
+
+      orgs_flat = []
+      org_idx_by_id = {}
+      org_custom_domains = {}
+      org_ids.each do |oid|
+        org = orgs_by_id[oid]
+        next unless org
+
+        org_idx_by_id[oid] = orgs_flat.size / 5
+        orgs_flat.push(
+          org.name,
+          org.username,
+          org.slug,
+          org.profile_image_url_for(length: 640),
+          org.profile_image_url_for(length: 90),
+        )
+        if allow_custom_domain && org.custom_domain.present? &&
+            FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          org_custom_domains[oid] = org.custom_domain
+        end
+      end
+
+      [orgs_flat, org_idx_by_id, org_custom_domains]
+    end
+
+    def native_index_flare_tags_payload(rows)
+      flare_map = FlareTag::FLARE_TAG_IDS_HASH
+      return [] if flare_map.empty?
+
+      flare_names = flare_map.keys
+      has_flare_match = rows.any? do |row|
+        raw_tags = row[10]
+        raw_tags.is_a?(String) && !raw_tags.empty? && ForemNative.match_first_flare_tag(raw_tags, flare_names) != false
+      end
+      return [] unless has_flare_match
+
+      tags_by_id = FlareTag.tags_by_id
+      flare_tags_flat = []
+      flare_map.each do |match_name, tag_id|
+        tag = tags_by_id[tag_id]
+        flare_tags_flat.push(match_name, tag&.name, tag&.bg_color_hex, tag&.text_color_hex)
+      end
+      flare_tags_flat
+    end
+
+    def native_index_articles_payload(rows, user_idx_by_id, org_idx_by_id, org_custom_domains)
+      subforem_disabled = Subforem.disabled_by_env?
+      subforem_domains = subforem_disabled ? {} : Subforem.cached_id_to_domain_hash
+      default_subforem_id = RequestStore.store[:default_subforem_id]
+      social_image_cutoff = Time.zone.local(2026, 3, 1)
+
+      base_urls = []
+      base_url_idx_by_domain = {}
+      articles_flat = []
+
+      rows.each do |row|
+        user_idx = user_idx_by_id[row[1]]
+        ai_idx = AI_DISCLOSURE_INDICES[row[24]]
+        return nil unless user_idx && ai_idx
+
+        domain, url_path = resolve_article_domain_and_path(
+          row, org_custom_domains, subforem_disabled, subforem_domains, default_subforem_id
+        )
+        base_url_idx = base_url_idx_by_domain[domain] ||= begin
+          idx = base_urls.size
+          base_urls << URL.url(nil, domain)
+          idx
+        end
+
+        timestamps = extract_article_epoch_secs(row)
+        return nil unless timestamps
+
+        social_image_large = row[7].present? && row[7] > social_image_cutoff
+        append_native_article_row(articles_flat, row, user_idx, org_idx_by_id[row[2]] || -1,
+                                  base_url_idx, url_path, ai_idx, timestamps, social_image_large)
+      end
+
+      [articles_flat, base_urls]
+    end
+
+    def resolve_article_domain_and_path(row, org_custom_domains, subforem_disabled, subforem_domains,
+                                        default_subforem_id)
+      custom_domain = row[2] ? org_custom_domains[row[2]] : nil
+      return [custom_domain, "/#{row[11]}"] if custom_domain
+      return [nil, row[12]] if subforem_disabled
+
+      sf_id = row[22] || default_subforem_id
+      domain = sf_id ? subforem_domains[sf_id] : nil
+      [domain, row[12]]
+    end
+
+    def extract_article_epoch_secs(row)
+      created_sec = extract_epoch_sec(row[16])
+      edited_sec = extract_epoch_sec(row[17])
+      crossposted_sec = extract_epoch_sec(row[8])
+      published_sec = extract_epoch_sec(row[7])
+      last_comment_sec = extract_epoch_sec(row[18])
+      return if created_sec == :invalid || edited_sec == :invalid ||
+        crossposted_sec == :invalid || published_sec == :invalid || last_comment_sec == :invalid
+
+      [created_sec, edited_sec, crossposted_sec, published_sec, last_comment_sec]
+    end
+
+    def extract_epoch_sec(value)
+      return if value.nil?
+      return value.tv_sec if value.respond_to?(:tv_sec)
+
+      :invalid
+    end
+
+    def append_native_article_row(articles_flat, row, user_idx, org_idx, base_url_idx, url_path, ai_idx, timestamps,
+                                  social_image_large)
+      created_sec, edited_sec, crossposted_sec, published_sec, last_comment_sec = timestamps
+      articles_flat.push(
+        row[0], user_idx, org_idx, base_url_idx, url_path,
+        row[3], row[4], row[5], row[6], row[9], row[20],
+        row[10], row[11], row[12], row[13], row[14], row[15],
+        row[21], row[22], row[23], row[19] ? true : false, ai_idx,
+        created_sec, edited_sec, crossposted_sec, published_sec, last_comment_sec,
+        social_image_large ? true : false
+      )
+    end
+
+    def native_index_config
+      subforem_id = RequestStore.store[:subforem_id]
+      cf_enabled = Images::Optimizer.cloudflare_enabled?
+      [
+        Time.current.year,
+        Settings::General.main_social_image.to_s,
+        Settings::UserExperience.cover_image_height(subforem_id: subforem_id).to_i,
+        Settings::UserExperience.cover_image_fit(subforem_id: subforem_id).to_s,
+        Rails.env.development?,
+        cf_enabled ? 1 : 0,
+        cf_enabled ? ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"] : nil,
+        Images::Optimizer::CLOUDFLARE_DIRECTORY,
+        I18n.t("models.article.ai_disclosure.not_disclosed"),
+        I18n.t("models.article.ai_disclosure.no_ai"),
+        I18n.t("models.article.ai_disclosure.some_ai"),
+        I18n.t("models.article.ai_disclosure.fully_autonomous"),
+        ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+      ]
+    end
 
     def extract_preview_article_hash
       return params[:article] if params[:article].is_a?(ActionController::Parameters) || params[:article].is_a?(Hash)

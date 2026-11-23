@@ -90,7 +90,7 @@ RSpec.describe BillboardPolicy, type: :policy do
     end
 
     %i[body_markdown name placement_area display_to type_of creator_id organization_id expires_at
-       target_geolocations tag_list render_mode template].each do |attribute|
+       target_geolocations tag_list render_mode isolate_content template].each do |attribute|
       it "needs modify_approved to change #{attribute}" do
         value = {
           body_markdown: "Changed after approval",
@@ -104,6 +104,7 @@ RSpec.describe BillboardPolicy, type: :policy do
           target_geolocations: "US-WA",
           tag_list: "ruby",
           render_mode: "raw",
+          isolate_content: true,
           template: "plain"
         }.fetch(attribute)
         billboard.public_send(:"#{attribute}=", value)

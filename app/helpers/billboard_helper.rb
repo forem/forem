@@ -54,6 +54,29 @@ module BillboardHelper
     end
   end
 
+  def billboard_shadow_isolated?(billboard, allow_embed_passthrough: true)
+    return false unless billboard&.raw? && billboard&.isolate_content?
+    return false if allow_embed_passthrough && Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area)
+
+    true
+  end
+
+  def billboard_body_html(billboard, html = billboard.processed_html_final, allow_embed_passthrough: true)
+    return "".html_safe if html.blank?
+
+    if billboard_shadow_isolated?(billboard, allow_embed_passthrough: allow_embed_passthrough)
+      Billboards::ShadowDomWrapper.call(
+        html,
+        billboard_id: billboard.id,
+        template: billboard.template,
+      )
+    else
+      # rubocop:disable Rails/OutputSafety
+      html.html_safe
+      # rubocop:enable Rails/OutputSafety
+    end
+  end
+
   # Including here because multiple controllers render this in different contexts
   # When signed in, this is uncached, but it is cached for signed-out contexts
   def get_homepage_sidebar_billboards

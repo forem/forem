@@ -1,4 +1,8 @@
 import { getInstantClick } from '../topNavigation/utilities';
+import {
+  findClosestInEventPath,
+  queryAllIncludingBillboardShadows,
+} from '../utilities/billboardShadowDom';
 
 let observer;
 
@@ -50,7 +54,9 @@ const updateButtonState = (button, isSignedUp) => {
 };
 
 const fetchStatuses = () => {
-  const buttons = document.querySelectorAll('[data-event-signup-button="true"]:not([data-fetched])');
+  const buttons = queryAllIncludingBillboardShadows(
+    '[data-event-signup-button="true"]:not([data-fetched])',
+  );
   if (buttons.length === 0) return;
 
   buttons.forEach((button) => {
@@ -98,7 +104,7 @@ const fetchStatuses = () => {
 };
 
 const handleEventSignupClick = (e) => {
-  const button = e.target.closest('[data-event-signup-button="true"]');
+  const button = findClosestInEventPath(e, '[data-event-signup-button="true"]');
   if (!button) return;
 
   e.preventDefault();
@@ -148,8 +154,8 @@ const handleEventSignupClick = (e) => {
       return res.json();
     })
     .then((data) => {
-      const matchingButtons = document.querySelectorAll(
-        `[data-event-signup-button="true"][data-event-name-slug="${nameSlug}"][data-event-variation-slug="${variationSlug}"]`
+      const matchingButtons = queryAllIncludingBillboardShadows(
+        `[data-event-signup-button="true"][data-event-name-slug="${nameSlug}"][data-event-variation-slug="${variationSlug}"]`,
       );
       matchingButtons.forEach((btn) => {
         updateButtonState(btn, data.signed_up);
@@ -160,8 +166,8 @@ const handleEventSignupClick = (e) => {
       alert('Something went wrong. Please try again.');
     })
     .finally(() => {
-      const matchingButtons = document.querySelectorAll(
-        `[data-event-signup-button="true"][data-event-name-slug="${nameSlug}"][data-event-variation-slug="${variationSlug}"]`
+      const matchingButtons = queryAllIncludingBillboardShadows(
+        `[data-event-signup-button="true"][data-event-name-slug="${nameSlug}"][data-event-variation-slug="${variationSlug}"]`,
       );
       matchingButtons.forEach((btn) => {
         btn.disabled = false;
@@ -184,7 +190,9 @@ const setupEventSignupFunctionality = () => {
           if (node.nodeType === Node.ELEMENT_NODE) {
             if (
               node.matches('[data-event-signup-button="true"]') ||
-              node.querySelector('[data-event-signup-button="true"]')
+              node.querySelector('[data-event-signup-button="true"]') ||
+              node.matches('[data-billboard-shadow-host="true"]') ||
+              node.querySelector('[data-billboard-shadow-host="true"]')
             ) {
               hasNewButtons = true;
               break;

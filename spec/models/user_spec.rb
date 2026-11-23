@@ -439,6 +439,108 @@ RSpec.describe User do
           .with(anything, "user_suspended", anything, anything, anything)
       end
     end
+
+    describe "Core trust role events" do
+      let(:user) { create(:user) }
+
+      before { enable_sync(actor: user) }
+
+      def roles_updated_with(roles)
+        have_received(:perform_async)
+          .with(anything, "user_roles_updated", [user.id], hash_including("dev_roles" => roles), anything)
+      end
+
+      it "emits the whole set of trust roles when one is added" do
+        user.add_role(:trusted)
+        user.add_role(:base_subscriber)
+
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[trusted])
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[base_subscriber trusted])
+      end
+
+      it "emits when a trust role is removed" do
+        user.add_role(:community_leader_level_1)
+        user.remove_role(:community_leader_level_1)
+
+        expect(Trackable::DispatchWorker).to roles_updated_with([])
+      end
+
+      it "emits once for a tag moderator of several tags, when the first is added" do
+        user.add_role(:tag_moderator, create(:tag))
+        user.add_role(:tag_moderator, create(:tag))
+
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[tag_moderator]).once
+      end
+
+      it "stamps each reading with when it was taken" do
+        user.add_role(:base_subscriber)
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, hash_including("dev_roles_read_at" => String), anything)
+      end
+
+      it "emits only once the surrounding transaction commits" do
+        described_class.transaction do
+          user.add_role(:trusted)
+          expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+            .with(anything, "user_roles_updated", anything, anything, anything)
+        end
+
+        expect(Trackable::DispatchWorker).to roles_updated_with(%w[trusted])
+      end
+
+      it "does not emit a change that rolls back" do
+        described_class.transaction do
+          user.add_role(:trusted)
+          raise ActiveRecord::Rollback
+        end
+
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything)
+      end
+
+      it "stamps a reading taken before a revocation earlier than the revocation's, even when it is sent later" do
+        user.add_role(:base_subscriber)
+        stale = user.core_trust_roles_snapshot
+        user.remove_role(:base_subscriber)
+        user.track_core_trust_roles!(stale)
+
+        readings = []
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything).exactly(3).times do |*args|
+            readings << args[3].slice("dev_roles", "dev_roles_read_at")
+          end
+        revocation, late = readings.last(2)
+        expect([revocation["dev_roles"], late["dev_roles"]]).to eq([[], %w[base_subscriber]])
+        expect(Time.zone.parse(late["dev_roles_read_at"])).to be < Time.zone.parse(revocation["dev_roles_read_at"])
+      end
+
+      it "takes a fresh reading even with the query cache on" do
+        first, second = described_class.cache { Array.new(2) { user.core_trust_roles_snapshot.first } }
+
+        expect(second).to be > first
+      end
+
+      it "emits nothing when the user is deleted before the change commits" do
+        described_class.transaction do
+          user.add_role(:trusted)
+          user.destroy!
+        end
+
+        expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything)
+      end
+
+      it "does not emit for a role the user already has or one Core does not count" do
+        user.add_role(:base_subscriber)
+        user.add_role(:base_subscriber)
+        user.add_role(:warned)
+        user.remove_role(:super_moderator)
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_roles_updated", anything, anything, anything).once
+      end
+    end
   end
 
   describe "delegations" do

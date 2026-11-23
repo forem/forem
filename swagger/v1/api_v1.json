@@ -8651,6 +8651,20 @@
             "default": "all",
             "description": "Potentially limits visitors to whom the ad is visible"
           },
+          "render_mode": {
+            "type": "string",
+            "enum": [
+              "forem_markdown",
+              "raw"
+            ],
+            "default": "forem_markdown",
+            "description": "Controls whether body_markdown is rendered as Forem Markdown or raw HTML"
+          },
+          "isolate_content": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true for raw billboards, wraps content in an open Shadow DOM and scoped JS sandbox"
+          },
           "type_of": {
             "type": "string",
             "enum": [

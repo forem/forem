@@ -1,3 +1,5 @@
+import { queryAllIncludingBillboardShadows } from './billboardShadowDom';
+
 let eventSignupButtonsPromise;
 
 /**
@@ -13,7 +15,10 @@ export function resetEventSignupButtonsLoaderForTests() {
  * @returns {boolean} True when at least one `[data-event-signup-button="true"]` element is present
  */
 export function shouldLoadEventSignupButtons() {
-  return Boolean(document.querySelector('[data-event-signup-button="true"]'));
+  return (
+    queryAllIncludingBillboardShadows('[data-event-signup-button="true"]')
+      .length > 0
+  );
 }
 
 /**

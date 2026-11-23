@@ -96,8 +96,26 @@ function startPollingBillboard(adBox) {
   adBox.dataset.pollingIntervalId = intervalId;
 }
 
+function findClickedBillboardAnchor(event) {
+  if (!event) {
+    return null;
+  }
+  if (typeof event.composedPath === 'function') {
+    var path = event.composedPath();
+    for (var i = 0; i < path.length; i++) {
+      var node = path[i];
+      if (node && node.nodeType === 1 && node.tagName === 'A') {
+        return node;
+      }
+    }
+  }
+  return event.target && typeof event.target.closest === 'function'
+    ? event.target.closest('a')
+    : null;
+}
+
 function trackAdClick(adBox, event, currentPath) {
-  if (event && !event.target.closest('a')) {
+  if (event && !findClickedBillboardAnchor(event)) {
     return;
   }
 

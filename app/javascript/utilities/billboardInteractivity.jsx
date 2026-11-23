@@ -1,5 +1,6 @@
 import { initializeDropdown } from './dropdownUtils';
 import { observeBillboards, executeBBScripts } from '../packs/billboardAfterRenderActions';
+import { cleanupBillboardShadowHostsIn } from './billboardShadowDom';
 
 
 export function setupBillboardInteractivity() {
@@ -112,14 +113,17 @@ function dismissBillboard(sponsorshipCloseButton) {
       sidebarContainer = ensurePersistentMinimizedBillboardContainer();
     }
     if (template && sidebarContainer) {
+      cleanupBillboardShadowHostsIn(sidebarContainer);
       sidebarContainer.innerHTML = template.innerHTML;
       sidebarContainer.classList.remove('hidden');
       executeBBScripts(sidebarContainer);
       observeBillboards();
+      cleanupBillboardShadowHostsIn(billboardEl);
       billboardEl.innerHTML = '';
     }
   }
 
+  cleanupBillboardShadowHostsIn(billboardEl);
   billboardEl.style.display = 'none';
   if (localStorage && sku && sku.length > 0) {
     const skuArray =
