@@ -9,128 +9,141 @@ module Billboards
     EXECUTABLE_SCRIPT_TYPES = %r{
       \A\s*(?:text/javascript|application/javascript|text/ecmascript|application/ecmascript|module)\s*(?:;.*)?\z
     }ix
-    # Zero-specificity (:where) base styles injected inside the ShadowRoot so
-    # raw billboards inherit layout containment, media aspect-ratio rules, and
-    # Forem's CTA/button tokens while letting any author <style> win cleanly.
+    BASE_LAYER_NAME = "forem-billboard-base".freeze
+    # Base styles injected as the first stylesheet inside the ShadowRoot.
+    #
+    # The isolation guarantees on :host sit in an anonymous cascade layer with
+    # !important. Because it is the first layer declared in the shadow tree,
+    # its important declarations beat every author declaration (unlayered,
+    # layered, or !important), and authors cannot append rules to an anonymous
+    # layer. Everything else is an overridable default in the named
+    # BASE_LAYER_NAME layer, which any unlayered or later-layered author rule
+    # beats regardless of selector specificity.
     BASE_STYLES = <<~CSS.squish.freeze
-      :host {
-        display: block;
-        min-width: 0;
-        max-width: 100%;
-        overflow-wrap: break-word;
-        box-sizing: border-box;
-        contain: layout style;
-        isolation: isolate;
+      @layer {
+        :host {
+          display: block !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
+          contain: layout style !important;
+          isolation: isolate !important;
+        }
       }
-      :where(.billboard-shadow-body) {
-        display: flow-root;
-        min-width: 0;
-        max-width: 100%;
-        overflow-wrap: break-word;
-      }
-      :where(*, *::before, *::after) {
-        box-sizing: border-box;
-      }
-      :where(img, video, canvas, iframe) {
-        max-width: 100%;
-      }
-      :where(img[width]:not([width='']), video[width]:not([width='']), img:not([height]), video:not([height]), img[height=''], video[height='']) {
-        height: auto;
-      }
-      :host([data-billboard-template='authorship_box']) :where(h1, h2, h3, h4, h5, h6, img, p) {
-        margin-top: 0;
-      }
-      :host([data-billboard-template='authorship_box']) :where(p) {
-        margin-bottom: var(--su-4, 1rem);
-      }
-      :host([data-billboard-template='authorship_box']) :where(.billboard-shadow-body > :last-child) {
-        margin-bottom: 0;
-      }
-      :host([data-billboard-template='authorship_box']) :where(a:not(.crayons-btn):not([class*='ltag']):not(.c-cta):not(.c-btn)) {
-        text-decoration: underline;
-        color: var(--link-branded-color);
-      }
-      :host([data-billboard-template='authorship_box']) :where(a:not(.crayons-btn):not([class*='ltag']):not(.c-cta):not(.c-btn)):hover {
-        color: var(--link-branded-color-hover);
-      }
-      :host([data-billboard-template='authorship_box']) :where(img) {
-        border-radius: var(--radius);
-        display: inline-block;
-        vertical-align: middle;
-      }
-      :where(.ltag_cta, .c-cta) {
-        --border-width: 1px;
-        --bg: var(--cta-bg);
-        --bg-hover: var(--cta-bg-hover);
-        --color: var(--cta-color);
-        --color-hover: var(--cta-color-hover);
-        --border: var(--cta-border);
-        --border-hover: var(--cta-border-hover);
-        padding: var(--su-2) var(--su-4);
-        border: var(--border-width) solid var(--border);
-        text-decoration: none;
-        border-radius: var(--radius);
-        font: inherit;
-        background-color: var(--bg);
-        color: var(--color);
-        outline: 0;
-        text-align: center;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow-wrap: normal;
-      }
-      :where(.ltag_cta:hover, .c-cta:hover) {
-        background-color: var(--bg-hover);
-        border-color: var(--border-hover);
-        color: var(--color-hover);
-        text-decoration: underline;
-      }
-      :where(.ltag_cta--branded, .c-cta--branded) {
-        --bg: var(--cta-branded-bg);
-        --bg-hover: var(--cta-branded-bg-hover);
-        --color: var(--cta-branded-color);
-        --color-hover: var(--cta-branded-color-hover);
-        --border: var(--cta-branded-border);
-        --border-hover: var(--cta-branded-border-hover);
-        font-weight: var(--fw-medium);
-      }
-      :where(.crayons-btn) {
-        position: relative;
-        display: inline-block;
-        padding: calc(var(--su-2) - 1px) calc(var(--su-4) - 1px);
-        border-radius: var(--radius);
-        font-family: inherit;
-        font-size: var(--fs-base);
-        line-height: var(--su-6);
-        font-weight: var(--fw-medium);
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        border: 1px solid transparent;
-        background-color: var(--button-primary-bg);
-        color: var(--button-primary-color);
-      }
-      :where(.crayons-btn:hover) {
-        background-color: var(--button-primary-bg-hover);
-        color: var(--button-primary-color-hover);
-      }
-      :where(.crayons-btn--secondary) {
-        background-color: var(--button-secondary-bg);
-        color: var(--button-secondary-color);
-      }
-      :where(.crayons-btn--secondary:hover) {
-        background-color: var(--button-secondary-bg-hover);
-        color: var(--button-secondary-color-hover);
-      }
-      :where(.crayons-btn--ghost) {
-        background-color: transparent;
-        color: var(--button-ghost-color);
-      }
-      :where(.crayons-btn--ghost:hover) {
-        background-color: var(--button-ghost-bg-hover);
-        color: var(--button-ghost-color-hover);
+      @layer #{BASE_LAYER_NAME} {
+        :host {
+          overflow-wrap: break-word;
+          box-sizing: border-box;
+        }
+        :where(.billboard-shadow-body) {
+          display: flow-root;
+          min-width: 0;
+          max-width: 100%;
+          overflow-wrap: break-word;
+        }
+        :where(*, *::before, *::after) {
+          box-sizing: border-box;
+        }
+        :where(img, video, canvas, iframe) {
+          max-width: 100%;
+        }
+        :where(img[width]:not([width='']), video[width]:not([width='']), img:not([height]), video:not([height]), img[height=''], video[height='']) {
+          height: auto;
+        }
+        :host([data-billboard-template='authorship_box']) :where(h1, h2, h3, h4, h5, h6, img, p) {
+          margin-top: 0;
+        }
+        :host([data-billboard-template='authorship_box']) :where(p) {
+          margin-bottom: var(--su-4, 1rem);
+        }
+        :host([data-billboard-template='authorship_box']) :where(.billboard-shadow-body > :last-child) {
+          margin-bottom: 0;
+        }
+        :host([data-billboard-template='authorship_box']) :where(a:not(.crayons-btn):not([class*='ltag']):not(.c-cta):not(.c-btn)) {
+          text-decoration: underline;
+          color: var(--link-branded-color);
+        }
+        :host([data-billboard-template='authorship_box']) :where(a:not(.crayons-btn):not([class*='ltag']):not(.c-cta):not(.c-btn)):hover {
+          color: var(--link-branded-color-hover);
+        }
+        :host([data-billboard-template='authorship_box']) :where(img) {
+          border-radius: var(--radius);
+          display: inline-block;
+          vertical-align: middle;
+        }
+        :where(.ltag_cta, .c-cta) {
+          --border-width: 1px;
+          --bg: var(--cta-bg);
+          --bg-hover: var(--cta-bg-hover);
+          --color: var(--cta-color);
+          --color-hover: var(--cta-color-hover);
+          --border: var(--cta-border);
+          --border-hover: var(--cta-border-hover);
+          padding: var(--su-2) var(--su-4);
+          border: var(--border-width) solid var(--border);
+          text-decoration: none;
+          border-radius: var(--radius);
+          font: inherit;
+          background-color: var(--bg);
+          color: var(--color);
+          outline: 0;
+          text-align: center;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow-wrap: normal;
+        }
+        :where(.ltag_cta:hover, .c-cta:hover) {
+          background-color: var(--bg-hover);
+          border-color: var(--border-hover);
+          color: var(--color-hover);
+          text-decoration: underline;
+        }
+        :where(.ltag_cta--branded, .c-cta--branded) {
+          --bg: var(--cta-branded-bg);
+          --bg-hover: var(--cta-branded-bg-hover);
+          --color: var(--cta-branded-color);
+          --color-hover: var(--cta-branded-color-hover);
+          --border: var(--cta-branded-border);
+          --border-hover: var(--cta-branded-border-hover);
+          font-weight: var(--fw-medium);
+        }
+        :where(.crayons-btn) {
+          position: relative;
+          display: inline-block;
+          padding: calc(var(--su-2) - 1px) calc(var(--su-4) - 1px);
+          border-radius: var(--radius);
+          font-family: inherit;
+          font-size: var(--fs-base);
+          line-height: var(--su-6);
+          font-weight: var(--fw-medium);
+          text-align: center;
+          text-decoration: none;
+          cursor: pointer;
+          border: 1px solid transparent;
+          background-color: var(--button-primary-bg);
+          color: var(--button-primary-color);
+        }
+        :where(.crayons-btn:hover) {
+          background-color: var(--button-primary-bg-hover);
+          color: var(--button-primary-color-hover);
+        }
+        :where(.crayons-btn--secondary) {
+          background-color: var(--button-secondary-bg);
+          color: var(--button-secondary-color);
+        }
+        :where(.crayons-btn--secondary:hover) {
+          background-color: var(--button-secondary-bg-hover);
+          color: var(--button-secondary-color-hover);
+        }
+        :where(.crayons-btn--ghost) {
+          background-color: transparent;
+          color: var(--button-ghost-color);
+        }
+        :where(.crayons-btn--ghost:hover) {
+          background-color: var(--button-ghost-bg-hover);
+          color: var(--button-ghost-color-hover);
+        }
       }
     CSS
 

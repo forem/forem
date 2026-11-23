@@ -13,6 +13,7 @@ This document is the source of truth for how Forem's Billboard system (`Billboar
 5. [Campaigns, Delivery Caps & Ideal Daily Impressions Pacing](#5-campaigns-delivery-caps--ideal-daily-impressions-pacing)
 6. [HTML-First (`raw`) Billboards & Shadow DOM Isolation (`isolate_content`)](#6-html-first-raw-billboards--shadow-dom-isolation-isolate_content)
    - [CSS & DOM Isolation Contract](#css--dom-isolation-contract)
+   - [How Author CSS Interacts with Forem's Base Styles](#how-author-css-interacts-with-forems-base-styles)
    - [Light Mode / Dark Mode Authoring DSL](#light-mode--dark-mode-authoring-dsl)
    - [Scoped JavaScript Sandbox & `billboard` Runtime API](#scoped-javascript-sandbox--billboard-runtime-api)
    - [Site-Wide Interactivity Preservation](#site-wide-interactivity-preservation)
@@ -181,7 +182,7 @@ When `render_mode == "raw"` and `isolate_content == true`, `Billboards::ShadowDo
      data-billboard-id="123"
      data-billboard-template="authorship_box">
   <template shadowrootmode="open">
-    <style data-billboard-base-styles="true">/* zero-specificity :where(...) base rules */</style>
+    <style data-billboard-base-styles="true">/* @layer { enforced :host rules } @layer forem-billboard-base { defaults } */</style>
     <div class="billboard-shadow-body">
       <!-- Balanced HTML + <style> + inert <script data-billboard-script="true"> -->
     </div>
@@ -192,10 +193,53 @@ When `render_mode == "raw"` and `isolate_content == true`, `Billboards::ShadowDo
 
 **What this guarantees:**
 - **No CSS leakage out**: Rules like `h1 { color: red; }`, `* { margin: 0; }`, `.btn { ... }`, or `@keyframes pulse` stay strictly inside the billboard's ShadowRoot and cannot affect the host page or other billboards.
-- **No layout / stacking escape**: `:host` enforces `display: block; min-width: 0; max-width: 100%; contain: layout style; isolation: isolate;`. Even an accidental `position: fixed; inset: 0; z-index: 99999` stays trapped inside the billboard's own box and stacking context (it cannot cover the navbar, modals, or the billboard's own `...` header dropdown).
+- **No layout / stacking escape**: `:host` enforces `display: block; min-width: 0; max-width: 100%; contain: layout style; isolation: isolate;` with `!important` in the first cascade layer of the ShadowRoot, so neither billboard CSS nor host-page CSS can turn them off (see [below](#how-author-css-interacts-with-forems-base-styles)). Even an accidental `position: fixed; inset: 0; z-index: 99999` stays trapped inside the billboard's own box and stacking context (it cannot cover the navbar, modals, or the billboard's own `...` header dropdown).
 - **Malformed HTML protection**: `Nokogiri::HTML5.fragment` auto-closes missing tags, discards stray closing tags (`</div>`, `</aside>`, `</main>`, `</template>`), closes unclosed comments/styles/scripts at fragment EOF, and strips `<base>` and `<meta http-equiv="refresh">`.
-- **Zero-specificity Forem base styles**: Inside the ShadowRoot, `:where(...)` rules provide `box-sizing: border-box`, responsive media sizing (preserving height-only badges like `height="20"`), `authorship_box` typography defaults, and built-in styling for `.ltag_cta`, `.ltag_cta--branded`, `.c-cta`, `.c-cta--branded`, `.crayons-btn`, `.crayons-btn--secondary`, and `.crayons-btn--ghost`. Because `:where(...)` has specificity `(0, 0, 0)`, **any author CSS rule wins cleanly without `!important`**.
+- **Overridable Forem base styles**: Inside the ShadowRoot, the `forem-billboard-base` cascade layer provides `box-sizing: border-box`, responsive media sizing (preserving height-only badges like `height="20"`), `authorship_box` typography and link defaults, and built-in styling for `.ltag_cta`, `.ltag_cta--branded`, `.c-cta`, `.c-cta--branded`, `.crayons-btn`, `.crayons-btn--secondary`, and `.crayons-btn--ghost`. Because unlayered author styles always beat layered styles, **any author CSS rule wins regardless of specificity, without `!important`**.
 - **Rolling-deploy & async safety**: SSR pages parse `<template shadowrootmode="open">` natively with zero FOUC. Async-fetched billboards (`innerHTML` / Preact `dangerouslySetInnerHTML`) keep `<style>` inert inside `<template>` until `mountBillboardShadowHosts` upgrades them — and the tiny bootstrap script ensures even stale pre-deploy cached clients never render a blank box.
+
+### How Author CSS Interacts with Forem's Base Styles
+
+Forem injects one `<style data-billboard-base-styles="true">` as the **first** stylesheet in every billboard ShadowRoot. It has two parts, and they behave differently on purpose:
+
+| Part | How it is declared | What it contains | Can billboard CSS override it? |
+| --- | --- | --- | --- |
+| Isolation guarantees | An anonymous `@layer { ... }`, declared first, every declaration `!important` | `:host { display: block; min-width: 0; max-width: 100%; contain: layout style; isolation: isolate; }` | **No** |
+| Defaults | `@layer forem-billboard-base { ... }` | `overflow-wrap` and `box-sizing` on `:host`, `.billboard-shadow-body` flow root, `box-sizing: border-box` on all elements, media sizing, `authorship_box` typography and link styles, `.ltag_cta` / `.c-cta` / `.crayons-btn` styling | **Yes**, by any rule you write |
+
+#### The rule: your CSS beats Forem's defaults
+
+Any normal (non-`!important`) rule you write outside `@layer` beats every Forem default, **whatever its specificity**. Cascade layers are compared before specificity, and unlayered styles rank above all layers. So `p { margin: 0; }` removes the `authorship_box` paragraph margin, and `.cta { color: red; text-decoration: none; }` replaces the branded link color and underline. You don't need `!important`, `:host(...)` prefixes, or extra-specific selectors to override a default.
+
+Two keywords are handy when you only want part of a default:
+- `revert-layer` (in an unlayered rule) rolls a property back to the value from the layers below it, which is Forem's default when you haven't declared layers of your own.
+- `revert` rolls a property back to the browser default, skipping Forem's defaults entirely.
+
+#### What stays enforced, and why
+
+The five `:host` properties above are what keep a billboard inside its slot. `display: block` keeps the host a real box, because layout containment does nothing on `display: contents` or inline boxes. `min-width: 0` and `max-width: 100%` stop wide content from blowing out the page's grid columns. `contain: layout style` makes the host the containing block for `position: fixed` descendants and scopes CSS counters. `isolation: isolate` gives the billboard its own stacking context, so `z-index: 99999` can't climb above the navbar or the billboard's own `...` menu.
+
+They are enforced with `!important` inside the first, anonymous layer because, for `!important` declarations, the cascade reverses layer order: the earliest layer wins, and layered beats unlayered. That means:
+- No author CSS can override them: not an unlayered `:host { display: inline !important; }`, not `!important` inside your own `@layer`, and not rules appended to `@layer forem-billboard-base`. An anonymous layer can't be reopened, so nobody can add rules to it.
+- Host-page CSS and inline styles can't override them on the shadow host either. For `!important` declarations, styles inside a shadow tree beat the outer page's styles for that host. To hide or resize a billboard from the page, target an ancestor instead (for example, the `[data-display-unit]` wrapper, which is what `data-placement-hidden` already does).
+
+To size or lay out your billboard, style your own wrapper element or `.billboard-shadow-body` instead of `:host` (for example `.card { display: grid; max-width: 480px; margin-inline: auto; }`). Every other `:host` property, such as `background`, `padding`, `border`, `border-radius`, `font`, or `color`, stays yours to style.
+
+#### Using your own `@layer`s
+
+- **Your layers also beat Forem's defaults.** Layer order follows first declaration. The base stylesheet comes first in the ShadowRoot, so `forem-billboard-base` is always declared before any layer you declare, and a rule like `@layer promo { p { margin: 0; } }` wins. Among your own styles, the usual rules apply: later layers beat earlier ones, and your unlayered rules beat all of your layers.
+- **Keep your stylesheets after the base stylesheet.** Inline `<style>` tags in the billboard body, `document.head.appendChild(style)` (which appends into the ShadowRoot), and `billboard.root.adoptedStyleSheets` are all ordered after it. Don't `document.head.prepend(style)` or insert a `<style>` before the first child of `billboard.root`: a layer first declared there would rank *below* `forem-billboard-base`, and Forem's defaults would beat it.
+- **Don't write into `@layer forem-billboard-base`.** It works, but your rules would then compete with Forem's defaults on specificity and source order, and the layer's contents can change without notice. Write unlayered rules or use your own layer names.
+
+#### Behavior changes from the original release
+
+The first release of `isolate_content` (forem/forem#24901) described its base styles as zero-specificity `:where(...)` rules that any author rule would beat. That wasn't true for every rule, so this changed:
+
+1. **Defaults are now always overridable.** The `authorship_box` rules were written as `:host([data-billboard-template='authorship_box']) :where(...)`. The `:host(...)` part sits outside `:where`, so those rules scored `(0, 2, 0)` and beat ordinary author selectors such as `p` or `.cta`: links kept the branded color and underline, and paragraphs kept a 16px bottom margin. All defaults now live in `forem-billboard-base` and lose to any author rule. Billboards that worked around the old behavior with `!important` or extra specificity keep rendering the same.
+2. **The isolation properties are now actually enforced.** They used to be plain unlayered `:host` rules, so a later author rule like `:host { display: inline; contain: none; max-width: none; }` won on source order, and host-page CSS on `.billboard-shadow-host` won as well. Neither can override them now. A billboard that set `display`, `min-width`, `max-width`, `contain`, or `isolation` on `:host` should move that styling onto its own wrapper element.
+3. **`overflow-wrap` and `box-sizing` on `:host` became defaults.** They moved into `forem-billboard-base` and can be overridden like any other default.
+
+**Browser support:** cascade layers ship in Chrome and Edge 99+, Firefox 97+, and Safari 15.4+, which covers every browser that parses Declarative Shadow DOM (`shadowrootmode`). A browser that can attach a ShadowRoot but doesn't support `@layer` ignores the whole base stylesheet. Its billboards lose the CTA and button defaults, but the host still gets `display`, `min-width`, `max-width`, `contain`, and `isolation` from Forem's light-DOM `:where(.billboard-shadow-host)` rule.
 
 ### Light Mode / Dark Mode Authoring DSL
 

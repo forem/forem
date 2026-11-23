@@ -22,6 +22,38 @@ RSpec.describe Billboards::ShadowDomWrapper do
       expect(wrapped).to include("Hello &amp; Welcome")
     end
 
+    it "puts the :host isolation rules first as !important in an anonymous cascade layer", :aggregate_failures do
+      isolation_block = described_class::BASE_STYLES[/\A@layer \{ :host \{(?<declarations>[^}]*)\} \}/, :declarations]
+
+      expect(isolation_block).to be_present
+      declarations = isolation_block.split(";").map(&:strip).compact_blank
+      expect(declarations).to contain_exactly(
+        "display: block !important",
+        "min-width: 0 !important",
+        "max-width: 100% !important",
+        "contain: layout style !important",
+        "isolation: isolate !important",
+      )
+    end
+
+    it "keeps every other base rule inside the named, overridable forem-billboard-base layer", :aggregate_failures do
+      layered = described_class::BASE_STYLES.sub(/\A@layer \{ :host \{[^}]*\} \} /, "")
+
+      expect(described_class::BASE_LAYER_NAME).to eq("forem-billboard-base")
+      expect(layered).to start_with("@layer forem-billboard-base { ")
+      expect(layered).to end_with(" }")
+      expect(layered.count("{")).to eq(layered.count("}"))
+      expect(layered).not_to include("!important")
+      expect(layered).to include(".crayons-btn", ".c-cta", ":host([data-billboard-template='authorship_box'])")
+    end
+
+    it "emits the base styles before any author markup so author cascade layers are ordered after the base layer" do
+      wrapped = described_class.call("<style>@layer promo { p { margin: 0; } }</style><p>Hi</p>", billboard_id: 3)
+      template = Nokogiri::HTML5.fragment(wrapped).at_css("template")
+
+      expect(template.children.first.to_html).to start_with('<style data-billboard-base-styles="true">@layer {')
+    end
+
     it "neutralizes executable script tags while preserving non-JS data scripts", :aggregate_failures do
       raw_html = <<~HTML
         <div id="widget"></div>

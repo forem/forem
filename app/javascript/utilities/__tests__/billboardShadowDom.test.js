@@ -67,6 +67,37 @@ describe('billboardShadowDom', () => {
     expect(host.shadowRoot.getElementById('counter').textContent).toBe('1');
   });
 
+  it('keeps the base styles as the first stylesheet so author cascade layers are ordered after the base layer', () => {
+    document.body.innerHTML = `
+      ${createShadowHostHtml({
+        id: '11',
+        innerHtml: '<style>@layer promo { p { margin: 0; } }</style><p>Hi</p>',
+      })}
+      <div class="billboard-shadow-host" data-billboard-shadow-host="true" data-billboard-id="12">
+        <template shadowrootmode="open">
+          <style data-billboard-base-styles="true">:host { display: block; }</style>
+          <style>@layer promo { p { margin: 0; } }</style>
+          <p>Unwrapped</p>
+        </template>
+      </div>
+    `;
+
+    mountBillboardShadowHosts(document);
+
+    ['11', '12'].forEach((id) => {
+      const { shadowRoot } = document.querySelector(
+        `[data-billboard-id="${id}"]`,
+      );
+      const styles = shadowRoot.querySelectorAll('style');
+      expect(shadowRoot.firstElementChild).toBe(styles[0]);
+      expect(styles[0].hasAttribute('data-billboard-base-styles')).toBe(true);
+      expect(styles[1].textContent).toContain('@layer promo');
+      expect(
+        shadowRoot.querySelector('.billboard-shadow-body p'),
+      ).not.toBeNull();
+    });
+  });
+
   it('isolates DOM queries and window globals across multiple billboards and from the host page', () => {
     document.body.innerHTML = `
       <h1 id="title">Host Page Title</h1>
