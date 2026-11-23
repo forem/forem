@@ -242,96 +242,129 @@ struct WriteContext<'a> {
     escape_html: bool,
 }
 
+enum WriteFrame {
+    Enter {
+        idx: usize,
+        depth: usize,
+        needs_comma: bool,
+    },
+    Close,
+}
+
 fn write_comment_node(
     ctx: &WriteContext<'_>,
-    idx: usize,
-    depth: usize,
+    root_idx: usize,
     out: &mut String,
     included_ids: &mut Vec<i64>,
 ) -> bool {
-    let row = &ctx.rows[idx];
-    let ai_idx = row.ai_disclosure_idx as usize;
-    if ai_idx >= AI_DISCLOSURE_KEYS.len() {
-        return false;
-    }
+    let mut stack = Vec::with_capacity(64);
+    stack.push(WriteFrame::Enter {
+        idx: root_idx,
+        depth: 0,
+        needs_comma: false,
+    });
 
-    included_ids.push(row.id);
-
-    out.push_str("{\"type_of\":\"comment\",\"id_code\":\"");
-    write_base26_id(out, row.id);
-    out.push_str("\",\"created_at\":");
-    match row.created_at_sec {
-        Some(sec) => {
-            out.push('"');
-            if !write_utc_iso8601(out, sec) {
-                return false;
+    while let Some(frame) = stack.pop() {
+        match frame {
+            WriteFrame::Close => {
+                out.push_str("]}");
             }
-            out.push('"');
+            WriteFrame::Enter {
+                idx,
+                depth,
+                needs_comma,
+            } => {
+                let row = &ctx.rows[idx];
+                let ai_idx = row.ai_disclosure_idx as usize;
+                if ai_idx >= AI_DISCLOSURE_KEYS.len() {
+                    return false;
+                }
+
+                if needs_comma {
+                    out.push(',');
+                }
+
+                included_ids.push(row.id);
+
+                out.push_str("{\"type_of\":\"comment\",\"id_code\":\"");
+                write_base26_id(out, row.id);
+                out.push_str("\",\"created_at\":");
+                match row.created_at_sec {
+                    Some(sec) => {
+                        out.push('"');
+                        if !write_utc_iso8601(out, sec) {
+                            return false;
+                        }
+                        out.push('"');
+                    }
+                    None => out.push_str("null"),
+                }
+
+                out.push_str(",\"ai_disclosure_level\":");
+                write_json_string(out, AI_DISCLOSURE_KEYS[ai_idx], ctx.escape_html);
+                out.push_str(",\"ai_disclosure_label\":");
+                write_json_string(
+                    out,
+                    ctx.labels.ai_disclosure_labels[ai_idx],
+                    ctx.escape_html,
+                );
+
+                if row.deleted {
+                    out.push_str(",\"body_html\":");
+                    write_json_string(out, ctx.labels.deleted_body_html, ctx.escape_html);
+                    out.push_str(",\"user\":{}");
+                } else if row.hidden {
+                    out.push_str(",\"body_html\":");
+                    write_json_string(out, ctx.labels.hidden_body_html, ctx.escape_html);
+                    out.push_str(",\"user\":{}");
+                } else {
+                    let user = match usize::try_from(row.user_idx)
+                        .ok()
+                        .and_then(|u_idx| ctx.users.get(u_idx))
+                    {
+                        Some(u) => u,
+                        None => return false,
+                    };
+
+                    out.push_str(",\"body_html\":");
+                    write_opt_json_string(out, row.processed_html, ctx.escape_html);
+
+                    out.push_str(",\"user\":{\"name\":");
+                    write_opt_json_string(out, user.name, ctx.escape_html);
+                    out.push_str(",\"username\":");
+                    write_opt_json_string(out, user.username, ctx.escape_html);
+                    out.push_str(",\"twitter_username\":");
+                    write_opt_json_string(out, user.twitter_username, ctx.escape_html);
+                    out.push_str(",\"github_username\":");
+                    write_opt_json_string(out, user.github_username, ctx.escape_html);
+                    out.push_str(",\"user_id\":");
+                    let _ = write!(out, "{}", user.id);
+                    out.push_str(",\"website_url\":");
+                    write_opt_json_string(out, user.website_url, ctx.escape_html);
+                    out.push_str(",\"profile_image\":");
+                    write_opt_json_string(out, user.profile_image, ctx.escape_html);
+                    out.push_str(",\"profile_image_90\":");
+                    write_opt_json_string(out, user.profile_image_90, ctx.escape_html);
+                    out.push('}');
+                }
+
+                out.push_str(",\"children\":[");
+                stack.push(WriteFrame::Close);
+
+                let next_depth = depth + 1;
+                if next_depth < ctx.max_depth {
+                    for (child_pos, &child_idx) in ctx.children[idx].iter().enumerate().rev() {
+                        stack.push(WriteFrame::Enter {
+                            idx: child_idx,
+                            depth: next_depth,
+                            needs_comma: child_pos > 0,
+                        });
+                    }
+                }
+            }
         }
-        None => out.push_str("null"),
     }
 
-    out.push_str(",\"ai_disclosure_level\":");
-    write_json_string(out, AI_DISCLOSURE_KEYS[ai_idx], ctx.escape_html);
-    out.push_str(",\"ai_disclosure_label\":");
-    write_json_string(
-        out,
-        ctx.labels.ai_disclosure_labels[ai_idx],
-        ctx.escape_html,
-    );
-
-    if row.deleted {
-        out.push_str(",\"body_html\":");
-        write_json_string(out, ctx.labels.deleted_body_html, ctx.escape_html);
-        out.push_str(",\"user\":{}");
-    } else if row.hidden {
-        out.push_str(",\"body_html\":");
-        write_json_string(out, ctx.labels.hidden_body_html, ctx.escape_html);
-        out.push_str(",\"user\":{}");
-    } else {
-        let user = match usize::try_from(row.user_idx)
-            .ok()
-            .and_then(|u_idx| ctx.users.get(u_idx))
-        {
-            Some(u) => u,
-            None => return false,
-        };
-
-        out.push_str(",\"body_html\":");
-        write_opt_json_string(out, row.processed_html, ctx.escape_html);
-
-        out.push_str(",\"user\":{\"name\":");
-        write_opt_json_string(out, user.name, ctx.escape_html);
-        out.push_str(",\"username\":");
-        write_opt_json_string(out, user.username, ctx.escape_html);
-        out.push_str(",\"twitter_username\":");
-        write_opt_json_string(out, user.twitter_username, ctx.escape_html);
-        out.push_str(",\"github_username\":");
-        write_opt_json_string(out, user.github_username, ctx.escape_html);
-        out.push_str(",\"user_id\":");
-        let _ = write!(out, "{}", user.id);
-        out.push_str(",\"website_url\":");
-        write_opt_json_string(out, user.website_url, ctx.escape_html);
-        out.push_str(",\"profile_image\":");
-        write_opt_json_string(out, user.profile_image, ctx.escape_html);
-        out.push_str(",\"profile_image_90\":");
-        write_opt_json_string(out, user.profile_image_90, ctx.escape_html);
-        out.push('}');
-    }
-
-    out.push_str(",\"children\":[");
-    let next_depth = depth + 1;
-    if next_depth < ctx.max_depth {
-        for (child_pos, &child_idx) in ctx.children[idx].iter().enumerate() {
-            if child_pos > 0 {
-                out.push(',');
-            }
-            if !write_comment_node(ctx, child_idx, next_depth, out, included_ids) {
-                return false;
-            }
-        }
-    }
-    out.push_str("]}");
     true
 }
 
@@ -461,7 +494,7 @@ pub fn serialize_api_comments_json(
     };
 
     if options.single_root {
-        if !write_comment_node(&ctx, selected_roots[0], 0, &mut out, &mut included_ids) {
+        if !write_comment_node(&ctx, selected_roots[0], &mut out, &mut included_ids) {
             return None;
         }
     } else {
@@ -470,7 +503,7 @@ pub fn serialize_api_comments_json(
             if pos > 0 {
                 out.push(',');
             }
-            if !write_comment_node(&ctx, root_idx, 0, &mut out, &mut included_ids) {
+            if !write_comment_node(&ctx, root_idx, &mut out, &mut included_ids) {
                 return None;
             }
         }
@@ -799,5 +832,48 @@ mod tests {
         ];
         assert!(serialize_api_comments_json(&cyclic_rows, &users, &labels, &opts).is_none());
         assert!(serialize_api_comments_json(&cyclic_rows, &users, &labels, &show_opts).is_none());
+    }
+
+    #[test]
+    fn serializes_very_deep_reply_chain_iteratively_without_stack_overflow() {
+        let users = [sample_user()];
+        let labels = sample_labels();
+        let depth = 5_000usize;
+        let ancestries: Vec<String> = (1..depth).map(|i| i.to_string()).collect();
+        let mut rows = Vec::with_capacity(depth);
+        rows.push(ApiCommentRow {
+            id: 1,
+            ancestry: None,
+            processed_html: Some("<p>0</p>"),
+            user_idx: 0,
+            deleted: false,
+            hidden: false,
+            created_at_sec: Some(0),
+            ai_disclosure_idx: 0,
+        });
+        for i in 1..depth {
+            rows.push(ApiCommentRow {
+                id: (i + 1) as i64,
+                ancestry: Some(&ancestries[i - 1]),
+                processed_html: Some("<p>x</p>"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            });
+        }
+        let opts = ApiCommentsOptions {
+            max_depth: 10_000,
+            single_root: true,
+            root_offset: 0,
+            root_limit: None,
+            escape_html_entities: false,
+        };
+        let (json, included) =
+            serialize_api_comments_json(&rows, &users, &labels, &opts).expect("deep chain");
+        assert_eq!(included.len(), depth);
+        assert!(json.starts_with("{\"type_of\":\"comment\""));
+        assert!(json.ends_with("]}"));
     }
 }
