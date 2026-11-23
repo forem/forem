@@ -1,0 +1,80 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 348-363,366-371,539,553,573,593,611
+app/assets/javascripts/initializers/initializeBillboardVisibility.js
+  h_f968154a99632d 99-116,118
+app/assets/stylesheets/billboards.scss
+  h_f968154a99632d 55-62
+app/controllers/admin/billboards_controller.rb
+  h_f968154a99632d 108
+app/controllers/api/v1/billboards_controller.rb
+  h_f968154a99632d 97
+app/controllers/billboards_controller.rb
+  h_f968154a99632d 186
+app/helpers/billboard_helper.rb
+  h_f968154a99632d 57-79
+app/javascript/__tests__/billboardShadowInteractivity.test.js
+  h_f968154a99632d 1-110
+app/javascript/packs/admin.js
+  h_f968154a99632d 7,17-18
+app/javascript/packs/application.jsx
+  h_f968154a99632d 20-24,99-100,143,146,172-173,185-189
+app/javascript/packs/billboard.js
+  h_f968154a99632d 9-12,131,140,146,183,189,277,281
+app/javascript/packs/billboardAfterRenderActions.js
+  h_f968154a99632d 4-9,30-31,37-41,181-187,276
+app/javascript/packs/eventSignupButtons.js
+  h_f968154a99632d 2-5,57-59,107,157-158,169-170,193-195
+app/javascript/packs/homePage.jsx
+  h_f968154a99632d 11,104
+app/javascript/utilities/__tests__/billboardShadowDom.test.js
+  h_f968154a99632d 1-370
+app/javascript/utilities/billboardInteractivity.jsx
+  h_f968154a99632d 3,116,121,126
+app/javascript/utilities/billboardShadowDom.js
+  h_f968154a99632d 1-909
+app/javascript/utilities/eventSignupButtonsLoader.js
+  h_f968154a99632d 1-2,18-21
+app/models/billboard.rb
+  h_f968154a99632d 637-638,712-713
+app/services/billboards/shadow_dom_wrapper.rb
+  h_f968154a99632d 1-202
+app/views/admin/billboards/_form.html.erb
+  h_f968154a99632d 45-50,208
+app/views/admin/billboards/show.html.erb
+  h_f968154a99632d 46-50,130
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 188
+app/views/billboards/show.html.erb
+  h_f968154a99632d 4
+app/views/shared/_billboard.html.erb
+  h_f968154a99632d 38-44,81,107,132,165,181,210,234
+db/migrate/20261123122600_add_isolate_content_to_display_ads.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,729
+spec/policies/billboard_policy_spec.rb
+  h_f968154a99632d 93,107
+spec/requests/admin/billboards_spec.rb
+  h_f968154a99632d 90
+spec/requests/api/v1/billboards_spec.rb
+  h_f968154a99632d 59,66-83,102-103,187-188
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 391-446,914
+spec/services/billboards/shadow_dom_wrapper_spec.rb
+  h_f968154a99632d 1-84
+spec/swagger_helper.rb
+  h_f968154a99632d 531-534
+swagger/v1/api_v1.json
+  h_f968154a99632d 8654-8667
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1065104a52055fcc1bb09dacab76c9cc61ada886",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
