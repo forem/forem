@@ -1,0 +1,18 @@
+app/policies/tag_adjustment_policy.rb
+  h_f968154a99632d 6,8
+spec/policies/tag_adjustment_policy_spec.rb
+  h_f968154a99632d 79-96
+spec/requests/tag_adjustments_spec.rb
+  h_f968154a99632d 315-388
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5edfc24f7b963f01ccc3b2ed0b09ac9636f7fee2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
