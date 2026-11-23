@@ -1,0 +1,28 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 21,59-61,179-183
+app/controllers/concerns/api/comments_controller.rb
+  h_f968154a99632d 118,193
+gems/forem_native/crates/forem_core/src/api_comments.rs
+  h_f968154a99632d 408-411,694-719
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 13,1186,1195
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 7965,8018,8046,8050-8058,8095,8100
+spec/requests/api/v0/comments_spec.rb
+  h_f968154a99632d 201-226
+spec/requests/api/v1/comments_spec.rb
+  h_f968154a99632d 201-209,285-309
+spec/requests/api/v1/docs/comments_spec.rb
+  h_f968154a99632d 27-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cb056baf52703ef280b6f870daddef959b1db653",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
