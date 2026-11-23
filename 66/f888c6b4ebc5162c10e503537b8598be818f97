@@ -1,0 +1,20 @@
+app/liquid_tags/comment_tag.rb
+  h_f968154a99632d 42,46
+app/liquid_tags/forem_tag.rb
+  h_f968154a99632d 47
+spec/liquid_tags/comment_tag_spec.rb
+  h_f968154a99632d 134-153
+spec/liquid_tags/forem_tag_spec.rb
+  h_f968154a99632d 53-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "66f888c6b4ebc5162c10e503537b8598be818f97",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
