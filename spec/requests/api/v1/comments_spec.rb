@@ -171,10 +171,14 @@ RSpec.describe "Api::V1::Comments" do
 
       it "scopes surrogate-key headers to returned paginated comments and matches Jbuilder fallback",
          :aggregate_failures do
+        expect(ForemNative.available?).to be(true)
+        allow(ForemNative).to receive(:serialize_api_comments_json).and_call_original
+
         child_comment.update!(deleted: true)
         grandchild_comment.update!(hidden_by_commentable_user: true)
 
         get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        expect(ForemNative).to have_received(:serialize_api_comments_json).once
         native_body = response.parsed_body
         native_keys = response.headers["surrogate-key"].split.to_set
 
@@ -190,6 +194,19 @@ RSpec.describe "Api::V1::Comments" do
         get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
         expect(response.parsed_body).to eq(native_body)
         expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+      end
+
+      it "only loads authors for the selected page when paginating", :aggregate_failures do
+        off_page_user = create(:user)
+        create(:comment, commentable: article, user: off_page_user)
+
+        allow(Images::Profile).to receive(:call).and_call_original
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+        # Only the single on-page author's two sizes (640 and 90) are resolved
+        expect(Images::Profile).to have_received(:call).twice
       end
 
       it "falls back to legacy Kaminari parsing for non-digit-prefixed per_page values", :aggregate_failures do
@@ -285,6 +302,9 @@ RSpec.describe "Api::V1::Comments" do
 
     it "matches the Jbuilder fallback response body, media type, and surrogate keys for nested subtrees",
        :aggregate_failures do
+      expect(ForemNative.available?).to be(true)
+      allow(ForemNative).to receive(:serialize_api_comments_json).and_call_original
+
       user.profile.update_column(:website_url, "  https://example.com/dev  ")
       build_comment_tree
       root_comment.update!(ai_disclosure_level: :fully_autonomous)
@@ -292,6 +312,7 @@ RSpec.describe "Api::V1::Comments" do
       grandchild_comment.update!(hidden_by_commentable_user: true)
 
       get api_comment_path(root_comment.id_code_generated), headers: headers
+      expect(ForemNative).to have_received(:serialize_api_comments_json).once
       native_body = response.parsed_body
       native_raw = response.body
       native_media_type = response.media_type

@@ -339,9 +339,14 @@ fn write_comment_node(
 /// root-level pagination, and streams the exact Jbuilder-equivalent JSON payload plus the
 /// list of included comment IDs (for Fastly `Surrogate-Key` headers) in a single pass.
 ///
-/// Returns `None` if any input falls outside the strict fast-path domain (e.g. malformed
-/// ancestry, duplicate comment IDs, missing user index, out-of-range timestamp year, or
-/// empty tree in `single_root` mode), signaling the caller to fall back to Ruby/Jbuilder.
+/// Graph-integrity checks (ancestry path syntax, duplicate comment IDs, cycles, and
+/// `single_root` root-count validation) run across all supplied rows before pagination.
+/// Per-node payload validation (active `user_idx` lookup, `ai_disclosure_idx` range, and
+/// UTC timestamp year `0000..=9999`) applies to emitted nodes only (matching Jbuilder,
+/// which only evaluates those fields when rendering a node).
+///
+/// Returns `None` if any checked input falls outside the strict fast-path domain,
+/// signaling the caller to fall back to Ruby/Jbuilder.
 pub fn serialize_api_comments_json(
     rows: &[ApiCommentRow<'_>],
     users: &[ApiCommentUser<'_>],
@@ -387,13 +392,64 @@ pub fn serialize_api_comments_json(
         }
     }
 
-    let html_bytes: usize = rows
-        .iter()
-        .map(|r| r.processed_html.map_or(0, str::len))
-        .sum();
-    let estimated_capacity = html_bytes.saturating_add(rows.len().saturating_mul(320));
+    // Verify every row is reachable from a root so disconnected cyclic components
+    // (e.g. two rows naming each other as parent alongside a valid root) defer to Ruby.
+    let mut visited_count: usize = 0;
+    let mut reach_stack: Vec<usize> = roots.clone();
+    while let Some(node_idx) = reach_stack.pop() {
+        visited_count += 1;
+        if visited_count > rows.len() {
+            return None;
+        }
+        reach_stack.extend_from_slice(&children[node_idx]);
+    }
+    if visited_count != rows.len() {
+        return None;
+    }
+
+    let (selected_roots, is_full_tree): (&[usize], bool) = if options.single_root {
+        if roots.len() != 1 {
+            return None;
+        }
+        (&roots[..1], true)
+    } else {
+        let start = options.root_offset.min(roots.len());
+        let end = match options.root_limit {
+            Some(limit) => start.saturating_add(limit).min(roots.len()),
+            None => roots.len(),
+        };
+        if start >= end {
+            return Some(("[]".to_string(), Vec::new()));
+        }
+        (&roots[start..end], start == 0 && end == roots.len())
+    };
+
+    let (selected_count, html_bytes) = if is_full_tree {
+        let bytes: usize = rows
+            .iter()
+            .map(|r| r.processed_html.map_or(0, str::len))
+            .sum();
+        (rows.len(), bytes)
+    } else {
+        let mut count: usize = 0;
+        let mut bytes: usize = 0;
+        let mut est_stack: Vec<(usize, usize)> = selected_roots.iter().map(|&r| (r, 0)).collect();
+        while let Some((node_idx, depth)) = est_stack.pop() {
+            count += 1;
+            bytes = bytes.saturating_add(rows[node_idx].processed_html.map_or(0, str::len));
+            let next_depth = depth + 1;
+            if next_depth < options.max_depth {
+                for &child_idx in &children[node_idx] {
+                    est_stack.push((child_idx, next_depth));
+                }
+            }
+        }
+        (count, bytes)
+    };
+
+    let estimated_capacity = html_bytes.saturating_add(selected_count.saturating_mul(320));
     let mut out = String::with_capacity(estimated_capacity.max(64));
-    let mut included_ids = Vec::with_capacity(rows.len());
+    let mut included_ids = Vec::with_capacity(selected_count);
 
     let ctx = WriteContext {
         rows,
@@ -405,22 +461,12 @@ pub fn serialize_api_comments_json(
     };
 
     if options.single_root {
-        if roots.len() != 1 {
-            return None;
-        }
-        let root_idx = roots[0];
-        if !write_comment_node(&ctx, root_idx, 0, &mut out, &mut included_ids) {
+        if !write_comment_node(&ctx, selected_roots[0], 0, &mut out, &mut included_ids) {
             return None;
         }
     } else {
-        let start = options.root_offset.min(roots.len());
-        let end = match options.root_limit {
-            Some(limit) => start.saturating_add(limit).min(roots.len()),
-            None => roots.len(),
-        };
-
         out.push('[');
-        for (pos, &root_idx) in roots[start..end].iter().enumerate() {
+        for (pos, &root_idx) in selected_roots.iter().enumerate() {
             if pos > 0 {
                 out.push(',');
             }
@@ -717,5 +763,41 @@ mod tests {
             },
         ];
         assert!(serialize_api_comments_json(&multi_roots, &users, &labels, &show_opts).is_none());
+
+        // Disconnected 2-node cycle alongside a valid root must return None in both modes
+        let cyclic_rows = [
+            ApiCommentRow {
+                id: 1,
+                ancestry: None,
+                processed_html: Some("root"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+            ApiCommentRow {
+                id: 2,
+                ancestry: Some("3"),
+                processed_html: Some("cycle a"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+            ApiCommentRow {
+                id: 3,
+                ancestry: Some("2"),
+                processed_html: Some("cycle b"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+        ];
+        assert!(serialize_api_comments_json(&cyclic_rows, &users, &labels, &opts).is_none());
+        assert!(serialize_api_comments_json(&cyclic_rows, &users, &labels, &show_opts).is_none());
     }
 }

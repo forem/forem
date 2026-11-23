@@ -8056,6 +8056,16 @@ RSpec.describe ForemNative do
           multi_root_rows, valid_user, labels, max_depth: 50, single_root: true
         ),
       ).to be_nil
+      # Disconnected 2-node cycle alongside a valid root must return nil in both modes
+      cyclic_rows = [
+        10, nil, "<p>root</p>", 0, false, false, 1_700_000_000, 0,
+        20, "30", "<p>a</p>", 0, false, false, 1_700_000_001, 0,
+        30, "20", "<p>b</p>", 0, false, false, 1_700_000_002, 0
+      ]
+      expect(described_class.serialize_api_comments_json(cyclic_rows, valid_user, labels, max_depth: 50)).to be_nil
+      expect(
+        described_class.serialize_api_comments_json(cyclic_rows, valid_user, labels, max_depth: 50, single_root: true),
+      ).to be_nil
     end
 
     it "matches the Ruby reference bit-for-bit across 1,000 randomized comment trees" do
