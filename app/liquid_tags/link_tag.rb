@@ -43,14 +43,14 @@ class LinkTag < LiquidTagBase
     user = User.find_by(username: hash[:username])
     return unless user
 
-    user.articles.where(slug: hash[:slug])&.first
+    user.articles.published.find_by(slug: hash[:slug])
   end
 
   def find_article_by_org(hash)
     org = Organization.find_by_slug_or_legacy(hash[:username])
     return unless org
 
-    org.articles.where(slug: hash[:slug])&.first
+    org.articles.published.find_by(slug: hash[:slug])
   end
 end
 

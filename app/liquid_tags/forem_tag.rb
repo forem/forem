@@ -44,7 +44,7 @@ module ForemTag
   end
 
   def self.podcast_or_link(match)
-    return PodcastTag if Podcast.find_by(slug: match[:podcast])
+    return PodcastTag if Podcast.published.find_by(slug: match[:podcast])
 
     LinkTag
   end
