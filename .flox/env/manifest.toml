@@ -21,11 +21,10 @@ openssl.pkg-path = "openssl"
 openssl.outputs = ["out", "dev"]
 pkg-config.pkg-path = "pkg-config"
 pkg-config.outputs = ["out"]
-# Linux only: the zlib gem compiles against it; macOS gets it from the SDK.
+# The zlib gem compiles against it; Nix's Apple SDK has no zlib.h.
 zlib.pkg-path = "zlib"
 zlib.outputs = ["out", "dev"]
-zlib.systems = ["aarch64-linux", "x86_64-linux"]
-# Linux only: Ruby's closure has no compiler (macOS uses the Command Line Tools).
+# Linux only: Ruby's closure has no compiler (macOS: `clang` below).
 # libruby is linked against the C library of the snapshot `flox/ruby_3_3` was
 # built from (glibc 2.44, gcc 16.2.0), and a gcc on an older glibc cannot link
 # it (`undefined reference to cosh@GLIBC_2.44`). Move this version when the Ruby
@@ -34,9 +33,14 @@ gcc.pkg-path = "gcc"
 gcc.outputs = ["out"]
 gcc.version = "16.2.0"
 gcc.systems = ["aarch64-linux", "x86_64-linux"]
-# Linux only: mkmf runs `make`, which a minimal Linux install may not have.
+# mkmf runs `make`; a minimal Linux install may not have it, and macOS's is a
+# Command Line Tools shim.
 gnumake.pkg-path = "gnumake"
-gnumake.systems = ["aarch64-linux", "x86_64-linux"]
+# macOS only: Ruby's rbconfig names a bare `clang`, so native gems compile with
+# this one and need no Command Line Tools, for ~256 MB more download. Delete
+# these two lines (and run `xcode-select --install`) to use Apple's instead.
+clang.pkg-path = "clang"
+clang.systems = ["aarch64-darwin"]
 
 # docker-compose.yml and CI run Redis 7; 7.x only exists in an older snapshot,
 # so its own group keeps the others current.
@@ -118,9 +122,6 @@ on-activate = '''
 command = '''
   set -eu
   cd "$FLOX_ENV_PROJECT"
-  if [ "$(uname -s)" = Darwin ]; then
-    xcrun -f clang >/dev/null 2>&1 || { echo "No C compiler found; native gems need one. Run: xcode-select --install" >&2; exit 1; }
-  fi
   # Gemfile.lock names the Bundler it was written with; a newer one rewrites the
   # committed git gem under vendor/cache. This is the one rubygems.org request.
   bundler="$(awk '/^BUNDLED WITH/ { getline; print $1 }' Gemfile.lock)"

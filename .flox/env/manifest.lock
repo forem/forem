@@ -3,6 +3,12 @@
   "manifest": {
     "schema-version": "1.19.0",
     "install": {
+      "clang": {
+        "pkg-path": "clang",
+        "systems": [
+          "aarch64-darwin"
+        ]
+      },
       "gcc": {
         "pkg-path": "gcc",
         "version": "16.2.0",
@@ -23,11 +29,7 @@
         ]
       },
       "gnumake": {
-        "pkg-path": "gnumake",
-        "systems": [
-          "aarch64-linux",
-          "x86_64-linux"
-        ]
+        "pkg-path": "gnumake"
       },
       "libpq": {
         "pkg-path": "libpq",
@@ -87,10 +89,6 @@
       },
       "zlib": {
         "pkg-path": "zlib",
-        "systems": [
-          "aarch64-linux",
-          "x86_64-linux"
-        ],
         "outputs": [
           "out",
           "dev"
@@ -133,7 +131,7 @@
         "command": "  mkdir -p \"$FLOX_ENV_CACHE/redis\"\n  # LC_ALL=C: Redis 7.2 exits if setlocale() fails, and Nix's glibc has no data\n  # for the host's locale.\n  LC_ALL=C exec redis-server --bind 127.0.0.1 --port \"$REDIS_PORT\" --dir \"$FLOX_ENV_CACHE/redis\" --save \"\" --appendonly no\n"
       },
       "setup": {
-        "command": "  set -eu\n  cd \"$FLOX_ENV_PROJECT\"\n  if [ \"$(uname -s)\" = Darwin ]; then\n    xcrun -f clang >/dev/null 2>&1 || { echo \"No C compiler found; native gems need one. Run: xcode-select --install\" >&2; exit 1; }\n  fi\n  # Gemfile.lock names the Bundler it was written with; a newer one rewrites the\n  # committed git gem under vendor/cache. This is the one rubygems.org request.\n  bundler=\"$(awk '/^BUNDLED WITH/ { getline; print $1 }' Gemfile.lock)\"\n  gem list -i bundler -v \"$bundler\" >/dev/null || gem install bundler -v \"$bundler\" --no-document\n  bundle check >/dev/null || bundle install --local --jobs 8 & gems=$!\n  [ node_modules/.yarn-state.yml -nt yarn.lock ] || yarn install --immutable & js=$!\n  wait \"$gems\"; wait \"$js\"\n  [ -n \"$(ls -A app/assets/builds 2>/dev/null)\" ] || yarn build\n  [ -f .env ] || cp .env_sample .env\n  # Only when what the databases depend on changed.\n  stamp=\"$FLOX_ENV_CACHE/databases.stamp\"\n  want=\"$(cat Gemfile.lock yarn.lock db/schema.rb db/seeds.rb | cksum)\"\n  [ \"$(cat \"$stamp\" 2>/dev/null)\" != \"$want\" ] || exit 0\n  until pg_isready -q -p \"$PGPORT\" && redis-cli -p \"$REDIS_PORT\" ping >/dev/null 2>&1; do sleep 0.2; done\n  # db:prepare seeds only a database it creates, and seeding needs node_modules\n  # (done above). A failed seed leaves a database that looks finished, so drop\n  # one we created and let the next run start over.\n  psql -d postgres -tAc \"select 1 from pg_database where datname = 'Forem_development'\" | grep -q 1 && existed=1 || existed=0\n  bin/rails app_initializer:setup forem:setup & dev=$!\n  RAILS_ENV=test bin/rails db:create db:schema:load & test=$!\n  wait \"$test\" || { wait \"$dev\" || true; exit 1; }\n  wait \"$dev\" || { [ \"$existed\" = 1 ] || bin/rails db:drop; exit 1; }\n  echo \"$want\" > \"$stamp\"\n",
+        "command": "  set -eu\n  cd \"$FLOX_ENV_PROJECT\"\n  # Gemfile.lock names the Bundler it was written with; a newer one rewrites the\n  # committed git gem under vendor/cache. This is the one rubygems.org request.\n  bundler=\"$(awk '/^BUNDLED WITH/ { getline; print $1 }' Gemfile.lock)\"\n  gem list -i bundler -v \"$bundler\" >/dev/null || gem install bundler -v \"$bundler\" --no-document\n  bundle check >/dev/null || bundle install --local --jobs 8 & gems=$!\n  [ node_modules/.yarn-state.yml -nt yarn.lock ] || yarn install --immutable & js=$!\n  wait \"$gems\"; wait \"$js\"\n  [ -n \"$(ls -A app/assets/builds 2>/dev/null)\" ] || yarn build\n  [ -f .env ] || cp .env_sample .env\n  # Only when what the databases depend on changed.\n  stamp=\"$FLOX_ENV_CACHE/databases.stamp\"\n  want=\"$(cat Gemfile.lock yarn.lock db/schema.rb db/seeds.rb | cksum)\"\n  [ \"$(cat \"$stamp\" 2>/dev/null)\" != \"$want\" ] || exit 0\n  until pg_isready -q -p \"$PGPORT\" && redis-cli -p \"$REDIS_PORT\" ping >/dev/null 2>&1; do sleep 0.2; done\n  # db:prepare seeds only a database it creates, and seeding needs node_modules\n  # (done above). A failed seed leaves a database that looks finished, so drop\n  # one we created and let the next run start over.\n  psql -d postgres -tAc \"select 1 from pg_database where datname = 'Forem_development'\" | grep -q 1 && existed=1 || existed=0\n  bin/rails app_initializer:setup forem:setup & dev=$!\n  RAILS_ENV=test bin/rails db:create db:schema:load & test=$!\n  wait \"$test\" || { wait \"$dev\" || true; exit 1; }\n  wait \"$dev\" || { [ \"$existed\" = 1 ] || bin/rails db:drop; exit 1; }\n  echo \"$want\" > \"$stamp\"\n",
         "depends-on": {
           "postgres": {
             "condition": "process_started"
@@ -741,19 +739,50 @@
       "priority": 5
     },
     {
+      "attr_path": "clang",
+      "broken": false,
+      "derivation": "/nix/store/n0k13qc2s1jjaz3nx7n50zfngwmbd78c-clang-wrapper-21.1.8.drv",
+      "description": "C language family frontend for LLVM (wrapper script)",
+      "install_id": "clang",
+      "license": "[ NCSA, [ Apache-2.0 LLVM-exception ] ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "name": "clang-wrapper-21.1.8",
+      "pname": "clang",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T05:47:34.201307Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "21.1.8",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/g8ygy4cj8gizpf47cpycr64fpkimchc8-clang-wrapper-21.1.8"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
       "attr_path": "gcc",
       "broken": false,
       "derivation": "/nix/store/fhwgr7lr7f5c5vk598zgkh5gqqblkjy8-gcc-wrapper-16.2.0.drv",
       "description": "GNU Compiler Collection, version 16.2.0 (wrapper script)",
       "install_id": "gcc",
       "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "gcc-wrapper-16.2.0",
       "pname": "gcc",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.446808Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:14:30.253620Z",
       "stabilities": [
         "unstable"
       ],
@@ -781,13 +810,13 @@
       "description": "GNU Compiler Collection, version 16.2.0 (wrapper script)",
       "install_id": "gcc",
       "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "gcc-wrapper-16.2.0",
       "pname": "gcc",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:43:20.582359Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:43:09.307665Z",
       "stabilities": [
         "unstable"
       ],
@@ -811,17 +840,50 @@
     {
       "attr_path": "gnumake",
       "broken": false,
+      "derivation": "/nix/store/hv6zcggkmbffnx9mmmdi5ak3q3xxrjj7-gnumake-4.4.1.drv",
+      "description": "Tool to control the generation of non-source files from sources",
+      "install_id": "gnumake",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "name": "gnumake-4.4.1",
+      "pname": "gnumake",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T05:47:34.227476Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "4.4.1",
+      "outputs_to_install": [
+        "man",
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/l5jys8b70zvgjrf6b8kyf9fvwicrzqvq-gnumake-4.4.1-doc",
+        "info": "/nix/store/0g23c1vmpgnqxfwryajimk83ivl5jcqn-gnumake-4.4.1-info",
+        "man": "/nix/store/4ycj844zjfpgv4dldll9qm2mw0sz0kc8-gnumake-4.4.1-man",
+        "out": "/nix/store/n6xg63cj0xxkkfa6rzg7h46r0grjwirp-gnumake-4.4.1"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "gnumake",
+      "broken": false,
       "derivation": "/nix/store/4sgpkpdjlyzmf3r1x3i6y780x8q91f65-gnumake-4.4.1.drv",
       "description": "Tool to control the generation of non-source files from sources",
       "install_id": "gnumake",
       "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "gnumake-4.4.1",
       "pname": "gnumake",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.456508Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:14:30.321470Z",
       "stabilities": [
         "unstable"
       ],
@@ -849,13 +911,13 @@
       "description": "Tool to control the generation of non-source files from sources",
       "install_id": "gnumake",
       "license": "GPL-3.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "gnumake-4.4.1",
       "pname": "gnumake",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:43:20.591408Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:43:09.317129Z",
       "stabilities": [
         "unstable"
       ],
@@ -883,13 +945,13 @@
       "description": "YAML 1.1 parser and emitter written in C",
       "install_id": "libyaml",
       "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "libyaml-0.2.5",
       "pname": "libyaml",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T05:47:33.276862Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T05:47:34.318722Z",
       "stabilities": [
         "unstable"
       ],
@@ -914,13 +976,13 @@
       "description": "YAML 1.1 parser and emitter written in C",
       "install_id": "libyaml",
       "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "libyaml-0.2.5",
       "pname": "libyaml",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.577048Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:14:30.420558Z",
       "stabilities": [
         "unstable"
       ],
@@ -947,13 +1009,13 @@
       "description": "YAML 1.1 parser and emitter written in C",
       "install_id": "libyaml",
       "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "libyaml-0.2.5",
       "pname": "libyaml",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:43:20.706128Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:43:09.412617Z",
       "stabilities": [
         "unstable"
       ],
@@ -980,13 +1042,13 @@
       "description": "Cryptographic library that implements the SSL and TLS protocols",
       "install_id": "openssl",
       "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "openssl-3.5.9",
       "pname": "openssl",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T05:47:33.327850Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T05:47:34.367847Z",
       "stabilities": [
         "unstable"
       ],
@@ -1015,13 +1077,13 @@
       "description": "Cryptographic library that implements the SSL and TLS protocols",
       "install_id": "openssl",
       "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "openssl-3.5.9",
       "pname": "openssl",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.626052Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:14:30.466222Z",
       "stabilities": [
         "unstable"
       ],
@@ -1052,13 +1114,13 @@
       "description": "Cryptographic library that implements the SSL and TLS protocols",
       "install_id": "openssl",
       "license": "Apache-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "openssl-3.5.9",
       "pname": "openssl",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:43:20.755474Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:43:09.456817Z",
       "stabilities": [
         "unstable"
       ],
@@ -1089,13 +1151,13 @@
       "description": "Tool that allows packages to find out information about other packages (wrapper script)",
       "install_id": "pkg-config",
       "license": "GPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "pkg-config-wrapper-0.29.2",
       "pname": "pkg-config",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T05:47:33.362810Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T05:47:34.397532Z",
       "stabilities": [
         "unstable"
       ],
@@ -1121,13 +1183,13 @@
       "description": "Tool that allows packages to find out information about other packages (wrapper script)",
       "install_id": "pkg-config",
       "license": "GPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "pkg-config-wrapper-0.29.2",
       "pname": "pkg-config",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.648755Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:14:30.488159Z",
       "stabilities": [
         "unstable"
       ],
@@ -1154,13 +1216,13 @@
       "description": "Tool that allows packages to find out information about other packages (wrapper script)",
       "install_id": "pkg-config",
       "license": "GPL-2.0-or-later",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "pkg-config-wrapper-0.29.2",
       "pname": "pkg-config",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:43:20.776570Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:43:09.477639Z",
       "stabilities": [
         "unstable"
       ],
@@ -1183,17 +1245,51 @@
     {
       "attr_path": "zlib",
       "broken": false,
+      "derivation": "/nix/store/rf5sfxrf66nx9nb861r5731p1kyak0ja-zlib-1.3.2.drv",
+      "description": "Lossless data-compression library",
+      "install_id": "zlib",
+      "license": "Zlib",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "name": "zlib-1.3.2",
+      "pname": "zlib",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T05:47:34.755153Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.3.2",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "dev": "/nix/store/ikl7zqn9brhsik9pcp1wz4l31y6ysy4p-zlib-1.3.2-dev",
+        "out": "/nix/store/bvn7181c2d8208834gpgng80imlyrsk5-zlib-1.3.2",
+        "static": "/nix/store/dh3lvy5prhvw68qzycz2kd070vxa15l0-zlib-1.3.2-static"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "zlib",
+      "broken": false,
       "derivation": "/nix/store/mnyss0zqnzclc6cbn5wj4rsrck4i57vr-zlib-1.3.2.drv",
       "description": "Lossless data-compression library",
       "install_id": "zlib",
       "license": "Zlib",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "zlib-1.3.2",
       "pname": "zlib",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:14:10.926142Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:14:30.761228Z",
       "stabilities": [
         "unstable"
       ],
@@ -1222,13 +1318,13 @@
       "description": "Lossless data-compression library",
       "install_id": "zlib",
       "license": "Zlib",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
       "name": "zlib-1.3.2",
       "pname": "zlib",
-      "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
-      "rev_count": 1122823,
-      "rev_date": "2026-11-17T04:43:17Z",
-      "scrape_date": "2026-11-19T06:43:21.009988Z",
+      "rev": "0bb8272318b4ca41bf0edc6224df3e3e3046b70d",
+      "rev_count": 1124497,
+      "rev_date": "2026-11-19T10:51:41Z",
+      "scrape_date": "2026-11-21T06:43:09.703746Z",
       "stabilities": [
         "unstable"
       ],

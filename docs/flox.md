@@ -8,8 +8,9 @@ Codespaces, `mise` and `dip` setups in the [README](../README.md) keep working.
 ## Prerequisites
 
 - [Flox](https://flox.dev/docs/install-flox/) 1.19 or newer, and `git`.
-- macOS: the Xcode Command Line Tools (`xcode-select --install`), which `git`
-  needs on a stock Mac. Native gems compile with Apple's compiler.
+- macOS: nothing else. Flox supplies the compiler, linker and `make`, so the
+  Xcode Command Line Tools are not needed; a stock Mac gets `git` from them,
+  though, so cloning may prompt you to install them.
 - Linux: the usual system time zone data in `/usr/share/zoneinfo` (the `tzdata`
   package). Flox supplies the compiler.
 - Apple Silicon Mac, or x86_64 or aarch64 Linux. Node 22.23.4 has no Intel Mac build.
