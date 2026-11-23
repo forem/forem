@@ -83,6 +83,18 @@ RSpec.describe Trackable::Registry do
     end
   end
 
+  describe ".flush" do
+    it "flushes every adapter instance built so far" do
+      described_class.register(:dummy, dummy_adapter_class)
+      adapter = described_class.instance_for(:dummy)
+      allow(adapter).to receive(:flush)
+
+      described_class.flush
+
+      expect(adapter).to have_received(:flush)
+    end
+  end
+
   describe ".active_names" do
     it "reflects adapter enablement changes at runtime (no stale memoization)" do
       described_class.reset!

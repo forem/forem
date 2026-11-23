@@ -83,6 +83,47 @@ en:
         new: "💬 New Comment"
       new_mention:
         new: "🗣️ New Mention"
+      sync_events:
+        badge: You earned the %{badge} badge
+        co_author: '%{actor} credited you as a co-author on "%{title}"'
+        co_author_invitation:
+          accepted: '%{actor} accepted your invitation to co-author "%{title}"'
+          invited: '%{actor} invited you to co-author "%{title}"'
+        comment: '%{actor} commented on "%{title}"'
+        community_favorite: '%{actor} picked "%{title}" as a community favorite'
+        event_reminder:
+          day: 'Reminder: "%{title}" starts in 1 day'
+          hour: 'Reminder: "%{title}" starts in 1 hour'
+        follow:
+          others:
+            one: "%{actor} and %{count} other person followed you"
+            other: "%{actor} and %{count} others followed you"
+          solo: "%{actor} followed you"
+        mention: '%{actor} mentioned you in "%{title}"'
+        milestone:
+          reaction: Your post "%{title}" passed %{count} reactions
+          view: Your post "%{title}" passed %{count} views
+        new_post: "%{actor} made a new post: %{title}"
+        org_deverification: "%{organization} is no longer verified"
+        org_invitation:
+          by_user: "%{actor} invited you to join %{organization}"
+          generic: You were invited to join %{organization}
+        other: You have a new notification
+        reaction:
+          article:
+            others:
+              one: '%{actor} and %{count} other person reacted to your post "%{title}"'
+              other: '%{actor} and %{count} others reacted to your post "%{title}"'
+            solo: '%{actor} reacted to your post "%{title}"'
+          comment:
+            others:
+              one: '%{actor} and %{count} other person reacted to your comment "%{title}"'
+              other: '%{actor} and %{count} others reacted to your comment "%{title}"'
+            solo: '%{actor} reacted to your comment "%{title}"'
+        subforem_change: Your post "%{title}" was moved to %{community}
+        tag_adjustment:
+          addition: '#%{tag} was added to your post "%{title}"'
+          removal: '#%{tag} was removed from your post "%{title}"'
     pages:
       embed_html_wrapper:
         complexity_fallback: "This embedded widget exceeds safe HTML complexity limits and cannot be rendered."

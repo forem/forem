@@ -34,6 +34,12 @@ module Trackable
         configured_adapter_names.select { |name| instance_for(name)&.enabled? }
       end
 
+      # Delivers whatever the memoized adapters still buffer (analytics-ruby
+      # queues calls in memory and posts them from a background thread).
+      def flush
+        instances.each_value(&:flush)
+      end
+
       def reset!
         @adapters = {}
         @instances = {}

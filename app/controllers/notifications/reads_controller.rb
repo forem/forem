@@ -7,7 +7,8 @@ module Notifications
       render plain: "" && return unless current_user
 
       now = Time.current
-      current_user.notifications.unread.update_all(read: true, read_at: now)
+      marked = current_user.notifications.unread.update_all(read: true, read_at: now)
+      Notifications::SyncEvents.read_all(user_id: current_user.id, read_at: now) if marked.positive?
       current_user.touch(:last_notification_activity)
 
       if params[:org_id] && current_user.org_member?(params[:org_id])

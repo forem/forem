@@ -225,6 +225,117 @@ RSpec.describe Trackers::CustomerioCdp do
     end
   end
 
+  describe "#track_batch" do
+    let(:client) { double(track: nil) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:linked) { create_list(:user, 3) }
+    let(:unlinked) { create(:user) }
+    let(:properties) { { "schema_version" => 1, "kind" => "comment" } }
+
+    before do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_WRITE_KEY").and_return("key123")
+      allow(ApplicationConfig).to receive(:[]).with("APP_NAME").and_return("dev_prod")
+      allow(Segment::Analytics).to receive(:new).and_return(client)
+      linked.each_with_index { |user, i| create(:identity, provider: "mlh", user: user, uid: "core-#{i}") }
+    end
+
+    def batch(recipient_ids, recipient_properties = {})
+      adapter.track_batch(
+        event_name: "notifications_sent", properties: properties,
+        anonymous_id: "dev:notifications", recipient_ids: recipient_ids, recipient_properties: recipient_properties
+      )
+    end
+
+    it "sends one call under the fixed anonymous id with only MLH-linked recipients, ascending" do
+      batch([unlinked.id] + linked.map(&:id).reverse)
+
+      expect(client).to have_received(:track).once.with(
+        anonymous_id: "dev:notifications",
+        event: "dev_prod_notifications_sent",
+        properties: properties.merge(
+          "recipient_user_ids" => linked.map(&:id).sort, "chunk_index" => 0, "chunk_count" => 1,
+        ),
+        timestamp: nil,
+      )
+    end
+
+    it "keeps each recipient property aligned with its recipient through filtering, dedup and sorting" do
+      ids = linked.map(&:id).sort
+      batch([ids[2], unlinked.id, ids[0], ids[1], ids[0]], { "notification_ids" => [302, 999, 300, 301, 888] })
+
+      expect(client).to have_received(:track).once.with(hash_including(properties: hash_including(
+        "recipient_user_ids" => ids, "notification_ids" => [300, 301, 302],
+      )))
+    end
+
+    it "never sends a user id in the envelope" do
+      batch(linked.map(&:id))
+
+      expect(client).not_to have_received(:track).with(hash_including(:user_id))
+    end
+
+    it "sends nothing when no recipient is linked" do
+      batch([unlinked.id])
+
+      expect(client).not_to have_received(:track)
+    end
+
+    it "splits recipients into chunks of MAX_BATCH_RECIPIENTS" do
+      stub_const("#{described_class}::MAX_BATCH_RECIPIENTS", 2)
+
+      batch(linked.map(&:id))
+
+      ids = linked.map(&:id).sort
+      expect(client).to have_received(:track).with(hash_including(properties: hash_including(
+        "recipient_user_ids" => ids.first(2), "chunk_index" => 0, "chunk_count" => 2,
+      )))
+      expect(client).to have_received(:track).with(hash_including(properties: hash_including(
+        "recipient_user_ids" => ids.last(1), "chunk_index" => 1, "chunk_count" => 2,
+      )))
+    end
+
+    it "halves a chunk while its properties exceed the byte budget" do
+      single_size = properties.merge("recipient_user_ids" => [linked.first.id]).to_json.bytesize
+      stub_const("#{described_class}::MAX_BATCH_PROPERTIES_BYTES", single_size + 1)
+
+      batch(linked.map(&:id))
+
+      expect(client).to have_received(:track).exactly(3).times
+      expect(client).to have_received(:track).with(hash_including(properties: hash_including("chunk_count" => 3)))
+        .exactly(3).times
+    end
+
+    it "sends properties unchanged, without filtering, when the event names no recipients" do
+      batch(nil)
+
+      expect(client).to have_received(:track).once.with(
+        anonymous_id: "dev:notifications", event: "dev_prod_notifications_sent", properties: properties, timestamp: nil,
+      )
+    end
+  end
+
+  describe "#flush" do
+    it "flushes the client's in-memory queue" do
+      client = double(track: nil, flush: nil) # rubocop:disable RSpec/VerifiedDoubles
+      allow(Segment::Analytics).to receive(:new).and_return(client)
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_CDP_WRITE_KEY").and_return("key123")
+      adapter.track_batch(event_name: "x", properties: {}, anonymous_id: "dev:notifications")
+
+      adapter.flush
+
+      expect(client).to have_received(:flush)
+    end
+
+    it "does nothing before any call built the client" do
+      allow(Segment::Analytics).to receive(:new)
+
+      adapter.flush
+
+      expect(Segment::Analytics).not_to have_received(:new)
+    end
+  end
+
   it "inherits from Trackers::Base" do
     expect(described_class.ancestors).to include(Trackers::Base)
   end

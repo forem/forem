@@ -10,8 +10,12 @@ class Notification < ApplicationRecord
   validates :organization_id, presence: true, if: proc { |notification| notification.user_id.nil? }
   validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
+  # Set by services that create many rows at once and report them together.
+  attr_accessor :skip_sync_event
+
   before_create :mark_notified_at_time
   after_commit :cleanup_old_notifications, on: :create
+  after_commit :send_sync_event, on: :create
 
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: %w[Published CoAuthor]) }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
@@ -258,6 +262,13 @@ class Notification < ApplicationRecord
 
   def mark_notified_at_time
     self.notified_at = Time.current
+  end
+
+  # Reaction and follow rows re-aggregate, so their services debounce them instead.
+  def send_sync_event
+    return if skip_sync_event || aggregated?
+
+    Notifications::SyncEvents.sent(self, recipients: { user_id => id })
   end
 
   def cleanup_old_notifications

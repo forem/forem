@@ -120,5 +120,37 @@ RSpec.describe "Notifications::Reads", type: :request do
         expect(response.body).to eq("")
       end
     end
+
+    context "when notification sync events are on" do
+      let(:user) { create(:user) }
+
+      before do
+        sign_in user
+        allow(Trackable::BatchEvent).to receive(:enqueue)
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(:notification_sync_events).and_return(true)
+      end
+
+      it "reports the read with the time written to read_at" do
+        create_follow_notifications(user, create(:user))
+
+        post "/notifications/reads"
+
+        read_at = user.notifications.first.read_at.utc.iso8601(3)
+        expect(Trackable::BatchEvent).to have_received(:enqueue).once.with(
+          "notifications_read",
+          properties: hash_including("user_id" => user.id, "scope" => "all", "read_at" => read_at),
+          anonymous_id: "dev:notifications",
+          recipient_ids: [user.id],
+          recipient_properties: {},
+        )
+      end
+
+      it "reports nothing when there was nothing unread" do
+        post "/notifications/reads"
+
+        expect(Trackable::BatchEvent).not_to have_received(:enqueue)
+      end
+    end
   end
 end

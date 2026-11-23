@@ -49,7 +49,8 @@ module Notifications
         end
 
         if aggregated_reaction_siblings.empty?
-          Notification.where(notification_params).delete_all
+          deleted = Notification.where(notification_params).delete_all
+          sync(notification_params) if deleted.positive?
           Response.new(:deleted)
         else
           recent_reaction = reaction_siblings.first
@@ -65,6 +66,7 @@ module Notifications
           notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
 
           notification_id = save_notification(notification_params, notification)
+          sync(notification_params)
 
           Response.new(:saved, notification_id)
         end
@@ -73,6 +75,15 @@ module Notifications
       private
 
       attr_reader :reaction, :receiver
+
+      def sync(params)
+        Notifications::SyncEvents.debounce(
+          user_id: params[:user_id],
+          notifiable_type: params[:notifiable_type],
+          notifiable_id: params[:notifiable_id],
+          action: params[:action],
+        )
+      end
 
       # when a notification exists in the DB already it's safe to just save it,
       # when it doesn't, there could be a race condition when 2 jobs try to create

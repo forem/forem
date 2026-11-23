@@ -32,6 +32,15 @@ module Notifications
       # Popular articles have a notification per follower. Batches keep each UPDATE under the
       # statement timeout and lock rows in id order, so concurrent refreshes don't deadlock.
       notifications.in_batches(of: 1_000) { |batch| batch.update_all(json_data: new_json_data) }
+
+      Notifications::SyncEvents.updated(
+        Notification.new(
+          notifiable_id: notifiable.id,
+          notifiable_type: notifiable.class.name,
+          action: action,
+          json_data: new_json_data,
+        ),
+      )
     end
 
     private

@@ -19,7 +19,7 @@ module Notifications
         if invitation.accepted?
           notify_author
         else
-          invitation.notifications.where(user_id: author_id, action: ACCEPTED).delete_all
+          remove_author_notification
         end
       end
 
@@ -31,7 +31,21 @@ module Notifications
         json_data = CoAuthorInvitations.json_data(invitation, user: invitation.article.user)
         invitation.notifications.where(user_id: invitation.user_id, action: INVITED).find_each do |notification|
           notification.update!(json_data: json_data, read: true)
+          Notifications::SyncEvents.read_one(notification)
         end
+      end
+
+      def remove_author_notification
+        notification_id = invitation.notifications.where(user_id: author_id, action: ACCEPTED).pick(:id)
+        return unless notification_id && Notification.where(id: notification_id).delete_all.positive?
+
+        Notifications::SyncEvents.removed(
+          notifiable_type: "CoAuthorInvitation",
+          notifiable_ids: [invitation.id],
+          action: ACCEPTED,
+          recipients: { author_id => notification_id },
+          reason: "invitation_updated",
+        )
       end
 
       def notify_author

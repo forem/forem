@@ -53,10 +53,12 @@ module Notifications
         # upsert rather than insert: a unique index covers
         # (user_id, notifiable_id, notifiable_type, action), and two publishes
         # racing would otherwise raise instead of no-opping.
-        Notification.upsert_all(
+        upserted = Notification.upsert_all(
           attributes,
           unique_by: :index_notifications_on_user_notifiable_and_action_not_null,
+          returning: %i[user_id id],
         )
+        Notifications::SyncEvents.sent(Notification.new(attributes.first), recipients: upserted.rows.to_h)
       end
 
       private

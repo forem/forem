@@ -78,15 +78,18 @@ module Notifications
 
         upsert_index = choose_upsert_index(action)
 
-        ActiveRecord::Base.transaction do
-          Notification.upsert_all(
+        recipients = ActiveRecord::Base.transaction do
+          upserted = Notification.upsert_all(
             notifications_attributes,
             unique_by: upsert_index,
-            returning: %i[id],
+            returning: %i[user_id id],
           )
 
           upsert_context_notification
+          upserted.rows.to_h
         end
+
+        Notifications::SyncEvents.sent(Notification.new(notifications_attributes.first), recipients: recipients)
       end
 
       private

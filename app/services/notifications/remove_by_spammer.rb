@@ -13,19 +13,34 @@ module Notifications
     def call
       return unless user
 
-      Notification.where(notifiable_type: "Follow", notifiable_id: user.follow_ids).delete_all
-      Notification.where(notifiable_type: "Comment", notifiable_id: user.comment_ids).delete_all
-      Notification.where(
-        notifiable_type: "Mention",
-        notifiable_id: Mention.where(mentionable_type: "Comment", mentionable_id: user.comment_ids)
-                              .or(Mention.where(mentionable_type: "Article", mentionable_id: user.article_ids))
-                              .select(:id),
-      ).delete_all
-      Notification.where(notifiable_type: "Article", action: "Published", notifiable_id: user.article_ids).delete_all
+      comment_ids = user.comment_ids
+      article_ids = user.article_ids
+      mention_ids = Mention.where(mentionable_type: "Comment", mentionable_id: comment_ids)
+        .or(Mention.where(mentionable_type: "Article", mentionable_id: article_ids))
+        .ids
+
+      remove("Follow", user.follow_ids)
+      remove("Comment", comment_ids)
+      remove("Mention", mention_ids)
+      remove("Article", article_ids, action: "Published")
     end
 
     private
 
     attr_reader :user
+
+    def remove(notifiable_type, notifiable_ids, action: nil)
+      scope = Notification.where(notifiable_type: notifiable_type, notifiable_id: notifiable_ids)
+      scope = scope.where(action: action) if action
+      return unless scope.delete_all.positive?
+
+      Notifications::SyncEvents.removed(
+        notifiable_type: notifiable_type,
+        notifiable_ids: notifiable_ids,
+        action: action,
+        all_actions: action.nil?,
+        reason: "spam",
+      )
+    end
   end
 end

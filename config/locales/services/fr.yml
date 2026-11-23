@@ -83,6 +83,47 @@ fr:
         new: "💬 Nouveau commentaire"
       new_mention:
         new: "🗣️ Nouvelle mention"
+      sync_events:
+        badge: Vous avez obtenu le badge %{badge}
+        co_author: '%{actor} vous a crédité comme coauteur de « %{title} »'
+        co_author_invitation:
+          accepted: '%{actor} a accepté votre invitation à coécrire « %{title} »'
+          invited: '%{actor} vous a invité à coécrire « %{title} »'
+        comment: '%{actor} a commenté « %{title} »'
+        community_favorite: '%{actor} a choisi « %{title} » comme favori de la communauté'
+        event_reminder:
+          day: 'Rappel : « %{title} » commence dans 1 jour'
+          hour: 'Rappel : « %{title} » commence dans 1 heure'
+        follow:
+          others:
+            one: "%{actor} et %{count} autre personne vous suivent"
+            other: "%{actor} et %{count} autres personnes vous suivent"
+          solo: "%{actor} vous suit"
+        mention: '%{actor} vous a mentionné dans « %{title} »'
+        milestone:
+          reaction: Votre article « %{title} » a dépassé %{count} réactions
+          view: Votre article « %{title} » a dépassé %{count} vues
+        new_post: "%{actor} a publié un nouvel article : %{title}"
+        org_deverification: "%{organization} n'est plus vérifiée"
+        org_invitation:
+          by_user: "%{actor} vous a invité à rejoindre %{organization}"
+          generic: Vous avez été invité à rejoindre %{organization}
+        other: Vous avez une nouvelle notification
+        reaction:
+          article:
+            others:
+              one: '%{actor} et %{count} autre personne ont réagi à votre article « %{title} »'
+              other: '%{actor} et %{count} autres personnes ont réagi à votre article « %{title} »'
+            solo: '%{actor} a réagi à votre article « %{title} »'
+          comment:
+            others:
+              one: '%{actor} et %{count} autre personne ont réagi à votre commentaire « %{title} »'
+              other: '%{actor} et %{count} autres personnes ont réagi à votre commentaire « %{title} »'
+            solo: '%{actor} a réagi à votre commentaire « %{title} »'
+        subforem_change: Votre article « %{title} » a été déplacé vers %{community}
+        tag_adjustment:
+          addition: "#%{tag} a été ajouté à votre article « %{title} »"
+          removal: "#%{tag} a été retiré de votre article « %{title} »"
     pages:
       embed_html_wrapper:
         complexity_fallback: "Ce widget intégré dépasse les limites de complexité HTML autorisées et ne peut pas être affiché."

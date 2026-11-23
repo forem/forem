@@ -26,7 +26,7 @@ module Notifications
           comment: comment_data(comment)
         }
 
-        user_ids.each do |user_id|
+        notifications = user_ids.map do |user_id|
           Notification.create(
             user_id: user_id,
             notifiable_id: comment.id,
@@ -34,7 +34,12 @@ module Notifications
             subforem_id: comment.commentable.subforem_id,
             action: nil,
             json_data: json_data,
+            skip_sync_event: true,
           )
+        end
+        created = notifications.select(&:persisted?)
+        if created.any?
+          Notifications::SyncEvents.sent(created.first, recipients: created.to_h { |row| [row.user_id, row.id] })
         end
 
         # Send PNs using Rpush - respecting users' notification delivery settings

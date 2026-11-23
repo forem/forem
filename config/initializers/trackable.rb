@@ -6,3 +6,8 @@ Rails.application.reloader.to_prepare do
   Trackable::Registry.register(:null, Trackers::Null)
   Trackable::Registry.register(:customerio_cdp, Trackers::CustomerioCdp)
 end
+
+# A dispatch job finishes once its calls are queued in the adapter's memory, so
+# a process stopping for a deploy would otherwise drop events Sidekiq already
+# counts as delivered.
+at_exit { Trackable::Registry.flush }

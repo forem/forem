@@ -21,6 +21,7 @@ module Notifications
           json_data = OrganizationInvitations.json_data(membership)
           json_data[:user] = inviter_data if inviter_data
           notification.update!(json_data: json_data, read: true)
+          Notifications::SyncEvents.read_one(notification)
         end
       end
 

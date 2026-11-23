@@ -58,12 +58,24 @@ module Notifications
           notification.read = is_read
           notification.save!
         end
+        sync(notification)
         notification
       end
 
       private
 
       attr_reader :followable_id, :followable_type, :follower_id, :is_read
+
+      def sync(notification)
+        return unless notification
+
+        Notifications::SyncEvents.debounce(
+          user_id: notification.user_id,
+          notifiable_type: notification.notifiable_type,
+          notifiable_id: notification.notifiable_id,
+          action: notification.action,
+        )
+      end
 
       def follower(followers = nil)
         followers&.detect { |user| user.id == follower_id } || User.find(follower_id)

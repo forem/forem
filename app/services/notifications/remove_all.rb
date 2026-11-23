@@ -12,10 +12,19 @@ module Notifications
     end
 
     def call
-      Notification.where(
+      removed = Notification.where(
         notifiable_type: notifiable_type,
         notifiable_id: notifiable_ids,
       ).delete_all
+      return removed unless removed.positive?
+
+      Notifications::SyncEvents.removed(
+        notifiable_type: notifiable_type,
+        notifiable_ids: notifiable_ids,
+        all_actions: true,
+        reason: "content_removed",
+      )
+      removed
     end
 
     private

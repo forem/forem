@@ -16,12 +16,23 @@ module Notifications
       def call
         return if user_ids.empty?
 
-        Notification.where(
+        recipients = Notification.where(
           user_id: user_ids,
           notifiable_id: article_id,
           notifiable_type: "Article",
           action: Notifications::CoAuthor::Send::ACTION,
-        ).delete_all
+        ).pluck(:user_id, :id).to_h
+        removed = Notification.where(id: recipients.values).delete_all
+        return removed unless removed.positive?
+
+        Notifications::SyncEvents.removed(
+          notifiable_type: "Article",
+          notifiable_ids: [article_id],
+          action: Notifications::CoAuthor::Send::ACTION,
+          recipients: recipients,
+          reason: "co_author_removed",
+        )
+        removed
       end
 
       private

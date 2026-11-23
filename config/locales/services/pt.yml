@@ -83,6 +83,47 @@ pt:
         new: "💬 Novo Comentário"
       new_mention:
         new: "🗣️ Nova Menção"
+      sync_events:
+        badge: Você conquistou o selo %{badge}
+        co_author: '%{actor} creditou você como coautor de "%{title}"'
+        co_author_invitation:
+          accepted: '%{actor} aceitou seu convite para ser coautor de "%{title}"'
+          invited: '%{actor} convidou você para ser coautor de "%{title}"'
+        comment: '%{actor} comentou em "%{title}"'
+        community_favorite: '%{actor} escolheu "%{title}" como favorito da comunidade'
+        event_reminder:
+          day: 'Lembrete: "%{title}" começa em 1 dia'
+          hour: 'Lembrete: "%{title}" começa em 1 hora'
+        follow:
+          others:
+            one: "%{actor} e mais %{count} pessoa seguiram você"
+            other: "%{actor} e mais %{count} pessoas seguiram você"
+          solo: "%{actor} seguiu você"
+        mention: '%{actor} mencionou você em "%{title}"'
+        milestone:
+          reaction: Sua publicação "%{title}" passou de %{count} reações
+          view: Sua publicação "%{title}" passou de %{count} visualizações
+        new_post: "%{actor} fez uma nova publicação: %{title}"
+        org_deverification: "%{organization} não é mais verificada"
+        org_invitation:
+          by_user: "%{actor} convidou você para entrar em %{organization}"
+          generic: Você foi convidado para entrar em %{organization}
+        other: Você tem uma nova notificação
+        reaction:
+          article:
+            others:
+              one: '%{actor} e mais %{count} pessoa reagiram à sua publicação "%{title}"'
+              other: '%{actor} e mais %{count} pessoas reagiram à sua publicação "%{title}"'
+            solo: '%{actor} reagiu à sua publicação "%{title}"'
+          comment:
+            others:
+              one: '%{actor} e mais %{count} pessoa reagiram ao seu comentário "%{title}"'
+              other: '%{actor} e mais %{count} pessoas reagiram ao seu comentário "%{title}"'
+            solo: '%{actor} reagiu ao seu comentário "%{title}"'
+        subforem_change: Sua publicação "%{title}" foi movida para %{community}
+        tag_adjustment:
+          addition: '#%{tag} foi adicionada à sua publicação "%{title}"'
+          removal: '#%{tag} foi removida da sua publicação "%{title}"'
     pages:
       embed_html_wrapper:
         complexity_fallback: "Este widget incorporado excede os limites seguros de complexidade HTML e não pode ser exibido."
