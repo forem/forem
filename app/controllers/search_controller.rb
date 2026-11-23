@@ -108,7 +108,7 @@ class SearchController < ApplicationController
 
     result =
       if class_name.blank?
-        search_postgres_article
+        search_postgres_article(format: :json)
       elsif is_homepage_search
         # NOTE: published_at is sent from the frontend in the following ES-friendly format:
         # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
@@ -132,6 +132,7 @@ class SearchController < ApplicationController
           sort_direction: params[:sort_direction],
           page: params[:page],
           per_page: params[:per_page],
+          format: :json,
         )
       elsif class_name.Comment?
         Search::Comment.search_documents(
@@ -166,7 +167,7 @@ class SearchController < ApplicationController
           sort_direction: feed_params[:sort_direction],
         )
       elsif class_name.Article?
-        search_postgres_article
+        search_postgres_article(format: :json)
       elsif class_name.Tag?
         Search::Tag.search_documents(
           term: feed_params[:search_fields],
@@ -174,7 +175,12 @@ class SearchController < ApplicationController
           per_page: feed_params[:per_page],
         )
       end
-    render json: { result: result }
+
+    if result.is_a?(Homepage::ArticleSerializer::EncodedJson)
+      render json: result.to_str
+    else
+      render json: { result: result }
+    end
   end
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
@@ -200,7 +206,7 @@ class SearchController < ApplicationController
     context_type.constantize if Comment::COMMENTABLE_TYPES.include?(context_type)
   end
 
-  def search_postgres_article
+  def search_postgres_article(format: :hash)
     Search::Article.search_documents(
       term: feed_params[:search_fields],
       user_id: feed_params[:user_id],
@@ -208,6 +214,7 @@ class SearchController < ApplicationController
       sort_direction: feed_params[:sort_direction],
       page: feed_params[:page],
       per_page: feed_params[:per_page],
+      format: format,
     )
   end
 

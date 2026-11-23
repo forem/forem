@@ -8514,4 +8514,312 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".select_top_public_reaction_categories" do
+    let(:categories) do
+      [
+        { slug: "like", name: "Like", icon: "sparkle-heart", position: 1 },
+        { slug: "unicorn", name: "Unicorn", icon: "multi-unicorn", position: 2 },
+        { slug: "exploding_head", name: "Exploding Head", icon: "exploding-head", position: 3 },
+        { slug: "raised_hands", name: "Raised Hands", icon: "raised-hands", position: 4 },
+        { slug: "fire", name: "Fire", icon: "fire", position: 5 },
+      ]
+    end
+    let(:categories_flat) { categories.flat_map { |c| [c[:slug], c[:name], c[:icon], c[:position]] } }
+
+    it "handles edge cases and malformed inputs", :aggregate_failures do
+      expect(described_class.select_top_public_reaction_categories([], categories_flat)).to eq([])
+      expect(described_class.select_top_public_reaction_categories(["like", 0, "readinglist", 9], categories_flat))
+        .to eq([])
+      expect(described_class.select_top_public_reaction_categories(["fire", 4, "like", 4, "unicorn", 8],
+                                                                   categories_flat)).to eq([1, 0, 4])
+      expect(described_class.select_top_public_reaction_categories(["odd"], categories_flat)).to be_nil
+      expect(described_class.select_top_public_reaction_categories([], ["bad"])).to be_nil
+    end
+
+    it "matches Ruby Reactable#public_reaction_categories sorting across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      all_slugs = %w[like unicorn exploding_head raised_hands fire readinglist thumbsup thumbsdown vomit unknown]
+      cat_by_slug = categories.each_with_index.to_h { |c, idx| [c[:slug], [c[:position], idx]] }
+
+      1_000.times do |i|
+        chosen = all_slugs.sample(rng.rand(0..all_slugs.size), random: rng)
+        pairs = chosen.map { |slug| [slug, rng.rand(-2..50)] }
+        counts_flat = pairs.flatten(1)
+
+        expected = pairs
+          .select { |slug, cnt| cnt.positive? && cat_by_slug.key?(slug) }
+          .sort_by { |slug, cnt| [-cnt, cat_by_slug[slug][0]] }
+          .first(3)
+          .map { |slug, _| cat_by_slug[slug][1] }
+
+        actual = described_class.select_top_public_reaction_categories(counts_flat, categories_flat)
+        expect(actual).to eq(expected), "iteration #{i} pairs=#{pairs.inspect}"
+      end
+    end
+  end
+
+  describe ".serialize_homepage_articles_json" do
+    let(:reaction_categories) do
+      [
+        { slug: "like", name: "Like", icon: "sparkle-heart", position: 1 },
+        { slug: "unicorn", name: "Unicorn", icon: "multi-unicorn", position: 2 },
+        { slug: "exploding_head", name: "Exploding Head", icon: "exploding-head", position: 3 },
+        { slug: "raised_hands", name: "Raised Hands", icon: "raised-hands", position: 4 },
+        { slug: "fire", name: "Fire", icon: "fire", position: 5 },
+      ]
+    end
+
+    let(:legacy_serialize_homepage_articles) do
+      lambda do |rows, users, orgs, flare_tags, categories, counts_by_row, cfg|
+        current_year, opt_mode, cf_domain, cf_dir, escape_html = cfg
+        cat_by_slug = categories.index_by { |c| c[:slug] }
+        flare_by_name = flare_tags.index_by { |ft| ft[:match_name] }
+
+        format_date = lambda do |sec|
+          t = Time.at(sec).utc
+          t.year == current_year ? t.strftime("%b %-e") : t.strftime("%b %-e '%y")
+        end
+
+        format_duration = lambda do |secs|
+          h = secs / 3600
+          m = (secs % 3600) / 60
+          s = secs % 60
+          if h.positive?
+            format("%<h>d:%<m>02d:%<s>02d", h: h, m: m, s: s)
+          else
+            format("%<m>02d:%<s>02d", m: m, s: s)
+          end
+        end
+
+        optimize_video = lambda do |src|
+          next nil if src.nil? || src.strip.empty?
+          next src if src.start_with?("/") || src.include?("/agent_sessions/")
+          next src if opt_mode == 0
+
+          described_class.cloudflare_image_url(cf_domain, cf_dir, 880, nil, "scale-down", src, src)
+        end
+
+        result = rows.each_with_index.map do |r, idx|
+          u = users[r[:user_idx]]
+          o = r[:org_idx] >= 0 ? orgs[r[:org_idx]] : nil
+          display_sec = r[:crossposted_at_sec] || r[:published_at_sec]
+          readable = display_sec ? format_date.call(display_sec) : nil
+          comments_cnt = if !r[:displayed_comments_count].nil? && r[:displayed_comments_count] != 0
+                           r[:displayed_comments_count]
+                         else
+                           r[:comments_count]
+                         end
+          tags = r[:cached_tag_list].to_s.split(", ")
+          matched_flare = tags.detect { |t| flare_by_name.key?(t) }
+          flare_obj = if matched_flare && flare_by_name[matched_flare][:name]
+                        ft = flare_by_name[matched_flare]
+                        {
+                          "name" => ft[:name],
+                          "bg_color_hex" => ft[:bg_color_hex],
+                          "text_color_hex" => ft[:text_color_hex]
+                        }
+                      end
+          top_cats = counts_by_row[idx]
+            .select { |slug, cnt| cnt.positive? && cat_by_slug.key?(slug) }
+            .sort_by { |slug, cnt| [-cnt, cat_by_slug[slug][:position]] }
+            .first(3)
+            .map do |slug, _|
+              c = cat_by_slug[slug]
+              { "slug" => c[:slug], "name" => c[:name], "icon" => c[:icon], "position" => c[:position] }
+            end
+
+          entry = {
+            "class_name" => "Article",
+            "cloudinary_video_url" => optimize_video.call(r[:video_thumbnail_url]),
+            "favorited_by_user_id" => r[:favorited_by_user_id],
+            "id" => r[:id],
+            "path" => r[:path],
+            "public_reactions_count" => r[:public_reactions_count],
+            "readable_publish_date" => readable,
+            "reading_time" => r[:reading_time],
+            "title" => r[:title],
+            "user_id" => r[:user_id],
+            "public_reaction_categories" => top_cats,
+            "comments_count" => comments_cnt,
+            "video_duration_string" => format_duration.call(r[:video_duration_in_seconds] || 0),
+            "published_at_int" => r[:published_at_sec] || 0,
+            "tag_list" => tags,
+            "flare_tag" => flare_obj,
+            "user" => {
+              "name" => u[:name],
+              "profile_image_90" => u[:profile_image_90],
+              "username" => u[:username]
+            }
+          }
+          if o
+            entry["organization"] = {
+              "name" => o[:name],
+              "profile_image_90" => o[:profile_image_90],
+              "slug" => o[:slug]
+            }
+          end
+          entry
+        end
+
+        json = JSON.generate({ "result" => result })
+        if escape_html
+          json.gsub("<", "\\u003c").gsub(">", "\\u003e").gsub("&", "\\u0026")
+            .gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+        else
+          json
+        end
+      end
+    end
+
+    it "handles empty arrays and returns nil on out-of-domain inputs", :aggregate_failures do
+      cfg = [2026, 0, nil, "cdn-cgi", true]
+      expect(described_class.serialize_homepage_articles_json([], [], [], [], [], [], [], cfg))
+        .to eq('{"result":[]}')
+
+      # Out-of-bounds user_idx
+      bad_user_row = [1, 5, -1, nil, "/a/b", 0, 1, "t", 1, 0, 0, 0, nil, nil, 1_700_000_000, nil]
+      expect(described_class.serialize_homepage_articles_json(bad_user_row, [], [], [], [], [], [0], cfg))
+        .to be_nil
+
+      # Negative video duration
+      users_flat = ["Alice", "/a.png", "alice"]
+      neg_vid_row = [1, 0, -1, nil, "/a/b", 0, 1, "t", 1, 0, 0, -3, nil, nil, 1_700_000_000, nil]
+      expect(described_class.serialize_homepage_articles_json(neg_vid_row, users_flat, [], [], [], [], [0], cfg))
+        .to be_nil
+
+      # Already Cloudflare-prefixed video_thumbnail_url defers to Ruby
+      cf_cfg = [2026, 1, "media2.dev.to", "dynamic", true]
+      cf_row = [
+        1, 0, -1, nil, "/a/b", 0, 1, "t", 1, 0, 0, 0,
+        "https://media2.dev.to/dynamic/image/width=500/https%3A%2F%2Fexample.com%2Fa.jpg",
+        nil, 1_700_000_000, nil
+      ]
+      expect(described_class.serialize_homepage_articles_json(cf_row, users_flat, [], [], [], [], [0], cf_cfg))
+        .to be_nil
+
+      # Mismatched reaction_counts_lens
+      ok_row = [1, 0, -1, nil, "/a/b", 0, 1, "t", 1, 0, 0, 0, nil, nil, 1_700_000_000, nil]
+      expect(described_class.serialize_homepage_articles_json(ok_row, users_flat, [], [], [], [], [2], cfg))
+        .to be_nil
+    end
+
+    it "matches Homepage::ArticleSerializer JSON output bit-for-bit across 1,000 randomized batches" do
+      rng = Random.new(424_242)
+      cats_flat = reaction_categories.flat_map { |c| [c[:slug], c[:name], c[:icon], c[:position]] }
+      all_reaction_slugs = %w[like unicorn exploding_head raised_hands fire readinglist thumbsup vomit]
+      tag_pool = %w[ruby rails rust ama discuss help explainlikeimfive javascript]
+      titles = [
+        "Hello World",
+        "Quotes \"<script>&</script>\" \\:/",
+        "日本語 🚀 Emoji & Line\nBreak",
+        "",
+        nil,
+      ]
+      video_thumbs = [
+        nil,
+        "",
+        "   ",
+        "/uploads/video.png",
+        "https://example.com/agent_sessions/1/thumb.png",
+        "https://example.com/thumb.jpg",
+        "https://example.com/anim.gif?v=1",
+      ]
+
+      1_000.times do |i|
+        user_count = rng.rand(1..4)
+        users = Array.new(user_count) do |u|
+          {
+            name: ["User #{u}", "\"Rowdy\" <#{u}> & Co", "🚀 Dev #{u}", nil].sample(random: rng),
+            profile_image_90: "https://cdn.example.com/u#{u}.png",
+            username: "user_#{u}"
+          }
+        end
+        users_flat = users.flat_map { |u| [u[:name], u[:profile_image_90], u[:username]] }
+
+        org_count = rng.rand(0..2)
+        orgs = Array.new(org_count) do |o|
+          {
+            name: ["Org #{o}", "Acme & <Co> #{o}"].sample(random: rng),
+            profile_image_90: "https://cdn.example.com/o#{o}.png",
+            slug: "org_#{o}"
+          }
+        end
+        orgs_flat = orgs.flat_map { |o| [o[:name], o[:profile_image_90], o[:slug]] }
+
+        flare_tags = [
+          { match_name: "ama", name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc" },
+          { match_name: "discuss", name: rng.rand(3).zero? ? nil : "discuss", bg_color_hex: "#1ad643",
+            text_color_hex: "#ffffff" },
+          { match_name: "help", name: "help", bg_color_hex: "#ff0000", text_color_hex: "#ffffff" },
+        ]
+        flare_tags_flat = flare_tags.flat_map do |ft|
+          [ft[:match_name], ft[:name], ft[:bg_color_hex], ft[:text_color_hex]]
+        end
+
+        opt_mode = rng.rand(2)
+        cfg = [
+          2026,
+          opt_mode,
+          opt_mode == 1 ? "media2.dev.to" : nil,
+          "cdn-cgi",
+          rng.rand(2).zero?,
+        ]
+
+        row_count = rng.rand(0..8)
+        rows = Array.new(row_count) do |idx|
+          raw_tags = case rng.rand(6)
+                     when 0 then nil
+                     when 1 then ""
+                     when 2 then "ruby, "
+                     when 3 then ", "
+                     else Array.new(rng.rand(1..4)) { tag_pool.sample(random: rng) }.uniq.join(", ")
+                     end
+          {
+            id: 1_000 + (i * 10) + idx,
+            user_idx: rng.rand(0...user_count),
+            org_idx: org_count.positive? && rng.rand(2).zero? ? rng.rand(0...org_count) : -1,
+            favorited_by_user_id: rng.rand(3).zero? ? rng.rand(1..999) : nil,
+            path: "/user_0/post-#{i}-#{idx}",
+            public_reactions_count: rng.rand(0..500),
+            reading_time: rng.rand(1..20),
+            title: titles.sample(random: rng),
+            user_id: rng.rand(1..10_000),
+            comments_count: rng.rand(0..50),
+            displayed_comments_count: [nil, 0, rng.rand(1..40)].sample(random: rng),
+            video_duration_in_seconds: [nil, 0, 59, 60, 125, 3661, 90_000].sample(random: rng),
+            video_thumbnail_url: video_thumbs.sample(random: rng),
+            cached_tag_list: raw_tags,
+            published_at_sec: rng.rand(8).zero? ? nil : rng.rand(1_700_000_000..1_790_000_000),
+            crossposted_at_sec: rng.rand(4).zero? ? rng.rand(1_700_000_000..1_790_000_000) : nil
+          }
+        end
+
+        counts_by_row = Array.new(row_count) do
+          chosen = all_reaction_slugs.sample(rng.rand(0..5), random: rng)
+          chosen.map { |slug| [slug, rng.rand(0..40)] }
+        end
+        counts_flat = counts_by_row.flatten(2)
+        counts_lens = counts_by_row.map(&:size)
+
+        articles_flat = rows.flat_map do |r|
+          [
+            r[:id], r[:user_idx], r[:org_idx], r[:favorited_by_user_id], r[:path],
+            r[:public_reactions_count], r[:reading_time], r[:title], r[:user_id],
+            r[:comments_count], r[:displayed_comments_count], r[:video_duration_in_seconds],
+            r[:video_thumbnail_url], r[:cached_tag_list], r[:published_at_sec], r[:crossposted_at_sec]
+          ]
+        end
+
+        actual = described_class.serialize_homepage_articles_json(
+          articles_flat, users_flat, orgs_flat, flare_tags_flat,
+          cats_flat, counts_flat, counts_lens, cfg
+        )
+        expected = legacy_serialize_homepage_articles.call(
+          rows, users, orgs, flare_tags, reaction_categories, counts_by_row, cfg
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

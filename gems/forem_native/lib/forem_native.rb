@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_api_articles_json
+  LATEST_NATIVE_SYMBOL = :serialize_homepage_articles_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -1919,6 +1919,49 @@ module ForemNative
         base_urls.is_a?(Array) && config.is_a?(Array)
 
       Native.serialize_api_articles_json(articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, config)
+    end
+
+    # Selects up to 3 public reaction category indices sorted by `(-count, position)`
+    # matching `Reactable#public_reaction_categories`.
+    def select_top_public_reaction_categories(counts_flat, categories_flat)
+      return unless Native.respond_to?(:select_top_public_reaction_categories)
+      return unless counts_flat.is_a?(Array) && categories_flat.is_a?(Array)
+
+      Native.select_top_public_reaction_categories(counts_flat, categories_flat)
+    end
+
+    # Single-pass streaming JSON serializer for `/search/feed_content`
+    # (`Homepage::ArticleSerializer` / `Homepage::FetchArticles` / `Search::Article`).
+    # Accepts flat article, user, organization, flare-tag, reaction-category,
+    # reaction-count, reaction-count-lengths, and config Arrays and returns the
+    # encoded `{"result":[...]}` JSON String, or `nil` when any entry falls outside
+    # the strict fast-path domain and should fall back to Ruby.
+    def serialize_homepage_articles_json(
+      articles_flat,
+      users_flat,
+      orgs_flat,
+      flare_tags_flat,
+      reaction_categories_flat,
+      reaction_counts_flat,
+      reaction_counts_lens,
+      config
+    )
+      return unless Native.respond_to?(:serialize_homepage_articles_json)
+      return unless articles_flat.is_a?(Array) && users_flat.is_a?(Array) &&
+        orgs_flat.is_a?(Array) && flare_tags_flat.is_a?(Array) &&
+        reaction_categories_flat.is_a?(Array) && reaction_counts_flat.is_a?(Array) &&
+        reaction_counts_lens.is_a?(Array) && config.is_a?(Array)
+
+      Native.serialize_homepage_articles_json(
+        articles_flat,
+        users_flat,
+        orgs_flat,
+        flare_tags_flat,
+        reaction_categories_flat,
+        reaction_counts_flat,
+        reaction_counts_lens,
+        config,
+      )
     end
 
     private

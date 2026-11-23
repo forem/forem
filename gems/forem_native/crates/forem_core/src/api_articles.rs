@@ -199,7 +199,7 @@ fn is_ruby_ascii_ws(b: u8) -> bool {
 /// Returns `Some(true)` if definitely blank, `Some(false)` if definitely non-blank,
 /// or `None` if the string contains non-ASCII bytes that might be Unicode whitespace
 /// (deferring to Ruby for exact `blank?` parity).
-fn check_blank(s: &str) -> Option<bool> {
+pub(crate) fn check_blank(s: &str) -> Option<bool> {
     if s.is_empty() {
         return Some(true);
     }

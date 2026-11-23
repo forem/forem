@@ -18,7 +18,8 @@ module Homepage
       sort_by: nil,
       sort_direction: nil,
       page: 0,
-      per_page: DEFAULT_PER_PAGE
+      per_page: DEFAULT_PER_PAGE,
+      format: :hash
     )
       articles = Homepage::ArticlesQuery.call(
         approved: approved,
@@ -33,7 +34,11 @@ module Homepage
         per_page: per_page,
       )
 
-      Homepage::ArticleSerializer.serialized_collection_from(relation: articles)
+      if format == :json
+        Homepage::ArticleSerializer.serialized_json_from(relation: articles)
+      else
+        Homepage::ArticleSerializer.serialized_collection_from(relation: articles)
+      end
     end
   end
 end

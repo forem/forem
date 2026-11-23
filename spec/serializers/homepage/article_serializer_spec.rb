@@ -99,4 +99,103 @@ RSpec.describe Homepage::ArticleSerializer, type: :serializer do
       )
     end
   end
+
+  describe ".serialized_json_from" do
+    let(:user) { create(:user, name: "\"Rowdy\" Roddy Piper \\:/") }
+    let(:organization) { create(:organization) }
+    let(:tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
+    let(:article) do
+      create(:article, user: user, organization: organization, tags: tag.name,
+                       video_thumbnail_url: "https://example.com/thumb.jpg")
+    end
+
+    before do
+      article
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: article, category: "unicorn")
+    end
+
+    it "matches serialized_collection_from JSON output identically without hydrating Article models",
+       :aggregate_failures do
+      native_result = nil
+      allow(ForemNative).to receive(:serialize_homepage_articles_json).and_wrap_original do |m, *args|
+        native_result = m.call(*args)
+      end
+
+      relation = Homepage::ArticlesQuery.call(sort_by: :hotness_score, sort_direction: :desc)
+      encoded = described_class.serialized_json_from(relation: relation)
+
+      expect(encoded).to be_a(described_class::EncodedJson)
+      expect(ForemNative).to have_received(:serialize_homepage_articles_json).once
+      expect(native_result).to be_a(String)
+
+      expected_rel = Homepage::ArticlesQuery.call(sort_by: :hotness_score, sort_direction: :desc)
+      expected = JSON.parse({ result: described_class.serialized_collection_from(relation: expected_rel) }.to_json)
+      expect(JSON.parse(encoded.to_str)).to eq(expected)
+    end
+
+    it "selects the first flare tag in article tag order matching serialized_collection_from", :aggregate_failures do
+      discuss_tag = create(:tag, name: "discuss", bg_color_hex: "#112233", text_color_hex: "#ffffff")
+      multi_flare = create(:article, user: user, tags: "#{discuss_tag.name}, #{tag.name}")
+
+      alone_expected = JSON.parse(
+        { result: described_class.serialized_collection_from(relation: Article.where(id: multi_flare.id)) }.to_json,
+      )
+      alone_json = described_class.serialized_json_from(relation: Article.where(id: multi_flare.id)).to_str
+      alone_actual = JSON.parse(alone_json)
+      expect(alone_actual).to eq(alone_expected)
+      expect(alone_actual.dig("result", 0, "flare_tag", "name")).to eq("discuss")
+
+      pair_ids = [multi_flare.id, article.id]
+      pair_expected_rel = Article.where(id: pair_ids).order(:id)
+      pair_expected = JSON.parse(
+        { result: described_class.serialized_collection_from(relation: pair_expected_rel) }.to_json,
+      )
+      pair_actual = JSON.parse(
+        described_class.serialized_json_from(relation: Article.where(id: pair_ids).order(:id)).to_str,
+      )
+      expect(pair_actual).to eq(pair_expected)
+    end
+
+    it "returns an empty result JSON immediately for empty relations" do
+      encoded = described_class.serialized_json_from(relation: Article.none)
+      expect(encoded.to_str).to eq('{"result":[]}')
+    end
+
+    it "falls back transparently for status articles, non-English locales, and eager-loading joins",
+       :aggregate_failures do
+      allow(ForemNative).to receive(:serialize_homepage_articles_json).and_call_original
+
+      status_article = create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
+      status_article.update!(published: true, title: "Quick status\nupdate")
+
+      expected = JSON.parse(
+        { result: described_class.serialized_collection_from(relation: Article.where(id: status_article.id)) }.to_json,
+      )
+      actual = JSON.parse(described_class.serialized_json_from(relation: Article.where(id: status_article.id)).to_str)
+      expect(actual).to eq(expected)
+      expect(actual["result"].first).to include("title_finalized_for_feed", "title_for_metadata")
+
+      I18n.with_locale(:fr) do
+        fr_expected = JSON.parse(
+          { result: described_class.serialized_collection_from(relation: Article.where(id: article.id)) }.to_json,
+        )
+        fr_actual = JSON.parse(described_class.serialized_json_from(relation: Article.where(id: article.id)).to_str)
+        expect(fr_actual).to eq(fr_expected)
+      end
+
+      eager_expected = JSON.parse(
+        { result: described_class.serialized_collection_from(
+          relation: Article.includes(:organization).where(organizations: { id: organization.id }),
+        ) }.to_json,
+      )
+      eager_actual = JSON.parse(
+        described_class.serialized_json_from(
+          relation: Article.includes(:organization).where(organizations: { id: organization.id }),
+        ).to_str,
+      )
+      expect(eager_actual).to eq(eager_expected)
+      expect(ForemNative).not_to have_received(:serialize_homepage_articles_json)
+    end
+  end
 end
