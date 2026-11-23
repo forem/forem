@@ -34,6 +34,7 @@ within our community. ❤️
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
+  - [Launching in a Cloud Dev Environment](#Launching-in-a-Cloud-Dev-Environment)
 - [Developer Documentation](#developer-documentation)
 - [Deployment with Kamal 2](#deployment-with-kamal-2)
 - [Vulnerability Disclosure](#vulnerability-disclosure)
@@ -58,6 +59,13 @@ Please also check out the [Contributing to Forem guide](https://developers.forem
 
 This section provides a high-level quick start guide. If you're looking for a more thorough installation guide (for example [with macOS](https://developers.forem.com/getting-started/installation/mac)), you'll want to refer to our complete [Developer Documentation](https://developers.forem.com/).
 
+### Installation Documentation
+
+Please see our installation guides:
+
+- [macOS, without containers](https://developers.forem.com/getting-started/installation/mac)
+- [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
+
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
 > **Prerequisites Note:** Forem now utilizes advanced AI embeddings for feed generation. You must ensure your PostgreSQL installation has the `pgvector` extension (version 0.8.0 or higher) installed to support HNSW indexing. This database extension is a **hard requirement** to migrate the database and run the app.
@@ -79,12 +87,6 @@ A more complete overview of our stack is available in [our docs](https://develop
 - **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension and run `bin/setup`, then `bin/startup`, in its terminal. Without VS Code, run `npx @devcontainers/cli up --workspace-folder .` (it returns to your host shell), then `npx @devcontainers/cli exec --workspace-folder . bin/setup` and `npx @devcontainers/cli exec --workspace-folder . bin/startup`. The devcontainer uses host networking; on Docker Desktop (4.34 or newer) turn on **Settings → Resources → Network → Enable host networking**, or the app will not be reachable at `localhost:3000`. On Linux, PostgreSQL and Redis bind host ports 5432 and 6379, so stop any host PostgreSQL or Redis service on those ports first.
 
 
-### Installation Documentation
-
-Please see our installation guides:
-
-- [macOS, without containers](https://developers.forem.com/getting-started/installation/mac)
-- [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
 
 ## Developer Documentation
 
