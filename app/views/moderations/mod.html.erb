@@ -160,7 +160,7 @@
       <% end %>
       <% if @adjustments.present? %>
         <% @adjustments.each do |adjustment| %>
-          <% if current_user.any_admin? || adjustment.user_id == current_user.id %>
+          <% if policy(adjustment).destroy? %>
             <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}",
                                      html: { method: :delete, onsubmit: "return confirm('#{t('views.moderations.actions.tag.undo.confirm', type: t("views.moderations.actions.tag.undo.type.#{adjustment.adjustment_type}"), tag: adjustment.tag_name)}')" }) do |f| %>
               <%= t("views.moderations.actions.tag.#{adjustment.adjustment_type == 'removal' ? 'removed' : 'added'}_html", tag: adjustment.tag_name) %>
