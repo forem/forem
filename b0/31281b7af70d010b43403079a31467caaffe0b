@@ -1,0 +1,20 @@
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 278,346,350-356
+lib/tasks/forem_native.rake
+  h_f968154a99632d 1849-1851,1854,1856
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 560-563,570-571
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 501-504,511-512,532-535,559-560,572-586
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b031281b7af70d010b43403079a31467caaffe0b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
