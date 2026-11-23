@@ -130,6 +130,11 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(AsciinemaTag)
     end
 
+    it "returns TrecsTag for a trecs watch url" do
+      expect(described_class.find_liquid_tag_for(link: "https://trecs.run/watch/9f66b056-dee1-460b-a2a0-fb45df6461d2"))
+        .to eq(TrecsTag)
+    end
+
     it "returns BlogcastTag for a valid blogcast url", :aggregate_failures do
       valid_blogcast_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
