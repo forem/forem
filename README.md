@@ -34,7 +34,7 @@ within our community. ❤️
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
-  - [Launching in a Cloud Dev Environment](#Launching-in-a-Cloud-Dev-Environment)
+  - [Launching in a Cloud Dev Environment](#launching-in-a-cloud-dev-environment)
 - [Developer Documentation](#developer-documentation)
 - [Deployment with Kamal 2](#deployment-with-kamal-2)
 - [Vulnerability Disclosure](#vulnerability-disclosure)
