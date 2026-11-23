@@ -7962,7 +7962,7 @@ RSpec.describe ForemNative do
         end
 
         payload = if single_root
-                    return if roots.empty?
+                    return if roots.size != 1
 
                     build_node.call(roots.first, 0)
                   else
@@ -8015,7 +8015,7 @@ RSpec.describe ForemNative do
       end
     end
 
-    it "returns nil for out-of-domain inputs in serialize_api_comments_json" do
+    it "returns nil for out-of-domain inputs in serialize_api_comments_json", :aggregate_failures do
       valid_user = [1, "Ada", "ada", nil, nil, nil, "https://img/640", "https://img/90"]
       # Bad stride
       expect(described_class.serialize_api_comments_json([1, 2], valid_user, labels, max_depth: 50)).to be_nil
@@ -8043,9 +8043,18 @@ RSpec.describe ForemNative do
         10, nil, "<p>b</p>", 0, false, false, 1_700_000_001, 0
       ]
       expect(described_class.serialize_api_comments_json(dup_rows, valid_user, labels, max_depth: 50)).to be_nil
-      # Empty in single_root mode
+      # Empty or multi-root in single_root mode
       expect(
         described_class.serialize_api_comments_json([], valid_user, labels, max_depth: 50, single_root: true),
+      ).to be_nil
+      multi_root_rows = [
+        10, nil, "<p>a</p>", 0, false, false, 1_700_000_000, 0,
+        11, nil, "<p>b</p>", 0, false, false, 1_700_000_001, 0
+      ]
+      expect(
+        described_class.serialize_api_comments_json(
+          multi_root_rows, valid_user, labels, max_depth: 50, single_root: true
+        ),
       ).to be_nil
     end
 
@@ -8083,11 +8092,12 @@ RSpec.describe ForemNative do
         end
 
         row_count = rng.rand(0..20)
+        single_root = row_count.positive? && rng.rand(4).zero?
         rows = []
         base_id = 1_000 + (i * 100)
         row_count.times do |idx|
           id = base_id + idx
-          ancestry = if rows.empty? || rng.rand(3).zero?
+          ancestry = if rows.empty? || (!single_root && rng.rand(3).zero?)
                        # Occasionally give a subtree root an external parent ancestry (like Comment.subtree_of)
                        rng.rand(4).zero? ? "7/8" : nil
                      else
@@ -8115,7 +8125,6 @@ RSpec.describe ForemNative do
           ]
         end
 
-        single_root = row_count.positive? && rng.rand(4).zero?
         max_depth = single_root ? rng.rand(1..6) : rng.rand(0..6)
         root_offset = single_root ? 0 : rng.rand(0..4)
         root_limit = single_root || rng.rand(2).zero? ? nil : rng.rand(1..5)

@@ -198,6 +198,15 @@ RSpec.describe "Api::V1::Comments" do
         # Kaminari ignores "+2" and uses its default page size (25), returning all 4 roots
         expect(response.parsed_body.size).to eq(4)
       end
+
+      it "falls back to Jbuilder when a stored ai_disclosure_level enum value cannot be decoded",
+         :aggregate_failures do
+        root_comment.update_column(:ai_disclosure_level, 2)
+
+        get api_comments_path(a_id: article.id, page: 1, per_page: 1), headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first["ai_disclosure_level"]).to be_nil
+      end
     end
   end
 
@@ -272,6 +281,31 @@ RSpec.describe "Api::V1::Comments" do
         expect(hidden_child["user"]).to be_empty
         expect(hidden_child["children"]).not_to be_empty
       end
+    end
+
+    it "matches the Jbuilder fallback response body, media type, and surrogate keys for nested subtrees",
+       :aggregate_failures do
+      user.profile.update_column(:website_url, "  https://example.com/dev  ")
+      build_comment_tree
+      root_comment.update!(ai_disclosure_level: :fully_autonomous)
+      child_comment.update!(deleted: true)
+      grandchild_comment.update!(hidden_by_commentable_user: true)
+
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+      native_body = response.parsed_body
+      native_raw = response.body
+      native_media_type = response.media_type
+      native_keys = response.headers["surrogate-key"].split.to_set
+
+      expect(native_body.dig("user", "website_url")).to eq("https://example.com/dev")
+
+      allow(ForemNative).to receive(:available?).and_return(false)
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+
+      expect(response.media_type).to eq(native_media_type)
+      expect(response.parsed_body).to eq(native_body)
+      expect(response.body).to eq(native_raw)
+      expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
     end
   end
 

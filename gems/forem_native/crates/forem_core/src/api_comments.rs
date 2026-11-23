@@ -405,7 +405,10 @@ pub fn serialize_api_comments_json(
     };
 
     if options.single_root {
-        let &root_idx = roots.first()?;
+        if roots.len() != 1 {
+            return None;
+        }
+        let root_idx = roots[0];
         if !write_comment_node(&ctx, root_idx, 0, &mut out, &mut included_ids) {
             return None;
         }
@@ -688,5 +691,31 @@ mod tests {
             ..opts
         };
         assert!(serialize_api_comments_json(&[], &users, &labels, &show_opts).is_none());
+
+        // Multiple disconnected roots in single_root mode defer to Ruby so legacy_show
+        // preserves edge_cache_keys for all arranged trees
+        let multi_roots = [
+            ApiCommentRow {
+                id: 1,
+                ancestry: None,
+                processed_html: Some("a"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+            ApiCommentRow {
+                id: 2,
+                ancestry: None,
+                processed_html: Some("b"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+        ];
+        assert!(serialize_api_comments_json(&multi_roots, &users, &labels, &show_opts).is_none());
     }
 }

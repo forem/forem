@@ -115,6 +115,7 @@ module Api
                    return [nil, nil]
                  end
       return [nil, nil] unless per_page.positive?
+      return [nil, nil] if Kaminari.config.max_per_page && per_page > Kaminari.config.max_per_page
 
       [(page - 1) * per_page, per_page]
     end
@@ -189,6 +190,7 @@ module Api
 
         ai_idx = AI_DISCLOSURE_INDICES[ai_level]
         return nil unless ai_idx
+        return nil if created_at && !created_at.respond_to?(:tv_sec)
 
         comments_flat.push(
           id,

@@ -24,8 +24,8 @@ RSpec.describe "Api::V1::Docs::Comments" do
 - If the `page` parameter is omitted, the response returns the full comment tree in a single payload."
         operationId "getCommentsByArticleId"
         produces "application/json"
-        parameter "$ref": "#/components/parameters/pageParam"
-        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+        parameter "$ref" => "#/components/parameters/pageParam"
+        parameter "$ref" => "#/components/parameters/perPageParam30to1000"
         parameter name: :a_id, in: :query, required: false,
                   description: "Article identifier. Provide this to fetch comments belonging to a specific article.",
                   schema: { type: :string },

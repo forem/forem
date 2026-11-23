@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :ahoy_decorate_payload
+  LATEST_NATIVE_SYMBOL = :serialize_api_comments_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -1183,7 +1183,7 @@ module ForemNative
     # Encodes an integer ID in base 26 matching `Integer#to_s(26)` (e.g. `Comment#id_code_generated`).
     def encode_base26_id(id)
       return unless Native.respond_to?(:encode_base26_id)
-      return unless id.is_a?(Integer) && id >= -2**63 && id < 2**63
+      return unless valid_i64_integer?(id)
 
       Native.encode_base26_id(id)
     end
@@ -1192,7 +1192,7 @@ module ForemNative
     # Returns `nil` for timestamps outside years `0000..=9999`.
     def format_utc_iso8601(epoch_secs)
       return unless Native.respond_to?(:format_utc_iso8601)
-      return unless epoch_secs.is_a?(Integer) && epoch_secs >= -2**63 && epoch_secs < 2**63
+      return unless valid_i64_integer?(epoch_secs)
 
       Native.format_utc_iso8601(epoch_secs)
     end
