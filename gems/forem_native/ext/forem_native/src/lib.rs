@@ -6164,6 +6164,198 @@ fn serialize_api_articles_json(
     Some(ruby.str_new(&json))
 }
 
+unsafe fn parse_public_reaction_categories(
+    cats_slice: &[Value],
+) -> Option<Vec<forem_core::homepage_articles::PublicReactionCategory<'_>>> {
+    if cats_slice.len() % 4 != 0 {
+        return None;
+    }
+    let mut categories = Vec::with_capacity(cats_slice.len() / 4);
+    for chunk in cats_slice.chunks_exact(4) {
+        categories.push(forem_core::homepage_articles::PublicReactionCategory {
+            slug: borrow_req_utf8_str(chunk[0])?,
+            name: borrow_opt_utf8_str(chunk[1])?,
+            icon: borrow_opt_utf8_str(chunk[2])?,
+            position: Integer::from_value(chunk[3])?.to_i64().ok()?,
+        });
+    }
+    Some(categories)
+}
+
+unsafe fn parse_reaction_counts(counts_slice: &[Value]) -> Option<Vec<(&str, i64)>> {
+    if counts_slice.len() % 2 != 0 {
+        return None;
+    }
+    let mut counts = Vec::with_capacity(counts_slice.len() / 2);
+    for chunk in counts_slice.chunks_exact(2) {
+        counts.push((
+            borrow_req_utf8_str(chunk[0])?,
+            Integer::from_value(chunk[1])?.to_i64().ok()?,
+        ));
+    }
+    Some(counts)
+}
+
+fn select_top_public_reaction_categories(
+    ruby: &Ruby,
+    counts_flat: RArray,
+    categories_flat: RArray,
+) -> Option<RArray> {
+    let (indices, len) = {
+        // SAFETY: No Ruby VM calls or allocations happen inside this block while
+        // borrowed `RArray` / `RString` slices are live.
+        unsafe {
+            let categories = parse_public_reaction_categories(categories_flat.as_slice())?;
+            let counts = parse_reaction_counts(counts_flat.as_slice())?;
+            forem_core::homepage_articles::select_top_public_reaction_categories(
+                &counts,
+                &categories,
+            )
+        }
+    };
+
+    let out = ruby.ary_new_capa(len);
+    for &idx in &indices[..len] {
+        out.push(idx as i64).ok()?;
+    }
+    Some(out)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn serialize_homepage_articles_json(
+    ruby: &Ruby,
+    articles_flat: RArray,
+    users_flat: RArray,
+    orgs_flat: RArray,
+    flare_tags_flat: RArray,
+    reaction_categories_flat: RArray,
+    reaction_counts_flat: RArray,
+    reaction_counts_lens_arr: RArray,
+    config_arr: RArray,
+) -> Option<RString> {
+    use forem_core::api_articles::ImageOptimizerMode;
+    use forem_core::homepage_articles::{
+        HomepageArticleFlareTag, HomepageArticleOrganization, HomepageArticleRow,
+        HomepageArticleUser, HomepageArticlesConfig,
+    };
+
+    let json = {
+        // SAFETY: No Ruby VM calls or allocations happen inside this block while
+        // borrowed `RArray` / `RString` slices are live.
+        unsafe {
+            let articles_slice = articles_flat.as_slice();
+            let users_slice = users_flat.as_slice();
+            let orgs_slice = orgs_flat.as_slice();
+            let flare_tags_slice = flare_tags_flat.as_slice();
+            let reaction_cats_slice = reaction_categories_flat.as_slice();
+            let reaction_counts_slice = reaction_counts_flat.as_slice();
+            let reaction_lens_slice = reaction_counts_lens_arr.as_slice();
+            let config_slice = config_arr.as_slice();
+
+            if articles_slice.len() % 16 != 0
+                || users_slice.len() % 3 != 0
+                || orgs_slice.len() % 3 != 0
+                || flare_tags_slice.len() % 4 != 0
+                || reaction_cats_slice.len() % 4 != 0
+                || reaction_counts_slice.len() % 2 != 0
+                || config_slice.len() != 5
+            {
+                return None;
+            }
+
+            let current_year = Integer::from_value(config_slice[0])?.to_i64().ok()?;
+            let optimizer_mode = match Integer::from_value(config_slice[1])?.to_i64().ok()? {
+                0 => ImageOptimizerMode::Passthrough,
+                1 => ImageOptimizerMode::Cloudflare,
+                _ => return None,
+            };
+            let cloudflare_domain = borrow_opt_utf8_str(config_slice[2])?;
+            let cloudflare_directory = borrow_req_utf8_str(config_slice[3])?;
+            let escape_html_entities = config_slice[4].to_bool();
+
+            let config = HomepageArticlesConfig {
+                current_year,
+                optimizer_mode,
+                cloudflare_domain,
+                cloudflare_directory,
+                escape_html_entities,
+            };
+
+            let mut users = Vec::with_capacity(users_slice.len() / 3);
+            for chunk in users_slice.chunks_exact(3) {
+                users.push(HomepageArticleUser {
+                    name: borrow_opt_utf8_str(chunk[0])?,
+                    profile_image_90: borrow_opt_utf8_str(chunk[1])?,
+                    username: borrow_opt_utf8_str(chunk[2])?,
+                });
+            }
+
+            let mut orgs = Vec::with_capacity(orgs_slice.len() / 3);
+            for chunk in orgs_slice.chunks_exact(3) {
+                orgs.push(HomepageArticleOrganization {
+                    name: borrow_opt_utf8_str(chunk[0])?,
+                    profile_image_90: borrow_opt_utf8_str(chunk[1])?,
+                    slug: borrow_opt_utf8_str(chunk[2])?,
+                });
+            }
+
+            let mut flare_tags = Vec::with_capacity(flare_tags_slice.len() / 4);
+            for chunk in flare_tags_slice.chunks_exact(4) {
+                flare_tags.push(HomepageArticleFlareTag {
+                    match_name: borrow_req_utf8_str(chunk[0])?,
+                    name: borrow_opt_utf8_str(chunk[1])?,
+                    bg_color_hex: borrow_opt_utf8_str(chunk[2])?,
+                    text_color_hex: borrow_opt_utf8_str(chunk[3])?,
+                });
+            }
+
+            let reaction_categories = parse_public_reaction_categories(reaction_cats_slice)?;
+            let reaction_counts = parse_reaction_counts(reaction_counts_slice)?;
+
+            let mut reaction_lens = Vec::with_capacity(reaction_lens_slice.len());
+            for &val in reaction_lens_slice {
+                let n = Integer::from_value(val)?.to_i64().ok()?;
+                reaction_lens.push(usize::try_from(n).ok()?);
+            }
+
+            let mut rows = Vec::with_capacity(articles_slice.len() / 16);
+            for chunk in articles_slice.chunks_exact(16) {
+                rows.push(HomepageArticleRow {
+                    id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                    user_idx: Integer::from_value(chunk[1])?.to_i64().ok()?,
+                    org_idx: Integer::from_value(chunk[2])?.to_i64().ok()?,
+                    favorited_by_user_id: extract_optional_i64(chunk[3])?,
+                    path: borrow_opt_utf8_str(chunk[4])?,
+                    public_reactions_count: extract_optional_i64(chunk[5])?,
+                    reading_time: extract_optional_i64(chunk[6])?,
+                    title: borrow_opt_utf8_str(chunk[7])?,
+                    user_id: extract_optional_i64(chunk[8])?,
+                    comments_count: extract_optional_i64(chunk[9])?,
+                    displayed_comments_count: extract_optional_i64(chunk[10])?,
+                    video_duration_in_seconds: extract_optional_i64(chunk[11])?,
+                    video_thumbnail_url: borrow_opt_utf8_str(chunk[12])?,
+                    cached_tag_list: borrow_opt_utf8_str(chunk[13])?,
+                    published_at_sec: extract_optional_i64(chunk[14])?,
+                    crossposted_at_sec: extract_optional_i64(chunk[15])?,
+                });
+            }
+
+            forem_core::homepage_articles::serialize_homepage_articles_json(
+                &rows,
+                &users,
+                &orgs,
+                &flare_tags,
+                &reaction_categories,
+                &reaction_counts,
+                &reaction_lens,
+                &config,
+            )
+        }
+    }?;
+
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -6694,6 +6886,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_api_articles_json",
         function!(serialize_api_articles_json, 6),
+    )?;
+    native_mod.define_singleton_method(
+        "select_top_public_reaction_categories",
+        function!(select_top_public_reaction_categories, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_homepage_articles_json",
+        function!(serialize_homepage_articles_json, 8),
     )?;
     Ok(())
 }

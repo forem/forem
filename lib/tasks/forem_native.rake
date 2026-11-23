@@ -88,6 +88,7 @@ namespace :forem_native do
     benchmark_comment_tree
     benchmark_api_comments
     benchmark_api_articles
+    benchmark_homepage_articles
     benchmark_story_cards
     benchmark_image_ops
     benchmark_html_postprocess
@@ -1860,6 +1861,152 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (30-article API index JSON)") { legacy_serialize.call }
       x.report("Rust Magnus (30-article API index JSON)") { native_serialize.call }
+      x.compare!
+    end
+  end
+
+  desc "Benchmark Homepage::ArticleSerializer streaming JSON serialization (Rust vs Legacy Ruby)"
+  task benchmark_homepage_articles: :environment do
+    require "addressable/template"
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    reaction_categories = [
+      { slug: "like", name: "Like", icon: "sparkle-heart", position: 1 },
+      { slug: "unicorn", name: "Unicorn", icon: "multi-unicorn", position: 2 },
+      { slug: "exploding_head", name: "Exploding Head", icon: "exploding-head", position: 3 },
+      { slug: "raised_hands", name: "Raised Hands", icon: "raised-hands", position: 4 },
+      { slug: "fire", name: "Fire", icon: "fire", position: 5 },
+    ]
+    cats_flat = reaction_categories.flat_map { |c| [c[:slug], c[:name], c[:icon], c[:position]] }
+    cat_by_slug = reaction_categories.index_by { |c| c[:slug] }
+
+    users = Array.new(20) do |u|
+      { name: "Author #{u}", profile_image_90: "https://media2.dev.to/90/#{u}.png", username: "author_#{u}" }
+    end
+    users_flat = users.flat_map { |u| [u[:name], u[:profile_image_90], u[:username]] }
+
+    orgs = Array.new(5) do |o|
+      { name: "Org #{o}", profile_image_90: "https://media2.dev.to/org90/#{o}.png", slug: "org-#{o}" }
+    end
+    orgs_flat = orgs.flat_map { |o| [o[:name], o[:profile_image_90], o[:slug]] }
+
+    flare_tags = [
+      { match_name: "ama", name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc" },
+      { match_name: "discuss", name: "discuss", bg_color_hex: "#71EA8B", text_color_hex: "#FFFFFF" },
+    ]
+    flare_tags_flat = flare_tags.flat_map { |f| [f[:match_name], f[:name], f[:bg_color_hex], f[:text_color_hex]] }
+    flare_by_name = flare_tags.index_by { |f| f[:match_name] }
+
+    cfg = [2026, 1, "media2.dev.to", "cdn-cgi", true]
+    rows = Array.new(60) do |i|
+      pub = 1_772_409_600 + (i * 3600)
+      {
+        id: 80_000 + i, user_idx: i % 20, org_idx: (i % 4).zero? ? i % 5 : -1,
+        favorited_by_user_id: (i % 6).zero? ? 42 : nil, path: "/author_#{i % 20}/feed-post-#{i}",
+        public_reactions_count: i * 8, reading_time: 4, title: "Homepage Feed Article ##{i} <2026>",
+        user_id: 100 + (i % 20), comments_count: i, displayed_comments_count: (i % 3).zero? ? i + 1 : 0,
+        video_duration_in_seconds: (i % 5).zero? ? 125 + i : 0,
+        video_thumbnail_url: (i % 5).zero? ? "https://img.example.com/v-#{i}.jpg" : nil,
+        cached_tag_list: (i % 3).zero? ? "ruby, discuss, ama" : "ruby, rails, webdev",
+        published_at_sec: pub, crossposted_at_sec: nil
+      }
+    end
+    counts_by_row = Array.new(60) do |i|
+      [["like", (i % 15) + 1], ["unicorn", i % 10], ["fire", i % 7], ["readinglist", 12]]
+    end
+    counts_flat = counts_by_row.flatten(2)
+    counts_lens = counts_by_row.map(&:size)
+    articles_flat = rows.flat_map do |r|
+      [
+        r[:id], r[:user_idx], r[:org_idx], r[:favorited_by_user_id], r[:path],
+        r[:public_reactions_count], r[:reading_time], r[:title], r[:user_id],
+        r[:comments_count], r[:displayed_comments_count], r[:video_duration_in_seconds],
+        r[:video_thumbnail_url], r[:cached_tag_list], r[:published_at_sec], r[:crossposted_at_sec]
+      ]
+    end
+
+    cf_template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+    legacy_serialize = lambda do
+      result = rows.each_with_index.map do |r, idx|
+        u = users[r[:user_idx]]
+        o = r[:org_idx] >= 0 ? orgs[r[:org_idx]] : nil
+        video_url = if r[:video_thumbnail_url]
+                      cf_template.expand(
+                        domain: "media2.dev.to", directory: "cdn-cgi",
+                        options: { width: 880, height: nil, fit: "scale-down", gravity: "auto", format: "auto" },
+                        src: r[:video_thumbnail_url]
+                      ).to_s
+                    end
+        parts = ActiveSupport::Duration.build(r[:video_duration_in_seconds]).parts.reverse_merge(
+          seconds: 0, minutes: 0, hours: 0,
+        )
+        mm_ss = format("%<minutes>02d:%<seconds>02d", parts)
+        dur = parts[:hours] < 1 ? mm_ss : "#{parts[:hours]}:#{mm_ss}"
+        tags = r[:cached_tag_list].split(", ")
+        matched_flare = tags.detect { |t| flare_by_name.key?(t) }
+        flare_obj = if matched_flare
+                      ft = flare_by_name[matched_flare]
+                      { "name" => ft[:name], "bg_color_hex" => ft[:bg_color_hex],
+                        "text_color_hex" => ft[:text_color_hex] }
+                    end
+        top_cats = counts_by_row[idx]
+          .select { |slug, cnt| cnt.positive? && cat_by_slug.key?(slug) }
+          .sort_by { |slug, cnt| [-cnt, cat_by_slug[slug][:position]] }
+          .first(3)
+          .map do |slug, _|
+            c = cat_by_slug[slug]
+            { "slug" => c[:slug], "name" => c[:name], "icon" => c[:icon], "position" => c[:position] }
+          end
+        entry = {
+          "class_name" => "Article", "cloudinary_video_url" => video_url,
+          "favorited_by_user_id" => r[:favorited_by_user_id], "id" => r[:id], "path" => r[:path],
+          "public_reactions_count" => r[:public_reactions_count],
+          "readable_publish_date" => Time.at(r[:published_at_sec]).utc.strftime("%b %-e"),
+          "reading_time" => r[:reading_time], "title" => r[:title], "user_id" => r[:user_id],
+          "public_reaction_categories" => top_cats,
+          "comments_count" => r[:displayed_comments_count].zero? ? r[:comments_count] : r[:displayed_comments_count],
+          "video_duration_string" => dur, "published_at_int" => r[:published_at_sec], "tag_list" => tags,
+          "flare_tag" => flare_obj,
+          "user" => { "name" => u[:name], "profile_image_90" => u[:profile_image_90], "username" => u[:username] }
+        }
+        if o
+          entry["organization"] = {
+            "name" => o[:name], "profile_image_90" => o[:profile_image_90], "slug" => o[:slug]
+          }
+        end
+        entry
+      end
+      ActiveSupport::JSON.encode({ "result" => result }, escape_html_entities: true)
+    end
+
+    native_serialize = lambda do
+      ForemNative.serialize_homepage_articles_json(
+        articles_flat, users_flat, orgs_flat, flare_tags_flat, cats_flat, counts_flat, counts_lens, cfg
+      )
+    end
+
+    raise "Homepage articles benchmark parity failure!" unless native_serialize.call == legacy_serialize.call
+
+    puts "\n=== Homepage Articles Streaming JSON Benchmark (60 articles, serializer-only on prepared fixtures) ==="
+    puts "Note: Excludes controller queries, payload construction, cache lookups, and fallback."
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust heap allocations)."
+    ruby_mem = MemoryProfiler.report { legacy_serialize.call }
+    rust_mem = MemoryProfiler.report { native_serialize.call }
+    puts "Ruby Legacy Ruby-heap allocations (1 run): #{ruby_mem.total_allocated} objects " \
+         "(#{ruby_mem.total_allocated_memsize} bytes)"
+    puts "Rust Magnus Ruby-heap allocations (1 run): #{rust_mem.total_allocated} objects " \
+         "(#{rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (60-article homepage feed JSON)") { legacy_serialize.call }
+      x.report("Rust Magnus (60-article homepage feed JSON)") { native_serialize.call }
       x.compare!
     end
   end

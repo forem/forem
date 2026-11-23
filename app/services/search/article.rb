@@ -8,7 +8,8 @@ module Search
       sort_by: nil,
       sort_direction: nil,
       page: nil,
-      per_page: nil
+      per_page: nil,
+      format: :hash
     )
       relation = Homepage::ArticlesQuery.call(user_id: user_id, page: page, per_page: per_page)
 
@@ -16,7 +17,11 @@ module Search
 
       relation = sort(relation, term, sort_by, sort_direction)
 
-      Homepage::ArticleSerializer.serialized_collection_from(relation: relation)
+      if format == :json
+        Homepage::ArticleSerializer.serialized_json_from(relation: relation)
+      else
+        Homepage::ArticleSerializer.serialized_collection_from(relation: relation)
+      end
     end
 
     def self.sort(relation, term, sort_by, sort_direction)

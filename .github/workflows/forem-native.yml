@@ -18,6 +18,7 @@ on:
       - "app/controllers/feed_config_visits_controller.rb"
       - "app/controllers/notifications/counts_controller.rb"
       - "app/controllers/reactions_controller.rb"
+      - "app/controllers/search_controller.rb"
       - "app/controllers/concerns/api/articles_controller.rb"
       - "app/controllers/concerns/api/comments_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
@@ -36,11 +37,14 @@ on:
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
       - "app/queries/billboards/filtered_ads_query.rb"
+      - "app/serializers/homepage/article_serializer.rb"
       - "app/services/agent_session_parsers/redaction_metadata.rb"
       - "app/services/agent_session_renderers/markdown_renderer.rb"
       - "app/services/articles/detect_code_block_languages.rb"
       - "app/services/articles/feeds/custom.rb"
       - "app/services/feed_events/bulk_upsert.rb"
+      - "app/services/homepage/fetch_articles.rb"
+      - "app/services/search/article.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
       - "app/services/images/**"
@@ -64,6 +68,8 @@ on:
       - "spec/requests/api/v1/docs/articles_spec.rb"
       - "spec/requests/api/v1/docs/comments_spec.rb"
       - "spec/requests/billboards_spec.rb"
+      - "spec/requests/search_spec.rb"
+      - "spec/serializers/homepage/article_serializer_spec.rb"
       - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
       - "spec/services/articles/detect_code_block_languages_spec.rb"
@@ -190,6 +196,10 @@ jobs:
             api_articles_row = [101, 0, -1, 0, "/ada/hi", nil, "Hi", "Desc", "https://img.example/c.png", nil, nil, "ruby", "hi", "/ada/hi", nil, 0, 0, 1, 1, "en", true, 0, 1_772_323_200, nil, nil, 1_772_323_200, nil, true]
             api_articles_res = ForemNative.serialize_api_articles_json(api_articles_row, [1, "Ada", "ada", nil, nil, nil, nil, nil], [], [], ["https://dev.to"], api_articles_cfg)
             raise "Unexpected serialize_api_articles_json!" unless api_articles_res.is_a?(String) && api_articles_res.include?("width=1200,height=627")
+            raise "Unexpected select_top_public_reaction_categories!" unless ForemNative.select_top_public_reaction_categories(["fire", 4, "like", 4], ["like", "Like", "heart", 1, "fire", "Fire", "fire", 5]) == [0, 1]
+            hp_row = [101, 0, -1, nil, "/ada/hi", 5, 3, "Hi <2026>", 1, 2, 0, 125, nil, "ruby, ama", 1_772_323_200, nil]
+            hp_res = ForemNative.serialize_homepage_articles_json(hp_row, ["Ada", "/a90.png", "ada"], [], ["ama", "ama", "#f3f3f3", "#ccc"], ["like", "Like", "heart", 1], ["like", 5], [1], [2026, 0, nil, "cdn-cgi", true])
+            raise "Unexpected serialize_homepage_articles_json!" unless hp_res.is_a?(String) && hp_res.include?("\"video_duration_string\":\"02:05\"") && hp_res.include?("\"name\":\"ama\"")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

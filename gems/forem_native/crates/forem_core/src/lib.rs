@@ -17,6 +17,7 @@ pub(crate) mod emoji_data;
 pub mod feed;
 pub mod feed_events;
 pub mod fixer;
+pub mod homepage_articles;
 pub mod html;
 pub mod image;
 pub mod image_ops;
