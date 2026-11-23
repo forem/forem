@@ -46,6 +46,13 @@ class User < ApplicationRecord
     removed: { "suspended" => "user_unsuspended", "spam" => "user_spam_unflagged" }
   }.freeze
 
+  # Roles MLH Core counts toward a person's trust: DEV++ (base_subscriber),
+  # moderators, and the community leaders who give out gems. Any change to the
+  # set a user holds emits user_roles_updated carrying the whole set, so Core
+  # can apply each reading on its own however events arrive.
+  CORE_TRUST_ROLES = %w[base_subscriber trusted tag_moderator super_moderator subforem_moderator
+                        community_leader_level_1 community_leader_level_2].freeze
+
   # Column changes that must reach MLH Core: deliberate profile edits, the
   # actual email swap (Devise reconfirmable lands it outside any profile
   # edit), email confirmation, and invited accounts completing registration.
@@ -1146,17 +1153,47 @@ class User < ApplicationRecord
   def add_role(role_name, resource = nil)
     event = moderation_role_event(role_name, :added, resource)
     already_had_role = event && has_role?(role_name)
+    trust_roles = core_trust_role_names if core_trust_role_change?(role_name)
     result = super
     track!(event) if event && !already_had_role
+    track_core_trust_roles_change(trust_roles)
     result
   end
 
   def remove_role(role_name, resource = nil)
     event = moderation_role_event(role_name, :removed, resource)
     had_role = event && has_role?(role_name)
+    trust_roles = core_trust_role_names if core_trust_role_change?(role_name)
     result = super
     track!(event) if event && had_role
+    track_core_trust_roles_change(trust_roles)
     result
+  end
+
+  # Emits user_roles_updated with the Core trust roles the user holds and when
+  # they were read.
+  def track_core_trust_roles!(snapshot = core_trust_roles_snapshot)
+    return unless snapshot
+
+    read_at, roles = snapshot
+    track!("user_roles_updated", "dev_roles" => roles, "dev_roles_read_at" => read_at.iso8601(6))
+  end
+
+  def core_trust_role_names
+    core_trust_roles_snapshot&.last
+  end
+
+  # The Core trust roles the user holds, read in one statement with the
+  # database's start time for it. Every commit before that time is in the
+  # reading, so Core can order readings from any process by it: a reading taken
+  # before a revocation committed is always stamped earlier than the reading the
+  # revocation publishes. Read past the query cache, which would otherwise hand
+  # back an earlier reading with its earlier time. Nil once the user is gone.
+  def core_trust_roles_snapshot
+    held = roles.where(name: CORE_TRUST_ROLES).distinct.select(:name).reorder(:name)
+    User.uncached do
+      User.where(id: id).pick(Arel.sql("statement_timestamp()"), Arel.sql("ARRAY(#{held.to_sql})"))
+    end
   end
 
   # Only global (non-resource-scoped) moderation roles emit.
@@ -1165,9 +1202,26 @@ class User < ApplicationRecord
 
     MODERATION_ROLE_EVENTS[direction][role_name.to_s]
   end
+
+  def core_trust_role_change?(role_name)
+    persisted? && CORE_TRUST_ROLES.include?(role_name.to_s)
+  end
+
+  # Once every open transaction commits, emits the trust roles held when they
+  # differ from `before`, the set held before the change (nil when the change
+  # could not alter it). Reading after commit keeps a rolled-back change from
+  # ever being published.
+  def track_core_trust_roles_change(before)
+    return unless before
+
+    ActiveRecord.after_all_transactions_commit do
+      snapshot = core_trust_roles_snapshot
+      track_core_trust_roles!(snapshot) if snapshot && snapshot.last != before
+    end
+  end
   private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
           :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,
-          :engagement_emission_due?
+          :engagement_emission_due?, :core_trust_role_change?, :track_core_trust_roles_change
 
   # rubocop:disable Style/OptionHash
   def send_reset_password_instructions(opts = {})
