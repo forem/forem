@@ -1,7 +1,8 @@
 class TrecsTag < LiquidTagBase
   PARTIAL = "liquids/trecs".freeze
   ID_REGEXP = /[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}/i
-  REGISTRY_REGEXP = %r{https://trecs\.run/watch/(?<id>#{ID_REGEXP.source})(?:\?t=(?<start>\d+))?}i
+  START_REGEXP = /\d+(?::\d{1,2}){0,2}/
+  REGISTRY_REGEXP = %r{\Ahttps://trecs\.run/watch/(?<id>#{ID_REGEXP.source})(?![0-9a-z_-])(?:\?t=(?<start>#{START_REGEXP.source}))?}i
 
   def initialize(_tag_name, input, _parse_context)
     super
