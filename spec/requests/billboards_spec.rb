@@ -388,6 +388,62 @@ RSpec.describe "Billboards" do
         expect(inline_style).not_to match(/:where\(img,\s*video\)\s*\{\s*height:\s*auto/)
         expect(inline_style).to include("img[width]:not([width='']), video[width]:not([width=''])")
       end
+
+      it "isolates raw billboards only when isolate_content is enabled",
+         :aggregate_failures do
+        billboard.destroy!
+        raw_body = '<style>body { background: red; }</style><div id="hero">Raw</div><script>window.foo = 1;</script>'
+        raw_bb = create_billboard(
+          placement_area: "post_fixed_bottom",
+          render_mode: "raw",
+          template: "authorship_box",
+          special_behavior: "persistent",
+          body_markdown: raw_body,
+          minimized_body_markdown: "<style>p { color: purple; }</style><p>Mini</p><script>window.bar = 2;</script>",
+        )
+
+        # Default (isolate_content: false) preserves legacy unwrapped rendering for existing billboards
+        expect(raw_bb.isolate_content).to be(false)
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<script>window.foo = 1;</script>")
+        expect(response.body).not_to include("data-billboard-shadow-host", "shadowrootmode")
+
+        # Turning isolate_content on wraps both main and persistent minimized markup in Declarative Shadow DOM
+        raw_bb.update!(isolate_content: true)
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body.scan('data-billboard-shadow-host="true"').size).to eq(2)
+        expect(response.body.scan('<template shadowrootmode="open">').size).to eq(2)
+        expect(response.body).to include(
+          %(data-billboard-id="#{raw_bb.id}"),
+          %(type="#{Billboards::ShadowDomWrapper::SCRIPT_MIME_TYPE}"),
+          'data-billboard-script="true"',
+          'data-billboard-shadow-bootstrap="true"',
+        )
+        expect(response.body).not_to include("<script>window.foo = 1;</script>")
+
+        markdown_bb = create_billboard(
+          placement_area: "post_sidebar",
+          render_mode: "forem_markdown",
+          isolate_content: true,
+          body_markdown: "Hello **markdown**",
+        )
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
+        expect(response.body).to include(markdown_bb.processed_html)
+        expect(response.body).not_to include("data-billboard-shadow-host")
+
+        raw_embed = create_billboard(
+          placement_area: "external_feed",
+          render_mode: "raw",
+          isolate_content: true,
+          body_markdown: "<div class=\"embed-promo\">External</div>",
+        )
+        get billboard_path(placement_area: "external_feed"), headers: { "Origin" => "https://embed.example.com" }
+        expect(response.body).to include(raw_embed.processed_html)
+        expect(response.body).not_to include("data-billboard-shadow-host", "shadowrootmode")
+      end
     end
 
     context "when the placement area is post_fixed_bottom" do
@@ -855,6 +911,7 @@ RSpec.describe "Billboards" do
         Regexp::MULTILINE,
       )
       expect(minimal_css).to match(media_height_pattern)
+      expect(minimal_css).to match(/:where\(\.billboard-shadow-host\)\s*\{[^}]*contain:\s*layout style\b/m)
 
       expect(crayons_css).to match(/\.crayons-layout__sidebar-left\s*\{[^}]*min-width:\s*0\b/m)
       expect(crayons_css).to match(/\.crayons-layout__sidebar-right\s*\{[^}]*min-width:\s*0\b/m)

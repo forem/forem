@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_20_160100) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_23_122600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -726,6 +726,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_20_160100) do
     t.datetime "expires_at"
     t.integer "impressions_count", default: 0
     t.integer "include_subforem_ids", default: [], array: true
+    t.boolean "isolate_content", default: false, null: false
     t.integer "max_clicks_count", default: 0, null: false
     t.integer "max_impressions_count", default: 0, null: false
     t.text "minimized_body_markdown"

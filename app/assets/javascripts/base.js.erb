@@ -345,10 +345,30 @@ var instantClick
     return target
   }
 
+  function getLinkTargetFromEvent(e) {
+    if (e && typeof e.composedPath === 'function') {
+      var path = e.composedPath()
+      if (path && path.length > 0) {
+        for (var i = 0; i < path.length; i++) {
+          var node = path[i]
+          if (node && node.nodeName === 'A') {
+            return node
+          }
+        }
+        return null
+      }
+    }
+    return getLinkTarget(e ? e.target : null)
+  }
+
   function isNotPreloadable(elem) {
     do {
-      if (!elem.hasAttribute) { // Parent of <html>
-        break
+      if (!elem.hasAttribute) { // ShadowRoot or Parent of <html>
+        if (elem.host) {
+          elem = elem.host
+        } else {
+          break
+        }
       }
       if (isForemWebview) {
         return true
@@ -516,7 +536,7 @@ var instantClick
       return // Otherwise, click doesn't fire
     }
 
-    var a = getLinkTarget(e.target)
+    var a = getLinkTargetFromEvent(e)
 
     if (!a || !isPreloadable(a)) {
       return
@@ -530,7 +550,7 @@ var instantClick
       return // Otherwise, click doesn't fire
     }
 
-    var a = getLinkTarget(e.target)
+    var a = getLinkTargetFromEvent(e)
 
     if (!a || !isPreloadable(a)) {
       return
@@ -550,7 +570,7 @@ var instantClick
 
   function touchstartListener(e) {
     $lastTouchTimestamp = +new Date
-    var a = getLinkTarget(e.target)
+    var a = getLinkTargetFromEvent(e)
 
     if (!a || !isPreloadable(a)) {
       return
@@ -570,7 +590,7 @@ var instantClick
   // It also covers the issue where a user needs to press <return>
   // twice in order to follow a focused link.
   function focusListener(e) {
-    var a = getLinkTarget(e.target)
+    var a = getLinkTargetFromEvent(e)
 
     if (!a || !isPreloadable(a)) {
       return
@@ -588,7 +608,7 @@ var instantClick
 
   function clickListener(e) {
     try{
-      var a = getLinkTarget(e.target)
+      var a = getLinkTargetFromEvent(e)
 
       if (!a || !isPreloadable(a)) {
         return

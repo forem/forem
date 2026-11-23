@@ -44,6 +44,11 @@
       </div>
 
       <div class="crayons-field">
+        <strong>Isolate Content (Shadow DOM):</strong>
+        <p><%= @billboard.isolate_content? ? "Yes" : "No" %></p>
+      </div>
+
+      <div class="crayons-field">
         <strong>Template:</strong>
         <p><%= @billboard.template == "authorship_box" ? "Authorship Box" : "Plain" %></p>
       </div>
@@ -122,7 +127,7 @@
     <div>
       <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard" style="<%= @billboard.style_string %>">
         <% if @billboard.persisted? %>
-          <%= @billboard.processed_html.html_safe %>
+          <%= billboard_body_html(@billboard, @billboard.processed_html, allow_embed_passthrough: false) %>
         <% end %>
       </div>
       <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard mt-4" style="<%= @billboard.style_string %>">
