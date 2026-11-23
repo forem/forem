@@ -215,6 +215,184 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".validate_agent_session_data" do
+    let(:validator) { AgentSessionParsers::NormalizedDataValidator }
+
+    def valid_transcript(overrides = {})
+      {
+        "messages" => [
+          { "role" => "user", "content" => [{ "type" => "text", "text" => "Hello" }] },
+          { "role" => "assistant", "content" => [{ "type" => "tool_call", "name" => "Read", "input" => "/a" }] },
+        ],
+        "metadata" => { "tool_name" => "claude_code" }
+      }.merge(overrides)
+    end
+
+    it "matches legacy_validate across structural, role, content, block, error-cap, and size edge cases" do
+      cases = [
+        nil,
+        [],
+        "not a hash",
+        42,
+        {},
+        { "metadata" => {} },
+        { "messages" => "not an array", "metadata" => "also bad" },
+        { "messages" => [], "metadata" => "bad" },
+        { "messages" => [], "metadata" => nil },
+        { "messages" => [] },
+        { "messages" => [nil, "str", 123, []] },
+        { "messages" => [{ "role" => "system", "content" => [{ "type" => "text" }] }] },
+        { "messages" => [{ "role" => nil, "content" => [{ "type" => "text" }] }] },
+        { "messages" => [{ "role" => 123, "content" => [{ "type" => "text" }] }] },
+        { "messages" => [{ "role" => true, "content" => [{ "type" => "text" }] }] },
+        { "messages" => [{ "role" => false, "content" => [{ "type" => "text" }] }] },
+        { "messages" => [{ "role" => :user, "content" => [{ "type" => "text" }] }] },
+        # Content key appearing before role key when both are invalid must keep role error first.
+        { "messages" => [{ "content" => "nope", "role" => "bad" }] },
+        { "messages" => [{ "content" => [{ "type" => "image" }], "role" => "bad" }] },
+        # 4 prior errors + message with both invalid role and non-array content produces 6 errors.
+        { "messages" => [nil, nil, nil, nil, { "role" => "bad", "content" => "bad" }, nil] },
+        # 4 prior errors + message with invalid role and array content stops before inspecting blocks.
+        { "messages" => [nil, nil, nil, nil, { "role" => "bad", "content" => [{ "type" => "bad" }] }] },
+        { "messages" => [{ "role" => "user", "content" => ["non-obj", {}, { "type" => :text }, { "type" => 7 }] }] },
+        valid_transcript,
+      ]
+
+      cases.each do |data|
+        instance = validator.new(data)
+        expected = instance.__send__(:legacy_validate).map(&:message)
+        actual = described_class.validate_agent_session_data(
+          data,
+          max_messages: validator::MAX_MESSAGES,
+          max_json_size: validator::MAX_JSON_SIZE,
+          escape_html_entities: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+          check_size: true,
+        )
+        expect(actual).to eq(expected), "mismatch for #{data.inspect}"
+        expect(instance.validate.map(&:message)).to eq(expected)
+      end
+    end
+
+    it "enforces max_messages and exact max_json_size boundaries" do
+      data = valid_transcript("metadata" => { "text" => "<>&😀\u2028" })
+      expect(
+        described_class.validate_agent_session_data(
+          data, max_messages: 1, max_json_size: 10_000, escape_html_entities: true, check_size: true
+        ),
+      ).to eq(["Too many messages (max 1)"])
+
+      [true, false].each do |escape_html|
+        exact = ActiveSupport::JSON.encode(data, escape_html_entities: escape_html).bytesize
+        expect(
+          described_class.validate_agent_session_data(
+            data, max_messages: 10, max_json_size: exact, escape_html_entities: escape_html, check_size: true
+          ),
+        ).to eq([])
+        expect(
+          described_class.validate_agent_session_data(
+            data, max_messages: 10, max_json_size: exact - 1, escape_html_entities: escape_html, check_size: true
+          ),
+        ).to eq(["Normalized data is too large (#{exact} bytes, max #{exact - 1})"])
+      end
+    end
+
+    it "returns :needs_legacy_size for out-of-domain size values and nil for Ruby-only edge cases" do
+      [1.25, 1e-7, 2**70, "safe".html_safe, "binary".b, { a: 1 }, Time.zone.at(0)].each do |val|
+        data = valid_transcript("metadata" => { "v" => val })
+        expect(
+          described_class.validate_agent_session_data(
+            data, max_messages: 10, max_json_size: 10_000, escape_html_entities: true, check_size: true
+          ),
+        ).to eq(:needs_legacy_size)
+        expect(validator.validate(data)).to be_empty
+      end
+
+      custom = valid_transcript
+      def custom.to_json(*)
+        '"custom"'
+      end
+      default_hash = Hash.new("user")
+      default_hash["content"] = [{ "type" => "text" }]
+
+      cbi_top = {}.compare_by_identity
+      cbi_top[+"messages"] = []
+      cbi_msg = {}.compare_by_identity
+      cbi_msg[+"role"] = "user"
+      cbi_msg[+"content"] = [{ "type" => "text" }]
+      cbi_block = {}.compare_by_identity
+      cbi_block[+"type"] = "text"
+
+      defer_cases = [
+        custom,
+        Class.new(Hash).new,
+        cbi_top,
+        { "messages" => Class.new(Array).new },
+        { "messages".b => [] },
+        { "messages" => [default_hash] },
+        { "messages" => [cbi_msg] },
+        { "messages" => [{ "role" => "user", "content" => [cbi_block] }] },
+        { "messages" => [{ "role" => { "a" => 1 }, "content" => [] }] },
+        { "messages" => [{ "role" => "user", "content" => [{ "type" => [1] }] }] },
+      ]
+
+      defer_cases.each do |data|
+        expect(
+          described_class.validate_agent_session_data(
+            data, max_messages: 10, max_json_size: 10_000, escape_html_entities: true, check_size: true
+          ),
+        ).to be_nil
+        instance = validator.new(data)
+        expect(instance.validate.map(&:message)).to eq(instance.__send__(:legacy_validate).map(&:message))
+      end
+    end
+
+    def random_content_block(rng, block_types, fragments)
+      return "non-obj" if rng.rand < 0.08
+
+      btype = rng.rand < 0.85 ? %w[text tool_call].sample(random: rng) : block_types.sample(random: rng)
+      text = Array.new(rng.rand(0..8)) { fragments.sample(random: rng) }.join
+      { "type" => btype, "text" => text }
+    end
+
+    def random_message(rng, roles, block_types, fragments)
+      return [nil, "bad", 99].sample(random: rng) if rng.rand < 0.08
+
+      role = rng.rand < 0.85 ? %w[user assistant].sample(random: rng) : roles.sample(random: rng)
+      content = if rng.rand < 0.1
+                  "not-array"
+                else
+                  Array.new(rng.rand(0..4)) { random_content_block(rng, block_types, fragments) }
+                end
+      rng.rand < 0.5 ? { "role" => role, "content" => content } : { "content" => content, "role" => role }
+    end
+
+    it "matches legacy_validate across 1,000 seeded randomized transcripts (valid, invalid, and size-limited)" do
+      rng = Random.new(424_242)
+      roles = ["user", "assistant", "system", "", nil, 42, :user]
+      block_types = ["text", "tool_call", "image", "", nil, :text]
+      fragments = ["abc", "<>&", "\u2028", "😀", "漢字", "\r\n", "\\", '\"']
+      invalid_roots = [nil, [], "bad", { "metadata" => {} }, { "messages" => "nope" },
+                       { "messages" => [], "metadata" => 1 }]
+      stub_const("AgentSessionParsers::NormalizedDataValidator::MAX_MESSAGES", 12)
+      stub_const("AgentSessionParsers::NormalizedDataValidator::MAX_JSON_SIZE", 600)
+
+      1_000.times do |iter|
+        data = if (iter % 10).zero?
+                 invalid_roots.sample(random: rng)
+               else
+                 messages = Array.new(rng.rand(0..14)) { random_message(rng, roles, block_types, fragments) }
+                 payload = { "messages" => messages }
+                 payload["metadata"] = { "tool" => "claude_code", "n" => rng.rand(-100..100) } if rng.rand < 0.7
+                 payload
+               end
+
+        instance = validator.new(data)
+        expected = instance.__send__(:legacy_validate).map(&:message)
+        expect(instance.validate.map(&:message)).to eq(expected), "mismatch at iter #{iter}"
+      end
+    end
+  end
+
   describe ".postprocess_transcript_html and transcript primitives" do
     let(:legacy_wrap) do
       lambda do |html|

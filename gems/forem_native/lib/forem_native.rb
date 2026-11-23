@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_homepage_articles_json
+  LATEST_NATIVE_SYMBOL = :validate_agent_session_data
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -938,6 +938,25 @@ module ForemNative
       return unless Native.respond_to?(:json_encoded_size)
 
       Native.json_encoded_size(value, escape_html_entities ? true : false)
+    end
+
+    # Single-pass validator and streaming JSON byte-size checker for
+    # `AgentSessionParsers::NormalizedDataValidator`.
+    # Returns an Array of error strings (`[]` when valid), `:needs_legacy_size` when
+    # structure and messages are valid but byte counting encountered an out-of-domain
+    # value, or `nil` when full validation should defer to Ruby.
+    def validate_agent_session_data(data, max_messages:, max_json_size:, escape_html_entities: true, check_size: true)
+      return unless Native.respond_to?(:validate_agent_session_data)
+      return unless max_messages.is_a?(Integer) && max_messages >= 0
+      return unless max_json_size.is_a?(Integer) && max_json_size >= 0
+
+      Native.validate_agent_session_data(
+        data,
+        max_messages,
+        max_json_size,
+        escape_html_entities ? true : false,
+        check_size ? true : false,
+      )
     end
 
     # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
