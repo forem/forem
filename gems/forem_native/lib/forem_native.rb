@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_api_comments_json
+  LATEST_NATIVE_SYMBOL = :serialize_api_articles_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -1897,6 +1897,28 @@ module ForemNative
       return unless external_base_url.nil? || external_base_url.is_a?(String)
 
       Native.ahoy_decorate_payload(payload, app_domain, token, campaign, secret_token, external_base_url)
+    end
+
+    # Formats a UTC Unix epoch timestamp into Forem's English `readable_publish_date`
+    # (`"%b %-e"` in `current_year`, `"%b %-d '%y"` otherwise). Returns `nil` when out of range.
+    def format_readable_publish_date(epoch_secs, current_year)
+      return unless Native.respond_to?(:format_readable_publish_date)
+      return unless valid_i64_integer?(epoch_secs) && valid_i64_integer?(current_year)
+
+      Native.format_readable_publish_date(epoch_secs, current_year)
+    end
+
+    # Single-pass streaming JSON serializer for `/api/articles` (v0 & v1).
+    # Accepts flat article, user, organization, flare-tag, base-URL, and config Arrays
+    # and returns the encoded JSON String, or `nil` when any entry falls outside the
+    # strict fast-path domain and should fall back to Ruby.
+    def serialize_api_articles_json(articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, config)
+      return unless Native.respond_to?(:serialize_api_articles_json)
+      return unless articles_flat.is_a?(Array) && users_flat.is_a?(Array) &&
+        orgs_flat.is_a?(Array) && flare_tags_flat.is_a?(Array) &&
+        base_urls.is_a?(Array) && config.is_a?(Array)
+
+      Native.serialize_api_articles_json(articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, config)
     end
 
     private

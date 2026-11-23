@@ -491,6 +491,125 @@ RSpec.describe "Api::V1::Articles" do
         get api_articles_path, params: { per_page: 10 }, headers: headers
         expect(response.parsed_body.count).to eq(2)
       end
+
+      it "matches the Jbuilder fallback bit-for-bit on V1 index including surrogate keys", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          expect(ForemNative.available?).to be(true)
+          native_results = []
+          allow(ForemNative).to receive(:serialize_api_articles_json).and_wrap_original do |original, *args|
+            original.call(*args).tap { |result| native_results << result }
+          end
+
+          org = create(:organization)
+          article.user.profile.update_column(:website_url, "  https://example.com/dev  ")
+          article.update!(organization: org, ai_disclosure_level: :fully_autonomous, crossposted_at: 1.day.ago)
+
+          get api_articles_path, headers: headers
+          expect(native_results.length).to eq(1)
+          expect(native_results.first).to be_a(String)
+          native_body = response.body
+          native_media_type = response.media_type
+          native_keys = response.headers["surrogate-key"].split.to_set
+
+          allow(ForemNative).to receive(:available?).and_return(false)
+          get api_articles_path, headers: headers
+          expect(response.media_type).to eq(native_media_type)
+          expect(response.body).to eq(native_body)
+          expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+        end
+      end
+
+      it "preserves sub-second precision for the Cloudflare social_image cutoff and matches Jbuilder",
+         :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          expect(ForemNative.available?).to be(true)
+          native_results = []
+          allow(ForemNative).to receive(:serialize_api_articles_json).and_wrap_original do |original, *args|
+            original.call(*args).tap { |result| native_results << result }
+          end
+          allow(ApplicationConfig).to receive(:[]).and_call_original
+          allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("media2.dev.to")
+          allow(Images::Optimizer).to receive_messages(imgproxy_enabled?: false, cloudinary_enabled?: false)
+
+          subsecond_article = create(
+            :article,
+            published: true,
+            featured: true,
+            hotness_score: 200,
+            main_image: "https://img.example.com/subsecond.png",
+          )
+          subsecond_article.update_column(:published_at, Time.utc(2026, 3, 1, 0, 0, 0, 500_000))
+
+          exact_cutoff_article = create(
+            :article,
+            published: true,
+            featured: true,
+            hotness_score: 100,
+            main_image: "https://img.example.com/midnight.png",
+          )
+          exact_cutoff_article.update_column(:published_at, Time.utc(2026, 3, 1, 0, 0, 0))
+
+          get api_articles_path, headers: headers
+          expect(native_results.length).to eq(1)
+          expect(native_results.first).to be_a(String)
+          native_body = response.body
+          parsed = response.parsed_body.index_by { |entry| entry["id"] }
+          expect(parsed[subsecond_article.id]["social_image"]).to include("width=1200,height=627")
+          expect(parsed[exact_cutoff_article.id]["social_image"]).to include("width=1000,height=500")
+
+          allow(ForemNative).to receive(:available?).and_return(false)
+          get api_articles_path, headers: headers
+          expect(response.body).to eq(native_body)
+        end
+      end
+
+      it "skips FlareTag.tags_by_id when no article on the page has a configured flare tag", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          article.update_column(:cached_tag_list, "ruby, rails")
+          allow(FlareTag).to receive(:tags_by_id).and_call_original
+
+          get api_articles_path, headers: headers
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body.first).not_to have_key("flare_tag")
+          expect(FlareTag).not_to have_received(:tags_by_id)
+        end
+      end
+
+      it "falls back to Jbuilder for unmapped ai_disclosure_level enum values", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          article.update_column(:ai_disclosure_level, 2)
+
+          get api_articles_path, headers: headers
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body.first["ai_disclosure_level"]).to be_nil
+        end
+      end
+
+      it "falls back to Jbuilder outside UTC time zones without calling the native serializer",
+         :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("America/New_York")
+
+        Time.use_zone("America/New_York") do
+          allow(ForemNative).to receive(:serialize_api_articles_json).and_call_original
+
+          get api_articles_path, headers: headers
+          expect(response).to have_http_status(:ok)
+          expect(ForemNative).not_to have_received(:serialize_api_articles_json)
+        end
+      end
     end
   end
 
