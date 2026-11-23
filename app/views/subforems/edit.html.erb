@@ -504,7 +504,7 @@
                 <% if link.respond_to?(:image) && link.image.present? %>
                   <%= optimized_image_tag(link.image.url, optimizer_options: { width: 24, height: 24, crop: "fill" }, image_options: { alt: "#{link.name} icon", style: "width: 16px; height: 16px;" }) %>
                 <% else %>
-                  <span class="text-sm" style="width: 16px; height: 16px;"><%= link.icon.html_safe %></span>
+                  <span class="text-sm" style="width: 16px; height: 16px;"><%= link.sanitized_icon %></span>
                 <% end %>
                 <%= link.name %>
               </div>
