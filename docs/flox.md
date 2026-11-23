@@ -87,6 +87,16 @@ a package group forward.
 - **`Address already in use`:** another process holds one of the three ports;
   set the `FOREM_*PORT` variables above.
 - **Setup fails:** `flox services logs setup`.
+- **The first download crawls (about 1 MB/s) on a fast connection:** Nix fetches
+  every package over a single HTTP/2 connection, and some networks limit each
+  connection separately. `http2 = false` makes it open one connection per
+  download instead. It only works when set for the Nix daemon: as a user
+  setting it is ignored (`ignoring the client-specified setting 'http2'`), even
+  though `nix config show` reports it. Add `http2 = false` to
+  `/etc/nix/nix.conf`, then restart the daemon with
+  `sudo launchctl kickstart -k system/org.nixos.nix-daemon` on macOS or
+  `sudo systemctl restart nix-daemon.service` on Linux. Elsewhere HTTP/2 is as
+  fast or faster, so change it only if downloads are slow.
 
 Outside the checkout, Flox's package store, Yarn's cache and RubyGems' normal
 caches are used. PostgreSQL listens on loopback only, with trust authentication.
