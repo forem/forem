@@ -66,4 +66,14 @@ RSpec.describe TrecsTag, type: :liquid_tag do
       expect(embed).to include("src=\"https://trecs.run/embed/#{id}\"")
     end
   end
+
+  describe "editor documentation" do
+    %w[editor_liquid_help supported_url_embeds_list].product(%w[en fr pt]).each do |partial, locale|
+      it "lists trecs in pages/_#{partial}.#{locale}" do
+        help = Rails.root.join("app/views/pages/_#{partial}.#{locale}.html.erb").read
+
+        expect(help).to include('<li class="ml-4">trecs</li>')
+      end
+    end
+  end
 end
