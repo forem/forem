@@ -209,6 +209,28 @@ RSpec.describe "Api::V1::Comments" do
         expect(Images::Profile).to have_received(:call).twice
       end
 
+      it "disables the paginated author mask and matches Jbuilder when ancestry prefixes are inconsistent",
+         :aggregate_failures do
+        expect(ForemNative.available?).to be(true)
+        second_root = article.comments.roots.order(:id).second
+        inconsistent_user = create(:user)
+        inconsistent_child = create(:comment, commentable: article, user: inconsistent_user)
+        inconsistent_child.update_column(:ancestry, "#{root_comment.id}/#{second_root.id}")
+
+        get api_comments_path(a_id: article.id, page: 2, per_page: 1), headers: headers
+        expect(response).to have_http_status(:ok)
+        native_body = response.parsed_body
+        native_keys = response.headers["surrogate-key"].split.to_set
+
+        expect(native_body.first["id_code"]).to eq(second_root.id_code_generated)
+        expect(native_body.first["children"].pluck("id_code")).to include(inconsistent_child.id_code_generated)
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get api_comments_path(a_id: article.id, page: 2, per_page: 1), headers: headers
+        expect(response.parsed_body).to eq(native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+      end
+
       it "falls back to legacy Kaminari parsing for non-digit-prefixed per_page values", :aggregate_failures do
         get api_comments_path(a_id: article.id, page: 1, per_page: "+2"), headers: headers
         expect(response).to have_http_status(:ok)

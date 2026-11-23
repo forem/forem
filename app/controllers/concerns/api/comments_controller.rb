@@ -121,7 +121,10 @@ module Api
       return [nil, nil] unless per_page.positive?
       return [nil, nil] if Kaminari.config.max_per_page && per_page > Kaminari.config.max_per_page
 
-      [(page - 1) * per_page, per_page]
+      offset = (page - 1) * per_page
+      return [nil, nil] unless offset < 2**63 && per_page < 2**63
+
+      [offset, per_page]
     end
 
     def native_serializable_request?
@@ -157,35 +160,46 @@ module Api
     def selected_paginated_root_ids(rows, single_root, root_offset, root_limit)
       return if single_root || root_limit.nil? || rows.empty?
 
-      all_id_set, root_ids, root_id_set = collect_row_ids(rows)
-      return unless all_id_set && all_descendants_rooted?(rows, all_id_set, root_id_set)
+      ancestry_by_id, root_ids, root_id_set = collect_row_ids(rows)
+      return unless ancestry_by_id && all_descendants_rooted?(rows, ancestry_by_id, root_id_set)
 
       (root_ids[root_offset, root_limit] || []).index_with(true)
     end
 
     def collect_row_ids(rows)
-      all_id_set = {}
+      ancestry_by_id = {}
       root_ids = []
       root_id_set = {}
       rows.each do |id, ancestry, *_rest|
         id_str = id.to_s
-        return nil if all_id_set.key?(id_str)
+        return nil if ancestry_by_id.key?(id_str)
 
-        all_id_set[id_str] = true
+        ancestry_by_id[id_str] = ancestry
         next unless root_ancestry?(ancestry)
 
         root_ids << id_str
         root_id_set[id_str] = true
       end
-      [all_id_set, root_ids, root_id_set]
+      [ancestry_by_id, root_ids, root_id_set]
     end
 
-    def all_descendants_rooted?(rows, all_id_set, root_id_set)
+    def all_descendants_rooted?(rows, ancestry_by_id, root_id_set)
       rows.all? do |_id, ancestry, *_rest|
         next true if root_ancestry?(ancestry)
 
-        segments = ancestry.split("/")
-        root_id_set.key?(segments.first) && all_id_set.key?(segments.last)
+        consistent_descendant_ancestry?(ancestry, ancestry_by_id, root_id_set)
+      end
+    end
+
+    def consistent_descendant_ancestry?(ancestry, ancestry_by_id, root_id_set)
+      top_ancestor = ancestry.split("/", 2).first
+      return false unless root_id_set.key?(top_ancestor)
+
+      if ancestry.include?("/")
+        prefix, _sep, parent_id = ancestry.rpartition("/")
+        ancestry_by_id.key?(parent_id) && ancestry_by_id[parent_id] == prefix
+      else
+        ancestry_by_id.key?(ancestry) && root_ancestry?(ancestry_by_id[ancestry])
       end
     end
 

@@ -386,14 +386,6 @@ pub fn serialize_api_comments_json(
     labels: &ApiCommentLabels<'_>,
     options: &ApiCommentsOptions,
 ) -> Option<(String, Vec<i64>)> {
-    if options.max_depth == 0 {
-        return if options.single_root {
-            None
-        } else {
-            Some(("[]".to_string(), Vec::new()))
-        };
-    }
-
     if rows.is_empty() {
         return if options.single_root {
             None
@@ -438,6 +430,14 @@ pub fn serialize_api_comments_json(
     }
     if visited_count != rows.len() {
         return None;
+    }
+
+    if options.max_depth == 0 {
+        return if options.single_root {
+            None
+        } else {
+            Some(("[]".to_string(), Vec::new()))
+        };
     }
 
     let (selected_roots, is_full_tree): (&[usize], bool) = if options.single_root {
@@ -832,6 +832,37 @@ mod tests {
         ];
         assert!(serialize_api_comments_json(&cyclic_rows, &users, &labels, &opts).is_none());
         assert!(serialize_api_comments_json(&cyclic_rows, &users, &labels, &show_opts).is_none());
+
+        // Duplicate IDs must still be rejected even when max_depth == 0
+        let zero_depth_opts = ApiCommentsOptions {
+            max_depth: 0,
+            ..opts
+        };
+        let dup_rows = [
+            ApiCommentRow {
+                id: 1,
+                ancestry: None,
+                processed_html: Some("a"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+            ApiCommentRow {
+                id: 1,
+                ancestry: None,
+                processed_html: Some("b"),
+                user_idx: 0,
+                deleted: false,
+                hidden: false,
+                created_at_sec: Some(0),
+                ai_disclosure_idx: 0,
+            },
+        ];
+        assert!(
+            serialize_api_comments_json(&dup_rows, &users, &labels, &zero_depth_opts).is_none()
+        );
     }
 
     #[test]
