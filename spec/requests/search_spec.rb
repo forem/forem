@@ -168,6 +168,58 @@ RSpec.describe "Search", :proper_status do
           .to have_received(:search_documents)
           .with(hash_including(sort_direction: nil))
       end
+
+      it "matches the Ruby fallback bit-for-bit on homepage and Postgres article search feeds", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          expect(ForemNative.available?).to be(true)
+          native_results = []
+          allow(ForemNative).to receive(:serialize_homepage_articles_json).and_wrap_original do |m, *args|
+            m.call(*args).tap { |res| native_results << res }
+          end
+
+          org = create(:organization)
+          flare_tag = create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc")
+          article = create(
+            :article,
+            user: authorized_user,
+            organization: org,
+            tags: flare_tag.name,
+            title: "Rust <Native> & Rails Feed",
+            video_thumbnail_url: "https://example.com/thumb.jpg",
+          )
+          create(:reaction, reactable: article, category: "like")
+
+          get search_feed_content_path(homepage_params)
+          expect(response).to have_http_status(:ok)
+          homepage_native_body = response.body
+          homepage_media_type = response.media_type
+          homepage_cache_control = response.headers["Cache-Control"]
+
+          get search_feed_content_path(
+            class_name: "Article", search_fields: "Rust", sort_by: :published_at, sort_direction: :desc,
+          )
+          expect(response).to have_http_status(:ok)
+          search_native_body = response.body
+
+          expect(native_results.length).to eq(2)
+          expect(native_results).to all(be_a(String))
+
+          allow(ForemNative).to receive(:available?).and_return(false)
+
+          get search_feed_content_path(homepage_params)
+          expect(response.media_type).to eq(homepage_media_type)
+          expect(response.headers["Cache-Control"]).to eq(homepage_cache_control)
+          expect(response.body).to eq(homepage_native_body)
+
+          get search_feed_content_path(
+            class_name: "Article", search_fields: "Rust", sort_by: :published_at, sort_direction: :desc,
+          )
+          expect(response.body).to eq(search_native_body)
+        end
+      end
     end
 
     context "when searching for comments" do

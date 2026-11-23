@@ -6164,42 +6164,49 @@ fn serialize_api_articles_json(
     Some(ruby.str_new(&json))
 }
 
+unsafe fn parse_public_reaction_categories(
+    cats_slice: &[Value],
+) -> Option<Vec<forem_core::homepage_articles::PublicReactionCategory<'_>>> {
+    if cats_slice.len() % 4 != 0 {
+        return None;
+    }
+    let mut categories = Vec::with_capacity(cats_slice.len() / 4);
+    for chunk in cats_slice.chunks_exact(4) {
+        categories.push(forem_core::homepage_articles::PublicReactionCategory {
+            slug: borrow_req_utf8_str(chunk[0])?,
+            name: borrow_opt_utf8_str(chunk[1])?,
+            icon: borrow_opt_utf8_str(chunk[2])?,
+            position: Integer::from_value(chunk[3])?.to_i64().ok()?,
+        });
+    }
+    Some(categories)
+}
+
+unsafe fn parse_reaction_counts(counts_slice: &[Value]) -> Option<Vec<(&str, i64)>> {
+    if counts_slice.len() % 2 != 0 {
+        return None;
+    }
+    let mut counts = Vec::with_capacity(counts_slice.len() / 2);
+    for chunk in counts_slice.chunks_exact(2) {
+        counts.push((
+            borrow_req_utf8_str(chunk[0])?,
+            Integer::from_value(chunk[1])?.to_i64().ok()?,
+        ));
+    }
+    Some(counts)
+}
+
 fn select_top_public_reaction_categories(
     ruby: &Ruby,
     counts_flat: RArray,
     categories_flat: RArray,
 ) -> Option<RArray> {
-    use forem_core::homepage_articles::PublicReactionCategory;
-
     let (indices, len) = {
         // SAFETY: No Ruby VM calls or allocations happen inside this block while
         // borrowed `RArray` / `RString` slices are live.
         unsafe {
-            let counts_slice = counts_flat.as_slice();
-            let cats_slice = categories_flat.as_slice();
-
-            if counts_slice.len() % 2 != 0 || cats_slice.len() % 4 != 0 {
-                return None;
-            }
-
-            let mut categories = Vec::with_capacity(cats_slice.len() / 4);
-            for chunk in cats_slice.chunks_exact(4) {
-                categories.push(PublicReactionCategory {
-                    slug: borrow_req_utf8_str(chunk[0])?,
-                    name: borrow_opt_utf8_str(chunk[1])?,
-                    icon: borrow_opt_utf8_str(chunk[2])?,
-                    position: Integer::from_value(chunk[3])?.to_i64().ok()?,
-                });
-            }
-
-            let mut counts = Vec::with_capacity(counts_slice.len() / 2);
-            for chunk in counts_slice.chunks_exact(2) {
-                counts.push((
-                    borrow_req_utf8_str(chunk[0])?,
-                    Integer::from_value(chunk[1])?.to_i64().ok()?,
-                ));
-            }
-
+            let categories = parse_public_reaction_categories(categories_flat.as_slice())?;
+            let counts = parse_reaction_counts(counts_flat.as_slice())?;
             forem_core::homepage_articles::select_top_public_reaction_categories(
                 &counts,
                 &categories,
@@ -6229,7 +6236,7 @@ fn serialize_homepage_articles_json(
     use forem_core::api_articles::ImageOptimizerMode;
     use forem_core::homepage_articles::{
         HomepageArticleFlareTag, HomepageArticleOrganization, HomepageArticleRow,
-        HomepageArticleUser, HomepageArticlesConfig, PublicReactionCategory,
+        HomepageArticleUser, HomepageArticlesConfig,
     };
 
     let json = {
@@ -6302,23 +6309,8 @@ fn serialize_homepage_articles_json(
                 });
             }
 
-            let mut reaction_categories = Vec::with_capacity(reaction_cats_slice.len() / 4);
-            for chunk in reaction_cats_slice.chunks_exact(4) {
-                reaction_categories.push(PublicReactionCategory {
-                    slug: borrow_req_utf8_str(chunk[0])?,
-                    name: borrow_opt_utf8_str(chunk[1])?,
-                    icon: borrow_opt_utf8_str(chunk[2])?,
-                    position: Integer::from_value(chunk[3])?.to_i64().ok()?,
-                });
-            }
-
-            let mut reaction_counts = Vec::with_capacity(reaction_counts_slice.len() / 2);
-            for chunk in reaction_counts_slice.chunks_exact(2) {
-                reaction_counts.push((
-                    borrow_req_utf8_str(chunk[0])?,
-                    Integer::from_value(chunk[1])?.to_i64().ok()?,
-                ));
-            }
+            let reaction_categories = parse_public_reaction_categories(reaction_cats_slice)?;
+            let reaction_counts = parse_reaction_counts(reaction_counts_slice)?;
 
             let mut reaction_lens = Vec::with_capacity(reaction_lens_slice.len());
             for &val in reaction_lens_slice {

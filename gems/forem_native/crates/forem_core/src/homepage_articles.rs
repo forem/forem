@@ -22,6 +22,7 @@
 //!     and [`crate::json::write_json_string`] to stream the complete `{"result":[...]}`
 //!     JSON payload into a single pre-sized buffer.
 
+use std::borrow::Cow;
 use std::fmt::Write;
 
 use crate::api_articles::{check_blank, write_readable_publish_date, ImageOptimizerMode};
@@ -233,10 +234,10 @@ fn write_opt_i64(out: &mut String, value: Option<i64>) {
 /// - `Some(Some(url))` when resolved in Rust
 /// - `None` when out-of-domain (e.g. non-ASCII whitespace check, already-Cloudflare URL needing
 ///   `CGI.unescape`, or non-NFC-stable characters) so the caller defers to Ruby.
-fn resolve_cloudinary_video_url(
-    raw: Option<&str>,
+fn resolve_cloudinary_video_url<'a>(
+    raw: Option<&'a str>,
     config: &HomepageArticlesConfig<'_>,
-) -> Option<Option<String>> {
+) -> Option<Option<Cow<'a, str>>> {
     let s = match raw {
         None => return Some(None),
         Some(v) => v,
@@ -245,10 +246,10 @@ fn resolve_cloudinary_video_url(
         return Some(None);
     }
     if s.starts_with('/') || s.contains("/agent_sessions/") {
-        return Some(Some(s.to_string()));
+        return Some(Some(Cow::Borrowed(s)));
     }
     match config.optimizer_mode {
-        ImageOptimizerMode::Passthrough => Some(Some(s.to_string())),
+        ImageOptimizerMode::Passthrough => Some(Some(Cow::Borrowed(s))),
         ImageOptimizerMode::Cloudflare => {
             let domain = config.cloudflare_domain?;
             let dir = config.cloudflare_directory;
@@ -264,7 +265,7 @@ fn resolve_cloudinary_video_url(
                 }
             }
             let optimized = cloudflare_image_url(domain, dir, "880", "", "scale-down", s, s)?;
-            Some(Some(optimized))
+            Some(Some(Cow::Owned(optimized)))
         }
     }
 }

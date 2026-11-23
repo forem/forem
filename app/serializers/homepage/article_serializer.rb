@@ -191,13 +191,13 @@ module Homepage
       def native_reaction_counts_payload(rows)
         article_ids = rows.pluck(0)
         keys_by_id = article_ids.index_with { |id| "reaction_counts_for_reactable-Article-#{id}" }
-        counts_by_key = fetch_reaction_counts_by_key(article_ids, keys_by_id)
+        counts_by_key = fetch_reaction_counts_by_key(keys_by_id)
         flatten_reaction_counts(article_ids, keys_by_id, counts_by_key)
       end
 
-      def fetch_reaction_counts_by_key(article_ids, keys_by_id)
+      def fetch_reaction_counts_by_key(keys_by_id)
         counts_by_key = Rails.cache.read_multi(*keys_by_id.values)
-        missing_ids = article_ids.reject { |id| counts_by_key.key?(keys_by_id[id]) }
+        missing_ids = keys_by_id.each_key.reject { |id| counts_by_key.key?(keys_by_id[id]) }
         return counts_by_key if missing_ids.empty?
 
         computed_by_id = Hash.new { |h, k| h[k] = [] }
@@ -240,16 +240,25 @@ module Homepage
 
           published_sec = extract_epoch_sec(row[13])
           crossposted_sec = extract_epoch_sec(row[14])
-          return nil if published_sec == :invalid || crossposted_sec == :invalid
+          video_duration_sec = extract_video_duration_sec(row[10])
+          return nil if published_sec == :invalid || crossposted_sec == :invalid || video_duration_sec == :invalid
 
           articles_flat.push(
             row[0], user_idx, org_idx_by_id[row[2]] || -1,
             row[3], row[4], row[5], row[6], row[7], row[1],
-            row[8], row[9], row[10], row[11], row[12],
+            row[8], row[9], video_duration_sec, row[11], row[12],
             published_sec, crossposted_sec
           )
         end
         articles_flat
+      end
+
+      def extract_video_duration_sec(value)
+        return 0 if value.nil?
+        return value if value.is_a?(Integer)
+        return value.to_i if value.is_a?(Float) && value.finite?
+
+        :invalid
       end
 
       def extract_epoch_sec(value)

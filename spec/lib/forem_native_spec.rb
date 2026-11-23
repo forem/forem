@@ -8576,20 +8576,17 @@ RSpec.describe ForemNative do
         cat_by_slug = categories.index_by { |c| c[:slug] }
         flare_by_name = flare_tags.index_by { |ft| ft[:match_name] }
 
+        cf_template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+
         format_date = lambda do |sec|
           t = Time.at(sec).utc
           t.year == current_year ? t.strftime("%b %-e") : t.strftime("%b %-e '%y")
         end
 
         format_duration = lambda do |secs|
-          h = secs / 3600
-          m = (secs % 3600) / 60
-          s = secs % 60
-          if h.positive?
-            format("%<h>d:%<m>02d:%<s>02d", h: h, m: m, s: s)
-          else
-            format("%<m>02d:%<s>02d", m: m, s: s)
-          end
+          parts = ActiveSupport::Duration.build(secs.to_i).parts.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+          mm_ss = format("%<minutes>02d:%<seconds>02d", parts)
+          parts[:hours] < 1 ? mm_ss : "#{parts[:hours]}:#{mm_ss}"
         end
 
         optimize_video = lambda do |src|
@@ -8597,7 +8594,9 @@ RSpec.describe ForemNative do
           next src if src.start_with?("/") || src.include?("/agent_sessions/")
           next src if opt_mode == 0
 
-          described_class.cloudflare_image_url(cf_domain, cf_dir, 880, nil, "scale-down", src, src)
+          options = { width: 880, height: nil, fit: "scale-down", gravity: "auto" }
+          options[:format] = "auto" unless src.match?(/\.(gif|webp)(\?.*)?$/i)
+          cf_template.expand(domain: cf_domain, directory: cf_dir, options: options, src: src).to_s
         end
 
         result = rows.each_with_index.map do |r, idx|
@@ -8662,20 +8661,23 @@ RSpec.describe ForemNative do
           entry
         end
 
-        json = JSON.generate({ "result" => result })
-        if escape_html
-          json.gsub("<", "\\u003c").gsub(">", "\\u003e").gsub("&", "\\u0026")
-            .gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
-        else
-          json
-        end
+        ActiveSupport::JSON.encode({ "result" => result }, escape_html_entities: escape_html)
       end
     end
 
-    it "handles empty arrays and returns nil on out-of-domain inputs", :aggregate_failures do
+    it "handles empty arrays, duration boundaries, and returns nil on out-of-domain inputs", :aggregate_failures do
       cfg = [2026, 0, nil, "cdn-cgi", true]
       expect(described_class.serialize_homepage_articles_json([], [], [], [], [], [], [], cfg))
         .to eq('{"result":[]}')
+
+      users_flat = ["Alice", "/a.png", "alice"]
+      # Over-day (90_000s -> 1:00:00 via ActiveSupport::Duration) & sub-day (3661s -> 1:01:01)
+      dur_rows = [
+        1, 0, -1, nil, "/a/b", 0, 1, "over-day", 1, 0, 0, 90_000, nil, nil, 1_700_000_000, nil,
+        2, 0, -1, nil, "/a/c", 0, 1, "sub-day", 1, 0, 0, 3_661, nil, nil, 1_700_000_000, nil
+      ]
+      dur_json = described_class.serialize_homepage_articles_json(dur_rows, users_flat, [], [], [], [], [0, 0], cfg)
+      expect(JSON.parse(dur_json)["result"].pluck("video_duration_string")).to eq(["1:00:00", "1:01:01"])
 
       # Out-of-bounds user_idx
       bad_user_row = [1, 5, -1, nil, "/a/b", 0, 1, "t", 1, 0, 0, 0, nil, nil, 1_700_000_000, nil]
@@ -8683,7 +8685,6 @@ RSpec.describe ForemNative do
         .to be_nil
 
       # Negative video duration
-      users_flat = ["Alice", "/a.png", "alice"]
       neg_vid_row = [1, 0, -1, nil, "/a/b", 0, 1, "t", 1, 0, 0, -3, nil, nil, 1_700_000_000, nil]
       expect(described_class.serialize_homepage_articles_json(neg_vid_row, users_flat, [], [], [], [], [0], cfg))
         .to be_nil
