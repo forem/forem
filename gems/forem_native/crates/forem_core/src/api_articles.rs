@@ -1,22 +1,27 @@
-//! Single-pass streaming JSON serializer for the Forem Articles Index API
-//! (`Api::V0::ArticlesController#index` and `Api::V1::ArticlesController#index`).
+//! Single-pass streaming JSON serializers for the Forem Articles API
+//! (`Api::V0::ArticlesController` and `Api::V1::ArticlesController`:
+//! `index`, `show`, `show_by_slug`, `me`, and `search`).
 //!
 //! Replaces `Article` / `ArticleDecorator` / `Profile` ActiveRecord hydration,
 //! per-article `CloudCoverUrl` / `Articles::SocialImage` / `I18n.l` / `FlareTag`
-//! Ruby object churn, and ActionView/Jbuilder partial rendering with a single-pass
-//! Rust streaming serializer:
+//! Ruby object churn, and ActionView/Jbuilder partial rendering with single-pass
+//! Rust streaming serializers:
 //!
-//! - **Tier 1 composable primitive**:
+//! - **Tier 1 composable primitives**:
 //!   - [`format_readable_publish_date`] / [`write_readable_publish_date`]:
 //!     zero-allocation UTC English short date formatter matching Ruby's
 //!     `Article#readable_publish_date` (`%b %-e` in the current year, `%b %-d '%y`
 //!     in other years).
-//! - **Tier 2 single-pass pipeline kernel**:
-//!   - [`serialize_api_articles_json`]: composes [`crate::url::join_url`],
-//!     [`crate::image::cloudflare_image_url`], [`crate::feed::iter_cached_tag_list`],
-//!     [`crate::api_comments::write_utc_iso8601`], [`write_readable_publish_date`],
-//!     and [`crate::json::write_json_string`] to stream the complete JSON array
-//!     payload into a single pre-sized buffer.
+//!   - [`format_utc_iso8601_millis`] / [`write_utc_iso8601_millis`]:
+//!     zero-allocation UTC ISO-8601 millisecond formatter matching ActiveSupport's
+//!     `TimeWithZone#as_json` (`%Y-%m-%dT%H:%M:%S.%3NZ`).
+//! - **Tier 2 single-pass pipeline kernels**:
+//!   - [`serialize_api_articles_json`]: `/api/articles` index JSON array.
+//!   - [`serialize_api_article_show_json`]: `/api/articles/:id` and
+//!     `/api/articles/:username/:slug` JSON object (including `body_html` & `body_markdown`).
+//!   - [`serialize_api_articles_search_json`]: `/api/articles/search` JSON array
+//!     (with optional `body_markdown` for single-hit responses).
+//!   - [`serialize_api_articles_me_json`]: `/api/articles/me(/:status)` JSON array.
 
 use std::fmt::Write;
 
@@ -79,6 +84,34 @@ pub struct ApiArticleRow<'a> {
     /// Pre-evaluated `published_at.present? && published_at > Time.zone.local(2026, 3, 1)`
     /// in Ruby so sub-second precision matches `Articles::SocialImage`.
     pub social_image_large: bool,
+}
+
+/// Flat representation of an article row fetched from PostgreSQL for `/api/articles/me`.
+#[derive(Debug, Clone, Copy)]
+pub struct ApiArticleMeRow<'a> {
+    pub id: i64,
+    /// Index into deduplicated `orgs` slice, or `-1` when absent.
+    pub org_idx: i64,
+    /// Index into deduplicated `base_urls` slice (must be in bounds).
+    pub base_url_idx: i64,
+    /// Path joined with `base_urls[base_url_idx]` (`"/#{slug}"` for custom domain, else `path`).
+    pub url_path: Option<&'a str>,
+    pub title: Option<&'a str>,
+    pub description: Option<&'a str>,
+    pub published: Option<bool>,
+    pub published_at_sec: Option<i64>,
+    pub published_at_millis: Option<u32>,
+    pub crossposted_at_sec: Option<i64>,
+    pub slug: Option<&'a str>,
+    pub path: Option<&'a str>,
+    pub comments_count: Option<i64>,
+    pub public_reactions_count: Option<i64>,
+    pub page_views_count: Option<i64>,
+    pub body_markdown: Option<&'a str>,
+    pub main_image: Option<&'a str>,
+    pub cached_tag_list: Option<&'a str>,
+    pub canonical_url: Option<&'a str>,
+    pub reading_time: Option<i64>,
 }
 
 /// Deduplicated user payload for `api/v1/shared/_user.json.jbuilder`.
@@ -184,6 +217,40 @@ pub fn write_readable_publish_date(out: &mut String, epoch_secs: i64, current_ye
 pub fn format_readable_publish_date(epoch_secs: i64, current_year: i64) -> Option<String> {
     let mut out = String::with_capacity(12);
     if !write_readable_publish_date(&mut out, epoch_secs, current_year) {
+        return None;
+    }
+    Some(out)
+}
+
+/// Writes a UTC ISO-8601 timestamp with 3-digit millisecond precision
+/// (`YYYY-MM-DDTHH:MM:SS.mmmZ`), matching ActiveSupport's `TimeWithZone#as_json`
+/// when `ActiveSupport::JSON::Encoding.time_precision == 3`.
+///
+/// Returns `false` if `millis >= 1000` or if the resolved year is outside `0..=9999`.
+pub fn write_utc_iso8601_millis(out: &mut String, epoch_secs: i64, millis: u32) -> bool {
+    if millis >= 1000 {
+        return false;
+    }
+    if !write_utc_iso8601(out, epoch_secs) {
+        return false;
+    }
+    // Replace trailing 'Z' with `.mmmZ`.
+    out.pop();
+    out.push('.');
+    out.push((b'0' + (millis / 100) as u8) as char);
+    out.push((b'0' + ((millis / 10) % 10) as u8) as char);
+    out.push((b'0' + (millis % 10) as u8) as char);
+    out.push('Z');
+    true
+}
+
+/// Formats a UTC Unix epoch timestamp with millisecond precision into
+/// `"YYYY-MM-DDTHH:MM:SS.mmmZ"`.
+///
+/// Returns `None` if `millis >= 1000` or if the resolved year is outside `0..=9999`.
+pub fn format_utc_iso8601_millis(epoch_secs: i64, millis: u32) -> Option<String> {
+    let mut out = String::with_capacity(24);
+    if !write_utc_iso8601_millis(&mut out, epoch_secs, millis) {
         return None;
     }
     Some(out)
@@ -400,12 +467,231 @@ fn match_flare_tag<'a>(
     None
 }
 
-/// Streams the complete `/api/articles` (v0 & v1) JSON array into a single pre-sized buffer.
-///
-/// Returns `None` whenever any article row, URL, image, or timestamp falls outside the
-/// strict fast-path domain so the controller can transparently fall back to `legacy_index`.
-pub fn serialize_api_articles_json(
+fn compute_cover_image(
+    main_image: Option<&str>,
+    cover_height_str: &str,
+    config: &ApiArticlesConfig<'_>,
+) -> Option<Option<String>> {
+    match main_image {
+        Some(raw_main) if !check_blank(raw_main)? => {
+            if config.is_development {
+                Some(Some(raw_main.to_string()))
+            } else {
+                let (h_str, crop) = if raw_main.contains("ytimg.com") {
+                    ("500", "crop")
+                } else {
+                    (cover_height_str, config.cover_image_fit)
+                };
+                let img_src = strip_cloudinary_w1000_prefix(raw_main, true)?;
+                Some(Some(optimize_image_url(
+                    img_src, "1000", h_str, crop, config,
+                )?))
+            }
+        }
+        _ => Some(None),
+    }
+}
+
+fn write_tag_list_array(out: &mut String, cached_tag_list: Option<&str>, escape_html: bool) {
+    out.push('[');
+    if let Some(raw_tags) = cached_tag_list {
+        for (tag_idx, tag) in iter_cached_tag_list(raw_tags).enumerate() {
+            if tag_idx > 0 {
+                out.push(',');
+            }
+            write_json_string(out, tag, escape_html);
+        }
+    }
+    out.push(']');
+}
+
+fn write_user_org_flare_tail(
+    out: &mut String,
+    cached_tag_list: Option<&str>,
+    user: &ApiArticleUser<'_>,
+    org: Option<&ApiArticleOrganization<'_>>,
+    flare_tags: &[ApiArticleFlareTag<'_>],
+    escape_html: bool,
+) {
+    out.push_str(",\"user\":");
+    write_user_object(out, user, escape_html);
+
+    if let Some(org) = org {
+        out.push_str(",\"organization\":");
+        write_organization_object(out, org, escape_html);
+    }
+
+    if let Some(ft) = match_flare_tag(cached_tag_list, flare_tags) {
+        if ft.name.is_some() {
+            out.push_str(",\"flare_tag\":{\"name\":");
+            write_opt_str(out, ft.name, escape_html);
+            out.push_str(",\"bg_color_hex\":");
+            write_opt_str(out, ft.bg_color_hex, escape_html);
+            out.push_str(",\"text_color_hex\":");
+            write_opt_str(out, ft.text_color_hex, escape_html);
+            out.push('}');
+        }
+    }
+
+    out.push('}');
+}
+
+/// Writes the shared `api/v*/articles/_article.json.jbuilder` fields from `{`
+/// through `reading_time_minutes`.
+fn write_article_common_fields(
+    out: &mut String,
+    article: &ApiArticleRow<'_>,
+    base_url: &str,
+    cover_height_str: &str,
+    config: &ApiArticlesConfig<'_>,
+) -> Option<()> {
+    let escape_html = config.escape_html_entities;
+    let article_url = match article.url_path {
+        Some(p) => join_url(base_url, p)?,
+        None => base_url.to_string(),
+    };
+
+    let ai_idx = usize::from(article.ai_disclosure_idx);
+    let ai_key = *AI_DISCLOSURE_KEYS.get(ai_idx)?;
+    let ai_label = *config.ai_disclosure_labels.get(ai_idx)?;
+
+    let displayable_sec = article.crossposted_at_sec.or(article.published_at_sec);
+    let canonical = trim_canonical_url(article.canonical_url)?.unwrap_or(article_url.as_str());
+    let cover_image = compute_cover_image(article.main_image, cover_height_str, config)?;
+
+    // Compute social_image (Articles::SocialImage#url).
+    let social_src = match article.main_image {
+        Some(s) if !check_blank(s)? => Some(s),
+        _ => match article.social_image {
+            Some(s) if !check_blank(s)? => Some(s),
+            _ => match article.video_thumbnail_url {
+                Some(s) if !check_blank(s)? => Some(s),
+                _ => None,
+            },
+        },
+    };
+    let social_image_owned: Option<String> = match social_src {
+        Some(raw_img) => {
+            let (w, h) = if article.social_image_large {
+                ("1200", "627")
+            } else {
+                ("1000", "500")
+            };
+            let img_src = strip_cloudinary_w1000_prefix(raw_img, false)?;
+            Some(optimize_image_url(img_src, w, h, "crop", config)?)
+        }
+        None => None,
+    };
+    let social_image = social_image_owned
+        .as_deref()
+        .unwrap_or(config.main_social_image);
+
+    out.push_str("{\"type_of\":\"article\",\"id\":");
+    let _ = write!(out, "{}", article.id);
+
+    out.push_str(",\"title\":");
+    write_opt_str(out, article.title, escape_html);
+
+    out.push_str(",\"description\":");
+    write_opt_str(out, article.description, escape_html);
+
+    out.push_str(",\"readable_publish_date\":");
+    match displayable_sec {
+        Some(secs) => {
+            out.push('"');
+            if !write_readable_publish_date(out, secs, config.current_year) {
+                return None;
+            }
+            out.push('"');
+        }
+        None => out.push_str("null"),
+    }
+
+    out.push_str(",\"slug\":");
+    write_opt_str(out, article.slug, escape_html);
+
+    out.push_str(",\"path\":");
+    write_opt_str(out, article.path, escape_html);
+
+    out.push_str(",\"url\":");
+    write_json_string(out, &article_url, escape_html);
+
+    out.push_str(",\"comments_count\":");
+    write_opt_i64(out, article.comments_count);
+
+    out.push_str(",\"public_reactions_count\":");
+    write_opt_i64(out, article.public_reactions_count);
+
+    out.push_str(",\"collection_id\":");
+    write_opt_i64(out, article.collection_id);
+
+    out.push_str(",\"published_timestamp\":\"");
+    if article.published {
+        if let Some(secs) = displayable_sec {
+            if !write_utc_iso8601(out, secs) {
+                return None;
+            }
+        }
+    }
+    out.push('"');
+
+    out.push_str(",\"language\":");
+    write_opt_str(out, article.language, escape_html);
+
+    out.push_str(",\"subforem_id\":");
+    write_opt_i64(out, article.subforem_id);
+
+    out.push_str(",\"ai_disclosure_level\":\"");
+    out.push_str(ai_key);
+    out.push_str("\",\"ai_disclosure_label\":");
+    write_json_string(out, ai_label, escape_html);
+
+    out.push_str(",\"positive_reactions_count\":");
+    write_opt_i64(out, article.public_reactions_count);
+
+    out.push_str(",\"cover_image\":");
+    write_opt_str(out, cover_image.as_deref(), escape_html);
+
+    out.push_str(",\"social_image\":");
+    write_json_string(out, social_image, escape_html);
+
+    out.push_str(",\"canonical_url\":");
+    write_json_string(out, canonical, escape_html);
+
+    out.push_str(",\"created_at\":");
+    if !write_opt_utc_iso8601(out, article.created_at_sec) {
+        return None;
+    }
+
+    out.push_str(",\"edited_at\":");
+    if !write_opt_utc_iso8601(out, article.edited_at_sec) {
+        return None;
+    }
+
+    out.push_str(",\"crossposted_at\":");
+    if !write_opt_utc_iso8601(out, article.crossposted_at_sec) {
+        return None;
+    }
+
+    out.push_str(",\"published_at\":");
+    if !write_opt_utc_iso8601(out, article.published_at_sec) {
+        return None;
+    }
+
+    out.push_str(",\"last_comment_at\":");
+    if !write_opt_utc_iso8601(out, article.last_comment_at_sec) {
+        return None;
+    }
+
+    out.push_str(",\"reading_time_minutes\":");
+    write_opt_i64(out, article.reading_time);
+
+    Some(())
+}
+
+fn serialize_api_articles_array(
     articles: &[ApiArticleRow<'_>],
+    single_body_markdown: Option<Option<&str>>,
     users: &[ApiArticleUser<'_>],
     orgs: &[ApiArticleOrganization<'_>],
     flare_tags: &[ApiArticleFlareTag<'_>],
@@ -413,12 +699,28 @@ pub fn serialize_api_articles_json(
     config: &ApiArticlesConfig<'_>,
 ) -> Option<String> {
     if articles.is_empty() {
-        return Some("[]".to_string());
+        return if single_body_markdown.is_none() {
+            Some("[]".to_string())
+        } else {
+            None
+        };
+    }
+    if single_body_markdown.is_some() && articles.len() != 1 {
+        return None;
     }
 
     let escape_html = config.escape_html_entities;
     let cover_height_str = config.cover_image_height.to_string();
-    let mut out = String::with_capacity(articles.len().saturating_mul(1100) + 16);
+    let md_extra = single_body_markdown
+        .flatten()
+        .map_or(0, |s| s.len() + s.len() / 8 + 32);
+    let mut out = String::with_capacity(
+        articles
+            .len()
+            .saturating_mul(1100)
+            .saturating_add(md_extra)
+            .saturating_add(16),
+    );
     out.push('[');
 
     for (idx, article) in articles.iter().enumerate() {
@@ -440,62 +742,193 @@ pub fn serialize_api_articles_json(
 
         let base_url_idx = usize::try_from(article.base_url_idx).ok()?;
         let base_url = *base_urls.get(base_url_idx)?;
+
+        write_article_common_fields(&mut out, article, base_url, &cover_height_str, config)?;
+
+        if let Some(body_md) = single_body_markdown {
+            out.push_str(",\"body_markdown\":");
+            write_opt_str(&mut out, body_md, escape_html);
+        }
+
+        out.push_str(",\"tag_list\":");
+        write_tag_list_array(&mut out, article.cached_tag_list, escape_html);
+
+        out.push_str(",\"tags\":");
+        write_opt_str(&mut out, article.cached_tag_list, escape_html);
+
+        write_user_org_flare_tail(
+            &mut out,
+            article.cached_tag_list,
+            user,
+            org,
+            flare_tags,
+            escape_html,
+        );
+    }
+
+    out.push(']');
+    Some(out)
+}
+
+/// Streams the complete `/api/articles` (v0 & v1) JSON array into a single pre-sized buffer.
+///
+/// Returns `None` whenever any article row, URL, image, or timestamp falls outside the
+/// strict fast-path domain so the controller can transparently fall back to `legacy_index`.
+pub fn serialize_api_articles_json(
+    articles: &[ApiArticleRow<'_>],
+    users: &[ApiArticleUser<'_>],
+    orgs: &[ApiArticleOrganization<'_>],
+    flare_tags: &[ApiArticleFlareTag<'_>],
+    base_urls: &[&str],
+    config: &ApiArticlesConfig<'_>,
+) -> Option<String> {
+    serialize_api_articles_array(articles, None, users, orgs, flare_tags, base_urls, config)
+}
+
+/// Streams the complete `/api/articles/search` (v0 & v1) JSON array into a single pre-sized buffer.
+///
+/// When `single_body_markdown` is `Some(opt_md)` (single-result search), emits `"body_markdown"`
+/// right after `"reading_time_minutes"` matching `search.json.jbuilder`.
+pub fn serialize_api_articles_search_json(
+    articles: &[ApiArticleRow<'_>],
+    single_body_markdown: Option<Option<&str>>,
+    users: &[ApiArticleUser<'_>],
+    orgs: &[ApiArticleOrganization<'_>],
+    flare_tags: &[ApiArticleFlareTag<'_>],
+    base_urls: &[&str],
+    config: &ApiArticlesConfig<'_>,
+) -> Option<String> {
+    serialize_api_articles_array(
+        articles,
+        single_body_markdown,
+        users,
+        orgs,
+        flare_tags,
+        base_urls,
+        config,
+    )
+}
+
+/// Streams the complete `/api/articles/:id` and `/api/articles/:username/:slug` (v0 & v1)
+/// JSON object into a single pre-sized buffer, including `body_html` and `body_markdown`.
+///
+/// Note: matching `show.json.jbuilder` (see forem/forem#4206), `tag_list` is the raw
+/// comma-separated string and `tags` is the tag array — opposite of `/api/articles` index.
+#[allow(clippy::too_many_arguments)]
+pub fn serialize_api_article_show_json(
+    article: &ApiArticleRow<'_>,
+    body_html: Option<&str>,
+    body_markdown: Option<&str>,
+    users: &[ApiArticleUser<'_>],
+    orgs: &[ApiArticleOrganization<'_>],
+    flare_tags: &[ApiArticleFlareTag<'_>],
+    base_urls: &[&str],
+    config: &ApiArticlesConfig<'_>,
+) -> Option<String> {
+    let user_idx = usize::try_from(article.user_idx).ok()?;
+    let user = users.get(user_idx)?;
+
+    let org = if article.org_idx >= 0 {
+        let org_idx = usize::try_from(article.org_idx).ok()?;
+        Some(orgs.get(org_idx)?)
+    } else if article.org_idx == -1 {
+        None
+    } else {
+        return None;
+    };
+
+    let base_url_idx = usize::try_from(article.base_url_idx).ok()?;
+    let base_url = *base_urls.get(base_url_idx)?;
+
+    let escape_html = config.escape_html_entities;
+    let cover_height_str = config.cover_image_height.to_string();
+    let body_bytes = body_html.map_or(0, str::len) + body_markdown.map_or(0, str::len);
+    let mut out = String::with_capacity(
+        1400usize
+            .saturating_add(body_bytes)
+            .saturating_add(body_bytes / 8),
+    );
+
+    write_article_common_fields(&mut out, article, base_url, &cover_height_str, config)?;
+
+    out.push_str(",\"tag_list\":");
+    write_opt_str(&mut out, article.cached_tag_list, escape_html);
+
+    out.push_str(",\"tags\":");
+    write_tag_list_array(&mut out, article.cached_tag_list, escape_html);
+
+    out.push_str(",\"body_html\":");
+    write_opt_str(&mut out, body_html, escape_html);
+
+    out.push_str(",\"body_markdown\":");
+    write_opt_str(&mut out, body_markdown, escape_html);
+
+    write_user_org_flare_tail(
+        &mut out,
+        article.cached_tag_list,
+        user,
+        org,
+        flare_tags,
+        escape_html,
+    );
+
+    Some(out)
+}
+
+/// Streams the complete `/api/articles/me(/:status)` (v0 & v1) JSON array into a single
+/// pre-sized buffer, matching `api/v*/articles/me.json.jbuilder` key-for-key.
+pub fn serialize_api_articles_me_json(
+    articles: &[ApiArticleMeRow<'_>],
+    user: &ApiArticleUser<'_>,
+    orgs: &[ApiArticleOrganization<'_>],
+    flare_tags: &[ApiArticleFlareTag<'_>],
+    base_urls: &[&str],
+    config: &ApiArticlesConfig<'_>,
+) -> Option<String> {
+    if articles.is_empty() {
+        return Some("[]".to_string());
+    }
+
+    let escape_html = config.escape_html_entities;
+    let cover_height_str = config.cover_image_height.to_string();
+    let md_total: usize = articles
+        .iter()
+        .map(|a| a.body_markdown.map_or(0, str::len))
+        .sum();
+    let mut out = String::with_capacity(
+        articles
+            .len()
+            .saturating_mul(900)
+            .saturating_add(md_total)
+            .saturating_add(md_total / 8)
+            .saturating_add(16),
+    );
+    out.push('[');
+
+    for (idx, article) in articles.iter().enumerate() {
+        if idx > 0 {
+            out.push(',');
+        }
+
+        let org = if article.org_idx >= 0 {
+            let org_idx = usize::try_from(article.org_idx).ok()?;
+            Some(orgs.get(org_idx)?)
+        } else if article.org_idx == -1 {
+            None
+        } else {
+            return None;
+        };
+
+        let base_url_idx = usize::try_from(article.base_url_idx).ok()?;
+        let base_url = *base_urls.get(base_url_idx)?;
         let article_url = match article.url_path {
             Some(p) => join_url(base_url, p)?,
             None => base_url.to_string(),
         };
 
-        let ai_idx = usize::from(article.ai_disclosure_idx);
-        let ai_key = *AI_DISCLOSURE_KEYS.get(ai_idx)?;
-        let ai_label = *config.ai_disclosure_labels.get(ai_idx)?;
-
         let displayable_sec = article.crossposted_at_sec.or(article.published_at_sec);
         let canonical = trim_canonical_url(article.canonical_url)?.unwrap_or(article_url.as_str());
-
-        // Compute cover_image (CloudCoverUrl#call).
-        let cover_image: Option<String> = match article.main_image {
-            Some(raw_main) if !check_blank(raw_main)? => {
-                if config.is_development {
-                    Some(raw_main.to_string())
-                } else {
-                    let (h_str, crop) = if raw_main.contains("ytimg.com") {
-                        ("500", "crop")
-                    } else {
-                        (cover_height_str.as_str(), config.cover_image_fit)
-                    };
-                    let img_src = strip_cloudinary_w1000_prefix(raw_main, true)?;
-                    Some(optimize_image_url(img_src, "1000", h_str, crop, config)?)
-                }
-            }
-            _ => None,
-        };
-
-        // Compute social_image (Articles::SocialImage#url).
-        let social_src = match article.main_image {
-            Some(s) if !check_blank(s)? => Some(s),
-            _ => match article.social_image {
-                Some(s) if !check_blank(s)? => Some(s),
-                _ => match article.video_thumbnail_url {
-                    Some(s) if !check_blank(s)? => Some(s),
-                    _ => None,
-                },
-            },
-        };
-        let social_image_owned: Option<String> = match social_src {
-            Some(raw_img) => {
-                let (w, h) = if article.social_image_large {
-                    ("1200", "627")
-                } else {
-                    ("1000", "500")
-                };
-                let img_src = strip_cloudinary_w1000_prefix(raw_img, false)?;
-                Some(optimize_image_url(img_src, w, h, "crop", config)?)
-            }
-            None => None,
-        };
-        let social_image = social_image_owned
-            .as_deref()
-            .unwrap_or(config.main_social_image);
+        let cover_image = compute_cover_image(article.main_image, &cover_height_str, config)?;
 
         out.push_str("{\"type_of\":\"article\",\"id\":");
         let _ = write!(out, "{}", article.id);
@@ -506,16 +939,24 @@ pub fn serialize_api_articles_json(
         out.push_str(",\"description\":");
         write_opt_str(&mut out, article.description, escape_html);
 
-        out.push_str(",\"readable_publish_date\":");
-        match displayable_sec {
-            Some(secs) => {
+        out.push_str(",\"published\":");
+        match article.published {
+            Some(true) => out.push_str("true"),
+            Some(false) => out.push_str("false"),
+            None => out.push_str("null"),
+        }
+
+        out.push_str(",\"published_at\":");
+        match (article.published_at_sec, article.published_at_millis) {
+            (Some(secs), Some(millis)) => {
                 out.push('"');
-                if !write_readable_publish_date(&mut out, secs, config.current_year) {
+                if !write_utc_iso8601_millis(&mut out, secs, millis) {
                     return None;
                 }
                 out.push('"');
             }
-            None => out.push_str("null"),
+            (None, None) => out.push_str("null"),
+            _ => return None,
         }
 
         out.push_str(",\"slug\":");
@@ -533,11 +974,11 @@ pub fn serialize_api_articles_json(
         out.push_str(",\"public_reactions_count\":");
         write_opt_i64(&mut out, article.public_reactions_count);
 
-        out.push_str(",\"collection_id\":");
-        write_opt_i64(&mut out, article.collection_id);
+        out.push_str(",\"page_views_count\":");
+        write_opt_i64(&mut out, article.page_views_count);
 
         out.push_str(",\"published_timestamp\":\"");
-        if article.published {
+        if article.published == Some(true) {
             if let Some(secs) = displayable_sec {
                 if !write_utc_iso8601(&mut out, secs) {
                     return None;
@@ -546,16 +987,8 @@ pub fn serialize_api_articles_json(
         }
         out.push('"');
 
-        out.push_str(",\"language\":");
-        write_opt_str(&mut out, article.language, escape_html);
-
-        out.push_str(",\"subforem_id\":");
-        write_opt_i64(&mut out, article.subforem_id);
-
-        out.push_str(",\"ai_disclosure_level\":\"");
-        out.push_str(ai_key);
-        out.push_str("\",\"ai_disclosure_label\":");
-        write_json_string(&mut out, ai_label, escape_html);
+        out.push_str(",\"body_markdown\":");
+        write_opt_str(&mut out, article.body_markdown, escape_html);
 
         out.push_str(",\"positive_reactions_count\":");
         write_opt_i64(&mut out, article.public_reactions_count);
@@ -563,75 +996,23 @@ pub fn serialize_api_articles_json(
         out.push_str(",\"cover_image\":");
         write_opt_str(&mut out, cover_image.as_deref(), escape_html);
 
-        out.push_str(",\"social_image\":");
-        write_json_string(&mut out, social_image, escape_html);
+        out.push_str(",\"tag_list\":");
+        write_tag_list_array(&mut out, article.cached_tag_list, escape_html);
 
         out.push_str(",\"canonical_url\":");
         write_json_string(&mut out, canonical, escape_html);
 
-        out.push_str(",\"created_at\":");
-        if !write_opt_utc_iso8601(&mut out, article.created_at_sec) {
-            return None;
-        }
-
-        out.push_str(",\"edited_at\":");
-        if !write_opt_utc_iso8601(&mut out, article.edited_at_sec) {
-            return None;
-        }
-
-        out.push_str(",\"crossposted_at\":");
-        if !write_opt_utc_iso8601(&mut out, article.crossposted_at_sec) {
-            return None;
-        }
-
-        out.push_str(",\"published_at\":");
-        if !write_opt_utc_iso8601(&mut out, article.published_at_sec) {
-            return None;
-        }
-
-        out.push_str(",\"last_comment_at\":");
-        if !write_opt_utc_iso8601(&mut out, article.last_comment_at_sec) {
-            return None;
-        }
-
         out.push_str(",\"reading_time_minutes\":");
         write_opt_i64(&mut out, article.reading_time);
 
-        out.push_str(",\"tag_list\":[");
-        if let Some(raw_tags) = article.cached_tag_list {
-            for (tag_idx, tag) in iter_cached_tag_list(raw_tags).enumerate() {
-                if tag_idx > 0 {
-                    out.push(',');
-                }
-                write_json_string(&mut out, tag, escape_html);
-            }
-        }
-        out.push(']');
-
-        out.push_str(",\"tags\":");
-        write_opt_str(&mut out, article.cached_tag_list, escape_html);
-
-        out.push_str(",\"user\":");
-        write_user_object(&mut out, user, escape_html);
-
-        if let Some(org) = org {
-            out.push_str(",\"organization\":");
-            write_organization_object(&mut out, org, escape_html);
-        }
-
-        if let Some(ft) = match_flare_tag(article.cached_tag_list, flare_tags) {
-            if ft.name.is_some() {
-                out.push_str(",\"flare_tag\":{\"name\":");
-                write_opt_str(&mut out, ft.name, escape_html);
-                out.push_str(",\"bg_color_hex\":");
-                write_opt_str(&mut out, ft.bg_color_hex, escape_html);
-                out.push_str(",\"text_color_hex\":");
-                write_opt_str(&mut out, ft.text_color_hex, escape_html);
-                out.push('}');
-            }
-        }
-
-        out.push('}');
+        write_user_org_flare_tail(
+            &mut out,
+            article.cached_tag_list,
+            user,
+            org,
+            flare_tags,
+            escape_html,
+        );
     }
 
     out.push(']');
@@ -876,5 +1257,191 @@ mod tests {
         .unwrap();
 
         assert!(!json.contains("\"flare_tag\""));
+    }
+
+    #[test]
+    fn format_utc_iso8601_millis_matches_activesupport() {
+        assert_eq!(
+            format_utc_iso8601_millis(1_795_528_285, 0).as_deref(),
+            Some("2026-11-24T13:51:25.000Z")
+        );
+        assert_eq!(
+            format_utc_iso8601_millis(1_795_528_285, 7).as_deref(),
+            Some("2026-11-24T13:51:25.007Z")
+        );
+        assert_eq!(
+            format_utc_iso8601_millis(1_795_528_285, 42).as_deref(),
+            Some("2026-11-24T13:51:25.042Z")
+        );
+        assert_eq!(
+            format_utc_iso8601_millis(1_795_528_285, 999).as_deref(),
+            Some("2026-11-24T13:51:25.999Z")
+        );
+        assert_eq!(format_utc_iso8601_millis(1_795_528_285, 1000), None);
+        assert_eq!(format_utc_iso8601_millis(-62_167_219_201, 0), None);
+    }
+
+    #[test]
+    fn serialize_api_article_show_swaps_tags_and_streams_bodies() {
+        let mut article = sample_article();
+        article.org_idx = 0;
+        let users = [sample_user()];
+        let orgs = [ApiArticleOrganization {
+            name: Some("Forem"),
+            username: Some("forem"),
+            slug: Some("forem"),
+            profile_image: Some("https://img.example/org640.png"),
+            profile_image_90: Some("https://img.example/org90.png"),
+        }];
+        let flare_tags = [ApiArticleFlareTag {
+            match_name: "discuss",
+            name: Some("discuss"),
+            bg_color_hex: Some("#71EA8B"),
+            text_color_hex: Some("#FFFFFF"),
+        }];
+        let base_urls = ["https://dev.to"];
+        let cfg = sample_config();
+
+        let json = serialize_api_article_show_json(
+            &article,
+            Some("<p>Hello &amp; <b>Rust</b></p>"),
+            Some("# Hello\n\nRust > Ruby"),
+            &users,
+            &orgs,
+            &flare_tags,
+            &base_urls,
+            &cfg,
+        )
+        .unwrap();
+
+        assert!(json.starts_with("{\"type_of\":\"article\",\"id\":101,"));
+        assert!(json.ends_with('}'));
+        // Opposite of index: tag_list is string, tags is array.
+        assert!(json.contains(
+            "\"tag_list\":\"ruby, discuss, rust\",\"tags\":[\"ruby\",\"discuss\",\"rust\"]"
+        ));
+        assert!(json.contains(
+            "\"body_html\":\"\\u003cp\\u003eHello \\u0026amp; \\u003cb\\u003eRust\\u003c/b\\u003e\\u003c/p\\u003e\""
+        ));
+        assert!(json.contains("\"body_markdown\":\"# Hello\\n\\nRust \\u003e Ruby\""));
+        assert!(json.contains("\"organization\":{\"name\":\"Forem\""));
+        assert!(json.contains("\"flare_tag\":{\"name\":\"discuss\""));
+    }
+
+    #[test]
+    fn serialize_api_articles_search_includes_markdown_only_for_single_hit() {
+        let article = sample_article();
+        let users = [sample_user()];
+        let base_urls = ["https://dev.to"];
+        let cfg = sample_config();
+
+        let single = serialize_api_articles_search_json(
+            &[article],
+            Some(Some("# Body")),
+            &users,
+            &[],
+            &[],
+            &base_urls,
+            &cfg,
+        )
+        .unwrap();
+        assert!(single.contains(
+            "\"reading_time_minutes\":3,\"body_markdown\":\"# Body\",\"tag_list\":[\"ruby\""
+        ));
+
+        let multi = serialize_api_articles_search_json(
+            &[article, article],
+            None,
+            &users,
+            &[],
+            &[],
+            &base_urls,
+            &cfg,
+        )
+        .unwrap();
+        assert!(!multi.contains("\"body_markdown\""));
+
+        // Mismatched single_body_markdown with len != 1 defers cleanly.
+        assert_eq!(
+            serialize_api_articles_search_json(
+                &[article, article],
+                Some(Some("# Body")),
+                &users,
+                &[],
+                &[],
+                &base_urls,
+                &cfg,
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn serialize_api_articles_me_handles_published_and_draft_rows() {
+        let user = sample_user();
+        let base_urls = ["https://dev.to"];
+        let cfg = sample_config();
+        let rows = [
+            ApiArticleMeRow {
+                id: 10,
+                org_idx: -1,
+                base_url_idx: 0,
+                url_path: Some("/alice/post-1"),
+                title: Some("Published"),
+                description: Some("Desc"),
+                published: Some(true),
+                published_at_sec: Some(1_795_528_285),
+                published_at_millis: Some(42),
+                crossposted_at_sec: None,
+                slug: Some("post-1"),
+                path: Some("/alice/post-1"),
+                comments_count: Some(2),
+                public_reactions_count: Some(7),
+                page_views_count: Some(123),
+                body_markdown: Some("Hello"),
+                main_image: None,
+                cached_tag_list: Some("rust"),
+                canonical_url: None,
+                reading_time: Some(3),
+            },
+            ApiArticleMeRow {
+                id: 11,
+                org_idx: -1,
+                base_url_idx: 0,
+                url_path: Some("/alice/draft"),
+                title: Some("Draft"),
+                description: Some(""),
+                published: Some(false),
+                published_at_sec: None,
+                published_at_millis: None,
+                crossposted_at_sec: None,
+                slug: Some("draft"),
+                path: Some("/alice/draft"),
+                comments_count: Some(0),
+                public_reactions_count: Some(0),
+                page_views_count: Some(0),
+                body_markdown: Some("WIP"),
+                main_image: None,
+                cached_tag_list: None,
+                canonical_url: None,
+                reading_time: Some(1),
+            },
+        ];
+
+        let json =
+            serialize_api_articles_me_json(&rows, &user, &[], &[], &base_urls, &cfg).unwrap();
+        assert!(json.contains("\"published\":true,\"published_at\":\"2026-11-24T13:51:25.042Z\""));
+        assert!(json
+            .contains("\"page_views_count\":123,\"published_timestamp\":\"2026-11-24T13:51:25Z\""));
+        assert!(json.contains("\"published\":false,\"published_at\":null"));
+        assert!(json.contains("\"page_views_count\":0,\"published_timestamp\":\"\""));
+
+        // Invalid millis >= 1000 defers.
+        let mut bad = rows[0];
+        bad.published_at_millis = Some(1000);
+        assert_eq!(
+            serialize_api_articles_me_json(&[bad], &user, &[], &[], &base_urls, &cfg),
+            None
+        );
     }
 }

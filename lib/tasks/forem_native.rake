@@ -1705,7 +1705,7 @@ namespace :forem_native do
     end
   end
 
-  desc "Benchmark Api::ArticlesController#index streaming JSON serialization (Rust vs Legacy Ruby)"
+  desc "Benchmark Api::ArticlesController streaming JSON serialization (index, show, me, search)"
   task benchmark_api_articles: :environment do
     require "addressable/template"
     require "addressable/uri"
@@ -1861,6 +1861,248 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (30-article API index JSON)") { legacy_serialize.call }
       x.report("Rust Magnus (30-article API index JSON)") { native_serialize.call }
+      x.compare!
+    end
+
+    # --- show (single article with 25 KB HTML + 15 KB Markdown) ---
+    show_row = rows.first
+    show_flat = articles_flat.first(28)
+    show_body_html = "<p>Hello &amp; <b>Rust</b> streaming JSON serialization.</p>\n" * 420
+    show_body_md = "## Section\n\nRust > Ruby for JSON serialization.\n\n" * 300
+    legacy_show = lambda do
+      r = show_row
+      u = users[r[:user_idx]]
+      article_url = Addressable::URI.parse(base_urls[r[:base_url_idx]]).join(r[:url_path]).normalize.to_s
+      cover_url = cf_template.expand(
+        domain: "media2.dev.to", directory: "cdn-cgi",
+        options: { width: 1000, height: 420, fit: "cover", gravity: "auto", format: "auto" },
+        src: r[:main_image]
+      ).to_s
+      social_url = cf_template.expand(
+        domain: "media2.dev.to", directory: "cdn-cgi",
+        options: { width: 1200, height: 627, fit: "cover", gravity: "auto", format: "auto" },
+        src: r[:main_image]
+      ).to_s
+      tag_list = r[:cached_tag_list].split(", ")
+      entry = {
+        "type_of" => "article", "id" => r[:id], "title" => r[:title], "description" => r[:description],
+        "readable_publish_date" => r[:published_at].strftime("%b %-e"), "slug" => r[:slug],
+        "path" => r[:path], "url" => article_url, "comments_count" => r[:comments_count],
+        "public_reactions_count" => r[:public_reactions_count], "collection_id" => r[:collection_id],
+        "published_timestamp" => r[:published_at].iso8601, "language" => r[:language],
+        "subforem_id" => r[:subforem_id], "ai_disclosure_level" => ai_keys[r[:ai_disclosure_idx]],
+        "ai_disclosure_label" => ai_labels[r[:ai_disclosure_idx]],
+        "positive_reactions_count" => r[:public_reactions_count], "cover_image" => cover_url,
+        "social_image" => social_url, "canonical_url" => article_url,
+        "created_at" => r[:created_at].iso8601, "edited_at" => nil, "crossposted_at" => nil,
+        "published_at" => r[:published_at].iso8601, "last_comment_at" => r[:last_comment_at].iso8601,
+        "reading_time_minutes" => r[:reading_time], "tag_list" => r[:cached_tag_list], "tags" => tag_list,
+        "body_html" => show_body_html, "body_markdown" => show_body_md,
+        "user" => {
+          "name" => u[:name], "username" => u[:username], "twitter_username" => u[:twitter_username],
+          "github_username" => u[:github_username], "user_id" => u[:id], "website_url" => u[:website_url],
+          "profile_image" => u[:profile_image], "profile_image_90" => u[:profile_image_90]
+        }
+      }
+      if r[:org_idx] >= 0
+        o = orgs[r[:org_idx]]
+        entry["organization"] = {
+          "name" => o[:name], "username" => o[:username], "slug" => o[:slug],
+          "profile_image" => o[:profile_image], "profile_image_90" => o[:profile_image_90]
+        }
+      end
+      ft = tag_list.lazy.filter_map { |t| flare_tags.detect { |f| f[:match_name] == t } }.first
+      if ft
+        entry["flare_tag"] = {
+          "name" => ft[:name], "bg_color_hex" => ft[:bg_color_hex], "text_color_hex" => ft[:text_color_hex]
+        }
+      end
+      ActiveSupport::JSON.encode(entry, escape_html_entities: true)
+    end
+    native_show = lambda do
+      ForemNative.serialize_api_article_show_json(
+        show_flat, show_body_html, show_body_md, users_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+      )
+    end
+    raise "API article show benchmark parity failure!" unless native_show.call == legacy_show.call
+
+    puts "\n=== API Article Show Streaming JSON Benchmark (25 KB HTML + 15 KB MD) ==="
+    ruby_show_mem = MemoryProfiler.report { legacy_show.call }
+    rust_show_mem = MemoryProfiler.report { native_show.call }
+    puts "Ruby Legacy Ruby-heap allocations (1 run): #{ruby_show_mem.total_allocated} objects " \
+         "(#{ruby_show_mem.total_allocated_memsize} bytes)"
+    puts "Rust Magnus Ruby-heap allocations (1 run): #{rust_show_mem.total_allocated} objects " \
+         "(#{rust_show_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (API show JSON)") { legacy_show.call }
+      x.report("Rust Magnus (API show JSON)") { native_show.call }
+      x.compare!
+    end
+
+    # --- search (single-hit with body_markdown & multi-hit without body_markdown) ---
+    search_single_md = "## Search Result\n\nRust > Ruby for JSON serialization.\n\n" * 60
+    legacy_search_single = lambda do
+      r = show_row
+      u = users[r[:user_idx]]
+      article_url = Addressable::URI.parse(base_urls[r[:base_url_idx]]).join(r[:url_path]).normalize.to_s
+      cover_url = cf_template.expand(
+        domain: "media2.dev.to", directory: "cdn-cgi",
+        options: { width: 1000, height: 420, fit: "cover", gravity: "auto", format: "auto" },
+        src: r[:main_image]
+      ).to_s
+      social_url = cf_template.expand(
+        domain: "media2.dev.to", directory: "cdn-cgi",
+        options: { width: 1200, height: 627, fit: "cover", gravity: "auto", format: "auto" },
+        src: r[:main_image]
+      ).to_s
+      tag_list = r[:cached_tag_list].split(", ")
+      entry = {
+        "type_of" => "article", "id" => r[:id], "title" => r[:title], "description" => r[:description],
+        "readable_publish_date" => r[:published_at].strftime("%b %-e"), "slug" => r[:slug],
+        "path" => r[:path], "url" => article_url, "comments_count" => r[:comments_count],
+        "public_reactions_count" => r[:public_reactions_count], "collection_id" => r[:collection_id],
+        "published_timestamp" => r[:published_at].iso8601, "language" => r[:language],
+        "subforem_id" => r[:subforem_id], "ai_disclosure_level" => ai_keys[r[:ai_disclosure_idx]],
+        "ai_disclosure_label" => ai_labels[r[:ai_disclosure_idx]],
+        "positive_reactions_count" => r[:public_reactions_count], "cover_image" => cover_url,
+        "social_image" => social_url, "canonical_url" => article_url,
+        "created_at" => r[:created_at].iso8601, "edited_at" => nil, "crossposted_at" => nil,
+        "published_at" => r[:published_at].iso8601, "last_comment_at" => r[:last_comment_at].iso8601,
+        "reading_time_minutes" => r[:reading_time], "body_markdown" => search_single_md,
+        "tag_list" => tag_list, "tags" => r[:cached_tag_list],
+        "user" => {
+          "name" => u[:name], "username" => u[:username], "twitter_username" => u[:twitter_username],
+          "github_username" => u[:github_username], "user_id" => u[:id], "website_url" => u[:website_url],
+          "profile_image" => u[:profile_image], "profile_image_90" => u[:profile_image_90]
+        }
+      }
+      if r[:org_idx] >= 0
+        o = orgs[r[:org_idx]]
+        entry["organization"] = {
+          "name" => o[:name], "username" => o[:username], "slug" => o[:slug],
+          "profile_image" => o[:profile_image], "profile_image_90" => o[:profile_image_90]
+        }
+      end
+      ft = tag_list.lazy.filter_map { |t| flare_tags.detect { |f| f[:match_name] == t } }.first
+      if ft
+        entry["flare_tag"] = {
+          "name" => ft[:name], "bg_color_hex" => ft[:bg_color_hex], "text_color_hex" => ft[:text_color_hex]
+        }
+      end
+      ActiveSupport::JSON.encode([entry], escape_html_entities: true)
+    end
+    native_search_single = lambda do
+      ForemNative.serialize_api_articles_search_json(
+        show_flat, true, search_single_md, users_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+      )
+    end
+    unless native_search_single.call == legacy_search_single.call
+      raise "API articles search (single-hit) parity failure!"
+    end
+
+    native_search_multi = lambda do
+      ForemNative.serialize_api_articles_search_json(
+        articles_flat, false, nil, users_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+      )
+    end
+    raise "API articles search (multi-hit) parity failure!" unless native_search_multi.call == legacy_serialize.call
+
+    puts "\n=== API Articles Search Streaming JSON Benchmark (single-hit with MD & 30-article multi-hit) ==="
+    ruby_s1_mem = MemoryProfiler.report { legacy_search_single.call }
+    rust_s1_mem = MemoryProfiler.report { native_search_single.call }
+    puts "Single-hit Ruby-heap allocations: Ruby #{ruby_s1_mem.total_allocated} objects " \
+         "(#{ruby_s1_mem.total_allocated_memsize} bytes) vs Rust #{rust_s1_mem.total_allocated} objects " \
+         "(#{rust_s1_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (search single-hit + MD)") { legacy_search_single.call }
+      x.report("Rust Magnus (search single-hit + MD)") { native_search_single.call }
+      x.compare!
+    end
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (search 30-article multi-hit)") { legacy_serialize.call }
+      x.report("Rust Magnus (search 30-article multi-hit)") { native_search_multi.call }
+      x.compare!
+    end
+
+    # --- me (30 articles x 3 KB Markdown) ---
+    me_user = users.first
+    me_user_flat = [
+      me_user[:id], me_user[:name], me_user[:username], me_user[:twitter_username],
+      me_user[:github_username], me_user[:website_url], me_user[:profile_image], me_user[:profile_image_90]
+    ]
+    me_md = "## My Article\n\nSome markdown content with <tags> & details.\n\n" * 50
+    me_rows = rows.map { |r| r.merge(page_views_count: r[:id] % 5_000, body_markdown: me_md) }
+    me_articles_flat = me_rows.flat_map do |r|
+      [
+        r[:id], r[:org_idx], r[:base_url_idx], r[:url_path], r[:title], r[:description], r[:published],
+        r[:published_at].tv_sec, r[:published_at].tv_usec / 1000, r[:crossposted_at]&.tv_sec,
+        r[:slug], r[:path], r[:comments_count], r[:public_reactions_count], r[:page_views_count],
+        r[:body_markdown], r[:main_image], r[:cached_tag_list], r[:canonical_url], r[:reading_time]
+      ]
+    end
+    legacy_me = lambda do
+      entries = me_rows.map do |r|
+        article_url = Addressable::URI.parse(base_urls[r[:base_url_idx]]).join(r[:url_path]).normalize.to_s
+        cover_url = cf_template.expand(
+          domain: "media2.dev.to", directory: "cdn-cgi",
+          options: { width: 1000, height: 420, fit: "cover", gravity: "auto", format: "auto" },
+          src: r[:main_image]
+        ).to_s
+        tag_list = r[:cached_tag_list].split(", ")
+        entry = {
+          "type_of" => "article", "id" => r[:id], "title" => r[:title], "description" => r[:description],
+          "published" => r[:published], "published_at" => r[:published_at].strftime("%Y-%m-%dT%H:%M:%S.%3NZ"),
+          "slug" => r[:slug], "path" => r[:path], "url" => article_url,
+          "comments_count" => r[:comments_count], "public_reactions_count" => r[:public_reactions_count],
+          "page_views_count" => r[:page_views_count], "published_timestamp" => r[:published_at].iso8601,
+          "body_markdown" => r[:body_markdown], "positive_reactions_count" => r[:public_reactions_count],
+          "cover_image" => cover_url, "tag_list" => tag_list, "canonical_url" => article_url,
+          "reading_time_minutes" => r[:reading_time],
+          "user" => {
+            "name" => me_user[:name], "username" => me_user[:username],
+            "twitter_username" => me_user[:twitter_username], "github_username" => me_user[:github_username],
+            "user_id" => me_user[:id], "website_url" => me_user[:website_url],
+            "profile_image" => me_user[:profile_image], "profile_image_90" => me_user[:profile_image_90]
+          }
+        }
+        if r[:org_idx] >= 0
+          o = orgs[r[:org_idx]]
+          entry["organization"] = {
+            "name" => o[:name], "username" => o[:username], "slug" => o[:slug],
+            "profile_image" => o[:profile_image], "profile_image_90" => o[:profile_image_90]
+          }
+        end
+        ft = tag_list.lazy.filter_map { |t| flare_tags.detect { |f| f[:match_name] == t } }.first
+        if ft
+          entry["flare_tag"] = {
+            "name" => ft[:name], "bg_color_hex" => ft[:bg_color_hex], "text_color_hex" => ft[:text_color_hex]
+          }
+        end
+        entry
+      end
+      ActiveSupport::JSON.encode(entries, escape_html_entities: true)
+    end
+    native_me = lambda do
+      ForemNative.serialize_api_articles_me_json(
+        me_articles_flat, me_user_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+      )
+    end
+    raise "API articles /me benchmark parity failure!" unless native_me.call == legacy_me.call
+
+    puts "\n=== API Articles /me Streaming JSON Benchmark (30 articles x 3 KB MD) ==="
+    ruby_me_mem = MemoryProfiler.report { legacy_me.call }
+    rust_me_mem = MemoryProfiler.report { native_me.call }
+    puts "Ruby Legacy Ruby-heap allocations (1 run): #{ruby_me_mem.total_allocated} objects " \
+         "(#{ruby_me_mem.total_allocated_memsize} bytes)"
+    puts "Rust Magnus Ruby-heap allocations (1 run): #{rust_me_mem.total_allocated} objects " \
+         "(#{rust_me_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (30-article API /me JSON)") { legacy_me.call }
+      x.report("Rust Magnus (30-article API /me JSON)") { native_me.call }
       x.compare!
     end
   end

@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :validate_agent_session_data
+  LATEST_NATIVE_SYMBOL = :serialize_api_articles_me_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -1938,6 +1938,72 @@ module ForemNative
         base_urls.is_a?(Array) && config.is_a?(Array)
 
       Native.serialize_api_articles_json(articles_flat, users_flat, orgs_flat, flare_tags_flat, base_urls, config)
+    end
+
+    # Formats a UTC Unix epoch timestamp with millisecond precision into
+    # `"YYYY-MM-DDTHH:MM:SS.mmmZ"`, matching ActiveSupport's `TimeWithZone#as_json`.
+    def format_utc_iso8601_millis(epoch_secs, millis)
+      return unless Native.respond_to?(:format_utc_iso8601_millis)
+      return unless valid_i64_integer?(epoch_secs) && valid_i64_integer?(millis)
+
+      Native.format_utc_iso8601_millis(epoch_secs, millis)
+    end
+
+    # Single-pass streaming JSON serializer for `/api/articles/:id` and
+    # `/api/articles/:username/:slug` (v0 & v1), including `body_html` and `body_markdown`.
+    def serialize_api_article_show_json(
+      article_flat,
+      body_html,
+      body_markdown,
+      users_flat,
+      orgs_flat,
+      flare_tags_flat,
+      base_urls,
+      config
+    )
+      return unless Native.respond_to?(:serialize_api_article_show_json)
+      return unless article_flat.is_a?(Array) && users_flat.is_a?(Array) &&
+        orgs_flat.is_a?(Array) && flare_tags_flat.is_a?(Array) &&
+        base_urls.is_a?(Array) && config.is_a?(Array)
+      return unless (body_html.nil? || body_html.is_a?(String)) &&
+        (body_markdown.nil? || body_markdown.is_a?(String))
+
+      Native.serialize_api_article_show_json(
+        article_flat, body_html, body_markdown, users_flat, orgs_flat, flare_tags_flat, base_urls, config
+      )
+    end
+
+    # Single-pass streaming JSON serializer for `/api/articles/search` (v0 & v1).
+    def serialize_api_articles_search_json(
+      articles_flat,
+      include_body_markdown,
+      single_body_markdown,
+      users_flat,
+      orgs_flat,
+      flare_tags_flat,
+      base_urls,
+      config
+    )
+      return unless Native.respond_to?(:serialize_api_articles_search_json)
+      return unless articles_flat.is_a?(Array) && users_flat.is_a?(Array) &&
+        orgs_flat.is_a?(Array) && flare_tags_flat.is_a?(Array) &&
+        base_urls.is_a?(Array) && config.is_a?(Array)
+      return unless single_body_markdown.nil? || single_body_markdown.is_a?(String)
+
+      Native.serialize_api_articles_search_json(
+        articles_flat, include_body_markdown ? true : false, single_body_markdown,
+        users_flat, orgs_flat, flare_tags_flat, base_urls, config
+      )
+    end
+
+    # Single-pass streaming JSON serializer for `/api/articles/me(/:status)` (v0 & v1).
+    def serialize_api_articles_me_json(articles_flat, user_flat, orgs_flat, flare_tags_flat, base_urls, config)
+      return unless Native.respond_to?(:serialize_api_articles_me_json)
+      return unless articles_flat.is_a?(Array) && user_flat.is_a?(Array) &&
+        orgs_flat.is_a?(Array) && flare_tags_flat.is_a?(Array) &&
+        base_urls.is_a?(Array) && config.is_a?(Array)
+
+      Native.serialize_api_articles_me_json(articles_flat, user_flat, orgs_flat, flare_tags_flat, base_urls, config)
     end
 
     # Selects up to 3 public reaction category indices sorted by `(-count, position)`
