@@ -46,5 +46,35 @@ RSpec.describe "ExternalAhoyEmailClicks" do
         expect(response).to redirect_to(url_without_bb)
       end
     end
+
+    context "when the URL is not a valid URI" do
+      before do
+        allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_return(false)
+      end
+
+      it "does not raise on trailing whitespace and delegates to Ahoy::MessagesController#click" do
+        expect do
+          get "/ahoy/click", params: { u: "https://example.com/path ", t: token }
+        end.not_to change(Billboards::TrackEmailClickWorker.jobs, :size)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not raise on non-ASCII characters and delegates to Ahoy::MessagesController#click" do
+        expect do
+          get "/ahoy/click", params: { u: "invalid..\u2663", t: token }
+        end.not_to change(Billboards::TrackEmailClickWorker.jobs, :size)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not raise on non-scalar url params and delegates to Ahoy::MessagesController#click" do
+        expect do
+          get "/ahoy/click", params: { u: ["https://example.com"], t: token }
+        end.not_to change(Billboards::TrackEmailClickWorker.jobs, :size)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
   end
 end
