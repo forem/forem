@@ -517,6 +517,33 @@ RSpec.describe Html::Parser, type: :service do
       expect(parsed_html).to include('data-gif-video="true"', 'autoplay="autoplay"', 'preload="metadata"')
     end
 
+    it "prefixes <img> elements in #prefix_all_images without DOM parsing" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      html = '<p><img src="https://media.giphy.com/media/abc/giphy.gif" alt="gif"></p>'
+      parsed_html = described_class.new(html).prefix_all_images.html
+
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(parsed_html).to eq('<p><img src="https://i.giphy.com/media/abc/giphy.gif" alt="gif" loading="lazy"></p>')
+    end
+
+    it "transforms markdown alerts in #transform_markdown_alerts without DOM parsing" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      html = "<blockquote>\n<p>[!TIP]\nUse Rust.</p>\n</blockquote>"
+      parsed_html = described_class.new(html).transform_markdown_alerts.html
+
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(parsed_html).to include('data-alert="tip"', 'data-alert-label="tip"', "<p>Use Rust.</p>")
+    end
+
+    it "wraps figcaptions in #wrap_all_figures_with_tags without DOM parsing" do
+      allow(Nokogiri).to receive(:HTML)
+      html = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
+      parsed_html = described_class.new(html).wrap_all_figures_with_tags.html
+
+      expect(Nokogiri).not_to have_received(:HTML)
+      expect(parsed_html).to eq("<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>\n")
+    end
+
     it "reuses FULLSCREEN_ACTION_CACHE without re-parsing inline SVGs on cache hits", :aggregate_failures do
       described_class.new("").fullscreen_action_html
 

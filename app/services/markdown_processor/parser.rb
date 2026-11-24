@@ -307,27 +307,36 @@ module MarkdownProcessor
     def finalize_html(html, prefix_images_options)
       return html if html.blank?
 
-      has_alert = html.match?(/<blockquote/i) && (html.include?("[!") || html.include?("&"))
-      has_figcaption = html.match?(/<figcaption/i)
+      has_img = html.match?(/<img/i)
+      prefix_config = if has_img
+                        Html::Parser.native_prefix_images_config(
+                          width: prefix_images_options.fetch(:width, 880),
+                          synchronous_detail_detection: prefix_images_options.fetch(
+                            :synchronous_detail_detection, false
+                          ),
+                        )
+                      end
 
-      unless has_alert || has_figcaption
-        if html.match?(/<img/i)
-          linked = add_target_blank_to_outbound_links(html)
-          prefixed = Html::Parser.new(linked).prefix_all_images(**prefix_images_options).html
-          result = native_postprocess_rendered_html(prefixed, run_target_blank: false)
-          return result if result
+      if !has_img || prefix_config
+        result = native_postprocess_rendered_html(
+          html,
+          run_target_blank: true,
+          prefix_images_config: prefix_config,
+        )
+        return result if result
+      else
+        linked = add_target_blank_to_outbound_links(html)
+        prefixed = Html::Parser.new(linked).prefix_all_images(**prefix_images_options).html
+        result = native_postprocess_rendered_html(prefixed, run_target_blank: false)
+        return result if result
 
-          return parse_post_prefix_html(Html::Parser.new(prefixed).remove_nested_linebreak_in_list).html
-        else
-          result = native_postprocess_rendered_html(html, run_target_blank: true)
-          return result if result
-        end
+        return parse_post_prefix_html(Html::Parser.new(prefixed).remove_nested_linebreak_in_list).html
       end
 
       parse_html(add_target_blank_to_outbound_links(html), prefix_images_options)
     end
 
-    def native_postprocess_rendered_html(html, run_target_blank:)
+    def native_postprocess_rendered_html(html, run_target_blank:, prefix_images_config: nil)
       prepared_html = html
       if html.include?("@") && html.include?("<br")
         prepared_html = ForemNative.remove_nested_linebreak_in_list_fragment(html)
@@ -343,6 +352,10 @@ module MarkdownProcessor
 
       existing_usernames = Html::Parser.resolve_existing_usernames(usernames)
       action_html = prepared_html.include?("highlight") ? Html::Parser.new("").fullscreen_action_html : ""
+      alert_labels = if prepared_html.include?("<blockquote") &&
+          (prepared_html.include?("[!") || prepared_html.include?("&"))
+                       Html::Parser.alert_labels
+                     end
       app_domain = Settings::General.app_domain
       base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{app_domain}"
 
@@ -354,6 +367,8 @@ module MarkdownProcessor
         base_url: base_url,
         run_target_blank: run_target_blank,
         normalize_document: true,
+        prefix_images_config: prefix_images_config,
+        alert_labels: alert_labels,
       )
     end
 

@@ -10791,4 +10791,301 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".prefix_all_images" do
+    let(:legacy_prefix_all_images) do
+      giphy_hosts = %w[media.giphy.com i.giphy.com]
+      lambda do |html, width:, app_host:, asset_host:, cloudflare_domain:, cloudflare_directory:|
+        doc = Nokogiri::HTML.fragment(html)
+        doc.css("img").each do |img|
+          src = img.attr("src")
+          next unless src
+
+          uri = URI(src)
+          allowed = (uri.host.nil? && uri.path.to_s.start_with?("/")) ||
+            (app_host && uri.host == app_host) ||
+            (asset_host && uri.host == asset_host) ||
+            (uri.scheme == "https" && uri.host == "camo.githubusercontent.com") ||
+            (uri.scheme == "https" && uri.host == "github.com" && File.basename(uri.path) == "badge.svg")
+          next if allowed
+          next if img["data-ignore-prefix"] == "true"
+
+          img["loading"] = "lazy"
+          is_giphy = uri.scheme == "https" && uri.userinfo.nil? && uri.fragment.nil? && uri.query.nil? &&
+            giphy_hosts.include?(uri.host) && uri.port == 443 && uri.path.end_with?(".gif")
+          img["src"] = if is_giphy
+                         src.gsub("https://media.", "https://i.")
+                       elsif src.include?("/agent_sessions/") || cloudflare_domain.nil?
+                         src.gsub(",", "%2C")
+                       else
+                         described_class.cloudflare_image_url(
+                           cloudflare_domain, cloudflare_directory, width, nil, "scale-down", src, src
+                         ).gsub(",", "%2C")
+                       end
+        end
+        doc.to_html
+      end
+    end
+
+    it "returns nil on out-of-domain inputs and handles empty strings", :aggregate_failures do
+      expect(described_class.prefix_all_images("")).to eq("")
+      expect(described_class.prefix_all_images(nil)).to be_nil
+      expect(described_class.prefix_all_images("<p><img src=\"https://example.com/bad url.png\"></p>")).to be_nil
+      expect(
+        described_class.prefix_all_images(
+          "<p><img src=\"https://media2.dev.to/dynamic/image/width=880/https://example.com/a.png\"></p>",
+          cloudflare_domain: "media2.dev.to",
+          cloudflare_directory: "dynamic",
+        ),
+      ).to be_nil
+      expect(described_class.prefix_all_images("<P><IMG SRC=\"https://example.com/a.png\"></P>")).to be_nil
+    end
+
+    it "matches Nokogiri::HTML.fragment output bit-for-bit across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      urls = [
+        "https://example.com/photo.jpg",
+        "https://example.com/anim.gif",
+        "https://example.com/pic.webp?v=1&amp;size=2",
+        "https://example.com/path,with,commas.png",
+        "https://media.giphy.com/media/abc123/giphy.gif",
+        "https://i.giphy.com/media/xyz/giphy.gif",
+        "https://dev.to/uploads/first-party.png",
+        "https://assets.dev.to/logo.png",
+        "https://camo.githubusercontent.com/abcdef",
+        "https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg",
+        "/assets/local.png",
+        "https://cdn.example.com/agent_sessions/123/shot.png",
+      ]
+
+      1_000.times do |i|
+        use_cf = rng.rand(2).zero?
+        cf_domain = use_cf ? "media2.dev.to" : nil
+        cf_dir = use_cf ? "dynamic" : "cdn-cgi"
+        width = [800, 880, 1000].sample(random: rng)
+        img_count = rng.rand(1..3)
+        parts = Array.new(img_count) do
+          url = urls.sample(random: rng)
+          attrs = []
+          attrs << "alt=\"pic #{rng.rand(10)}\"" if rng.rand(2).zero?
+          attrs << "src=\"#{url}\""
+          attrs << "data-ignore-prefix=\"true\"" if rng.rand(6).zero?
+          attrs << "loading=\"eager\"" if rng.rand(5).zero?
+          attrs << "loading=\"lazy\"" if rng.rand(5).zero? && attrs.none? { |a| a.start_with?("loading=") }
+          "<p><img #{attrs.join(' ')}></p>"
+        end
+        html = parts.join("\n")
+
+        actual = described_class.prefix_all_images(
+          html,
+          width: width,
+          app_host: "dev.to",
+          asset_host: "assets.dev.to",
+          cloudflare_domain: cf_domain,
+          cloudflare_directory: cf_dir,
+        )
+        expected = legacy_prefix_all_images.call(
+          html,
+          width: width,
+          app_host: "dev.to",
+          asset_host: "assets.dev.to",
+          cloudflare_domain: cf_domain,
+          cloudflare_directory: cf_dir,
+        )
+        expect(actual).to eq(expected), "iteration #{i}: html=#{html.inspect}"
+      end
+    end
+  end
+
+  describe ".transform_markdown_alerts" do
+    let(:labels) { %w[Note Tip Important Warning Caution] }
+    let(:alert_token_re) { /\A\[!(note|tip|important|warning|caution)\](?=\s|\z)\s*/i }
+    let(:legacy_transform_markdown_alerts) do
+      lambda do |html, alert_labels|
+        type_map = %w[note tip important warning caution].zip(alert_labels).to_h
+        blank_node = lambda do |node|
+          (node.text? && node.content.strip == "") || (node.element? && node.name == "br")
+        end
+        doc = Nokogiri::HTML.fragment(html)
+        doc.css("blockquote").each do |bq|
+          first = bq.element_children.first
+          next unless first&.name == "p"
+
+          leading = first.children.first
+          next unless leading&.text?
+
+          match = leading.content.match(alert_token_re)
+          next unless match
+
+          alert_type = match[1].downcase
+          leading.content = leading.content.sub(alert_token_re, "")
+          while (l = first.children.first) && blank_node.call(l)
+            l.remove
+          end
+          first.remove if first.children.all? { |c| blank_node.call(c) }
+          bq["data-alert"] = alert_type
+          lbl = Nokogiri::XML::Node.new("p", doc)
+          lbl["data-alert-label"] = alert_type
+          lbl.content = type_map[alert_type]
+          bq.prepend_child(lbl)
+        end
+        doc.to_html
+      end
+    end
+
+    it "returns nil on out-of-domain inputs and handles empty strings", :aggregate_failures do
+      expect(described_class.transform_markdown_alerts("", labels)).to eq("")
+      expect(described_class.transform_markdown_alerts(nil, labels)).to be_nil
+      expect(described_class.transform_markdown_alerts("<blockquote><p>[!TIP] x</p></blockquote>", %w[Only])).to be_nil
+      expect(
+        described_class.transform_markdown_alerts(
+          "<blockquote data-alert=\"tip\"><p>[!TIP] x</p></blockquote>", labels
+        ),
+      ).to be_nil
+      expect(
+        described_class.transform_markdown_alerts("<blockquote><p>&#91;!TIP] x</p></blockquote>", labels),
+      ).to be_nil
+    end
+
+    it "matches Nokogiri::HTML.fragment output bit-for-bit across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      tokens = ["[!NOTE]", "[!tip]", "[!Important]", "[!WARNING]", "[!CAUTION]", "[!UNKNOWN]", "[!NOTE]worthy", "Plain"]
+      bodies = ["Body text.", "Multi\nline body.", "<code>inline</code> text", "<strong>bold</strong>", ""]
+
+      1_000.times do |i|
+        token = tokens.sample(random: rng)
+        body = bodies.sample(random: rng)
+        sep = [" ", "\n", "<br>", "<br>\n"].sample(random: rng)
+        p_inner = body.empty? ? token : "#{token}#{sep}#{body}"
+        extra_p = rng.rand(3).zero? ? "\n<p>Second paragraph.</p>" : ""
+        html = case rng.rand(4)
+               when 0
+                 "<blockquote><p>#{p_inner}</p></blockquote>"
+               when 1
+                 "<blockquote>\n<p>#{p_inner}</p>#{extra_p}\n</blockquote>"
+               when 2
+                 "<blockquote><blockquote><p>#{p_inner}</p></blockquote></blockquote>"
+               else
+                 "<p>Before</p>\n<blockquote>\n<p>#{p_inner}</p>\n</blockquote>\n<p>After</p>"
+               end
+
+        actual = described_class.transform_markdown_alerts(html, labels)
+        expected = legacy_transform_markdown_alerts.call(html, labels)
+        expect(actual).to eq(expected), "iteration #{i}: html=#{html.inspect}"
+      end
+    end
+  end
+
+  describe ".wrap_all_figures_with_tags" do
+    let(:legacy_wrap_all_figures_with_tags) do
+      lambda do |html|
+        doc = Nokogiri::HTML(html)
+        doc.xpath("//figcaption").each do |caption|
+          next if caption.parent.name == "figure"
+          next unless caption.previous_element
+
+          fig = doc.create_element("figure")
+          prev = caption.previous_element
+          prev.replace(fig) << prev << caption
+        end
+        body = doc.at_css("body")
+        body ? body.inner_html : doc.to_html
+      end
+    end
+
+    it "returns nil on out-of-domain inputs and handles empty strings", :aggregate_failures do
+      expect(described_class.wrap_all_figures_with_tags("")).to eq("")
+      expect(described_class.wrap_all_figures_with_tags(nil)).to be_nil
+      expect(described_class.wrap_all_figures_with_tags("<p>Hi</p>text<figcaption>Cap</figcaption>")).to be_nil
+      expect(described_class.wrap_all_figures_with_tags("<P>Hi</P><FIGCAPTION>Cap</FIGCAPTION>")).to be_nil
+    end
+
+    it "matches Nokogiri::HTML output bit-for-bit across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      prev_blocks = [
+        "<p>Statement</p>",
+        "<p><img src=\"https://example.com/a.png\"></p>",
+        "<div>Box</div>",
+      ]
+
+      1_000.times do |i|
+        prev_block = prev_blocks.sample(random: rng)
+        ws = ["", "\n"].sample(random: rng)
+        caption = "<figcaption>Caption #{i}</figcaption>"
+        html = case rng.rand(5)
+               when 0
+                 "<p>Intro</p>#{prev_block}#{ws}#{caption}"
+               when 1
+                 "#{prev_block}#{ws}#{caption}"
+               when 2
+                 "<figure>#{prev_block}\n#{caption}</figure>"
+               when 3
+                 caption
+               else
+                 "#{prev_block}#{ws}#{caption}\n<p>After</p>"
+               end
+
+        actual = described_class.wrap_all_figures_with_tags(html)
+        expected = legacy_wrap_all_figures_with_tags.call(html)
+        expect(actual).to eq(expected), "iteration #{i}: html=#{html.inspect}"
+      end
+    end
+  end
+
+  describe ".postprocess_rendered_html (full fused pipeline with images, alerts, and figures)" do
+    it "matches sequential native primitives + normalize_document across 1,000 randomized articles" do
+      rng = Random.new(424_242)
+      labels = %w[Note Tip Important Warning Caution]
+      prefix_cfg = ["800", "dev.to", "assets.dev.to", "media2.dev.to", "dynamic"]
+      alert_types = %w[NOTE TIP IMPORTANT WARNING CAUTION]
+      img_urls = [
+        "https://example.com/a.png",
+        "https://media.giphy.com/media/abc/giphy.gif",
+        "https://dev.to/local.png",
+      ]
+
+      1_000.times do |i|
+        blocks = []
+        blocks << "<p>Hello @alice <a href=\"https://github.com/forem\">link</a></p>"
+        if rng.rand(2).zero?
+          blocks << "<p><img src=\"#{img_urls.sample(random: rng)}\" alt=\"img #{i}\"></p>"
+          blocks << "<figcaption>Cap #{i}</figcaption>" if rng.rand(2).zero?
+        end
+        if rng.rand(2).zero?
+          blocks << "<blockquote>\n<p>[!#{alert_types.sample(random: rng)}]\nAlert body #{i}.</p>\n</blockquote>"
+        end
+        html = blocks.join("\n")
+
+        actual = described_class.postprocess_rendered_html(
+          html,
+          app_domain: "dev.to",
+          fullscreen_action_html: "",
+          existing_usernames: ["alice"],
+          base_url: "https://dev.to",
+          run_target_blank: true,
+          normalize_document: true,
+          prefix_images_config: prefix_cfg,
+          alert_labels: labels,
+        )
+
+        step = described_class.add_target_blank_to_outbound_links(html, "dev.to")
+        step = described_class.prefix_all_images(
+          step,
+          width: "800",
+          app_host: "dev.to",
+          asset_host: "assets.dev.to",
+          cloudflare_domain: "media2.dev.to",
+          cloudflare_directory: "dynamic",
+        )
+        step = described_class.wrap_all_images_in_links(step)
+        step = described_class.transform_markdown_alerts(step, labels)
+        step = described_class.remove_empty_paragraphs(step)
+        step = described_class.wrap_all_figures_with_tags(step)
+        step = described_class.wrap_mentions_with_links(step, ["alice"], "https://dev.to")
+        expected = "#{step}\n"
+
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

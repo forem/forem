@@ -30,6 +30,34 @@ module Html
       User.where(username: usernames).pluck(:username)
     end
 
+    def self.alert_labels
+      ALERT_TYPES.map { |type| I18n.t("services.html.parser.alerts.#{type}") }
+    end
+
+    def self.native_prefix_images_config(width: 880, synchronous_detail_detection: false)
+      return if synchronous_detail_detection
+      return unless width.nil? || width.is_a?(Integer) || width.is_a?(String)
+      return if Images::Optimizer.imgproxy_enabled? || Images::Optimizer.cloudinary_enabled?
+
+      app_domain = Settings::General.app_domain
+      app_host = app_domain.present? ? URI("https://#{app_domain}").host : nil
+      asset_host_raw = ActionController::Base.asset_host
+      asset_host = if asset_host_raw.present?
+                     URI("https://#{asset_host_raw.sub(%r{^https?://}, '')}").host
+                   end
+      cf_domain = Images::Optimizer.cloudflare_enabled? ? ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"] : nil
+
+      [
+        width.nil? ? "" : width.to_s,
+        app_host,
+        asset_host,
+        cf_domain,
+        Images::Optimizer::CLOUDFLARE_DIRECTORY,
+      ]
+    rescue URI::InvalidURIError
+      nil
+    end
+
     attr_accessor :html
     private :html=
 
@@ -48,32 +76,9 @@ module Html
     def prefix_all_images(width: 880, synchronous_detail_detection: false, quality: "auto")
       return self if @html.blank? || (!@html.match?(/<img/i) && @html.exclude?("<!DOCTYPE"))
 
-      # wrap with Cloudinary or allow if from giphy or githubusercontent.com
-      doc = Nokogiri::HTML.fragment(@html)
-
-      if @html&.match?(/<img/i)
-        doc.css("img").each do |img|
-          src = img.attr("src")
-          next unless src
-          # allow image to render as-is
-          next if allowed_image_host?(src)
-          next if img["data-ignore-prefix"] == "true"
-
-          if synchronous_detail_detection
-            header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
-            img["width"], img["height"] = SafeFastImage.size(src, timeout: 10, http_header: header)
-          end
-
-          img["loading"] = "lazy"
-          img["src"] = if Giphy::Image.valid_url?(src)
-                         src.gsub("https://media.", "https://i.")
-                       else
-                         img_of_size(src, width, quality: quality)
-                       end
-        end
-      end
-
-      @html = doc.to_html
+      @html = native_prefix_all_images(width: width, synchronous_detail_detection: synchronous_detail_detection) ||
+        legacy_prefix_all_images(width: width, synchronous_detail_detection: synchronous_detail_detection,
+                                 quality: quality)
 
       self
     end
@@ -150,26 +155,8 @@ module Html
     def transform_markdown_alerts
       return self if @html.blank? || !@html.match?(/<blockquote/i) || !(@html.include?("[!") || @html.include?("&"))
 
-      doc = Nokogiri::HTML.fragment(@html)
-
-      doc.css("blockquote").each do |blockquote|
-        first = blockquote.element_children.first
-        next unless first&.name == "p"
-
-        leading = first.children.first
-        next unless leading&.text?
-
-        match = leading.content.match(ALERT_TOKEN)
-        next unless match
-
-        alert_type = match[1].downcase
-        strip_alert_token(first)
-
-        blockquote["data-alert"] = alert_type
-        blockquote.prepend_child(alert_label_node(doc, alert_type))
-      end
-
-      @html = doc.to_html
+      @html = ForemNative.transform_markdown_alerts(@html, self.class.alert_labels) ||
+        legacy_transform_markdown_alerts
 
       self
     end
@@ -202,19 +189,8 @@ module Html
     def wrap_all_figures_with_tags
       return self if @html.blank? || !@html.match?(/<figcaption/i)
 
-      html_doc = Nokogiri::HTML(@html)
-
-      html_doc.xpath("//figcaption").each do |caption|
-        next if caption.parent.name == "figure"
-        next unless caption.previous_element
-
-        fig = html_doc.create_element "figure"
-        prev = caption.previous_element
-        prev.replace(fig) << prev << caption
-      end
-
-      body = html_doc.at_css("body")
-      @html = body ? body.inner_html : html_doc.to_html
+      @html = ForemNative.wrap_all_figures_with_tags(@html) ||
+        legacy_wrap_all_figures_with_tags
 
       self
     end
@@ -462,6 +438,89 @@ module Html
         ForemNative.emoji_by_alias(Regexp.last_match(1)) || match
       end
       @html
+    end
+
+    def native_prefix_all_images(width:, synchronous_detail_detection:)
+      config = self.class.native_prefix_images_config(
+        width: width,
+        synchronous_detail_detection: synchronous_detail_detection,
+      )
+      return unless config
+
+      ForemNative.prefix_all_images(
+        @html,
+        width: config[0],
+        app_host: config[1],
+        asset_host: config[2],
+        cloudflare_domain: config[3],
+        cloudflare_directory: config[4],
+      )
+    end
+
+    def legacy_prefix_all_images(width:, synchronous_detail_detection:, quality:)
+      doc = Nokogiri::HTML.fragment(@html)
+
+      if @html&.match?(/<img/i)
+        doc.css("img").each do |img|
+          src = img.attr("src")
+          next unless src
+          next if allowed_image_host?(src)
+          next if img["data-ignore-prefix"] == "true"
+
+          if synchronous_detail_detection
+            header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
+            img["width"], img["height"] = SafeFastImage.size(src, timeout: 10, http_header: header)
+          end
+
+          img["loading"] = "lazy"
+          img["src"] = if Giphy::Image.valid_url?(src)
+                         src.gsub("https://media.", "https://i.")
+                       else
+                         img_of_size(src, width, quality: quality)
+                       end
+        end
+      end
+
+      doc.to_html
+    end
+
+    def legacy_transform_markdown_alerts
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.css("blockquote").each do |blockquote|
+        first = blockquote.element_children.first
+        next unless first&.name == "p"
+
+        leading = first.children.first
+        next unless leading&.text?
+
+        match = leading.content.match(ALERT_TOKEN)
+        next unless match
+
+        alert_type = match[1].downcase
+        strip_alert_token(first)
+
+        blockquote["data-alert"] = alert_type
+        blockquote.prepend_child(alert_label_node(doc, alert_type))
+      end
+
+      doc.to_html
+    end
+
+    def legacy_wrap_all_figures_with_tags
+      html_doc = Nokogiri::HTML(@html)
+
+      html_doc.xpath("//figcaption").each do |caption|
+        next if caption.parent.name == "figure"
+        next unless caption.previous_element
+
+        fig = html_doc.create_element "figure"
+        prev = caption.previous_element
+        prev.replace(fig) << prev << caption
+      end
+
+      body = html_doc.at_css("body")
+      body ? body.inner_html : html_doc.to_html
     end
   end
 end

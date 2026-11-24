@@ -2300,6 +2300,214 @@ fn postprocess_rendered_html(
     Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+fn prefix_all_images(
+    ruby: &Ruby,
+    html: RString,
+    width: RString,
+    app_host: Option<RString>,
+    asset_host: Option<RString>,
+    cloudflare_domain: Option<RString>,
+    cloudflare_directory: RString,
+) -> Option<RString> {
+    if !width.is_utf8_compatible_encoding()
+        || !cloudflare_directory.is_utf8_compatible_encoding()
+        || app_host
+            .as_ref()
+            .is_some_and(|s| !s.is_utf8_compatible_encoding())
+        || asset_host
+            .as_ref()
+            .is_some_and(|s| !s.is_utf8_compatible_encoding())
+        || cloudflare_domain
+            .as_ref()
+            .is_some_and(|s| !s.is_utf8_compatible_encoding())
+    {
+        return None;
+    }
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let width_str = unsafe { width.test_as_str() }?;
+        let app_h = match app_host.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        let asset_h = match asset_host.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        let cf_dom = match cloudflare_domain.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        let cf_dir = unsafe { cloudflare_directory.test_as_str() }?;
+        let config = forem_core::html::PrefixImagesConfig {
+            width: width_str,
+            app_host: app_h,
+            asset_host: asset_h,
+            cloudflare_domain: cf_dom,
+            cloudflare_directory: cf_dir,
+        };
+        match forem_core::html::prefix_all_images(text, &config)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn extract_alert_labels(alert_labels: RArray) -> Option<[String; 5]> {
+    let slice = unsafe { alert_labels.as_slice() };
+    if slice.len() != 5 {
+        return None;
+    }
+    let mut out = Vec::with_capacity(5);
+    for &val in slice {
+        let rstr = RString::from_value(val)?;
+        if !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        out.push(unsafe { rstr.test_as_str() }?.to_string());
+    }
+    out.try_into().ok()
+}
+
+fn transform_markdown_alerts(ruby: &Ruby, html: RString, alert_labels: RArray) -> Option<RString> {
+    let labels_owned = extract_alert_labels(alert_labels)?;
+    let labels_ref: [&str; 5] = [
+        &labels_owned[0],
+        &labels_owned[1],
+        &labels_owned[2],
+        &labels_owned[3],
+        &labels_owned[4],
+    ];
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::transform_markdown_alerts(text, &labels_ref)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn wrap_all_figures_with_tags(ruby: &Ruby, html: RString) -> Option<RString> {
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::wrap_all_figures_with_tags(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn postprocess_rendered_html_full(
+    ruby: &Ruby,
+    html: RString,
+    app_domain: RString,
+    fullscreen_action_html: RString,
+    existing_usernames: RArray,
+    base_url: RString,
+    run_target_blank: bool,
+    normalize_document: bool,
+    prefix_images_config: Option<RArray>,
+    alert_labels: Option<RArray>,
+) -> Option<RString> {
+    if !app_domain.is_utf8_compatible_encoding()
+        || !fullscreen_action_html.is_utf8_compatible_encoding()
+        || !base_url.is_utf8_compatible_encoding()
+    {
+        return None;
+    }
+    let usernames_vec: Vec<String> = {
+        let slice = unsafe { existing_usernames.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_ascii_lowercase());
+        }
+        out
+    };
+    let prefix_owned = match prefix_images_config {
+        Some(arr) => {
+            let slice = unsafe { arr.as_slice() };
+            if slice.len() != 5 {
+                return None;
+            }
+            let width_rstr = RString::from_value(slice[0])?;
+            if !width_rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            let width = unsafe { width_rstr.test_as_str() }?.to_string();
+            let app_host = extract_optional_utf8_string(slice[1])?;
+            let asset_host = extract_optional_utf8_string(slice[2])?;
+            let cloudflare_domain = extract_optional_utf8_string(slice[3])?;
+            let cf_dir_rstr = RString::from_value(slice[4])?;
+            if !cf_dir_rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            let cloudflare_directory = unsafe { cf_dir_rstr.test_as_str() }?.to_string();
+            Some((
+                width,
+                app_host,
+                asset_host,
+                cloudflare_domain,
+                cloudflare_directory,
+            ))
+        }
+        None => None,
+    };
+    let labels_owned = match alert_labels {
+        Some(arr) => Some(extract_alert_labels(arr)?),
+        None => None,
+    };
+
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        let domain = unsafe { app_domain.test_as_str() }?;
+        let action = unsafe { fullscreen_action_html.test_as_str() }?;
+        let url_str = unsafe { base_url.test_as_str() }?;
+        let prefix_cfg = prefix_owned
+            .as_ref()
+            .map(
+                |(w, app_h, asset_h, cf_d, cf_dir)| forem_core::html::PrefixImagesConfig {
+                    width: w.as_str(),
+                    app_host: app_h.as_deref(),
+                    asset_host: asset_h.as_deref(),
+                    cloudflare_domain: cf_d.as_deref(),
+                    cloudflare_directory: cf_dir.as_str(),
+                },
+            );
+        let labels_ref = labels_owned.as_ref().map(|l| {
+            [
+                l[0].as_str(),
+                l[1].as_str(),
+                l[2].as_str(),
+                l[3].as_str(),
+                l[4].as_str(),
+            ]
+        });
+        match forem_core::html::postprocess_rendered_html_full(
+            text,
+            domain,
+            action,
+            &usernames_vec,
+            url_str,
+            run_target_blank,
+            normalize_document,
+            prefix_cfg.as_ref(),
+            labels_ref.as_ref(),
+        )? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
 #[allow(clippy::too_many_arguments)]
 fn calendar_grid_days_html(
     grid_start_jd: Integer,
@@ -8467,6 +8675,19 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_api_readinglist_json",
         function!(serialize_api_readinglist_json, 6),
+    )?;
+    native_mod.define_singleton_method("prefix_all_images", function!(prefix_all_images, 6))?;
+    native_mod.define_singleton_method(
+        "transform_markdown_alerts",
+        function!(transform_markdown_alerts, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "wrap_all_figures_with_tags",
+        function!(wrap_all_figures_with_tags, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "postprocess_rendered_html_full",
+        function!(postprocess_rendered_html_full, 9),
     )?;
     Ok(())
 }
