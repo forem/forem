@@ -2702,6 +2702,136 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".sanitize_strip_all_tags and .sanitized_text_preview (truncate(sanitize(html, tags: [])))" do
+    # Mirrors `ActionView::Helpers::SanitizeHelper#sanitize(html, tags: [])` with the app's HTML5
+    # sanitizer vendor (`config.load_defaults 8.0`) and `TextHelper#truncate(text, length:)`.
+    let(:safe_list_sanitizer) { Rails::HTML5::SafeListSanitizer.new }
+    let(:legacy_strip_all_tags) do
+      ->(html) { html && ActiveSupport::SafeBuffer.new(safe_list_sanitizer.sanitize(html, tags: [])) }
+    end
+    let(:legacy_preview) do
+      lambda do |html, length|
+        text = legacy_strip_all_tags.call(html)
+        ERB::Util.html_escape(text.truncate(length)) if text
+      end
+    end
+    let(:article_html) do
+      code_panel = <<~HTML
+        <div class="highlight js-code-highlight">
+        <pre class="highlight ruby"><code><span class="k">def</span> <span class="nf">x</span>
+          <span class="mi">1</span> <span class="o">&lt;</span> 2 &amp;&amp; "ok"
+        <span class="k">end</span>
+        </code></pre>
+        <div class="highlight__panel js-actions-panel">
+        <div class="highlight__panel-action js-fullscreen-code-action">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewbox="0 0 24 24" class="highlight-action crayons-icon highlight-action--fullscreen-on"><title>Enter fullscreen mode</title>
+            <path d="M16 3h6v6h-2V5h-4V3zM2 3h6v2H4v4H2V3z"></path>
+        </svg>
+        </div>
+        </div>
+        </div>
+      HTML
+      link = %(<a href="https://dev.to/a?b=1&amp;c=2">link</a>)
+      paragraph = %(<p>Rust &amp; Ruby #{link} &mdash; caf&eacute; "quoted" it's 😀 東京.</p>\n)
+      %(<h2>\n  <a name="intro" href="#intro">\n  </a>\n  Intro\n</h2>\n#{paragraph * 3}#{code_panel}) * 8
+    end
+
+    it "matches sanitize(html, tags: []) and its truncated preview on rendered article HTML" do
+      expect(described_class.sanitize_strip_all_tags(article_html)).to eq(legacy_strip_all_tags.call(article_html))
+
+      [3, 4, 10, 150, 200, 5_000, 100_000].each do |length|
+        expect(described_class.sanitized_text_preview(article_html, length))
+          .to eq(legacy_preview.call(article_html, length)), "length #{length}"
+      end
+      # ActionView escapes a truncated preview a second time; the fast path keeps that exact output.
+      expect(described_class.sanitized_text_preview(article_html, 150)).to include("Rust &amp;amp; Ruby")
+    end
+
+    it "matches edge cases, including SVG pruning that differs from full_sanitize" do
+      svg = %(a<svg viewBox="0 0 1 1"><title>Copy &amp; paste</title>\n<path d="M0"></path>x</svg>b)
+      expect(described_class.full_sanitize(svg)).to eq("aCopy &amp; paste\nxb")
+      expect(described_class.sanitize_strip_all_tags(svg)).to eq("ab")
+      preview_lengths = [3, 8, 20, 150]
+
+      [
+        "", "plain", "a < b > c", "\r\nline\rbreak\n", "&amp;&lt;&gt;&quot;&#39;&apos;&nbsp;\u00A0",
+        "<p>\"Hi\" it's <b>long</b> enough to truncate here</p>", "😀😀😀😀😀😀", "東京東京東京東京",
+        "<pre>\nkept</pre><textarea>\n&lt;b&gt;</textarea><iframe>i&lt;</iframe>",
+        "<script>if (a < b && c) {}</script><style>p > a {}</style><!-- gone -->",
+        "<table>\n<thead>\n<tr><th>H &amp; I</th></tr>\n</thead>\n<tbody>\n<tr><td>D</td></tr>\n</tbody>\n</table>",
+        "<p>#{'x' * 400}</p>", svg * 30, "a<svg><svg/>hidden</svg>b"
+      ].each do |html|
+        expect(described_class.sanitize_strip_all_tags(html)).to eq(legacy_strip_all_tags.call(html)), html.inspect
+        preview_lengths.each do |length|
+          expect(described_class.sanitized_text_preview(html, length))
+            .to eq(legacy_preview.call(html, length)), "#{html.inspect} length #{length}"
+        end
+      end
+    end
+
+    it "returns nil for HTML outside the fast path so callers fall back to ActionView" do
+      long = "<p>#{'a' * 400}</p>"
+      ["<math><mi>x</mi></math>#{long}", "#{long}<table>stray</table>", "<p>x &notanentity; y</p>#{long}",
+       "<svg><p>breakout</p></svg>", "<svg><g><svg></g></svg>visible</svg>",
+       "null\x00byte#{long}", "\uFEFF#{long}"].each do |html|
+        expect(described_class.sanitize_strip_all_tags(html)).to be_nil, html.inspect
+        expect(described_class.sanitized_text_preview(html, 150)).to be_nil, html.inspect
+      end
+    end
+
+    it "returns nil for non-String, non-UTF-8, or invalid inputs and out-of-range lengths" do
+      expect(described_class.sanitized_text_preview(nil, 150)).to be_nil
+      expect(described_class.sanitized_text_preview(ActiveSupport::SafeBuffer.new("abc"), 150)).to be_nil
+      expect(described_class.sanitized_text_preview("abc".b, 150)).to be_nil
+      expect(described_class.sanitized_text_preview("bad \xFF utf8", 150)).to be_nil
+      expect(described_class.sanitized_text_preview("abc", 2)).to be_nil
+      expect(described_class.sanitized_text_preview("abc", 100_001)).to be_nil
+      expect(described_class.sanitized_text_preview("abc", 150.0)).to be_nil
+      expect(described_class.sanitize_strip_all_tags(nil)).to be_nil
+    end
+
+    it "passes differential equivalence across 1,000 seeded HTML documents and preview lengths" do
+      rng = Random.new(424_242)
+      pieces = [
+        "", "hello", "world", " ", "\n", "\r\n", "\t", "\u00A0", "é", "日本", "🚀", "\"q\"", "it's",
+        "&", "&amp;", "&lt;", "&gt;", "&quot;", "&apos;", "&nbsp;", "&copy;", "&mdash;", "&eacute;",
+        "&#39;", "&#x25B8;", "&#160;", "&#128;", "&#128512;", "&#xD800;",
+        "< ", ">", "a < b", "<p>", "</p>", "<br>", "<h2>", "</h2>", "<em>", "</em>", "<code>", "</code>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\" title='x > y'>", "</a>", "<img src=\"x.png\" alt=\"a & b\">",
+        "<!-- comment -->", "<pre>\ncode</pre>", "<pre><code>\ncode &lt;T&gt;</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Icon &amp; label</title><path d=\"M0 0\"/></svg>",
+        "<svg><g><text>svg text</text></g></svg>", "<svg/>",
+        "<table>\n<thead>\n<tr><th>H</th></tr>\n</thead>\n<tbody>\n<tr><td>D</td></tr>\n</tbody>\n</table>",
+        "<style>.a > .b {}</style>", "<script>1 < 2 && 3 > 1</script>", "<iframe src=\"x\">fallback</iframe>",
+        "<textarea>\nraw <b>html</b></textarea>", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " * 3
+      ]
+      # Constructs the fast path declines (MathML, foster-parented table text, unknown or
+      # semicolon-less references, lone surrogates); mixed into every other document.
+      declined_pieces = ["<math><mi>x</mi></math>", "<table>stray</table>", "&unknown;", "&copy=1", "&#123"]
+      lengths = [3, 4, 5, 10, 30, 150, 200, 1_000]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        in_domain = iteration.even?
+        pool = in_domain ? pieces : pieces + declined_pieces
+        html = Array.new(rng.rand(1..24)) { pool.sample(random: rng) }.join
+        length = rng.rand < 0.5 ? lengths.sample(random: rng) : rng.rand(3..400)
+
+        expected_text = legacy_strip_all_tags.call(html)
+        native_text = described_class.sanitize_strip_all_tags(html)
+        expect(native_text || expected_text).to eq(expected_text), "iteration #{iteration}: #{html.inspect}"
+
+        expected = legacy_preview.call(html, length)
+        native = described_class.sanitized_text_preview(html, length)
+        native_hits += 1 unless native.nil?
+        expect(native).not_to be_nil, "iteration #{iteration}: #{html.inspect}" if in_domain
+        expect(native || expected).to eq(expected), "iteration #{iteration} (length #{length}): #{html.inspect}"
+      end
+
+      expect(native_hits).to be > 500
+    end
+  end
+
   describe ".slugify_heading_anchor (AgentSessionRenderers::HeadingAnchors.slugify)" do
     let(:legacy_slugify_heading_anchor) do
       lambda do |heading_html|

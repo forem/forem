@@ -574,6 +574,26 @@ fn full_sanitize(html: RString) -> Option<String> {
     forem_core::sanitize::full_sanitize(unsafe { html.test_as_str() }?)
 }
 
+fn sanitize_strip_all_tags(html: RString) -> Option<String> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `None` (invalid UTF-8 or HTML5 edge cases) lets callers fall
+    // back to `sanitize(html, tags: [])`.
+    forem_core::sanitize::sanitize_strip_all_tags(unsafe { html.test_as_str() }?)
+}
+
+fn sanitized_text_preview(html: RString, length: usize) -> Option<String> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `None` lets callers fall back to
+    // `truncate(sanitize(html, tags: []), length: length)`.
+    forem_core::sanitize::sanitized_text_preview(unsafe { html.test_as_str() }?, length)
+}
+
 fn slugify_heading_anchor(heading_html: RString) -> Option<String> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
     // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
@@ -7707,6 +7727,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;
     native_mod.define_singleton_method("full_sanitize", function!(full_sanitize, 1))?;
+    native_mod.define_singleton_method(
+        "sanitize_strip_all_tags",
+        function!(sanitize_strip_all_tags, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "sanitized_text_preview",
+        function!(sanitized_text_preview, 2),
+    )?;
     native_mod.define_singleton_method(
         "slugify_heading_anchor",
         function!(slugify_heading_anchor, 1),

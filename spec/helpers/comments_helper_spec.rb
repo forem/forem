@@ -167,6 +167,72 @@ RSpec.describe CommentsHelper do
     end
   end
 
+  describe "#sanitized_text_preview" do
+    let(:article_html) do
+      paragraph = %(<p>Rust &amp; Ruby <a href="https://dev.to/a?b=1&amp;c=2">link</a> caf&eacute; "it's" 😀</p>\n)
+      svg = %(<svg viewBox="0 0 24 24"><title>Enter fullscreen mode</title><path d="M0 0"></path></svg>\n)
+      "#{paragraph}<pre><code>a &lt; b</code></pre>\n#{svg}" * 10
+    end
+
+    def legacy_preview(html, length)
+      helper.truncate(helper.sanitize(html, tags: []), length: length)
+    end
+
+    it "matches truncate(sanitize(html, tags: [])) for previews that fit and that are truncated" do
+      lengths = [3, 20, 150, 200, 10_000]
+      ["", "short <b>text</b>", "<p>a &amp; b</p>", article_html].each do |html|
+        lengths.each do |length|
+          preview = helper.sanitized_text_preview(html, length: length)
+
+          expect(preview).to eq(legacy_preview(html, length)), "#{html.inspect} length #{length}"
+          expect(preview).to be_html_safe
+        end
+      end
+    end
+
+    it "takes the native fast path without parsing the HTML in Ruby" do
+      allow(helper).to receive(:sanitize).and_call_original
+
+      expect(helper.sanitized_text_preview(article_html, length: 150)).to include("Rust &amp;amp; Ruby")
+      expect(helper).not_to have_received(:sanitize)
+    end
+
+    it "falls back to the ActionView helpers for HTML outside the native fast path" do
+      allow(helper).to receive(:sanitize).and_call_original
+
+      ["<math><mi>x</mi></math><p>#{'a' * 300}</p>", "<svg><g><svg></g></svg>visible</svg>"].each do |html|
+        expect(ForemNative.sanitized_text_preview(html, 150)).to be_nil
+        expect(helper.sanitized_text_preview(html, length: 150)).to eq(legacy_preview(html, 150))
+      end
+
+      expect(helper.sanitized_text_preview("<svg><g><svg></g></svg>visible</svg>", length: 150)).to eq("visible")
+      expect(helper).to have_received(:sanitize).at_least(4).times
+    end
+
+    it "renders only text nodes inside an HTML container for fitting and truncated previews" do
+      lengths = [15, 150, 10_000]
+      samples = [
+        "<p><img src=x onerror=alert(1)>Hello &lt;script&gt;alert(1)&lt;/script&gt;</p>",
+        "<script>alert('xss')</script><p>\"quoted\" &amp; <b>bold</b></p>",
+        article_html,
+      ]
+
+      samples.each do |html|
+        lengths.each do |length|
+          preview = helper.sanitized_text_preview(html, length: length)
+          fragment = Nokogiri::HTML5.fragment("<div>#{preview}</div>")
+          container = fragment.at_css("div")
+
+          expect(container.children).to all(be_text), "#{html.inspect} length #{length}"
+        end
+      end
+    end
+
+    it "returns nil for nil HTML like truncate(sanitize(nil))" do
+      expect(helper.sanitized_text_preview(nil, length: 150)).to be_nil
+    end
+  end
+
   describe "#nested_comments" do
     let(:organization) { create(:organization, name: "Forem & Co <Test>") }
     let(:author_user) { create(:user, name: "Alice <Author> & Co") }

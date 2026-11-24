@@ -1,6 +1,6 @@
 <div class="crayons-layout crayons-layout--limited-l gap-0">
   <div class="crayons-card crayons-card--secondary text-styles text-styles--secondary text-padding -mb-1 mx-3 m:mx-6 mt-3">
-    <%= truncate(sanitize(@comment.processed_html, tags: []), length: 200) %>
+    <%= sanitized_text_preview(@comment.processed_html, length: 200) %>
   </div>
   <div class="crayons-card text-padding">
     <h1 class="crayons-subtitle-1 mb-2"><%= t("views.comments.delete.heading") %></h1>
