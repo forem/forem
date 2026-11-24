@@ -1,0 +1,24 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 36-37,237-238
+gems/forem_native/crates/forem_core/src/sanitize.rs
+  h_f968154a99632d 254,279-285,324-326,597,600,608-610,614-623,1367-1370,1376-1377
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 13
+lib/tasks/forem_native.rake
+  h_f968154a99632d 93,2577-2611
+spec/helpers/comments_helper_spec.rb
+  h_f968154a99632d 203-207,213-214
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 2776
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "343978e03653761534e3e3966f1ecafc9d1fe475",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
