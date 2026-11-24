@@ -123,19 +123,36 @@ command = '''
   wait "$gems"; wait "$js"
   [ -n "$(ls -A app/assets/builds 2>/dev/null)" ] || yarn build
   [ -f .env ] || cp .env_sample .env
+  # `process_started` does not mean ready, and a service that died on start
+  # (a port conflict) would otherwise leave this waiting forever.
+  deadline=$(($(date +%s) + 60))
+  until pg_isready -q -p "$PGPORT" && redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; do
+    [ "$(date +%s)" -lt "$deadline" ] || { echo "setup: PostgreSQL (port $PGPORT) or Redis (port $REDIS_PORT) not accepting connections after 60 s; see 'flox services logs postgres' and 'flox services logs redis'" >&2; exit 1; }
+    sleep 0.2
+  done
   # Only when what the databases depend on changed.
   stamp="$FLOX_ENV_CACHE/databases.stamp"
   want="$(cat Gemfile.lock yarn.lock db/schema.rb db/seeds.rb | cksum)"
   [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || exit 0
-  until pg_isready -q -p "$PGPORT" && redis-cli -p "$REDIS_PORT" ping >/dev/null 2>&1; do sleep 0.2; done
-  # db:prepare seeds only a database it creates, and seeding needs node_modules
-  # (done above). A failed seed leaves a database that looks finished, so drop
-  # one we created and let the next run start over.
-  psql -d postgres -tAc "select 1 from pg_database where datname = 'Forem_development'" | grep -q 1 && existed=1 || existed=0
+  rm -f "$stamp"
+  # db:prepare seeds only a database it creates, so one left unseeded by a failed
+  # or killed run looks finished to the next. `creating` marks a development
+  # database this setup created and has not finished seeding; the next run drops
+  # it. A database that predates setup is never marked, so never dropped.
+  creating="$FLOX_ENV_CACHE/databases.creating"
+  if [ -e "$creating" ]; then
+    dropdb --if-exists --force Forem_development
+    existed=
+  else
+    existed="$(psql -v ON_ERROR_STOP=1 -d postgres -tAc "select 1 from pg_database where datname = 'Forem_development'")"
+  fi
+  [ -n "$existed" ] || touch "$creating"
   bin/rails app_initializer:setup forem:setup & dev=$!
   RAILS_ENV=test bin/rails db:create db:schema:load & test=$!
-  wait "$test" || { wait "$dev" || true; exit 1; }
-  wait "$dev" || { [ "$existed" = 1 ] || bin/rails db:drop; exit 1; }
+  failed=0
+  wait "$dev" && rm -f "$creating" || failed=1
+  wait "$test" || failed=1
+  [ "$failed" = 0 ] || exit 1
   echo "$want" > "$stamp"
 '''
 depends-on.postgres = { condition = "process_started" }
@@ -144,8 +161,9 @@ depends-on.redis = { condition = "process_started" }
 [services.postgres]
 command = '''
   [ -s "$PGDATA/PG_VERSION" ] || initdb -D "$PGDATA" -U "$PGUSER" --auth=trust --locale=en_US.UTF-8 -E UTF8
-  # No Unix socket: macOS limits socket paths to 104 bytes. Trust auth is safe
-  # because the server listens on loopback only.
+  # No Unix socket: macOS limits socket paths to 104 bytes. Trust auth lets every
+  # local user connect as postgres, so this assumes a single-user workstation or
+  # isolated VM; loopback does not separate users on a shared host.
   exec postgres -D "$PGDATA" -c unix_socket_directories= -h 127.0.0.1 -p "$PGPORT"
 '''
 shutdown.signal = 2   # SIGINT: fast shutdown

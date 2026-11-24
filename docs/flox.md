@@ -29,8 +29,10 @@ with the password `password`; [/dev_tools](dev_tools.md) switches between seeded
 accounts. Setup contacts rubygems.org once (for the Bundler version
 `Gemfile.lock` names) and the npm registry. Without `-s` nothing is installed.
 
-The services stop when the activation that started them exits. Keep one
-`flox activate -s` shell open and run everything else in it:
+The services stop when the last activation of the environment exits; closing
+the shell that started them is not enough while another `flox activate` is
+still open. Keep one `flox activate -s` shell open and run everything else in
+it:
 
 | To                   | Run                                     |
 | -------------------- | --------------------------------------- |
@@ -41,7 +43,9 @@ The services stop when the activation that started them exits. Keep one
 | Reset the databases  | `flox services stop web sidekiq && bin/rails db:reset && flox services start web sidekiq` |
 
 A failed setup shows as `setup Completed (1)` in `flox services status`; read
-why with `flox services logs setup`, fix it, exit and activate again.
+why with `flox services logs setup`, fix it, exit every activation of the
+environment, then run `flox activate -s` again. While one is open the services
+keep running, and a new `flox activate -s` warns without restarting them.
 
 ## Is it ready?
 
@@ -99,4 +103,6 @@ a package group forward.
   fast or faster, so change it only if downloads are slow.
 
 Outside the checkout, Flox's package store, Yarn's cache and RubyGems' normal
-caches are used. PostgreSQL listens on loopback only, with trust authentication.
+caches are used. PostgreSQL listens on loopback only and trusts every local
+connection. The setup therefore assumes a trusted checkout on a single-user
+workstation or an isolated VM, with seed data and no production credentials.
