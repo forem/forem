@@ -1,0 +1,14 @@
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 107-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1c3d75668e0fb31d6ab5e5c3957881a7e9e58a33",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
