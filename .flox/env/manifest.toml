@@ -145,9 +145,9 @@ command = '''
   if [ -e "$creating" ]; then
     # One connection checks the server is this checkout's and then drops, so
     # the check and the drop cannot reach different servers.
-    psql -X -q -v ON_ERROR_STOP=1 -d postgres -o /dev/null \
-      -c "select 1/(current_setting('data_directory') = '$PGDATA')::int" \
-      -c 'drop database if exists "Forem_development" with (force)'
+    printf '%s\n' "select 1/(current_setting('data_directory') = :'dir')::int;" \
+      'drop database if exists "Forem_development" with (force);' |
+      psql -X -q -v ON_ERROR_STOP=1 -v dir="$PGDATA" -d postgres -o /dev/null
     existed=
   else
     existed="$(psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "select 1 from pg_database where datname = 'Forem_development'")"
