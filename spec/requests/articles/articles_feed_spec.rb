@@ -158,5 +158,18 @@ RSpec.describe "ArticlesFeed" do
       expect(queries.grep(/FROM "tags"/).size).to eq(1)
       expect(queries.grep(/FROM "users"/)).to be_empty
     end
+
+    it "produces byte-for-byte identical XML between ForemNative and the Builder fallback" do
+      get "/feed/#{article.user.username}"
+      native_body = response.body
+      native_content_type = response.headers["Content-Type"]
+
+      allow(ForemNative).to receive(:serialize_rss_feed_xml).and_return(nil)
+      get "/feed/#{article.user.username}"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Content-Type"]).to eq(native_content_type)
+      expect(response.body).to eq(native_body)
+    end
   end
 end

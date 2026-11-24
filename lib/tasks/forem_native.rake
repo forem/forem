@@ -2478,6 +2478,87 @@ namespace :forem_native do
         x.compare!
       end
     end
+
+    require "builder"
+
+    rss_channel = [
+      "DEV Community: Alice",
+      "The latest articles on DEV Community by Alice (@alice).",
+      "https://dev.to/alice",
+      true,
+      "https://dev.to/uploads/user/profile_image/1/avatar.png",
+      "DEV Community: Alice",
+      "https://dev.to/alice",
+      "https://dev.to/feed/alice?page=1&sort=latest",
+      "en",
+    ]
+    sample_body = (
+      "<p>Building high-throughput <strong>Rust &amp; Ruby</strong> pipelines with " \
+      "<code>&lt;T: Copy&gt;</code> and zero-copy slices — 🚀 café.</p>\n" * 40
+    )
+    rss_items = Array.new(12) do |i|
+      link = "https://dev.to/alice/post-#{i}"
+      [
+        "Deep Dive ##{i}: Rust & Ruby <3 Performance",
+        "Alice Developer",
+        1_795_553_448 - (i * 3600),
+        0,
+        link,
+        link,
+        sample_body,
+        "rust, ruby, performance, webdev",
+      ]
+    end.flatten(1)
+
+    legacy_rss = lambda do
+      xml = Builder::XmlMarkup.new(indent: 2)
+      xml.instruct! :xml, version: "1.0"
+      xml.rss(:version => "2.0",
+              "xmlns:atom" => "http://www.w3.org/2005/Atom",
+              "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
+        xml.channel do
+          xml.title rss_channel[0]
+          xml.description rss_channel[1]
+          xml.link rss_channel[2]
+          xml.image do
+            xml.url rss_channel[4]
+            xml.title rss_channel[5]
+            xml.link rss_channel[6]
+          end
+          xml.tag! "atom:link", rel: "self", type: "application/rss+xml", href: rss_channel[7]
+          xml.language rss_channel[8]
+          rss_items.each_slice(8) do |title, creator, pub_sec, pub_off, link, guid, desc, tag_list|
+            xml.item do
+              xml.title title
+              xml.tag!("dc:creator", creator)
+              xml.pubDate Time.at(pub_sec, in: pub_off).strftime("%a, %d %b %Y %H:%M:%S %z") if pub_sec
+              xml.link link
+              xml.guid guid
+              xml.description desc
+              (tag_list || "").split(", ").each { |tag_name| xml.category tag_name }
+            end
+          end
+        end
+      end
+      xml.target!
+    end
+    native_rss = -> { ForemNative.serialize_rss_feed_xml(rss_channel, rss_items) }
+
+    raise "RSS feed benchmark parity failure!" unless native_rss.call == legacy_rss.call
+
+    puts "\n=== ArticlesController#feed Streaming RSS 2.0 XML Benchmark (12 items) ==="
+    rss_ruby_mem = MemoryProfiler.report { legacy_rss.call }
+    rss_rust_mem = MemoryProfiler.report { native_rss.call }
+    puts "RSS Feed (12 items) — Ruby: #{rss_ruby_mem.total_allocated} objs " \
+         "(#{rss_ruby_mem.total_allocated_memsize} B) " \
+         "vs Rust: #{rss_rust_mem.total_allocated} objs (#{rss_rust_mem.total_allocated_memsize} B)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (Builder::XmlMarkup 12 items)") { legacy_rss.call }
+      x.report("Rust Magnus (serialize_rss_feed_xml 12 items)") { native_rss.call }
+      x.compare!
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength
