@@ -11,8 +11,8 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - `.github/copilot-instructions.md`
 
 ## Local Development Environment (Flox)
-- **One command**: `flox activate -s` in a fresh clone installs the toolchain, sets up and seeds the databases, and starts the app and its services. It is an alternative to the Dev Container, `mise` and `dip` setups. See [docs/flox.md](docs/flox.md).
-- **Run commands inside the environment** (`flox activate`, or a shell started with `flox activate -s`), never with a Ruby or Node from elsewhere on the machine.
+- **One command**: `flox activate -s` in a fresh clone installs the toolchain, sets up and seeds the databases, and starts the app and its services. It is an alternative to the Dev Container, `mise` and `dip` setups. See `docs/flox.md`.
+- **When using Flox, run commands inside the environment** (`flox activate`, or a shell started with `flox activate -s`), never with a Ruby or Node from elsewhere on the machine.
 
 ## General Philosophy
 - **Follow Patterns**: Application consistency is key. Mimic existing patterns for controllers, services, and specs.
