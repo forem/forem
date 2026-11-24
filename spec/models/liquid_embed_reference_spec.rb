@@ -86,4 +86,18 @@ RSpec.describe LiquidEmbedReference do
       expect(described_class.record_engagement_backoff(page)).to eq(5.minutes)
     end
   end
+
+  describe ".record_published?" do
+    it "returns false for a billboard whose campaign has expired", :aggregate_failures do
+      expired_campaign = BillboardCampaign.create!(name: "Expired", expires_at: 1.minute.ago)
+      active_campaign = BillboardCampaign.create!(name: "Active", expires_at: 1.day.from_now)
+
+      expired_bb = create(:billboard, approved: true, published: true)
+      expired_bb.update_column(:billboard_campaign_id, expired_campaign.id)
+      active_bb = create(:billboard, approved: true, published: true, billboard_campaign: active_campaign)
+
+      expect(described_class.record_published?(expired_bb)).to be(false)
+      expect(described_class.record_published?(active_bb)).to be(true)
+    end
+  end
 end

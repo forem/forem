@@ -134,10 +134,21 @@ class Billboard < ApplicationRecord
   after_save :bust_home_page_cache, if: -> { should_bust_home_page_cache? }
   after_destroy :bust_billboard_cache, if: -> { approved && published }
   after_destroy :bust_home_page_cache, if: -> { approved && published && HOME_PAGE_PLACEMENTS.include?(placement_area) }
+  after_commit :enforce_delivery_limits_if_changed, on: %i[create update]
+
+  ACTIVE_CAMPAIGN_SQL =
+    "display_ads.billboard_campaign_id IS NULL OR NOT EXISTS (" \
+    "SELECT 1 FROM billboard_campaigns " \
+    "WHERE billboard_campaigns.id = display_ads.billboard_campaign_id " \
+    "AND billboard_campaigns.expires_at IS NOT NULL " \
+    "AND billboard_campaigns.expires_at <= ?)".freeze
 
   scope :approved_and_published, lambda {
-                                   where(approved: true, published: true).where("expires_at IS NULL OR expires_at > ?", Time.current)
-                                 }
+    now = Time.current
+    where(approved: true, published: true)
+      .where("display_ads.expires_at IS NULL OR display_ads.expires_at > ?", now)
+      .where(ACTIVE_CAMPAIGN_SQL, now)
+  }
 
   scope :search_ads, lambda { |term|
                        where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
@@ -418,21 +429,29 @@ class Billboard < ApplicationRecord
   end
 
   def validate_expiration_approval
-    return unless expires_at.present? && expires_at < Time.current && approved?
+    return unless expired? && approved?
 
     errors.add(:approved, "cannot be set to true if billboard has expired")
   end
 
   def validate_delivery_cap_approval
     return unless approved? && will_save_change_to_approved?
-    return unless over_cap? || billboard_campaign&.expired? || billboard_campaign&.over_cap?(self)
+    return unless over_cap? || billboard_campaign&.delivery_limit_reached?(self)
 
     errors.add(:approved, "cannot be set to true once the billboard or its campaign has ended or reached a cap")
   end
 
-  def delivery_limit_reached?
-    (expires_at.present? && expires_at < Time.current) || over_cap? ||
-      billboard_campaign&.expired? || billboard_campaign&.over_cap?(self)
+  def expired?(now: Time.current)
+    expires_at.present? && expires_at <= now
+  end
+
+  def has_delivery_cap?
+    max_impressions_count.to_i.positive? || max_clicks_count.to_i.positive?
+  end
+
+  def delivery_limit_reached?(now: Time.current)
+    expired?(now: now) || over_cap? ||
+      billboard_campaign&.delivery_limit_reached?(self, now: now) == true
   end
 
   def over_cap?
@@ -594,17 +613,10 @@ class Billboard < ApplicationRecord
     BillboardCampaign.where(id: ids).order(:id).lock.ids if ids.any?
   end
 
-  # Takes the billboard down once it, or its campaign, has expired or reached a delivery cap.
+  # Takes the billboard (or its entire campaign) down once it, or its campaign,
+  # has expired or reached a delivery cap.
   def check_and_handle_delivery_limits
-    return unless approved? && delivery_limit_reached?
-
-    update_column(:approved, false)
-    if current_markdown_has_liquid_tag?
-      updated = liquid_embed_references.update_all(published: false)
-      LiquidEmbedReference.bust_feed_targets_cache! if updated.positive?
-    end
-    bust_billboard_cache if published
-    bust_home_page_cache if published && HOME_PAGE_PLACEMENTS.include?(placement_area)
+    Billboards::EnforceDeliveryLimits.enforce_for_billboard!(self)
   end
 
   # Check if a user should be excluded from seeing this billboard based on survey completion
@@ -878,5 +890,16 @@ class Billboard < ApplicationRecord
     return if audience_segment_type != "manual"
 
     errors.add(:audience_segment_type) if audience_segment.blank?
+  end
+
+  def enforce_delivery_limits_if_changed
+    if previously_new_record?
+      return unless billboard_campaign_id.present? && (impressions_count.to_i.positive? || clicks_count.to_i.positive?)
+    else
+      return unless saved_change_to_max_impressions_count? || saved_change_to_max_clicks_count? ||
+        saved_change_to_expires_at? || saved_change_to_billboard_campaign_id?
+    end
+
+    check_and_handle_delivery_limits
   end
 end

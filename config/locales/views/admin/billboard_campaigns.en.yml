@@ -13,7 +13,7 @@ en:
         max_impressions_count: Impression cap
         max_clicks_count: Click cap
         ideal_daily_impressions: Daily impression target
-        campaign_limits: Caps apply to all billboards in the campaign combined. Use 0 for no cap or to turn off the daily target. Caps and end dates are checked in the background, so saving does not stop delivery immediately.
+        campaign_limits: Caps apply to all billboards in the campaign combined. Use 0 for no cap or to turn off the daily target. Saving an already-expired end date or a reached cap takes the campaign's billboards down immediately; ongoing limits and expirations are enforced every 5 minutes in the background.
         billboard_limits: These caps apply to this billboard only. Use 0 for no cap.
         delivery_controls: Delivery settings
         membership_help_html: Leave blank for no campaign. Find IDs under %{campaigns}.

@@ -44,7 +44,7 @@ Billboards are Forem's native promotional, community, announcement, and sponsors
 | `special_behavior` | `nothing`, `delayed`, `persistent` | `nothing` | `delayed` reveals after 10 seconds. `persistent` (for fixed-bottom popovers) requires `minimized_body_markdown` and minimizes into the right sidebar (`#persistent-minimized-billboard-container`) on dismiss or internal navigation. |
 | `display_to` | `all`, `logged_in`, `logged_out` | `all` | Controls auth-state eligibility. |
 | `browser_context` | `all_browsers`, `desktop`, `mobile_web`, `mobile_in_app` | `all_browsers` | Filters by client user-agent / viewport context. |
-| `approved` & `published` | `boolean` | `false` | Both must be `true` (and `expires_at` must be `nil` or in the future) for a billboard to enter rotation. |
+| `approved` & `published` | `boolean` | `false` | Both must be `true` (and neither the billboard's `expires_at` nor its campaign's `expires_at` may be in the past) for a billboard to enter rotation. |
 | `weight` & `priority` | `0.0..10_000.0`, `boolean` | `1.0`, `false` | Controls weighted share inside the `new_and_priority` selection strategy (also steered automatically by campaign pacing). |
 
 ### Automatic Processing on Save
@@ -152,8 +152,12 @@ Candidate selection runs through `Billboards::FilteredAdsQuery` (accelerated by 
 
 `BillboardCampaign` (`app/models/billboard_campaign.rb`) groups multiple billboards under shared constraints:
 
-- **Shared Expiration (`expires_at`)**: Takes down all member billboards when the campaign expires.
-- **Delivery Caps (`max_impressions_count`, `max_clicks_count`)**: Set on either a `BillboardCampaign` (summed across all member billboards) or an individual `Billboard`. `0` means unlimited. Once reached, affected billboards are automatically taken down.
+- **Shared Expiration (`expires_at`)**: Enforced immediately at query time (`Billboard.approved_and_published` and `Billboards::FilteredAdsQuery` exclude billboards whose campaign has expired) and takes down all member billboards when the campaign expires.
+- **Delivery Caps (`max_impressions_count`, `max_clicks_count`)**: Set on either a `BillboardCampaign` (summed across all member billboards, including unapproved/paused ones) or an individual `Billboard`. `0` means unlimited. Once reached, affected billboards — or all approved billboards in the campaign when a campaign limit trips — are automatically unapproved (`approved: false`).
+- **How Expiration & Cap Enforcement Runs (`Billboards::EnforceDeliveryLimits`)**:
+  - **Immediate on save (API & Admin UI)**: Updating a `BillboardCampaign` to an already-expired `expires_at` or a reached impression/click cap immediately unapproves all approved member billboards, unpublishes any `LiquidEmbedReference` rows, purges affected billboard and homepage edge caches, and refreshes the campaign throttle cache. Tightening a `Billboard`'s own cap below its current counts — or moving a billboard with existing counts into a campaign so the campaign reaches its cap — likewise enforces takedown immediately on commit.
+  - **Event-driven campaign-wide takedown (`Billboards::DataUpdateWorker`)**: When newly tabulated counts push a billboard or its campaign over a cap, `Billboard#check_and_handle_delivery_limits` unapproves the billboard — or the entire campaign if a campaign limit was reached — in the same run. Billboards with an active individual or campaign cap never skip tabulation via the high-impression random backoff.
+  - **Scheduled 5-minute sweep (`Billboards::EnforceDeliveryLimitsWorker`)**: Runs every 5 minutes (`*/5 * * * *`) to take down any approved billboards or campaigns whose `expires_at` passed or whose tabulated counts reached a cap without waiting for incoming traffic events, purging edge caches, homepage caches, and Liquid embed references cleanly.
 - **Ideal Daily Impressions Titration (`ideal_daily_impressions`)**:
   - Set `ideal_daily_impressions > 0` on a `BillboardCampaign` to pace campaign delivery smoothly over each 24-hour day.
   - Every 10 minutes (`144` windows/day), `Billboards::TitrateCampaignImpressionsWorker` evaluates actual vs. traffic-adjusted expected impressions via `Billboards::CampaignPacing` (`deadband: 0.90..1.10`, smoothing prior `3.0`, control gain `0.6`) and steers three monotonic levers in order:
@@ -506,7 +510,7 @@ Accepts `{ body_markdown, minimized_body_markdown, placement_area, render_mode }
 | `GET /api/billboard_campaigns` | List campaigns (50/page, descending by `id`). |
 | `GET /api/billboard_campaigns/:id` | Fetch a campaign (includes `delivery_throttle_rate`). |
 | `POST /api/billboard_campaigns` | Create a campaign. Returns `201 Created`. |
-| `PUT /api/billboard_campaigns/:id` | Update a campaign (locks member billboards transactionally). |
+| `PUT /api/billboard_campaigns/:id` | Update a campaign (locks member billboards transactionally; immediately unapproves member billboards and purges caches if the updated `expires_at` has passed or a cap is already reached). |
 
 **Permitted Parameters**: `name` (required), `organization_id`, `expires_at`, `max_impressions_count`, `max_clicks_count`, `ideal_daily_impressions`.
 
@@ -609,7 +613,7 @@ curl -sS -X PUT "$FOREM_URL/api/billboards/$BB_ID/unpublish" \
 | Area | File |
 | --- | --- |
 | Model & processing | `app/models/billboard.rb`, `app/models/billboard_campaign.rb`, `app/models/billboard_placement_area_config.rb`, `app/models/billboard_event.rb` |
-| Filtering & pacing | `app/queries/billboards/filtered_ads_query.rb`, `app/services/billboards/campaign_pacing.rb`, `app/workers/billboards/titrate_campaign_impressions_worker.rb` |
+| Filtering, pacing & limits | `app/queries/billboards/filtered_ads_query.rb`, `app/services/billboards/campaign_pacing.rb`, `app/services/billboards/enforce_delivery_limits.rb`, `app/workers/billboards/titrate_campaign_impressions_worker.rb`, `app/workers/billboards/enforce_delivery_limits_worker.rb` |
 | Shadow DOM server wrapper | `app/services/billboards/shadow_dom_wrapper.rb`, `app/helpers/billboard_helper.rb` |
 | Delivery & views | `app/controllers/billboards_controller.rb`, `app/views/billboards/show.html.erb`, `app/views/shared/_billboard.html.erb`, `app/views/shared/_billboard_header.html.erb` |
 | Client runtime & sandbox | `app/javascript/utilities/billboardShadowDom.js`, `app/javascript/packs/billboard.js`, `app/javascript/packs/billboardAfterRenderActions.js`, `app/javascript/utilities/billboardInteractivity.jsx` |

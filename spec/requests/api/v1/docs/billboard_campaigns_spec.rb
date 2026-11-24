@@ -133,7 +133,8 @@ RSpec.describe "api/v1/billboard_campaigns" do
         description(<<-DESCRIBE.strip)
         Update a billboard campaign's name, caps, end date, or `ideal_daily_impressions` titration target.
         Modifying a campaign that governs an approved or Event-owned billboard requires the `modify_approved`
-        Billboard sub-permission.
+        Billboard sub-permission. Saving an already-expired `expires_at` or a cap already reached by the
+        campaign's billboards immediately unapproves all approved member billboards and purges affected caches.
         DESCRIBE
 
         produces "application/json"

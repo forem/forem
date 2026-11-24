@@ -17,9 +17,22 @@ class BillboardCampaign < ApplicationRecord
 
   before_save :reset_delivery_throttle_rate, if: :should_reset_delivery_throttle_rate?
   after_commit :clear_throttle_cache_if_disabled, on: %i[update destroy]
+  after_commit :enforce_delivery_limits_on_update, on: :update
 
-  def expired?
-    expires_at.present? && expires_at < Time.current
+  def expired?(now: Time.current)
+    expires_at.present? && expires_at <= now
+  end
+
+  def has_delivery_cap?
+    max_impressions_count.to_i.positive? || max_clicks_count.to_i.positive?
+  end
+
+  def delivery_limit_reached?(billboard = nil, now: Time.current)
+    expired?(now: now) || over_cap?(billboard)
+  end
+
+  def enforce_delivery_limits!(now: Time.current)
+    Billboards::EnforceDeliveryLimits.enforce_campaign!(self, now: now)
   end
 
   # Match billboard saves: lock the billboard rows before locking their campaign.
@@ -65,5 +78,12 @@ class BillboardCampaign < ApplicationRecord
     return unless destroyed? || (saved_change_to_ideal_daily_impressions? && ideal_daily_impressions.to_i.zero?)
 
     Billboards::CampaignPacing.refresh_throttled_campaign_rates_cache!
+  end
+
+  def enforce_delivery_limits_on_update
+    return unless saved_change_to_expires_at? || saved_change_to_max_impressions_count? ||
+      saved_change_to_max_clicks_count?
+
+    enforce_delivery_limits!
   end
 end

@@ -2139,7 +2139,7 @@
         "tags": [
           "billboard_campaigns"
         ],
-        "description": "Update a billboard campaign's name, caps, end date, or `ideal_daily_impressions` titration target.\n        Modifying a campaign that governs an approved or Event-owned billboard requires the `modify_approved`\n        Billboard sub-permission.",
+        "description": "Update a billboard campaign's name, caps, end date, or `ideal_daily_impressions` titration target.\n        Modifying a campaign that governs an approved or Event-owned billboard requires the `modify_approved`\n        Billboard sub-permission. Saving an already-expired `expires_at` or a cap already reached by the\n        campaign's billboards immediately unapproves all approved member billboards and purges affected caches.",
         "parameters": [
 
         ],

@@ -623,4 +623,39 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(results).to include(throttled_bb, active_bb, uncampaigned_bb)
     end
   end
+
+  context "when considering expired billboard campaigns" do
+    let(:expired_campaign) { BillboardCampaign.create!(name: "Ended", expires_at: 1.minute.ago) }
+    let(:active_campaign) { BillboardCampaign.create!(name: "Ongoing", expires_at: 1.day.from_now) }
+    let!(:expired_campaign_bb) do
+      create_billboard.tap { |bb| bb.update_column(:billboard_campaign_id, expired_campaign.id) }
+    end
+    let!(:active_campaign_bb) { create_billboard(billboard_campaign: active_campaign) }
+    let!(:uncampaigned_bb) { create_billboard(billboard_campaign: nil) }
+
+    it "excludes billboards in expired campaigns on both native and legacy paths", :aggregate_failures do
+      native_results = filter_billboards.to_a
+      expect(native_results).not_to include(expired_campaign_bb)
+      expect(native_results).to include(active_campaign_bb, uncampaigned_bb)
+
+      legacy_results = described_class.new(area: placement_area, user_signed_in: false).__send__(:legacy_call).to_a
+      expect(legacy_results).not_to include(expired_campaign_bb)
+      expect(legacy_results).to include(active_campaign_bb, uncampaigned_bb)
+    end
+
+    it "does not let an expired community billboard suppress standard ads for an organization", :aggregate_failures do
+      organization = create(:organization)
+      expired_community = create_billboard(type_of: :community, organization: organization)
+      expired_community.update_column(:billboard_campaign_id, expired_campaign.id)
+
+      native_results = filter_billboards(organization_id: organization.id).to_a
+      legacy_results = described_class.new(
+        area: placement_area, user_signed_in: false, organization_id: organization.id,
+      ).__send__(:legacy_call).to_a
+
+      expect(native_results).not_to include(expired_community)
+      expect(native_results).to include(active_campaign_bb, uncampaigned_bb)
+      expect(legacy_results.map(&:id)).to eq(native_results.map(&:id))
+    end
+  end
 end
