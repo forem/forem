@@ -130,6 +130,8 @@ command = '''
     [ "$(date +%s)" -lt "$deadline" ] || { echo "setup: PostgreSQL (port $PGPORT) or Redis (port $REDIS_PORT) not accepting connections after 60 s; see 'flox services logs postgres' and 'flox services logs redis'" >&2; exit 1; }
     sleep 0.2
   done
+  # Another server on this port passes the check above; leave its databases alone.
+  [ "$(psql -d postgres -tAc 'show data_directory')" = "$PGDATA" ] || { echo "setup: the PostgreSQL on port $PGPORT is not this checkout's ($PGDATA)" >&2; exit 1; }
   # Only when what the databases depend on changed.
   stamp="$FLOX_ENV_CACHE/databases.stamp"
   want="$(cat Gemfile.lock yarn.lock db/schema.rb db/seeds.rb | cksum)"
