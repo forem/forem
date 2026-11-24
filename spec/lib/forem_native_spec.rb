@@ -10156,8 +10156,15 @@ RSpec.describe ForemNative do
       1_000.times do |i|
         epoch_secs = rng.rand(-1_000_000_000..2_500_000_000)
         offset = offsets.sample(random: rng)
-        expected = Time.at(epoch_secs, in: offset).strftime("%a, %d %b %Y %H:%M:%S %z")
+        expected = Time.at(epoch_secs, in: offset).to_fs(:rfc822)
         expect(described_class.format_rfc822_timestamp(epoch_secs, offset)).to eq(expected), "iteration #{i}"
+      end
+
+      ["UTC", "Eastern Time (US & Canada)", "Chennai", "Kathmandu"].each do |zone_name|
+        Time.use_zone(zone_name) do
+          twz = Time.zone.at(1_795_553_448)
+          expect(described_class.format_rfc822_timestamp(twz.tv_sec, twz.utc_offset)).to eq(twz.to_fs(:rfc822))
+        end
       end
     end
   end

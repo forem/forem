@@ -331,8 +331,9 @@ class ArticlesController < ApplicationController
     allowed_attributes = MarkdownProcessor::AllowedAttributes::FEED
     scrubber = FeedMarkdownScrubber.new
 
-    if (xml = serialize_rss_feed_natively(allowed_tags: allowed_tags, allowed_attributes: allowed_attributes,
-                                          scrubber: scrubber))
+    if request.format.rss? && ForemNative.available? &&
+        (xml = serialize_rss_feed_natively(allowed_tags: allowed_tags, allowed_attributes: allowed_attributes,
+                                           scrubber: scrubber))
       render plain: xml, content_type: "application/xml"
       return
     end
@@ -355,7 +356,10 @@ class ArticlesController < ApplicationController
       attributes: allowed_attributes,
       scrubber: scrubber,
     )
-    ForemNative.serialize_rss_feed_xml(native_rss_channel_fields, native_rss_items_flat(descriptions))
+    items_flat = native_rss_items_flat(descriptions)
+    return unless items_flat
+
+    ForemNative.serialize_rss_feed_xml(native_rss_channel_fields, items_flat)
   end
 
   def native_rss_channel_fields
@@ -409,6 +413,10 @@ class ArticlesController < ApplicationController
     idx = 0
     @articles.each do |article|
       published_at = article.published_at
+      if published_at && !(published_at.respond_to?(:tv_sec) && published_at.respond_to?(:utc_offset))
+        return nil
+      end
+
       article_link = custom_domain ? "#{base_url}/#{article.slug}" : app_url(article.path)
 
       items_flat[idx] = article.title

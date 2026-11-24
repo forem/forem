@@ -89,6 +89,7 @@ namespace :forem_native do
     benchmark_api_comments
     benchmark_api_articles
     benchmark_api_users_orgs
+    benchmark_rss_feed
     benchmark_homepage_articles
     benchmark_reactions
     benchmark_story_cards
@@ -2478,8 +2479,18 @@ namespace :forem_native do
         x.compare!
       end
     end
+  end
 
+  desc "Benchmark ArticlesController#feed streaming RSS 2.0 XML serialization (Rust vs Builder::XmlMarkup)"
+  task benchmark_rss_feed: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
     require "builder"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
 
     rss_channel = [
       "DEV Community: Alice",
@@ -2531,7 +2542,7 @@ namespace :forem_native do
             xml.item do
               xml.title title
               xml.tag!("dc:creator", creator)
-              xml.pubDate Time.at(pub_sec, in: pub_off).strftime("%a, %d %b %Y %H:%M:%S %z") if pub_sec
+              xml.pubDate Time.at(pub_sec, in: pub_off).to_fs(:rfc822) if pub_sec
               xml.link link
               xml.guid guid
               xml.description desc
@@ -2547,6 +2558,8 @@ namespace :forem_native do
     raise "RSS feed benchmark parity failure!" unless native_rss.call == legacy_rss.call
 
     puts "\n=== ArticlesController#feed Streaming RSS 2.0 XML Benchmark (12 items) ==="
+    puts "Note: Serializer-only benchmark on prepared fixtures (excludes DB queries and description sanitization)."
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust heap allocations)."
     rss_ruby_mem = MemoryProfiler.report { legacy_rss.call }
     rss_rust_mem = MemoryProfiler.report { native_rss.call }
     puts "RSS Feed (12 items) — Ruby: #{rss_ruby_mem.total_allocated} objs " \
