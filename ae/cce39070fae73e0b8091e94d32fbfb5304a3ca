@@ -1,0 +1,58 @@
+app/models/billboard.rb
+  h_f968154a99632d 137-144,147-151,432,439,444-454,616-617,619,894-904
+app/models/billboard_campaign.rb
+  h_f968154a99632d 20,22-35,82-88
+app/models/liquid_embed_reference.rb
+  h_f968154a99632d 43
+app/queries/billboards/filtered_ads_query.rb
+  h_f968154a99632d 111,279-282
+app/services/billboards/enforce_delivery_limits.rb
+  h_f968154a99632d 1-204
+app/workers/billboards/data_update_worker.rb
+  h_f968154a99632d 28,31-34,74-77
+app/workers/billboards/enforce_delivery_limits_worker.rb
+  h_f968154a99632d 1-13
+config/locales/views/admin/billboard_campaigns.en.yml
+  h_f968154a99632d 16
+config/locales/views/admin/billboard_campaigns.fr.yml
+  h_f968154a99632d 16
+config/locales/views/admin/billboard_campaigns.pt.yml
+  h_f968154a99632d 16
+config/schedule.yml
+  h_f968154a99632d 207-210
+docs/billboards.md
+  h_f968154a99632d 47,155-160,513,616
+spec/models/billboard_campaign_spec.rb
+  h_f968154a99632d 97-152
+spec/models/billboard_spec.rb
+  h_f968154a99632d 1166-1167,1170-1195,1248-1260
+spec/models/liquid_embed_reference_spec.rb
+  h_f968154a99632d 89-102
+spec/queries/billboards/filtered_ads_query_spec.rb
+  h_f968154a99632d 626-660
+spec/requests/admin/billboard_campaigns_spec.rb
+  h_f968154a99632d 63-67,75
+spec/requests/api/v1/billboard_campaigns_spec.rb
+  h_f968154a99632d 78-94
+spec/requests/api/v1/docs/billboard_campaigns_spec.rb
+  h_f968154a99632d 136-137
+spec/services/billboards/enforce_delivery_limits_spec.rb
+  h_f968154a99632d 1-197
+spec/workers/billboards/data_update_worker_spec.rb
+  h_f968154a99632d 33-76,78-80
+spec/workers/billboards/enforce_delivery_limits_worker_spec.rb
+  h_f968154a99632d 1-18
+swagger/v1/api_v1.json
+  h_f968154a99632d 2142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aecce39070fae73e0b8091e94d32fbfb5304a3ca",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
