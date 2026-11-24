@@ -1,0 +1,28 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 24-26,70-71,74-75,219-226
+app/controllers/concerns/api/organizations_controller.rb
+  h_f968154a99632d 67
+app/controllers/concerns/api/users_controller.rb
+  h_f968154a99632d 86
+lib/tasks/forem_native.rake
+  h_f968154a99632d 91,2352-2481
+spec/requests/api/v0/organizations_spec.rb
+  h_f968154a99632d 30-57,130-153
+spec/requests/api/v0/users_spec.rb
+  h_f968154a99632d 72-74,76-106,109-120,173-194
+spec/requests/api/v1/organizations_spec.rb
+  h_f968154a99632d 212-231,322-345
+spec/requests/api/v1/users_spec.rb
+  h_f968154a99632d 112-166,392-418,489-515
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3838c827951ada15a1a7568aac0068e459e04540",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
