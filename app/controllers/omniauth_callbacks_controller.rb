@@ -43,8 +43,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
                                   error.message.include?("nonce_mismatch") ||
                                     error.message.include?("csrf_detected") ||
                                     error.message.include?("user_cancelled_authorize")
-                                when "OAuth2::Error", "OAuth::Unauthorized", "OmniAuth::NoSessionError"
-                                  # Expired/invalid HTTP token grants natively raised by remote provider APIs
+                                when "OAuth2::Error", "OAuth::Unauthorized", "OmniAuth::NoSessionError",
+                                     "OmniAuth::Strategies::Facebook::NoAuthorizationCodeError"
+                                  # Expired/invalid HTTP token grants and missing client authorization codes
                                   true
                                 when "StandardError"
                                   error.message.include?("access_token was nil")
