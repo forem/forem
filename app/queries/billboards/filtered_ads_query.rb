@@ -108,6 +108,7 @@ module Billboards
       return unless where_sql
 
       @filtered_billboards = @filtered_billboards.where(Arel.sql(where_sql))
+      @filtered_billboards = exclude_expired_campaign_billboards
       apply_non_inlineable_org_post_filters! if @organization_id.present?
       @filtered_billboards = exclude_throttled_campaign_billboards
       @filtered_billboards = @filtered_billboards.order(success_rate: :desc)
@@ -273,6 +274,10 @@ module Billboards
       # Exclude billboards from paused organizations, but include those with no organization
       # Use a single WHERE clause - this pattern matches user_targeting_ads for consistency
       @filtered_billboards.where("organization_id IS NULL OR organization_id NOT IN (?)", valid_paused_ids)
+    end
+
+    def exclude_expired_campaign_billboards
+      @filtered_billboards.where(Billboard::ACTIVE_CAMPAIGN_SQL, Time.current)
     end
 
     def exclude_throttled_campaign_billboards

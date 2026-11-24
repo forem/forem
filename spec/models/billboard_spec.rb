@@ -1163,11 +1163,36 @@ RSpec.describe Billboard do
       expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
     end
 
-    it "takes the billboard down once its campaign's billboards together reach the campaign cap" do
+    it "takes the billboard and its approved campaign siblings down once the campaign reaches its cap",
+       :aggregate_failures do
       campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 150)
       billboard.update_columns(billboard_campaign_id: campaign.id, impressions_count: 100)
-      create(:billboard, billboard_campaign: campaign).update_column(:impressions_count, 50)
-      expect { billboard.check_and_handle_delivery_limits }.to change { billboard.reload.approved }.from(true).to(false)
+      sibling = create(:billboard, billboard_campaign: campaign, approved: true, published: true)
+      sibling.update_column(:impressions_count, 50)
+
+      expect { billboard.check_and_handle_delivery_limits }
+        .to change { billboard.reload.approved }.from(true).to(false)
+        .and change { sibling.reload.approved }.from(true).to(false)
+    end
+
+    it "immediately takes down an approved billboard when its own cap is lowered below its current counts",
+       :aggregate_failures do
+      billboard.update_column(:impressions_count, 200)
+
+      expect(billboard.update(max_impressions_count: 150)).to be(true)
+      expect(billboard.approved).to be(false)
+      expect(billboard.reload.approved).to be(false)
+    end
+
+    it "immediately takes down approved campaign siblings when a joining billboard pushes the campaign over cap",
+       :aggregate_failures do
+      campaign = BillboardCampaign.create!(name: "Launch", max_impressions_count: 100)
+      billboard.update_columns(billboard_campaign_id: campaign.id, impressions_count: 60)
+      joining = create(:billboard, approved: false, published: false)
+      joining.update_column(:impressions_count, 50)
+
+      expect(joining.update(billboard_campaign: campaign)).to be(true)
+      expect(billboard.reload.approved).to be(false)
     end
 
     it "does not allow approving a billboard that has reached its cap" do
@@ -1219,6 +1244,19 @@ RSpec.describe Billboard do
       it "includes billboards with no expiration or future expiration and excludes expired ones", :aggregate_failures do
         expect(described_class.approved_and_published).to include(active_billboard, future_expiry_billboard)
         expect(described_class.approved_and_published).not_to include(expired_billboard)
+      end
+
+      it "excludes billboards whose campaign has expired while including active campaign billboards",
+         :aggregate_failures do
+        expired_campaign = BillboardCampaign.create!(name: "Ended", expires_at: 1.minute.ago)
+        active_campaign = BillboardCampaign.create!(name: "Active", expires_at: 1.day.from_now)
+
+        expired_campaign_bb = create(:billboard, approved: true, published: true)
+        expired_campaign_bb.update_column(:billboard_campaign_id, expired_campaign.id)
+        active_campaign_bb = create(:billboard, approved: true, published: true, billboard_campaign: active_campaign)
+
+        expect(described_class.approved_and_published).to include(active_billboard, active_campaign_bb)
+        expect(described_class.approved_and_published).not_to include(expired_campaign_bb)
       end
     end
   end

@@ -40,7 +40,7 @@ class LiquidEmbedReference < ApplicationRecord
 
   def self.record_published?(record)
     if defined?(Billboard) && record.is_a?(Billboard)
-      record.approved? && record.published? && (record.expires_at.nil? || record.expires_at > Time.current)
+      record.approved? && record.published? && !record.expired? && !record.billboard_campaign&.expired?
     elsif record.respond_to?(:published)
       record.published == true
     else

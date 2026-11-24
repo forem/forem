@@ -13,7 +13,7 @@ pt:
         max_impressions_count: Limite de impressões
         max_clicks_count: Limite de cliques
         ideal_daily_impressions: Meta diária de impressões
-        campaign_limits: Os limites se aplicam ao total de todos os anúncios da campanha. Use 0 para remover um limite ou desativar a meta diária. Os limites e as datas de término são verificados em segundo plano, então salvar não interrompe a veiculação imediatamente.
+        campaign_limits: Os limites se aplicam ao total de todos os anúncios da campanha. Use 0 para remover um limite ou desativar a meta diária. Salvar uma data de término já passada ou um limite já atingido desativa imediatamente os anúncios da campanha; limites em andamento e expirações são verificados a cada 5 minutos em segundo plano.
         billboard_limits: Estes limites se aplicam apenas a este anúncio. Use 0 para não definir um limite.
         delivery_controls: Configurações de veiculação
         membership_help_html: Deixe em branco se este anúncio não pertencer a uma campanha. Consulte os IDs em %{campaigns}.

@@ -75,6 +75,23 @@ RSpec.describe "Api::V1::BillboardCampaigns" do
       expect(response).to have_http_status(:ok)
       expect(billboard.reload).to have_attributes(billboard_campaign_id: campaign.id, max_impressions_count: 1_000)
     end
+
+    it "immediately takes down all approved member billboards when a campaign update expires it or reaches a cap",
+       :aggregate_failures do
+      campaign = BillboardCampaign.create!(name: "Launch")
+      bb_a = create(:billboard, billboard_campaign: campaign, approved: true, published: true)
+      bb_b = create(:billboard, billboard_campaign: campaign, approved: true, published: true)
+      bb_a.update_column(:impressions_count, 60)
+      bb_b.update_column(:impressions_count, 40)
+
+      put api_billboard_campaign_path(campaign.id),
+          params: { max_impressions_count: 100 }.to_json,
+          headers: auth_header
+
+      expect(response).to have_http_status(:ok)
+      expect(bb_a.reload.approved).to be(false)
+      expect(bb_b.reload.approved).to be(false)
+    end
   end
 
   context "when a cap is out of range" do

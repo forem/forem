@@ -30,8 +30,54 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
       end
     end
 
+    context "when tabulation pushes a campaign over its impression cap" do
+      let(:campaign) { BillboardCampaign.create!(name: "Shared Cap", max_impressions_count: 100) }
+      let!(:billboard) do
+        create(:billboard, approved: true, published: true, billboard_campaign: campaign,
+                           impressions_count: 60, counts_tabulated_at: now - 1.hour)
+      end
+      let!(:sibling) do
+        create(:billboard, approved: true, published: true, billboard_campaign: campaign,
+                           impressions_count: 35, counts_tabulated_at: now - 1.hour)
+      end
+
+      before do
+        create(:billboard_event, billboard: billboard, category: "impression", counts_for: 5,
+                                 created_at: now - 10.minutes)
+      end
+
+      it "takes down both the tabulated billboard and its approved campaign siblings in the same run",
+         :aggregate_failures do
+        travel_to(now) { worker.perform(billboard.id) }
+
+        expect(billboard.reload).to have_attributes(impressions_count: 65, approved: false)
+        expect(sibling.reload.approved).to be(false)
+      end
+    end
+
+    context "when a high-impression billboard has a delivery cap" do
+      let!(:billboard) do
+        create(:billboard, approved: true, published: true, max_impressions_count: 600_005,
+                           impressions_count: 600_000, counts_tabulated_at: now - 1.hour)
+      end
+
+      before do
+        create(:billboard_event, billboard: billboard, category: "impression", counts_for: 5,
+                                 created_at: now - 10.minutes)
+        allow(worker).to receive(:rand).and_return(1)
+      end
+
+      it "bypasses random high-impression skip and enforces the cap", :aggregate_failures do
+        travel_to(now) { worker.perform(billboard.id) }
+
+        expect(billboard.reload).to have_attributes(impressions_count: 600_005, approved: false)
+      end
+    end
+
     context "when the billboard has never been tabulated before" do
-      let!(:billboard) { create(:billboard, impressions_count: 0, clicks_count: 0, seconds_visible: 0, counts_tabulated_at: nil) }
+      let!(:billboard) do
+        create(:billboard, impressions_count: 0, clicks_count: 0, seconds_visible: 0, counts_tabulated_at: nil)
+      end
 
       before do
         # Create some events before now

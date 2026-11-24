@@ -94,6 +94,62 @@ RSpec.describe BillboardCampaign do
     end
   end
 
+  describe "immediate delivery-limit enforcement on update" do
+    before do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      Rails.cache.clear
+      MemoryFirstCache.clear
+    end
+
+    it "immediately takes down all approved member billboards when expires_at is moved into the past",
+       :aggregate_failures do
+      bb_a = create(:billboard, billboard_campaign: campaign, approved: true, published: true,
+                                placement_area: "feed_first")
+      bb_b = create(:billboard, billboard_campaign: campaign, approved: true, published: true,
+                                placement_area: "post_sidebar")
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+
+      campaign.update!(expires_at: 1.minute.ago)
+
+      expect(bb_a.reload.approved).to be(false)
+      expect(bb_b.reload.approved).to be(false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(bb_a.record_key).once
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(bb_b.record_key).once
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/").once
+    end
+
+    it "immediately takes down approved member billboards when a cap is tightened to or below current totals",
+       :aggregate_failures do
+      bb_a = create(:billboard, billboard_campaign: campaign, approved: true, published: true)
+      bb_b = create(:billboard, billboard_campaign: campaign, approved: true, published: true)
+      bb_a.update_column(:impressions_count, 60)
+      bb_b.update_column(:impressions_count, 40)
+
+      campaign.update!(max_impressions_count: 100)
+
+      expect(bb_a.reload.approved).to be(false)
+      expect(bb_b.reload.approved).to be(false)
+    end
+
+    it "leaves approved member billboards active when limits are not reached", :aggregate_failures do
+      bb = create(:billboard, billboard_campaign: campaign, approved: true, published: true)
+      bb.update_column(:impressions_count, 50)
+
+      campaign.update!(max_impressions_count: 100, expires_at: 1.day.from_now)
+
+      expect(bb.reload.approved).to be(true)
+    end
+
+    it "clears the campaign from the throttle cache when expires_at is moved into the past", :aggregate_failures do
+      paced = described_class.create!(name: "Paced", ideal_daily_impressions: 5_000, delivery_throttle_rate: 0.3)
+      Billboards::CampaignPacing.write_throttled_campaign_rates(paced.id => 0.3)
+
+      paced.update!(expires_at: 1.minute.ago)
+
+      expect(Billboards::CampaignPacing.throttled_campaign_rates).to eq({})
+    end
+  end
+
   it "detaches its billboards when destroyed" do
     billboard = create(:billboard, billboard_campaign: campaign)
     campaign.destroy!

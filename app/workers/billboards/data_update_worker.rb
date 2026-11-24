@@ -25,11 +25,13 @@ module Billboards
       billboard = Billboard.find(billboard_id)
       timestamp = Time.current
 
-      # Take the billboard down if it has expired or reached a delivery cap before processing other updates
+      # Take the billboard (or its campaign) down if expired or capped before processing other updates
       billboard.check_and_handle_delivery_limits
 
-      return if rand(3) > 0 && billboard.impressions_count > 500_000
-      return if rand(2).zero? && billboard.impressions_count > 100_000
+      unless capped_billboard_or_campaign?(billboard)
+        return if rand(3).positive? && billboard.impressions_count > 500_000
+        return if rand(2).zero? && billboard.impressions_count > 100_000
+      end
 
       if billboard.counts_tabulated_at.present?
         cutoff = billboard.counts_tabulated_at
@@ -67,6 +69,10 @@ module Billboards
 
       # Enforce caps on the counts this run just wrote
       billboard.check_and_handle_delivery_limits
+    end
+
+    def capped_billboard_or_campaign?(billboard)
+      billboard.has_delivery_cap? || billboard.billboard_campaign&.has_delivery_cap? == true
     end
 
     # Sums every category in one pass over the billboard's events instead of

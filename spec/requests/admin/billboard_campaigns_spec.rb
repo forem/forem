@@ -60,7 +60,11 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
                                        'name="billboard_campaign[ideal_daily_impressions]"')
     end
 
-    it "updates delivery limits but leaves the worker-managed throttle alone", :aggregate_failures do
+    it "updates delivery limits and immediately takes down member billboards when a cap is already reached",
+       :aggregate_failures do
+      member = create(:billboard, billboard_campaign: campaign, approved: true, published: true, organization: nil)
+      member.update_column(:clicks_count, 25)
+
       patch admin_billboard_campaign_path(campaign), params: {
         billboard_campaign: { max_clicks_count: 25, ideal_daily_impressions: 100, delivery_throttle_rate: 0.01 }
       }
@@ -68,6 +72,7 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
       expect(response).to redirect_to(edit_admin_billboard_campaign_path(campaign))
       expect(campaign.reload).to have_attributes(max_clicks_count: 25, ideal_daily_impressions: 100,
                                                  delivery_throttle_rate: 1.0)
+      expect(member.reload.approved).to be(false)
       expect(AuditLog.last).to have_attributes(user_id: admin.id, slug: "billboard_campaign_update",
                                                data: include("billboard_campaign_id" => campaign.id))
     end
