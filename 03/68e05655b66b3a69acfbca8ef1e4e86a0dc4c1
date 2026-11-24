@@ -1,0 +1,22 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 39,72,205-211
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 73-75,100-102,106-110
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 7248-7249
+lib/tasks/forem_native.rake
+  h_f968154a99632d 92,2255-2265
+spec/requests/reactions_spec.rb
+  h_f968154a99632d 57-86,88,90-92,94-98,100-104,243-272
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0368e05655b66b3a69acfbca8ef1e4e86a0dc4c1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
