@@ -131,7 +131,7 @@ command = '''
     sleep 0.2
   done
   # Another server on this port passes the check above; leave its databases alone.
-  [ "$(psql -d postgres -tAc 'show data_directory')" = "$PGDATA" ] || { echo "setup: the PostgreSQL on port $PGPORT is not this checkout's ($PGDATA)" >&2; exit 1; }
+  [ "$(psql -X -d postgres -tAc 'show data_directory')" = "$PGDATA" ] || { echo "setup: the PostgreSQL on port $PGPORT is not this checkout's ($PGDATA)" >&2; exit 1; }
   # Only when what the databases depend on changed.
   stamp="$FLOX_ENV_CACHE/databases.stamp"
   want="$(cat Gemfile.lock yarn.lock db/schema.rb db/seeds.rb | cksum)"
@@ -146,7 +146,7 @@ command = '''
     dropdb --if-exists --force Forem_development
     existed=
   else
-    existed="$(psql -v ON_ERROR_STOP=1 -d postgres -tAc "select 1 from pg_database where datname = 'Forem_development'")"
+    existed="$(psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "select 1 from pg_database where datname = 'Forem_development'")"
   fi
   [ -n "$existed" ] || touch "$creating"
   bin/rails app_initializer:setup forem:setup & dev=$!
