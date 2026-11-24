@@ -21,6 +21,9 @@ on:
       - "app/controllers/search_controller.rb"
       - "app/controllers/concerns/api/articles_controller.rb"
       - "app/controllers/concerns/api/comments_controller.rb"
+      - "app/controllers/concerns/api/organizations_controller.rb"
+      - "app/controllers/concerns/api/users_controller.rb"
+      - "app/controllers/api/v1/organizations_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/helpers/agent_sessions_helper.rb"
       - "app/helpers/application_helper.rb"
@@ -64,8 +67,12 @@ on:
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
       - "spec/requests/api/v0/articles_spec.rb"
       - "spec/requests/api/v0/comments_spec.rb"
+      - "spec/requests/api/v0/organizations_spec.rb"
+      - "spec/requests/api/v0/users_spec.rb"
       - "spec/requests/api/v1/articles_spec.rb"
       - "spec/requests/api/v1/comments_spec.rb"
+      - "spec/requests/api/v1/organizations_spec.rb"
+      - "spec/requests/api/v1/users_spec.rb"
       - "spec/requests/api/v1/docs/articles_spec.rb"
       - "spec/requests/api/v1/docs/comments_spec.rb"
       - "spec/requests/billboards_spec.rb"
@@ -209,6 +216,14 @@ jobs:
             raise "Unexpected serialize_article_reactions_json!" unless art_rxn_res.is_a?(String) && art_rxn_res.index("\"category\":\"like\"") < art_rxn_res.index("\"category\":\"readinglist\"")
             cmt_rxn_res = ForemNative.serialize_comment_reactions_json(7, rxn_cols, [{ "id" => 9, "category" => "like", "reactable_id" => 101, "reactable_type" => "Comment", "user_id" => 7, "created_at" => rxn_ts, "updated_at" => rxn_ts, "points" => 1.0, "status" => "valid" }], [[101, 4]])
             raise "Unexpected serialize_comment_reactions_json!" unless cmt_rxn_res.is_a?(String) && cmt_rxn_res.include?("\"public_reaction_counts\":[{\"id\":101,\"count\":4}]")
+            raise "Unexpected format_joined_at_date!" unless ForemNative.format_joined_at_date(1_767_601_800) == "Jan  5, 2026"
+            api_user_row = [42, "ada", "Ada <L>", "ada_tw", nil, "Bio & more", "London", "https://ada.dev", 1_767_601_800, "https://cdn.example/ada.png"]
+            api_user_res = ForemNative.serialize_api_user_json(api_user_row, extended: true, email: "ada@example.com", badge_ids: [1, 7], followers_count: 12)
+            raise "Unexpected serialize_api_user_json!" unless api_user_res.is_a?(String) && api_user_res.include?("\"joined_at\":\"Jan  5, 2026\"") && api_user_res.include?("\"badge_ids\":[1,7],\"followers_count\":12}")
+            api_users_res = ForemNative.serialize_api_users_json(api_user_row)
+            raise "Unexpected serialize_api_users_json!" unless api_users_res.is_a?(String) && api_users_res.start_with?("[{\"type_of\":\"user\",\"id\":42,")
+            api_org_res = ForemNative.serialize_api_organization_json([10, "forem", "Forem", "Summary", nil, "forem", "https://forem.com", "Remote", "Ruby, Rust", "Tagline", "Story", 1_795_546_800, "https://cdn.example/org.png"])
+            raise "Unexpected serialize_api_organization_json!" unless api_org_res.is_a?(String) && api_org_res.include?("\"joined_at\":\"2026-11-24T19:00:00Z\"")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

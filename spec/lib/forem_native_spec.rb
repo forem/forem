@@ -9875,4 +9875,207 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".format_joined_at_date" do
+    it "matches UTC strftime('%b %e, %Y') across edge cases and 1,000 randomized timestamps", :aggregate_failures do
+      expect(described_class.format_joined_at_date(0)).to eq("Jan  1, 1970")
+      expect(described_class.format_joined_at_date(-1)).to eq("Dec 31, 1969")
+      expect(described_class.format_joined_at_date(1_709_208_000)).to eq("Feb 29, 2024")
+      expect(described_class.format_joined_at_date(1_767_601_800)).to eq("Jan  5, 2026")
+      expect(described_class.format_joined_at_date(1_795_546_800)).to eq("Nov 24, 2026")
+
+      # Out-of-domain inputs return nil
+      expect(described_class.format_joined_at_date(nil)).to be_nil
+      expect(described_class.format_joined_at_date("1795546800")).to be_nil
+      expect(described_class.format_joined_at_date(-30_610_224_001)).to be_nil # year 999
+      expect(described_class.format_joined_at_date(253_402_300_800)).to be_nil # year 10000
+
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        secs = rng.rand(-2_208_988_800..4_102_444_800) # 1900..2100
+        expected = Time.at(secs).utc.strftime("%b %e, %Y")
+        expect(described_class.format_joined_at_date(secs)).to eq(expected), "iteration #{i} (secs=#{secs})"
+      end
+    end
+  end
+
+  describe ".serialize_api_user_json" do
+    let(:legacy_serialize_api_user) do
+      lambda do |fields, extended:, email:, badge_ids:, followers_count:|
+        id, username, name, twitter_username, github_username, summary, location,
+          website_url, created_at_sec, profile_image = fields
+        payload = {
+          "type_of" => "user",
+          "id" => id,
+          "username" => username,
+          "name" => name,
+          "twitter_username" => twitter_username,
+          "github_username" => github_username
+        }
+        payload["email"] = email if extended
+        payload["summary"] = summary
+        payload["location"] = location
+        payload["website_url"] = website_url
+        payload["joined_at"] = Time.at(created_at_sec).utc.strftime("%b %e, %Y")
+        payload["profile_image"] = profile_image
+        payload["badge_ids"] = badge_ids || [] if extended
+        payload["followers_count"] = followers_count unless followers_count.nil?
+        ActiveSupport::JSON.encode(payload)
+      end
+    end
+
+    it "returns nil for out-of-domain inputs", :aggregate_failures do
+      valid_fields = [1, "u", "User", nil, nil, nil, nil, nil, 1_700_000_000, "https://example.com/a.png"]
+      expect(described_class.serialize_api_user_json(nil)).to be_nil
+      expect(described_class.serialize_api_user_json(valid_fields[0..8])).to be_nil
+      expect(described_class.serialize_api_user_json([*valid_fields[0..7], nil, valid_fields[9]])).to be_nil
+      expect(described_class.serialize_api_user_json([*valid_fields[0..7], 253_402_300_800, valid_fields[9]])).to be_nil
+      expect(described_class.serialize_api_user_json(valid_fields, extended: true, badge_ids: ["bad"])).to be_nil
+      expect(described_class.serialize_api_user_json(valid_fields, extended: true, followers_count: "10")).to be_nil
+    end
+
+    it "matches ActiveSupport::JSON / Jbuilder output bit-for-bit across 1,000 randomized users" do
+      rng = Random.new(424_242)
+      text_pool = [
+        nil, "", "Alice", "Ada <Lovelace> & \"Co\"", "Line1\nLine2\t\\/",
+        "日本語 🚀 \u2028\u2029", "https://example.com/a?x=1&y=2"
+      ]
+
+      1_000.times do |i|
+        fields = [
+          rng.rand(1..10_000_000),
+          ["user_#{i}", "dev-#{i}", nil].sample(random: rng),
+          text_pool.sample(random: rng),
+          [nil, "tw_#{i}", "a&b"].sample(random: rng),
+          [nil, "gh_#{i}", "<gh>"].sample(random: rng),
+          text_pool.sample(random: rng),
+          text_pool.sample(random: rng),
+          [nil, "", "https://example.com/#{i}?a=1&b=2"].sample(random: rng),
+          rng.rand(0..2_000_000_000),
+          [nil, "https://cdn.example.com/img/#{i}.png"].sample(random: rng),
+        ]
+        extended = rng.rand(2).zero?
+        email = extended ? [nil, "user#{i}@example.com", "a+b<c>@example.com"].sample(random: rng) : nil
+        badge_ids = extended ? Array.new(rng.rand(0..6)) { rng.rand(1..500) } : nil
+        followers_count = extended && rng.rand(2).zero? ? rng.rand(0..100_000) : nil
+
+        actual = described_class.serialize_api_user_json(
+          fields,
+          extended: extended,
+          email: email,
+          badge_ids: badge_ids,
+          followers_count: followers_count,
+        )
+        expected = legacy_serialize_api_user.call(
+          fields,
+          extended: extended,
+          email: email,
+          badge_ids: badge_ids,
+          followers_count: followers_count,
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_users_json" do
+    it "handles empty arrays, out-of-domain inputs, and 1,000 randomized batches", :aggregate_failures do
+      expect(described_class.serialize_api_users_json([])).to eq("[]")
+      expect(described_class.serialize_api_users_json(nil)).to be_nil
+      expect(described_class.serialize_api_users_json([1, "u"])).to be_nil
+
+      rng = Random.new(424_242)
+      text_pool = [nil, "", "Bob <Dev> & Co", "🚀 Bio\nLine 2", "NYC"]
+
+      1_000.times do |i|
+        count = rng.rand(0..6)
+        users_flat = []
+        expected_hashes = Array.new(count) do |j|
+          secs = rng.rand(0..2_000_000_000)
+          row = [
+            (i * 10) + j + 1,
+            "member_#{i}_#{j}",
+            text_pool.sample(random: rng),
+            [nil, "tw#{j}"].sample(random: rng),
+            [nil, "gh#{j}"].sample(random: rng),
+            text_pool.sample(random: rng),
+            text_pool.sample(random: rng),
+            [nil, "https://member#{j}.dev"].sample(random: rng),
+            secs,
+            "https://cdn.example.com/u/#{j}.png",
+          ]
+          users_flat.concat(row)
+          {
+            "type_of" => "user",
+            "id" => row[0],
+            "username" => row[1],
+            "name" => row[2],
+            "twitter_username" => row[3],
+            "github_username" => row[4],
+            "summary" => row[5],
+            "location" => row[6],
+            "website_url" => row[7],
+            "joined_at" => Time.at(secs).utc.strftime("%b %e, %Y"),
+            "profile_image" => row[9]
+          }
+        end
+
+        expect(described_class.serialize_api_users_json(users_flat))
+          .to eq(ActiveSupport::JSON.encode(expected_hashes)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_organization_json" do
+    it "handles edge cases, out-of-domain inputs, and 1,000 randomized organizations", :aggregate_failures do
+      expect(described_class.serialize_api_organization_json(nil)).to be_nil
+      expect(described_class.serialize_api_organization_json([1, "org"])).to be_nil
+      bad_year = [1, "org", "Org", nil, nil, nil, nil, nil, nil, nil, nil, 253_402_300_800, nil]
+      expect(described_class.serialize_api_organization_json(bad_year)).to be_nil
+
+      rng = Random.new(424_242)
+      text_pool = [
+        nil, "", "Forem & <Friends>", "Ruby, Rust\nPostgres",
+        "日本語 🚀 \"Quoted\" \\/", "https://forem.com/?a=1&b=2"
+      ]
+
+      1_000.times do |i|
+        created_at_sec = rng.rand(8).zero? ? nil : rng.rand(0..2_000_000_000)
+        org_fields = [
+          i + 1,
+          "org_#{i}",
+          text_pool.sample(random: rng),
+          text_pool.sample(random: rng),
+          [nil, "org_tw_#{i}"].sample(random: rng),
+          [nil, "org_gh_#{i}"].sample(random: rng),
+          [nil, "https://org#{i}.example.com"].sample(random: rng),
+          text_pool.sample(random: rng),
+          text_pool.sample(random: rng),
+          text_pool.sample(random: rng),
+          text_pool.sample(random: rng),
+          created_at_sec,
+          [nil, "https://cdn.example.com/org/#{i}.png"].sample(random: rng),
+        ]
+
+        expected = ActiveSupport::JSON.encode(
+          "type_of" => "organization",
+          "id" => org_fields[0],
+          "username" => org_fields[1],
+          "name" => org_fields[2],
+          "summary" => org_fields[3],
+          "twitter_username" => org_fields[4],
+          "github_username" => org_fields[5],
+          "url" => org_fields[6],
+          "location" => org_fields[7],
+          "tech_stack" => org_fields[8],
+          "tag_line" => org_fields[9],
+          "story" => org_fields[10],
+          "joined_at" => created_at_sec ? Time.at(created_at_sec).utc.iso8601 : nil,
+          "profile_image" => org_fields[12],
+        )
+
+        expect(described_class.serialize_api_organization_json(org_fields)).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

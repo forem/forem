@@ -9,6 +9,7 @@
 pub mod ahoy_link;
 pub mod api_articles;
 pub mod api_comments;
+pub mod api_users;
 pub mod calendar;
 pub mod color;
 pub mod comment_tree;

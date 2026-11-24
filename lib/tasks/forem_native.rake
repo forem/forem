@@ -88,6 +88,7 @@ namespace :forem_native do
     benchmark_comment_tree
     benchmark_api_comments
     benchmark_api_articles
+    benchmark_api_users_orgs
     benchmark_homepage_articles
     benchmark_reactions
     benchmark_story_cards
@@ -2346,6 +2347,136 @@ namespace :forem_native do
       x.report("Ruby Legacy (120-comment reactions JSON)") { legacy_comment_reactions.call }
       x.report("Rust Magnus (120-comment reactions JSON)") { native_comment_reactions.call }
       x.compare!
+    end
+  end
+
+  desc "Benchmark Api::UsersController & Api::OrganizationsController streaming JSON serialization"
+  task benchmark_api_users_orgs: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    joined_time = Time.utc(2026, 1, 5, 8, 30, 0)
+    user_row = [
+      42, "ada", "Ada <Lovelace> & Co.", "ada_dev", "adalovelace",
+      "Systems engineer & writer 🚀", "London, UK", "https://ada.example.com",
+      joined_time.tv_sec, "https://cdn.example.com/ada-320.png"
+    ]
+    badge_ids = [1, 7, 19, 42, 108]
+    users_flat = Array.new(30) do |i|
+      t = Time.utc(2024, (i % 12) + 1, (i % 28) + 1, 12, 0, 0)
+      [
+        1000 + i, "dev_#{i}", "Developer #{i} <Team>", "dev_tw_#{i}", "dev_gh_#{i}",
+        "Building Forem & friends #{i}", "City #{i}", "https://dev#{i}.example.com",
+        t.tv_sec, "https://cdn.example.com/u#{i}-320.png"
+      ]
+    end.flatten(1)
+    org_row = [
+      10, "forem", "Forem & Friends", "Open source <community> software",
+      "forem", "forem", "https://forem.com", "Remote",
+      "Ruby, Rails, Rust, Preact", "Where communities thrive",
+      "Started in 2016 to power open-source communities.",
+      Time.utc(2026, 11, 24, 19, 0, 0).tv_sec,
+      "https://cdn.example.com/forem-640.png"
+    ]
+
+    legacy_user_me = lambda do
+      ActiveSupport::JSON.encode(
+        type_of: "user",
+        id: user_row[0],
+        username: user_row[1],
+        name: user_row[2],
+        twitter_username: user_row[3],
+        github_username: user_row[4],
+        email: "ada@example.com",
+        summary: user_row[5],
+        location: user_row[6],
+        website_url: user_row[7],
+        joined_at: I18n.l(Time.at(user_row[8]).utc, format: :json, locale: :en),
+        profile_image: user_row[9],
+        badge_ids: badge_ids,
+        followers_count: 128,
+      )
+    end
+    native_user_me = lambda do
+      ForemNative.serialize_api_user_json(
+        user_row,
+        extended: true,
+        email: "ada@example.com",
+        badge_ids: badge_ids,
+        followers_count: 128,
+      )
+    end
+
+    legacy_org_users = lambda do
+      arr = []
+      users_flat.each_slice(10) do |row|
+        arr << {
+          type_of: "user",
+          id: row[0],
+          username: row[1],
+          name: row[2],
+          twitter_username: row[3],
+          github_username: row[4],
+          summary: row[5],
+          location: row[6],
+          website_url: row[7],
+          joined_at: I18n.l(Time.at(row[8]).utc, format: :json, locale: :en),
+          profile_image: row[9]
+        }
+      end
+      ActiveSupport::JSON.encode(arr)
+    end
+    native_org_users = -> { ForemNative.serialize_api_users_json(users_flat) }
+
+    legacy_org_show = lambda do
+      ActiveSupport::JSON.encode(
+        type_of: "organization",
+        id: org_row[0],
+        username: org_row[1],
+        name: org_row[2],
+        summary: org_row[3],
+        twitter_username: org_row[4],
+        github_username: org_row[5],
+        url: org_row[6],
+        location: org_row[7],
+        tech_stack: org_row[8],
+        tag_line: org_row[9],
+        story: org_row[10],
+        joined_at: Time.at(org_row[11]).utc.iso8601,
+        profile_image: org_row[12],
+      )
+    end
+    native_org_show = -> { ForemNative.serialize_api_organization_json(org_row) }
+
+    raise "API user benchmark parity failure!" unless native_user_me.call == legacy_user_me.call
+    raise "API org users benchmark parity failure!" unless native_org_users.call == legacy_org_users.call
+    raise "API org show benchmark parity failure!" unless native_org_show.call == legacy_org_show.call
+
+    puts "\n=== Api::UsersController & Api::OrganizationsController Streaming JSON Benchmark ==="
+    puts "Note: Serializer-only benchmark on prepared fixtures (excludes DB queries and ActiveRecord hydration)."
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust heap allocations)."
+
+    [
+      ["V1 User /me", legacy_user_me, native_user_me],
+      ["Organization Users (30)", legacy_org_users, native_org_users],
+      ["Organization Show", legacy_org_show, native_org_show],
+    ].each do |label, legacy_fn, native_fn|
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "#{label} — Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby Legacy (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
     end
   end
 end

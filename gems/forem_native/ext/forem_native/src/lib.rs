@@ -7406,6 +7406,114 @@ fn serialize_comment_reactions_json(
     Some(ruby.str_new(&json))
 }
 
+fn format_joined_at_date(ruby: &Ruby, epoch_secs: i64) -> Option<RString> {
+    let formatted = forem_core::api_users::format_joined_at_date(epoch_secs)?;
+    Some(ruby.str_new(&formatted))
+}
+
+unsafe fn parse_api_user_row(chunk: &[Value]) -> Option<forem_core::api_users::ApiUserRow<'_>> {
+    if chunk.len() != 10 {
+        return None;
+    }
+    let id = Integer::from_value(chunk[0])?.to_i64().ok()?;
+    let created_at_sec = Integer::from_value(chunk[8])?.to_i64().ok()?;
+    Some(forem_core::api_users::ApiUserRow {
+        id,
+        username: borrow_opt_utf8_str(chunk[1])?,
+        name: borrow_opt_utf8_str(chunk[2])?,
+        twitter_username: borrow_opt_utf8_str(chunk[3])?,
+        github_username: borrow_opt_utf8_str(chunk[4])?,
+        summary: borrow_opt_utf8_str(chunk[5])?,
+        location: borrow_opt_utf8_str(chunk[6])?,
+        website_url: borrow_opt_utf8_str(chunk[7])?,
+        created_at_sec,
+        profile_image: borrow_opt_utf8_str(chunk[9])?,
+    })
+}
+
+fn serialize_api_user_json(
+    ruby: &Ruby,
+    user_fields: RArray,
+    extended: bool,
+    email: Value,
+    badge_ids: Value,
+    followers_count: Value,
+) -> Option<RString> {
+    let followers = extract_opt_i64_val(followers_count)?;
+    let badges = if extended {
+        if badge_ids.is_nil() {
+            Vec::new()
+        } else {
+            extract_strict_i64_vec(RArray::from_value(badge_ids)?)?
+        }
+    } else {
+        Vec::new()
+    };
+
+    let json = {
+        // SAFETY: Zero-copy borrows of `user_fields` and `email` strings; `forem_core`
+        // never calls into Ruby, and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { user_fields.as_slice() };
+        let row = unsafe { parse_api_user_row(slice) }?;
+        let email_str = if extended {
+            unsafe { borrow_opt_utf8_str(email) }?
+        } else {
+            None
+        };
+        forem_core::api_users::serialize_api_user_json(
+            &row, extended, email_str, &badges, followers,
+        )?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_users_json(ruby: &Ruby, users_flat: RArray) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `users_flat` elements; `forem_core` never calls into
+        // Ruby, and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { users_flat.as_slice() };
+        if slice.len() % 10 != 0 {
+            return None;
+        }
+        let mut rows = Vec::with_capacity(slice.len() / 10);
+        for chunk in slice.chunks_exact(10) {
+            rows.push(unsafe { parse_api_user_row(chunk) }?);
+        }
+        forem_core::api_users::serialize_api_users_json(&rows)?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_organization_json(ruby: &Ruby, org_fields: RArray) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `org_fields` elements; `forem_core` never calls into
+        // Ruby, and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { org_fields.as_slice() };
+        if slice.len() != 13 {
+            return None;
+        }
+        let id = Integer::from_value(slice[0])?.to_i64().ok()?;
+        let created_at_sec = extract_opt_i64_val(slice[11])?;
+        let org = forem_core::api_users::ApiOrganizationRow {
+            id,
+            username: unsafe { borrow_opt_utf8_str(slice[1]) }?,
+            name: unsafe { borrow_opt_utf8_str(slice[2]) }?,
+            summary: unsafe { borrow_opt_utf8_str(slice[3]) }?,
+            twitter_username: unsafe { borrow_opt_utf8_str(slice[4]) }?,
+            github_username: unsafe { borrow_opt_utf8_str(slice[5]) }?,
+            url: unsafe { borrow_opt_utf8_str(slice[6]) }?,
+            location: unsafe { borrow_opt_utf8_str(slice[7]) }?,
+            tech_stack: unsafe { borrow_opt_utf8_str(slice[8]) }?,
+            tag_line: unsafe { borrow_opt_utf8_str(slice[9]) }?,
+            story: unsafe { borrow_opt_utf8_str(slice[10]) }?,
+            created_at_sec,
+            profile_image: unsafe { borrow_opt_utf8_str(slice[12]) }?,
+        };
+        forem_core::api_users::serialize_api_organization_json(&org)?
+    };
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -7973,6 +8081,20 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_comment_reactions_json",
         function!(serialize_comment_reactions_json, 4),
+    )?;
+    native_mod
+        .define_singleton_method("format_joined_at_date", function!(format_joined_at_date, 1))?;
+    native_mod.define_singleton_method(
+        "serialize_api_user_json",
+        function!(serialize_api_user_json, 5),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_users_json",
+        function!(serialize_api_users_json, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_organization_json",
+        function!(serialize_api_organization_json, 1),
     )?;
     Ok(())
 }
