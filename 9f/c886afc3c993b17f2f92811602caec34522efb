@@ -1,0 +1,32 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 25-26,28-30,32,80-81,83-85,87,90-91,93-95,97,257-263
+app/controllers/concerns/api/readinglist_controller.rb
+  h_f968154a99632d 21
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 13
+lib/tasks/forem_native.rake
+  h_f968154a99632d 92,2613-2708
+spec/requests/api/v0/followers_spec.rb
+  h_f968154a99632d 94-111
+spec/requests/api/v0/follows_spec.rb
+  h_f968154a99632d 60-75
+spec/requests/api/v0/podcasts_episodes_spec.rb
+  h_f968154a99632d 126-143
+spec/requests/api/v0/readinglist_spec.rb
+  h_f968154a99632d 62-88
+spec/requests/api/v0/tags_spec.rb
+  h_f968154a99632d 103-120
+spec/requests/api/v0/videos_spec.rb
+  h_f968154a99632d 74-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9fc886afc3c993b17f2f92811602caec34522efb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
