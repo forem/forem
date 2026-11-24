@@ -1,9 +1,55 @@
-//! Literal transcript HTML substitutions after Rouge and before sanitization.
+//! Literal transcript HTML substitutions and normalized agent-session validation primitives.
 //!
-//! These deliberately match the renderer's string/regexp substitutions, not HTML
+//! HTML substitutions deliberately match the renderer's string/regexp substitutions, not HTML
 //! parsing rules: entities stay encoded and markers inside code are styled too.
 
 use std::borrow::Cow;
+
+pub const MAX_VALIDATION_ERRORS: usize = 5;
+pub const ERR_NON_OBJECT: &str = "Normalized data must be a JSON object";
+pub const ERR_MISSING_MESSAGES: &str = "Missing required key: messages";
+pub const ERR_MESSAGES_NOT_ARRAY: &str = "messages must be an array";
+pub const ERR_METADATA_NOT_OBJECT: &str = "metadata must be a JSON object";
+
+/// Returns `true` when `role` is one of `AgentSessionParsers::NormalizedDataValidator::VALID_ROLES`.
+#[inline]
+pub fn is_valid_message_role(role: &str) -> bool {
+    matches!(role, "user" | "assistant")
+}
+
+/// Returns `true` when `block_type` is one of `AgentSessionParsers::NormalizedDataValidator::VALID_BLOCK_TYPES`.
+#[inline]
+pub fn is_valid_block_type(block_type: &str) -> bool {
+    matches!(block_type, "text" | "tool_call")
+}
+
+pub fn format_too_many_messages_error(max_messages: usize) -> String {
+    format!("Too many messages (max {max_messages})")
+}
+
+pub fn format_message_not_object_error(index: usize) -> String {
+    format!("Message at index {index} must be a JSON object")
+}
+
+pub fn format_invalid_role_error(index: usize, role: &str) -> String {
+    format!("Message at index {index} has invalid role: {role}")
+}
+
+pub fn format_missing_content_array_error(index: usize) -> String {
+    format!("Message at index {index} must have a content array")
+}
+
+pub fn format_invalid_block_type_error(
+    msg_index: usize,
+    block_index: usize,
+    block_type: &str,
+) -> String {
+    format!("Message {msg_index}, block {block_index} has invalid type: {block_type}")
+}
+
+pub fn format_too_large_error(json_size: usize, max_json_size: usize) -> String {
+    format!("Normalized data is too large ({json_size} bytes, max {max_json_size})")
+}
 
 const CODE_OPEN: &str = "<pre><code>";
 const CODE_CLOSE: &str = "</code></pre>";
@@ -188,5 +234,57 @@ mod tests {
             assert_eq!(postprocess_transcript_html(html, true).unwrap(), html);
         }
         assert_eq!(wrap_untagged_codeblocks("<pre><code>x</code> </pre>"), None);
+    }
+
+    #[test]
+    fn validates_roles_and_block_types_strictly() {
+        assert!(is_valid_message_role("user"));
+        assert!(is_valid_message_role("assistant"));
+        assert!(!is_valid_message_role("system"));
+        assert!(!is_valid_message_role("User"));
+        assert!(!is_valid_message_role(""));
+        assert!(!is_valid_message_role(" user "));
+
+        assert!(is_valid_block_type("text"));
+        assert!(is_valid_block_type("tool_call"));
+        assert!(!is_valid_block_type("image"));
+        assert!(!is_valid_block_type("Text"));
+        assert!(!is_valid_block_type(""));
+    }
+
+    #[test]
+    fn formats_validation_error_messages_matching_ruby() {
+        assert_eq!(ERR_NON_OBJECT, "Normalized data must be a JSON object");
+        assert_eq!(ERR_MISSING_MESSAGES, "Missing required key: messages");
+        assert_eq!(ERR_MESSAGES_NOT_ARRAY, "messages must be an array");
+        assert_eq!(ERR_METADATA_NOT_OBJECT, "metadata must be a JSON object");
+        assert_eq!(
+            format_too_many_messages_error(50_000),
+            "Too many messages (max 50000)"
+        );
+        assert_eq!(
+            format_message_not_object_error(3),
+            "Message at index 3 must be a JSON object"
+        );
+        assert_eq!(
+            format_invalid_role_error(0, "system"),
+            "Message at index 0 has invalid role: system"
+        );
+        assert_eq!(
+            format_invalid_role_error(2, ""),
+            "Message at index 2 has invalid role: "
+        );
+        assert_eq!(
+            format_missing_content_array_error(4),
+            "Message at index 4 must have a content array"
+        );
+        assert_eq!(
+            format_invalid_block_type_error(1, 2, "non-object"),
+            "Message 1, block 2 has invalid type: non-object"
+        );
+        assert_eq!(
+            format_too_large_error(10_485_761, 10_485_760),
+            "Normalized data is too large (10485761 bytes, max 10485760)"
+        );
     }
 }

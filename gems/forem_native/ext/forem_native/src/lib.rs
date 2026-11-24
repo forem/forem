@@ -2387,6 +2387,99 @@ fn write_json_key<W: forem_core::json::JsonOutput>(
     Some(())
 }
 
+const SMALL_INLINE_CAP: usize = 8;
+
+/// Stack-first buffer for copying `(key, value)` handles out of a Ruby `Hash` without
+/// heap-allocating a `Vec` for small hashes (<= 8 entries, e.g. message/block hashes).
+enum SmallPairs {
+    Inline {
+        buf: [(Value, Value); SMALL_INLINE_CAP],
+        len: usize,
+    },
+    Heap(Vec<(Value, Value)>),
+}
+
+impl SmallPairs {
+    fn as_slice(&self) -> &[(Value, Value)] {
+        match self {
+            Self::Inline { buf, len } => &buf[..*len],
+            Self::Heap(vec) => vec.as_slice(),
+        }
+    }
+}
+
+/// Stack-first buffer for copying `Value` handles out of a Ruby `Array` so no `as_slice()`
+/// borrow is held across recursion or Ruby VM calls.
+enum SmallValues {
+    Inline {
+        buf: [Value; SMALL_INLINE_CAP],
+        len: usize,
+    },
+    Heap(Vec<Value>),
+}
+
+impl SmallValues {
+    fn as_slice(&self) -> &[Value] {
+        match self {
+            Self::Inline { buf, len } => &buf[..*len],
+            Self::Heap(vec) => vec.as_slice(),
+        }
+    }
+}
+
+fn collect_hash_pairs(ruby: &Ruby, hash: RHash) -> Option<SmallPairs> {
+    let expected = hash.len();
+    if expected <= SMALL_INLINE_CAP {
+        let nil = ruby.qnil().as_value();
+        let mut pairs = SmallPairs::Inline {
+            buf: [(nil, nil); SMALL_INLINE_CAP],
+            len: 0,
+        };
+        hash.foreach(|k: Value, v: Value| {
+            match &mut pairs {
+                SmallPairs::Inline { buf, len } if *len < SMALL_INLINE_CAP => {
+                    buf[*len] = (k, v);
+                    *len += 1;
+                }
+                SmallPairs::Inline { buf, len } => {
+                    let mut vec = Vec::with_capacity(*len + 1);
+                    vec.extend_from_slice(&buf[..*len]);
+                    vec.push((k, v));
+                    pairs = SmallPairs::Heap(vec);
+                }
+                SmallPairs::Heap(vec) => vec.push((k, v)),
+            }
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+        Some(pairs)
+    } else {
+        let mut vec = Vec::with_capacity(expected);
+        hash.foreach(|k: Value, v: Value| {
+            vec.push((k, v));
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+        Some(SmallPairs::Heap(vec))
+    }
+}
+
+fn collect_array_values(ruby: &Ruby, arr: RArray) -> SmallValues {
+    // SAFETY: Copy handles into stack/heap buffer before releasing the slice borrow.
+    let slice = unsafe { arr.as_slice() };
+    if slice.len() <= SMALL_INLINE_CAP {
+        let nil = ruby.qnil().as_value();
+        let mut buf = [nil; SMALL_INLINE_CAP];
+        buf[..slice.len()].copy_from_slice(slice);
+        SmallValues::Inline {
+            buf,
+            len: slice.len(),
+        }
+    } else {
+        SmallValues::Heap(slice.to_vec())
+    }
+}
+
 /// Recursively traverses a supported Ruby value and writes or counts its JSON representation in `w`.
 fn write_json_value<W: forem_core::json::JsonOutput>(
     ruby: &Ruby,
@@ -2412,23 +2505,17 @@ fn write_json_value<W: forem_core::json::JsonOutput>(
             w.string(json_str(&RString::from_value(value)?)?);
         } else if is_instance_of(value, ruby.class_hash()) {
             let hash = RHash::from_value(value)?;
-            let mut pairs: Vec<(Value, Value)> = Vec::with_capacity(hash.len());
-            hash.foreach(|k: Value, v: Value| {
-                pairs.push((k, v));
-                Ok(ForEach::Continue)
-            })
-            .ok()?;
+            let pairs = collect_hash_pairs(ruby, hash)?;
             w.begin_object();
-            for (k, v) in pairs {
+            for &(k, v) in pairs.as_slice() {
                 write_json_key(ruby, w, k, string_keys_only)?;
                 write_json_value(ruby, w, v, string_keys_only)?;
             }
             w.end_object();
         } else if is_instance_of(value, ruby.class_array()) {
-            // SAFETY: Copy the element handles out so no slice borrow is held while recursing.
-            let items: Vec<Value> = unsafe { RArray::from_value(value)?.as_slice() }.to_vec();
+            let items = collect_array_values(ruby, RArray::from_value(value)?);
             w.begin_array();
-            for item in items {
+            for &item in items.as_slice() {
                 write_json_value(ruby, w, item, string_keys_only)?;
             }
             w.end_array();
@@ -2457,6 +2544,502 @@ fn json_encoded_size(ruby: &Ruby, value: Value, escape_html: bool) -> Option<usi
     let mut w = forem_core::json::JsonWriter::counting(escape_html);
     write_json_value(ruby, &mut w, value, true)?;
     Some(w.finish().0)
+}
+
+/// Returns `true` when `hash` has `compare_by_identity` enabled (or if the check fails).
+#[inline]
+fn hash_is_compare_by_identity(hash: RHash, id_compare_by_identity: magnus::value::Id) -> bool {
+    hash.funcall::<_, _, bool>(id_compare_by_identity, ())
+        .unwrap_or(true)
+}
+
+/// Returns `true` when `hash` has a non-nil `default` value or `default_proc`.
+/// Only called on missing-key paths so valid transcripts incur zero Ruby VM calls.
+fn hash_has_default(hash: RHash) -> Option<bool> {
+    let default_val: Value = hash.funcall("default", ()).ok()?;
+    if !default_val.is_nil() {
+        return Some(true);
+    }
+    let default_proc: Value = hash.funcall("default_proc", ()).ok()?;
+    Some(!default_proc.is_nil())
+}
+
+/// Formats simple Ruby scalar values identically to Ruby string interpolation `"#{val}"`.
+/// Returns `None` for complex types (Hash, Array, Float, custom objects, non-UTF-8 strings)
+/// so the caller defers to Ruby.
+fn format_simple_ruby_value(ruby: &Ruby, value: Value) -> Option<String> {
+    if value.is_nil() {
+        Some(String::new())
+    } else if Qtrue::from_value(value).is_some() {
+        Some("true".to_string())
+    } else if Qfalse::from_value(value).is_some() {
+        Some("false".to_string())
+    } else if let Some(integer) = Integer::from_value(value) {
+        Some(integer.to_i64().ok()?.to_string())
+    } else if let Some(symbol) = Symbol::from_value(value) {
+        Some(symbol.name().ok()?.to_string())
+    } else if is_instance_of(value, ruby.class_string()) {
+        Some(json_str(&RString::from_value(value)?)?.to_string())
+    } else {
+        None
+    }
+}
+
+/// Checks whether a Ruby hash key is a plain UTF-8 String matching one of the known keys.
+/// Returns `None` if the key is a String subclass or non-UTF-8 String (e.g. `ASCII-8BIT`)
+/// so the caller defers to Ruby.
+#[derive(Copy, Clone, Eq, PartialEq)]
+enum SessionKey {
+    Messages,
+    Metadata,
+    Role,
+    Content,
+    Type,
+    Other,
+}
+
+fn classify_utf8_key(ruby: &Ruby, key: Value) -> Option<SessionKey> {
+    if let Some(rstr) = RString::from_value(key) {
+        if !is_instance_of(key, ruby.class_string()) || !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        // SAFETY: Slice is only inspected within this function before returning an enum.
+        let s = std::str::from_utf8(unsafe { rstr.as_slice() }).ok()?;
+        Some(match s {
+            "messages" => SessionKey::Messages,
+            "metadata" => SessionKey::Metadata,
+            "role" => SessionKey::Role,
+            "content" => SessionKey::Content,
+            "type" => SessionKey::Type,
+            _ => SessionKey::Other,
+        })
+    } else {
+        Some(SessionKey::Other)
+    }
+}
+
+/// Validates content blocks for message `msg_index` and, when `count_size` is active,
+/// simultaneously counts their encoded JSON bytes into `w`.
+/// Returns `None` to defer the whole validation to Ruby, or `Some(size_still_supported)`.
+fn validate_and_count_content_blocks<W: forem_core::json::JsonOutput>(
+    ruby: &Ruby,
+    id_compare_by_identity: magnus::value::Id,
+    msg_index: usize,
+    content_arr: RArray,
+    errors: &mut Vec<String>,
+    w: &mut forem_core::json::JsonWriter<W>,
+    mut count_size: bool,
+) -> Option<bool> {
+    let blocks = collect_array_values(ruby, content_arr);
+    if count_size {
+        if w.depth() >= JSON_MAX_DEPTH {
+            count_size = false;
+        } else {
+            w.begin_array();
+        }
+    }
+
+    for (bi, &block_val) in blocks.as_slice().iter().enumerate() {
+        if errors.len() >= forem_core::transcript::MAX_VALIDATION_ERRORS {
+            break;
+        }
+
+        if RHash::from_value(block_val).is_none() {
+            errors.push(forem_core::transcript::format_invalid_block_type_error(
+                msg_index,
+                bi,
+                "non-object",
+            ));
+            count_size = false;
+            continue;
+        }
+        if !is_instance_of(block_val, ruby.class_hash()) {
+            return None;
+        }
+
+        let block_hash = RHash::from_value(block_val)?;
+        if hash_is_compare_by_identity(block_hash, id_compare_by_identity) {
+            return None;
+        }
+        let block_pairs = collect_hash_pairs(ruby, block_hash)?;
+
+        let mut found_type: Option<Value> = None;
+        for &(bk, bv) in block_pairs.as_slice() {
+            if classify_utf8_key(ruby, bk)? == SessionKey::Type {
+                found_type = Some(bv);
+                break;
+            }
+        }
+        let type_val = match found_type {
+            Some(v) => v,
+            None => {
+                if hash_has_default(block_hash)? {
+                    return None;
+                }
+                ruby.qnil().as_value()
+            }
+        };
+
+        let type_valid = if let Some(rstr) = RString::from_value(type_val) {
+            if !is_instance_of(type_val, ruby.class_string()) || !rstr.is_utf8_compatible_encoding()
+            {
+                return None;
+            }
+            let s = std::str::from_utf8(unsafe { rstr.as_slice() }).ok()?;
+            forem_core::transcript::is_valid_block_type(s)
+        } else {
+            false
+        };
+
+        if !type_valid {
+            let formatted = format_simple_ruby_value(ruby, type_val)?;
+            errors.push(forem_core::transcript::format_invalid_block_type_error(
+                msg_index, bi, &formatted,
+            ));
+            count_size = false;
+            continue;
+        }
+
+        if count_size {
+            if w.depth() >= JSON_MAX_DEPTH {
+                count_size = false;
+            } else {
+                w.begin_object();
+                for &(bk, bv) in block_pairs.as_slice() {
+                    if write_json_key(ruby, w, bk, true).is_none()
+                        || write_json_value(ruby, w, bv, true).is_none()
+                    {
+                        count_size = false;
+                        break;
+                    }
+                }
+                if count_size {
+                    w.end_object();
+                }
+            }
+        }
+    }
+
+    if count_size {
+        w.end_array();
+    }
+    Some(count_size)
+}
+
+/// Single-pass validator + streaming JSON byte-size counter for
+/// `AgentSessionParsers::NormalizedDataValidator`.
+///
+/// Returns:
+/// - `RArray` of error strings (`[]` when valid and within `max_json_size`),
+/// - `:needs_legacy_size` when structure and messages are valid but JSON byte-size
+///   counting encountered an out-of-domain value (Float, Time, Symbol key, invalid UTF-8, etc.),
+/// - `nil` to defer full validation to Ruby (Hash/Array subclasses, singleton classes such as
+///   RSpec stubs, hashes with `default`/`default_proc` on missing keys, or complex error values).
+fn validate_agent_session_data(
+    ruby: &Ruby,
+    data: Value,
+    max_messages: usize,
+    max_json_size: usize,
+    escape_html: bool,
+    check_size: bool,
+) -> Value {
+    // 1. Top-level Hash check.
+    if RHash::from_value(data).is_none() {
+        return ruby
+            .ary_from_vec(vec![forem_core::transcript::ERR_NON_OBJECT])
+            .as_value();
+    }
+    if !is_instance_of(data, ruby.class_hash()) {
+        return ruby.qnil().as_value();
+    }
+
+    let Some(top_hash) = RHash::from_value(data) else {
+        return ruby.qnil().as_value();
+    };
+    let id_compare_by_identity = ruby.intern("compare_by_identity?");
+    if hash_is_compare_by_identity(top_hash, id_compare_by_identity) {
+        return ruby.qnil().as_value();
+    }
+    let Some(top_pairs) = collect_hash_pairs(ruby, top_hash) else {
+        return ruby.qnil().as_value();
+    };
+
+    // 2. Structure validation (exact precedence: missing messages -> messages not array -> metadata not hash).
+    let mut messages_val: Option<Value> = None;
+    let mut metadata_val: Option<Value> = None;
+    for &(k, v) in top_pairs.as_slice() {
+        let Some(key_kind) = classify_utf8_key(ruby, k) else {
+            return ruby.qnil().as_value();
+        };
+        match key_kind {
+            SessionKey::Messages => messages_val = Some(v),
+            SessionKey::Metadata => metadata_val = Some(v),
+            _ => {}
+        }
+    }
+
+    let Some(messages_val) = messages_val else {
+        return ruby
+            .ary_from_vec(vec![forem_core::transcript::ERR_MISSING_MESSAGES])
+            .as_value();
+    };
+
+    if RArray::from_value(messages_val).is_none() {
+        return ruby
+            .ary_from_vec(vec![forem_core::transcript::ERR_MESSAGES_NOT_ARRAY])
+            .as_value();
+    }
+    if !is_instance_of(messages_val, ruby.class_array()) {
+        return ruby.qnil().as_value();
+    }
+
+    match metadata_val {
+        Some(mv) if !mv.is_nil() => {
+            if RHash::from_value(mv).is_none() {
+                return ruby
+                    .ary_from_vec(vec![forem_core::transcript::ERR_METADATA_NOT_OBJECT])
+                    .as_value();
+            }
+            if !is_instance_of(mv, ruby.class_hash()) {
+                return ruby.qnil().as_value();
+            }
+        }
+        Some(_) => {}
+        None => match hash_has_default(top_hash) {
+            Some(false) => {}
+            _ => return ruby.qnil().as_value(),
+        },
+    }
+
+    let Some(messages_arr) = RArray::from_value(messages_val) else {
+        return ruby.qnil().as_value();
+    };
+    if messages_arr.len() > max_messages {
+        return ruby
+            .ary_from_vec(vec![
+                forem_core::transcript::format_too_many_messages_error(max_messages),
+            ])
+            .as_value();
+    }
+
+    // 3. Single fused pass over top-level entries: validate messages/blocks + count JSON bytes.
+    let mut errors: Vec<String> = Vec::new();
+    let mut size_supported = check_size;
+    let mut w = forem_core::json::JsonWriter::counting(escape_html);
+    if size_supported {
+        w.begin_object();
+    }
+
+    for &(k, v) in top_pairs.as_slice() {
+        let Some(key_kind) = classify_utf8_key(ruby, k) else {
+            return ruby.qnil().as_value();
+        };
+        let is_messages_key = key_kind == SessionKey::Messages;
+
+        if size_supported && errors.is_empty() && write_json_key(ruby, &mut w, k, true).is_none() {
+            size_supported = false;
+        }
+
+        if is_messages_key {
+            let messages = collect_array_values(ruby, messages_arr);
+            if size_supported && errors.is_empty() {
+                w.begin_array();
+            }
+
+            for (i, &msg_val) in messages.as_slice().iter().enumerate() {
+                if errors.len() >= forem_core::transcript::MAX_VALIDATION_ERRORS {
+                    break;
+                }
+
+                if RHash::from_value(msg_val).is_none() {
+                    errors.push(forem_core::transcript::format_message_not_object_error(i));
+                    size_supported = false;
+                    continue;
+                }
+                if !is_instance_of(msg_val, ruby.class_hash()) {
+                    return ruby.qnil().as_value();
+                }
+
+                let Some(msg_hash) = RHash::from_value(msg_val) else {
+                    return ruby.qnil().as_value();
+                };
+                if hash_is_compare_by_identity(msg_hash, id_compare_by_identity) {
+                    return ruby.qnil().as_value();
+                }
+                let Some(msg_pairs) = collect_hash_pairs(ruby, msg_hash) else {
+                    return ruby.qnil().as_value();
+                };
+
+                let mut found_role: Option<Value> = None;
+                let mut found_content: Option<Value> = None;
+                for &(mk, mv) in msg_pairs.as_slice() {
+                    let Some(mkey) = classify_utf8_key(ruby, mk) else {
+                        return ruby.qnil().as_value();
+                    };
+                    match mkey {
+                        SessionKey::Role => found_role = Some(mv),
+                        SessionKey::Content => found_content = Some(mv),
+                        _ => {}
+                    }
+                }
+
+                let role_val = match found_role {
+                    Some(rv) => rv,
+                    None => match hash_has_default(msg_hash) {
+                        Some(false) => ruby.qnil().as_value(),
+                        _ => return ruby.qnil().as_value(),
+                    },
+                };
+
+                let role_valid = if let Some(rstr) = RString::from_value(role_val) {
+                    if !is_instance_of(role_val, ruby.class_string())
+                        || !rstr.is_utf8_compatible_encoding()
+                    {
+                        return ruby.qnil().as_value();
+                    }
+                    let Ok(s) = std::str::from_utf8(unsafe { rstr.as_slice() }) else {
+                        return ruby.qnil().as_value();
+                    };
+                    forem_core::transcript::is_valid_message_role(s)
+                } else {
+                    false
+                };
+
+                if !role_valid {
+                    let Some(formatted) = format_simple_ruby_value(ruby, role_val) else {
+                        return ruby.qnil().as_value();
+                    };
+                    errors.push(forem_core::transcript::format_invalid_role_error(
+                        i, &formatted,
+                    ));
+                    size_supported = false;
+                }
+
+                let content_val = match found_content {
+                    Some(cv) => cv,
+                    None => match hash_has_default(msg_hash) {
+                        Some(false) => ruby.qnil().as_value(),
+                        _ => return ruby.qnil().as_value(),
+                    },
+                };
+
+                if RArray::from_value(content_val).is_none() {
+                    errors.push(forem_core::transcript::format_missing_content_array_error(
+                        i,
+                    ));
+                    size_supported = false;
+                    continue;
+                }
+                if !is_instance_of(content_val, ruby.class_array()) {
+                    return ruby.qnil().as_value();
+                }
+                let Some(content_arr) = RArray::from_value(content_val) else {
+                    return ruby.qnil().as_value();
+                };
+
+                if size_supported && errors.is_empty() {
+                    if w.depth() >= JSON_MAX_DEPTH {
+                        size_supported = false;
+                        let Some(_) = validate_and_count_content_blocks(
+                            ruby,
+                            id_compare_by_identity,
+                            i,
+                            content_arr,
+                            &mut errors,
+                            &mut w,
+                            false,
+                        ) else {
+                            return ruby.qnil().as_value();
+                        };
+                    } else {
+                        w.begin_object();
+                        for &(mk, mv) in msg_pairs.as_slice() {
+                            let Some(mkey) = classify_utf8_key(ruby, mk) else {
+                                return ruby.qnil().as_value();
+                            };
+                            if size_supported
+                                && errors.is_empty()
+                                && write_json_key(ruby, &mut w, mk, true).is_none()
+                            {
+                                size_supported = false;
+                            }
+                            if mkey == SessionKey::Content {
+                                let count_now = size_supported && errors.is_empty();
+                                let Some(still_ok) = validate_and_count_content_blocks(
+                                    ruby,
+                                    id_compare_by_identity,
+                                    i,
+                                    content_arr,
+                                    &mut errors,
+                                    &mut w,
+                                    count_now,
+                                ) else {
+                                    return ruby.qnil().as_value();
+                                };
+                                if !still_ok {
+                                    size_supported = false;
+                                }
+                            } else if size_supported
+                                && errors.is_empty()
+                                && write_json_value(ruby, &mut w, mv, true).is_none()
+                            {
+                                size_supported = false;
+                            }
+                        }
+                        if size_supported && errors.is_empty() {
+                            w.end_object();
+                        }
+                    }
+                } else {
+                    let Some(_) = validate_and_count_content_blocks(
+                        ruby,
+                        id_compare_by_identity,
+                        i,
+                        content_arr,
+                        &mut errors,
+                        &mut w,
+                        false,
+                    ) else {
+                        return ruby.qnil().as_value();
+                    };
+                }
+            }
+
+            if size_supported && errors.is_empty() {
+                w.end_array();
+            }
+        } else if size_supported
+            && errors.is_empty()
+            && write_json_value(ruby, &mut w, v, true).is_none()
+        {
+            size_supported = false;
+        }
+    }
+
+    if size_supported && errors.is_empty() {
+        w.end_object();
+    }
+
+    if !errors.is_empty() {
+        return ruby.ary_from_vec(errors).as_value();
+    }
+    if !check_size {
+        return ruby.ary_new().as_value();
+    }
+    if !size_supported {
+        return ruby.sym_new("needs_legacy_size").as_value();
+    }
+
+    let json_size = w.finish().0;
+    if json_size > max_json_size {
+        ruby.ary_from_vec(vec![forem_core::transcript::format_too_large_error(
+            json_size,
+            max_json_size,
+        )])
+        .as_value()
+    } else {
+        ruby.ary_new().as_value()
+    }
 }
 
 fn truncate_feed_xml_items(ruby: &Ruby, xml: RString, max_items: usize) -> Option<RString> {
@@ -6608,6 +7191,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("json_quote", function!(json_quote, 2))?;
     native_mod.define_singleton_method("encode_json", function!(encode_json, 2))?;
     native_mod.define_singleton_method("json_encoded_size", function!(json_encoded_size, 2))?;
+    native_mod.define_singleton_method(
+        "validate_agent_session_data",
+        function!(validate_agent_session_data, 5),
+    )?;
     native_mod.define_singleton_method(
         "truncate_feed_xml_items",
         function!(truncate_feed_xml_items, 2),

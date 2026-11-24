@@ -16,6 +16,39 @@ module AgentSessionParsers
     end
 
     def validate
+      check_size = default_json_encoder?
+      native_result = native_validate(check_size: check_size)
+
+      if native_result == :needs_legacy_size
+        return validate_size_with_legacy
+      elsif !native_result.nil?
+        return validate_size_with_legacy if !check_size && native_result.empty?
+        return [] if native_result.empty?
+
+        return native_result.map { |msg| ValidationError.new(message: msg) }
+      end
+
+      legacy_validate
+    end
+
+    private
+
+    def default_json_encoder?
+      encoding = ActiveSupport::JSON::Encoding
+      encoding.json_encoder == encoding::JSONGemEncoder
+    end
+
+    def native_validate(check_size:)
+      ForemNative.validate_agent_session_data(
+        @data,
+        max_messages: MAX_MESSAGES,
+        max_json_size: MAX_JSON_SIZE,
+        escape_html_entities: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+        check_size: check_size,
+      )
+    end
+
+    def legacy_validate
       errors = []
 
       unless @data.is_a?(Hash)
@@ -28,8 +61,6 @@ module AgentSessionParsers
 
       errors
     end
-
-    private
 
     def validate_structure
       errors = []
@@ -94,10 +125,10 @@ module AgentSessionParsers
 
     # Counts encoded JSON bytes via ForemNative when using the default ActiveSupport encoder.
     def native_json_size
-      encoding = ActiveSupport::JSON::Encoding
-      return unless encoding.json_encoder == encoding::JSONGemEncoder
+      return unless default_json_encoder?
 
-      ForemNative.json_encoded_size(@data, escape_html_entities: encoding.escape_html_entities_in_json)
+      escape = ActiveSupport::JSON::Encoding.escape_html_entities_in_json
+      ForemNative.json_encoded_size(@data, escape_html_entities: escape)
     end
 
     # Measures encoded JSON byte size by serializing @data through ActiveSupport#to_json.
@@ -107,16 +138,21 @@ module AgentSessionParsers
 
     # Validates that the encoded JSON representation of @data does not exceed MAX_JSON_SIZE.
     def validate_size
-      errors = []
+      size_errors_for(native_json_size || legacy_json_size)
+    end
 
-      json_size = native_json_size || legacy_json_size
-      if json_size > MAX_JSON_SIZE
-        errors << ValidationError.new(
+    def validate_size_with_legacy
+      size_errors_for(legacy_json_size)
+    end
+
+    def size_errors_for(json_size)
+      return [] if json_size <= MAX_JSON_SIZE
+
+      [
+        ValidationError.new(
           message: "Normalized data is too large (#{json_size} bytes, max #{MAX_JSON_SIZE})",
-        )
-      end
-
-      errors
+        ),
+      ]
     end
   end
 end

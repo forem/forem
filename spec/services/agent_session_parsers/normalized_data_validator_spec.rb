@@ -63,13 +63,22 @@ RSpec.describe AgentSessionParsers::NormalizedDataValidator do
         .to eq(["Normalized data is too large (#{limit + 1} bytes, max #{limit})"])
     end
 
-    it "uses legacy serialization when a platform binary lacks the counting symbol" do
+    it "uses legacy serialization when a platform binary lacks the native validation and counting symbols" do
+      allow(ForemNative::Native).to receive(:respond_to?).and_call_original
+      allow(ForemNative::Native).to receive(:respond_to?).with(:validate_agent_session_data).and_return(false)
       allow(ForemNative::Native).to receive(:respond_to?).with(:json_encoded_size).and_return(false)
       data = valid_data
       instance = described_class.new(data)
       allow(instance).to receive(:legacy_json_size).and_call_original
       expect(instance.validate).to be_empty
       expect(instance).to have_received(:legacy_json_size)
+    end
+
+    it "validates supported transcripts in a single native pass without invoking legacy_validate" do
+      instance = described_class.new(valid_data)
+      allow(instance).to receive(:legacy_validate).and_call_original
+      expect(instance.validate).to be_empty
+      expect(instance).not_to have_received(:legacy_validate)
     end
 
     it "returns no errors for valid data" do
