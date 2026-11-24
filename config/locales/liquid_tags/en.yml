@@ -112,6 +112,8 @@ en:
       invalid_site: 'Invalid Stack Exchange site: {% %{tag} %{input} %}'
     tag_tag:
       invalid_tag_name: invalid tag name
+    trecs_tag:
+      invalid_trecs_id: 'Invalid trecs recording ID: %{id}'
     tweet_tag:
       invalid_twitter_id: Invalid Twitter ID or URL
     twitch_tag:

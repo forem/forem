@@ -112,6 +112,8 @@ pt:
       invalid_site: 'Site do Stack Exchange inválido: {% %{tag} %{input} %}'
     tag_tag:
       invalid_tag_name: nome da tag inválido
+    trecs_tag:
+      invalid_trecs_id: 'ID de gravação do trecs inválido: %{id}'
     tweet_tag:
       invalid_twitter_id: ID ou URL do Twitter inválido
     twitch_tag:
