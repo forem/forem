@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_comment_reactions_json
+  LATEST_NATIVE_SYMBOL = :serialize_api_organization_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2083,6 +2083,48 @@ module ForemNative
         column_names.is_a?(Array) && reactions.is_a?(Array) && comment_rows.is_a?(Array)
 
       Native.serialize_comment_reactions_json(user_id, column_names, reactions, comment_rows)
+    end
+
+    # Formats a UTC Unix epoch timestamp (Integer seconds) as `"%b %e, %Y"` (e.g.
+    # `"Jan  5, 2026"` / `"Nov 24, 2026"`), matching English `I18n.l(time, format: :json)`.
+    # Returns `nil` for non-integers or years outside `1000..=9999`.
+    def format_joined_at_date(epoch_secs)
+      return unless Native.respond_to?(:format_joined_at_date)
+      return unless valid_i64_integer?(epoch_secs)
+
+      Native.format_joined_at_date(epoch_secs)
+    end
+
+    # Single-pass streaming JSON serializer for `Api::UsersController` (`show`, `me`, `search`).
+    # `user_fields` is a 10-element flat Array:
+    # `[id, username, name, twitter_username, github_username, summary, location,`
+    # ` website_url, created_at_sec, profile_image]`.
+    def serialize_api_user_json(user_fields, extended: false, email: nil, badge_ids: nil, followers_count: nil)
+      return unless Native.respond_to?(:serialize_api_user_json)
+      return unless user_fields.is_a?(Array) && user_fields.size == 10
+      return unless followers_count.nil? || valid_i64_integer?(followers_count)
+
+      Native.serialize_api_user_json(user_fields, extended ? true : false, email, badge_ids, followers_count)
+    end
+
+    # Single-pass streaming JSON serializer for `Api::OrganizationsController#users`.
+    # `users_flat` is a flat Array with a 10-element stride matching `serialize_api_user_json`.
+    def serialize_api_users_json(users_flat)
+      return unless Native.respond_to?(:serialize_api_users_json)
+      return unless users_flat.is_a?(Array) && (users_flat.size % 10).zero?
+
+      Native.serialize_api_users_json(users_flat)
+    end
+
+    # Single-pass streaming JSON serializer for `Api::OrganizationsController#show` (v0 & v1).
+    # `org_fields` is a 13-element flat Array:
+    # `[id, username, name, summary, twitter_username, github_username, url, location,`
+    # ` tech_stack, tag_line, story, created_at_sec, profile_image]`.
+    def serialize_api_organization_json(org_fields)
+      return unless Native.respond_to?(:serialize_api_organization_json)
+      return unless org_fields.is_a?(Array) && org_fields.size == 13
+
+      Native.serialize_api_organization_json(org_fields)
     end
 
     private

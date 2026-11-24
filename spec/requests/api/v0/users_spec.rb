@@ -68,6 +68,57 @@ RSpec.describe "Api::V0::Users" do
       expect(queries.grep(/FROM "profiles"/i)).to be_empty
       expect(queries.grep(/FROM "users_settings"/i)).to be_empty
     end
+
+    it "matches Jbuilder byte-for-byte via ForemNative under UTC and falls back cleanly", :aggregate_failures do
+      user.update!(name: "Ada <Lovelace> & Co.", created_at: Time.utc(2026, 1, 5, 8, 30, 0))
+      user.profile.update!(summary: "Line 1\nLine 2 🚀")
+
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+      Time.use_zone("UTC") do
+        native_results = []
+        allow(ForemNative).to receive(:serialize_api_user_json).and_wrap_original do |method, *args, **kwargs|
+          method.call(*args, **kwargs).tap { |res| native_results << res }
+        end
+
+        get api_user_path(user.id)
+        expect(response).to have_http_status(:ok)
+        native_body = response.body
+        native_media_type = response.media_type
+        expect(native_results.length).to eq(1)
+        expect(native_results.first).to be_a(String)
+
+        allow(ForemNative).to receive(:serialize_api_user_json).and_return(nil)
+        get api_user_path(user.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq(native_media_type)
+        expect(native_body).to eq(response.body)
+      end
+    end
+
+    it "skips native serialization when HTML entity escaping is disabled" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+      allow(ActiveSupport::JSON::Encoding).to receive(:escape_html_entities_in_json).and_return(false)
+      allow(ForemNative).to receive(:serialize_api_user_json).and_call_original
+
+      Time.use_zone("UTC") { get api_user_path(user.id) }
+
+      expect(response).to have_http_status(:ok)
+      expect(ForemNative).not_to have_received(:serialize_api_user_json)
+    end
+
+    it "skips native serialization under a non-UTC time zone" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("America/New_York")
+      allow(ForemNative).to receive(:serialize_api_user_json).and_call_original
+
+      Time.use_zone("America/New_York") { get api_user_path(user.id) }
+
+      expect(response).to have_http_status(:ok)
+      expect(ForemNative).not_to have_received(:serialize_api_user_json)
+    end
   end
 
   describe "GET /api/users/me" do
@@ -118,6 +169,28 @@ RSpec.describe "Api::V0::Users" do
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
         expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
+      end
+
+      it "matches Jbuilder byte-for-byte via ForemNative under UTC", :aggregate_failures do
+        user.update!(name: "Grace <Hopper> & Co.", created_at: Time.utc(2026, 1, 5, 8, 30, 0))
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          native_results = []
+          allow(ForemNative).to receive(:serialize_api_user_json).and_wrap_original do |method, *args, **kwargs|
+            method.call(*args, **kwargs).tap { |res| native_results << res }
+          end
+
+          get me_api_users_path, headers: headers
+          native_body = response.body
+          expect(native_results.length).to eq(1)
+          expect(native_results.first).to be_a(String)
+
+          allow(ForemNative).to receive(:serialize_api_user_json).and_return(nil)
+          get me_api_users_path, headers: headers
+          expect(native_body).to eq(response.body)
+        end
       end
     end
   end

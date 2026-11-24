@@ -27,6 +27,34 @@ RSpec.describe "Api::V0::Organizations" do
         expect(response_organization[attr]).to eq(organization.public_send(attr))
       end
     end
+
+    it "matches Jbuilder byte-for-byte via ForemNative", :aggregate_failures do
+      organization.update!(name: "Forem <Org> & Co.", summary: "Open source 🚀")
+
+      native_results = []
+      allow(ForemNative).to receive(:serialize_api_organization_json).and_wrap_original do |method, *args|
+        method.call(*args).tap { |res| native_results << res }
+      end
+
+      get api_organization_path(organization.username)
+      native_body = response.body
+      expect(native_results.length).to eq(1)
+      expect(native_results.first).to be_a(String)
+
+      allow(ForemNative).to receive(:serialize_api_organization_json).and_return(nil)
+      get api_organization_path(organization.username)
+      expect(native_body).to eq(response.body)
+    end
+
+    it "skips native serialization when HTML entity escaping is disabled" do
+      allow(ActiveSupport::JSON::Encoding).to receive(:escape_html_entities_in_json).and_return(false)
+      allow(ForemNative).to receive(:serialize_api_organization_json).and_call_original
+
+      get api_organization_path(organization.username)
+
+      expect(response).to have_http_status(:ok)
+      expect(ForemNative).not_to have_received(:serialize_api_organization_json)
+    end
   end
 
   describe "GET /api/organizations/:username/users" do
@@ -82,6 +110,55 @@ RSpec.describe "Api::V0::Organizations" do
 
       expect(response_org_users["joined_at"]).to eq(org_user.created_at.strftime("%b %e, %Y"))
       expect(response_org_users["profile_image"]).to eq(org_user.profile_image_url_for(length: 320))
+    end
+
+    it "does not execute N+1 queries on profiles when serializing organization users" do
+      create(:organization_membership, user: create(:user), organization: organization)
+      create(:organization_membership, user: create(:user), organization: organization)
+
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get api_organization_users_path(organization.username)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.size).to eq(3)
+      expect(queries.grep(/FROM "profiles"/i)).to be_empty
+    end
+
+    it "matches Jbuilder byte-for-byte via ForemNative under UTC", :aggregate_failures do
+      org_user.update!(name: "Ada <Org> & Co.", created_at: Time.utc(2026, 1, 5, 8, 30, 0))
+      create(:organization_membership, user: create(:user, name: "Bob 🚀"), organization: organization)
+
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+      Time.use_zone("UTC") do
+        native_results = []
+        allow(ForemNative).to receive(:serialize_api_users_json).and_wrap_original do |method, *args|
+          method.call(*args).tap { |res| native_results << res }
+        end
+
+        get api_organization_users_path(organization.username)
+        native_body = response.body
+        expect(native_results.length).to eq(1)
+        expect(native_results.first).to be_a(String)
+
+        allow(ForemNative).to receive(:serialize_api_users_json).and_return(nil)
+        fallback_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          fallback_queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get api_organization_users_path(organization.username)
+        end
+
+        expect(native_body).to eq(response.body)
+        expect(fallback_queries.grep(/FROM "profiles"/i)).to be_empty
+      end
     end
   end
 

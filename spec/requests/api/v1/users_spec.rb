@@ -109,6 +109,61 @@ RSpec.describe "Api::V1::Users" do
       expect(queries.grep(/FROM "profiles"/i)).to be_empty
       expect(queries.grep(/FROM "users_settings"/i)).to be_empty
     end
+
+    describe "native vs Jbuilder parity and email visibility contract" do
+      let(:owner_secret) { create(:api_secret, user: user) }
+      let(:owner_headers) { headers.merge("api-key" => owner_secret.secret) }
+
+      before do
+        user.update!(name: "Ada <Lovelace> & Co.", created_at: Time.utc(2026, 1, 5, 8, 30, 0))
+        user.profile.update!(summary: "Line 1\nLine 2 🚀")
+        create(:badge_achievement, user: user)
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+      end
+
+      [
+        [:anonymous, false, false],
+        [:anonymous, true, false],
+        [:other_user, false, false],
+        [:other_user, true, true],
+        [:owner, false, true],
+        [:owner, true, true],
+      ].each do |caller_kind, display_email, expect_email|
+        it "matches Jbuilder byte-for-byte for #{caller_kind} when display_email_on_profile=#{display_email}",
+           :aggregate_failures do
+          user.setting.update_column(:display_email_on_profile, display_email)
+          req_headers = case caller_kind
+                        when :anonymous then headers
+                        when :other_user then auth_headers
+                        when :owner then owner_headers
+                        end
+
+          Time.use_zone("UTC") do
+            native_results = []
+            allow(ForemNative).to receive(:serialize_api_user_json).and_wrap_original do |method, *args, **kwargs|
+              method.call(*args, **kwargs).tap { |res| native_results << res }
+            end
+
+            get api_user_path(user.id), headers: req_headers
+            expect(response).to have_http_status(:ok)
+            native_body = response.body
+            native_media_type = response.media_type
+            expected_email = expect_email ? user.email : nil
+            expect(native_results.length).to eq(1)
+            expect(native_results.first).to be_a(String)
+            expect(response.parsed_body["email"]).to eq(expected_email)
+
+            allow(ForemNative).to receive(:serialize_api_user_json).and_return(nil)
+            get api_user_path(user.id), headers: req_headers
+            expect(response).to have_http_status(:ok)
+            expect(response.media_type).to eq(native_media_type)
+            expect(response.parsed_body["email"]).to eq(expected_email)
+            expect(native_body).to eq(response.body)
+          end
+        end
+      end
+    end
   end
 
   describe "GET /api/users/me" do
@@ -334,6 +389,33 @@ RSpec.describe "Api::V1::Users" do
         response_user = response.parsed_body
         expect(response_user["followers_count"]).to eq(0)
       end
+
+      it "matches Jbuilder byte-for-byte via ForemNative under UTC", :aggregate_failures do
+        user.update!(name: "Ada <Me> & Co.", created_at: Time.utc(2026, 1, 5, 8, 30, 0))
+        user.setting.update_column(:display_email_on_profile, false)
+        create(:badge_achievement, user: user)
+        create(:follow, followable: user)
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          native_results = []
+          allow(ForemNative).to receive(:serialize_api_user_json).and_wrap_original do |method, *args, **kwargs|
+            method.call(*args, **kwargs).tap { |res| native_results << res }
+          end
+
+          get me_api_users_path, headers: auth_headers
+          native_body = response.body
+          expect(native_results.length).to eq(1)
+          expect(native_results.first).to be_a(String)
+          expect(response.parsed_body["email"]).to eq(user.email)
+          expect(response.parsed_body["followers_count"]).to eq(1)
+
+          allow(ForemNative).to receive(:serialize_api_user_json).and_return(nil)
+          get me_api_users_path, headers: auth_headers
+          expect(native_body).to eq(response.body)
+        end
+      end
     end
   end
 
@@ -403,6 +485,33 @@ RSpec.describe "Api::V1::Users" do
       it "returns not found when user is not found" do
         get api_users_search_path(email: "hello@hello.edu"), headers: auth_headers
         expect(response).to have_http_status(:not_found)
+      end
+
+      it "matches Jbuilder byte-for-byte via ForemNative under UTC for both email visibility states",
+         :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        [false, true].each do |display_email|
+          user.setting.update_column(:display_email_on_profile, display_email)
+
+          Time.use_zone("UTC") do
+            native_results = []
+            allow(ForemNative).to receive(:serialize_api_user_json).and_wrap_original do |method, *args, **kwargs|
+              method.call(*args, **kwargs).tap { |res| native_results << res }
+            end
+
+            get api_users_search_path(email: user.email), headers: auth_headers
+            native_body = response.body
+            expect(native_results.length).to eq(1)
+            expect(native_results.first).to be_a(String)
+            expect(response.parsed_body["email"]).to eq(display_email ? user.email : nil)
+
+            allow(ForemNative).to receive(:serialize_api_user_json).and_return(nil)
+            get api_users_search_path(email: user.email), headers: auth_headers
+            expect(native_body).to eq(response.body)
+          end
+        end
       end
     end
   end

@@ -36,7 +36,7 @@ module Api
         @organization = finder.find_by(id: params[:id_or_slug]) || finder.find_by(slug: params[:id_or_slug])
         raise ActiveRecord::RecordNotFound unless @organization
 
-        render :show
+        render_organization_show_json(@organization)
       rescue ArgumentError => e
         render json: { error: e }, status: :unprocessable_entity
       end

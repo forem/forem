@@ -115,7 +115,7 @@ pub fn encode_base26_id(id: i64) -> String {
 ///
 /// Uses Howard Hinnant's `civil_from_days` algorithm.
 #[inline]
-fn civil_from_days(days_since_epoch: i64) -> (i64, u32, u32) {
+pub(crate) fn civil_from_days(days_since_epoch: i64) -> (i64, u32, u32) {
     let z = days_since_epoch + 719_468;
     let era = z.div_euclid(146_097);
     let doe = (z - era * 146_097) as u64; // [0, 146096]
