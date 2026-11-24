@@ -133,6 +133,20 @@ module CommentsHelper
       legacy_nested_comments(tree: tree, commentable: commentable, is_view_root: is_view_root, is_admin: is_admin)
   end
 
+  # Plain-text preview of rendered HTML (the parent article on comment pages, or a comment on its
+  # delete confirmation), equivalent to `truncate(sanitize(html, tags: []), length: length)`.
+  # ForemNative strips the tags and truncates in one pass, so long articles no longer build a
+  # Loofah DOM and a full sanitized copy just to show a few characters.
+  # The returned html_safe string is intended for HTML element text content only (not attribute or
+  # `<script>` contexts), matching `truncate(sanitize(html, tags: []), length:)`.
+  def sanitized_text_preview(html, length:)
+    native = ForemNative.sanitized_text_preview(html, length)
+    # The kernel escapes every text byte exactly like the ActionView helpers it replaces.
+    return native.html_safe if native # rubocop:disable Rails/OutputSafety
+
+    legacy_sanitized_text_preview(html, length: length)
+  end
+
   private
 
   def no_comments_on?(commentable)
@@ -155,6 +169,10 @@ module CommentsHelper
       new_hash
     end
     traverse.call(sub_hash)
+  end
+
+  def legacy_sanitized_text_preview(html, length:)
+    truncate(sanitize(html, tags: []), length: length)
   end
 
   def legacy_nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)

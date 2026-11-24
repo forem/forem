@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_rss_feed_xml
+  LATEST_NATIVE_SYMBOL = :sanitized_text_preview
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -428,6 +428,31 @@ module ForemNative
       return unless html.instance_of?(String)
 
       Native.full_sanitize(html)
+    end
+
+    # Strips every tag like `sanitize(html, tags: [])` (`Rails::HTML5::SafeListSanitizer` with an
+    # empty allow-list): identical to `full_sanitize` except that `<svg>` subtrees are pruned
+    # together with their text. Returns nil for non-Strings, invalid or non-UTF-8 strings, and the
+    # same HTML5 parser edge cases as `full_sanitize`.
+    def sanitize_strip_all_tags(html)
+      return unless Native.respond_to?(:sanitize_strip_all_tags)
+      return unless html.instance_of?(String)
+
+      Native.sanitize_strip_all_tags(html)
+    end
+
+    # Computes `truncate(sanitize(html, tags: []), length: length)` in a single pass, retaining
+    # only `length + 1` serialized characters instead of building a Loofah DOM and a full-length
+    # sanitized copy of the document. Like ActionView, a truncated preview is HTML-escaped again
+    # (`&amp;` becomes `&amp;amp;`). Returns a plain String (the caller marks it `html_safe`), or
+    # nil for non-Strings, lengths outside 3..100_000, and the HTML5 edge cases `full_sanitize`
+    # declines, so callers can fall back to the ActionView helpers.
+    def sanitized_text_preview(html, length)
+      return unless Native.respond_to?(:sanitized_text_preview)
+      return unless html.instance_of?(String) && length.instance_of?(Integer)
+      return unless length.between?(3, 100_000)
+
+      Native.sanitized_text_preview(html, length)
     end
 
     # Strips `<[^>]*>` tags, unescapes basic and numeric HTML entities, strips ASCII whitespace,

@@ -83,8 +83,159 @@ impl TableState {
 /// inside `<svg>`, unclosed or malformed tags/comments, or uncommon named character references)
 /// so the caller can fall back to `ActionView::Base.full_sanitizer.sanitize`.
 pub fn full_sanitize(html: &str) -> Option<String> {
+    let mut out = TextOut::unbounded(html.len());
+    sanitize_text_into(html, &mut out, ForeignContent::KeepText)?;
+    Some(out.buf)
+}
+
+/// The `String#truncate` default omission appended by `ActionView::Helpers::TextHelper#truncate`.
+const TRUNCATE_OMISSION: &str = "...";
+
+/// Largest `length:` accepted by [`sanitized_text_preview`]; longer previews defer to Ruby.
+pub const MAX_PREVIEW_LENGTH: usize = 100_000;
+
+/// Tier 1: strips every tag like `sanitize(html, tags: [])` (`Rails::HTML5::SafeListSanitizer`
+/// with an empty `PermitScrubber` allow-list), which matches [`full_sanitize`] except that
+/// `<svg>` subtrees (namespaced foreign content) are pruned together with their text.
+///
+/// Returns `None` for the same HTML5 parser edge cases as [`full_sanitize`].
+pub fn sanitize_strip_all_tags(html: &str) -> Option<String> {
+    let mut out = TextOut::unbounded(html.len());
+    sanitize_text_into(html, &mut out, ForeignContent::Prune)?;
+    Some(out.buf)
+}
+
+/// Tier 2: computes `truncate(sanitize(html, tags: []), length: length)` from
+/// `ActionView::Helpers` in a single pass, without materializing the sanitized document.
+///
+/// * The sanitized text is `html_safe`, so when it is at most `length` characters `truncate`
+///   returns it unchanged.
+/// * Otherwise `String#truncate` keeps the first `length - 3` characters of the *serialized*
+///   text (entities such as `&amp;` count as five characters) plus `"..."`, and the result is a
+///   plain `String` again, so `ERB::Util.html_escape` escapes it a second time.
+///
+/// Only `length + 1` serialized characters are ever retained, while the whole document is still
+/// scanned so every out-of-domain construct defers to Ruby (`None`), exactly like
+/// [`sanitize_strip_all_tags`]. Lengths below the omission or above [`MAX_PREVIEW_LENGTH`] are
+/// declined as well.
+pub fn sanitized_text_preview(html: &str, length: usize) -> Option<String> {
+    if !(TRUNCATE_OMISSION.len()..=MAX_PREVIEW_LENGTH).contains(&length) {
+        return None;
+    }
+    let mut out = TextOut::capped(length + 1);
+    sanitize_text_into(html, &mut out, ForeignContent::Prune)?;
+    if out.chars <= length {
+        return Some(out.buf);
+    }
+
+    let stop = length - TRUNCATE_OMISSION.len();
+    let cut = out
+        .buf
+        .char_indices()
+        .nth(stop)
+        .map_or(out.buf.len(), |(idx, _)| idx);
+    let mut escaped = String::with_capacity(cut + cut / 4 + 16);
+    erb_html_escape_into(&mut escaped, &out.buf[..cut]);
+    escaped.push_str(TRUNCATE_OMISSION);
+    Some(escaped)
+}
+
+/// Appends `text` escaped like `ERB::Util.html_escape` (`&`, `<`, `>`, `"`, `'`).
+pub fn erb_html_escape_into(out: &mut String, text: &str) {
+    let mut start = 0;
+    for (idx, byte) in text.bytes().enumerate() {
+        let replacement = match byte {
+            b'&' => "&amp;",
+            b'<' => "&lt;",
+            b'>' => "&gt;",
+            b'"' => "&quot;",
+            b'\'' => "&#39;",
+            _ => continue,
+        };
+        out.push_str(&text[start..idx]);
+        out.push_str(replacement);
+        start = idx + 1;
+    }
+    out.push_str(&text[start..]);
+}
+
+/// What happens to the text inside `<svg>` subtrees.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ForeignContent {
+    /// `Rails::HTML::TextOnlyScrubber` (`full_sanitizer`) hoists foreign text like any other text.
+    KeepText,
+    /// `Rails::HTML::PermitScrubber` (`sanitize(html, tags: [...])`) prunes every namespaced
+    /// (`svg`/`math`) element together with its whole subtree.
+    Prune,
+}
+
+/// Serialized-text sink shared by the Tier 1 sanitizer and the Tier 2 preview kernel.
+///
+/// `cap_chars` bounds how many serialized characters are retained (the preview kernel only needs
+/// `length + 1` of them to decide whether `String#truncate` cuts), so a large article never
+/// allocates more than a few hundred bytes. `muted` discards text inside pruned subtrees while
+/// the scanner still validates them.
+struct TextOut {
+    buf: String,
+    chars: usize,
+    cap_chars: usize,
+    muted: bool,
+}
+
+impl TextOut {
+    fn unbounded(capacity: usize) -> Self {
+        Self {
+            buf: String::with_capacity(capacity),
+            chars: 0,
+            cap_chars: usize::MAX,
+            muted: false,
+        }
+    }
+
+    fn capped(cap_chars: usize) -> Self {
+        Self {
+            buf: String::with_capacity(cap_chars.saturating_mul(2).min(4096)),
+            chars: 0,
+            cap_chars,
+            muted: false,
+        }
+    }
+
+    #[inline]
+    fn push_str(&mut self, text: &str) {
+        if self.muted {
+            return;
+        }
+        if self.cap_chars == usize::MAX {
+            self.buf.push_str(text);
+            return;
+        }
+        let room = self.cap_chars - self.chars;
+        if room == 0 {
+            return;
+        }
+        match text.char_indices().nth(room) {
+            Some((cut, _)) => {
+                self.buf.push_str(&text[..cut]);
+                self.chars = self.cap_chars;
+            }
+            None => {
+                self.buf.push_str(text);
+                self.chars += text.chars().count();
+            }
+        }
+    }
+
+    #[inline]
+    fn push(&mut self, c: char) {
+        let mut tmp = [0u8; 4];
+        self.push_str(c.encode_utf8(&mut tmp));
+    }
+}
+
+fn sanitize_text_into(html: &str, out: &mut TextOut, foreign: ForeignContent) -> Option<()> {
     if html.is_empty() {
-        return Some(String::new());
+        return Some(());
     }
     let bytes = html.as_bytes();
     if bytes.contains(&0) || html.starts_with('\u{FEFF}') {
@@ -94,15 +245,17 @@ pub fn full_sanitize(html: &str) -> Option<String> {
         .iter()
         .any(|&b| matches!(b, b'<' | b'>' | b'&' | b'\r' | 0xC2))
     {
-        return Some(html.to_owned());
+        out.push_str(html);
+        return Some(());
     }
 
-    let mut out = String::with_capacity(html.len());
     let mut table_state = TableState::NotInTable;
     let mut svg_depth = 0usize;
+    let mut svg_child_stack: Vec<&[u8]> = Vec::new();
     let mut i = 0;
 
     while i < bytes.len() {
+        out.muted = foreign == ForeignContent::Prune && svg_depth > 0;
         let b = bytes[i];
         if b == b'<' {
             let Some(&next) = bytes.get(i + 1) else {
@@ -123,7 +276,13 @@ pub fn full_sanitize(html: &str) -> Option<String> {
             }
             if next == b'/' {
                 let (name, tag_end) = parse_end_tag(bytes, i)?;
-                update_end_tag_state(name, &mut table_state, &mut svg_depth)?;
+                update_end_tag_state(
+                    name,
+                    foreign,
+                    &mut table_state,
+                    &mut svg_depth,
+                    &mut svg_child_stack,
+                )?;
                 i = tag_end;
                 continue;
             }
@@ -136,6 +295,12 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                 if svg_depth > 0 {
                     if name.eq_ignore_ascii_case(b"svg") {
                         if !self_closing {
+                            // In HTML5 foreign content, an intervening end tag (e.g. `</g>` in
+                            // `<svg><g><svg></g></svg>visible</svg>`) pops the nested `<svg>` too,
+                            // which a bare depth counter cannot track when pruning.
+                            if foreign == ForeignContent::Prune {
+                                return None;
+                            }
                             svg_depth += 1;
                         }
                         i = tag_end;
@@ -149,12 +314,15 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                         if bytes[tag_end..content_end].contains(&b'<') {
                             return None;
                         }
-                        push_rcdata(&mut out, &html[tag_end..content_end])?;
+                        push_rcdata(out, &html[tag_end..content_end])?;
                         i = close_end;
                         continue;
                     }
                     if !is_svg_child_tag(name) {
                         return None;
+                    }
+                    if foreign == ForeignContent::Prune && !self_closing {
+                        svg_child_stack.push(name);
                     }
                     i = tag_end;
                     continue;
@@ -189,7 +357,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                     if name.eq_ignore_ascii_case(b"script") && has_script_escape_sequence(inner) {
                         return None;
                     }
-                    push_rawtext(&mut out, inner);
+                    push_rawtext(out, inner);
                     i = close_end;
                     continue;
                 }
@@ -207,7 +375,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                         }
                         tag_end
                     };
-                    push_rcdata(&mut out, &html[inner_start..content_end])?;
+                    push_rcdata(out, &html[inner_start..content_end])?;
                     i = close_end;
                     continue;
                 }
@@ -242,7 +410,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                 };
             }
             b'&' => {
-                let consumed = push_entity_or_amp(&mut out, &html[i..])?;
+                let consumed = push_entity_or_amp(out, &html[i..])?;
                 i += consumed;
             }
             0xC2 if bytes.get(i + 1) == Some(&0xA0) => {
@@ -271,7 +439,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
         return None;
     }
 
-    Some(out)
+    Some(())
 }
 
 fn is_html_space(byte: u8) -> bool {
@@ -426,8 +594,10 @@ fn update_start_tag_table_state(
 
 fn update_end_tag_state(
     name: &[u8],
+    foreign: ForeignContent,
     table_state: &mut TableState,
     svg_depth: &mut usize,
+    svg_child_stack: &mut Vec<&[u8]>,
 ) -> Option<()> {
     if is_declined_tag(name) {
         return None;
@@ -435,9 +605,22 @@ fn update_end_tag_state(
     if *svg_depth > 0 {
         if name.eq_ignore_ascii_case(b"svg") {
             *svg_depth -= 1;
+            if *svg_depth == 0 {
+                svg_child_stack.clear();
+            }
             return Some(());
         }
         if is_svg_child_tag(name) {
+            if foreign == ForeignContent::Prune {
+                // Only accept an SVG child end tag if a matching child was opened inside this
+                // `<svg>`; otherwise an outer HTML element with the same name (e.g.
+                // `<g><svg></g>visible</svg>`) closes the `<svg>` under HTML5 foreign-content
+                // end-tag rules and must defer to Loofah.
+                let pos = svg_child_stack
+                    .iter()
+                    .rposition(|open| open.eq_ignore_ascii_case(name))?;
+                svg_child_stack.truncate(pos);
+            }
             return Some(());
         }
         return None;
@@ -696,7 +879,7 @@ fn has_script_escape_sequence(inner: &str) -> bool {
 }
 
 /// Serializes RAWTEXT / Script data content as a text node (no entity decoding, only escaping).
-fn push_rawtext(out: &mut String, text: &str) {
+fn push_rawtext(out: &mut TextOut, text: &str) {
     let bytes = text.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
@@ -738,7 +921,7 @@ fn push_rawtext(out: &mut String, text: &str) {
 }
 
 /// Serializes RCDATA content as a text node (decodes entities, escapes `<`, `>`, `&`, U+00A0).
-fn push_rcdata(out: &mut String, text: &str) -> Option<()> {
+fn push_rcdata(out: &mut TextOut, text: &str) -> Option<()> {
     let bytes = text.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
@@ -782,7 +965,7 @@ fn push_rcdata(out: &mut String, text: &str) -> Option<()> {
 
 /// Decodes a character reference starting at `rest` (`rest.starts_with('&')`) or emits `&amp;`.
 /// Returns the number of bytes consumed from `rest`.
-fn push_entity_or_amp(out: &mut String, rest: &str) -> Option<usize> {
+fn push_entity_or_amp(out: &mut TextOut, rest: &str) -> Option<usize> {
     let bytes = rest.as_bytes();
     let Some(&second) = bytes.get(1) else {
         out.push_str("&amp;");
@@ -815,7 +998,7 @@ fn push_entity_or_amp(out: &mut String, rest: &str) -> Option<usize> {
     Some(1)
 }
 
-fn push_numeric_entity(out: &mut String, bytes: &[u8]) -> Option<usize> {
+fn push_numeric_entity(out: &mut TextOut, bytes: &[u8]) -> Option<usize> {
     let (radix, digits_start) = match bytes.get(2) {
         Some(b'x' | b'X') => (16u32, 3usize),
         _ => (10u32, 2usize),
@@ -1156,5 +1339,108 @@ mod tests {
         ] {
             assert_eq!(full_sanitize(input), None, "{input:?}");
         }
+    }
+
+    #[test]
+    fn strip_all_tags_prunes_svg_subtrees_but_matches_full_sanitize_elsewhere() {
+        let svg = "a<svg viewBox=\"0 0 1 1\"><title>Copy &amp; paste</title>\n<path d=\"M0\"></path>x</svg>b";
+        assert_eq!(full_sanitize(svg).as_deref(), Some("aCopy &amp; paste\nxb"));
+        assert_eq!(sanitize_strip_all_tags(svg).as_deref(), Some("ab"));
+
+        for input in [
+            "",
+            "plain text",
+            "<p>a &amp; b &lt;x&gt; &nbsp; caf&eacute;</p>\n<script>if (a < b) {}</script>",
+            "<pre>\nx</pre><table><tr><td>c</td></tr></table><!-- c -->",
+            "<textarea>&lt;b&gt;</textarea><iframe>i&lt;</iframe>",
+        ] {
+            assert_eq!(
+                sanitize_strip_all_tags(input),
+                full_sanitize(input),
+                "{input:?}"
+            );
+        }
+        assert_eq!(
+            sanitize_strip_all_tags("a<svg><svg/>hidden</svg>b").as_deref(),
+            Some("ab")
+        );
+        assert_eq!(
+            sanitize_strip_all_tags("<svg><g>hidden</svg>after").as_deref(),
+            Some("after")
+        );
+        for declined in [
+            "<math><mi>x</mi></math>",
+            "<svg><p>x</p></svg>",
+            "<svg><g><svg></g></svg>visible</svg>",
+            "<svg><svg><text>nested</text></svg></svg>",
+            "<g><svg></g>visible</svg>",
+            "<text><svg></text>visible</svg>",
+            "<table>t</table>",
+            "<svg>",
+        ] {
+            assert_eq!(sanitize_strip_all_tags(declined), None, "{declined:?}");
+            assert_eq!(sanitized_text_preview(declined, 150), None, "{declined:?}");
+        }
+    }
+
+    #[test]
+    fn preview_returns_sanitized_text_when_it_fits() {
+        assert_eq!(sanitized_text_preview("", 150).as_deref(), Some(""));
+        assert_eq!(
+            sanitized_text_preview("<p>a &amp; b</p>", 9).as_deref(),
+            Some("a &amp; b")
+        );
+        assert_eq!(
+            sanitized_text_preview("<p>\"q\" 'x'</p>", 9).as_deref(),
+            Some("\"q\" 'x'")
+        );
+        assert_eq!(
+            sanitized_text_preview("😀😀😀", 3).as_deref(),
+            Some("😀😀😀")
+        );
+    }
+
+    #[test]
+    fn preview_truncates_serialized_text_and_escapes_it_again() {
+        // `a &amp; b` is 9 serialized characters, so a length of 8 keeps `a &am` + `...`.
+        assert_eq!(
+            sanitized_text_preview("<p>a &amp; b</p>", 8).as_deref(),
+            Some("a &amp;am...")
+        );
+        assert_eq!(
+            sanitized_text_preview("<b>\"Hi\" it's</b> long", 10).as_deref(),
+            Some("&quot;Hi&quot; it...")
+        );
+        assert_eq!(
+            sanitized_text_preview("😀😀😀😀", 3).as_deref(),
+            Some("...")
+        );
+        assert_eq!(
+            sanitized_text_preview("東京東京東京", 5).as_deref(),
+            Some("東京...")
+        );
+        assert_eq!(
+            sanitized_text_preview("x<svg><title>long hidden title</title></svg>yz", 3).as_deref(),
+            Some("xyz")
+        );
+    }
+
+    #[test]
+    fn preview_still_validates_the_whole_document() {
+        let tail = format!("<p>{}</p><table>stray</table>", "a".repeat(400));
+        assert_eq!(sanitized_text_preview(&tail, 150), None);
+        assert_eq!(
+            sanitized_text_preview("<p>x &notanentity; y</p>", 150),
+            None
+        );
+        assert_eq!(sanitized_text_preview("abc", 2), None);
+        assert_eq!(sanitized_text_preview("abc", MAX_PREVIEW_LENGTH + 1), None);
+    }
+
+    #[test]
+    fn erb_html_escape_matches_erb_util() {
+        let mut out = String::new();
+        erb_html_escape_into(&mut out, "a&b<c>d\"e'f😀");
+        assert_eq!(out, "a&amp;b&lt;c&gt;d&quot;e&#39;f😀");
     }
 }
