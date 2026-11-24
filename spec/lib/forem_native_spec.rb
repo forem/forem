@@ -2773,6 +2773,7 @@ RSpec.describe ForemNative do
       long = "<p>#{'a' * 400}</p>"
       ["<math><mi>x</mi></math>#{long}", "#{long}<table>stray</table>", "<p>x &notanentity; y</p>#{long}",
        "<svg><p>breakout</p></svg>", "<svg><g><svg></g></svg>visible</svg>",
+       "<g><svg></g>visible</svg>", "<text><svg></text>visible</svg>",
        "null\x00byte#{long}", "\uFEFF#{long}"].each do |html|
         expect(described_class.sanitize_strip_all_tags(html)).to be_nil, html.inspect
         expect(described_class.sanitized_text_preview(html, 150)).to be_nil, html.inspect

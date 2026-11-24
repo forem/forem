@@ -33,6 +33,8 @@ on:
       - "app/views/articles/_single_story.html.erb"
       - "app/views/articles/_single_story_legacy.html.erb"
       - "app/views/articles/feed.rss.builder"
+      - "app/views/comments/delete_confirm.html.erb"
+      - "app/views/comments/index.html.erb"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
@@ -232,6 +234,8 @@ jobs:
             raise "Unexpected format_rfc822_timestamp!" unless ForemNative.format_rfc822_timestamp(0, 0) == "Thu, 01 Jan 1970 00:00:00 +0000"
             rss_xml = ForemNative.serialize_rss_feed_xml(["DEV", "Desc", "https://dev.to", false, nil, nil, nil, "https://dev.to/feed?a=1&b=2", "en"], ["Title & <3", "Alice", 0, 0, "https://dev.to/a", "https://dev.to/a", "<p>Hi</p>", "rust, ruby"])
             raise "Unexpected serialize_rss_feed_xml!" unless rss_xml.is_a?(String) && rss_xml.include?("<title>Title &amp; &lt;3</title>") && rss_xml.include?("<pubDate>Thu, 01 Jan 1970 00:00:00 +0000</pubDate>")
+            raise "Unexpected sanitize_strip_all_tags!" unless ForemNative.sanitize_strip_all_tags("a<svg><title>x</title></svg>b") == "ab"
+            raise "Unexpected sanitized_text_preview!" unless ForemNative.sanitized_text_preview("<p>a &amp; b</p>", 8) == "a &amp;am..."
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

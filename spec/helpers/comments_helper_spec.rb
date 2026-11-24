@@ -200,13 +200,18 @@ RSpec.describe CommentsHelper do
     it "falls back to the ActionView helpers for HTML outside the native fast path" do
       allow(helper).to receive(:sanitize).and_call_original
 
-      ["<math><mi>x</mi></math><p>#{'a' * 300}</p>", "<svg><g><svg></g></svg>visible</svg>"].each do |html|
+      [
+        "<math><mi>x</mi></math><p>#{'a' * 300}</p>",
+        "<svg><g><svg></g></svg>visible</svg>",
+        "<g><svg></g>visible</svg>",
+      ].each do |html|
         expect(ForemNative.sanitized_text_preview(html, 150)).to be_nil
         expect(helper.sanitized_text_preview(html, length: 150)).to eq(legacy_preview(html, 150))
       end
 
       expect(helper.sanitized_text_preview("<svg><g><svg></g></svg>visible</svg>", length: 150)).to eq("visible")
-      expect(helper).to have_received(:sanitize).at_least(4).times
+      expect(helper.sanitized_text_preview("<g><svg></g>visible</svg>", length: 150)).to eq("visible")
+      expect(helper).to have_received(:sanitize).at_least(5).times
     end
 
     it "renders only text nodes inside an HTML container for fitting and truncated previews" do

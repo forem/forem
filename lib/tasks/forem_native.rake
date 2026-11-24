@@ -90,6 +90,7 @@ namespace :forem_native do
     benchmark_api_articles
     benchmark_api_users_orgs
     benchmark_rss_feed
+    benchmark_sanitized_text_preview
     benchmark_homepage_articles
     benchmark_reactions
     benchmark_story_cards
@@ -2570,6 +2571,41 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (Builder::XmlMarkup 12 items)") { legacy_rss.call }
       x.report("Rust Magnus (serialize_rss_feed_xml 12 items)") { native_rss.call }
+      x.compare!
+    end
+  end
+
+  desc "Benchmark comment page sanitized_text_preview (Rust vs ActionView truncate+sanitize)"
+  task benchmark_sanitized_text_preview: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    view = ActionView::Base.with_empty_template_cache.new(ActionView::LookupContext.new([]), {}, nil)
+    paragraph = %(<p>Rust &amp; Ruby <a href="https://dev.to/a?b=1&amp;c=2">link</a> caf&eacute; "it's" 😀</p>\n)
+    svg = %(<svg viewBox="0 0 24 24"><title>Enter fullscreen mode</title><path d="M0 0"></path></svg>\n)
+    sample_html = "#{paragraph}<pre><code>a &lt; b</code></pre>\n#{svg}" * 30
+
+    legacy = -> { view.truncate(view.sanitize(sample_html, tags: []), length: 150) }
+    native = -> { ForemNative.sanitized_text_preview(sample_html, 150) }
+
+    raise "sanitized_text_preview benchmark parity failure!" unless native.call == legacy.call
+
+    puts "\n=== Comment Page sanitized_text_preview Benchmark (#{sample_html.bytesize} bytes, length: 150) ==="
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust/libxml2 C heap allocations)."
+    ruby_mem = MemoryProfiler.report { legacy.call }
+    rust_mem = MemoryProfiler.report { native.call }
+    puts "Preview — Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+         "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (truncate + sanitize)") { legacy.call }
+      x.report("Rust Magnus (sanitized_text_preview)") { native.call }
       x.compare!
     end
   end

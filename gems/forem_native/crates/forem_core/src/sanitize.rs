@@ -251,6 +251,7 @@ fn sanitize_text_into(html: &str, out: &mut TextOut, foreign: ForeignContent) ->
 
     let mut table_state = TableState::NotInTable;
     let mut svg_depth = 0usize;
+    let mut svg_child_stack: Vec<&[u8]> = Vec::new();
     let mut i = 0;
 
     while i < bytes.len() {
@@ -275,7 +276,13 @@ fn sanitize_text_into(html: &str, out: &mut TextOut, foreign: ForeignContent) ->
             }
             if next == b'/' {
                 let (name, tag_end) = parse_end_tag(bytes, i)?;
-                update_end_tag_state(name, &mut table_state, &mut svg_depth)?;
+                update_end_tag_state(
+                    name,
+                    foreign,
+                    &mut table_state,
+                    &mut svg_depth,
+                    &mut svg_child_stack,
+                )?;
                 i = tag_end;
                 continue;
             }
@@ -313,6 +320,9 @@ fn sanitize_text_into(html: &str, out: &mut TextOut, foreign: ForeignContent) ->
                     }
                     if !is_svg_child_tag(name) {
                         return None;
+                    }
+                    if foreign == ForeignContent::Prune && !self_closing {
+                        svg_child_stack.push(name);
                     }
                     i = tag_end;
                     continue;
@@ -584,8 +594,10 @@ fn update_start_tag_table_state(
 
 fn update_end_tag_state(
     name: &[u8],
+    foreign: ForeignContent,
     table_state: &mut TableState,
     svg_depth: &mut usize,
+    svg_child_stack: &mut Vec<&[u8]>,
 ) -> Option<()> {
     if is_declined_tag(name) {
         return None;
@@ -593,9 +605,22 @@ fn update_end_tag_state(
     if *svg_depth > 0 {
         if name.eq_ignore_ascii_case(b"svg") {
             *svg_depth -= 1;
+            if *svg_depth == 0 {
+                svg_child_stack.clear();
+            }
             return Some(());
         }
         if is_svg_child_tag(name) {
+            if foreign == ForeignContent::Prune {
+                // Only accept an SVG child end tag if a matching child was opened inside this
+                // `<svg>`; otherwise an outer HTML element with the same name (e.g.
+                // `<g><svg></g>visible</svg>`) closes the `<svg>` under HTML5 foreign-content
+                // end-tag rules and must defer to Loofah.
+                let pos = svg_child_stack
+                    .iter()
+                    .rposition(|open| open.eq_ignore_ascii_case(name))?;
+                svg_child_stack.truncate(pos);
+            }
             return Some(());
         }
         return None;
@@ -1339,11 +1364,17 @@ mod tests {
             sanitize_strip_all_tags("a<svg><svg/>hidden</svg>b").as_deref(),
             Some("ab")
         );
+        assert_eq!(
+            sanitize_strip_all_tags("<svg><g>hidden</svg>after").as_deref(),
+            Some("after")
+        );
         for declined in [
             "<math><mi>x</mi></math>",
             "<svg><p>x</p></svg>",
             "<svg><g><svg></g></svg>visible</svg>",
             "<svg><svg><text>nested</text></svg></svg>",
+            "<g><svg></g>visible</svg>",
+            "<text><svg></text>visible</svg>",
             "<table>t</table>",
             "<svg>",
         ] {
