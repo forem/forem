@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_api_articles_me_json
+  LATEST_NATIVE_SYMBOL = :serialize_comment_reactions_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2047,6 +2047,42 @@ module ForemNative
         reaction_counts_lens,
         config,
       )
+    end
+
+    # Formats a finite Float matching Ruby's `Float#to_s` / `ActiveSupport::JSON.encode`
+    # for `±0.0`, exact integer floats in `(-1e15, 1e15)`, and exact dyadic 1/16ths in
+    # `(-1e9, 1e9)`. Returns `nil` for non-finite, non-dyadic, or scientific-notation floats.
+    def format_json_float(value)
+      return unless Native.respond_to?(:format_json_float)
+      return unless value.is_a?(Float)
+
+      Native.format_json_float(value)
+    end
+
+    # Single-pass streaming JSON serializer for `GET /reactions?article_id=...`.
+    # Accepts `user_id` (Integer or nil), `column_names` (`Reaction.column_names`),
+    # `reaction_rows` (Array of plucked column Arrays or attribute Hashes; `"readinglist"`
+    # rows are partitioned after public reactions in place), and `article_counts`
+    # (`[{ category:, count: }, ...]`). Returns `nil` for out-of-domain inputs.
+    def serialize_article_reactions_json(user_id, column_names, reaction_rows, article_counts)
+      return unless Native.respond_to?(:serialize_article_reactions_json)
+      return unless (user_id.nil? || valid_i64_integer?(user_id)) &&
+        column_names.is_a?(Array) && reaction_rows.is_a?(Array) && article_counts.is_a?(Array)
+
+      Native.serialize_article_reactions_json(user_id, column_names, reaction_rows, article_counts)
+    end
+
+    # Single-pass streaming JSON serializer for `GET /reactions?commentable_id=...&commentable_type=...`.
+    # Accepts `user_id` (Integer or nil), `column_names` (`Reaction.column_names`),
+    # `reactions` (Array of attribute Hashes or plucked column Arrays), and `comment_rows`
+    # (Array of `[id, count]` pairs or `{ id:, count: }` Hashes). Returns `nil` for
+    # out-of-domain inputs.
+    def serialize_comment_reactions_json(user_id, column_names, reactions, comment_rows)
+      return unless Native.respond_to?(:serialize_comment_reactions_json)
+      return unless (user_id.nil? || valid_i64_integer?(user_id)) &&
+        column_names.is_a?(Array) && reactions.is_a?(Array) && comment_rows.is_a?(Array)
+
+      Native.serialize_comment_reactions_json(user_id, column_names, reactions, comment_rows)
     end
 
     private

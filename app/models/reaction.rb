@@ -106,6 +106,10 @@ class Reaction < ApplicationRecord
       @public_reaction_types ||= ReactionCategory.public.map(&:to_s) - ["readinglist"]
     end
 
+    def article_reaction_types
+      @article_reaction_types ||= (public_reaction_types + ["readinglist"]).freeze
+    end
+
     def surrogate_key_for_article(article_id)
       "reactions/article/#{article_id}"
     end
