@@ -123,5 +123,23 @@ RSpec.describe "Api::V0::PodcastEpisodes" do
         expect(response).to have_http_status(:not_found)
       end
     end
+
+    it "matches Jbuilder byte-for-byte via ForemNative", :aggregate_failures do
+      create(:podcast_episode, title: "Ep <1> & Friends 🚀", podcast: podcast)
+
+      native_results = []
+      allow(ForemNative).to receive(:serialize_api_podcast_episodes_json).and_wrap_original do |method, *args, **kwargs|
+        method.call(*args, **kwargs).tap { |res| native_results << res }
+      end
+
+      get api_podcast_episodes_path
+      native_body = response.body
+      expect(native_results.length).to eq(1)
+      expect(native_results.first).to be_a(String)
+
+      allow(ForemNative).to receive(:serialize_api_podcast_episodes_json).and_return(nil)
+      get api_podcast_episodes_path
+      expect(native_body).to eq(response.body)
+    end
   end
 end

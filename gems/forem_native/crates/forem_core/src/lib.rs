@@ -8,6 +8,7 @@
 
 pub mod ahoy_link;
 pub mod api_articles;
+pub mod api_collections;
 pub mod api_comments;
 pub mod api_users;
 pub mod calendar;

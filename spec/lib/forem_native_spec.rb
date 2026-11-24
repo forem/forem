@@ -10401,4 +10401,394 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".serialize_api_tags_json" do
+    def legacy_api_tags_json(tags_flat, escape_html:)
+      entries = tags_flat.each_slice(5).map do |id, name, bg, fg, summary|
+        {
+          "id" => id,
+          "name" => name,
+          "bg_color_hex" => bg,
+          "text_color_hex" => fg,
+          "short_summary" => summary
+        }
+      end
+      json = JSON.generate(entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+      escape_html ? json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") : json
+    end
+
+    it "returns nil for invalid inputs", :aggregate_failures do
+      expect(described_class.serialize_api_tags_json("not_array")).to be_nil
+      expect(described_class.serialize_api_tags_json([1, "a"])).to be_nil
+      expect(described_class.serialize_api_tags_json(["bad_id", "a", nil, nil, nil])).to be_nil
+    end
+
+    it "matches legacy JSON byte-for-byte across 1,000 randomized tag payloads" do
+      rng = Random.new(424_242)
+      text_pool = [nil, "", "rust", "A <fast> & \"safe\" tag\nline", "🚀 日本語 \u2028\u2029", "#000000", "#fff"]
+
+      1_000.times do |i|
+        escape_html = i.even?
+        flat = []
+        rng.rand(0..15).times do |j|
+          flat.push(
+            (i * 100) + j + 1,
+            text_pool.sample(random: rng),
+            text_pool.sample(random: rng),
+            text_pool.sample(random: rng),
+            text_pool.sample(random: rng),
+          )
+        end
+
+        expect(described_class.serialize_api_tags_json(flat, escape_html: escape_html))
+          .to eq(legacy_api_tags_json(flat, escape_html: escape_html)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_followed_tags_json" do
+    def legacy_api_followed_tags_json(tags_flat, escape_html:)
+      entries = tags_flat.each_slice(3).map do |id, name, points|
+        { "id" => id, "name" => name, "points" => points }
+      end
+      json = JSON.generate(entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+      escape_html ? json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") : json
+    end
+
+    it "returns nil on out-of-domain floats and invalid inputs", :aggregate_failures do
+      expect(described_class.serialize_api_followed_tags_json([1, "ruby", 0.3])).to be_nil
+      expect(described_class.serialize_api_followed_tags_json([1, "ruby", Float::NAN])).to be_nil
+      expect(described_class.serialize_api_followed_tags_json([1, "ruby", Float::INFINITY])).to be_nil
+      expect(described_class.serialize_api_followed_tags_json([1, "ruby"])).to be_nil
+    end
+
+    it "matches legacy JSON byte-for-byte across 1,000 randomized followed-tag payloads" do
+      rng = Random.new(424_242)
+      names = [nil, "ruby", "c++", "a&b<tag>", "日本語"]
+      points_pool = [nil, 0.0, 1.0, 1.5, -2.25, 0.0625, 100.0]
+
+      1_000.times do |i|
+        escape_html = i.even?
+        flat = []
+        rng.rand(0..15).times do |j|
+          flat.push((i * 100) + j + 1, names.sample(random: rng), points_pool.sample(random: rng))
+        end
+
+        expect(described_class.serialize_api_followed_tags_json(flat, escape_html: escape_html))
+          .to eq(legacy_api_followed_tags_json(flat, escape_html: escape_html)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_followers_json" do
+    def legacy_api_followers_json(followers_flat, escape_html:)
+      entries = followers_flat.each_slice(7).map do |id, created_sec, user_id, name, path, username, profile_image|
+        {
+          "type_of" => "user_follower",
+          "id" => id,
+          "created_at" => created_sec ? Time.at(created_sec).utc.iso8601 : nil,
+          "user_id" => user_id,
+          "name" => name,
+          "path" => "/#{path.delete_prefix('/')}",
+          "username" => username || name,
+          "profile_image" => profile_image
+        }
+      end
+      json = JSON.generate(entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+      escape_html ? json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") : json
+    end
+
+    it "returns nil on missing path or out-of-range timestamps", :aggregate_failures do
+      expect(described_class.serialize_api_followers_json([1, 1_700_000_000, 2, "A", nil, "a", nil])).to be_nil
+      expect(described_class.serialize_api_followers_json([1, 999_999_999_999, 2, "A", "/a", "a", nil])).to be_nil
+      expect(described_class.serialize_api_followers_json([1, 2])).to be_nil
+    end
+
+    it "matches legacy JSON byte-for-byte across 1,000 randomized follower payloads" do
+      rng = Random.new(424_242)
+      names = [nil, "Alice", "Bob <Dev> & Co", "🚀 Dev"]
+      paths = ["/alice", "bob", "/u/1&2", ""]
+      images = [nil, "https://cdn.example.com/a.png?w=60&h=60"]
+
+      1_000.times do |i|
+        escape_html = i.even?
+        flat = []
+        rng.rand(0..12).times do |j|
+          created = rng.rand(4).zero? ? nil : rng.rand(0..2_000_000_000)
+          flat.push(
+            (i * 100) + j + 1,
+            created,
+            (i * 100) + j + 1000,
+            names.sample(random: rng),
+            paths.sample(random: rng),
+            names.sample(random: rng),
+            images.sample(random: rng),
+          )
+        end
+
+        expect(described_class.serialize_api_followers_json(flat, escape_html: escape_html))
+          .to eq(legacy_api_followers_json(flat, escape_html: escape_html)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_podcast_episodes_json" do
+    def legacy_api_podcast_episodes_json(episodes_flat, escape_html:)
+      entries = episodes_flat.each_slice(7).map do |id, slug, title, ep_img, pod_title, pod_slug, pod_img|
+        {
+          "type_of" => "podcast_episodes",
+          "class_name" => "PodcastEpisode",
+          "id" => id,
+          "path" => pod_slug ? "/#{pod_slug}/#{slug}" : nil,
+          "title" => title,
+          "image_url" => ep_img || pod_img,
+          "podcast" => {
+            "title" => pod_title,
+            "slug" => pod_slug,
+            "image_url" => pod_img
+          }
+        }
+      end
+      json = JSON.generate(entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+      escape_html ? json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") : json
+    end
+
+    it "matches legacy JSON byte-for-byte across 1,000 randomized podcast episode payloads" do
+      rng = Random.new(424_242)
+      strs = [nil, "ep-1", "My <Podcast> & Show", "日本語", "https://cdn.example.com/img.png?a=1&b=2"]
+
+      1_000.times do |i|
+        escape_html = i.even?
+        flat = []
+        rng.rand(0..12).times do |j|
+          flat.push(
+            (i * 100) + j + 1,
+            strs.sample(random: rng),
+            strs.sample(random: rng),
+            strs.sample(random: rng),
+            strs.sample(random: rng),
+            strs.sample(random: rng),
+            strs.sample(random: rng),
+          )
+        end
+
+        expect(described_class.serialize_api_podcast_episodes_json(flat, escape_html: escape_html))
+          .to eq(legacy_api_podcast_episodes_json(flat, escape_html: escape_html)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_videos_json" do
+    # Mirrors `Images::Optimizer.legacy_cloudflare`.
+    def legacy_cloudflare_url(domain, directory, width, height, fit, img_src, src)
+      template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+      options = { width: width, height: height, fit: fit, gravity: "auto" }
+      options[:format] = "auto" unless img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
+      template.expand(domain: domain, directory: directory, options: options, src: src).to_s
+    end
+
+    # Mirrors `Article#legacy_video_duration_in_minutes`.
+    def legacy_video_duration(seconds)
+      parts = ActiveSupport::Duration.build(seconds.to_i).parts.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+      minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", parts)
+      parts[:hours] < 1 ? minutes_and_seconds : "#{parts[:hours]}:#{minutes_and_seconds}"
+    end
+
+    def legacy_api_videos_json(videos_flat, config)
+      mode, domain, dir, escape_html = config
+      entries = videos_flat.each_slice(9).map do |id, path, thumb, video, title, uid, dur, src_url, uname|
+        cloud_url = if thumb.nil? || thumb.strip.empty?
+                      nil
+                    elsif mode == 1 && !thumb.start_with?("/") && thumb.exclude?("/agent_sessions/")
+                      legacy_cloudflare_url(domain, dir, "880", "", "scale-down", thumb, thumb)
+                    else
+                      thumb
+                    end
+        {
+          "type_of" => "video_article",
+          "id" => id,
+          "path" => path,
+          "cloudinary_video_url" => cloud_url,
+          "video" => video,
+          "title" => title,
+          "user_id" => uid,
+          "video_duration_in_minutes" => legacy_video_duration(dur),
+          "video_source_url" => src_url,
+          "user" => { "name" => uname }
+        }
+      end
+      json = JSON.generate(entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+      escape_html ? json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") : json
+    end
+
+    it "returns nil for negative durations or invalid config", :aggregate_failures do
+      cfg = [0, nil, "cdn-cgi", true]
+      expect(described_class.serialize_api_videos_json([1, "/a", nil, "v", "t", 1, -5, nil, "u"], cfg)).to be_nil
+      expect(described_class.serialize_api_videos_json([], [9, nil, "cdn-cgi", true])).to be_nil
+      expect(described_class.serialize_api_videos_json([1], cfg)).to be_nil
+    end
+
+    it "truncates Float durations from the float column like Article#video_duration_in_minutes", :aggregate_failures do
+      cfg = [0, nil, "cdn-cgi", false]
+      row = [1, "/a/v", nil, "v", "t", 1, nil, nil, "u"]
+      [0.0, 125.0, 125.9, 3725.0].each do |dur|
+        flat = row.dup.tap { |r| r[6] = dur }
+        expect(described_class.serialize_api_videos_json(flat, cfg)).to eq(legacy_api_videos_json(flat, cfg))
+      end
+      expect(described_class.serialize_api_videos_json(row.dup.tap { |r| r[6] = -5.0 }, cfg)).to be_nil
+      expect(described_class.serialize_api_videos_json(row.dup.tap { |r| r[6] = Float::NAN }, cfg)).to be_nil
+    end
+
+    it "matches legacy JSON byte-for-byte across 1,000 randomized video payloads" do
+      rng = Random.new(424_242)
+      thumbs = [nil, "", "   ", "/local/thumb.png", "https://media.example.com/a.jpg", "https://media.example.com/a.gif"]
+      texts = [nil, "Video <1> & Demo", "https://video.example.com/v.m3u8", "日本語"]
+
+      1_000.times do |i|
+        mode = i.even? ? 0 : 1
+        escape_html = (i % 3) != 0
+        cfg = [mode, mode == 1 ? "media2.dev.to" : nil, "dynamic", escape_html]
+        flat = []
+        rng.rand(0..10).times do |j|
+          flat.push(
+            (i * 100) + j + 1,
+            "/user/vid-#{j}",
+            thumbs.sample(random: rng),
+            texts.sample(random: rng),
+            texts.sample(random: rng),
+            rng.rand(1..5000),
+            [nil, rng.rand(0..10_000), rng.rand(0..10_000).to_f, rng.rand * 10_000].sample(random: rng),
+            texts.sample(random: rng),
+            texts.sample(random: rng),
+          )
+        end
+
+        expect(described_class.serialize_api_videos_json(flat, cfg))
+          .to eq(legacy_api_videos_json(flat, cfg)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_readinglist_json" do
+    it "returns nil on mismatched lengths or out-of-bounds indices", :aggregate_failures do
+      cfg = [2026, "https://dev.to/social.png", 420, "crop", false, 0, nil, "cdn-cgi",
+             "Not disclosed", "No AI", "Some AI", "Fully autonomous", true]
+      expect(described_class.serialize_api_readinglist_json([1, "valid", 1_700_000_000], [], [], [], [], cfg)).to be_nil
+      expect(described_class.serialize_api_readinglist_json([1, "valid"], [], [], [], [], cfg)).to be_nil
+    end
+
+    it "matches legacy JSON byte-for-byte across 1,000 randomized readinglist payloads" do
+      rng = Random.new(424_242)
+      statuses = %w[valid confirmed]
+      tag_lists = [nil, "", "rust, ruby", "webdev, <tag>"]
+      ai_keys = %w[not_disclosed no_ai some_ai fully_autonomous]
+      ai_labels = ["Not disclosed", "No AI", "Some AI", "Fully autonomous"]
+
+      1_000.times do |i|
+        escape_html = i.even?
+        cfg = [
+          2026, "https://dev.to/social.png", 420, "crop", false, 0, nil, "cdn-cgi",
+          *ai_labels, escape_html
+        ]
+        users_flat = [42, "Alice <Dev>", "alice", "alice_tw", "alice_gh", "https://alice.dev",
+                      "https://cdn.example.com/a640.png", "https://cdn.example.com/a90.png"]
+        orgs_flat = ["Forem & Co", "forem", "forem",
+                     "https://cdn.example.com/o640.png", "https://cdn.example.com/o90.png"]
+        base_urls = ["https://dev.to"]
+
+        reactions_flat = []
+        articles_flat = []
+        expected_entries = []
+
+        rng.rand(0..8).times do |j|
+          rx_id = (i * 100) + j + 1
+          rx_status = statuses.sample(random: rng)
+          rx_created = rng.rand(1_600_000_000..1_790_000_000)
+          art_id = rx_id + 10_000
+          org_idx = rng.rand(2).zero? ? 0 : -1
+          ai_idx = rng.rand(0..3)
+          tags = tag_lists.sample(random: rng)
+          pub_sec = rng.rand(1_700_000_000..1_790_000_000)
+          path = "/alice/post-#{art_id}"
+          url = "https://dev.to#{path}"
+
+          reactions_flat.push(rx_id, rx_status, rx_created)
+          articles_flat.push(
+            art_id, 0, org_idx, 0, path,
+            nil, "Post <#{art_id}>", "Desc & #{art_id}", nil, nil, nil,
+            tags, "post-#{art_id}", path, nil, j, j * 2,
+            3, 1, "en", true, ai_idx,
+            pub_sec, nil, nil, pub_sec, pub_sec, false
+          )
+
+          article_hash = {
+            "type_of" => "article",
+            "id" => art_id,
+            "title" => "Post <#{art_id}>",
+            "description" => "Desc & #{art_id}",
+            "readable_publish_date" => Time.at(pub_sec).utc.then do |t|
+              t.year == 2026 ? t.strftime("%b %-e") : t.strftime("%b %-d '%y")
+            end,
+            "slug" => "post-#{art_id}",
+            "path" => path,
+            "url" => url,
+            "comments_count" => j,
+            "public_reactions_count" => j * 2,
+            "collection_id" => nil,
+            "published_timestamp" => Time.at(pub_sec).utc.iso8601,
+            "language" => "en",
+            "subforem_id" => 1,
+            "ai_disclosure_level" => ai_keys[ai_idx],
+            "ai_disclosure_label" => ai_labels[ai_idx],
+            "positive_reactions_count" => j * 2,
+            "cover_image" => nil,
+            "social_image" => "https://dev.to/social.png",
+            "canonical_url" => url,
+            "created_at" => Time.at(pub_sec).utc.iso8601,
+            "edited_at" => nil,
+            "crossposted_at" => nil,
+            "published_at" => Time.at(pub_sec).utc.iso8601,
+            "last_comment_at" => Time.at(pub_sec).utc.iso8601,
+            "reading_time_minutes" => 3,
+            "tags" => tags,
+            "user" => {
+              "name" => "Alice <Dev>",
+              "username" => "alice",
+              "twitter_username" => "alice_tw",
+              "github_username" => "alice_gh",
+              "user_id" => 42,
+              "website_url" => "https://alice.dev",
+              "profile_image" => "https://cdn.example.com/a640.png",
+              "profile_image_90" => "https://cdn.example.com/a90.png"
+            }
+          }
+          if org_idx >= 0
+            article_hash["organization"] = {
+              "name" => "Forem & Co",
+              "username" => "forem",
+              "slug" => "forem",
+              "profile_image" => "https://cdn.example.com/o640.png",
+              "profile_image_90" => "https://cdn.example.com/o90.png"
+            }
+          end
+
+          expected_entries << {
+            "type_of" => "readinglist",
+            "id" => rx_id,
+            "status" => rx_status,
+            "created_at" => Time.at(rx_created).utc.iso8601,
+            "article" => article_hash
+          }
+        end
+
+        expected = JSON.generate(expected_entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+        expected = expected.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") if escape_html
+
+        actual = described_class.serialize_api_readinglist_json(
+          reactions_flat, articles_flat, users_flat, orgs_flat, base_urls, cfg
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

@@ -57,6 +57,22 @@ RSpec.describe "Api::V0::FollowsController" do
         expect(body).to include(tag1_json)
         expect(body).to include(tag2_json)
       end
+
+      it "matches Jbuilder byte-for-byte via ForemNative", :aggregate_failures do
+        native_results = []
+        allow(ForemNative).to receive(:serialize_api_followed_tags_json).and_wrap_original do |method, *args, **kwargs|
+          method.call(*args, **kwargs).tap { |res| native_results << res }
+        end
+
+        get "/api/follows/tags"
+        native_body = response.body
+        expect(native_results.length).to eq(1)
+        expect(native_results.first).to be_a(String)
+
+        allow(ForemNative).to receive(:serialize_api_followed_tags_json).and_return(nil)
+        get "/api/follows/tags"
+        expect(native_body).to eq(response.body)
+      end
     end
   end
 end

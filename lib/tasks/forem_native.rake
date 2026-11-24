@@ -89,6 +89,7 @@ namespace :forem_native do
     benchmark_api_comments
     benchmark_api_articles
     benchmark_api_users_orgs
+    benchmark_api_collections
     benchmark_rss_feed
     benchmark_sanitized_text_preview
     benchmark_homepage_articles
@@ -2607,6 +2608,102 @@ namespace :forem_native do
       x.report("Ruby Legacy (truncate + sanitize)") { legacy.call }
       x.report("Rust Magnus (sanitized_text_preview)") { native.call }
       x.compare!
+    end
+  end
+
+  desc "Benchmark collection API streaming JSON serializers (tags, follows, followers, podcasts, videos, readinglist)"
+  task benchmark_api_collections: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    tags_flat = Array.new(100) do |i|
+      [i + 1, "tag#{i}", "#112233", "#ffffff", "Short summary for tag <#{i}> & friends"]
+    end.flatten(1)
+    followers_flat = Array.new(80) do |i|
+      [1000 + i, 1_795_546_800 - (i * 60), 5000 + i, "Follower <#{i}>", "/follower#{i}", "follower#{i}",
+       "https://cdn.example.com/u#{i}-60.png"]
+    end.flatten(1)
+    videos_flat = Array.new(24) do |i|
+      [200 + i, "/dev/video-#{i}", "https://media.example.com/v#{i}.jpg", "https://v.example.com/#{i}.m3u8",
+       "Video <#{i}> & Demo", 42, (125 + (i * 60)).to_f, "https://v.example.com/#{i}.mp4", "Ada Lovelace"]
+    end.flatten(1)
+    videos_cfg = [0, nil, "cdn-cgi", true]
+
+    legacy_tags = lambda do
+      entries = tags_flat.each_slice(5).map do |id, name, bg, fg, summary|
+        { id: id, name: name, bg_color_hex: bg, text_color_hex: fg, short_summary: summary }
+      end
+      ActiveSupport::JSON.encode(entries)
+    end
+    native_tags = -> { ForemNative.serialize_api_tags_json(tags_flat, escape_html: true) }
+
+    legacy_followers = lambda do
+      entries = followers_flat.each_slice(7).map do |id, sec, uid, name, path, uname, img|
+        {
+          type_of: "user_follower",
+          id: id,
+          created_at: Time.at(sec).utc.iso8601,
+          user_id: uid,
+          name: name,
+          path: "/#{path.delete_prefix('/')}",
+          username: uname || name,
+          profile_image: img
+        }
+      end
+      ActiveSupport::JSON.encode(entries)
+    end
+    native_followers = -> { ForemNative.serialize_api_followers_json(followers_flat, escape_html: true) }
+
+    legacy_videos = lambda do
+      entries = videos_flat.each_slice(9).map do |id, path, thumb, video, title, uid, dur, src, uname|
+        parts = ActiveSupport::Duration.build(dur.to_i).parts.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+        mmss = format("%<minutes>02d:%<seconds>02d", parts)
+        dur_str = parts[:hours] < 1 ? mmss : "#{parts[:hours]}:#{mmss}"
+        {
+          type_of: "video_article",
+          id: id,
+          path: path,
+          cloudinary_video_url: thumb,
+          video: video,
+          title: title,
+          user_id: uid,
+          video_duration_in_minutes: dur_str,
+          video_source_url: src,
+          user: { name: uname }
+        }
+      end
+      ActiveSupport::JSON.encode(entries)
+    end
+    native_videos = -> { ForemNative.serialize_api_videos_json(videos_flat, videos_cfg) }
+
+    raise "Tags benchmark parity failure!" unless native_tags.call == legacy_tags.call
+    raise "Followers benchmark parity failure!" unless native_followers.call == legacy_followers.call
+    raise "Videos benchmark parity failure!" unless native_videos.call == legacy_videos.call
+
+    puts "\n=== Collection API Streaming JSON Benchmark (serializer-only on prepared fixtures) ==="
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust heap allocations)."
+
+    [
+      ["Tags (100)", legacy_tags, native_tags],
+      ["Followers (80)", legacy_followers, native_followers],
+      ["Videos (24)", legacy_videos, native_videos],
+    ].each do |label, legacy_fn, native_fn|
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "#{label} — Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby Legacy (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
     end
   end
 end

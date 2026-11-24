@@ -7627,6 +7627,222 @@ fn serialize_rss_feed_xml(
     Some(ruby.str_new(&xml))
 }
 
+fn extract_opt_f64_val(val: Value) -> Option<Option<f64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    if let Some(f) = Float::from_value(val) {
+        return Some(Some(f.to_f64()));
+    }
+    if let Some(i) = Integer::from_value(val) {
+        return Some(Some(i.to_i64().ok()? as f64));
+    }
+    None
+}
+
+fn serialize_api_tags_json(ruby: &Ruby, tags_flat: RArray, escape_html: bool) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `tags_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { tags_flat.as_slice() };
+        if slice.len() % 5 != 0 {
+            return None;
+        }
+        let mut rows = Vec::with_capacity(slice.len() / 5);
+        for chunk in slice.chunks_exact(5) {
+            rows.push(forem_core::api_collections::ApiTagRow {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                name: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                bg_color_hex: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+                text_color_hex: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+                short_summary: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+            });
+        }
+        forem_core::api_collections::serialize_api_tags_json(&rows, escape_html)
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_followed_tags_json(
+    ruby: &Ruby,
+    tags_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `tags_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { tags_flat.as_slice() };
+        if slice.len() % 3 != 0 {
+            return None;
+        }
+        let mut rows = Vec::with_capacity(slice.len() / 3);
+        for chunk in slice.chunks_exact(3) {
+            rows.push(forem_core::api_collections::ApiFollowedTagRow {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                name: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                points: extract_opt_f64_val(chunk[2])?,
+            });
+        }
+        forem_core::api_collections::serialize_api_followed_tags_json(&rows, escape_html)?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_followers_json(
+    ruby: &Ruby,
+    followers_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `followers_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { followers_flat.as_slice() };
+        if slice.len() % 7 != 0 {
+            return None;
+        }
+        let mut rows = Vec::with_capacity(slice.len() / 7);
+        for chunk in slice.chunks_exact(7) {
+            rows.push(forem_core::api_collections::ApiFollowerRow {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                created_at_sec: extract_opt_i64_val(chunk[1])?,
+                user_id: Integer::from_value(chunk[2])?.to_i64().ok()?,
+                name: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+                path: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                username: unsafe { borrow_opt_utf8_str(chunk[5]) }?,
+                profile_image: unsafe { borrow_opt_utf8_str(chunk[6]) }?,
+            });
+        }
+        forem_core::api_collections::serialize_api_followers_json(&rows, escape_html)?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_podcast_episodes_json(
+    ruby: &Ruby,
+    episodes_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `episodes_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { episodes_flat.as_slice() };
+        if slice.len() % 7 != 0 {
+            return None;
+        }
+        let mut rows = Vec::with_capacity(slice.len() / 7);
+        for chunk in slice.chunks_exact(7) {
+            rows.push(forem_core::api_collections::ApiPodcastEpisodeRow {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                slug: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                title: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+                image_url: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+                podcast_title: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                podcast_slug: unsafe { borrow_opt_utf8_str(chunk[5]) }?,
+                podcast_image_url: unsafe { borrow_opt_utf8_str(chunk[6]) }?,
+            });
+        }
+        forem_core::api_collections::serialize_api_podcast_episodes_json(&rows, escape_html)
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_videos_json(
+    ruby: &Ruby,
+    videos_flat: RArray,
+    config_arr: RArray,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `videos_flat` and `config_arr`; `forem_core` never
+        // calls into Ruby, and all borrows end before `ruby.str_new` allocates.
+        let cfg = unsafe { config_arr.as_slice() };
+        if cfg.len() != 4 {
+            return None;
+        }
+        let optimizer_mode = match Integer::from_value(cfg[0])?.to_i64().ok()? {
+            0 => forem_core::api_articles::ImageOptimizerMode::Passthrough,
+            1 => forem_core::api_articles::ImageOptimizerMode::Cloudflare,
+            _ => return None,
+        };
+        let cloudflare_domain = unsafe { borrow_opt_utf8_str(cfg[1]) }?;
+        let cloudflare_directory = unsafe { borrow_opt_utf8_str(cfg[2]) }?.unwrap_or("cdn-cgi");
+        let escape_html_entities = if cfg[3].is_kind_of(ruby.class_true_class()) {
+            true
+        } else if cfg[3].is_kind_of(ruby.class_false_class()) {
+            false
+        } else {
+            return None;
+        };
+        let config = forem_core::api_collections::ApiVideosConfig {
+            optimizer_mode,
+            cloudflare_domain,
+            cloudflare_directory,
+            escape_html_entities,
+        };
+
+        let slice = unsafe { videos_flat.as_slice() };
+        if slice.len() % 9 != 0 {
+            return None;
+        }
+        let mut rows = Vec::with_capacity(slice.len() / 9);
+        for chunk in slice.chunks_exact(9) {
+            rows.push(forem_core::api_collections::ApiVideoRow {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                path: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                video_thumbnail_url: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+                video: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+                title: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                user_id: extract_opt_i64_val(chunk[5])?,
+                video_duration_in_seconds: extract_opt_i64_val(chunk[6])?,
+                video_source_url: unsafe { borrow_opt_utf8_str(chunk[7]) }?,
+                user_name: unsafe { borrow_opt_utf8_str(chunk[8]) }?,
+            });
+        }
+        forem_core::api_collections::serialize_api_videos_json(&rows, &config)?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_api_readinglist_json(
+    ruby: &Ruby,
+    reactions_flat: RArray,
+    articles_flat: RArray,
+    users_flat: RArray,
+    orgs_flat: RArray,
+    base_urls_arr: RArray,
+    config_arr: RArray,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of all input arrays; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        unsafe {
+            let config = parse_api_articles_config(config_arr.as_slice())?;
+            let base_urls = parse_api_article_base_urls(base_urls_arr.as_slice())?;
+            let users = parse_api_article_users(users_flat.as_slice())?;
+            let orgs = parse_api_article_orgs(orgs_flat.as_slice())?;
+            let articles = parse_api_article_rows(articles_flat.as_slice())?;
+
+            let rx_slice = reactions_flat.as_slice();
+            if rx_slice.len() % 3 != 0 || rx_slice.len() / 3 != articles.len() {
+                return None;
+            }
+            let mut items = Vec::with_capacity(articles.len());
+            for (chunk, article) in rx_slice.chunks_exact(3).zip(articles) {
+                items.push(forem_core::api_collections::ApiReadinglistItem {
+                    id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                    status: borrow_opt_utf8_str(chunk[1])?,
+                    created_at_sec: extract_opt_i64_val(chunk[2])?,
+                    article,
+                });
+            }
+
+            forem_core::api_collections::serialize_api_readinglist_json(
+                &items, &users, &orgs, &base_urls, &config,
+            )
+        }
+    }?;
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -8227,6 +8443,30 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_rss_feed_xml",
         function!(serialize_rss_feed_xml, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_tags_json",
+        function!(serialize_api_tags_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_followed_tags_json",
+        function!(serialize_api_followed_tags_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_followers_json",
+        function!(serialize_api_followers_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_podcast_episodes_json",
+        function!(serialize_api_podcast_episodes_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_videos_json",
+        function!(serialize_api_videos_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_api_readinglist_json",
+        function!(serialize_api_readinglist_json, 6),
     )?;
     Ok(())
 }

@@ -720,7 +720,7 @@ class Article < ApplicationRecord
   scope :with_video, lambda {
                        published
                          .where("articles.video > ''")
-                         .where("score > ?", -4)
+                         .where("articles.score > ?", -4)
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
