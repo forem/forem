@@ -47,6 +47,22 @@ module Api
     ].freeze
     private_constant :INDEX_PLUCK_COLUMNS
 
+    SHOW_PLUCK_COLUMNS = [
+      *INDEX_PLUCK_COLUMNS, :processed_html, :body_markdown
+    ].freeze
+    private_constant :SHOW_PLUCK_COLUMNS
+
+    ME_PLUCK_COLUMNS = %i[
+      id organization_id title description published published_at
+      crossposted_at slug path comments_count public_reactions_count
+      page_views_count body_markdown main_image cached_tag_list
+      canonical_url reading_time
+    ].freeze
+    private_constant :ME_PLUCK_COLUMNS
+
+    POSITIVE_INT32_MAX = 2_147_483_647
+    private_constant :POSITIVE_INT32_MAX
+
     USER_INDEX_COLUMNS = %i[
       id name username twitter_username github_username profile_image
     ].freeze
@@ -94,24 +110,39 @@ module Api
     end
 
     def show
-      @article = Article.published.from_subforem
-        .includes(user: :profile)
-        .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-        .find(params[:id])
-        .decorate
+      if native_show_serializable?
+        row = Article.published.from_subforem
+          .where(id: params[:id])
+          .pick(*SHOW_PLUCK_COLUMNS)
+        raise ActiveRecord::RecordNotFound unless row
 
-      set_surrogate_key_header @article.record_key
+        json_body = serialize_article_show_natively(row)
+        if json_body
+          set_surrogate_key_header "#{Article.table_key}/#{row[0]}"
+          render json: json_body
+          return
+        end
+      end
+
+      legacy_show
     end
 
     def show_by_slug
-      @article = Article.published.from_subforem
-        .includes(user: :profile)
-        .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-        .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
-        .decorate
+      if native_serialization_supported?
+        row = Article.published.from_subforem
+          .where(path: "/#{params[:username]}/#{params[:slug]}")
+          .pick(*SHOW_PLUCK_COLUMNS)
+        raise ActiveRecord::RecordNotFound unless row
 
-      set_surrogate_key_header @article.record_key
-      render "show"
+        json_body = serialize_article_show_natively(row)
+        if json_body
+          set_surrogate_key_header "#{Article.table_key}/#{row[0]}"
+          render json: json_body
+          return
+        end
+      end
+
+      legacy_show_by_slug
     end
 
     def create
@@ -153,24 +184,17 @@ module Api
       per_page = (params[:per_page] || 30).to_i
       num = [per_page, per_page_max].min
 
-      @articles = case params[:status]
-                  when "published"
-                    @user.articles.published.from_subforem
-                  when "unpublished"
-                    @user.articles.unpublished.from_subforem
-                  when "all"
-                    @user.articles.from_subforem
-                  else
-                    @user.articles.published.from_subforem
-                  end
+      relation = me_articles_relation(num)
+      if native_me_serializable?(relation)
+        rows = relation.pluck(*ME_PLUCK_COLUMNS)
+        json_body = serialize_articles_me_natively(rows)
+        if json_body
+          render json: json_body
+          return
+        end
+      end
 
-      @articles = @articles
-        .includes({ user: :profile }, :organization)
-        .select(ME_ATTRIBUTES_FOR_SERIALIZATION)
-        .order(published_at: :desc, created_at: :desc)
-        .page(params[:page])
-        .per(num)
-        .decorate
+      legacy_me(relation)
     end
 
     def unpublish
@@ -194,21 +218,27 @@ module Api
       # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
       articles = Articles::ApiSearchQuery.call(params)
 
-      # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
-      # ChatGPT cannot process the long body request.
-      # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
-      # running a separate COUNT over the full search before every load.
-      @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-      if @articles.size == 1
-        # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
-        # return 0-1 results are the slowest searches, so repeating them doubled their cost).
-        @articles = Article.includes([{ user: :profile }, :organization])
-          .where(id: @articles.first.id)
-          .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
-          .decorate
+      if native_index_serializable?(articles)
+        rows = articles.except(:includes).pluck(*INDEX_PLUCK_COLUMNS)
+        single_body_markdown = nil
+        if rows.size == 1
+          refetched = Article.where(id: rows[0][0]).pick(*INDEX_PLUCK_COLUMNS, :body_markdown)
+          if refetched
+            single_body_markdown = refetched.pop
+            rows = [refetched]
+          else
+            rows = []
+          end
+        end
+        json_body = serialize_articles_search_natively(rows, single_body_markdown: single_body_markdown)
+        if json_body
+          set_surrogate_key_header(Article.table_key, rows.map { |row| "#{Article.table_key}/#{row[0]}" })
+          render json: json_body
+          return
+        end
       end
 
-      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
+      legacy_search(articles)
     end
 
     def preview
@@ -240,6 +270,67 @@ module Api
       set_index_surrogate_keys(@articles.map(&:id))
     end
 
+    def legacy_show
+      @article = Article.published.from_subforem
+        .includes(user: :profile)
+        .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        .find(params[:id])
+        .decorate
+
+      set_surrogate_key_header @article.record_key
+    end
+
+    def legacy_show_by_slug
+      @article = Article.published.from_subforem
+        .includes(user: :profile)
+        .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
+        .decorate
+
+      set_surrogate_key_header @article.record_key
+      render "show"
+    end
+
+    def me_articles_relation(per_page_num)
+      scope = case params[:status]
+              when "published"
+                @user.articles.published.from_subforem
+              when "unpublished"
+                @user.articles.unpublished.from_subforem
+              when "all"
+                @user.articles.from_subforem
+              else
+                @user.articles.published.from_subforem
+              end
+
+      scope.order(published_at: :desc, created_at: :desc).page(params[:page]).per(per_page_num)
+    end
+
+    def legacy_me(relation)
+      @articles = relation
+        .includes({ user: :profile }, :organization)
+        .select(ME_ATTRIBUTES_FOR_SERIALIZATION)
+        .decorate
+    end
+
+    def legacy_search(articles)
+      # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
+      # ChatGPT cannot process the long body request.
+      # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
+      # running a separate COUNT over the full search before every load.
+      @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+      if @articles.size == 1
+        # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
+        # return 0-1 results are the slowest searches, so repeating them doubled their cost).
+        @articles = Article.includes([{ user: :profile }, :organization])
+          .where(id: @articles.first.id)
+          .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
+          .decorate
+      end
+
+      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
+    end
+
     def set_index_surrogate_keys(article_ids)
       prefix = "#{Article.table_key}/"
       surrogate_keys = [Article.table_key]
@@ -251,14 +342,37 @@ module Api
       set_surrogate_key_header(*surrogate_keys)
     end
 
-    def native_index_serializable?(relation)
+    def native_serialization_supported?
       ForemNative.available? &&
-        relation.is_a?(ActiveRecord::Relation) &&
         (request.format.json? || request.format.api_v0? || request.format.api_v1?) &&
         I18n.locale == :en &&
         Time.zone&.tzinfo&.name == "Etc/UTC" &&
         !Images::Optimizer.imgproxy_enabled? &&
         !Images::Optimizer.cloudinary_enabled?
+    end
+
+    def native_index_serializable?(relation)
+      relation.is_a?(ActiveRecord::Relation) && native_serialization_supported?
+    end
+
+    def native_show_serializable?
+      return false unless native_serialization_supported?
+
+      raw_id = params[:id]
+      if raw_id.is_a?(Integer)
+        raw_id.positive? && raw_id <= POSITIVE_INT32_MAX
+      elsif raw_id.is_a?(String) && raw_id.match?(/\A\d+\z/)
+        parsed = raw_id.to_i
+        parsed.positive? && parsed <= POSITIVE_INT32_MAX
+      else
+        false
+      end
+    end
+
+    def native_me_serializable?(relation)
+      native_index_serializable?(relation) &&
+        ActiveSupport::JSON::Encoding.use_standard_json_time_format &&
+        ActiveSupport::JSON::Encoding.time_precision == 3
     end
 
     def serialize_articles_index_natively(rows)
@@ -279,6 +393,124 @@ module Api
         base_urls,
         native_index_config,
       )
+    end
+
+    def serialize_article_show_natively(row)
+      rows = [row]
+      users_flat, user_idx_by_id = native_index_users_payload(rows)
+      return unless users_flat
+
+      orgs_flat, org_idx_by_id, org_custom_domains = native_index_orgs_payload(rows)
+      articles_flat, base_urls = native_index_articles_payload(rows, user_idx_by_id, org_idx_by_id, org_custom_domains)
+      return unless articles_flat
+
+      ForemNative.serialize_api_article_show_json(
+        articles_flat,
+        row[25],
+        row[26],
+        users_flat,
+        orgs_flat,
+        native_index_flare_tags_payload(rows),
+        base_urls,
+        native_index_config,
+      )
+    end
+
+    def serialize_articles_search_natively(rows, single_body_markdown: nil)
+      return "[]" if rows.empty?
+
+      users_flat, user_idx_by_id = native_index_users_payload(rows)
+      return unless users_flat
+
+      orgs_flat, org_idx_by_id, org_custom_domains = native_index_orgs_payload(rows)
+      articles_flat, base_urls = native_index_articles_payload(rows, user_idx_by_id, org_idx_by_id, org_custom_domains)
+      return unless articles_flat
+
+      include_body_markdown = rows.size == 1
+
+      ForemNative.serialize_api_articles_search_json(
+        articles_flat,
+        include_body_markdown,
+        single_body_markdown,
+        users_flat,
+        orgs_flat,
+        native_index_flare_tags_payload(rows),
+        base_urls,
+        native_index_config,
+      )
+    end
+
+    def serialize_articles_me_natively(rows)
+      return "[]" if rows.empty?
+
+      user_flat = native_me_user_payload
+      orgs_flat, org_idx_by_id, org_custom_domains = native_index_orgs_payload(rows, org_col_idx: 1)
+      articles_flat, base_urls = native_me_articles_payload(rows, org_idx_by_id, org_custom_domains)
+      return unless articles_flat
+
+      ForemNative.serialize_api_articles_me_json(
+        articles_flat,
+        user_flat,
+        orgs_flat,
+        native_index_flare_tags_payload(rows, tag_col_idx: 14),
+        base_urls,
+        native_index_config,
+      )
+    end
+
+    def native_me_user_payload
+      website = if @user.association(:profile).loaded?
+                  @user.profile&.website_url
+                else
+                  Profile.where(user_id: @user.id).pick(:website_url)
+                end
+      processed_website = website.present? ? website.to_s.strip : nil
+      [
+        @user.id,
+        @user.name,
+        @user.username,
+        @user.twitter_username,
+        @user.github_username,
+        processed_website,
+        @user.profile_image_url_for(length: 640),
+        @user.profile_image_url_for(length: 90),
+      ]
+    end
+
+    def native_me_articles_payload(rows, org_idx_by_id, org_custom_domains)
+      base_urls = []
+      base_url_idx_by_domain = {}
+      articles_flat = []
+
+      rows.each do |row|
+        org_id = row[1]
+        custom_domain = org_id ? org_custom_domains[org_id] : nil
+        url_path = custom_domain ? "/#{row[7]}" : row[8]
+        base_url_idx = base_url_idx_by_domain[custom_domain] ||= begin
+          idx = base_urls.size
+          base_urls << URL.url(nil, custom_domain)
+          idx
+        end
+
+        pub_sec, pub_millis = extract_epoch_sec_and_millis(row[5])
+        crossposted_sec = extract_epoch_sec(row[6])
+        return nil if pub_sec == :invalid || crossposted_sec == :invalid
+
+        articles_flat.push(
+          row[0], org_idx_by_id[org_id] || -1, base_url_idx, url_path,
+          row[2], row[3], row[4], pub_sec, pub_millis, crossposted_sec,
+          row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16]
+        )
+      end
+
+      [articles_flat, base_urls]
+    end
+
+    def extract_epoch_sec_and_millis(value)
+      return [nil, nil] if value.nil?
+      return [value.tv_sec, value.tv_usec / 1000] if value.respond_to?(:tv_sec) && value.respond_to?(:tv_usec)
+
+      [:invalid, nil]
     end
 
     def native_index_users_payload(rows)
@@ -312,8 +544,8 @@ module Api
       [users_flat, user_idx_by_id]
     end
 
-    def native_index_orgs_payload(rows)
-      org_ids = rows.filter_map { |row| row[2] }.uniq
+    def native_index_orgs_payload(rows, org_col_idx: 2)
+      org_ids = rows.filter_map { |row| row[org_col_idx] }.uniq
       return [[], {}, {}] if org_ids.empty?
 
       orgs_by_id = Organization.where(id: org_ids).select(*ORG_INDEX_COLUMNS).index_by(&:id)
@@ -343,13 +575,13 @@ module Api
       [orgs_flat, org_idx_by_id, org_custom_domains]
     end
 
-    def native_index_flare_tags_payload(rows)
+    def native_index_flare_tags_payload(rows, tag_col_idx: 10)
       flare_map = FlareTag::FLARE_TAG_IDS_HASH
       return [] if flare_map.empty?
 
       flare_names = flare_map.keys
       has_flare_match = rows.any? do |row|
-        raw_tags = row[10]
+        raw_tags = row[tag_col_idx]
         raw_tags.is_a?(String) && !raw_tags.empty? && ForemNative.match_first_flare_tag(raw_tags, flare_names) != false
       end
       return [] unless has_flare_match

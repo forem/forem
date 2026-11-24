@@ -9001,4 +9001,707 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".format_utc_iso8601_millis" do
+    it "handles edge cases and out-of-domain inputs", :aggregate_failures do
+      expect(described_class.format_utc_iso8601_millis(0, 0)).to eq("1970-01-01T00:00:00.000Z")
+      expect(described_class.format_utc_iso8601_millis(1_795_528_285, 7)).to eq("2026-11-24T13:51:25.007Z")
+      expect(described_class.format_utc_iso8601_millis(1_795_528_285, 42)).to eq("2026-11-24T13:51:25.042Z")
+      expect(described_class.format_utc_iso8601_millis(1_795_528_285, 999)).to eq("2026-11-24T13:51:25.999Z")
+      expect(described_class.format_utc_iso8601_millis(1_795_528_285, 1000)).to be_nil
+      expect(described_class.format_utc_iso8601_millis(1_795_528_285, -1)).to be_nil
+      expect(described_class.format_utc_iso8601_millis(-62_167_219_201, 0)).to be_nil
+      expect(described_class.format_utc_iso8601_millis("123", 0)).to be_nil
+    end
+
+    it "matches ActiveSupport Time#as_json (time_precision=3) across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      1_000.times do |i|
+        sec = rng.rand(0..2_500_000_000)
+        usec = rng.rand(0..999_999)
+        t = Time.at(sec, usec).utc
+        expected = t.strftime("%Y-%m-%dT%H:%M:%S.%3NZ")
+        actual = described_class.format_utc_iso8601_millis(t.tv_sec, t.tv_usec / 1000)
+        expect(actual).to eq(expected), "iteration #{i} sec=#{sec} usec=#{usec}"
+      end
+    end
+  end
+
+  describe ".serialize_api_article_show_json" do
+    let(:ai_keys) { %w[not_disclosed no_ai some_ai fully_autonomous] }
+    let(:ai_labels) { ["Not disclosed", "Human written", "AI assisted", "Fully autonomous"] }
+
+    let(:legacy_show_json) do
+      lambda do |r, body_html, body_markdown, user, org, flare_tags, base_url, cfg, cutoff_time|
+        current_year, main_social, cover_h, cover_fit, is_dev, opt_mode, cf_domain, cf_dir,
+          l0, l1, l2, l3, escape_html = cfg
+        labels = [l0, l1, l2, l3]
+        article_url = r[:url_path] ? Addressable::URI.parse(base_url).join(r[:url_path]).normalize.to_s : base_url
+        displayable_time = r[:crossposted_at] || r[:published_at]
+        readable_date = if displayable_time
+                          t = displayable_time.utc
+                          t.strftime(t.year == current_year ? "%b %-e" : "%b %-d '%y")
+                        end
+        published_ts = r[:published] && displayable_time ? displayable_time.utc.iso8601 : ""
+        canonical = r[:canonical_url] && !r[:canonical_url].strip.empty? ? r[:canonical_url].strip : article_url
+
+        opt_img = lambda do |img_src, width:, height:, crop:|
+          return img_src if img_src.nil? || img_src.strip.empty? || img_src.start_with?("/") ||
+            img_src.include?("/agent_sessions/")
+          return img_src if opt_mode.zero?
+
+          fit = crop == "crop" ? "cover" : "scale-down"
+          template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+          options = { width: width, height: height, fit: fit, gravity: "auto" }
+          options[:format] = "auto" unless img_src.match?(/\.(gif|webp)(\?.*)?$/i)
+          template.expand(domain: cf_domain, directory: cf_dir, options: options, src: img_src).to_s
+        end
+
+        cover_image = if r[:main_image] && !r[:main_image].strip.empty?
+                        if is_dev
+                          r[:main_image]
+                        else
+                          h = r[:main_image].include?("ytimg.com") ? 500 : cover_h
+                          c = r[:main_image].include?("ytimg.com") ? "crop" : cover_fit
+                          src = if r[:main_image].start_with?("https://res.cloudinary.com/") &&
+                              r[:main_image].include?("w_1000/https://")
+                                  r[:main_image].split("w_1000/").last
+                                else
+                                  r[:main_image]
+                                end
+                          opt_img.call(src, width: 1000, height: h, crop: c)
+                        end
+                      end
+
+        social_src = [r[:main_image], r[:social_image], r[:video_thumbnail_url]].detect { |s| s && !s.strip.empty? }
+        social_image = if social_src
+                         w, h = r[:published_at] && r[:published_at] > cutoff_time ? [1200, 627] : [1000, 500]
+                         src = social_src.include?("w_1000/https://") ? social_src.split("w_1000/").last : social_src
+                         opt_img.call(src, width: w, height: h, crop: "crop")
+                       else
+                         main_social
+                       end
+
+        tag_array = (r[:cached_tag_list] || "").split(", ")
+        entry = {
+          "type_of" => "article",
+          "id" => r[:id],
+          "title" => r[:title],
+          "description" => r[:description],
+          "readable_publish_date" => readable_date,
+          "slug" => r[:slug],
+          "path" => r[:path],
+          "url" => article_url,
+          "comments_count" => r[:comments_count],
+          "public_reactions_count" => r[:public_reactions_count],
+          "collection_id" => r[:collection_id],
+          "published_timestamp" => published_ts,
+          "language" => r[:language],
+          "subforem_id" => r[:subforem_id],
+          "ai_disclosure_level" => ai_keys[r[:ai_disclosure_idx]],
+          "ai_disclosure_label" => labels[r[:ai_disclosure_idx]],
+          "positive_reactions_count" => r[:public_reactions_count],
+          "cover_image" => cover_image,
+          "social_image" => social_image,
+          "canonical_url" => canonical,
+          "created_at" => r[:created_at]&.utc&.iso8601,
+          "edited_at" => r[:edited_at]&.utc&.iso8601,
+          "crossposted_at" => r[:crossposted_at]&.utc&.iso8601,
+          "published_at" => r[:published_at]&.utc&.iso8601,
+          "last_comment_at" => r[:last_comment_at]&.utc&.iso8601,
+          "reading_time_minutes" => r[:reading_time],
+          "tag_list" => r[:cached_tag_list],
+          "tags" => tag_array,
+          "body_html" => body_html,
+          "body_markdown" => body_markdown,
+          "user" => {
+            "name" => user[:name],
+            "username" => user[:username],
+            "twitter_username" => user[:twitter_username],
+            "github_username" => user[:github_username],
+            "user_id" => user[:id],
+            "website_url" => user[:website_url],
+            "profile_image" => user[:profile_image],
+            "profile_image_90" => user[:profile_image_90]
+          }
+        }
+        if org
+          entry["organization"] = {
+            "name" => org[:name],
+            "username" => org[:username],
+            "slug" => org[:slug],
+            "profile_image" => org[:profile_image],
+            "profile_image_90" => org[:profile_image_90]
+          }
+        end
+        matched = tag_array.lazy.filter_map { |tag| flare_tags.detect { |f| f[:match_name] == tag } }.first
+        if matched && matched[:name]
+          entry["flare_tag"] = {
+            "name" => matched[:name],
+            "bg_color_hex" => matched[:bg_color_hex],
+            "text_color_hex" => matched[:text_color_hex]
+          }
+        end
+
+        json = JSON.generate(entry).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+        json = json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") if escape_html
+        json
+      end
+    end
+
+    it "returns nil on invalid or out-of-domain inputs", :aggregate_failures do
+      cfg = [2026, "https://dev.to/social.png", 420, "crop", false, 0, nil, "cdn-cgi", *ai_labels, true]
+      expect(
+        described_class.serialize_api_article_show_json([], nil, nil, [], [], [], ["https://dev.to"], cfg),
+      ).to be_nil
+      expect(
+        described_class.serialize_api_article_show_json([1], 123, nil, [], [], [], ["https://dev.to"], cfg),
+      ).to be_nil
+    end
+
+    it "matches legacy show.json.jbuilder output byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      cutoff_time = Time.utc(2026, 3, 1, 0, 0, 0)
+      base_urls = ["https://dev.to", "https://blog.custom.example"]
+      tag_pool = %w[ruby rails rust discuss help watercooler webdev]
+      bodies_html = [nil, "", "<p>Hello &amp; <b>Rust</b> 🚀</p>", "<pre><code>a < b && c > d</code></pre>"]
+      bodies_md = [nil, "", "# Title\n\nRust > Ruby\u2028line", "```ruby\nputs 'hi'\n```"]
+      images = [nil, "", "https://cdn.example.com/a.png", "https://i.ytimg.com/vi/abc/hqdefault.jpg"]
+      flare_tags = [
+        { match_name: "discuss", name: "discuss", bg_color_hex: "#71EA8B", text_color_hex: "#FFFFFF" },
+        { match_name: "help", name: nil, bg_color_hex: nil, text_color_hex: nil },
+      ]
+      flare_tags_flat = flare_tags.flat_map { |f| [f[:match_name], f[:name], f[:bg_color_hex], f[:text_color_hex]] }
+
+      1_000.times do |i|
+        user = {
+          id: 50 + i,
+          name: "Ada <#{i}>",
+          username: "ada_#{i}",
+          twitter_username: rng.rand(2).zero? ? "ada" : nil,
+          github_username: "ada",
+          website_url: rng.rand(2).zero? ? "https://ada.example" : nil,
+          profile_image: "https://media.dev.to/640/#{i}.png",
+          profile_image_90: "https://media.dev.to/90/#{i}.png"
+        }
+        users_flat = [
+          user[:id], user[:name], user[:username], user[:twitter_username], user[:github_username],
+          user[:website_url], user[:profile_image], user[:profile_image_90]
+        ]
+        org = if rng.rand(2).zero?
+                {
+                  name: "Forem", username: "forem", slug: "forem",
+                  profile_image: "https://o/640.png", profile_image_90: "https://o/90.png"
+                }
+              end
+        orgs_flat = org ? [org[:name], org[:username], org[:slug], org[:profile_image], org[:profile_image_90]] : []
+        opt_mode = rng.rand(2)
+        cfg = [
+          rng.rand(2025..2027), "https://dev.to/default.png", [420, 500].sample(random: rng),
+          %w[crop limit].sample(random: rng), rng.rand(4).zero?, opt_mode,
+          opt_mode == 1 ? "media2.dev.to" : nil, "cdn-cgi", *ai_labels, rng.rand(2).zero?
+        ]
+        base_url_idx = rng.rand(0...base_urls.size)
+        slug = "post-#{i}"
+        path = "/ada_#{i}/#{slug}"
+        published_at = Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc
+        raw_tags = if rng.rand(5).zero?
+                     nil
+                   else
+                     Array.new(rng.rand(1..3)) { tag_pool.sample(random: rng) }.uniq.join(", ")
+                   end
+        r = {
+          id: 1000 + i,
+          user_idx: 0,
+          org_idx: org ? 0 : -1,
+          base_url_idx: base_url_idx,
+          url_path: base_url_idx == 1 ? "/#{slug}" : path,
+          collection_id: rng.rand(3).zero? ? rng.rand(1..50) : nil,
+          title: "Post #{i} <script>&\"'",
+          description: "Desc #{i} 🚀",
+          main_image: images.sample(random: rng),
+          social_image: images.sample(random: rng),
+          video_thumbnail_url: images.sample(random: rng),
+          cached_tag_list: raw_tags,
+          slug: slug,
+          path: path,
+          canonical_url: rng.rand(2).zero? ? " https://canon.example/#{i} " : nil,
+          comments_count: rng.rand(0..50),
+          public_reactions_count: rng.rand(0..500),
+          reading_time: rng.rand(1..15),
+          subforem_id: rng.rand(2).zero? ? 1 : nil,
+          language: %w[en fr].push(nil).sample(random: rng),
+          published: true,
+          ai_disclosure_idx: rng.rand(0..3),
+          created_at: Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc,
+          edited_at: rng.rand(2).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil,
+          crossposted_at: rng.rand(4).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil,
+          published_at: published_at,
+          last_comment_at: rng.rand(2).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil
+        }
+        article_flat = [
+          r[:id], r[:user_idx], r[:org_idx], r[:base_url_idx], r[:url_path],
+          r[:collection_id], r[:title], r[:description], r[:main_image], r[:social_image],
+          r[:video_thumbnail_url], r[:cached_tag_list], r[:slug], r[:path], r[:canonical_url],
+          r[:comments_count], r[:public_reactions_count], r[:reading_time], r[:subforem_id],
+          r[:language], r[:published], r[:ai_disclosure_idx], r[:created_at]&.tv_sec,
+          r[:edited_at]&.tv_sec, r[:crossposted_at]&.tv_sec, r[:published_at]&.tv_sec,
+          r[:last_comment_at]&.tv_sec, r[:published_at] > cutoff_time
+        ]
+        body_html = bodies_html.sample(random: rng)
+        body_md = bodies_md.sample(random: rng)
+
+        actual = described_class.serialize_api_article_show_json(
+          article_flat, body_html, body_md, users_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+        )
+        expected = legacy_show_json.call(
+          r, body_html, body_md, user, org, flare_tags, base_urls[base_url_idx], cfg, cutoff_time
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_articles_search_json" do
+    let(:ai_keys) { %w[not_disclosed no_ai some_ai fully_autonomous] }
+    let(:ai_labels) { ["Not disclosed", "Human written", "AI assisted", "Fully autonomous"] }
+
+    let(:legacy_search_json) do
+      lambda do |rows, include_body_markdown, single_body_markdown, users, orgs, flare_tags, base_urls, cfg, cutoff|
+        current_year, main_social, cover_h, cover_crop, dev_env, opt_mode, cf_domain, cf_dir,
+          l0, l1, l2, l3, escape_html = cfg
+        labels = [l0, l1, l2, l3]
+        cf_template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+
+        opt_img = lambda do |src, width:, height: nil, crop: "limit"|
+          next src if opt_mode != 1 || src.nil? || src.empty? || !src.start_with?("http")
+
+          fit = crop == "crop" ? "cover" : "scale-down"
+          opts = { width: width }
+          opts[:height] = height if height
+          opts[:fit] = fit
+          opts[:gravity] = "auto"
+          opts[:format] = "auto"
+          cf_template.expand(domain: cf_domain, directory: cf_dir, options: opts, src: src).to_s
+        end
+
+        entries = rows.map do |r|
+          user = users[r[:user_idx]]
+          org = r[:org_idx] >= 0 ? orgs[r[:org_idx]] : nil
+          base_url = base_urls[r[:base_url_idx]]
+          article_url = Addressable::URI.parse(base_url).join(r[:url_path]).normalize.to_s
+          canonical = if r[:canonical_url] && !r[:canonical_url].strip.empty?
+                        r[:canonical_url].strip
+                      else
+                        article_url
+                      end
+          displayable = r[:crossposted_at] || r[:published_at]
+          published_ts = r[:published] && displayable ? displayable.utc.iso8601 : ""
+          readable_date = if displayable.nil?
+                            ""
+                          elsif displayable.year == current_year
+                            displayable.strftime("%b %-e")
+                          else
+                            displayable.strftime("%b %-e '%y")
+                          end
+          cover_image = if r[:main_image].blank?
+                          nil
+                        elsif dev_env || r[:main_image].start_with?("/")
+                          r[:main_image]
+                        else
+                          h = r[:main_image].include?("ytimg.com") ? 500 : cover_h
+                          c = r[:main_image].include?("ytimg.com") ? "crop" : cover_crop
+                          opt_img.call(r[:main_image], width: 1000, height: h, crop: c)
+                        end
+          social_src = [r[:main_image], r[:social_image], r[:video_thumbnail_url]].detect { |s| s && !s.strip.empty? }
+          social_image = if social_src
+                           w, h = r[:published_at] > cutoff ? [1200, 627] : [1000, 500]
+                           opt_img.call(social_src, width: w, height: h, crop: "crop")
+                         else
+                           main_social
+                         end
+
+          tag_array = (r[:cached_tag_list] || "").split(", ")
+          entry = {
+            "type_of" => "article",
+            "id" => r[:id],
+            "title" => r[:title],
+            "description" => r[:description],
+            "readable_publish_date" => readable_date,
+            "slug" => r[:slug],
+            "path" => r[:path],
+            "url" => article_url,
+            "comments_count" => r[:comments_count],
+            "public_reactions_count" => r[:public_reactions_count],
+            "collection_id" => r[:collection_id],
+            "published_timestamp" => published_ts,
+            "language" => r[:language],
+            "subforem_id" => r[:subforem_id],
+            "ai_disclosure_level" => ai_keys[r[:ai_disclosure_idx]],
+            "ai_disclosure_label" => labels[r[:ai_disclosure_idx]],
+            "positive_reactions_count" => r[:public_reactions_count],
+            "cover_image" => cover_image,
+            "social_image" => social_image,
+            "canonical_url" => canonical,
+            "created_at" => r[:created_at]&.utc&.iso8601,
+            "edited_at" => r[:edited_at]&.utc&.iso8601,
+            "crossposted_at" => r[:crossposted_at]&.utc&.iso8601,
+            "published_at" => r[:published_at]&.utc&.iso8601,
+            "last_comment_at" => r[:last_comment_at]&.utc&.iso8601,
+            "reading_time_minutes" => r[:reading_time]
+          }
+          entry["body_markdown"] = single_body_markdown if include_body_markdown
+          entry["tag_list"] = tag_array
+          entry["tags"] = r[:cached_tag_list]
+          entry["user"] = {
+            "name" => user[:name],
+            "username" => user[:username],
+            "twitter_username" => user[:twitter_username],
+            "github_username" => user[:github_username],
+            "user_id" => user[:id],
+            "website_url" => user[:website_url],
+            "profile_image" => user[:profile_image],
+            "profile_image_90" => user[:profile_image_90]
+          }
+          if org
+            entry["organization"] = {
+              "name" => org[:name],
+              "username" => org[:username],
+              "slug" => org[:slug],
+              "profile_image" => org[:profile_image],
+              "profile_image_90" => org[:profile_image_90]
+            }
+          end
+          matched = tag_array.lazy.filter_map { |tag| flare_tags.detect { |f| f[:match_name] == tag } }.first
+          if matched && matched[:name]
+            entry["flare_tag"] = {
+              "name" => matched[:name],
+              "bg_color_hex" => matched[:bg_color_hex],
+              "text_color_hex" => matched[:text_color_hex]
+            }
+          end
+          entry
+        end
+
+        json = JSON.generate(entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+        json = json.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") if escape_html
+        json
+      end
+    end
+
+    it "handles empty, single-hit (string/nil markdown), multi-hit, and out-of-domain inputs",
+       :aggregate_failures do
+      cutoff_time = Time.utc(2026, 3, 1, 0, 0, 0)
+      cfg = [2026, "https://dev.to/social.png", 420, "crop", false, 0, nil, "cdn-cgi", *ai_labels, true]
+      expect(described_class.serialize_api_articles_search_json([], false, nil, [], [], [], [], cfg)).to eq("[]")
+      expect(described_class.serialize_api_articles_search_json([], true, "md", [], [], [], [], cfg)).to be_nil
+
+      user = {
+        id: 1, name: "Ada", username: "ada", twitter_username: nil, github_username: nil,
+        website_url: nil, profile_image: "https://u/640.png", profile_image_90: "https://u/90.png"
+      }
+      user_flat = [
+        user[:id], user[:name], user[:username], user[:twitter_username], user[:github_username],
+        user[:website_url], user[:profile_image], user[:profile_image_90]
+      ]
+      published_at = Time.at(1_772_409_600).utc
+      row_hash = {
+        id: 101, user_idx: 0, org_idx: -1, base_url_idx: 0, url_path: "/ada/p", collection_id: nil,
+        title: "T", description: "D", main_image: nil, social_image: nil, video_thumbnail_url: nil,
+        cached_tag_list: "ruby", slug: "p", path: "/ada/p", canonical_url: nil, comments_count: 1,
+        public_reactions_count: 2, reading_time: 3, subforem_id: 1, language: "en", published: true,
+        ai_disclosure_idx: 0, created_at: published_at, edited_at: nil, crossposted_at: nil,
+        published_at: published_at, last_comment_at: nil
+      }
+      row = [
+        101, 0, -1, 0, "/ada/p", nil, "T", "D", nil, nil, nil, "ruby", "p", "/ada/p", nil,
+        1, 2, 3, 1, "en", true, 0, 1_772_409_600, nil, nil, 1_772_409_600, nil, true
+      ]
+      single = described_class.serialize_api_articles_search_json(
+        row, true, "# Hello <Rust>", user_flat, [], [], ["https://dev.to"], cfg
+      )
+      expect(single).to eq(
+        legacy_search_json.call(
+          [row_hash], true, "# Hello <Rust>", [user], [], [], ["https://dev.to"], cfg, cutoff_time
+        ),
+      )
+
+      single_nil_md = described_class.serialize_api_articles_search_json(
+        row, true, nil, user_flat, [], [], ["https://dev.to"], cfg
+      )
+      expect(single_nil_md).to eq(
+        legacy_search_json.call([row_hash], true, nil, [user], [], [], ["https://dev.to"], cfg, cutoff_time),
+      )
+      expect(single_nil_md).to include('"body_markdown":null')
+
+      multi = described_class.serialize_api_articles_search_json(
+        row + row, false, nil, user_flat, [], [], ["https://dev.to"], cfg
+      )
+      expect(multi).to eq(
+        legacy_search_json.call([row_hash, row_hash], false, nil, [user], [], [], ["https://dev.to"], cfg, cutoff_time),
+      )
+      expect(multi).not_to include('"body_markdown"')
+      expect(described_class.serialize_api_articles_search_json(
+               row + row, true, "md", user_flat, [], [], ["https://dev.to"], cfg
+             )).to be_nil
+    end
+
+    it "matches legacy search.json.jbuilder output byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(515_151)
+      cutoff_time = Time.utc(2026, 3, 1, 0, 0, 0)
+      base_urls = ["https://dev.to", "https://blog.custom.example"]
+      tag_pool = %w[ruby rails rust discuss help watercooler webdev]
+      bodies_md = [nil, "", "# Search Hit\n\nRust > Ruby & friends\u2028next", "```ruby\nputs 1\n```"]
+      images = [nil, "", "https://cdn.example.com/a.png", "https://i.ytimg.com/vi/abc/hqdefault.jpg"]
+      flare_tags = [
+        { match_name: "discuss", name: "discuss", bg_color_hex: "#71EA8B", text_color_hex: "#FFFFFF" },
+        { match_name: "help", name: nil, bg_color_hex: nil, text_color_hex: nil },
+      ]
+      flare_tags_flat = flare_tags.flat_map { |f| [f[:match_name], f[:name], f[:bg_color_hex], f[:text_color_hex]] }
+
+      1_000.times do |i|
+        users = Array.new(2) do |u|
+          {
+            id: 200 + (i * 2) + u,
+            name: "Author <#{u}>",
+            username: "author_#{u}",
+            twitter_username: rng.rand(2).zero? ? "tw_#{u}" : nil,
+            github_username: "gh_#{u}",
+            website_url: rng.rand(2).zero? ? "https://example.com/#{u}" : nil,
+            profile_image: "https://media.dev.to/640/#{u}.png",
+            profile_image_90: "https://media.dev.to/90/#{u}.png"
+          }
+        end
+        users_flat = users.flat_map do |u|
+          [
+            u[:id], u[:name], u[:username], u[:twitter_username], u[:github_username],
+            u[:website_url], u[:profile_image], u[:profile_image_90]
+          ]
+        end
+        orgs = [
+          {
+            name: "Forem", username: "forem", slug: "forem",
+            profile_image: "https://o/640.png", profile_image_90: "https://o/90.png"
+          },
+        ]
+        orgs_flat = orgs.flat_map { |o| [o[:name], o[:username], o[:slug], o[:profile_image], o[:profile_image_90]] }
+        opt_mode = rng.rand(2)
+        cfg = [
+          rng.rand(2025..2027), "https://dev.to/default.png", [420, 500].sample(random: rng),
+          %w[crop limit].sample(random: rng), rng.rand(4).zero?, opt_mode,
+          opt_mode == 1 ? "media2.dev.to" : nil, "cdn-cgi", *ai_labels, rng.rand(2).zero?
+        ]
+
+        row_count = [0, 1, 1, 2, 3].sample(random: rng)
+        rows = Array.new(row_count) do |idx|
+          base_url_idx = rng.rand(0...base_urls.size)
+          slug = "search-#{i}-#{idx}"
+          path = "/author_#{idx % 2}/#{slug}"
+          published_at = Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc
+          raw_tags = if rng.rand(5).zero?
+                       nil
+                     else
+                       Array.new(rng.rand(1..3)) { tag_pool.sample(random: rng) }.uniq.join(", ")
+                     end
+          {
+            id: 5_000 + (i * 4) + idx,
+            user_idx: idx % 2,
+            org_idx: rng.rand(2).zero? ? 0 : -1,
+            base_url_idx: base_url_idx,
+            url_path: base_url_idx == 1 ? "/#{slug}" : path,
+            collection_id: rng.rand(3).zero? ? rng.rand(1..50) : nil,
+            title: "Hit #{idx} <script>&\"'",
+            description: "Desc #{idx} 🚀",
+            main_image: images.sample(random: rng),
+            social_image: images.sample(random: rng),
+            video_thumbnail_url: images.sample(random: rng),
+            cached_tag_list: raw_tags,
+            slug: slug,
+            path: path,
+            canonical_url: rng.rand(2).zero? ? " https://canon.example/#{idx} " : nil,
+            comments_count: rng.rand(0..50),
+            public_reactions_count: rng.rand(0..500),
+            reading_time: rng.rand(1..15),
+            subforem_id: rng.rand(2).zero? ? 1 : nil,
+            language: %w[en fr].push(nil).sample(random: rng),
+            published: true,
+            ai_disclosure_idx: rng.rand(0..3),
+            created_at: Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc,
+            edited_at: rng.rand(2).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil,
+            crossposted_at: rng.rand(4).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil,
+            published_at: published_at,
+            last_comment_at: rng.rand(2).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil
+          }
+        end
+
+        articles_flat = rows.flat_map do |r|
+          [
+            r[:id], r[:user_idx], r[:org_idx], r[:base_url_idx], r[:url_path],
+            r[:collection_id], r[:title], r[:description], r[:main_image], r[:social_image],
+            r[:video_thumbnail_url], r[:cached_tag_list], r[:slug], r[:path], r[:canonical_url],
+            r[:comments_count], r[:public_reactions_count], r[:reading_time], r[:subforem_id],
+            r[:language], r[:published], r[:ai_disclosure_idx], r[:created_at]&.tv_sec,
+            r[:edited_at]&.tv_sec, r[:crossposted_at]&.tv_sec, r[:published_at]&.tv_sec,
+            r[:last_comment_at]&.tv_sec, r[:published_at] > cutoff_time
+          ]
+        end
+
+        include_body_markdown = row_count == 1
+        single_body_markdown = include_body_markdown ? bodies_md.sample(random: rng) : nil
+
+        actual = described_class.serialize_api_articles_search_json(
+          articles_flat, include_body_markdown, single_body_markdown,
+          users_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+        )
+        expected = legacy_search_json.call(
+          rows, include_body_markdown, single_body_markdown,
+          users, orgs, flare_tags, base_urls, cfg, cutoff_time
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_api_articles_me_json" do
+    let(:ai_labels) { ["Not disclosed", "Human written", "AI assisted", "Fully autonomous"] }
+
+    it "returns nil on out-of-domain inputs and [] on empty", :aggregate_failures do
+      cfg = [2026, "https://dev.to/social.png", 420, "crop", false, 0, nil, "cdn-cgi", *ai_labels, true]
+      user_flat = [1, "Ada", "ada", nil, nil, nil, "https://u/640.png", "https://u/90.png"]
+      expect(described_class.serialize_api_articles_me_json([], user_flat, [], [], ["https://dev.to"], cfg)).to eq("[]")
+      expect(described_class.serialize_api_articles_me_json([1], user_flat, [], [], ["https://dev.to"], cfg)).to be_nil
+      expect(described_class.serialize_api_articles_me_json([], [], [], [], ["https://dev.to"], cfg)).to be_nil
+    end
+
+    it "matches legacy me.json.jbuilder output byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      base_urls = ["https://dev.to", "https://blog.custom.example"]
+      tag_pool = %w[ruby rust discuss help webdev]
+      flare_tags = [
+        { match_name: "discuss", name: "discuss", bg_color_hex: "#71EA8B", text_color_hex: "#FFFFFF" },
+      ]
+      flare_tags_flat = flare_tags.flat_map { |f| [f[:match_name], f[:name], f[:bg_color_hex], f[:text_color_hex]] }
+
+      1_000.times do |i|
+        user = {
+          id: 7, name: "Ada", username: "ada", twitter_username: "ada", github_username: "ada",
+          website_url: "https://ada.example", profile_image: "https://u/640.png", profile_image_90: "https://u/90.png"
+        }
+        user_flat = [
+          user[:id], user[:name], user[:username], user[:twitter_username], user[:github_username],
+          user[:website_url], user[:profile_image], user[:profile_image_90]
+        ]
+        org = {
+          name: "Forem", username: "forem", slug: "forem",
+          profile_image: "https://o/640.png", profile_image_90: "https://o/90.png"
+        }
+        orgs_flat = [org[:name], org[:username], org[:slug], org[:profile_image], org[:profile_image_90]]
+        escape_html = rng.rand(2).zero?
+        cfg = [
+          2026, "https://dev.to/default.png", 420, "crop", rng.rand(2).zero?, 0, nil, "cdn-cgi", *ai_labels, escape_html
+        ]
+
+        rows = Array.new(rng.rand(0..5)) do |idx|
+          pub_state = [true, false, nil].sample(random: rng)
+          pub_time = pub_state ? Time.at(rng.rand(1_700_000_000..1_795_000_000), rng.rand(0..999_999)).utc : nil
+          cross_time = rng.rand(4).zero? ? Time.at(rng.rand(1_700_000_000..1_795_000_000)).utc : nil
+          base_url_idx = rng.rand(0...base_urls.size)
+          slug = "me-#{i}-#{idx}"
+          path = "/ada/#{slug}"
+          raw_tags = if rng.rand(3).zero?
+                       nil
+                     else
+                       Array.new(rng.rand(1..3)) { tag_pool.sample(random: rng) }.uniq.join(", ")
+                     end
+          {
+            id: (i * 10) + idx,
+            org_idx: rng.rand(2).zero? ? 0 : -1,
+            base_url_idx: base_url_idx,
+            url_path: base_url_idx == 1 ? "/#{slug}" : path,
+            title: "My Post #{idx} <ok>",
+            description: "Desc & stuff",
+            published: pub_state,
+            published_at: pub_time,
+            crossposted_at: cross_time,
+            slug: slug,
+            path: path,
+            comments_count: rng.rand(0..20),
+            public_reactions_count: rng.rand(0..100),
+            page_views_count: rng.rand(0..50_000),
+            body_markdown: rng.rand(4).zero? ? nil : "# Post #{idx}\n\nBody > all",
+            main_image: rng.rand(2).zero? ? "https://img.example/#{idx}.png" : nil,
+            cached_tag_list: raw_tags,
+            canonical_url: rng.rand(2).zero? ? "https://canon.example/#{idx}" : nil,
+            reading_time: rng.rand(1..10)
+          }
+        end
+
+        articles_flat = rows.flat_map do |r|
+          [
+            r[:id], r[:org_idx], r[:base_url_idx], r[:url_path],
+            r[:title], r[:description], r[:published],
+            r[:published_at]&.tv_sec, r[:published_at] ? r[:published_at].tv_usec / 1000 : nil,
+            r[:crossposted_at]&.tv_sec, r[:slug], r[:path], r[:comments_count],
+            r[:public_reactions_count], r[:page_views_count], r[:body_markdown],
+            r[:main_image], r[:cached_tag_list], r[:canonical_url], r[:reading_time]
+          ]
+        end
+
+        expected_entries = rows.map do |r|
+          base_url = base_urls[r[:base_url_idx]]
+          article_url = Addressable::URI.parse(base_url).join(r[:url_path]).normalize.to_s
+          displayable = r[:crossposted_at] || r[:published_at]
+          tag_array = (r[:cached_tag_list] || "").split(", ")
+          entry = {
+            "type_of" => "article",
+            "id" => r[:id],
+            "title" => r[:title],
+            "description" => r[:description],
+            "published" => r[:published],
+            "published_at" => r[:published_at]&.strftime("%Y-%m-%dT%H:%M:%S.%3NZ"),
+            "slug" => r[:slug],
+            "path" => r[:path],
+            "url" => article_url,
+            "comments_count" => r[:comments_count],
+            "public_reactions_count" => r[:public_reactions_count],
+            "page_views_count" => r[:page_views_count],
+            "published_timestamp" => r[:published] && displayable ? displayable.utc.iso8601 : "",
+            "body_markdown" => r[:body_markdown],
+            "positive_reactions_count" => r[:public_reactions_count],
+            "cover_image" => r[:main_image],
+            "tag_list" => tag_array,
+            "canonical_url" => r[:canonical_url] || article_url,
+            "reading_time_minutes" => r[:reading_time],
+            "user" => {
+              "name" => user[:name], "username" => user[:username],
+              "twitter_username" => user[:twitter_username], "github_username" => user[:github_username],
+              "user_id" => user[:id], "website_url" => user[:website_url],
+              "profile_image" => user[:profile_image], "profile_image_90" => user[:profile_image_90]
+            }
+          }
+          if r[:org_idx] >= 0
+            entry["organization"] = {
+              "name" => org[:name], "username" => org[:username], "slug" => org[:slug],
+              "profile_image" => org[:profile_image], "profile_image_90" => org[:profile_image_90]
+            }
+          end
+          matched = tag_array.lazy.filter_map { |t| flare_tags.detect { |f| f[:match_name] == t } }.first
+          if matched
+            entry["flare_tag"] = {
+              "name" => matched[:name], "bg_color_hex" => matched[:bg_color_hex],
+              "text_color_hex" => matched[:text_color_hex]
+            }
+          end
+          entry
+        end
+        expected = JSON.generate(expected_entries).gsub("\u2028", "\\u2028").gsub("\u2029", "\\u2029")
+        expected = expected.gsub(">", "\\u003e").gsub("<", "\\u003c").gsub("&", "\\u0026") if escape_html
+
+        actual = described_class.serialize_api_articles_me_json(
+          articles_flat, user_flat, orgs_flat, flare_tags_flat, base_urls, cfg
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

@@ -692,6 +692,39 @@ RSpec.describe "Api::V1::Articles" do
       expected_key = [article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    it "matches the Jbuilder fallback bit-for-bit on V1 show including headers", :aggregate_failures do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+      Time.use_zone("UTC") do
+        expect(ForemNative.available?).to be(true)
+        native_results = []
+        allow(ForemNative).to receive(:serialize_api_article_show_json).and_wrap_original do |original, *args|
+          original.call(*args).tap { |result| native_results << result }
+        end
+
+        org = create(:organization)
+        article.user.profile.update_column(:website_url, "  https://example.com/dev  ")
+        article.update!(organization: org, ai_disclosure_level: :fully_autonomous, crossposted_at: 1.day.ago)
+
+        get api_article_path(article.id), headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(native_results.length).to eq(1)
+        expect(native_results.first).to be_a(String)
+        native_body = response.body
+        native_media_type = response.media_type
+        native_keys = response.headers["surrogate-key"].split.to_set
+        native_cache = response.headers["Cache-Control"]
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get api_article_path(article.id), headers: headers
+        expect(response.media_type).to eq(native_media_type)
+        expect(response.body).to eq(native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+        expect(response.headers["Cache-Control"]).to eq(native_cache)
+      end
+    end
   end
 
   describe "GET /api/articles/:username/:slug" do
@@ -751,6 +784,33 @@ RSpec.describe "Api::V1::Articles" do
       expected_key = [article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    it "matches the Jbuilder fallback bit-for-bit on V1 show_by_slug including headers", :aggregate_failures do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+      Time.use_zone("UTC") do
+        expect(ForemNative.available?).to be(true)
+        native_results = []
+        allow(ForemNative).to receive(:serialize_api_article_show_json).and_wrap_original do |original, *args|
+          original.call(*args).tap { |result| native_results << result }
+        end
+
+        get "/api/articles/#{article.username}/#{article.slug}", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(native_results.length).to eq(1)
+        expect(native_results.first).to be_a(String)
+        native_body = response.body
+        native_media_type = response.media_type
+        native_keys = response.headers["surrogate-key"].split.to_set
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get "/api/articles/#{article.username}/#{article.slug}", headers: headers
+        expect(response.media_type).to eq(native_media_type)
+        expect(response.body).to eq(native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(native_keys)
+      end
+    end
   end
 
   describe "GET /api/articles/me(/:status)" do
@@ -793,6 +853,52 @@ RSpec.describe "Api::V1::Articles" do
         get "/api/articles/me", headers: auth_headers
         expect(response.parsed_body.length).to eq(1)
         expect(response.parsed_body[0]["body_markdown"]).not_to be_nil
+      end
+
+      it "matches the Jbuilder fallback bit-for-bit on V1 /me/all including headers", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          expect(ForemNative.available?).to be(true)
+          native_results = []
+          allow(ForemNative).to receive(:serialize_api_articles_me_json).and_wrap_original do |original, *args|
+            original.call(*args).tap { |result| native_results << result }
+          end
+
+          create(:article, user: user, organization: organization)
+          create(:article, user: user, published: false)
+          create(:article)
+
+          get "/api/articles/me/all", headers: auth_headers
+          expect(response).to have_http_status(:ok)
+          expect(native_results.length).to eq(1)
+          expect(native_results.first).to be_a(String)
+          native_body = response.body
+          native_media_type = response.media_type
+          native_cache = response.headers["Cache-Control"]
+
+          allow(ForemNative).to receive(:available?).and_return(false)
+          get "/api/articles/me/all", headers: auth_headers
+          expect(response.media_type).to eq(native_media_type)
+          expect(response.body).to eq(native_body)
+          expect(response.headers["Cache-Control"]).to eq(native_cache)
+        end
+      end
+
+      it "falls back to Jbuilder on /me when use_standard_json_time_format is false", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+        allow(ActiveSupport::JSON::Encoding).to receive(:use_standard_json_time_format).and_return(false)
+
+        Time.use_zone("UTC") do
+          create(:article, user: user)
+          allow(ForemNative).to receive(:serialize_api_articles_me_json).and_call_original
+
+          get "/api/articles/me", headers: auth_headers
+          expect(response).to have_http_status(:ok)
+          expect(ForemNative).not_to have_received(:serialize_api_articles_me_json)
+        end
       end
 
       it "supports pagination" do
@@ -1894,6 +2000,43 @@ RSpec.describe "Api::V1::Articles" do
       expect(response).to have_http_status(:ok)
       expect(response.headers["Surrogate-Key"]).to include("articles", article.record_key)
       expect(response.headers["Surrogate-Control"]).to include("max-age=3600")
+    end
+
+    it "matches the Jbuilder fallback bit-for-bit on V1 search (single-hit and multi-hit)", :aggregate_failures do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+      Time.use_zone("UTC") do
+        expect(ForemNative.available?).to be(true)
+        native_results = []
+        allow(ForemNative).to receive(:serialize_api_articles_search_json).and_wrap_original do |original, *args|
+          original.call(*args).tap { |result| native_results << result }
+        end
+
+        article.update_columns(organization_id: organization.id)
+        get "/api/articles/search", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(native_results.length).to eq(1)
+        single_native_body = response.body
+        single_native_keys = response.headers["surrogate-key"].split.to_set
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get "/api/articles/search", headers: headers
+        expect(response.body).to eq(single_native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(single_native_keys)
+
+        allow(ForemNative).to receive(:available?).and_return(true)
+        create(:article, organization: organization)
+        get "/api/articles/search", headers: headers
+        expect(native_results.length).to eq(2)
+        multi_native_body = response.body
+        multi_native_keys = response.headers["surrogate-key"].split.to_set
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+        get "/api/articles/search", headers: headers
+        expect(response.body).to eq(multi_native_body)
+        expect(response.headers["surrogate-key"].split.to_set).to eq(multi_native_keys)
+      end
     end
 
     context "when there is one article returned" do
