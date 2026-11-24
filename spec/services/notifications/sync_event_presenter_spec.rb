@@ -106,6 +106,16 @@ RSpec.describe Notifications::SyncEventPresenter, type: :service do
     )
   end
 
+  it "renders an admin notification from its own title and link" do
+    json_data = { admin_notification: { title: "You're in", url: "https://mlh.io/x" } }
+    notification = create(:notification, user: create(:user), organization: nil,
+                                         notifiable: create(:admin_notification), action: nil, json_data: json_data)
+
+    expect(described_class.new(notification).to_h).to include(
+      "kind" => "admin", "actor" => nil, "text" => "You're in", "url" => "https://mlh.io/x",
+    )
+  end
+
   it "falls back to other for kinds it does not know" do
     result = present(notifiable: article, action: "SomethingNew", json_data: {})
 

@@ -1,0 +1,19 @@
+<% json_data = notification.json_data %>
+<% content = json_data["admin_notification"] || {} %>
+<div class="crayons-card notification">
+  <% if json_data["user"] %>
+    <%= render "notifications/shared/profile_pic", json_data: json_data %>
+  <% end %>
+
+  <div class="notification__content">
+    <h3 class="mb-2 color-base-90"><%= content["title"] %></h3>
+    <% if content["body"].present? %>
+      <div class="mb-4"><%= simple_format(h(content["body"])) %></div>
+    <% end %>
+    <% if content["url"].present? %>
+      <p>
+        <a href="<%= content["url"] %>" class="crayons-btn crayons-btn--secondary"><%= t("views.notifications.admin_notification.open") %></a>
+      </p>
+    <% end %>
+  </div>
+</div>

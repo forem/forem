@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_23_122600) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_24_121704) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -19,6 +19,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_23_122600) do
   enable_extension "pgcrypto"
   enable_extension "unaccent"
   enable_extension "vector"
+
+  create_table "admin_notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "agent_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false

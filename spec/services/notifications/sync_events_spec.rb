@@ -105,6 +105,16 @@ RSpec.describe Notifications::SyncEvents, type: :service do
           recipient_properties: {},
         )
       end
+
+      it "can scope the update to some recipients, naming their rows" do
+        described_class.updated(notification_for(reader), recipients: { reader.id => 5 })
+
+        expect(Trackable::BatchEvent).to have_received(:enqueue).with(
+          "notifications_updated", properties: hash_including("notifiable_id" => article.id),
+                                   anonymous_id: "dev:notifications", recipient_ids: [reader.id],
+                                   recipient_properties: { "notification_ids" => [5] }
+        )
+      end
     end
 
     describe ".removed" do

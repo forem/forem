@@ -11,7 +11,8 @@ module Notifications
       ["Comment", nil] => "comment",
       ["Mention", nil] => "mention",
       ["BadgeAchievement", nil] => "badge",
-      ["TagAdjustment", nil] => "tag_adjustment"
+      ["TagAdjustment", nil] => "tag_adjustment",
+      ["AdminNotification", nil] => "admin"
     }.freeze
     ACTORLESS_KINDS = %w[
       badge milestone welcome event_reminder tag_adjustment subforem_change org_deverification
@@ -81,7 +82,8 @@ module Notifications
     end
 
     def title
-      raw = data.dig("article", "title") ||
+      raw = data.dig("admin_notification", "title") ||
+        data.dig("article", "title") ||
         data.dig("comment", "commentable", "title") ||
         data.dig("reaction", "reactable", "title") ||
         data.dig("broadcast", "title") ||
@@ -99,7 +101,7 @@ module Notifications
       when "reaction" then aggregated_text("reaction.#{reactable_key}")
       when "follow" then aggregated_text("follow")
       when "milestone" then milestone_text
-      when "welcome" then title || localized("other")
+      when "welcome", "admin" then title || localized("other")
       when *VARIANT_KINDS then localized("#{kind}.#{variant}")
       else localized(kind)
       end
@@ -151,6 +153,7 @@ module Notifications
              when "follow", "badge" then data.dig("user", "path")
              when "reaction" then data.dig("reaction", "reactable", "path")
              when "org_invitation", "org_deverification" then data.dig("organization", "path")
+             when "admin" then data.dig("admin_notification", "url")
              else data.dig("comment", "path") || data.dig("article", "path")
              end
       path.presence || FALLBACK_PATH

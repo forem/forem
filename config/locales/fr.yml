@@ -287,6 +287,13 @@ fr:
       email_taken: "Adresse e-mail déjà utilisée"
       email_invalid: "Adresse e-mail invalide"
       validation_failed: "La validation a échoué"
+      no_recipients_found: "Aucun des user_ids ne correspond à un utilisateur existant"
+      invalid_user_ids: "user_ids doit être un tableau de 1 à %{limit} entiers positifs"
+      actor_not_found: "actor_id ne correspond à aucun utilisateur existant"
+      invalid_notification_content: "Contenu de notification invalide (%{fields}) : title est obligatoire et ne dépasse pas %{title_limit} caractères, body ne dépasse pas %{body_limit} caractères, et url doit être une URL http(s) ou un chemin commençant par /"
+      notification_not_found: "Notification introuvable"
+      notification_not_editable: "Seules les notifications créées via l'API d'administration peuvent être modifiées"
+      invalid_read_cutoff: "Fournissez exactement un paramètre parmi up_to_id (un identifiant de notification) ou read_through (une date ISO 8601)"
   errors:
     messages:
       accepted: doit être accepté

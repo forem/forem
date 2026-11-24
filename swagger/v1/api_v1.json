@@ -6,6 +6,203 @@
     "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication. Instances that\n        enable delegated access additionally accept an `Authorization: Bearer` token\n        issued by their configured delegation service on every endpoint that accepts\n        an api-key.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
   },
   "paths": {
+    "/api/admin/notifications": {
+      "post": {
+        "summary": "Create notifications (Admin)",
+        "tags": [
+          "notifications",
+          "admin"
+        ],
+        "description": "Pushes one notification to each listed user and returns each user's DEV notification id. Users that don't exist are reported as not_found and skipped. The notification appears on the user's /notifications page. Requires Super Admin credentials.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created"
+          },
+          "422": {
+            "description": "invalid parameters"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1000,
+                    "description": "DEV user ids, 1 to 1,000."
+                  },
+                  "actor_id": {
+                    "type": "integer",
+                    "description": "Optional DEV user whose avatar the notification shows."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Plain text, at most 250 characters."
+                  },
+                  "body": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Plain text, at most 1,000 characters. Line breaks are kept."
+                  },
+                  "url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "An absolute http(s) URL or a same-site path starting with /."
+                  }
+                },
+                "required": [
+                  "user_ids",
+                  "title"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/notifications/{id}": {
+      "put": {
+        "summary": "Update a notification (Admin)",
+        "tags": [
+          "notifications",
+          "admin"
+        ],
+        "description": "Edits the content of one notification created through this API, for that recipient only. Its position and read state don't change. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "DEV notification id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          },
+          "404": {
+            "description": "not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Plain text, at most 250 characters."
+                  },
+                  "body": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Plain text, at most 1,000 characters. Line breaks are kept."
+                  },
+                  "url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "An absolute http(s) URL or a same-site path starting with /."
+                  }
+                },
+                "description": "Any subset; an empty body or url clears it."
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a notification (Admin)",
+        "tags": [
+          "notifications",
+          "admin"
+        ],
+        "description": "Deletes one notification of any kind. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "DEV notification id."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "deleted"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
+    "/api/admin/users/{user_id}/notifications/read": {
+      "post": {
+        "summary": "Mark a user's notifications read (Admin)",
+        "tags": [
+          "notifications",
+          "admin"
+        ],
+        "description": "Marks a user's unread notifications read up to a point, given as exactly one of up_to_id or read_through. up_to_id marks rows with an id up to it that were last notified no later than it, so a reaction or follow row re-notified after it stays unread. read_through marks rows last notified at or before that time, to the millisecond. Requires Super Admin credentials.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "DEV user id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          },
+          "422": {
+            "description": "invalid cutoff"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "up_to_id": {
+                    "type": "integer",
+                    "description": "One of the user's DEV notification ids."
+                  },
+                  "read_through": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "ISO 8601 time."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/agent_sessions": {
       "get": {
         "summary": "list the authenticated user's agent sessions",

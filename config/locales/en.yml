@@ -256,6 +256,13 @@ en:
       email_taken: "Email already in use"
       email_invalid: "Email is invalid"
       validation_failed: "Validation failed"
+      no_recipients_found: "None of the user_ids belong to an existing user"
+      invalid_user_ids: "user_ids must be an array of 1 to %{limit} positive integers"
+      actor_not_found: "actor_id does not belong to an existing user"
+      invalid_notification_content: "Invalid notification content (%{fields}): title is required and at most %{title_limit} characters, body is at most %{body_limit} characters, and url must be an http(s) URL or a path starting with /"
+      notification_not_found: "Notification not found"
+      notification_not_editable: "Only notifications created through the admin API can be updated"
+      invalid_read_cutoff: "Provide exactly one of up_to_id (a notification id) or read_through (an ISO 8601 time)"
   errors:
     messages:
       accepted: must be accepted

@@ -7,6 +7,8 @@ pt:
         og:
           title: Notificações - %{community}
       heading: Notificações
+      admin_notification:
+        open: Ver
       article:
         published_html: "%{user} publicou %{title}"
         mod_greeting: "Olá %{user} 👋"

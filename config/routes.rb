@@ -175,9 +175,13 @@ Rails.application.routes.draw do
             end
 
             resources :notes, only: %i[index create], controller: "user_notes"
+            resources :notifications, only: [] do
+              post :read, on: :collection
+            end
             resources :identities, only: %i[index create destroy], controller: "user_identities"
           end
 
+          resources :notifications, only: %i[create update destroy]
           resources :request_redirects, only: %i[index show create update destroy]
           resources :concepts, only: %i[index show create update destroy] do
             post :trigger_lookback, on: :member

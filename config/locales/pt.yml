@@ -287,6 +287,13 @@ pt:
       email_taken: "E-mail já utilizado"
       email_invalid: "E-mail inválido"
       validation_failed: "A validação falhou"
+      no_recipients_found: "Nenhum dos user_ids pertence a um usuário existente"
+      invalid_user_ids: "user_ids deve ser uma lista de 1 a %{limit} inteiros positivos"
+      actor_not_found: "actor_id não pertence a um usuário existente"
+      invalid_notification_content: "Conteúdo de notificação inválido (%{fields}): title é obrigatório e tem no máximo %{title_limit} caracteres, body tem no máximo %{body_limit} caracteres, e url deve ser uma URL http(s) ou um caminho começando com /"
+      notification_not_found: "Notificação não encontrada"
+      notification_not_editable: "Somente notificações criadas pela API de administração podem ser atualizadas"
+      invalid_read_cutoff: "Informe exatamente um entre up_to_id (um id de notificação) ou read_through (uma data ISO 8601)"
   errors:
     messages:
       accepted: deve ser aceito

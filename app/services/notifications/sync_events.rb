@@ -50,10 +50,11 @@ module Notifications
         deliver("notifications_sent", properties, recipients)
       end
 
-      # Applies to every recipient's row with the notification's notifiable and action.
-      #
       # @param notification [Notification] carrying the refreshed json_data
-      def updated(notification)
+      # @param recipients [Hash{Integer => Integer}, nil] each recipient's user
+      #   id and row id; nil updates every recipient's row with the
+      #   notification's notifiable and action
+      def updated(notification, recipients: nil)
         return unless enabled?
 
         presented = SyncEventPresenter.new(notification).to_h
@@ -61,7 +62,7 @@ module Notifications
           .merge(key(notification))
           .merge(presented.slice("text", "url"))
 
-        deliver("notifications_updated", properties)
+        deliver("notifications_updated", properties, recipients)
       end
 
       # @param action [String, nil] ignored when all_actions is true
