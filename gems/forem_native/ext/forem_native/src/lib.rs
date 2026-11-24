@@ -7514,6 +7514,99 @@ fn serialize_api_organization_json(ruby: &Ruby, org_fields: RArray) -> Option<RS
     Some(ruby.str_new(&json))
 }
 
+fn xml_escape_text(ruby: &Ruby, text: RString) -> Option<RString> {
+    if !text.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let escaped = {
+        // SAFETY: `forem_core::rss::xml_escape_text` never calls into Ruby; the
+        // borrow ends before `ruby.str_new` allocates.
+        let s = unsafe { text.as_str() }.ok()?;
+        forem_core::rss::xml_escape_text(s)
+    };
+    Some(ruby.str_new(&escaped))
+}
+
+fn xml_escape_attribute(ruby: &Ruby, text: RString) -> Option<RString> {
+    if !text.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let escaped = {
+        // SAFETY: `forem_core::rss::xml_escape_attribute` never calls into Ruby; the
+        // borrow ends before `ruby.str_new` allocates.
+        let s = unsafe { text.as_str() }.ok()?;
+        forem_core::rss::xml_escape_attribute(s)
+    };
+    Some(ruby.str_new(&escaped))
+}
+
+fn format_rfc822_timestamp(ruby: &Ruby, epoch_secs: i64, utc_offset_secs: i64) -> Option<RString> {
+    let offset = i32::try_from(utc_offset_secs).ok()?;
+    let formatted = forem_core::rss::format_rfc822_timestamp(epoch_secs, offset)?;
+    Some(ruby.str_new(&formatted))
+}
+
+fn serialize_rss_feed_xml(
+    ruby: &Ruby,
+    channel_fields: RArray,
+    items_flat: RArray,
+) -> Option<RString> {
+    let xml = {
+        // SAFETY: Zero-copy borrows of `channel_fields` and `items_flat` elements;
+        // `forem_core::rss::serialize_rss_feed_xml` never calls into Ruby, and all
+        // borrows end before `ruby.str_new` allocates.
+        let ch = unsafe { channel_fields.as_slice() };
+        if ch.len() != 9 {
+            return None;
+        }
+        let has_image = ch[3].to_bool();
+        let image = if has_image {
+            Some(forem_core::rss::RssChannelImage {
+                url: unsafe { borrow_opt_utf8_str(ch[4]) }?,
+                title: unsafe { borrow_opt_utf8_str(ch[5]) }?,
+                link: unsafe { borrow_opt_utf8_str(ch[6]) }?,
+            })
+        } else {
+            None
+        };
+        let channel = forem_core::rss::RssChannel {
+            title: unsafe { borrow_opt_utf8_str(ch[0]) }?,
+            description: unsafe { borrow_opt_utf8_str(ch[1]) }?,
+            link: unsafe { borrow_opt_utf8_str(ch[2]) }?,
+            image,
+            self_href: unsafe { borrow_req_utf8_str(ch[7]) }?,
+            language: unsafe { borrow_req_utf8_str(ch[8]) }?,
+        };
+
+        let items_slice = unsafe { items_flat.as_slice() };
+        if items_slice.len() % 8 != 0 {
+            return None;
+        }
+        let mut items = Vec::with_capacity(items_slice.len() / 8);
+        for chunk in items_slice.chunks_exact(8) {
+            let pub_sec = extract_opt_i64_val(chunk[2])?;
+            let pub_off = extract_opt_i64_val(chunk[3])?;
+            let published_at = match (pub_sec, pub_off) {
+                (Some(sec), Some(off)) => Some((sec, i32::try_from(off).ok()?)),
+                (None, None) => None,
+                _ => return None,
+            };
+            items.push(forem_core::rss::RssItem {
+                title: unsafe { borrow_opt_utf8_str(chunk[0]) }?,
+                creator: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                published_at,
+                link: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                guid: unsafe { borrow_opt_utf8_str(chunk[5]) }?,
+                description: unsafe { borrow_opt_utf8_str(chunk[6]) }?,
+                cached_tag_list: unsafe { borrow_opt_utf8_str(chunk[7]) }?,
+            });
+        }
+
+        forem_core::rss::serialize_rss_feed_xml(&channel, &items)?
+    };
+    Some(ruby.str_new(&xml))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -8095,6 +8188,17 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_api_organization_json",
         function!(serialize_api_organization_json, 1),
+    )?;
+    native_mod.define_singleton_method("xml_escape_text", function!(xml_escape_text, 1))?;
+    native_mod
+        .define_singleton_method("xml_escape_attribute", function!(xml_escape_attribute, 1))?;
+    native_mod.define_singleton_method(
+        "format_rfc822_timestamp",
+        function!(format_rfc822_timestamp, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_rss_feed_xml",
+        function!(serialize_rss_feed_xml, 2),
     )?;
     Ok(())
 }

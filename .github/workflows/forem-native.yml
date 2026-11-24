@@ -8,6 +8,7 @@ on:
       - "gems/forem_native/**"
       - "app/controllers/application_metal_controller.rb"
       - "app/controllers/application_controller.rb"
+      - "app/controllers/articles_controller.rb"
       - "app/controllers/async_info_controller.rb"
       - "app/controllers/auth_pass_controller.rb"
       - "app/controllers/billboard_events_controller.rb"
@@ -31,6 +32,7 @@ on:
       - "app/helpers/story_card_helper.rb"
       - "app/views/articles/_single_story.html.erb"
       - "app/views/articles/_single_story_legacy.html.erb"
+      - "app/views/articles/feed.rss.builder"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
@@ -75,6 +77,7 @@ on:
       - "spec/requests/api/v1/users_spec.rb"
       - "spec/requests/api/v1/docs/articles_spec.rb"
       - "spec/requests/api/v1/docs/comments_spec.rb"
+      - "spec/requests/articles/articles_feed_spec.rb"
       - "spec/requests/billboards_spec.rb"
       - "spec/requests/reactions_spec.rb"
       - "spec/requests/search_spec.rb"
@@ -224,6 +227,11 @@ jobs:
             raise "Unexpected serialize_api_users_json!" unless api_users_res.is_a?(String) && api_users_res.start_with?("[{\"type_of\":\"user\",\"id\":42,")
             api_org_res = ForemNative.serialize_api_organization_json([10, "forem", "Forem", "Summary", nil, "forem", "https://forem.com", "Remote", "Ruby, Rust", "Tagline", "Story", 1_795_546_800, "https://cdn.example/org.png"])
             raise "Unexpected serialize_api_organization_json!" unless api_org_res.is_a?(String) && api_org_res.include?("\"joined_at\":\"2026-11-24T19:00:00Z\"")
+            raise "Unexpected xml_escape_text!" unless ForemNative.xml_escape_text("A & B < C > D\u0093") == "A &amp; B &lt; C &gt; D\u201C"
+            raise "Unexpected xml_escape_attribute!" unless ForemNative.xml_escape_attribute("a&\"b\"\n") == "a&amp;&quot;b&quot;&#10;"
+            raise "Unexpected format_rfc822_timestamp!" unless ForemNative.format_rfc822_timestamp(0, 0) == "Thu, 01 Jan 1970 00:00:00 +0000"
+            rss_xml = ForemNative.serialize_rss_feed_xml(["DEV", "Desc", "https://dev.to", false, nil, nil, nil, "https://dev.to/feed?a=1&b=2", "en"], ["Title & <3", "Alice", 0, 0, "https://dev.to/a", "https://dev.to/a", "<p>Hi</p>", "rust, ruby"])
+            raise "Unexpected serialize_rss_feed_xml!" unless rss_xml.is_a?(String) && rss_xml.include?("<title>Title &amp; &lt;3</title>") && rss_xml.include?("<pubDate>Thu, 01 Jan 1970 00:00:00 +0000</pubDate>")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

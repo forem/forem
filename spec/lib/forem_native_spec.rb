@@ -10078,4 +10078,196 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".xml_escape_text" do
+    it "matches Builder::XChar.encode across edge cases, CP1252, invalid XML chars, and 1,000 randomized strings",
+       :aggregate_failures do
+      require "builder"
+
+      expect(described_class.xml_escape_text(nil)).to be_nil
+      expect(described_class.xml_escape_text(123)).to be_nil
+      expect(described_class.xml_escape_text((+"\xFF").force_encoding(Encoding::UTF_8))).to be_nil
+      expect(described_class.xml_escape_text((+"caf\xE9").force_encoding(Encoding::ISO_8859_1))).to be_nil
+
+      edge_cases = [
+        "",
+        "plain ASCII 123",
+        "A & B < C > D \"quoted\" 'single'",
+        "a\tb\nc\rd\x00e\x08f\x0Bg\x0Ch\x1Fi",
+        (0x80..0x9F).map { |cp| cp.chr(Encoding::UTF_8) }.join,
+        "nonchars: \uFFFE and \uFFFF end",
+        "<p>Hello &amp; world! 🚀 — café 日本語</p>",
+      ]
+      edge_cases.each do |sample|
+        expect(described_class.xml_escape_text(sample)).to eq(Builder::XChar.encode(sample))
+      end
+
+      rng = Random.new(424_242)
+      alphabet = [
+        "a", "Z", "0", " ", "&", "<", ">", "\"", "'", "\t", "\n", "\r",
+        "\x00", "\x07", "\x0B", "\x1F",
+        "\u0080", "\u0081", "\u0085", "\u0093", "\u0094", "\u0099", "\u009F",
+        "\uFFFE", "\uFFFF", "é", "—", "🚀", "日", "<p>", "</p>", "&amp;"
+      ]
+
+      1_000.times do |i|
+        sample = Array.new(rng.rand(0..40)) { alphabet.sample(random: rng) }.join
+        expect(described_class.xml_escape_text(sample)).to eq(Builder::XChar.encode(sample)), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".xml_escape_attribute" do
+    it "matches Builder::XmlMarkup#_escape_attribute across edge cases and 1,000 randomized strings",
+       :aggregate_failures do
+      require "builder"
+
+      xml = Builder::XmlMarkup.new(indent: 2)
+      expect(described_class.xml_escape_attribute(nil)).to be_nil
+      expect(described_class.xml_escape_attribute((+"\xFF").force_encoding(Encoding::UTF_8))).to be_nil
+
+      rng = Random.new(424_242)
+      alphabet = [
+        "https://dev.to/feed", "?a=1&b=2", "\"", "'", "<", ">", "\n", "\r", "\t",
+        "\x00", "\u0080", "\u0094", "\uFFFE", "🚀", "café", " "
+      ]
+
+      1_000.times do |i|
+        sample = Array.new(rng.rand(0..30)) { alphabet.sample(random: rng) }.join
+        expected = xml.__send__(:_escape_attribute, sample)
+        expect(described_class.xml_escape_attribute(sample)).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".format_rfc822_timestamp" do
+    it "matches Ruby Time RFC 822 formatting across offsets, leap days, and 1,000 randomized timestamps",
+       :aggregate_failures do
+      expect(described_class.format_rfc822_timestamp(nil, 0)).to be_nil
+      expect(described_class.format_rfc822_timestamp(0, 30)).to be_nil
+      expect(described_class.format_rfc822_timestamp(0, 86_400)).to be_nil
+      expect(described_class.format_rfc822_timestamp(0, -86_400)).to be_nil
+      expect(described_class.format_rfc822_timestamp(-62_167_219_201, 0)).to be_nil
+      expect(described_class.format_rfc822_timestamp(253_402_300_800, 0)).to be_nil
+
+      rng = Random.new(424_242)
+      offsets = [0, -18_000, -14_400, -19_800, 3_600, 19_800, 32_400, 50_400, -43_200]
+
+      1_000.times do |i|
+        epoch_secs = rng.rand(-1_000_000_000..2_500_000_000)
+        offset = offsets.sample(random: rng)
+        expected = Time.at(epoch_secs, in: offset).to_fs(:rfc822)
+        expect(described_class.format_rfc822_timestamp(epoch_secs, offset)).to eq(expected), "iteration #{i}"
+      end
+
+      ["UTC", "Eastern Time (US & Canada)", "Chennai", "Kathmandu"].each do |zone_name|
+        Time.use_zone(zone_name) do
+          twz = Time.zone.at(1_795_553_448)
+          expect(described_class.format_rfc822_timestamp(twz.tv_sec, twz.utc_offset)).to eq(twz.to_fs(:rfc822))
+        end
+      end
+    end
+  end
+
+  describe ".serialize_rss_feed_xml" do
+    def legacy_rss_feed_xml(channel, items)
+      require "builder"
+
+      xml = Builder::XmlMarkup.new(indent: 2)
+      xml.instruct! :xml, version: "1.0"
+      xml.rss(:version => "2.0",
+              "xmlns:atom" => "http://www.w3.org/2005/Atom",
+              "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
+        xml.channel do
+          xml.title channel[0]
+          xml.description channel[1]
+          xml.link channel[2]
+          if channel[3]
+            xml.image do
+              xml.url channel[4]
+              xml.title channel[5]
+              xml.link channel[6]
+            end
+          end
+          xml.tag! "atom:link", rel: "self", type: "application/rss+xml", href: channel[7]
+          xml.language channel[8]
+          items.each_slice(8) do |title, creator, pub_sec, pub_off, link, guid, desc, tag_list|
+            xml.item do
+              xml.title title
+              xml.tag!("dc:creator", creator)
+              xml.pubDate Time.at(pub_sec, in: pub_off).strftime("%a, %d %b %Y %H:%M:%S %z") if pub_sec
+              xml.link link
+              xml.guid guid
+              xml.description desc
+              (tag_list || "").split(", ").each do |tag_name|
+                xml.category tag_name
+              end
+            end
+          end
+        end
+      end
+      xml.target!
+    end
+
+    it "matches Builder::XmlMarkup byte-for-byte across edge cases, out-of-domain inputs, and 1,000 randomized feeds",
+       :aggregate_failures do
+      expect(described_class.serialize_rss_feed_xml(nil, [])).to be_nil
+      expect(described_class.serialize_rss_feed_xml([], [])).to be_nil
+      valid_channel = ["Title", "Desc", "https://dev.to", false, nil, nil, nil, "https://dev.to/feed", "en"]
+      expect(described_class.serialize_rss_feed_xml(valid_channel, ["bad"])).to be_nil
+      # Out-of-domain offset defers to Ruby
+      bad_item = ["T", "A", 0, 30, "https://dev.to/a", "https://dev.to/a", "<p>x</p>", "ruby"]
+      expect(described_class.serialize_rss_feed_xml(valid_channel, bad_item)).to be_nil
+      # Invalid UTF-8 defers to Ruby
+      bad_utf8_item = [(+"\xFF").force_encoding(Encoding::UTF_8), "A", nil, nil, "u", "u", "", nil]
+      expect(described_class.serialize_rss_feed_xml(valid_channel, bad_utf8_item)).to be_nil
+
+      rng = Random.new(424_242)
+      text_pool = [
+        nil, "", "Rust & Ruby <3", "Quoted \"title\" 'here'",
+        "<p>Body with &amp; <code>x < y</code> & \u0093quotes\u0094 🚀</p>",
+        "Control\x00char\nline2\tindented",
+        "日本語と café"
+      ]
+      tag_lists = [nil, "", ", ", ", , ", "ruby", "ruby, rails", "ruby, ", "ruby, , rails", ", ruby", "a&b, c<d"]
+      offsets = [0, -18_000, 19_800, 32_400]
+
+      1_000.times do |i|
+        has_image = rng.rand(2).zero?
+        channel = [
+          text_pool.sample(random: rng),
+          text_pool.sample(random: rng),
+          "https://dev.to/feed_#{i}",
+          has_image,
+          has_image ? [nil, "https://dev.to/avatar_#{i}.png"].sample(random: rng) : nil,
+          has_image ? text_pool.sample(random: rng) : nil,
+          has_image ? "https://dev.to/user_#{i}" : nil,
+          "https://dev.to/feed?page=#{i}&q=\"a\"\n",
+          "en",
+        ]
+
+        items_flat = []
+        rng.rand(0..12).times do |j|
+          has_pub = rng.rand(5) != 0
+          pub_sec = has_pub ? rng.rand(0..2_000_000_000) : nil
+          pub_off = has_pub ? offsets.sample(random: rng) : nil
+          link = "https://dev.to/u/post-#{i}-#{j}"
+          items_flat.push(
+            text_pool.sample(random: rng),
+            text_pool.sample(random: rng),
+            pub_sec,
+            pub_off,
+            link,
+            link,
+            text_pool.sample(random: rng),
+            tag_lists.sample(random: rng),
+          )
+        end
+
+        expected = legacy_rss_feed_xml(channel, items_flat)
+        actual = described_class.serialize_rss_feed_xml(channel, items_flat)
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

@@ -158,5 +158,52 @@ RSpec.describe "ArticlesFeed" do
       expect(queries.grep(/FROM "tags"/).size).to eq(1)
       expect(queries.grep(/FROM "users"/)).to be_empty
     end
+
+    it "produces byte-for-byte identical XML between ForemNative and Builder across feed types", :aggregate_failures do
+      organization = create(:organization, name: "Forem & <Friends>")
+      article.user.update!(name: "Alice & <Co.>")
+      article.update!(
+        title: "Rust & Ruby <3 \"Quotes\" \u0093CP1252\u0094 🚀",
+        organization: organization,
+        score: 10,
+      )
+
+      [
+        "/feed?page=1&sort=a&b=c",
+        "/feed/latest?page=1&sort=a&b=c",
+        "/feed/tag/#{tag.name}?page=1&sort=a&b=c",
+        "/feed/#{article.user.username}?page=1&sort=a&b=c",
+        "/feed/#{organization.slug}?page=1&sort=a&b=c",
+      ].each do |path|
+        native_results = []
+        allow(ForemNative).to receive(:serialize_rss_feed_xml).and_wrap_original do |method, *args|
+          method.call(*args).tap { |res| native_results << res }
+        end
+
+        get path
+        expect(response).to have_http_status(:ok)
+        native_body = response.body
+        native_content_type = response.headers["Content-Type"]
+        expect(native_results.length).to eq(1)
+        expect(native_results.first).to be_a(String)
+        expect(native_body).to include("page=1&amp;sort=a&amp;b=c")
+
+        allow(ForemNative).to receive(:serialize_rss_feed_xml).and_return(nil)
+        get path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Content-Type"]).to eq(native_content_type)
+        expect(response.body).to eq(native_body)
+      end
+    end
+
+    it "does not bypass format negotiation for non-RSS requests" do
+      allow(ForemNative).to receive(:serialize_rss_feed_xml).and_call_original
+
+      get "/feed.json"
+
+      expect(response).to have_http_status(:not_found)
+      expect(ForemNative).not_to have_received(:serialize_rss_feed_xml)
+    end
   end
 end

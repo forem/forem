@@ -68,15 +68,7 @@ class ArticlesController < ApplicationController
     set_surrogate_key_header("articles-feed", *user_keys, @tag&.record_key, *@articles.map(&:record_key))
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
-    render layout: false, content_type: "application/xml", locals: {
-      articles: @articles,
-      user: @user,
-      tag: @tag,
-      latest: @latest,
-      allowed_tags: MarkdownProcessor::AllowedTags::FEED,
-      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED,
-      scrubber: FeedMarkdownScrubber.new
-    }
+    render_rss_feed
   end
 
   def short_link
@@ -332,6 +324,112 @@ class ArticlesController < ApplicationController
     tag_name = tag.alias_for.presence || tag.name
     @tag = tag.alias_for.present? ? Tag.select(:id, :name).find_by(name: tag_name) : tag
     @articles = @articles.cached_tagged_with(tag_name)
+  end
+
+  def render_rss_feed
+    allowed_tags = MarkdownProcessor::AllowedTags::FEED
+    allowed_attributes = MarkdownProcessor::AllowedAttributes::FEED
+    scrubber = FeedMarkdownScrubber.new
+
+    if request.format.rss? && ForemNative.available? &&
+        (xml = serialize_rss_feed_natively(allowed_tags: allowed_tags, allowed_attributes: allowed_attributes,
+                                           scrubber: scrubber))
+      render plain: xml, content_type: "application/xml"
+      return
+    end
+
+    render layout: false, content_type: "application/xml", locals: {
+      articles: @articles,
+      user: @user,
+      tag: @tag,
+      latest: @latest,
+      allowed_tags: allowed_tags,
+      allowed_attributes: allowed_attributes,
+      scrubber: scrubber
+    }
+  end
+
+  def serialize_rss_feed_natively(allowed_tags:, allowed_attributes:, scrubber:)
+    descriptions = helpers.feed_item_descriptions(
+      @articles,
+      tags: allowed_tags,
+      attributes: allowed_attributes,
+      scrubber: scrubber,
+    )
+    items_flat = native_rss_items_flat(descriptions)
+    return unless items_flat
+
+    ForemNative.serialize_rss_feed_xml(native_rss_channel_fields, items_flat)
+  end
+
+  def native_rss_channel_fields
+    community = community_name
+    custom_domain = request.env["forem.custom_domain_org"].present?
+
+    if @user
+      title = "#{community}: #{@user.name}"
+      user_handle = @user.instance_of?(User) ? "@#{@user.username}" : @user.slug
+      description = "The latest articles on #{community} by #{@user.name} (#{user_handle})."
+      channel_link = custom_domain ? request.base_url : app_url(@user.path)
+      image_url = app_url(@user.profile_image_90)
+      [title, description, channel_link, true, image_url, title, channel_link, request.original_url, "en"]
+    elsif @tag
+      [
+        "#{community}: #{@tag.name}",
+        "The latest articles tagged '#{@tag.name}' on #{community}.",
+        tag_url(@tag),
+        false, nil, nil, nil,
+        request.original_url,
+        "en"
+      ]
+    elsif @latest
+      [
+        "#{community}: Latest",
+        "The most recent articles on #{community}.",
+        "#{app_url}/latest",
+        false, nil, nil, nil,
+        request.original_url,
+        "en"
+      ]
+    else
+      [
+        community,
+        "The most recent home feed on #{community}.",
+        app_url,
+        false, nil, nil, nil,
+        request.original_url,
+        "en"
+      ]
+    end
+  end
+
+  def native_rss_items_flat(descriptions)
+    custom_domain = request.env["forem.custom_domain_org"].present?
+    base_url = request.base_url if custom_domain
+    is_user = @user.instance_of?(User)
+    user_name = @user.name if is_user
+
+    items_flat = Array.new(@articles.size * 8)
+    idx = 0
+    @articles.each do |article|
+      published_at = article.published_at
+      if published_at && !(published_at.respond_to?(:tv_sec) && published_at.respond_to?(:utc_offset))
+        return nil
+      end
+
+      article_link = custom_domain ? "#{base_url}/#{article.slug}" : app_url(article.path)
+
+      items_flat[idx] = article.title
+      items_flat[idx + 1] = is_user ? user_name : (article.cached_user_name.presence || article.user.name)
+      items_flat[idx + 2] = published_at&.tv_sec
+      items_flat[idx + 3] = published_at&.utc_offset
+      items_flat[idx + 4] = article_link
+      items_flat[idx + 5] = article_link
+      items_flat[idx + 6] = descriptions[article.id]
+      items_flat[idx + 7] = article.cached_tag_list
+      idx += 8
+    end
+    items_flat
   end
 
   def set_article

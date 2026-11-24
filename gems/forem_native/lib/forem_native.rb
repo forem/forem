@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_api_organization_json
+  LATEST_NATIVE_SYMBOL = :serialize_rss_feed_xml
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2125,6 +2125,51 @@ module ForemNative
       return unless org_fields.is_a?(Array) && org_fields.size == 13
 
       Native.serialize_api_organization_json(org_fields)
+    end
+
+    # Escapes `text` for XML 1.0 text nodes matching `Builder::XChar.encode`
+    # (CP1252 `U+0080..=U+009F` remapping, invalid XML 1.0 char replacement,
+    # and `&`/`<`/`>` escaping). Returns `nil` for non-String or non-UTF-8 inputs.
+    def xml_escape_text(text)
+      return unless Native.respond_to?(:xml_escape_text)
+      return unless text.is_a?(String)
+
+      Native.xml_escape_text(text)
+    end
+
+    # Escapes `text` for XML 1.0 double-quoted attribute values matching
+    # `Builder::XmlBase#_escape_attribute` (text escaping plus `\n`, `\r`, `"`).
+    # Returns `nil` for non-String or non-UTF-8 inputs.
+    def xml_escape_attribute(text)
+      return unless Native.respond_to?(:xml_escape_attribute)
+      return unless text.is_a?(String)
+
+      Native.xml_escape_attribute(text)
+    end
+
+    # Formats `(epoch_secs, utc_offset_secs)` as RFC 822 (`%a, %d %b %Y %H:%M:%S %z`)
+    # matching `Time#to_fs(:rfc822)`. Returns `nil` for out-of-domain offsets/years.
+    def format_rfc822_timestamp(epoch_secs, utc_offset_secs = 0)
+      return unless Native.respond_to?(:format_rfc822_timestamp)
+      return unless valid_i64_integer?(epoch_secs) && valid_i64_integer?(utc_offset_secs)
+
+      Native.format_rfc822_timestamp(epoch_secs, utc_offset_secs)
+    end
+
+    # Streams a complete `indent: 2` RSS 2.0 XML document matching
+    # `app/views/articles/feed.rss.builder` into a single UTF-8 String.
+    #
+    # `channel_fields` is a 9-element flat Array:
+    # `[title, description, link, has_image, image_url, image_title, image_link, self_href, language]`.
+    # `items_flat` is a flat Array with 8 elements per item:
+    # `[title, creator, pub_sec, pub_offset, link, guid, description, cached_tag_list]`.
+    # Returns `nil` when any input falls outside the native UTF-8 / RFC 822 domain.
+    def serialize_rss_feed_xml(channel_fields, items_flat)
+      return unless Native.respond_to?(:serialize_rss_feed_xml)
+      return unless channel_fields.is_a?(Array) && channel_fields.size == 9
+      return unless items_flat.is_a?(Array) && (items_flat.size % 8).zero?
+
+      Native.serialize_rss_feed_xml(channel_fields, items_flat)
     end
 
     private
