@@ -22,8 +22,14 @@ on:
       - "app/controllers/search_controller.rb"
       - "app/controllers/concerns/api/articles_controller.rb"
       - "app/controllers/concerns/api/comments_controller.rb"
+      - "app/controllers/concerns/api/followers_controller.rb"
+      - "app/controllers/concerns/api/follows_controller.rb"
       - "app/controllers/concerns/api/organizations_controller.rb"
+      - "app/controllers/concerns/api/podcast_episodes_controller.rb"
+      - "app/controllers/concerns/api/readinglist_controller.rb"
+      - "app/controllers/concerns/api/tags_controller.rb"
       - "app/controllers/concerns/api/users_controller.rb"
+      - "app/controllers/concerns/api/videos_controller.rb"
       - "app/controllers/api/v1/organizations_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/helpers/agent_sessions_helper.rb"
@@ -71,12 +77,24 @@ on:
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
       - "spec/requests/api/v0/articles_spec.rb"
       - "spec/requests/api/v0/comments_spec.rb"
+      - "spec/requests/api/v0/followers_spec.rb"
+      - "spec/requests/api/v0/follows_spec.rb"
       - "spec/requests/api/v0/organizations_spec.rb"
+      - "spec/requests/api/v0/podcasts_episodes_spec.rb"
+      - "spec/requests/api/v0/readinglist_spec.rb"
+      - "spec/requests/api/v0/tags_spec.rb"
       - "spec/requests/api/v0/users_spec.rb"
+      - "spec/requests/api/v0/videos_spec.rb"
       - "spec/requests/api/v1/articles_spec.rb"
       - "spec/requests/api/v1/comments_spec.rb"
+      - "spec/requests/api/v1/followers_spec.rb"
+      - "spec/requests/api/v1/follows_spec.rb"
       - "spec/requests/api/v1/organizations_spec.rb"
+      - "spec/requests/api/v1/podcasts_episodes_spec.rb"
+      - "spec/requests/api/v1/readinglist_spec.rb"
+      - "spec/requests/api/v1/tags_spec.rb"
       - "spec/requests/api/v1/users_spec.rb"
+      - "spec/requests/api/v1/videos_spec.rb"
       - "spec/requests/api/v1/docs/articles_spec.rb"
       - "spec/requests/api/v1/docs/comments_spec.rb"
       - "spec/requests/articles/articles_feed_spec.rb"
@@ -236,6 +254,13 @@ jobs:
             raise "Unexpected serialize_rss_feed_xml!" unless rss_xml.is_a?(String) && rss_xml.include?("<title>Title &amp; &lt;3</title>") && rss_xml.include?("<pubDate>Thu, 01 Jan 1970 00:00:00 +0000</pubDate>")
             raise "Unexpected sanitize_strip_all_tags!" unless ForemNative.sanitize_strip_all_tags("a<svg><title>x</title></svg>b") == "ab"
             raise "Unexpected sanitized_text_preview!" unless ForemNative.sanitized_text_preview("<p>a &amp; b</p>", 8) == "a &amp;am..."
+            raise "Unexpected serialize_api_tags_json!" unless ForemNative.serialize_api_tags_json([1, "rust", "#000", "#fff", "Fast"]) == "[{\"id\":1,\"name\":\"rust\",\"bg_color_hex\":\"#000\",\"text_color_hex\":\"#fff\",\"short_summary\":\"Fast\"}]"
+            raise "Unexpected serialize_api_followed_tags_json!" unless ForemNative.serialize_api_followed_tags_json([1, "ruby", 1.5]) == "[{\"id\":1,\"name\":\"ruby\",\"points\":1.5}]"
+            raise "Unexpected serialize_api_followers_json!" unless ForemNative.serialize_api_followers_json([10, 1_700_000_000, 42, "Ada", "/ada", "ada", nil]).include?("\"type_of\":\"user_follower\"")
+            raise "Unexpected serialize_api_podcast_episodes_json!" unless ForemNative.serialize_api_podcast_episodes_json([5, "ep-1", "Ep 1", nil, "Pod", "pod", "https://cdn.example/p.png"]).include?("\"path\":\"/pod/ep-1\"")
+            raise "Unexpected serialize_api_videos_json!" unless ForemNative.serialize_api_videos_json([9, "/a/v", nil, "https://v.example/a.m3u8", "Vid", 42, 125.5, nil, "Ada"], [0, nil, "cdn-cgi", true]).include?("\"video_duration_in_minutes\":\"02:05\"")
+            rl_res = ForemNative.serialize_api_readinglist_json([7, "valid", 1_772_323_200], api_articles_row, [1, "Ada", "ada", nil, nil, nil, nil, nil], [], ["https://dev.to"], api_articles_cfg)
+            raise "Unexpected serialize_api_readinglist_json!" unless rl_res.is_a?(String) && rl_res.start_with?("[{\"type_of\":\"readinglist\",\"id\":7,")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

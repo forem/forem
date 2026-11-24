@@ -18,7 +18,7 @@ module Api
     private_constant :ARTICLE_PLUCK_COLUMNS
 
     ORG_COLUMNS = %i[
-      id name username slug profile_image custom_domain
+      id name slug profile_image custom_domain
     ].freeze
     private_constant :ORG_COLUMNS
 

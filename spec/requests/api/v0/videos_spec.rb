@@ -71,5 +71,24 @@ RSpec.describe "Api::V0::Videos" do
       get api_videos_path, params: { per_page: 10 }
       expect(response.parsed_body.count).to eq(2)
     end
+
+    it "matches Jbuilder byte-for-byte via ForemNative with Float durations", :aggregate_failures do
+      create_article(title: "Video <1> & Demo 🚀", video_duration_in_seconds: 125.9)
+
+      native_results = []
+      allow(ForemNative).to receive(:serialize_api_videos_json).and_wrap_original do |method, *args|
+        method.call(*args).tap { |res| native_results << res }
+      end
+
+      get api_videos_path
+      native_body = response.body
+      expect(native_results.length).to eq(1)
+      expect(native_results.first).to be_a(String)
+      expect(response.parsed_body.first["video_duration_in_minutes"]).to eq("02:05")
+
+      allow(ForemNative).to receive(:serialize_api_videos_json).and_return(nil)
+      get api_videos_path
+      expect(native_body).to eq(response.body)
+    end
   end
 end
