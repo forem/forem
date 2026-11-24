@@ -2197,7 +2197,88 @@ module ForemNative
       Native.serialize_rss_feed_xml(channel_fields, items_flat)
     end
 
+    # Streams a JSON array matching `api/v{0,1}/tags/index.json.jbuilder`.
+    # `tags_flat` is a flat Array with stride 5:
+    # `[id, name, bg_color_hex, text_color_hex, short_summary]`.
+    def serialize_api_tags_json(tags_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_api_tags_json)
+      return unless tags_flat.is_a?(Array) && (tags_flat.size % 5).zero?
+
+      Native.serialize_api_tags_json(tags_flat, escape_html ? true : false)
+    end
+
+    # Streams a JSON array matching `api/v{0,1}/follows/tags.json.jbuilder`.
+    # `tags_flat` is a flat Array with stride 3: `[id, name, points]`.
+    def serialize_api_followed_tags_json(tags_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_api_followed_tags_json)
+      return unless tags_flat.is_a?(Array) && (tags_flat.size % 3).zero?
+
+      Native.serialize_api_followed_tags_json(tags_flat, escape_html ? true : false)
+    end
+
+    # Streams a JSON array matching `api/v{0,1}/followers/users.json.jbuilder`.
+    # `followers_flat` is a flat Array with stride 7:
+    # `[id, created_at_sec, user_id, name, path, username, profile_image]`.
+    def serialize_api_followers_json(followers_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_api_followers_json)
+      return unless followers_flat.is_a?(Array) && (followers_flat.size % 7).zero?
+
+      Native.serialize_api_followers_json(followers_flat, escape_html ? true : false)
+    end
+
+    # Streams a JSON array matching `api/v{0,1}/podcast_episodes/index.json.jbuilder`.
+    # `episodes_flat` is a flat Array with stride 7:
+    # `[id, slug, title, image_url, podcast_title, podcast_slug, podcast_image_url]`.
+    def serialize_api_podcast_episodes_json(episodes_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_api_podcast_episodes_json)
+      return unless episodes_flat.is_a?(Array) && (episodes_flat.size % 7).zero?
+
+      Native.serialize_api_podcast_episodes_json(episodes_flat, escape_html ? true : false)
+    end
+
+    # Streams a JSON array matching `api/v{0,1}/videos/index.json.jbuilder`.
+    # `videos_flat` is a flat Array with stride 9:
+    # `[id, path, video_thumbnail_url, video, title, user_id, video_duration_in_seconds, video_source_url, user_name]`.
+    # `config` is `[optimizer_mode_int, cloudflare_domain, cloudflare_directory, escape_html]`.
+    def serialize_api_videos_json(videos_flat, config)
+      return unless Native.respond_to?(:serialize_api_videos_json)
+      return unless videos_flat.is_a?(Array) && (videos_flat.size % 9).zero?
+      return unless config.is_a?(Array) && config.size == 4
+
+      Native.serialize_api_videos_json(normalize_video_durations(videos_flat), config)
+    end
+
+    # Streams a JSON array matching `api/v{0,1}/readinglist/index.json.jbuilder`.
+    # `reactions_flat` is a flat Array with stride 3 (`[id, status, created_at_sec]`),
+    # paired 1-to-1 with `articles_flat` (same stride-28 format as `serialize_api_articles_json`).
+    def serialize_api_readinglist_json(reactions_flat, articles_flat, users_flat, orgs_flat, base_urls, config)
+      return unless Native.respond_to?(:serialize_api_readinglist_json)
+      return unless reactions_flat.is_a?(Array) && (reactions_flat.size % 3).zero?
+      return unless articles_flat.is_a?(Array) && (articles_flat.size % 28).zero?
+      return unless reactions_flat.size / 3 == articles_flat.size / 28
+      return unless users_flat.is_a?(Array) && orgs_flat.is_a?(Array) &&
+        base_urls.is_a?(Array) && config.is_a?(Array)
+
+      Native.serialize_api_readinglist_json(
+        reactions_flat, articles_flat, users_flat, orgs_flat, base_urls, config
+      )
+    end
+
     private
+
+    # `articles.video_duration_in_seconds` is a float column. Truncate finite Floats to
+    # Integers, matching the `.to_i` in `Article#video_duration_in_minutes`; non-finite
+    # values are left untouched so the native serializer returns nil (Jbuilder fallback).
+    def normalize_video_durations(videos_flat)
+      return videos_flat unless 6.step(videos_flat.size - 1, 9).any? { |i| videos_flat[i].is_a?(Float) }
+
+      normalized = videos_flat.dup
+      6.step(normalized.size - 1, 9) do |i|
+        duration = normalized[i]
+        normalized[i] = duration.to_i if duration.is_a?(Float) && duration.finite?
+      end
+      normalized
+    end
 
     def coerce_social_canvas(image)
       return image if defined?(SocialCanvas) && image.is_a?(SocialCanvas)

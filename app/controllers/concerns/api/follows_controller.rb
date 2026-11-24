@@ -21,6 +21,11 @@ module Api
     end
 
     def tags
+      if native_followed_tags_serializable? && (json_body = serialize_followed_tags_natively)
+        render json: json_body
+        return
+      end
+
       @follows = @user.follows_by_type("ActsAsTaggableOn::Tag")
         .select(%i[id followable_id followable_type points])
         .includes(:followable)
@@ -28,6 +33,27 @@ module Api
     end
 
     private
+
+    def native_followed_tags_serializable?
+      ForemNative.available? &&
+        (request.format.json? || request.format.api_v0? || request.format.api_v1?)
+    end
+
+    def serialize_followed_tags_natively
+      # `follows_by_type` adds `includes(:followable)`; drop it so the polymorphic
+      # association is not eager loaded alongside the explicit `tags` join.
+      rows = @user.follows_by_type("ActsAsTaggableOn::Tag")
+        .except(:includes)
+        .joins("INNER JOIN tags ON tags.id = follows.followable_id")
+        .order(points: :desc)
+        .pluck("tags.id", "tags.name", "follows.points")
+      return "[]" if rows.empty?
+
+      ForemNative.serialize_api_followed_tags_json(
+        rows.flatten(1),
+        escape_html: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+      )
+    end
 
     # The strange params situation here is mostly due to a bug in the way
     # rswag processes array-type params that appear in a query-string.

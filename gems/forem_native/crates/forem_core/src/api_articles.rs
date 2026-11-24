@@ -339,7 +339,7 @@ fn strip_cloudinary_w1000_prefix(url: &str, require_cloudinary_host: bool) -> Op
 /// Returns `None` to defer to Ruby when the URL starts with the Cloudflare prefix
 /// (requiring `extract_suffix_url` / `CGI.unescape`) or when `cloudflare_image_url`
 /// declines (non-NFC-stable characters).
-fn optimize_image_url(
+pub(crate) fn optimize_image_url(
     img_src: &str,
     width: &str,
     height: &str,
@@ -377,14 +377,14 @@ fn optimize_image_url(
     }
 }
 
-fn write_opt_str(out: &mut String, value: Option<&str>, escape_html: bool) {
+pub(crate) fn write_opt_str(out: &mut String, value: Option<&str>, escape_html: bool) {
     match value {
         Some(s) => write_json_string(out, s, escape_html),
         None => out.push_str("null"),
     }
 }
 
-fn write_opt_i64(out: &mut String, value: Option<i64>) {
+pub(crate) fn write_opt_i64(out: &mut String, value: Option<i64>) {
     match value {
         Some(n) => {
             let _ = write!(out, "{n}");
@@ -393,7 +393,7 @@ fn write_opt_i64(out: &mut String, value: Option<i64>) {
     }
 }
 
-fn write_opt_utc_iso8601(out: &mut String, epoch_secs: Option<i64>) -> bool {
+pub(crate) fn write_opt_utc_iso8601(out: &mut String, epoch_secs: Option<i64>) -> bool {
     match epoch_secs {
         Some(secs) => {
             out.push('"');
@@ -410,7 +410,7 @@ fn write_opt_utc_iso8601(out: &mut String, epoch_secs: Option<i64>) -> bool {
     }
 }
 
-fn write_user_object(out: &mut String, user: &ApiArticleUser<'_>, escape_html: bool) {
+pub(crate) fn write_user_object(out: &mut String, user: &ApiArticleUser<'_>, escape_html: bool) {
     out.push_str("{\"name\":");
     write_opt_str(out, user.name, escape_html);
     out.push_str(",\"username\":");
@@ -430,7 +430,7 @@ fn write_user_object(out: &mut String, user: &ApiArticleUser<'_>, escape_html: b
     out.push('}');
 }
 
-fn write_organization_object(
+pub(crate) fn write_organization_object(
     out: &mut String,
     org: &ApiArticleOrganization<'_>,
     escape_html: bool,
@@ -538,7 +538,7 @@ fn write_user_org_flare_tail(
 
 /// Writes the shared `api/v*/articles/_article.json.jbuilder` fields from `{`
 /// through `reading_time_minutes`.
-fn write_article_common_fields(
+pub(crate) fn write_article_common_fields(
     out: &mut String,
     article: &ApiArticleRow<'_>,
     base_url: &str,
