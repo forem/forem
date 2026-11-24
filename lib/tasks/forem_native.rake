@@ -89,6 +89,7 @@ namespace :forem_native do
     benchmark_api_comments
     benchmark_api_articles
     benchmark_homepage_articles
+    benchmark_reactions
     benchmark_story_cards
     benchmark_image_ops
     benchmark_html_postprocess
@@ -2249,6 +2250,101 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (60-article homepage feed JSON)") { legacy_serialize.call }
       x.report("Rust Magnus (60-article homepage feed JSON)") { native_serialize.call }
+      x.compare!
+    end
+  end
+
+  desc "Benchmark ReactionsController#index streaming JSON serialization (Rust vs Legacy Ruby)"
+  task benchmark_reactions: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    reaction_columns = %w[id category reactable_id reactable_type user_id created_at updated_at points status]
+    now = Time.utc(2026, 11, 24, 15, 50, 31, 123_456)
+    article_reaction_rows = [
+      [101, "readinglist", 42_000, "Article", 7_777, now, now, 1.0, "valid"],
+      [102, "like", 42_000, "Article", 7_777, now, now, 1.0, "valid"],
+      [103, "unicorn", 42_000, "Article", 7_777, now, now, 1.0, "valid"],
+    ]
+    article_counts = [
+      { category: "like", count: 142 },
+      { category: "unicorn", count: 19 },
+      { category: "exploding_head", count: 8 },
+      { category: "raised_hands", count: 11 },
+      { category: "fire", count: 24 },
+      { category: "readinglist", count: 65 },
+    ]
+    comment_rows = Array.new(120) { |i| [900_000 + i, i % 15] }
+    comment_reaction_hashes = Array.new(8) do |i|
+      {
+        "id" => 500_000 + i, "category" => "like", "reactable_id" => 900_000 + (i * 10),
+        "reactable_type" => "Comment", "user_id" => 7_777, "created_at" => now, "updated_at" => now,
+        "points" => 1.0, "status" => "valid"
+      }
+    end
+
+    legacy_article_reactions = lambda do
+      cat_idx = reaction_columns.index("category")
+      readinglist, public_rows = article_reaction_rows.partition { |r| r[cat_idx] == "readinglist" }
+      reactions = (public_rows + readinglist).map { |r| reaction_columns.zip(r).to_h }
+      ActiveSupport::JSON.encode(
+        current_user: { id: 7_777 },
+        reactions: reactions,
+        article_reaction_counts: article_counts,
+      )
+    end
+    native_article_reactions = lambda do
+      ForemNative.serialize_article_reactions_json(7_777, reaction_columns, article_reaction_rows, article_counts)
+    end
+
+    legacy_comment_reactions = lambda do
+      ActiveSupport::JSON.encode(
+        current_user: { id: 7_777 },
+        reactions: comment_reaction_hashes,
+        public_reaction_counts: comment_rows.map { |cid, count| { id: cid, count: count } },
+      )
+    end
+    native_comment_reactions = lambda do
+      ForemNative.serialize_comment_reactions_json(7_777, reaction_columns, comment_reaction_hashes, comment_rows)
+    end
+
+    unless native_article_reactions.call == legacy_article_reactions.call
+      raise "Article reactions benchmark parity failure!"
+    end
+    unless native_comment_reactions.call == legacy_comment_reactions.call
+      raise "Comment reactions benchmark parity failure!"
+    end
+
+    puts "\n=== ReactionsController#index Streaming JSON Benchmark ==="
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust heap allocations)."
+    art_ruby_mem = MemoryProfiler.report { legacy_article_reactions.call }
+    art_rust_mem = MemoryProfiler.report { native_article_reactions.call }
+    puts "Article Reactions (3 user reactions + 6 counts) — Ruby: #{art_ruby_mem.total_allocated} objs " \
+         "(#{art_ruby_mem.total_allocated_memsize} B) vs Rust: #{art_rust_mem.total_allocated} objs " \
+         "(#{art_rust_mem.total_allocated_memsize} B)"
+
+    cmt_ruby_mem = MemoryProfiler.report { legacy_comment_reactions.call }
+    cmt_rust_mem = MemoryProfiler.report { native_comment_reactions.call }
+    puts "Comment Reactions (8 user reactions + 120 comments) — Ruby: #{cmt_ruby_mem.total_allocated} objs " \
+         "(#{cmt_ruby_mem.total_allocated_memsize} B) vs Rust: #{cmt_rust_mem.total_allocated} objs " \
+         "(#{cmt_rust_mem.total_allocated_memsize} B)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (article reactions JSON)") { legacy_article_reactions.call }
+      x.report("Rust Magnus (article reactions JSON)") { native_article_reactions.call }
+      x.compare!
+    end
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (120-comment reactions JSON)") { legacy_comment_reactions.call }
+      x.report("Rust Magnus (120-comment reactions JSON)") { native_comment_reactions.call }
       x.compare!
     end
   end

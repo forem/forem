@@ -36,6 +36,7 @@ on:
       - "app/models/page_view.rb"
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
+      - "app/models/reaction.rb"
       - "app/queries/billboards/filtered_ads_query.rb"
       - "app/serializers/homepage/article_serializer.rb"
       - "app/services/agent_session_parsers/redaction_metadata.rb"
@@ -68,6 +69,7 @@ on:
       - "spec/requests/api/v1/docs/articles_spec.rb"
       - "spec/requests/api/v1/docs/comments_spec.rb"
       - "spec/requests/billboards_spec.rb"
+      - "spec/requests/reactions_spec.rb"
       - "spec/requests/search_spec.rb"
       - "spec/serializers/homepage/article_serializer_spec.rb"
       - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
@@ -200,6 +202,13 @@ jobs:
             hp_row = [101, 0, -1, nil, "/ada/hi", 5, 3, "Hi <2026>", 1, 2, 0, 125, nil, "ruby, ama", 1_772_323_200, nil]
             hp_res = ForemNative.serialize_homepage_articles_json(hp_row, ["Ada", "/a90.png", "ada"], [], ["ama", "ama", "#f3f3f3", "#ccc"], ["like", "Like", "heart", 1], ["like", 5], [1], [2026, 0, nil, "cdn-cgi", true])
             raise "Unexpected serialize_homepage_articles_json!" unless hp_res.is_a?(String) && hp_res.include?("\"video_duration_string\":\"02:05\"") && hp_res.include?("\"name\":\"ama\"")
+            raise "Unexpected format_json_float!" unless ForemNative.format_json_float(1.25) == "1.25" && ForemNative.format_json_float(0.3).nil?
+            rxn_cols = %w[id category reactable_id reactable_type user_id created_at updated_at points status]
+            rxn_ts = Time.utc(2026, 11, 24, 15, 50, 31, 123_000)
+            art_rxn_res = ForemNative.serialize_article_reactions_json(7, rxn_cols, [[1, "readinglist", 42, "Article", 7, rxn_ts, rxn_ts, 1.0, "valid"], [2, "like", 42, "Article", 7, rxn_ts, rxn_ts, 1.5, "valid"]], [{ category: "like", count: 3 }])
+            raise "Unexpected serialize_article_reactions_json!" unless art_rxn_res.is_a?(String) && art_rxn_res.index("\"category\":\"like\"") < art_rxn_res.index("\"category\":\"readinglist\"")
+            cmt_rxn_res = ForemNative.serialize_comment_reactions_json(7, rxn_cols, [{ "id" => 9, "category" => "like", "reactable_id" => 101, "reactable_type" => "Comment", "user_id" => 7, "created_at" => rxn_ts, "updated_at" => rxn_ts, "points" => 1.0, "status" => "valid" }], [[101, 4]])
+            raise "Unexpected serialize_comment_reactions_json!" unless cmt_rxn_res.is_a?(String) && cmt_rxn_res.include?("\"public_reaction_counts\":[{\"id\":101,\"count\":4}]")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

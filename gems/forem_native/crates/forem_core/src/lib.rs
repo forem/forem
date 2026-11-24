@@ -25,6 +25,7 @@ pub mod json;
 pub mod markdown;
 pub mod metal;
 pub(crate) mod psl_data;
+pub mod reactions;
 pub mod redaction_metadata;
 pub mod sanitize;
 pub mod scrubber;

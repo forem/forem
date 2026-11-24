@@ -7143,6 +7143,269 @@ fn serialize_homepage_articles_json(
     Some(ruby.str_new(&json))
 }
 
+enum OwnedReactionField {
+    Null,
+    Int(i64),
+    Float(f64),
+    Str(String),
+    UtcMillis { secs: i64, millis: u32 },
+    Bool(bool),
+}
+
+impl OwnedReactionField {
+    fn as_borrowed(&self) -> forem_core::reactions::ReactionFieldValue<'_> {
+        match self {
+            Self::Null => forem_core::reactions::ReactionFieldValue::Null,
+            Self::Int(n) => forem_core::reactions::ReactionFieldValue::Int(*n),
+            Self::Float(f) => forem_core::reactions::ReactionFieldValue::Float(*f),
+            Self::Str(s) => forem_core::reactions::ReactionFieldValue::Str(s.as_str()),
+            Self::UtcMillis { secs, millis } => {
+                forem_core::reactions::ReactionFieldValue::UtcMillis {
+                    secs: *secs,
+                    millis: *millis,
+                }
+            }
+            Self::Bool(b) => forem_core::reactions::ReactionFieldValue::Bool(*b),
+        }
+    }
+}
+
+fn extract_plain_utf8_string(ruby: &Ruby, val: Value) -> Option<String> {
+    let rstr = RString::from_value(val)?;
+    if !is_instance_of(val, ruby.class_string()) || !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let slice = unsafe { rstr.as_slice() };
+    std::str::from_utf8(slice).ok().map(str::to_owned)
+}
+
+fn extract_optional_user_id(val: Value) -> Option<Option<i64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let int = Integer::from_value(val)?;
+    int.to_i64().ok().map(Some)
+}
+
+fn extract_reaction_field(ruby: &Ruby, val: Value) -> Option<OwnedReactionField> {
+    if val.is_nil() {
+        return Some(OwnedReactionField::Null);
+    }
+    if Qtrue::from_value(val).is_some() {
+        return Some(OwnedReactionField::Bool(true));
+    }
+    if Qfalse::from_value(val).is_some() {
+        return Some(OwnedReactionField::Bool(false));
+    }
+    if let Some(int) = Integer::from_value(val) {
+        return int.to_i64().ok().map(OwnedReactionField::Int);
+    }
+    if let Some(fl) = Float::from_value(val) {
+        return Some(OwnedReactionField::Float(fl.to_f64()));
+    }
+    if RString::from_value(val).is_some() {
+        return extract_plain_utf8_string(ruby, val).map(OwnedReactionField::Str);
+    }
+    if val.respond_to("tv_sec", false).unwrap_or(false) {
+        let is_utc: bool = val.funcall("utc?", ()).ok()?;
+        let utc_offset: i64 = val.funcall("utc_offset", ()).ok()?;
+        if !is_utc || utc_offset != 0 {
+            return None;
+        }
+        let secs: i64 = val.funcall("tv_sec", ()).ok()?;
+        let nsec: i64 = val.funcall("tv_nsec", ()).ok()?;
+        if !(0..1_000_000_000).contains(&nsec) {
+            return None;
+        }
+        return Some(OwnedReactionField::UtcMillis {
+            secs,
+            millis: (nsec / 1_000_000) as u32,
+        });
+    }
+    None
+}
+
+fn extract_column_names(ruby: &Ruby, column_names: RArray) -> Option<Vec<String>> {
+    let len = column_names.len();
+    let mut cols = Vec::with_capacity(len);
+    for idx in 0..len {
+        let val: Value = column_names.entry(idx as isize).ok()?;
+        cols.push(extract_plain_utf8_string(ruby, val)?);
+    }
+    Some(cols)
+}
+
+fn extract_reaction_rows(
+    ruby: &Ruby,
+    column_names: RArray,
+    rows: RArray,
+) -> Option<Vec<OwnedReactionField>> {
+    let width = column_names.len();
+    let row_count = rows.len();
+    if width == 0 && row_count > 0 {
+        return None;
+    }
+    let total_cells = row_count.checked_mul(width)?;
+    let mut out = Vec::with_capacity(total_cells);
+
+    for row_idx in 0..row_count {
+        // Read each row and cell from the live Ruby Array at point of use so `GC.compact`
+        // never leaves stale handles on the Rust heap across Ruby method calls.
+        let row_val: Value = rows.entry(row_idx as isize).ok()?;
+        if let Some(row_arr) = RArray::from_value(row_val) {
+            if row_arr.len() != width {
+                return None;
+            }
+            for col_idx in 0..width {
+                let cell: Value = row_arr.entry(col_idx as isize).ok()?;
+                out.push(extract_reaction_field(ruby, cell)?);
+            }
+        } else {
+            let row_hash = RHash::from_value(row_val)?;
+            if row_hash.len() != width {
+                return None;
+            }
+            for col_idx in 0..width {
+                let key: Value = column_names.entry(col_idx as isize).ok()?;
+                let cell = row_hash.get(key)?;
+                out.push(extract_reaction_field(ruby, cell)?);
+            }
+        }
+    }
+
+    Some(out)
+}
+
+fn format_json_float(ruby: &Ruby, value: f64) -> Option<RString> {
+    let formatted = forem_core::reactions::format_json_float(value)?;
+    Some(ruby.str_new(&formatted))
+}
+
+fn serialize_article_reactions_json(
+    ruby: &Ruby,
+    user_id: Value,
+    column_names: RArray,
+    reaction_rows: RArray,
+    article_counts: RArray,
+) -> Option<RString> {
+    let uid = extract_optional_user_id(user_id)?;
+    let cols = extract_column_names(ruby, column_names)?;
+    let owned_fields = extract_reaction_rows(ruby, column_names, reaction_rows)?;
+
+    let count_len = article_counts.len();
+    let sym_category = ruby.to_symbol("category");
+    let sym_count = ruby.to_symbol("count");
+
+    let mut owned_counts: Vec<(String, i64)> = Vec::with_capacity(count_len);
+    for idx in 0..count_len {
+        let entry_val: Value = article_counts.entry(idx as isize).ok()?;
+        if let Some(hash) = RHash::from_value(entry_val) {
+            if hash.len() != 2 {
+                return None;
+            }
+            let cat_val = hash
+                .get(sym_category)
+                .or_else(|| hash.get(ruby.str_new("category")))?;
+            let category = extract_plain_utf8_string(ruby, cat_val)?;
+            let cnt_val = hash
+                .get(sym_count)
+                .or_else(|| hash.get(ruby.str_new("count")))?;
+            let count = Integer::from_value(cnt_val)?.to_i64().ok()?;
+            owned_counts.push((category, count));
+        } else {
+            let arr = RArray::from_value(entry_val)?;
+            if arr.len() != 2 {
+                return None;
+            }
+            let cat_val: Value = arr.entry(0).ok()?;
+            let cnt_val: Value = arr.entry(1).ok()?;
+            let category = extract_plain_utf8_string(ruby, cat_val)?;
+            let count = Integer::from_value(cnt_val)?.to_i64().ok()?;
+            owned_counts.push((category, count));
+        }
+    }
+
+    let col_refs: Vec<&str> = cols.iter().map(String::as_str).collect();
+    let category_col_idx = col_refs.iter().position(|&c| c == "category");
+    let borrowed_fields: Vec<forem_core::reactions::ReactionFieldValue<'_>> = owned_fields
+        .iter()
+        .map(OwnedReactionField::as_borrowed)
+        .collect();
+    let count_refs: Vec<forem_core::reactions::ArticleReactionCount<'_>> = owned_counts
+        .iter()
+        .map(|(cat, count)| forem_core::reactions::ArticleReactionCount {
+            category: cat.as_str(),
+            count: *count,
+        })
+        .collect();
+
+    let json = forem_core::reactions::serialize_article_reactions_json(
+        uid,
+        &col_refs,
+        category_col_idx,
+        &borrowed_fields,
+        &count_refs,
+    )?;
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_comment_reactions_json(
+    ruby: &Ruby,
+    user_id: Value,
+    column_names: RArray,
+    reactions: RArray,
+    comment_rows: RArray,
+) -> Option<RString> {
+    let uid = extract_optional_user_id(user_id)?;
+    let cols = extract_column_names(ruby, column_names)?;
+    let owned_fields = extract_reaction_rows(ruby, column_names, reactions)?;
+
+    let count_len = comment_rows.len();
+    let sym_id = ruby.to_symbol("id");
+    let sym_count = ruby.to_symbol("count");
+
+    let mut counts = Vec::with_capacity(count_len);
+    for idx in 0..count_len {
+        let entry_val: Value = comment_rows.entry(idx as isize).ok()?;
+        if let Some(arr) = RArray::from_value(entry_val) {
+            if arr.len() != 2 {
+                return None;
+            }
+            let id_val: Value = arr.entry(0).ok()?;
+            let cnt_val: Value = arr.entry(1).ok()?;
+            let id = Integer::from_value(id_val)?.to_i64().ok()?;
+            let count = Integer::from_value(cnt_val)?.to_i64().ok()?;
+            counts.push(forem_core::reactions::CommentReactionCount { id, count });
+        } else {
+            let hash = RHash::from_value(entry_val)?;
+            if hash.len() != 2 {
+                return None;
+            }
+            let id_val = hash.get(sym_id).or_else(|| hash.get(ruby.str_new("id")))?;
+            let id = Integer::from_value(id_val)?.to_i64().ok()?;
+            let cnt_val = hash
+                .get(sym_count)
+                .or_else(|| hash.get(ruby.str_new("count")))?;
+            let count = Integer::from_value(cnt_val)?.to_i64().ok()?;
+            counts.push(forem_core::reactions::CommentReactionCount { id, count });
+        }
+    }
+
+    let col_refs: Vec<&str> = cols.iter().map(String::as_str).collect();
+    let borrowed_fields: Vec<forem_core::reactions::ReactionFieldValue<'_>> = owned_fields
+        .iter()
+        .map(OwnedReactionField::as_borrowed)
+        .collect();
+
+    let json = forem_core::reactions::serialize_comment_reactions_json(
+        uid,
+        &col_refs,
+        &borrowed_fields,
+        &counts,
+    )?;
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -7701,6 +7964,15 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_homepage_articles_json",
         function!(serialize_homepage_articles_json, 8),
+    )?;
+    native_mod.define_singleton_method("format_json_float", function!(format_json_float, 1))?;
+    native_mod.define_singleton_method(
+        "serialize_article_reactions_json",
+        function!(serialize_article_reactions_json, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_comment_reactions_json",
+        function!(serialize_comment_reactions_json, 4),
     )?;
     Ok(())
 }

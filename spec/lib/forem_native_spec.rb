@@ -9704,4 +9704,175 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".format_json_float" do
+    it "returns nil for non-finite, non-dyadic, scientific-notation, and non-Float inputs", :aggregate_failures do
+      expect(described_class.format_json_float(Float::NAN)).to be_nil
+      expect(described_class.format_json_float(Float::INFINITY)).to be_nil
+      expect(described_class.format_json_float(-Float::INFINITY)).to be_nil
+      expect(described_class.format_json_float(0.3)).to be_nil
+      expect(described_class.format_json_float(-867_686_116_116_487.2)).to be_nil
+      expect(described_class.format_json_float(1e-5)).to be_nil
+      expect(described_class.format_json_float(-1e-7)).to be_nil
+      expect(described_class.format_json_float(1e15)).to be_nil
+      expect(described_class.format_json_float(-1e20)).to be_nil
+      expect(described_class.format_json_float(1)).to be_nil
+      expect(described_class.format_json_float("1.0")).to be_nil
+      expect(described_class.format_json_float(nil)).to be_nil
+    end
+
+    it "matches Ruby Float#to_s byte-for-byte across boundary and 1,000 randomized floats" do
+      rng = Random.new(424_242)
+      boundaries = [0.0, -0.0, 1.0, -1.0, 0.5, -0.5, 1.25, -2.75, 0.0625, -0.125, 1e14, -1e14]
+      boundaries.each do |val|
+        expect(described_class.format_json_float(val)).to eq(val.to_s)
+      end
+
+      1_000.times do |i|
+        sign = rng.rand(2).zero? ? 1.0 : -1.0
+        val = if i.even?
+                sign * rng.rand(0..999_999_999_999_999).to_f
+              else
+                sign * (rng.rand(1..10_000_000) / 16.0)
+              end
+
+        expect(described_class.format_json_float(val)).to eq(val.to_s), "iteration #{i} val=#{val.inspect}"
+      end
+    end
+  end
+
+  describe ".serialize_article_reactions_json" do
+    let(:reaction_columns) do
+      %w[id category reactable_id reactable_type user_id created_at updated_at points status]
+    end
+
+    it "returns nil on out-of-domain inputs (non-UTC time, scientific float, invalid types)", :aggregate_failures do
+      counts = [{ category: "like", count: 1 }]
+      non_utc = Time.new(2026, 1, 1, 0, 0, 0, "+02:00")
+      plus_zero_non_utc = Time.new(2026, 1, 1, 0, 0, 0, "+00:00")
+      utc = Time.utc(2026, 1, 1, 0, 0, 0)
+
+      bad_time_row = [1, "like", 10, "Article", 7, non_utc, utc, 1.0, "valid"]
+      expect(described_class.serialize_article_reactions_json(7, reaction_columns, [bad_time_row], counts)).to be_nil
+
+      plus_zero_row = [1, "like", 10, "Article", 7, plus_zero_non_utc, utc, 1.0, "valid"]
+      expect(described_class.serialize_article_reactions_json(7, reaction_columns, [plus_zero_row], counts)).to be_nil
+
+      sci_float_row = [1, "like", 10, "Article", 7, utc, utc, 1e-7, "valid"]
+      expect(described_class.serialize_article_reactions_json(7, reaction_columns, [sci_float_row], counts)).to be_nil
+
+      short_row = [1, "like"]
+      expect(described_class.serialize_article_reactions_json(7, reaction_columns, [short_row], counts)).to be_nil
+
+      bad_counts = [{ category: "like", count: 1, extra: true }]
+      expect(described_class.serialize_article_reactions_json(7, reaction_columns, [], bad_counts)).to be_nil
+      expect(described_class.serialize_article_reactions_json("7", reaction_columns, [], counts)).to be_nil
+      expect(described_class.serialize_article_reactions_json(7, [], [[]], counts)).to be_nil
+    end
+
+    it "matches legacy ActiveSupport JSON output byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      categories = %w[like unicorn exploding_head raised_hands fire readinglist]
+      statuses = ["valid", "confirmed", "archived", "invalid", "ok<>&\u2028\u2029"]
+
+      1_000.times do |i|
+        user_id = rng.rand(3).zero? ? nil : rng.rand(1..1_000_000)
+        cols = i.even? ? reaction_columns : reaction_columns.shuffle(random: rng)
+        cat_idx = cols.index("category")
+
+        row_count = user_id.nil? ? 0 : rng.rand(0..6)
+        rows = Array.new(row_count) do |idx|
+          created = Time.at(rng.rand(1_500_000_000..1_800_000_000), rng.rand(0..999_999), :usec).utc
+          updated = Time.at(created.tv_sec + rng.rand(0..3600), rng.rand(0..999_999), :usec).utc
+          values_by_col = {
+            "id" => 10_000 + (i * 10) + idx,
+            "category" => categories.sample(random: rng),
+            "reactable_id" => rng.rand(1..500_000),
+            "reactable_type" => "Article",
+            "user_id" => user_id,
+            "created_at" => created,
+            "updated_at" => updated,
+            "points" => [0.0, 1.0, -1.0, 2.5, 4.0, nil].sample(random: rng),
+            "status" => statuses.sample(random: rng)
+          }
+          cols.map { |c| values_by_col[c] }
+        end
+
+        counts = categories.map do |cat|
+          { category: cat, count: rng.rand(0..500) }
+        end
+
+        readinglist, public_rows = rows.partition { |r| r[cat_idx] == "readinglist" }
+        legacy_reactions = (public_rows + readinglist).map { |r| cols.zip(r).to_h }
+        expected = ActiveSupport::JSON.encode(
+          current_user: { id: user_id },
+          reactions: legacy_reactions,
+          article_reaction_counts: counts,
+        )
+
+        actual = described_class.serialize_article_reactions_json(user_id, cols, rows, counts)
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
+
+  describe ".serialize_comment_reactions_json" do
+    let(:reaction_columns) do
+      %w[id category reactable_id reactable_type user_id created_at updated_at points status]
+    end
+
+    it "returns nil on out-of-domain inputs and handles empty arrays", :aggregate_failures do
+      expect(described_class.serialize_comment_reactions_json(nil, reaction_columns, [], [])).to eq(
+        '{"current_user":{"id":null},"reactions":[],"public_reaction_counts":[]}',
+      )
+      bad_hash = { "id" => 1 }
+      expect(described_class.serialize_comment_reactions_json(1, reaction_columns, [bad_hash], [])).to be_nil
+      expect(described_class.serialize_comment_reactions_json(1, reaction_columns, [], [[1, nil]])).to be_nil
+      expect(described_class.serialize_comment_reactions_json(1, [], [[]], [])).to be_nil
+    end
+
+    it "matches legacy ActiveSupport JSON output byte-for-byte across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      categories = %w[like unicorn exploding_head raised_hands fire]
+
+      1_000.times do |i|
+        user_id = rng.rand(3).zero? ? nil : rng.rand(1..1_000_000)
+        comment_count = rng.rand(0..15)
+        comment_rows = Array.new(comment_count) do |idx|
+          [50_000 + (i * 20) + idx, rng.rand(0..100)]
+        end
+
+        reaction_hashes = if user_id.nil? || comment_rows.empty?
+                            []
+                          else
+                            Array.new(rng.rand(0..[comment_count, 5].min)) do |idx|
+                              created = Time.at(rng.rand(1_500_000_000..1_800_000_000), rng.rand(0..999_999), :usec).utc
+                              updated = Time.at(created.tv_sec + rng.rand(0..600), rng.rand(0..999_999), :usec).utc
+                              {
+                                "id" => 90_000 + (i * 10) + idx,
+                                "category" => categories.sample(random: rng),
+                                "reactable_id" => comment_rows[idx][0],
+                                "reactable_type" => "Comment",
+                                "user_id" => user_id,
+                                "created_at" => created,
+                                "updated_at" => updated,
+                                "points" => [1.0, 2.0, -1.0, 0.5].sample(random: rng),
+                                "status" => "valid"
+                              }
+                            end
+                          end
+
+        expected = ActiveSupport::JSON.encode(
+          current_user: { id: user_id },
+          reactions: reaction_hashes,
+          public_reaction_counts: comment_rows.map { |cid, count| { id: cid, count: count } },
+        )
+
+        actual = described_class.serialize_comment_reactions_json(
+          user_id, reaction_columns, reaction_hashes, comment_rows
+        )
+        expect(actual).to eq(expected), "iteration #{i}"
+      end
+    end
+  end
 end

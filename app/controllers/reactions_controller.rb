@@ -19,16 +19,13 @@ class ReactionsController < ApplicationController
     user_id = session_or_remembered_user_id
     request.session_options[:skip] = true unless remembered_user_restored?
 
-    reactions, result, has_reactions = if params[:article_id]
-                                         article_reactions_payload(params[:article_id], user_id)
-                                       else
-                                         comment_reactions_payload(user_id)
-                                       end
+    payload, has_reactions = if params[:article_id]
+                               article_reactions_json(params[:article_id], user_id)
+                             else
+                               comment_reactions_json(user_id)
+                             end
 
-    render json: {
-      current_user: { id: user_id },
-      reactions: reactions
-    }.merge(result).to_json
+    render json: payload
 
     return if user_id || cookies[:remember_user_token].present?
 
@@ -55,34 +52,70 @@ class ReactionsController < ApplicationController
   def cached_user_public_comment_reactions(user, comment_ids)
     cache = Rails.cache.fetch("#{user.cache_key}/public-comment-reactions-#{user.public_reactions_count}",
                               expires_in: 24.hours) do
-      user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
-        h[r.reactable_id] = r.attributes
+      columns = Reaction.column_names
+      reactable_id_idx = columns.index("reactable_id")
+      user.reactions.public_category.where(reactable_type: "Comment").pluck(*columns).each_with_object({}) do |row, h|
+        h[row[reactable_id_idx]] = columns.zip(row).to_h
       end
     end
+    return [] if cache.empty? || comment_ids.empty?
+
     cache.slice(*comment_ids).values
   end
 
   private
 
-  def article_reactions_payload(article_id, user_id)
-    reactions = user_id ? reactions_by_user_id(user_id) : Reaction.none
+  def article_reactions_json(article_id, user_id)
+    columns = Reaction.column_names
+    reaction_rows = user_id ? article_reaction_rows_by_user_id(article_id, user_id, columns) : []
     counts = Reaction.count_for_article(article_id)
     has_reactions = counts.any? { |entry| entry[:count].to_i.positive? }
-    [reactions, { article_reaction_counts: counts }, has_reactions]
+    payload = if native_reactions_serializable?
+                ForemNative.serialize_article_reactions_json(user_id, columns, reaction_rows, counts)
+              end || legacy_article_reactions_json(user_id, columns, reaction_rows, counts)
+    [payload, has_reactions]
   end
 
-  def comment_reactions_payload(user_id)
+  def legacy_article_reactions_json(user_id, columns, reaction_rows, counts)
+    category_idx = columns.index("category")
+    readinglist, public_rows = reaction_rows.partition { |row| row[category_idx] == "readinglist" }
+    reactions = (public_rows + readinglist).map { |row| columns.zip(row).to_h }
+    {
+      current_user: { id: user_id },
+      reactions: reactions,
+      article_reaction_counts: counts
+    }.to_json
+  end
+
+  def comment_reactions_json(user_id)
     comment_rows = Comment
       .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
       .pluck(:id, :public_reactions_count)
-    reaction_counts = comment_rows.map { |cid, count| { id: cid, count: count } }
     reactions = if user_id && comment_rows.any?
                   viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: user_id)
-                  viewer ? cached_user_public_comment_reactions(viewer, comment_rows.map(&:first)) : Reaction.none
+                  viewer ? cached_user_public_comment_reactions(viewer, comment_rows.map(&:first)) : []
                 else
-                  Reaction.none
+                  []
                 end
-    [reactions, { public_reaction_counts: reaction_counts }, comment_rows.any?]
+    payload = if native_reactions_serializable?
+                ForemNative.serialize_comment_reactions_json(user_id, Reaction.column_names, reactions, comment_rows)
+              end || legacy_comment_reactions_json(user_id, reactions, comment_rows)
+    [payload, comment_rows.any?]
+  end
+
+  def native_reactions_serializable?
+    ActiveSupport::JSON::Encoding.use_standard_json_time_format &&
+      ActiveSupport::JSON::Encoding.escape_html_entities_in_json &&
+      ActiveSupport::JSON::Encoding.time_precision == 3
+  end
+
+  def legacy_comment_reactions_json(user_id, reactions, comment_rows)
+    reaction_counts = comment_rows.map { |cid, count| { id: cid, count: count } }
+    {
+      current_user: { id: user_id },
+      reactions: reactions,
+      public_reaction_counts: reaction_counts
+    }.to_json
   end
 
   def reactions_surrogate_key(has_reactions: false)
@@ -125,19 +158,15 @@ class ReactionsController < ApplicationController
     authorize(Reaction, policy_query)
   end
 
-  def reactions_by_user_id(user_id = session_current_user_id)
-    id = params[:article_id]
-
-    # Single lookup on the (user_id, reactable_id, reactable_type, category) unique index,
-    # keeping public reactions ahead of the readinglist one as before.
-    readinglist, public_reactions = Reaction.where(
-      reactable_id: id,
+  def article_reaction_rows_by_user_id(article_id, user_id, columns)
+    # Single lookup on the (user_id, reactable_id, reactable_type, category) unique index;
+    # plucking raw column tuples avoids hydrating ActiveRecord Reaction models just to serialize JSON.
+    Reaction.where(
+      reactable_id: article_id,
       reactable_type: "Article",
       user_id: user_id,
-      category: Reaction.public_reaction_types + ["readinglist"],
-    ).partition { |reaction| reaction.category == "readinglist" }
-
-    public_reactions + readinglist
+      category: Reaction.article_reaction_types,
+    ).pluck(*columns)
   end
 
   # TODO: should this move to toggle service? refactor?

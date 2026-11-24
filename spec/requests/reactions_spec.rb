@@ -54,6 +54,56 @@ RSpec.describe "Reactions" do
         expect(categories.last).to eq("readinglist")
       end
 
+      it "serializes natively without hydrating Reaction models and matches legacy_article_reactions_json",
+         :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          create(:reaction, reactable: article, user: user, category: "readinglist")
+          native_results = []
+          allow(ForemNative).to receive(:serialize_article_reactions_json).and_wrap_original do |orig, *args|
+            orig.call(*args).tap { |res| native_results << res }
+          end
+
+          instantiated_reactions = 0
+          callback = lambda do |*, payload|
+            instantiated_reactions += payload[:record_count].to_i if payload[:class_name] == "Reaction"
+          end
+          ActiveSupport::Notifications.subscribed(callback, "instantiation.active_record") do
+            get reactions_path(article_id: article.id)
+          end
+
+          expect(native_results.size).to eq(1)
+          expect(native_results.first).to be_a(String)
+          expect(instantiated_reactions).to eq(0)
+          native_body = response.body
+
+          allow(ForemNative).to receive(:serialize_article_reactions_json).and_return(nil)
+          get reactions_path(article_id: article.id)
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq(native_body)
+        end
+      end
+
+      it "falls back transparently to legacy_article_reactions_json outside UTC time zones", :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("America/New_York")
+
+        Time.use_zone("America/New_York") do
+          native_results = []
+          allow(ForemNative).to receive(:serialize_article_reactions_json).and_wrap_original do |orig, *args|
+            orig.call(*args).tap { |res| native_results << res }
+          end
+
+          get reactions_path(article_id: article.id)
+          expect(response).to have_http_status(:ok)
+          expect(native_results).to eq([nil])
+          expect(response.parsed_body["reactions"].first["created_at"]).to match(/[+-]\d{2}:\d{2}\z/)
+        end
+      end
+
       it "does not hydrate the full users row on GET /reactions?article_id=" do
         get reactions_path(article_id: article.id)
 
@@ -188,6 +238,39 @@ RSpec.describe "Reactions" do
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
+      end
+
+      it "serializes natively without hydrating Reaction models and matches legacy_comment_reactions_json",
+         :aggregate_failures do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("TZ").and_return("Etc/UTC")
+
+        Time.use_zone("UTC") do
+          sign_in user
+          native_results = []
+          allow(ForemNative).to receive(:serialize_comment_reactions_json).and_wrap_original do |orig, *args|
+            orig.call(*args).tap { |res| native_results << res }
+          end
+
+          instantiated_reactions = 0
+          callback = lambda do |*, payload|
+            instantiated_reactions += payload[:record_count].to_i if payload[:class_name] == "Reaction"
+          end
+          ActiveSupport::Notifications.subscribed(callback, "instantiation.active_record") do
+            get reactions_path(commentable_id: article.id, commentable_type: "Article")
+          end
+
+          expect(native_results.size).to eq(1)
+          expect(native_results.first).to be_a(String)
+          expect(instantiated_reactions).to eq(0)
+          native_body = response.body
+
+          allow(ForemNative).to receive(:serialize_comment_reactions_json).and_return(nil)
+          get reactions_path(commentable_id: article.id, commentable_type: "Article")
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq(native_body)
+        end
       end
     end
 
