@@ -544,35 +544,7 @@ class Billboard < ApplicationRecord
   def with_bb_param(html)
     return html if html.blank?
 
-    # Parse the html with Nokogiri
-    full_html = "<html><head></head><body>#{html}</body></html>"
-    doc = Nokogiri::HTML(full_html)
-    # Iterate over all the <a> tags
-    doc.css("a").each do |link|
-      href = link["href"]
-      next unless href.present? && href.start_with?("http", "/")
-
-      begin
-        uri = URI.parse(href)
-      rescue URI::InvalidURIError
-        next
-      end
-      existing_params = URI.decode_www_form(uri.query || "")
-      # Check if 'bb' parameter exists and update it or append if not exists
-      bb_param_index = existing_params.find_index { |param| param[0] == "bb" }
-      if bb_param_index
-        existing_params[bb_param_index][1] = id.to_s # Update existing 'bb' parameter
-      else
-        existing_params << ["bb", id.to_s] # Append new 'bb' parameter
-      end
-      uri.query = URI.encode_www_form(existing_params)
-      link["href"] = uri.to_s
-    end
-
-    # Extract and return only the inner HTML of the body
-    modified_html = doc.at("body").inner_html
-    modified_html.gsub!(/href="([^"]*)&amp;([^"]*)"/, 'href="\1&\2"')
-    modified_html
+    ForemNative.billboard_append_bb_param(html, id.to_s) || legacy_with_bb_param(html)
   end
 
   def refresh_embedded_markdown!(bust_caches: true, retried: false)
@@ -644,6 +616,38 @@ class Billboard < ApplicationRecord
 
   private
 
+  def legacy_with_bb_param(html)
+    # Parse the html with Nokogiri
+    full_html = "<html><head></head><body>#{html}</body></html>"
+    doc = Nokogiri::HTML(full_html)
+    # Iterate over all the <a> tags
+    doc.css("a").each do |link|
+      href = link["href"]
+      next unless href.present? && href.start_with?("http", "/")
+
+      begin
+        uri = URI.parse(href)
+      rescue URI::InvalidURIError
+        next
+      end
+      existing_params = URI.decode_www_form(uri.query || "")
+      # Check if 'bb' parameter exists and update it or append if not exists
+      bb_param_index = existing_params.find_index { |param| param[0] == "bb" }
+      if bb_param_index
+        existing_params[bb_param_index][1] = id.to_s # Update existing 'bb' parameter
+      else
+        existing_params << ["bb", id.to_s] # Append new 'bb' parameter
+      end
+      uri.query = URI.encode_www_form(existing_params)
+      link["href"] = uri.to_s
+    end
+
+    # Extract and return only the inner HTML of the body
+    modified_html = doc.at("body").inner_html
+    modified_html.gsub!(/href="([^"]*)&amp;([^"]*)"/, 'href="\1&\2"')
+    modified_html
+  end
+
   def update_content_updated_at_if_needed
     # Only update content_updated_at when content-related fields change
     content_fields = %w[body_markdown minimized_body_markdown name placement_area color template render_mode
@@ -676,17 +680,26 @@ class Billboard < ApplicationRecord
 
   def extract_internal_article_paths(html)
     return [] if html.blank?
+    return [] unless html.include?("<a") || html.include?("<A")
 
-    paths = []
-    doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
-    
+    internal_hosts = normalized_internal_hosts
+    ForemNative.billboard_extract_internal_article_paths(html, internal_hosts) ||
+      legacy_extract_internal_article_paths(html, internal_hosts)
+  end
+
+  def normalized_internal_hosts
     internal_hosts = [
       ApplicationConfig["APP_DOMAIN"],
       Settings::General.app_domain,
-      URI.parse(URL.url).host
+      URI.parse(URL.url).host,
     ]
     internal_hosts += Subforem.cached_domains if defined?(Subforem)
-    internal_hosts = internal_hosts.compact.map { |h| h.downcase.delete_prefix("www.") }.uniq
+    internal_hosts.compact.map { |h| h.downcase.delete_prefix("www.") }.uniq
+  end
+
+  def legacy_extract_internal_article_paths(html, internal_hosts)
+    paths = []
+    doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
 
     doc.css("a").each do |link|
       href = link["href"]

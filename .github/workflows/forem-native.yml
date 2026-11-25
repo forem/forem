@@ -57,6 +57,7 @@ on:
       - "app/services/agent_session_renderers/markdown_renderer.rb"
       - "app/services/articles/detect_code_block_languages.rb"
       - "app/services/articles/feeds/custom.rb"
+      - "app/services/billboards/shadow_dom_wrapper.rb"
       - "app/services/feed_events/bulk_upsert.rb"
       - "app/services/homepage/fetch_articles.rb"
       - "app/services/html/parser.rb"
@@ -111,6 +112,7 @@ on:
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
       - "spec/services/articles/detect_code_block_languages_spec.rb"
       - "spec/services/articles/feeds/custom_spec.rb"
+      - "spec/services/billboards/shadow_dom_wrapper_spec.rb"
       - "spec/services/html/parser_spec.rb"
       - "spec/services/markdown_processor/parser_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
@@ -274,6 +276,10 @@ jobs:
             fused_html = ForemNative.postprocess_rendered_html("<p><img src=\"https://media.giphy.com/media/abc/giphy.gif\"></p>\n<figcaption>Cap</figcaption>\n<blockquote>\n<p>[!NOTE]\nHi</p>\n</blockquote>", app_domain: "dev.to", prefix_images_config: ["880", "dev.to", nil, nil, "cdn-cgi"], alert_labels: %w[Note Tip Important Warning Caution])
             raise "Unexpected postprocess_rendered_html_full!" unless fused_html.is_a?(String) && fused_html.include?("<figure>") && fused_html.include?("data-alert=\"note\"")
             raise "Unexpected comment_title!" unless ForemNative.comment_title("<p>Rust &amp; Ruby &lt;3</p>", 80) == "Rust & Ruby <3"
+            raise "Unexpected billboard_prepare_shadow_inner_html!" unless ForemNative.billboard_prepare_shadow_inner_html("<base href=\"/\"><script>x()</script>", "application/x-forem-billboard-script") == "<script type=\"application/x-forem-billboard-script\" data-billboard-script=\"true\">x()</script>"
+            raise "Unexpected billboard_wrap_shadow_dom!" unless ForemNative.billboard_wrap_shadow_dom("<p>Hi</p>", "42", "plain", "BASE", "BOOT", "application/x-forem-billboard-script").include?("data-billboard-id=\"42\"")
+            raise "Unexpected billboard_append_bb_param!" unless ForemNative.billboard_append_bb_param("<p><a href=\"https://example.com\">x</a></p>", "42") == "<p><a href=\"https://example.com?bb=42\">x</a></p>"
+            raise "Unexpected billboard_extract_internal_article_paths!" unless ForemNative.billboard_extract_internal_article_paths("<p><a href=\"https://www.dev.to/Ada/Post/\">x</a></p>", ["dev.to"]) == ["/ada/post"]
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

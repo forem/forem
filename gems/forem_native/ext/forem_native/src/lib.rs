@@ -2410,6 +2410,97 @@ fn wrap_all_figures_with_tags(ruby: &Ruby, html: RString) -> Option<RString> {
     Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+fn billboard_prepare_shadow_inner_html(
+    ruby: &Ruby,
+    raw_html: RString,
+    script_mime_type: RString,
+) -> Option<RString> {
+    if !raw_html.is_utf8_compatible_encoding() || !script_mime_type.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let result = {
+        let html = unsafe { raw_html.test_as_str() }?;
+        let mime = unsafe { script_mime_type.test_as_str() }?;
+        forem_core::billboard_html::billboard_prepare_shadow_inner_html(html, mime)?
+    };
+    Some(ruby.str_new(&result))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn billboard_wrap_shadow_dom(
+    ruby: &Ruby,
+    raw_html: RString,
+    billboard_id: RString,
+    template: RString,
+    base_styles: RString,
+    bootstrap_script: RString,
+    script_mime_type: RString,
+) -> Option<RString> {
+    if !raw_html.is_utf8_compatible_encoding()
+        || !billboard_id.is_utf8_compatible_encoding()
+        || !template.is_utf8_compatible_encoding()
+        || !base_styles.is_utf8_compatible_encoding()
+        || !bootstrap_script.is_utf8_compatible_encoding()
+        || !script_mime_type.is_utf8_compatible_encoding()
+    {
+        return None;
+    }
+    let result = {
+        let html = unsafe { raw_html.test_as_str() }?;
+        let id = unsafe { billboard_id.test_as_str() }?;
+        let tmpl = unsafe { template.test_as_str() }?;
+        let styles = unsafe { base_styles.test_as_str() }?;
+        let boot = unsafe { bootstrap_script.test_as_str() }?;
+        let mime = unsafe { script_mime_type.test_as_str() }?;
+        forem_core::billboard_html::billboard_wrap_shadow_dom(html, id, tmpl, styles, boot, mime)?
+    };
+    Some(ruby.str_new(&result))
+}
+
+fn billboard_append_bb_param(ruby: &Ruby, html: RString, billboard_id: RString) -> Option<RString> {
+    if !html.is_utf8_compatible_encoding() || !billboard_id.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let result = {
+        let text = unsafe { html.test_as_str() }?;
+        let id = unsafe { billboard_id.test_as_str() }?;
+        forem_core::billboard_html::billboard_append_bb_param(text, id)?
+    };
+    Some(ruby.str_new(&result))
+}
+
+fn billboard_extract_internal_article_paths(
+    ruby: &Ruby,
+    html: RString,
+    internal_hosts: RArray,
+) -> Option<RArray> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let hosts_owned: Vec<String> = {
+        let slice = unsafe { internal_hosts.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_string());
+        }
+        out
+    };
+    let paths = {
+        let text = unsafe { html.test_as_str() }?;
+        let host_refs: Vec<&str> = hosts_owned.iter().map(String::as_str).collect();
+        forem_core::billboard_html::billboard_extract_internal_article_paths(text, &host_refs)?
+    };
+    let out = ruby.ary_new_capa(paths.len());
+    for path in paths {
+        out.push(ruby.str_new(&path)).ok()?;
+    }
+    Some(out)
+}
+
 #[allow(clippy::too_many_arguments)]
 fn postprocess_rendered_html_full(
     ruby: &Ruby,
@@ -8699,6 +8790,22 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "postprocess_rendered_html_full",
         function!(postprocess_rendered_html_full, 9),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_prepare_shadow_inner_html",
+        function!(billboard_prepare_shadow_inner_html, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_wrap_shadow_dom",
+        function!(billboard_wrap_shadow_dom, 6),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_append_bb_param",
+        function!(billboard_append_bb_param, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_extract_internal_article_paths",
+        function!(billboard_extract_internal_article_paths, 2),
     )?;
     Ok(())
 }

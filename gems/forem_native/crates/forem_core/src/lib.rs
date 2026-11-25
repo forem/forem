@@ -11,6 +11,7 @@ pub mod api_articles;
 pub mod api_collections;
 pub mod api_comments;
 pub mod api_users;
+pub mod billboard_html;
 pub mod calendar;
 pub mod color;
 pub mod comment_tree;

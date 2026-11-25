@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :comment_title
+  LATEST_NATIVE_SYMBOL = :billboard_extract_internal_article_paths
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2325,7 +2325,46 @@ module ForemNative
       )
     end
 
+    def billboard_prepare_shadow_inner_html(raw_html, script_mime_type)
+      return unless Native.respond_to?(:billboard_prepare_shadow_inner_html)
+      return unless utf8_compatible_string?(raw_html) && utf8_compatible_string?(script_mime_type)
+
+      Native.billboard_prepare_shadow_inner_html(raw_html, script_mime_type)
+    end
+
+    def billboard_wrap_shadow_dom(raw_html, billboard_id, template, base_styles, bootstrap_script, script_mime_type)
+      return unless Native.respond_to?(:billboard_wrap_shadow_dom)
+
+      id_str = billboard_id.to_s
+      tmpl_str = template.to_s
+      return unless utf8_compatible_string?(raw_html) && utf8_compatible_string?(id_str) &&
+        utf8_compatible_string?(tmpl_str) && utf8_compatible_string?(base_styles) &&
+        utf8_compatible_string?(bootstrap_script) && utf8_compatible_string?(script_mime_type)
+
+      Native.billboard_wrap_shadow_dom(raw_html, id_str, tmpl_str, base_styles, bootstrap_script, script_mime_type)
+    end
+
+    def billboard_append_bb_param(html, billboard_id)
+      return unless Native.respond_to?(:billboard_append_bb_param)
+
+      id_str = billboard_id.to_s
+      return unless utf8_compatible_string?(html) && utf8_compatible_string?(id_str)
+
+      Native.billboard_append_bb_param(html, id_str)
+    end
+
+    def billboard_extract_internal_article_paths(html, internal_hosts)
+      return unless Native.respond_to?(:billboard_extract_internal_article_paths)
+      return unless utf8_compatible_string?(html) && internal_hosts.is_a?(Array)
+
+      Native.billboard_extract_internal_article_paths(html, internal_hosts)
+    end
+
     private
+
+    def utf8_compatible_string?(str)
+      str.instance_of?(String) && (str.encoding == Encoding::UTF_8 || str.encoding == Encoding::US_ASCII)
+    end
 
     # `articles.video_duration_in_seconds` is a float column. Truncate finite Floats to
     # Integers, matching the `.to_i` in `Article#video_duration_in_minutes`; non-finite

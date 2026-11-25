@@ -99,6 +99,7 @@ namespace :forem_native do
     benchmark_html_postprocess
     benchmark_html_finalize
     benchmark_comment_title
+    benchmark_billboard_html
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -2798,6 +2799,61 @@ namespace :forem_native do
       x.report("Ruby/Loofah+Nokogiri (legacy_title)") { legacy.call }
       x.report("Rust Magnus (comment_title)") { native.call }
       x.compare!
+    end
+  end
+
+  desc "Benchmark Billboard Shadow DOM wrapping, bb param injection, and internal path extraction"
+  task benchmark_billboard_html: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    raw_html = <<~HTML
+      <style>h1 { color: red; }</style>
+      <div class="promo"><h1>Hello &amp; Welcome</h1><p>Check <a href="https://dev.to/alice/post-1">post</a></p></div>
+      <script type="module">console.log("hi");</script>
+    HTML
+    bb_html = '<p>Intro <a href="https://example.com?foo=bar">One</a> <a href="/articles/123?bb=9&amp;x=2">Two</a>.</p>'
+    hosts = ["dev.to", "sub.dev.to"]
+    billboard = Billboard.new(id: 42)
+    wrapper = Billboards::ShadowDomWrapper.new(raw_html, billboard_id: 42, template: "authorship_box")
+
+    cases = [
+      [
+        "ShadowDomWrapper#call",
+        -> { wrapper.__send__(:legacy_call) },
+        -> { wrapper.call },
+      ],
+      [
+        "Billboard#with_bb_param",
+        -> { billboard.__send__(:legacy_with_bb_param, bb_html) },
+        -> { ForemNative.billboard_append_bb_param(bb_html, "42") },
+      ],
+      [
+        "Billboard#extract_internal_article_paths",
+        -> { billboard.__send__(:legacy_extract_internal_article_paths, raw_html, hosts) },
+        -> { ForemNative.billboard_extract_internal_article_paths(raw_html, hosts) },
+      ],
+    ]
+
+    cases.each do |label, legacy_fn, native_fn|
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby/Nokogiri (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
     end
   end
 end
