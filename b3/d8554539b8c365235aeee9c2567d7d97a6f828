@@ -1,0 +1,32 @@
+spec/requests/magic_links_spec.rb
+  s_66381dcf40a8b5::t_6f0f0b70797046 241-254
+  s_66381dcf40a8b5::t_cef53962c6f4dc 31-35
+config/initializers/rack_attack.rb
+  s_66381dcf40a8b5::t_680e765bfa1959 172,176,180,185,189
+  s_66381dcf40a8b5::t_e6c3c5bdb1b450 14-15
+  s_66381dcf40a8b5::t_1175a2374848fc 57-77
+app/controllers/magic_links_controller.rb
+  s_66381dcf40a8b5::t_5e02bf64b91c1a 4
+  s_66381dcf40a8b5::t_40316fed811367 77-83
+  s_66381dcf40a8b5::t_7473c7ab52cadd 28
+spec/requests/rack_attack_magic_links_spec.rb
+  s_66381dcf40a8b5::t_5b284859116b56 47-71,80,91-92
+  s_66381dcf40a8b5::t_4edfb84565289d 72-79,81-90
+  s_66381dcf40a8b5::t_51c4bebcd388ee 8-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b3d8554539b8c365235aeee9c2567d7d97a6f828",
+  "prompts": {},
+  "sessions": {
+    "s_66381dcf40a8b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cdf79699-b56a-4de2-8ac0-1c2757b5f275",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+app/views/articles/index.html.erb
+  h_a5e25bc086eb00 74
+app/views/articles/_single_story.html.erb
+  h_a5e25bc086eb00 47,49
+  h_a5e25bc086eb00 48,50
+app/javascript/articles/__tests__/__snapshots__/Article.test.jsx.snap
+  h_a5e25bc086eb00 184-185,187-189,191-198,297-319,459-460,462-464,466-473,572-594
+spec/views/users/main_feed_spec.rb
+  h_a5e25bc086eb00 111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "589d9e74e9b5ff1213ffc655e3b19529f27040d3",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

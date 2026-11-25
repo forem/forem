@@ -1,0 +1,498 @@
+.slugignore
+  h_a5e25bc086eb00 32
+Gemfile
+  h_a5e25bc086eb00 20,118
+Gemfile.lock
+  h_a5e25bc086eb00 115,117,1066-1067,1157,1301
+app/assets/config/manifest.js
+  h_a5e25bc086eb00 5-13,21
+app/assets/javascripts/.eslintrc.js
+  h_a5e25bc086eb00 17-18
+app/assets/javascripts/initializers/initializeBodyData.js
+  h_a5e25bc086eb00 54-55
+app/assets/javascripts/utilities/applyColorMode.js
+  h_a5e25bc086eb00 1-71
+app/assets/stylesheets/badge_details.scss
+  h_a5e25bc086eb00 17-20
+app/assets/stylesheets/badges.scss
+  h_a5e25bc086eb00 23-26
+app/assets/stylesheets/components/header.scss
+  h_a5e25bc086eb00 61-70
+app/assets/stylesheets/dashboard.scss
+  h_a5e25bc086eb00 207-245,251-252,258-261,263-264,266-267,269,272-274,278-322,326-370,372-384,386-394,397-417,420-449,453-476,480-488,491-509,513-526,534,537,543-546,551,606-609
+app/assets/stylesheets/theme-selector.scss
+  h_a5e25bc086eb00 90,99,108-123
+app/assets/stylesheets/views/dashboard.scss
+  h_a5e25bc086eb00 65-122,132-134
+app/controllers/admin/feed_configs_controller.rb
+  h_a5e25bc086eb00 178,187
+app/controllers/api/v1/tags_controller.rb
+  h_a5e25bc086eb00 14-16,46-67,70-90
+app/controllers/application_controller.rb
+  h_a5e25bc086eb00 243
+app/controllers/calendar_controller.rb
+  h_a5e25bc086eb00 3,8-10,27,38,43-48,76,90-93,105-108
+app/controllers/concerns/api/tags_controller.rb
+  h_a5e25bc086eb00 14-17
+app/controllers/dashboards_controller.rb
+  h_a5e25bc086eb00 67,98-101,103-107,191,195,199-208
+app/controllers/feed_events_controller.rb
+  h_a5e25bc086eb00 12,15-17,19-27,30,36-39
+app/controllers/organization_profile_pins_controller.rb
+  h_a5e25bc086eb00 1-43
+app/controllers/profile_field_groups_controller.rb
+  h_a5e25bc086eb00 5-11
+app/controllers/sidebars_controller.rb
+  h_a5e25bc086eb00 26-30,33-47
+app/controllers/stories/tagged_articles_controller.rb
+  h_a5e25bc086eb00 6,19,60,72-77
+app/controllers/stories_controller.rb
+  h_a5e25bc086eb00 250-256,259,262-263,269,384,556-557,559,562
+app/decorators/notification_decorator.rb
+  h_a5e25bc086eb00 13,19,24,194-208,339-364
+app/decorators/user_decorator.rb
+  h_a5e25bc086eb00 21-49,158
+app/helpers/application_helper.rb
+  h_a5e25bc086eb00 209-215,618-630
+app/helpers/articles_helper.rb
+  h_a5e25bc086eb00 46,49-50
+app/helpers/calendar_helper.rb
+  h_a5e25bc086eb00 1-36
+app/javascript/__tests__/analyticsDashboard.test.js
+  h_a5e25bc086eb00 11-14,29-37,54,72-100
+app/javascript/__tests__/feedEvents.test.js
+  h_a5e25bc086eb00 1-353
+app/javascript/article-form/components/__tests__/Title.test.jsx
+  h_a5e25bc086eb00 2,4,8-11,38-61
+app/javascript/packs/analyticsDashboard.js
+  h_a5e25bc086eb00 19-45,50
+app/javascript/packs/feedEvents.js
+  h_a5e25bc086eb00 4-20,49,52-55,74-77,96-97,99,101-105,121-126,128-130,139,141-149,178,186-192,198-206,208-222,224-229,231-245,247-258,260,262-263,266,269-317,331-337,348,357,362
+app/javascript/packs/followButtons.js
+  h_a5e25bc086eb00 138,143,320-322
+app/javascript/utilities/__tests__/applyColorMode.test.js
+  h_a5e25bc086eb00 1-172
+app/javascript/utilities/calculateTextAreaHeight.js
+  h_a5e25bc086eb00 12-13
+app/javascript/utilities/textAreaUtils.js
+  h_a5e25bc086eb00 1,276,282,286,293-294,301,309
+app/models/article.rb
+  h_a5e25bc086eb00 219-220,377-379,451-461,472-480,496-497,500-507,509,511,1984-1994
+app/models/badge.rb
+  h_a5e25bc086eb00 23
+app/models/billboard.rb
+  h_a5e25bc086eb00 117,629-631,634-636,638-657
+app/models/feed_config.rb
+  h_a5e25bc086eb00 39-41,51-56,163-168,241-246,260-274,307-312,317,480,508,599-603
+app/models/feed_event.rb
+  h_a5e25bc086eb00 32,38-42,45-46,57,128,142-204,207-215
+app/models/feed_event_receipt.rb
+  h_a5e25bc086eb00 1-4
+app/models/follow.rb
+  h_a5e25bc086eb00 31-35,43
+app/models/profile_field.rb
+  h_a5e25bc086eb00 21-22,27-29,32-36,43
+app/models/profile_pin.rb
+  h_a5e25bc086eb00 8,21-27
+app/models/tag.rb
+  h_a5e25bc086eb00 66,356-361
+app/models/users/setting.rb
+  h_a5e25bc086eb00 22
+app/queries/articles/api_search_query.rb
+  h_a5e25bc086eb00 56-64,68,71
+app/queries/comments/tree.rb
+  h_a5e25bc086eb00 5-7,9,11,16-21,25
+app/services/analytics_service.rb
+  h_a5e25bc086eb00 94,106,158,163
+app/services/articles/feeds/custom.rb
+  h_a5e25bc086eb00 28,47-51,56-60,62-63,251-290
+app/services/articles/feeds/variant_query.rb
+  h_a5e25bc086eb00 293-295
+app/services/edge_cache/bust_article.rb
+  h_a5e25bc086eb00 49,80-82,101-111
+app/services/email_digest_article_collector.rb
+  h_a5e25bc086eb00 8-9,56,66,85,97,115,129,163,170,280-289
+app/services/feed_events/bulk_upsert.rb
+  h_a5e25bc086eb00 5,13,29-47,49-71,73-78,85,94-97,99,101,103,107,109,112-113,136,140,160
+app/services/feeds/assemble_article_markdown.rb
+  h_a5e25bc086eb00 48-51,64-81,83-84,88,92,100-104,134-140,151-155,157,159,165,170,222-224,228-231,272-286,290-291,298-300
+app/services/feeds/clean_html.rb
+  h_a5e25bc086eb00 6-10,12-28,31-36,39-51
+app/services/feeds/import.rb
+  h_a5e25bc086eb00 6-11,47,96-102,106,108,112,114,127-130,139-152,164-167,178,184,199-200,202-208,210-212,247-335,407-408,412-436,443-476
+app/services/feeds/resolve_author.rb
+  h_a5e25bc086eb00 24-33,39-49,53,56,59-64,69,72,75-80
+app/views/admin/feed_configs/_form.html.erb
+  h_a5e25bc086eb00 118-122,154-158
+app/views/articles/manage.html.erb
+  h_a5e25bc086eb00 2-3,14-16,142-143,161-188
+app/views/articles/show.html.erb
+  h_a5e25bc086eb00 28
+app/views/badges/_badge_detail.html.erb
+  h_a5e25bc086eb00 16-17
+app/views/badges/index.html.erb
+  h_a5e25bc086eb00 10
+app/views/calendar/_calendar_widget.html.erb
+  h_a5e25bc086eb00 7-8,12,14,24-29
+app/views/comments/index.html.erb
+  h_a5e25bc086eb00 148,151-161,175
+app/views/dashboards/_actions.html.erb
+  h_a5e25bc086eb00 71-101,126
+app/views/dashboards/_actions_mobile.html.erb
+  h_a5e25bc086eb00 17-22
+app/views/dashboards/_dashboard_article.html.erb
+  h_a5e25bc086eb00 56-57
+app/views/dashboards/_dashboard_article_row.html.erb
+  h_a5e25bc086eb00 84-85
+app/views/dashboards/_header_and_action.html.erb
+  h_a5e25bc086eb00 17,23,29,35,41,47,60,66
+app/views/dashboards/analytics.erb
+  h_a5e25bc086eb00 3-8,10-13,17-33,35-62,64-76,78
+app/views/layouts/_user_config.html.erb
+  h_a5e25bc086eb00 12-15,21-22,25
+app/views/notifications/shared/_comment_box.html.erb
+  h_a5e25bc086eb00 53
+app/views/organizations/_header.html.erb
+  h_a5e25bc086eb00 3
+app/views/organizations/_main_feed.html.erb
+  h_a5e25bc086eb00 1-14
+app/views/organizations/show.html.erb
+  h_a5e25bc086eb00 5,27
+app/views/shared/_stats.html.erb
+  h_a5e25bc086eb00 1-18,20-22,24-25,27-28,30-31,34-35,40-45,52-57,65-69,76-80,85-88,97-101,113-118,139-143,156-159
+app/views/stories/articles_search/_nav_menu.html.erb
+  h_a5e25bc086eb00 23
+app/views/stories/tagged_articles/_sidebar.html.erb
+  h_a5e25bc086eb00 75,87
+app/views/users/_customization.html.erb
+  h_a5e25bc086eb00 17
+app/views/users/_theme_selector.html.erb
+  h_a5e25bc086eb00 1-2,5
+app/views/users/show.html.erb
+  h_a5e25bc086eb00 14
+app/workers/feed_events/feedback_worker.rb
+  h_a5e25bc086eb00 1-16
+app/workers/feeds/import_articles_worker.rb
+  h_a5e25bc086eb00 22-27,42-43
+app/workers/organizations/track_promotional_billboard_impressions_worker.rb
+  h_a5e25bc086eb00 11-14,79-82,87-89
+bin/e2e
+  h_a5e25bc086eb00 25-29
+config/initializers/assets.rb
+  h_a5e25bc086eb00 3-5,8-13,16,28,33-37
+config/initializers/strong_migrations.rb
+  h_a5e25bc086eb00 8
+config/locales/views/dashboard/en.yml
+  h_a5e25bc086eb00 30,41
+config/locales/views/dashboard/fr.yml
+  h_a5e25bc086eb00 28,39
+config/locales/views/dashboard/pt.yml
+  h_a5e25bc086eb00 28,45
+config/locales/views/settings/en.yml
+  h_a5e25bc086eb00 98-101
+config/locales/views/settings/fr.yml
+  h_a5e25bc086eb00 98-101
+config/locales/views/settings/pt.yml
+  h_a5e25bc086eb00 133-137
+config/routes.rb
+  h_a5e25bc086eb00 111-116,353-354,513-514
+db/migrate/20261028212000_add_org_id_published_at_index_to_articles.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261029140000_add_feed_lookback_hours_to_feed_configs.rb
+  h_a5e25bc086eb00 1-4
+db/migrate/20261029161500_add_mentionable_index_to_mentions.rb
+  h_a5e25bc086eb00 1-10
+db/migrate/20261029180000_add_event_id_to_feed_events.rb
+  h_a5e25bc086eb00 1-12
+db/migrate/20261029180100_index_feed_event_ids.rb
+  h_a5e25bc086eb00 1-2,4-6
+db/migrate/20261030110000_add_approved_hotness_score_index_to_articles.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261030120000_add_published_at_diversity_weight_to_feed_configs.rb
+  h_a5e25bc086eb00 1-5
+db/schema.rb
+  h_a5e25bc086eb00 13,251,257,850,860,883-886,894,901,1176
+docs/analytics/feed_impressions.md
+  h_a5e25bc086eb00 1-142
+esbuild.config.mjs
+  h_a5e25bc086eb00 13
+gems/forem_native/crates/forem_core/src/calendar.rs
+  h_a5e25bc086eb00 1-271
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_a5e25bc086eb00 14,635,666,693-695,864-884,1622-2392,2558,2566-2610,2713-2840
+gems/forem_native/crates/forem_core/src/json.rs
+  h_a5e25bc086eb00 1-299
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_a5e25bc086eb00 9,17
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_a5e25bc086eb00 6-10,932,964,969,983,1149,1883-1924,1939-2149,2359-2380
+gems/forem_native/lib/forem_native.rb
+  h_a5e25bc086eb00 835-935
+lib/sidekiq/memory_killer.rb
+  h_a5e25bc086eb00 3-24,26-31,36,39,44-62,64-65,70,72-78,80-89,95-98,100,106-129
+lib/tasks/assets.rake
+  h_a5e25bc086eb00 22-24
+lib/tasks/forem_native.rake
+  h_a5e25bc086eb00 363-417
+package.json
+  h_a5e25bc086eb00 26,31-41,170
+spec/controllers/application_controller_spec.rb
+  h_a5e25bc086eb00 11-16
+spec/decorators/notification_decorator_spec.rb
+  h_a5e25bc086eb00 5-11,14,16,21,28,37,40,85,87,164,166,249,288-289,320-322,325-326,352,389-390,444,502-503,605-633
+spec/decorators/user_decorator_spec.rb
+  h_a5e25bc086eb00 75-94,141-152
+spec/factories/profile_pins.rb
+  h_a5e25bc086eb00 5-6,9-15
+spec/helpers/articles_helper_spec.rb
+  h_a5e25bc086eb00 150-198
+spec/initializers/assets_spec.rb
+  h_a5e25bc086eb00 18-19,36-66,83,85-88,92-123,128-132
+spec/lib/forem_native_spec.rb
+  h_a5e25bc086eb00 1851,2189,3019,3051-3052,3120-3131,3134-3136,3963-4498
+spec/lib/sidekiq/memory_killer_spec.rb
+  h_a5e25bc086eb00 6,12,28,30,36-43,47,49,52-66,68-78,81-99,102-146,148
+spec/mailers/digest_mailer_spec.rb
+  h_a5e25bc086eb00 83-94
+spec/models/article_spec.rb
+  h_a5e25bc086eb00 4785-4795,4799-4818
+spec/models/badge_spec.rb
+  h_a5e25bc086eb00 41-48
+spec/models/billboard_spec.rb
+  h_a5e25bc086eb00 384-425
+spec/models/feed_config_spec.rb
+  h_a5e25bc086eb00 401,445,477,566-589,624-673,1055-1109,1161-1162,1170,1176-1179
+spec/models/feed_event_spec.rb
+  h_a5e25bc086eb00 269-310,318,321,326,328,330,332,336,338-339,344,368,373-417,458,552
+spec/models/follow_spec.rb
+  h_a5e25bc086eb00 110,113
+spec/models/mention_spec.rb
+  h_a5e25bc086eb00 48
+spec/models/profile_field_spec.rb
+  h_a5e25bc086eb00 90,94,100,110
+spec/models/profile_pin_spec.rb
+  h_a5e25bc086eb00 45-81
+spec/models/tag_spec.rb
+  h_a5e25bc086eb00 139-148
+spec/models/users/setting_spec.rb
+  h_a5e25bc086eb00 22,68-74
+spec/policies/subforem_policy_spec.rb
+  h_a5e25bc086eb00 4-6,12,38,64,90,106,114,140,148,174,182
+spec/queries/articles/api_search_query_spec.rb
+  h_a5e25bc086eb00 44,50-51,61-62
+spec/queries/billboards/filtered_ads_query_spec.rb
+  h_a5e25bc086eb00 13,128,132,238,290-294,297-307,310-314,317-320,350-353,363-369,371-373,375-377,379-380,396-399,401-402,404-405,407-408,411-412,440,456,476,501,509-512,515,520,525-528,531-532,536-538,544
+spec/queries/comments/tree_spec.rb
+  h_a5e25bc086eb00 4-5,13,22-37,78-112,137-139,141-142,148-149,155
+spec/queries/homepage/articles_query_spec.rb
+  h_a5e25bc086eb00 53-69
+spec/requests/admin/billboards_spec.rb
+  h_a5e25bc086eb00 20,38,50,59,99,121,132-134,155,167,178-180
+spec/requests/admin/feed_configs_spec.rb
+  h_a5e25bc086eb00 15-17,160,163-172,175-189
+spec/requests/admin/users_spec.rb
+  h_a5e25bc086eb00 50-51,54,56-70,73,79-81,83,85-89,93-97,178,185-186,189,196-201,214,580,583-585,590-592,632,638
+spec/requests/api/v0/analytics_spec.rb
+  h_a5e25bc086eb00 14,24
+spec/requests/api/v1/admin/users_spec.rb
+  h_a5e25bc086eb00 86,94-97,99-102,104-113,115-116,118-122,124,126-127,129-131,133-134,136-137,139-143,148,150,153,155-157,166
+spec/requests/api/v1/analytics_spec.rb
+  h_a5e25bc086eb00 4,22,32,85,195
+spec/requests/api/v1/audience_segments_spec.rb
+  h_a5e25bc086eb00 6-7,10-11,25-26,56,110,155,211,265,267-268,275,289,321
+spec/requests/api/v1/billboards_spec.rb
+  h_a5e25bc086eb00 112-124,194-204
+spec/requests/api/v1/docs/tags_spec.rb
+  h_a5e25bc086eb00 21-22,29-33,213-342
+spec/requests/api/v1/tags_spec.rb
+  h_a5e25bc086eb00 67-112,544-714
+spec/requests/api/v1/user_roles_spec.rb
+  h_a5e25bc086eb00 9-12,14-15,18,20,22-24,26-27,29,66,99,133,166,200,232,266,327,332-335,342
+spec/requests/articles_manage_pins_spec.rb
+  h_a5e25bc086eb00 1-89
+spec/requests/badges_spec.rb
+  h_a5e25bc086eb00 19-24,37-54
+spec/requests/billboards_spec.rb
+  h_a5e25bc086eb00 4-5,17,468,533-536,574,581,592,605-608,666,673,850
+spec/requests/calendar_spec.rb
+  h_a5e25bc086eb00 133-152,405-441
+spec/requests/dashboard_spec.rb
+  h_a5e25bc086eb00 203-229,293-294,298-307,310-312,335-343,348-350,352-355,360-362,402,408,412-422,426-429,454-456,458,467-473
+spec/requests/feed_events_spec.rb
+  h_a5e25bc086eb00 15-22,49-104,146,150-152,165-167
+spec/requests/moderations_spec.rb
+  h_a5e25bc086eb00 16,30-33,58,71,81,83-84,110-111,125-126,150,177-180,186-197,213-214
+spec/requests/notifications_spec.rb
+  h_a5e25bc086eb00 6-8,12-13,39,99,144,215-216,219,228-229,231-232,279-280,284,294-295,298-299,357-359,367,387,416,646,651,702,720,746,748
+spec/requests/omniauth_callbacks_failure_spec.rb
+  h_a5e25bc086eb00 1,3,40-43,50-51,68-70,78-92
+spec/requests/organization_profile_pins_spec.rb
+  h_a5e25bc086eb00 1-85
+spec/requests/profile_field_groups_request_spec.rb
+  h_a5e25bc086eb00 47-96
+spec/requests/reading_list_items_spec.rb
+  h_a5e25bc086eb00 4-6,15,17
+spec/requests/search_spec.rb
+  h_a5e25bc086eb00 4,34,40,58,75,114,116,136-138,150-151,153,156,161,176,193-196,210-215,228,230,233,236-237,241-242
+spec/requests/sidebars_spec.rb
+  h_a5e25bc086eb00 168-218
+spec/requests/sitemaps_spec.rb
+  h_a5e25bc086eb00 4-20,71-72,82-85,88-89,92-93,96-97,100-101,110-115,118-119,122-123,126-127,130,135-138,141-142,145-146,149-150,153,160-161,181-182
+spec/requests/stories/articles_search_spec.rb
+  h_a5e25bc086eb00 23-45
+spec/requests/stories/tagged_articles_spec.rb
+  h_a5e25bc086eb00 129-142,397-419
+spec/requests/stories_index_spec.rb
+  h_a5e25bc086eb00 738-769
+spec/requests/stories_performance_fix_spec.rb
+  h_a5e25bc086eb00 57,62,67-84
+spec/requests/subforems_spec.rb
+  h_a5e25bc086eb00 3-9,11-12,77,128,315,337,1143,1147,1186,1190,1222,1226,1320,1324,1466
+spec/requests/tags_spec.rb
+  h_a5e25bc086eb00 51-52,63-64,66-70,77-79,120-122
+spec/requests/user/user_destroy_spec.rb
+  h_a5e25bc086eb00 4,14,28,39,63-64,80
+spec/requests/user/user_profile_spec.rb
+  h_a5e25bc086eb00 6,9,11-12,16,24,154,199-202,235,237-238,262,268-269,275,281,288,295,304,382,387,420-421,424,430-431,434,485,493
+spec/requests/user/user_settings_spec.rb
+  h_a5e25bc086eb00 377-405
+spec/requests/user/user_show_spec.rb
+  h_a5e25bc086eb00 8,19,22,57,59,64,67,85,94-96,98-100,119,154,172
+spec/serializers/search/reading_list_article_serializer_spec.rb
+  h_a5e25bc086eb00 4-6,39,43
+spec/services/ai/about_page_generator_spec.rb
+  h_a5e25bc086eb00 3,10-13,49,81,88-90,114,116,128,130,246
+spec/services/ai/community_copy_spec.rb
+  h_a5e25bc086eb00 3,5,9-13,80,83-85,102,104,377
+spec/services/ai/forem_tags_spec.rb
+  h_a5e25bc086eb00 3,9-12,34,38-39,73,77,89,91,449
+spec/services/analytics_service_spec.rb
+  h_a5e25bc086eb00 4,6,8,23-25,138,144,153-158,163-168,170-172,174-180,184,217,301,309,320-321,323,330-331,333-335,337-341,343-346,350,537,593,622-635,640
+spec/services/appeals/resolver_spec.rb
+  h_a5e25bc086eb00 4-6,9,19-20,34-37,67-68,77-78,84-85,88-90,102-103,114,145-146,161,163-164,278,321-323,326,363-366,373-374
+spec/services/articles/feeds/article_score_calculator_for_user_spec.rb
+  h_a5e25bc086eb00 4-6,116,162-164,196-199
+spec/services/articles/feeds/custom_spec.rb
+  h_a5e25bc086eb00 3,6-7,11-15,17-18,21-23,49-50,91-109,111-112,195-198,229-230,257,294,321,339,539,609-610,808-868
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  h_a5e25bc086eb00 4-7,9-10,12-13,19,159-161,242,249-256
+spec/services/articles/feeds/variant_query_spec.rb
+  h_a5e25bc086eb00 7-9,26-52,73-75,78,84,90-91,98-99,106-107,140,143,148,150-151,170
+spec/services/articles/get_user_stickies_spec.rb
+  h_a5e25bc086eb00 89-107
+spec/services/edge_cache/bust_article_spec.rb
+  h_a5e25bc086eb00 100-122
+spec/services/email_digest_article_collector_spec.rb
+  h_a5e25bc086eb00 5,8-11,14-19,23-34,274,276,293,295,309,314-318,320-324,328-329,387,394-397,411-412,497,499,572-621
+spec/services/feed_events/bulk_upsert_spec.rb
+  h_a5e25bc086eb00 7-12,54,79,166,178,183,185-213,216-268,327-448
+spec/services/feeds/assemble_article_markdown_spec.rb
+  h_a5e25bc086eb00 237-287
+spec/services/feeds/import_spec.rb
+  h_a5e25bc086eb00 29,113-120,125,130,141,304-427
+spec/services/feeds/resolve_author_spec.rb
+  h_a5e25bc086eb00 12-18,29-32,34-36,38-41,43-44,47-50,52-54,56-59,61-62,65-67,69-71,73-75,77-78,113-123,159
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_a5e25bc086eb00 4,7-8,11,13,36-37,41-42,152-155,158,161,163,185,198,201,204,206,219-222,283-285,311,336,365,378-379,397-398,412-414,449-450,468,486,511,557,599,623,656-659,665
+spec/services/reaction_handler_spec.rb
+  h_a5e25bc086eb00 10-11,14-17,19-20,43-46,51-52,78-80,107-110,114-115,145-146,162,172,176-178,188-191,196-197,234-239,251-253,279-280,289,308-309,324-325,359,420-421,426-427,434-435
+spec/services/search/reading_list_spec.rb
+  h_a5e25bc086eb00 4-10,56,78,328,334,341-343,351-359,373,377,383-388
+spec/services/spam/reaction_ring_detector_spec.rb
+  h_a5e25bc086eb00 3,5,107-112,116-118,138-144,148-149,165,349,449-451,580
+spec/services/subforem_reassignment_service_spec.rb
+  h_a5e25bc086eb00 3,5,10-12,16-19,27-29,31-34,36,46-47,49-51,133,135,138-139,183-189,195-204,210-211,214-215,256,268,280,296,314,329,337,340,343,355,398
+spec/services/users/delete_spec.rb
+  h_a5e25bc086eb00 276,279,323,325,327,335-339
+spec/support/ci/schema_railtie.rb
+  h_a5e25bc086eb00 15-18
+spec/support/shared_examples/api_analytics.rb
+  h_a5e25bc086eb00 2,4-9,11-13,18,38
+spec/system/admin/admin_invites_user_spec.rb
+  h_a5e25bc086eb00 4,16,22-23,26-27,37-39
+spec/system/admin/admin_manages_pages_spec.rb
+  h_a5e25bc086eb00 4,11-25,39-41,45,50,54,57,60,63,92,144
+spec/system/admin/admin_updates_tag_spec.rb
+  h_a5e25bc086eb00 4,7-10,18,21,23,39
+spec/system/admin/admin_views_tags_spec.rb
+  h_a5e25bc086eb00 4,8-11,17-18,20,25-27,31-32
+spec/system/admin/admin_visits_badge_achievements_spec.rb
+  h_a5e25bc086eb00 4,11-13
+spec/system/admin/admin_visits_extensions_spec.rb
+  h_a5e25bc086eb00 4,11-13
+spec/system/articles/user_visits_an_article_spec.rb
+  h_a5e25bc086eb00 11-20,168-169,188,192-193,197-198
+spec/system/authentication/redirects_using_referer_spec.rb
+  h_a5e25bc086eb00 6,23,25,30-31,33,40-41,48-49
+spec/system/authentication/user_logs_in_with_email_spec.rb
+  h_a5e25bc086eb00 24,27,30-33,46,50,53,64,66,76-78,85,90-92,114,122,124,126,140-144
+spec/system/authentication/user_logs_in_with_facebook_spec.rb
+  h_a5e25bc086eb00 55,82-84,93,122
+spec/system/authentication/user_logs_in_with_forem_spec.rb
+  h_a5e25bc086eb00 55,82-84,93,122
+spec/system/authentication/user_logs_in_with_github_spec.rb
+  h_a5e25bc086eb00 32,59-61,70,119,124-127
+spec/system/authentication/user_logs_in_with_twitter_spec.rb
+  h_a5e25bc086eb00 32,55-57,66,111
+spec/system/collections/user_views_collections_spec.rb
+  h_a5e25bc086eb00 4,16,22
+spec/system/comments/like_button_state_after_reply_spec.rb
+  h_a5e25bc086eb00 3-10,13-14,32-47
+spec/system/comments/user_edits_a_comment_spec.rb
+  h_a5e25bc086eb00 5-8,37-39,41,45-46,48-49,51,55-56
+spec/system/comments/user_views_a_comment_spec.rb
+  h_a5e25bc086eb00 5,22-36,39-43
+spec/system/comments/user_views_article_comments_spec.rb
+  h_a5e25bc086eb00 5,7-8,12-14,18,42,45-46,48,51
+spec/system/homepage/user_visits_homepage_with_announcement_spec.rb
+  h_a5e25bc086eb00 18-20,22,24-25,27,29-30,35,41-45,47,49-50,52,54-55
+spec/system/notifications/notifications_page_spec.rb
+  h_a5e25bc086eb00 3,12-13,19,22,32-33,36,45,47-48,62,69,81-83,86,92,102-104,109
+spec/system/podcasts/user_visits_podcast_page_spec.rb
+  h_a5e25bc086eb00 7,11,16-17,20
+spec/system/search/display_articles_search_spec.rb
+  h_a5e25bc086eb00 3-6,11-15,19-20,22,27
+spec/system/search/display_comments_search_spec.rb
+  h_a5e25bc086eb00 3,6-8
+spec/system/search/display_users_search_spec.rb
+  h_a5e25bc086eb00 3-7,9,18-19,22,25
+spec/system/search/search_title_spec.rb
+  h_a5e25bc086eb00 4-5,7-8,10,12-13
+spec/system/search/user_searches_users_spec.rb
+  h_a5e25bc086eb00 43
+spec/system/user/trusted_user_flags_user_spec.rb
+  h_a5e25bc086eb00 35
+spec/system/user/view_user_comments_spec.rb
+  h_a5e25bc086eb00 4-8,16,19,33,46
+spec/system/user_logs_in_with_password_spec.rb
+  h_a5e25bc086eb00 6-10,14-16,22-24,26,31-33,38,49,59
+spec/system/user_visits_a_comments_page_spec.rb
+  h_a5e25bc086eb00 6-8,10-13,15-16,21-24,26-31,38,44-47
+spec/tasks/assets_spec.rb
+  h_a5e25bc086eb00 9-10,18-20,25,28,32-33
+spec/views/badges/badge_detail_spec.rb
+  h_a5e25bc086eb00 3-26
+spec/workers/emails/send_user_digest_worker_spec.rb
+  h_a5e25bc086eb00 344,360-362
+spec/workers/feed_events/feedback_worker_spec.rb
+  h_a5e25bc086eb00 1-30
+spec/workers/feeds/import_articles_worker_spec.rb
+  h_a5e25bc086eb00 11-12,57-76
+spec/workers/organizations/track_promotional_billboard_impressions_worker_spec.rb
+  h_a5e25bc086eb00 348-370
+swagger/v1/api_v1.json
+  h_a5e25bc086eb00 5284,5292-5301,5539-5714
+yarn.lock
+  h_a5e25bc086eb00 7804-7810
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b030b63c94292b8428ce9e7eb568f3a5db6136a9",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

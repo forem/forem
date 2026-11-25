@@ -1,0 +1,16 @@
+app/controllers/community_controller.rb
+  h_a5e25bc086eb00 41,49,56
+spec/requests/community_spec.rb
+  h_a5e25bc086eb00 46-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "27438219fb400f90cd587579b51ec110843bc8ae",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

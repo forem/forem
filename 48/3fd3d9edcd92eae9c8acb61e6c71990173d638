@@ -1,0 +1,18 @@
+app/assets/stylesheets/badges.scss
+  h_a5e25bc086eb00 23-26
+app/assets/stylesheets/badge_details.scss
+  h_a5e25bc086eb00 17-20
+spec/requests/badges_spec.rb
+  h_a5e25bc086eb00 19-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "483fd3d9edcd92eae9c8acb61e6c71990173d638",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

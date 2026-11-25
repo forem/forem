@@ -1,0 +1,14 @@
+app/assets/javascripts/initializers/initializeBodyData.js
+  h_a5e25bc086eb00 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ab53937f3c5e210dd189db79946612b78e77e025",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
