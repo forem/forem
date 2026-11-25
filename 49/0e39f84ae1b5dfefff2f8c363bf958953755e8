@@ -1,0 +1,30 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 354
+app/views/events/_brand_banner.html.erb
+  h_f968154a99632d 1-16
+app/views/events/_challenge_sidebar.html.erb
+  h_f968154a99632d 1-81
+app/views/events/_gathering_sidebar.html.erb
+  h_f968154a99632d 1-68
+app/views/events/challenge.html.erb
+  h_f968154a99632d 164
+app/views/events/gathering.html.erb
+  h_f968154a99632d 26,156
+app/views/events/page.html.erb
+  h_f968154a99632d 31-32,35,45-66,68-69,71-75,77-84
+spec/requests/events_hierarchy_ui_spec.rb
+  h_f968154a99632d 110-130
+spec/requests/events_spec.rb
+  h_f968154a99632d 471
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "490e39f84ae1b5dfefff2f8c363bf958953755e8",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
