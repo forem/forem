@@ -189,9 +189,11 @@ class ArticleActivity < ApplicationRecord
     comment_rows = comment_rollup_rows
     now = Time.current
 
-    sql = ForemNative.article_activity_recompute_sql(
-      id, page_view_rows, reaction_rows, comment_rows, now.to_i, now.usec
-    )
+    sql = if ActiveRecord.default_timezone == :utc
+            ForemNative.article_activity_recompute_sql(
+              id, page_view_rows, reaction_rows, comment_rows, now.to_i, now.usec
+            )
+          end
     return legacy_recompute_all!(page_view_rows, reaction_rows, comment_rows, now) unless sql
 
     self.class.connection.update(sql, "ArticleActivity Recompute")

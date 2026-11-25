@@ -204,8 +204,16 @@ RSpec.describe ArticleActivity do
         create(:comment, commentable: article, user: user, score: 5, created_at: ts)
       end
 
-      it "persists exactly what the legacy ActiveRecord save path persists" do
+      it "persists exactly what the legacy ActiveRecord save path persists", :aggregate_failures do
+        generated_sql = []
+        allow(ForemNative).to receive(:article_activity_recompute_sql).and_wrap_original do |original, *args|
+          sql = original.call(*args)
+          generated_sql << sql
+          sql
+        end
+
         activity.recompute_all!
+        expect(generated_sql).to contain_exactly(a_kind_of(String))
         native_values = activity.reload.attributes.slice(*columns)
 
         allow(ForemNative).to receive(:article_activity_recompute_sql).and_return(nil)

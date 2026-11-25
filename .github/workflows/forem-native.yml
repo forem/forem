@@ -56,6 +56,7 @@ on:
       - "app/models/page_view.rb"
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
+      - "app/models/article_activity.rb"
       - "app/models/comment.rb"
       - "app/models/concerns/processed_html_finalizable.rb"
       - "app/models/reaction.rb"
@@ -87,6 +88,7 @@ on:
       - "app/services/color/compare_hex.rb"
       - "app/services/images/**"
       - "app/uploaders/**"
+      - "app/workers/articles/update_article_activity_worker.rb"
       - "lib/ISO3166/country.rb"
       - "spec/helpers/agent_sessions_helper_spec.rb"
       - "spec/helpers/application_helper_spec.rb"
@@ -96,6 +98,7 @@ on:
       - "spec/lib/forem_native_spec.rb"
       - "spec/lib/redcarpet/render/html_rouge_spec.rb"
       - "spec/models/article_spec.rb"
+      - "spec/models/article_activity_spec.rb"
       - "spec/models/billboard_spec.rb"
       - "spec/models/comment_spec.rb"
       - "spec/models/geolocation_spec.rb"
@@ -149,6 +152,7 @@ on:
       - "spec/services/images/**"
       - "spec/support/carrierwave_matchers.rb"
       - "spec/uploaders/**"
+      - "spec/workers/articles/update_article_activity_worker_spec.rb"
       - ".ruby-version"
       - ".github/workflows/forem-native.yml"
       - "Containerfile"
@@ -361,6 +365,13 @@ jobs:
             n_sql2 = ForemNative.build_article_notification_bulk_upsert_sql([10, 20, 10], "Article", 1, "Published", n_user, n_art, nil, 1_700_000_600, 0)
             raise "Unexpected build_article_notification_bulk_upsert_sql!" unless n_sql2 == n_sql1
             raise "Expected Unicode whitespace action to return nil!" unless ForemNative.build_notification_bulk_upsert_sql([10], 9001, "Article", 1, "\u00A0", "{}", 1_700_000_600, 0).nil?
+            aa_pv = [["2026-03-01", "google.com", 4, 30, 1], ["2026-03-01", nil, 2, 0, 0]]
+            aa_rx = [["2026-03-01", 2, 1, 0, 0, 0, 0, 1, [7, 9]]]
+            aa_cm = [["2026-03-01", 3]]
+            aa_rollup = ForemNative.article_activity_rollup_json(aa_pv, aa_rx, aa_cm)
+            raise "Unexpected article_activity_rollup_json!" unless aa_rollup.is_a?(Array) && aa_rollup[4..] == [6, 2, 3]
+            aa_sql = ForemNative.article_activity_recompute_sql(42, aa_pv, aa_rx, aa_cm, 1_772_366_400, 123)
+            raise "Unexpected article_activity_recompute_sql!" unless aa_sql.is_a?(String) && aa_sql.include?("\"total_page_views\" = 6") && aa_sql.end_with?("WHERE \"article_activities\".\"id\" = 42")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

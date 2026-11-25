@@ -107,6 +107,7 @@ namespace :forem_native do
     benchmark_processed_html_final
     benchmark_search_results
     benchmark_notifications_bulk_upsert
+    benchmark_article_activity
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -3610,6 +3611,86 @@ namespace :forem_native do
     [
       ["article notification JSON payload", legacy_json_fn, native_json_fn],
       ["1,000-follower bulk upsert SQL", legacy_bulk_fn, native_bulk_fn],
+    ].each do |label, legacy_fn, native_fn|
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark ArticleActivity#recompute_all! rollup encoding and SQL generation"
+  task benchmark_article_activity: :environment do
+    require "active_support/json"
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    isos = Array.new(90) { |i| (Date.new(2026, 1, 1) + i).iso8601 }
+    domains = [
+      nil, "google.com", "dev.to", "t.co", "github.com",
+      "o'neil.example", "reddit.com", "news.ycombinator.com"
+    ]
+    page_view_rows = isos.flat_map.with_index do |iso, d_idx|
+      domains.map.with_index do |domain, idx|
+        [iso, domain, 5 + ((d_idx + idx) % 40), 120 + (idx * 15), 2 + (idx % 5)]
+      end
+    end
+    reaction_rows = isos.map.with_index do |iso, d_idx|
+      ids = Array.new(20) { |k| (d_idx * 100) + k + 1 }
+      [iso, 20, 10, 4, 2, 1, 1, 2, ids]
+    end
+    comment_rows = isos.map.with_index { |iso, d_idx| [iso, 1 + (d_idx % 8)] }
+    now = Time.utc(2026, 11, 25, 22, 0, 0, 123_456)
+
+    legacy_rollup = lambda do
+      pv, rf = ArticleActivity.legacy_page_views_and_referrers(page_view_rows)
+      rx = ArticleActivity.legacy_reactions(reaction_rows)
+      cm = comment_rows.to_h
+      [
+        JSON.generate(pv.as_json),
+        JSON.generate(rx.as_json),
+        JSON.generate(cm.as_json),
+        JSON.generate(rf.as_json),
+        pv.values.sum { |v| v["total"].to_i },
+        rx.values.sum { |v| v["total"].to_i },
+        cm.values.sum(&:to_i),
+      ]
+    end
+    native_rollup = -> { ForemNative.article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows) }
+
+    raise "ArticleActivity rollup parity mismatch!" unless native_rollup.call == legacy_rollup.call
+
+    legacy_sql = lambda do
+      pv_json, rx_json, cm_json, rf_json, pv_tot, rx_tot, cm_tot = legacy_rollup.call
+      quote = ->(s) { "'#{s.gsub("'", "''")}'" }
+      ts = "'#{now.utc.strftime('%Y-%m-%d %H:%M:%S.%6N')}'"
+      "UPDATE \"article_activities\" SET " \
+        "\"daily_page_views\" = #{quote.call(pv_json)}::jsonb, " \
+        "\"daily_reactions\" = #{quote.call(rx_json)}::jsonb, " \
+        "\"daily_comments\" = #{quote.call(cm_json)}::jsonb, " \
+        "\"daily_referrers\" = #{quote.call(rf_json)}::jsonb, " \
+        "\"total_page_views\" = #{pv_tot}, \"total_reactions\" = #{rx_tot}, \"total_comments\" = #{cm_tot}, " \
+        "\"last_aggregated_at\" = #{ts}, \"updated_at\" = #{ts} WHERE \"article_activities\".\"id\" = 42"
+    end
+    native_sql = lambda do
+      ForemNative.article_activity_recompute_sql(42, page_view_rows, reaction_rows, comment_rows, now.to_i, now.usec)
+    end
+
+    [
+      ["ArticleActivity rollup JSON (90 days x 8 domains)", legacy_rollup, native_rollup],
+      ["ArticleActivity recompute SQL (90 days x 8 domains)", legacy_sql, native_sql],
     ].each do |label, legacy_fn, native_fn|
       ruby_mem = MemoryProfiler.report { legacy_fn.call }
       rust_mem = MemoryProfiler.report { native_fn.call }
