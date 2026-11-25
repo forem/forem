@@ -19,9 +19,11 @@
   host = @event.organization || @event.user
   duration = event_duration_label(@event)
 %>
-<div class="container crayons-layout event-show-layout">
+<%= render "event_tabs" %>
+
+<div class="event-show-layout event-page-container">
   <% if !@event.published? %>
-    <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
+    <div class="crayons-notice crayons-notice--warning mb-5 p-4 text-center">
       <strong><%= t("views.events.draft_notice.heading") %></strong> <%= t("views.events.draft_notice.body") %>
       <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2"><%= t("views.events.draft_notice.edit") %></a>
     </div>
@@ -29,7 +31,7 @@
 
   <%= render "parent_context_bar" %>
 
-  <header class="event-stage-header crayons-card p-6 mb-4" style="--event-accent: <%= @event.background_hex_color %>;">
+  <header class="event-stage-header crayons-card p-6 mb-5" style="--event-accent: <%= @event.background_hex_color %>;">
     <nav aria-label="Breadcrumbs" class="event-breadcrumbs mb-3 fs-s color-base-60">
       <% event_breadcrumb_links(@event).each do |label, path| %>
         <a href="<%= path %>" class="c-link c-link--branded font-bold"><%= label %></a>
@@ -138,8 +140,6 @@
       </div>
     </div>
   </header>
-
-  <%= render "event_tabs" %>
 
   <%= render "stream_player", event: @event %>
 

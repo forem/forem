@@ -91,6 +91,21 @@ RSpec.describe "Event Hierarchy Public UI and Livestream Experience" do
       expect(response).to have_http_status(:success)
       expect(response.body).to include("Featured Speakers", "HAPPENING NOW", "Live Keynote on Stage")
     end
+
+    it "renders the top event nav above page content on both Overview and sub-pages without duplicate tag buttons" do
+      create(:page, event: conference, slug: conference.page_slug_for("speakers"),
+                    title: "Speakers", body_markdown: "## Featured Speakers", position: 1)
+
+      get event_path(conference.event_name_slug, conference.event_variation_slug)
+      expect(response).to have_http_status(:success)
+      expect(response.body.index("event-top-nav")).to be < response.body.index("event-show-layout")
+      expect(response.body).not_to include("js-follow-tag-button")
+      expect(response.body).not_to include("data-instant-keep-scroll")
+
+      get event_custom_page_path(conference.event_name_slug, conference.event_variation_slug, "speakers")
+      expect(response).to have_http_status(:success)
+      expect(response.body.index("event-top-nav")).to be < response.body.index("event-show-layout")
+    end
   end
 
   describe "draft conference preview for admins" do

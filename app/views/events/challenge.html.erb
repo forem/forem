@@ -10,6 +10,8 @@
   <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
+<%= render "event_tabs" %>
+
 <div class="crayons-layout event-show-layout container grid-cols-1">
   <% if !@event.published? %>
     <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
@@ -27,8 +29,6 @@
       <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
     </div>
   <% end %>
-
-  <%= render "event_tabs" %>
 
   <%= render "sub_events_hero", event: @event, schedule: @sub_event_schedule %>
 

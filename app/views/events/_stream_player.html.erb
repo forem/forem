@@ -65,9 +65,9 @@
       <% if event.primary_stream_url.present? %>
         <div class="overlay-post stream-coming-soon <%= 'hidden' unless is_upcoming %>"
              id="overlay-post-<%= event.id %>"
-             style="<%= safe_backdrop ? "--stream-backdrop-image: url('#{ERB::Util.html_escape(safe_backdrop)}');" : "--stream-backdrop-gradient: #{event.gradient_background_css};" %>">
+             style="<%= safe_backdrop ? "--stream-backdrop-image: url('#{ERB::Util.html_escape(safe_backdrop)}');" : "" %>">
           <div class="stream-coming-soon__bg" aria-hidden="true"></div>
-          <div class="stream-coming-soon__grid-pattern" aria-hidden="true"></div>
+          <div class="stream-coming-soon__scrim" aria-hidden="true"></div>
 
           <div class="stream-coming-soon__card">
             <div class="stream-coming-soon__eyebrow">
@@ -142,8 +142,9 @@
         <div class="player-container-post w-100 h-100" id="player-container-post-<%= event.id %>"></div>
       <% else %>
         <div class="stream-coming-soon stream-coming-soon--placeholder"
-             style="<%= safe_backdrop ? "--stream-backdrop-image: url('#{ERB::Util.html_escape(safe_backdrop)}');" : "--stream-backdrop-gradient: #{event.gradient_background_css};" %>">
+             style="<%= safe_backdrop ? "--stream-backdrop-image: url('#{ERB::Util.html_escape(safe_backdrop)}');" : "" %>">
           <div class="stream-coming-soon__bg" aria-hidden="true"></div>
+          <div class="stream-coming-soon__scrim" aria-hidden="true"></div>
           <div class="stream-coming-soon__card">
             <div class="stream-coming-soon__eyebrow">
               <%= is_upcoming ? t("views.events.stream.coming_soon") : t("views.events.stream.stream_not_configured_eyebrow") %>
