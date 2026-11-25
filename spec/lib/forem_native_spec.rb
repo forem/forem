@@ -11720,7 +11720,9 @@ RSpec.describe ForemNative do
         described_class.redcarpet_render_image("data:image/png;base64,abc", "data:image/png;base64,abc", nil, nil),
       ).to be_nil
       expect(
-        described_class.redcarpet_render_image("https://example.com/a.png", "https://example.com/a.png", "a &amp; b", nil),
+        described_class.redcarpet_render_image(
+          "https://example.com/a.png", "https://example.com/a.png", "a &amp; b", nil
+        ),
       ).to be_nil
       expect(described_class.redcarpet_render_link("irc://irc.example.com", "chat", "", "https://", "dev.to")).to be_nil
     end
@@ -11756,6 +11758,9 @@ RSpec.describe ForemNative do
         "click here",
         "<strong>bold</strong>",
         "<a href=\"/x\">nested</a>",
+        "<a é='x'>nested</a>",
+        "<a é/a>",
+        "<a /a>",
         "<a\nhref=\"/x\">multiline</a>",
         "日本語 🚀",
       ]

@@ -382,7 +382,7 @@ pub fn extract_img_attrs(content: &str) -> Option<(Option<&str>, Option<&str>, O
         i += 1;
         let val_start = i;
         while i < bytes.len() && bytes[i] != quote {
-            if bytes[i] == b'&' {
+            if bytes[i] == b'&' || bytes[i] == 0 {
                 return None;
             }
             i += 1;
@@ -532,7 +532,8 @@ fn contains_nested_anchor(content: &str) -> bool {
                     .iter()
                     .position(|&b| b == b'\n')
                     .map_or(bytes.len(), |r| after_ws + r);
-                if line_end > after_ws + 3 && content[after_ws + 1..line_end].contains("/a>") {
+                let mut chars = content[after_ws..line_end].chars();
+                if chars.next().is_some() && chars.as_str().contains("/a>") {
                     return true;
                 }
             }
@@ -865,6 +866,42 @@ mod tests {
                 false
             ),
             Some(RenderLinkResult::NestedLink)
+        );
+        // Non-ASCII character immediately after `<a ` must not panic on UTF-8 boundary
+        assert_eq!(
+            render_link(
+                Some("https://example.com"),
+                Some("<a é='x'>nested</a>"),
+                "",
+                "https://",
+                "dev.to",
+                false
+            ),
+            Some(RenderLinkResult::NestedLink)
+        );
+        assert_eq!(
+            render_link(
+                Some("https://example.com"),
+                Some("<a é/a>"),
+                "",
+                "https://",
+                "dev.to",
+                false
+            ),
+            Some(RenderLinkResult::NestedLink)
+        );
+        assert_eq!(
+            render_link(
+                Some("https://example.com"),
+                Some("<a /a>"),
+                "",
+                "https://",
+                "dev.to",
+                false
+            ),
+            Some(RenderLinkResult::Html(
+                r#"<a href="https://example.com"><a /a></a>"#.into()
+            ))
         );
     }
 }

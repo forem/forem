@@ -100,6 +100,7 @@ namespace :forem_native do
     benchmark_html_finalize
     benchmark_comment_title
     benchmark_billboard_html
+    benchmark_redcarpet_pipeline
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -2851,6 +2852,74 @@ namespace :forem_native do
       Benchmark.ips do |x|
         x.config(time: 2, warmup: 1)
         x.report("Ruby/Nokogiri (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark MarkdownProcessor & Redcarpet::Render::HTMLRouge native kernels"
+  task benchmark_redcarpet_pipeline: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    md = (["# Heading", "", "- item 1", "  - item 2", "    - item 3", "plain prose line"] * 20).join("\n")
+    img_html = '<img src="https://example.com/badge.png" alt="badge" title="v1"/>'
+    parser = MarkdownProcessor::Parser.new(md)
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, link_attributes: { rel: "nofollow" })
+
+    cases = [
+      [
+        "normalize_overly_nested_lists",
+        -> { parser.__send__(:legacy_normalize_overly_nested_lists, md) },
+        -> { ForemNative.normalize_overly_nested_lists(md) },
+      ],
+      [
+        "redcarpet_extract_img_attrs",
+        -> { Nokogiri::HTML(img_html).at_css("img").then { |i| [i["src"], i["alt"] || nil, i["title"] || nil] } },
+        -> { ForemNative.redcarpet_extract_img_attrs(img_html) },
+      ],
+      [
+        "redcarpet_render_header",
+        lambda do
+          anchor = renderer.__send__(:legacy_slugify, "🚀 Launch Day: <em>v2.0</em>!")
+          <<~HEREDOC
+            <h2>
+              <a name="#{anchor}" href="##{anchor}" class="anchor">
+              </a>
+              🚀 Launch Day: <em>v2.0</em>!
+            </h2>
+          HEREDOC
+        end,
+        -> { ForemNative.redcarpet_render_header("🚀 Launch Day: <em>v2.0</em>!", 2) },
+      ],
+      [
+        "redcarpet_render_link",
+        -> { renderer.__send__(:legacy_link, "https://github.com/forem/forem", "Forem") },
+        lambda do
+          ForemNative.redcarpet_render_link(
+            "https://github.com/forem/forem", "Forem", ' rel="nofollow"', "https://", "dev.to"
+          )
+        end,
+      ],
+    ]
+
+    cases.each do |label, legacy_fn, native_fn|
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
         x.report("Rust Magnus (#{label})") { native_fn.call }
         x.compare!
       end
