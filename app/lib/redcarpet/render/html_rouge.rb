@@ -16,56 +16,86 @@ module Redcarpet
       end
 
       def image(link, title, alt_text)
+        url = resolve_media_store_url(link)
+        ForemNative.redcarpet_render_image(link, url, title, alt_text) ||
+          legacy_image(link, url, title, alt_text)
+      end
+
+      def link(link, _title, content)
+        if content&.include?("<img")
+          return render_linked_image(link, content)
+        end
+
+        proto, domain = link_app_origin_if_needed(link)
+        native_result = ForemNative.redcarpet_render_link(
+          link, content, rendered_link_attributes, proto, domain, raw_href: false
+        )
+        return if native_result == :nested_link
+        return native_result if native_result
+
+        legacy_link(link, content)
+      end
+
+      def header(title, header_number)
+        ForemNative.redcarpet_render_header(title, header_number) ||
+          legacy_header(title, header_number)
+      end
+
+      private
+
+      def legacy_image(link, url, title, alt_text)
         return "" unless allowed_uri?(link, allow_data: true)
 
-        # Check if the URL is an image and process accordingly
-        url = if %r{\Ahttps?://}.match?(link)
-                MediaStore.find_by(original_url: link)&.output_url || link
-              else
-                link
-              end
         safe_url = escape_uri_attribute(url)
         title_attr = title ? %( title="#{escape_attribute(title)}") : ""
         alt_text_attr = alt_text ? %( alt="#{escape_attribute(alt_text)}") : ""
         %(<img src="#{safe_url}"#{title_attr}#{alt_text_attr}/>)
       end
 
-      def link(link, _title, content) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-        # Regex to capture src, alt, and title attributes from an img tag
-        if content&.include?("<img") && (doc = Nokogiri::HTML(content))
-          image_url = doc.at_css("img")["src"]
-          alt_text = doc.at_css("img")["alt"] || nil
-          title = doc.at_css("img")["title"] || nil
-          modified_content = image(image_url, title, alt_text) # Call your image method with title and alt text
-          return %(<a>#{modified_content}</a>) unless allowed_uri?(link)
-
-          %(<a href="#{escape_uri_attribute(link)}">#{modified_content}</a>)
+      def render_linked_image(link, content)
+        attrs = ForemNative.redcarpet_extract_img_attrs(content)
+        if attrs
+          image_url, alt_text, title = attrs
         else
-          # Proceed with normal link rendering if no image is detected
-          return if %r{<a\s.+/a>}.match?(content)
-          return %(<a>#{content}</a>) unless allowed_uri?(link)
+          doc = Nokogiri::HTML(content)
+          img = doc.at_css("img")
+          image_url = img["src"]
+          alt_text = img["alt"] || nil
+          title = img["title"] || nil
+        end
 
-          link_attributes = ""
-          @options[:link_attributes]&.each do |attribute, value|
-            link_attributes += %( #{attribute}="#{escape_attribute(value)}")
-          end
-          safe_link = escape_uri_attribute(link)
-          if (%r{\Ahttps?://\S+}.match? link) || link.nil?
-            %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
-          elsif /\A\w+:/.match?(link)
-            # Handle links with protocols (mailto:, tel:, ftp:, etc.)
-            %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
-          elsif /\.{1}/.match? link
-            %(<a href="//#{safe_link}"#{link_attributes}>#{content}</a>)
-          elsif link.start_with?("#")
-            %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
-          else
-            %(<a href="#{app_protocol}#{app_domain}#{safe_link}"#{link_attributes}>#{content}</a>)
-          end
+        modified_content = image(image_url, title, alt_text)
+        native_wrapped = ForemNative.redcarpet_render_link(
+          link, modified_content, "", "", "", raw_href: true
+        )
+        return native_wrapped if native_wrapped
+
+        return %(<a>#{modified_content}</a>) unless allowed_uri?(link)
+
+        %(<a href="#{escape_uri_attribute(link)}">#{modified_content}</a>)
+      end
+
+      def legacy_link(link, content)
+        return if %r{<a\s.+/a>}.match?(content)
+        return %(<a>#{content}</a>) unless allowed_uri?(link)
+
+        link_attributes = rendered_link_attributes
+        safe_link = escape_uri_attribute(link)
+        if (%r{\Ahttps?://\S+}.match? link) || link.nil?
+          %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
+        elsif /\A\w+:/.match?(link)
+          # Handle links with protocols (mailto:, tel:, ftp:, etc.)
+          %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
+        elsif /\.{1}/.match? link
+          %(<a href="//#{safe_link}"#{link_attributes}>#{content}</a>)
+        elsif link.start_with?("#")
+          %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
+        else
+          %(<a href="#{app_protocol}#{app_domain}#{safe_link}"#{link_attributes}>#{content}</a>)
         end
       end
 
-      def header(title, header_number)
+      def legacy_header(title, header_number)
         anchor_link = slugify(title)
         <<~HEREDOC
           <h#{header_number}>
@@ -76,7 +106,35 @@ module Redcarpet
         HEREDOC
       end
 
-      private
+      def resolve_media_store_url(link)
+        return link unless %r{\Ahttps?://}.match?(link)
+
+        @media_store_cache ||= {}
+        return @media_store_cache[link] if @media_store_cache.key?(link)
+
+        @media_store_cache[link] = MediaStore.find_by(original_url: link)&.output_url || link
+      end
+
+      def rendered_link_attributes
+        return @rendered_link_attributes if defined?(@rendered_link_attributes)
+
+        attrs = @options[:link_attributes]
+        @rendered_link_attributes =
+          if attrs.blank?
+            ""
+          else
+            attrs.map { |attribute, value| %( #{attribute}="#{escape_attribute(value)}") }.join
+          end
+      end
+
+      def link_app_origin_if_needed(link)
+        if link.is_a?(String) && !link.start_with?("http://", "https://", "#") &&
+            link.exclude?(".") && !/\A\w+:/.match?(link)
+          [app_protocol.to_s, app_domain.to_s]
+        else
+          ["", ""]
+        end
+      end
 
       def mermaid_language?(language)
         language.split.first == MERMAID_LANGUAGE
@@ -104,6 +162,10 @@ module Redcarpet
       end
 
       def slugify(string)
+        ForemNative.redcarpet_slugify_header(string) || legacy_slugify(string)
+      end
+
+      def legacy_slugify(string)
         stripped_string = ForemNative.full_sanitize(string) || ActionView::Base.full_sanitizer.sanitize(string)
         downcased = stripped_string.downcase
         without_emoji = ForemNative.strip_rgi_emoji(downcased) || downcased

@@ -67,35 +67,8 @@ module MarkdownProcessor
 
     # Prevent Redcarpet from dropping text in deeply nested lists
     def normalize_overly_nested_lists(content)
-      current_fence_marker = nil
-
-      content.each_line.map do |line|
-        if current_fence_marker
-          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
-          next line
-        end
-
-        opening_marker = fenced_code_block_opening_marker(line)
-        if opening_marker
-          current_fence_marker = opening_marker
-          next line
-        end
-
-        line.gsub(/^([ \t]+)([-*+]|\d+\.)[ \t]+(.*)$/) do
-          indent = Regexp.last_match(1)
-          marker = Regexp.last_match(2)
-          text   = Regexp.last_match(3)
-
-          normalized_indent =
-            if indent.include?("\t")
-              indent[0, 4]
-            else
-              indent[0, MAX_LIST_INDENT_SPACES]
-            end
-
-          "#{normalized_indent}#{marker} #{text}"
-        end
-      end.join
+      ForemNative.normalize_overly_nested_lists(content) ||
+        legacy_normalize_overly_nested_lists(content)
     end
 
     def convert_deeply_nested_links_to_html(content)
@@ -226,6 +199,40 @@ module MarkdownProcessor
 
       code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
       escape_liquid_tags_in_codeblock(code_tag_content)
+    end
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_normalize_overly_nested_lists(content)
+      current_fence_marker = nil
+
+      content.each_line.map do |line|
+        if current_fence_marker
+          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
+          next line
+        end
+
+        opening_marker = fenced_code_block_opening_marker(line)
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub(/^([ \t]+)([-*+]|\d+\.)[ \t]+(.*)$/) do
+          indent = Regexp.last_match(1)
+          marker = Regexp.last_match(2)
+          text   = Regexp.last_match(3)
+
+          normalized_indent =
+            if indent.include?("\t")
+              indent[0, 4]
+            else
+              indent[0, MAX_LIST_INDENT_SPACES]
+            end
+
+          "#{normalized_indent}#{marker} #{text}"
+        end
+      end.join
     end
 
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,

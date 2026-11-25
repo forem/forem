@@ -11500,4 +11500,293 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".normalize_overly_nested_lists" do
+    def legacy_normalize_overly_nested_lists(content)
+      current_fence_marker = nil
+
+      content.each_line.map do |line|
+        if current_fence_marker
+          fence_char = current_fence_marker[0]
+          min_len = current_fence_marker.length
+          current_fence_marker = nil if line.match?(/^\s*#{Regexp.escape(fence_char)}{#{min_len},}\s*$/)
+          next line
+        end
+
+        opening_marker = line[/^\s*((`{3,}|~{3,}))/i, 1]
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub(/^([ \t]+)([-*+]|\d+\.)[ \t]+(.*)$/) do
+          indent = Regexp.last_match(1)
+          marker = Regexp.last_match(2)
+          text   = Regexp.last_match(3)
+
+          normalized_indent = indent.include?("\t") ? indent[0, 4] : indent[0, 16]
+          "#{normalized_indent}#{marker} #{text}"
+        end
+      end.join
+    end
+
+    it "handles empty strings, CRLF, fenced blocks, and defers non-UTF-8 encodings" do
+      expect(described_class.normalize_overly_nested_lists("")).to eq("")
+      expect(described_class.normalize_overly_nested_lists("  - ok\n")).to eq("  - ok\n")
+      expect(described_class.normalize_overly_nested_lists("#{' ' * 20}- deep\r\n")).to eq("#{' ' * 16}- deep\r\n")
+      expect(described_class.normalize_overly_nested_lists("\t\t\t\t\t1.  tab\n")).to eq("\t\t\t\t1. tab\n")
+      expect(described_class.normalize_overly_nested_lists("plain".encode("US-ASCII"))).to be_nil
+    end
+
+    it "matches legacy_normalize_overly_nested_lists across 1,000 randomized documents" do
+      rng = Random.new(424_242)
+      indents = ["", "  ", "    ", " " * 16, " " * 20, " " * 24, "\t", "\t\t\t\t\t", " \t\t  \t"]
+      markers = ["-", "*", "+", "1.", "42.", "notalist"]
+      seps = [" ", "   ", "\t", " \t "]
+      texts = ["item", "deep [link](https://dev.to)", "日本語 🚀", ""]
+      newlines = ["\n", "\r\n"]
+
+      1_000.times do |i|
+        lines = Array.new(rng.rand(1..12)) do
+          case rng.rand(10)
+          when 0
+            "```ruby#{newlines[rng.rand(2)]}"
+          when 1
+            "```#{newlines[rng.rand(2)]}"
+          when 2
+            "~~~~#{newlines[rng.rand(2)]}"
+          else
+            "#{indents[rng.rand(indents.size)]}#{markers[rng.rand(markers.size)]}" \
+            "#{seps[rng.rand(seps.size)]}#{texts[rng.rand(texts.size)]}#{newlines[rng.rand(2)]}"
+          end
+        end
+        doc = lines.join
+        doc = doc.chomp if rng.rand(3).zero?
+
+        actual = described_class.normalize_overly_nested_lists(doc)
+        expected = legacy_normalize_overly_nested_lists(doc)
+        expect(actual).to eq(expected), "iteration #{i}: #{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".redcarpet_slugify_header and .redcarpet_render_header" do
+    def legacy_slugify_header(title)
+      stripped = described_class.full_sanitize(title)
+      downcased = stripped.downcase
+      without_emoji = described_class.strip_rgi_emoji(downcased) || downcased
+      without_emoji.strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
+    end
+
+    def legacy_render_header(title, header_number)
+      anchor_link = legacy_slugify_header(title)
+      <<~HEREDOC
+        <h#{header_number}>
+          <a name="#{anchor_link}" href="##{anchor_link}" class="anchor">
+          </a>
+          #{title}
+        </h#{header_number}>
+      HEREDOC
+    end
+
+    it "defers non-ASCII non-emoji headings and non-UTF-8 strings to nil" do
+      expect(described_class.redcarpet_slugify_header("日本語見出し")).to be_nil
+      expect(described_class.redcarpet_render_header("Café Résumé", 2)).to be_nil
+      expect(described_class.redcarpet_slugify_header("Hello".encode("US-ASCII"))).to be_nil
+    end
+
+    it "matches legacy_slugify_header and legacy_render_header across 1,000 randomized headings" do
+      rng = Random.new(424_242)
+      tokens = [
+        "Hello", "World", "Ruby", "3.3", "🚀", "🔥", "<em>v2.0</em>", "<code>foo_bar</code>",
+        "!", "?", "---", ":", "/", "  ", "\t", "a-b", "(test)", "100%", "C++"
+      ]
+
+      1_000.times do |i|
+        title = Array.new(rng.rand(1..6)) { tokens[rng.rand(tokens.size)] }.join(" ")
+        level = rng.rand(1..6)
+
+        expect(described_class.redcarpet_slugify_header(title))
+          .to eq(legacy_slugify_header(title)), "slugify iteration #{i}: #{title.inspect}"
+        expect(described_class.redcarpet_render_header(title, level))
+          .to eq(legacy_render_header(title, level)), "render_header iteration #{i}: #{title.inspect}"
+      end
+    end
+  end
+
+  describe ".redcarpet_extract_img_attrs" do
+    it "defers malformed tags, entities, and preceding tags to nil" do
+      expect(described_class.redcarpet_extract_img_attrs("<img src='https://example.com/a.png")).to be_nil
+      expect(
+        described_class.redcarpet_extract_img_attrs('<img src="https://example.com/a.png" alt="a &amp; b"/>'),
+      ).to be_nil
+      expect(
+        described_class.redcarpet_extract_img_attrs('<span><img src="https://example.com/a.png"/></span>'),
+      ).to be_nil
+      expect(described_class.redcarpet_extract_img_attrs("<img src=https://example.com/a.png>")).to be_nil
+    end
+
+    it "matches Nokogiri::HTML(content).at_css('img') across 1,000 randomized <img> tags" do
+      require "nokogiri"
+      rng = Random.new(424_242)
+      urls = ["https://example.com/a.png", "/local/pic.jpg", "https://cdn.dev.to/img/123.webp", ""]
+      alts = [nil, "", "alt text", "hello world", "日本語 🚀"]
+      titles = [nil, "", "my title", "badge 1"]
+      quotes = ['"', "'"]
+
+      1_000.times do |i|
+        q1 = quotes[rng.rand(2)]
+        q2 = quotes[rng.rand(2)]
+        q3 = quotes[rng.rand(2)]
+        parts = []
+        parts << "src=#{q1}#{urls[rng.rand(urls.size)]}#{q1}" if rng.rand(10) != 0
+        alt = alts[rng.rand(alts.size)]
+        parts << "alt=#{q2}#{alt}#{q2}" unless alt.nil?
+        title = titles[rng.rand(titles.size)]
+        parts << "title=#{q3}#{title}#{q3}" unless title.nil?
+        parts.shuffle!(random: rng)
+        closing = rng.rand(2).zero? ? "/>" : " >"
+        html = "<img #{parts.join(' ')}#{closing}"
+
+        doc = Nokogiri::HTML(html)
+        img = doc.at_css("img")
+        expected = [img["src"], img["alt"] || nil, img["title"] || nil]
+        actual = described_class.redcarpet_extract_img_attrs(html)
+        expect(actual).to eq(expected), "iteration #{i}: #{html.inspect}"
+      end
+    end
+  end
+
+  describe ".redcarpet_render_image and .redcarpet_render_link" do
+    def legacy_allowed_uri?(uri, allow_data: false)
+      return true if uri.nil?
+
+      str = uri.to_s
+      prev = nil
+      while str != prev
+        prev = str
+        str = CGI.unescape_html(str)
+      end
+      unescaped = str.strip
+      return false if !allow_data && unescaped.gsub(/[\x00-\x20]+/, "").match?(/\Adata:/i)
+
+      Loofah::HTML5::Scrub.allowed_uri?(unescaped)
+    end
+
+    def legacy_escape_uri(uri)
+      uri.to_s.gsub('"', "&quot;").gsub("<", "&lt;").gsub(">", "&gt;")
+    end
+
+    def legacy_escape_attr(val)
+      ERB::Util.html_escape(CGI.unescapeHTML(val.to_s))
+    end
+
+    def legacy_render_image(link, resolved_url, title, alt_text)
+      return "" unless legacy_allowed_uri?(link, allow_data: true)
+
+      safe_url = legacy_escape_uri(resolved_url)
+      title_attr = title ? %( title="#{legacy_escape_attr(title)}") : ""
+      alt_attr = alt_text ? %( alt="#{legacy_escape_attr(alt_text)}") : ""
+      %(<img src="#{safe_url}"#{title_attr}#{alt_attr}/>)
+    end
+
+    def legacy_render_link(link, content, link_attrs_html, app_protocol, app_domain, raw_href: false)
+      if raw_href
+        return %(<a>#{content}</a>) unless legacy_allowed_uri?(link)
+
+        return %(<a href="#{legacy_escape_uri(link)}">#{content}</a>)
+      end
+
+      return :nested_link if %r{<a\s.+/a>}.match?(content)
+      return %(<a>#{content}</a>) unless legacy_allowed_uri?(link)
+
+      safe_link = legacy_escape_uri(link)
+      if (%r{\Ahttps?://\S+}.match? link) || link.nil?
+        %(<a href="#{safe_link}"#{link_attrs_html}>#{content}</a>)
+      elsif /\A\w+:/.match?(link)
+        %(<a href="#{safe_link}"#{link_attrs_html}>#{content}</a>)
+      elsif /\.{1}/.match? link
+        %(<a href="//#{safe_link}"#{link_attrs_html}>#{content}</a>)
+      elsif link.start_with?("#")
+        %(<a href="#{safe_link}"#{link_attrs_html}>#{content}</a>)
+      else
+        %(<a href="#{app_protocol}#{app_domain}#{safe_link}"#{link_attrs_html}>#{content}</a>)
+      end
+    end
+
+    it "defers entity-encoded schemes, data: images, and & in alt/title to nil" do
+      expect(described_class.redcarpet_render_link("javascript&#58;alert(1)", "x", "", "https://", "dev.to")).to be_nil
+      expect(
+        described_class.redcarpet_render_image("data:image/png;base64,abc", "data:image/png;base64,abc", nil, nil),
+      ).to be_nil
+      expect(
+        described_class.redcarpet_render_image("https://example.com/a.png", "https://example.com/a.png", "a &amp; b", nil),
+      ).to be_nil
+      expect(described_class.redcarpet_render_link("irc://irc.example.com", "chat", "", "https://", "dev.to")).to be_nil
+    end
+
+    it "matches legacy_render_image and legacy_render_link across 1,000 randomized inputs" do
+      require "cgi"
+      require "erb"
+      require "loofah"
+
+      rng = Random.new(424_242)
+      links = [
+        nil,
+        "",
+        "https://github.com/forem/forem?a=1&b=2",
+        "http://example.com/path\"<tag>",
+        "github.com",
+        "/t/career",
+        "/docs/v1.2",
+        "#chapter-1",
+        "#v1.2",
+        "mailto:test@example.com",
+        "tel:+1234567890",
+        "ftp://files.example.com",
+        "javascript:alert(1)",
+        "JAVASCRIPT:alert(1)",
+        "vbscript:msgbox(1)",
+        "data:text/html,<script>alert(1)</script>",
+        "a/b:c",
+      ]
+      contents = [
+        nil,
+        "",
+        "click here",
+        "<strong>bold</strong>",
+        "<a href=\"/x\">nested</a>",
+        "<a\nhref=\"/x\">multiline</a>",
+        "日本語 🚀",
+      ]
+      attrs_list = ["", ' rel="nofollow"', ' target="_blank" rel="noopener"']
+      titles = [nil, "", "simple title", 'quote " and <tag>']
+      alts = [nil, "", "alt text", "x'y <z>"]
+
+      1_000.times do |i|
+        link = links[rng.rand(links.size)]
+        content = contents[rng.rand(contents.size)]
+        attrs_html = attrs_list[rng.rand(attrs_list.size)]
+        raw_href = rng.rand(4).zero?
+
+        actual_link = described_class.redcarpet_render_link(
+          link, content, attrs_html, "https://", "dev.to", raw_href: raw_href
+        )
+        expected_link = legacy_render_link(
+          link, content, attrs_html, "https://", "dev.to", raw_href: raw_href
+        )
+        expect(actual_link).to eq(expected_link),
+                               "link iter #{i}: link=#{link.inspect} content=#{content.inspect} raw=#{raw_href}"
+
+        next if link&.downcase&.start_with?("data:")
+
+        resolved = link&.start_with?("http://", "https://") && rng.rand(2).zero? ? "https://cdn.dev.to/x.png" : link
+        title = titles[rng.rand(titles.size)]
+        alt = alts[rng.rand(alts.size)]
+        actual_img = described_class.redcarpet_render_image(link, resolved, title, alt)
+        expected_img = legacy_render_image(link, resolved, title, alt)
+        expect(actual_img).to eq(expected_img), "image iteration #{i}: link=#{link.inspect}"
+      end
+    end
+  end
 end

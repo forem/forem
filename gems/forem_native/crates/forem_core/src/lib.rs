@@ -30,6 +30,7 @@ pub mod metal;
 pub(crate) mod psl_data;
 pub mod reactions;
 pub mod redaction_metadata;
+pub mod redcarpet;
 pub mod rss;
 pub mod sanitize;
 pub mod scrubber;
