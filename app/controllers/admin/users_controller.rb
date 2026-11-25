@@ -182,11 +182,12 @@ new_email = user_params[:email].to_s.strip.presence
 
     def update_profile
       @user = User.find(params[:id])
-      previous_user_values = @user.slice(*ADMIN_PROFILE_USER_PARAMS)
+      attributes = admin_profile_user_params
+      previous_user_values = @user.slice(*ADMIN_PROFILE_USER_PARAMS).merge("profile_image" => @user[:profile_image])
       previous_profile_values = (@user.profile || @user.build_profile).slice(*ADMIN_PROFILE_PROFILE_PARAMS)
 
       update_result = Users::Update.call(@user,
-                                         user: admin_profile_user_params,
+                                         user: attributes,
                                          profile: admin_profile_params)
 
       if update_result.success?
@@ -808,7 +809,17 @@ new_email = user_params[:email].to_s.strip.presence
     end
 
     def admin_profile_user_params
-      params.require(:user).permit(ADMIN_PROFILE_USER_PARAMS)
+      attributes = params.require(:user).permit(*ADMIN_PROFILE_USER_PARAMS, :profile_image, :remove_profile_image)
+      attributes.delete(:profile_image) if attributes[:profile_image].blank?
+      if ActiveModel::Type::Boolean.new.cast(attributes[:remove_profile_image])
+        attributes[:remove_profile_image] = true
+      else
+        attributes.delete(:remove_profile_image)
+      end
+      if attributes.key?(:profile_image) || attributes.key?(:remove_profile_image)
+        authorize @user, :admin_update_profile_image?
+      end
+      attributes
     end
 
     def admin_profile_params
@@ -822,6 +833,7 @@ new_email = user_params[:email].to_s.strip.presence
 
       append_profile_change(changes, "name", previous_user_values["name"], updated_user_values["name"])
       append_profile_change(changes, "username", previous_user_values["username"], updated_user_values["username"])
+      append_profile_change(changes, "profile_image", previous_user_values["profile_image"], @user[:profile_image])
       append_profile_change(changes, "summary", previous_profile_values["summary"], updated_profile_values["summary"])
       append_profile_change(changes, "location", previous_profile_values["location"], updated_profile_values["location"])
       append_profile_change(changes, "website_url", previous_profile_values["website_url"], updated_profile_values["website_url"])

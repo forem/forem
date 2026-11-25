@@ -27,6 +27,18 @@
         <%= pf.url_field :website_url, class: "crayons-textfield" %>
       </div>
     <% end %>
+    <% if policy(@user).admin_update_profile_image? %>
+      <div class="crayons-field">
+        <%= f.label :profile_image, t("helpers.label.user.profile_image"), class: "crayons-field__label" %>
+        <%= f.file_field :profile_image, accept: "image/*", class: "crayons-textfield" %>
+      </div>
+      <% if @user[:profile_image].present? %>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :remove_profile_image, include_hidden: false, class: "crayons-checkbox" %>
+          <%= f.label :remove_profile_image, t("views.settings.profile_image.remove"), class: "crayons-field__label" %>
+        </div>
+      <% end %>
+    <% end %>
     <div>
       <%= f.button t("views.admin.users.edit_profile.submit"), class: "c-btn c-btn--primary", type: "submit" %>
     </div>

@@ -853,6 +853,53 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "PATCH /admin/member_manager/users/:id/update_profile" do
+    let(:upload) { fixture_file_upload("800x600.png", "image/png") }
+
+    before { user.update!(profile_image: upload) }
+
+    it "leaves the image in place on a text-only edit by an admin", :aggregate_failures do
+      sign_in create(:user, :admin)
+      previous_image = user[:profile_image]
+
+      patch update_profile_admin_user_path(user), params: { user: { name: "Updated Name" } }
+
+      expect(user.reload.name).to eq("Updated Name")
+      expect(user[:profile_image]).to eq(previous_image)
+    end
+
+    it "does not show image controls to an admin", :aggregate_failures do
+      sign_in create(:user, :admin)
+
+      get admin_user_path(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include('name="user[profile_image]"', 'name="user[remove_profile_image]"')
+    end
+
+    it "does not let an admin replace or remove an image", :aggregate_failures do
+      sign_in create(:user, :admin)
+      previous_image = user[:profile_image]
+      replacement = fixture_file_upload("podcast.png", "image/png")
+
+      [{ profile_image: replacement }, { remove_profile_image: "1" }].each do |attributes|
+        expect do
+          patch update_profile_admin_user_path(user), params: { user: attributes }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+
+      expect(user.reload[:profile_image]).to eq(previous_image)
+    end
+
+    it "leaves the image unchanged if no image action is selected" do
+      expect do
+        patch update_profile_admin_user_path(user), params: {
+          user: { profile_image: "", remove_profile_image: "0" }
+        }
+      end.not_to change { user.reload[:profile_image] }
+    end
+  end
+
   describe "audit log creation" do
     before { Audit::Subscribe.listen :moderator }
 
@@ -863,6 +910,44 @@ RSpec.describe "/admin/member_manager/users" do
       expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
       expect(log.user_id).to eq(admin.id)
       expect(log.data).to include("action" => action, "target_user_id" => user.id, **expected_data.stringify_keys)
+    end
+
+    it "records the old and new image references when a super admin replaces the image", :aggregate_failures do
+      user.update!(profile_image: fixture_file_upload("800x600.png", "image/png"))
+      previous_image = user[:profile_image]
+
+      patch update_profile_admin_user_path(user), params: {
+        user: { profile_image: fixture_file_upload("podcast.png", "image/png") }
+      }
+
+      expect(response).to redirect_to(admin_user_path(user))
+      current_image = user.reload[:profile_image]
+      expect(current_image).to be_present
+      expect(current_image).not_to eq(previous_image)
+      changes = "profile_image: '#{previous_image}' -> '#{current_image}'"
+      expect_moderator_log("update_profile", changes: include(changes))
+      expect(user.notes.last.content).to include(changes)
+    end
+
+    it "records the old image reference when a super admin resets the image", :aggregate_failures do
+      user.update!(profile_image: fixture_file_upload("800x600.png", "image/png"))
+      previous_image = user[:profile_image]
+
+      patch update_profile_admin_user_path(user), params: { user: { remove_profile_image: "1" } }
+
+      expect(response).to redirect_to(admin_user_path(user))
+      expect(user.reload[:profile_image]).to be_blank
+      changes = "profile_image: '#{previous_image}' -> (blank)"
+      expect_moderator_log("update_profile", changes: include(changes))
+      expect(user.notes.last.content).to include(changes)
+    end
+
+    it "does not audit a rejected image upload" do
+      expect do
+        patch update_profile_admin_user_path(user), params: {
+          user: { profile_image: fixture_file_upload("article_published.txt", "text/plain") }
+        }
+      end.not_to change(AuditLog, :count)
     end
 
     it "creates audit log records for email, profile, reputation, and max_score actions", :aggregate_failures do
