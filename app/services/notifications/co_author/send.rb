@@ -46,7 +46,7 @@ module Notifications
         )
 
         if bulk_sql
-          Notification.connection.execute(bulk_sql)
+          Notification.connection.exec_update(bulk_sql, "Notification Bulk Upsert")
         else
           legacy_upsert_notifications(existing_ids, now)
         end

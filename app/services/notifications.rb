@@ -107,7 +107,7 @@ module Notifications
   end
 
   def self.article_bulk_upsert_sql(user_ids:, article:, action:, now:, returning_id: false)
-    return if user_ids.empty? || !now.respond_to?(:utc_offset) || !now.utc_offset.zero?
+    return if user_ids.empty? || !native_bulk_upsert_supported?(now)
 
     payload = native_article_payload(article)
     return unless payload
@@ -127,9 +127,20 @@ module Notifications
     )
   end
 
+  def self.native_bulk_upsert_supported?(now)
+    ForemNative.available? &&
+      ActiveRecord.default_timezone == :utc &&
+      ActiveSupport::JSON::Encoding.use_standard_json_time_format &&
+      ActiveSupport::JSON::Encoding.time_precision == 3 &&
+      ActiveSupport::JSON::Encoding.escape_html_entities_in_json &&
+      now.respond_to?(:tv_sec) && now.respond_to?(:usec)
+  end
+  private_class_method :native_bulk_upsert_supported?
+
   def self.utc_sec_millis(time)
     return [nil, nil] if time.nil?
-    return [:defer, nil] unless time.respond_to?(:utc_offset) && time.utc_offset.zero?
+    return [:defer, nil] unless time.respond_to?(:utc?) && time.utc? &&
+      time.respond_to?(:tv_sec) && time.respond_to?(:nsec)
 
     [time.tv_sec, time.nsec / 1_000_000]
   end

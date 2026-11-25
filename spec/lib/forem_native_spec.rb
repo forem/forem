@@ -13212,7 +13212,7 @@ RSpec.describe ForemNative do
     let(:encode_active_support_json) do
       lambda do |obj|
         require "active_support/json"
-        ActiveSupport::JSON.encode(obj)
+        ActiveSupport::JSON.encode(obj, escape_html_entities: true)
       end
     end
 
@@ -13249,7 +13249,7 @@ RSpec.describe ForemNative do
       end
     end
 
-    it "returns nil for out-of-domain inputs so callers transparently fall back to legacy Ruby" do
+    it "returns nil for out-of-domain inputs so callers transparently fall back to legacy Ruby", :aggregate_failures do
       valid_user = [1, "Ada", "ada", "/ada", nil, 0, 1_700_000_000, 0]
       valid_article = [10, "ruby", "Title", "/ada/title", 1_700_000_000, 0, 1_700_000_000, 0, "Nov 14", 3]
 
@@ -13261,6 +13261,12 @@ RSpec.describe ForemNative do
              )).to be_nil
       expect(described_class.build_notification_bulk_upsert_sql(
                [1], 10, "Article", 1, "   ", "{}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_notification_bulk_upsert_sql(
+               [1], 10, "Article", 1, "\u00A0", "{}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_article_notification_bulk_upsert_sql(
+               [1], "Article", 1, "\u3000", valid_user, valid_article, nil, 1_700_000_000, 0
              )).to be_nil
       expect(described_class.build_notification_bulk_upsert_sql(
                [1], 10, "Article", 1, "Published", "{\"a\":\"\0\"}", 1_700_000_000, 0

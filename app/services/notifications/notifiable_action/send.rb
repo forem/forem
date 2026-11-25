@@ -64,7 +64,7 @@ module Notifications
 
         ActiveRecord::Base.transaction do
           if bulk_sql
-            Notification.connection.execute(bulk_sql)
+            Notification.connection.exec_update(bulk_sql, "Notification Bulk Upsert")
           else
             legacy_upsert_notifications(follower_ids, now)
           end

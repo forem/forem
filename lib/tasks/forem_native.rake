@@ -106,6 +106,7 @@ namespace :forem_native do
     benchmark_stories_feed
     benchmark_processed_html_final
     benchmark_search_results
+    benchmark_notifications_bulk_upsert
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -3526,6 +3527,90 @@ namespace :forem_native do
     ].each do |label, legacy_fn, native_fn|
       raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
 
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark Notifications article JSON serialization and bulk upsert SQL generation (1,000 followers)"
+  task benchmark_notifications_bulk_upsert: :environment do
+    require "active_support/json"
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    follower_ids = (1..1_000).to_a
+    now = Time.utc(2026, 11, 25, 18, 0, 0, 123_456)
+    user_created = Time.utc(2023, 11, 14, 22, 13, 20, 123_000)
+    art_updated = Time.utc(2026, 11, 25, 17, 59, 0, 45_000)
+    art_published = Time.utc(2026, 11, 25, 17, 58, 0, 0)
+
+    user_fields = [42, "Ada Lovelace", "ada", "/ada", "https://media2.dev.to/90/ada.png", 17,
+                   user_created.tv_sec, user_created.nsec / 1_000_000]
+    article_fields = [9001, "rust, ruby, performance", "O'Reilly's <Fast> & \"Clean\" 🚀 Guide",
+                      "/ada/fast-and-clean", art_updated.tv_sec, art_updated.nsec / 1_000_000,
+                      art_published.tv_sec, art_published.nsec / 1_000_000, "Nov 25", 5]
+    org_fields = [7, "Forem Core", "forem", "/forem", "https://media2.dev.to/90/forem.png"]
+
+    legacy_json_fn = lambda do
+      ActiveSupport::JSON.encode(
+        {
+          user: {
+            id: 42, class: { name: "User" }, name: "Ada Lovelace", username: "ada", path: "/ada",
+            profile_image_90: "https://media2.dev.to/90/ada.png", comments_count: 17, created_at: user_created
+          },
+          article: {
+            id: 9001, cached_tag_list_array: "rust, ruby, performance".split(", "),
+            class: { name: "Article" }, title: "O'Reilly's <Fast> & \"Clean\" 🚀 Guide",
+            path: "/ada/fast-and-clean", updated_at: art_updated, published_at: art_published,
+            readable_publish_date: "Nov 25", reading_time: 5
+          },
+          organization: {
+            id: 7, class: { name: "Organization" }, name: "Forem Core", slug: "forem",
+            path: "/forem", profile_image_90: "https://media2.dev.to/90/forem.png"
+          }
+        },
+        escape_html_entities: true,
+      )
+    end
+    native_json_fn = -> { ForemNative.serialize_article_notification_json(user_fields, article_fields, org_fields) }
+
+    raise "Notification JSON parity mismatch!" unless native_json_fn.call == legacy_json_fn.call
+
+    # Simulates ActiveRecord InsertAll encoding json_data and quoting values per follower row.
+    legacy_bulk_fn = lambda do
+      ts = "'#{now.utc.strftime('%Y-%m-%d %H:%M:%S.%6N')}'"
+      values = follower_ids.map do |uid|
+        encoded = legacy_json_fn.call.gsub("'", "''")
+        "(#{uid},9001,'Article',1,'Published','#{encoded}',#{ts},#{ts},#{ts})"
+      end
+      "INSERT INTO \"notifications\" (\"user_id\",\"notifiable_id\",\"notifiable_type\",\"subforem_id\"," \
+        "\"action\",\"json_data\",\"created_at\",\"notified_at\",\"updated_at\") VALUES #{values.join(',')}"
+    end
+    native_bulk_fn = lambda do
+      ForemNative.build_article_notification_bulk_upsert_sql(
+        follower_ids, "Article", 1, "Published", user_fields, article_fields, org_fields,
+        now.tv_sec, now.usec
+      )
+    end
+
+    [
+      ["article notification JSON payload", legacy_json_fn, native_json_fn],
+      ["1,000-follower bulk upsert SQL", legacy_bulk_fn, native_bulk_fn],
+    ].each do |label, legacy_fn, native_fn|
       ruby_mem = MemoryProfiler.report { legacy_fn.call }
       rust_mem = MemoryProfiler.report { native_fn.call }
       puts "\n=== #{label} ==="

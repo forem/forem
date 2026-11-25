@@ -217,7 +217,7 @@ pub fn serialize_article_notification_json(
 
 #[inline]
 fn is_ruby_blank(s: &str) -> bool {
-    s.bytes().all(|b| b.is_ascii_whitespace()) && s.chars().all(|c| c.is_whitespace())
+    s.chars().all(char::is_whitespace)
 }
 
 /// Tier 1 primitive: builds a single-statement PostgreSQL `INSERT INTO "notifications" ...
@@ -497,18 +497,20 @@ mod tests {
             false,
         )
         .is_none());
-        // Blank action string
-        assert!(build_article_notification_bulk_upsert_sql(
-            &[1],
-            "Article",
-            Some(1),
-            Some("   "),
-            &p,
-            1_700_000_000,
-            0,
-            false,
-        )
-        .is_none());
+        // Blank action string (ASCII and Unicode whitespace)
+        for blank in ["", "   ", "\u{00A0}", "\u{3000}", "\t\u{00A0}\n"] {
+            assert!(build_article_notification_bulk_upsert_sql(
+                &[1],
+                "Article",
+                Some(1),
+                Some(blank),
+                &p,
+                1_700_000_000,
+                0,
+                false,
+            )
+            .is_none());
+        }
         // NUL byte in json_data
         assert!(build_notification_bulk_upsert_sql(&NotificationBulkUpsert {
             user_ids: &[1],
