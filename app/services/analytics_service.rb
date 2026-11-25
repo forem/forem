@@ -65,6 +65,53 @@ class AnalyticsService
     Rails.cache.fetch(cache_key, expires_in: 1.minute) { grouped_by_day_from_raw }
   end
 
+  # Streams grouped_by_day directly to JSON via ForemNative when activities cover
+  # the scope, avoiding intermediate per-bucket Ruby Hash allocations.
+  def grouped_by_day_json
+    return "{}" unless start_date && end_date
+
+    fast = grouped_by_day_json_from_activities
+    return fast if fast
+
+    encode_json_payload(grouped_by_day)
+  end
+
+  # Streams the complete /api/analytics/dashboard payload in a single pass over
+  # raw article_activities JSONB columns, computing historical buckets, all-time
+  # totals, and top referrers simultaneously.
+  def dashboard_json(top_referrers: 20)
+    contributors = nil
+    engagement = nil
+
+    if start_date && end_date && (columns = scoped_activity_json_columns)
+      follows_stats = calculate_follows_stats_per_day(follow_data)
+      follows_total = follow_data.size
+      contributors = top_contributors
+      engagement = follower_engagement
+      native_json = ForemNative.analytics_dashboard_json(
+        columns,
+        follows_by_iso: follows_stats,
+        follows_total: follows_total,
+        window: bucket_window_payload,
+        top_referrers: top_referrers,
+        top_contributors_json: encode_json_payload(contributors),
+        follower_engagement_json: encode_json_payload(engagement),
+        start_date_floor_iso: start_date_floor.iso8601,
+      )
+      return native_json if native_json
+    end
+
+    data = {
+      historical: grouped_by_day,
+      totals: totals(ignore_date_range: true),
+      referrers: referrers(top: top_referrers),
+      top_contributors: contributors || top_contributors,
+      follower_engagement: engagement || follower_engagement,
+      start_date_floor: start_date_floor.iso8601
+    }
+    encode_json_payload(data)
+  end
+
   # Returns the list of referrers
   def referrers(top: 20)
     if (fast = referrers_from_activities(top: top))
@@ -389,6 +436,39 @@ class AnalyticsService
   # explicitly: "single article stats should use the activity table if it's
   # available but fall back to the current system if it isn't".
   def grouped_by_day_from_activities
+    columns = scoped_activity_json_columns
+    return if columns.nil?
+
+    pv_jsons, rx_jsons, cm_jsons, = columns
+    follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
+    win_start, win_end, weekly, weekly_start, cutoff = bucket_window_payload
+
+    native = ForemNative.analytics_aggregate_grouped_by_day(
+      pv_jsons, rx_jsons, cm_jsons, follows_stats_per_day,
+      start_iso: win_start, end_iso: win_end,
+      weekly_bucketing: weekly, weekly_start_iso: weekly_start, cutoff_iso: cutoff
+    )
+    return native if native
+
+    legacy_grouped_by_day_from_activities(follows_stats_per_day)
+  end
+
+  def grouped_by_day_json_from_activities
+    columns = scoped_activity_json_columns
+    return if columns.nil?
+
+    pv_jsons, rx_jsons, cm_jsons, = columns
+    follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
+    win_start, win_end, weekly, weekly_start, cutoff = bucket_window_payload
+
+    ForemNative.analytics_grouped_by_day_json(
+      pv_jsons, rx_jsons, cm_jsons, follows_stats_per_day,
+      start_iso: win_start, end_iso: win_end,
+      weekly_bucketing: weekly, weekly_start_iso: weekly_start, cutoff_iso: cutoff
+    )
+  end
+
+  def legacy_grouped_by_day_from_activities(follows_stats_per_day)
     activities = scoped_activities
     return if activities.nil?
 
@@ -397,8 +477,6 @@ class AnalyticsService
     pv_raw = aggregate_page_view_counters(activities)
     rx_raw = aggregate_reaction_counters(activities)
     cm_raw = aggregate_comment_counters(activities)
-
-    follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
 
     stats = {}
     bucket_dates.each do |date|
@@ -417,6 +495,32 @@ class AnalyticsService
   # Returns a totals hash matching #totals using only article_activity rows.
   # Returns nil if the cache doesn't yet cover all in-scope articles.
   def totals_from_activities(ignore_date_range: false)
+    columns = scoped_activity_json_columns
+    return if columns.nil?
+
+    pv_jsons, rx_jsons, cm_jsons, = columns
+    range_start = ignore_date_range ? nil : start_iso
+    range_end = ignore_date_range ? nil : end_iso
+
+    if (agg = ForemNative.analytics_aggregate_totals(pv_jsons, rx_jsons, cm_jsons,
+                                                     start_iso: range_start, end_iso: range_end))
+      return {
+        comments: { total: agg[0] },
+        follows: { total: follow_data.size },
+        reactions: {
+          total: agg[1], like: agg[2], readinglist: agg[3], unicorn: agg[4],
+          exploding_head: agg[5], raised_hands: agg[6], fire: agg[7], unique_reactors: agg[8]
+        },
+        page_views: {
+          total: agg[9], average_read_time_in_seconds: agg[10], total_read_time_in_seconds: agg[11]
+        }
+      }
+    end
+
+    legacy_totals_from_activities(ignore_date_range: ignore_date_range)
+  end
+
+  def legacy_totals_from_activities(ignore_date_range: false)
     activities = scoped_activities
     return if activities.nil?
 
@@ -437,6 +541,19 @@ class AnalyticsService
 
   # Returns referrers in the same shape as #referrers using activity rows.
   def referrers_from_activities(top: 20)
+    columns = scoped_activity_json_columns
+    return if columns.nil?
+
+    ref_jsons = columns[3]
+    if (ranked = ForemNative.analytics_aggregate_referrers(ref_jsons, start_iso: start_iso,
+                                                                      end_iso: end_iso, top: top))
+      return { domains: ranked.map { |domain, count| { domain: domain, count: count } } }
+    end
+
+    legacy_referrers_from_activities(top: top)
+  end
+
+  def legacy_referrers_from_activities(top: 20)
     activities = scoped_activities
     return if activities.nil?
 
@@ -452,30 +569,85 @@ class AnalyticsService
     { domains: domains }
   end
 
-  # Loads the ArticleActivity rows for the request scope, or returns nil and
-  # enqueues lazy backfill jobs if any are missing. Result is memoized so the
-  # totals/referrers/grouped_by_day fast paths share one DB load.
-  def scoped_activities
-    return @scoped_activities if defined?(@scoped_activities)
+  # Fetches raw JSONB text columns directly via `pluck` so Rust can scan them in
+  # a single pass without instantiating ActiveRecord models or running Ruby's
+  # JSONB deserializer across every article's daily history. Enqueues lazy
+  # backfill jobs if any in-scope articles are missing. Result is memoized so
+  # totals/referrers/grouped_by_day/dashboard share one DB load.
+  def scoped_activity_json_columns
+    return @scoped_activity_json_columns if defined?(@scoped_activity_json_columns)
 
     if article_ids.empty?
-      @scoped_activities = nil
+      @scoped_activity_json_columns = nil
       return
     end
 
-    activities = ArticleActivity.where(article_id: article_ids).index_by(&:article_id)
-    missing = article_ids - activities.keys
+    # Each `::text` cast is aliased so `pluck` does not map the result column back
+    # onto the model's `jsonb` attribute type (which would deserialize it to a Hash).
+    rows = ArticleActivity.where(article_id: article_ids).pluck(
+      :article_id,
+      Arel.sql("daily_page_views::text AS daily_page_views_json"),
+      Arel.sql("daily_reactions::text AS daily_reactions_json"),
+      Arel.sql("daily_comments::text AS daily_comments_json"),
+      Arel.sql("daily_referrers::text AS daily_referrers_json"),
+    )
+    present_ids = rows.map(&:first)
+    missing = article_ids - present_ids
     if missing.any?
       # Enqueue a single batch backfill rather than one job per article so
       # that owners with thousands of articles don't spike the queue on a
       # cold dashboard load. The current request still falls back to the
       # raw-table path; the cache is warm on the next visit.
       Articles::BackfillActivitiesWorker.perform_async(missing.sort)
+      @scoped_activity_json_columns = nil
+      return
+    end
+
+    pv_jsons = Array.new(rows.length)
+    rx_jsons = Array.new(rows.length)
+    cm_jsons = Array.new(rows.length)
+    ref_jsons = Array.new(rows.length)
+    rows.each_with_index do |(_, pv, rx, cm, ref), idx|
+      pv_jsons[idx] = pv || "{}"
+      rx_jsons[idx] = rx || "{}"
+      cm_jsons[idx] = cm || "{}"
+      ref_jsons[idx] = ref || "{}"
+    end
+
+    @scoped_activity_json_columns = [pv_jsons, rx_jsons, cm_jsons, ref_jsons]
+  end
+
+  # Hydrates Ruby hashes from `scoped_activity_json_columns` only when an
+  # out-of-domain input falls back to the legacy Ruby aggregation path.
+  def scoped_activities
+    return @scoped_activities if defined?(@scoped_activities)
+
+    columns = scoped_activity_json_columns
+    if columns.nil?
       @scoped_activities = nil
       return
     end
 
-    @scoped_activities = activities.values
+    pv_jsons, rx_jsons, cm_jsons, ref_jsons = columns
+    @scoped_activities = pv_jsons.each_index.map do |i|
+      {
+        daily_page_views: JSON.parse(pv_jsons[i]),
+        daily_reactions: JSON.parse(rx_jsons[i]),
+        daily_comments: JSON.parse(cm_jsons[i]),
+        daily_referrers: JSON.parse(ref_jsons[i])
+      }
+    end
+  end
+
+  def bucket_window_payload
+    weekly = weekly_bucketing?
+    weekly_start_iso = weekly ? start_date.to_date.beginning_of_week.iso8601 : nil
+    cutoff_iso = weekly ? (end_date - DAILY_HISTORY_DAYS.days).to_date.iso8601 : nil
+    [start_iso, end_iso, weekly, weekly_start_iso, cutoff_iso]
+  end
+
+  def encode_json_payload(data)
+    ForemNative.encode_json(data) || data.to_json
   end
 
   def iso_in_range?(iso)

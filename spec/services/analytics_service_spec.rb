@@ -605,4 +605,66 @@ RSpec.describe AnalyticsService, type: :service do
       expect(result[:engaged_followers]).to eq(1)
     end
   end
+
+  describe "#grouped_by_day_json and #dashboard_json" do
+    it "matches the Ruby hash serialization with ArticleActivity rows and falls back when native returns nil",
+       :aggregate_failures do
+      ArticleActivity.create!(
+        article: article,
+        total_page_views: 15,
+        total_reactions: 2,
+        total_comments: 1,
+        daily_page_views: {
+          "2019-04-01" => { "total" => 10, "sum_read_seconds" => 150, "logged_in_count" => 5 },
+          "2019-03-01" => { "total" => 5, "sum_read_seconds" => 100, "logged_in_count" => 2 }
+        },
+        daily_reactions: {
+          "2019-04-01" => {
+            "total" => 2, "like" => 1, "readinglist" => 0, "unicorn" => 1,
+            "exploding_head" => 0, "raised_hands" => 0, "fire" => 0, "reactor_ids" => [10, 20]
+          }
+        },
+        daily_comments: { "2019-04-01" => 1 },
+        daily_referrers: {
+          "2019-04-01" => {
+            "dev.to" => 7,
+            "a<b&c>.test" => 5,
+            'quote"slash\\domain.io' => 4,
+            "café.dev" => 3,
+            "日本語.jp" => 2
+          }
+        },
+      )
+
+      service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-02")
+      expected_grouped = service.grouped_by_day
+      native_grouped_json = service.grouped_by_day_json
+      expect(native_grouped_json).to eq(expected_grouped.to_json)
+
+      expected_dashboard = {
+        historical: expected_grouped,
+        totals: service.totals(ignore_date_range: true),
+        referrers: service.referrers,
+        top_contributors: service.top_contributors,
+        follower_engagement: service.follower_engagement,
+        start_date_floor: service.start_date_floor.iso8601
+      }
+      native_dashboard_json = service.dashboard_json
+      expect(native_dashboard_json).to eq(expected_dashboard.to_json)
+      expect(native_dashboard_json).to include('a\u003cb\u0026c\u003e.test', "café.dev", "日本語.jp")
+
+      allow(ForemNative).to receive_messages(
+        analytics_aggregate_totals: nil,
+        analytics_aggregate_referrers: nil,
+        analytics_aggregate_grouped_by_day: nil,
+        analytics_grouped_by_day_json: nil,
+        analytics_dashboard_json: nil,
+      )
+      fallback_service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-02")
+      expect(fallback_service.grouped_by_day).to eq(expected_grouped)
+      expect(fallback_service.totals(ignore_date_range: true)).to eq(expected_dashboard[:totals])
+      expect(fallback_service.referrers).to eq(expected_dashboard[:referrers])
+      expect(fallback_service.dashboard_json).to eq(native_dashboard_json)
+    end
+  end
 end

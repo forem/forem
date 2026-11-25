@@ -11960,4 +11960,381 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "analytics activity aggregation and streaming JSON kernels" do
+    let(:reaction_categories) { %w[like readinglist unicorn exploding_head raised_hands fire] }
+
+    let(:legacy_aggregate_totals) do
+      lambda do |activities, start_iso, end_iso|
+        in_range = lambda do |iso|
+          return true unless start_iso && end_iso
+
+          iso >= start_iso && iso <= end_iso
+        end
+
+        pv_total = 0
+        sum_read = 0
+        logged_count = 0
+        activities.each do |a|
+          a[:daily_page_views].each do |iso, raw|
+            next unless in_range.call(iso)
+
+            pv_total += raw["total"].to_i
+            sum_read += raw["sum_read_seconds"].to_i
+            logged_count += raw["logged_in_count"].to_i
+          end
+        end
+        avg = logged_count.positive? ? (sum_read.to_f / logged_count).round : 0
+
+        rx = { "total" => 0, "like" => 0, "readinglist" => 0, "unicorn" => 0,
+               "exploding_head" => 0, "raised_hands" => 0, "fire" => 0 }
+        reactors = Set.new
+        activities.each do |a|
+          a[:daily_reactions].each do |iso, raw|
+            next unless in_range.call(iso)
+
+            reaction_categories.each { |c| rx[c] += raw[c].to_i }
+            rx["total"] += raw["total"].to_i
+            Array(raw["reactor_ids"]).each { |uid| reactors << uid }
+          end
+        end
+
+        cm_total = 0
+        activities.each do |a|
+          a[:daily_comments].each do |iso, n|
+            next unless in_range.call(iso)
+
+            cm_total += n.to_i
+          end
+        end
+
+        [
+          cm_total,
+          rx["total"], rx["like"], rx["readinglist"], rx["unicorn"],
+          rx["exploding_head"], rx["raised_hands"], rx["fire"], reactors.size,
+          pv_total, avg, pv_total * avg
+        ]
+      end
+    end
+
+    let(:legacy_aggregate_referrers) do
+      lambda do |activities, start_iso, end_iso, top|
+        counts = Hash.new(0)
+        activities.each do |a|
+          a[:daily_referrers].each do |iso, day_hash|
+            next if start_iso && end_iso && !(iso >= start_iso && iso <= end_iso)
+
+            day_hash.each { |domain, n| counts[domain] += n.to_i }
+          end
+        end
+        counts.each_with_index
+          .sort_by { |(_, n), idx| [-n, idx] }
+          .first(top)
+          .map { |(d, n), _| [d, n] }
+      end
+    end
+
+    let(:legacy_grouped_by_day) do
+      lambda do |activities, follows_by_iso, start_iso, end_iso, weekly_bucketing, weekly_start_iso, cutoff_iso|
+        pv_raw = Hash.new { |h, k| h[k] = { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 } }
+        rx_raw = Hash.new do |h, k|
+          h[k] = { "total" => 0, "like" => 0, "readinglist" => 0, "unicorn" => 0,
+                   "exploding_head" => 0, "raised_hands" => 0, "fire" => 0, "reactor_ids" => [] }
+        end
+        cm_raw = Hash.new(0)
+
+        activities.each do |a|
+          a[:daily_page_views].each do |iso, raw|
+            next unless iso >= start_iso && iso <= end_iso
+
+            pv_raw[iso]["total"] += raw["total"].to_i
+            pv_raw[iso]["sum_read_seconds"] += raw["sum_read_seconds"].to_i
+            pv_raw[iso]["logged_in_count"] += raw["logged_in_count"].to_i
+          end
+          a[:daily_reactions].each do |iso, raw|
+            next unless iso >= start_iso && iso <= end_iso
+
+            reaction_categories.each { |c| rx_raw[iso][c] += raw[c].to_i }
+            rx_raw[iso]["total"] += raw["total"].to_i
+            rx_raw[iso]["reactor_ids"].concat(Array(raw["reactor_ids"]))
+          end
+          a[:daily_comments].each do |iso, n|
+            next unless iso >= start_iso && iso <= end_iso
+
+            cm_raw[iso] += n.to_i
+          end
+        end
+
+        start_d = Date.iso8601(start_iso)
+        end_d = Date.iso8601(end_iso)
+        bucket_dates = []
+        if weekly_bucketing
+          cutoff_d = Date.iso8601(cutoff_iso)
+          week = Date.iso8601(weekly_start_iso)
+          while week < cutoff_d
+            bucket_dates << week
+            week += 7
+          end
+          daily_start = [cutoff_d, start_d].max
+          bucket_dates.concat((daily_start..end_d).to_a)
+        else
+          bucket_dates.concat((start_d..end_d).to_a)
+        end
+
+        stats = {}
+        bucket_dates.each do |date|
+          iso = date.iso8601
+          keys = if weekly_bucketing && date < Date.iso8601(cutoff_iso)
+                   w_start = [date, start_d].max
+                   w_end = [date + 6, Date.iso8601(cutoff_iso) - 1, end_d].min
+                   (w_start..w_end).map(&:iso8601)
+                 else
+                   [iso]
+                 end
+
+          cm_sum = keys.sum { |d| cm_raw[d].to_i }
+          rx_base = { total: 0, like: 0, readinglist: 0, unicorn: 0,
+                      exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 }
+          rset = Set.new
+          keys.each do |d|
+            sub = rx_raw[d]
+            next if sub.empty?
+
+            rx_base[:total] += sub["total"].to_i
+            reaction_categories.each { |c| rx_base[c.to_sym] += sub[c].to_i }
+            sub["reactor_ids"].each { |uid| rset << uid }
+          end
+          rx_base[:unique_reactors] = rset.size
+
+          pv_t = 0
+          pv_s = 0
+          pv_l = 0
+          keys.each do |d|
+            sub = pv_raw[d]
+            next if sub.empty?
+
+            pv_t += sub["total"].to_i
+            pv_s += sub["sum_read_seconds"].to_i
+            pv_l += sub["logged_in_count"].to_i
+          end
+          pv_avg = pv_l.positive? ? (pv_s.to_f / pv_l).round : 0
+
+          stats[iso] = {
+            comments: { total: cm_sum },
+            follows: { total: follows_by_iso[iso] || 0 },
+            reactions: rx_base,
+            page_views: { total: pv_t, average_read_time_in_seconds: pv_avg,
+                          total_read_time_in_seconds: pv_t * pv_avg }
+          }
+        end
+        stats
+      end
+    end
+
+    it "returns nil for out-of-domain JSON types and invalid arguments so callers fall back cleanly",
+       :aggregate_failures do
+      expect(described_class.analytics_aggregate_totals(['{"2024-01-01":{"total":1.5}}'], [], [])).to be_nil
+      expect(described_class.analytics_aggregate_totals([], ['{"2024-01-01":{"reactor_ids":["x"]}}'], [])).to be_nil
+      expect(described_class.analytics_aggregate_totals([], ['{"2024-01-01":{"reactor_ids":42}}'], [])).to be_nil
+      expect(described_class.analytics_aggregate_totals(["not json"], [], [])).to be_nil
+      expect(described_class.analytics_aggregate_totals(nil, [], [])).to be_nil
+
+      expect(described_class.analytics_aggregate_referrers(['{"2024-01-01":{"a.com":1}}'], top: -1)).to be_nil
+      expect(described_class.analytics_aggregate_referrers(["{bad"], top: 5)).to be_nil
+
+      expect(described_class.analytics_aggregate_grouped_by_day(
+               [], [], [], {}, start_iso: "bad", end_iso: "2024-01-02"
+             )).to be_nil
+      expect(described_class.analytics_grouped_by_day_json(
+               [], [], [], {}, start_iso: "2024-01-01", end_iso: "2024-01-02",
+                               weekly_bucketing: true, weekly_start_iso: "2024-01-05", cutoff_iso: "2024-01-02"
+             )).to be_nil
+      expect(described_class.analytics_dashboard_json(
+               [[], [], []], follows_by_iso: {}, follows_total: 0,
+                             window: ["2024-01-01", "2024-01-01", false, nil, nil],
+                             top_contributors_json: "[]", follower_engagement_json: "{}",
+                             start_date_floor_iso: "2024-01-01"
+             )).to be_nil
+      expect(described_class.analytics_dashboard_json(
+               [[], [], [], []], follows_by_iso: {}, follows_total: 0,
+                                 window: ["2024-01-01", "2024-01-01", false, nil, nil],
+                                 top_contributors_json: "", follower_engagement_json: "{}",
+                                 start_date_floor_iso: "2024-01-01"
+             )).to be_nil
+      # i64::MAX / 1 rounds in f64 to 2^63 (Bignum in Ruby) -> defer cleanly instead of saturating.
+      expect(described_class.analytics_aggregate_totals(
+               ['{"2024-01-01":{"total":1,"sum_read_seconds":9223372036854775807,"logged_in_count":1}}'],
+               [], []
+             )).to be_nil
+      # Postgres jsonb::text whitespace formatting (spaces after `:` and `,`).
+      expect(described_class.analytics_aggregate_totals(
+               ['{"2024-01-01": {"total": 4, "sum_read_seconds": 60, "logged_in_count": 2}}'],
+               ['{"2024-01-01": {"total": 2, "like": 2, "reactor_ids": [1, 2]}}'],
+               ['{"2024-01-01": 3}'],
+             )).to eq([3, 2, 2, 0, 0, 0, 0, 0, 2, 4, 30, 120])
+    end
+
+    it "matches the legacy Ruby analytics aggregation and JSON encoding across 1,000 randomized payloads" do
+      rng = Random.new(424_242)
+      domains_pool = [
+        "google.com", "dev.to", "github.com", "t.co", "reddit.com", "news.ycombinator.com",
+        "sub.example.org", "a<b&c>.test", "quote\"slash\\domain.io", "café.dev", "日本語.jp"
+      ]
+
+      1_000.times do |i|
+        weekly = rng.rand(3).zero?
+        if weekly
+          start_d = Date.new(2019, 1, 1) + rng.rand(0..200)
+          span = rng.rand(181..400)
+          end_d = start_d + span
+          cutoff_d = end_d - 180
+          weekly_start_d = start_d - ((start_d.wday + 6) % 7) # Monday
+          weekly_start_iso = weekly_start_d.iso8601
+          cutoff_iso = cutoff_d.iso8601
+        else
+          start_d = Date.new(2020, 1, 1) + rng.rand(0..365)
+          end_d = start_d + rng.rand(0..30)
+          weekly_start_iso = nil
+          cutoff_iso = nil
+        end
+        start_iso = start_d.iso8601
+        end_iso = end_d.iso8601
+
+        num_articles = rng.rand(0..5)
+        activities = Array.new(num_articles) do
+          pv = {}
+          rx = {}
+          cm = {}
+          rf = {}
+
+          rng.rand(0..8).times do
+            day = (start_d - 10 + rng.rand(0..((end_d - start_d).to_i + 20))).iso8601
+            if rng.rand(2).zero?
+              pv[day] = {
+                "total" => rng.rand(0..500),
+                "sum_read_seconds" => rng.rand(0..10_000),
+                "logged_in_count" => rng.rand(0..50)
+              }
+            end
+            if rng.rand(2).zero?
+              counts = {
+                "like" => rng.rand(0..10),
+                "readinglist" => rng.rand(0..5),
+                "unicorn" => rng.rand(0..5),
+                "exploding_head" => rng.rand(0..3),
+                "raised_hands" => rng.rand(0..3),
+                "fire" => rng.rand(0..3)
+              }
+              counts["total"] = counts.values.sum
+              counts["reactor_ids"] = Array.new(rng.rand(0..8)) { rng.rand(1..20) }
+              rx[day] = counts
+            end
+            cm[day] = rng.rand(0..20) if rng.rand(2).zero?
+            next unless rng.rand(2).zero?
+
+            day_refs = {}
+            rng.rand(1..4).times do
+              day_refs[domains_pool[rng.rand(domains_pool.size)]] = rng.rand(1..100)
+            end
+            rf[day] = day_refs
+          end
+
+          { daily_page_views: pv, daily_reactions: rx, daily_comments: cm, daily_referrers: rf }
+        end
+
+        pv_jsons = activities.map { |a| JSON.generate(a[:daily_page_views]) }
+        rx_jsons = activities.map { |a| JSON.generate(a[:daily_reactions]) }
+        cm_jsons = activities.map { |a| JSON.generate(a[:daily_comments]) }
+        ref_jsons = activities.map { |a| JSON.generate(a[:daily_referrers]) }
+
+        follows_by_iso = {}
+        rng.rand(0..4).times do
+          key = (start_d + rng.rand(0..[(end_d - start_d).to_i, 0].max)).iso8601
+          follows_by_iso[key] = rng.rand(0..15)
+        end
+        follows_by_iso[weekly_start_iso] = rng.rand(1..10) if weekly_start_iso
+        follows_total = rng.rand(0..100)
+
+        # 1. Totals (both ranged and all-time)
+        range_start = rng.rand(2).zero? ? start_iso : nil
+        range_end = range_start ? end_iso : nil
+        actual_totals = described_class.analytics_aggregate_totals(
+          pv_jsons, rx_jsons, cm_jsons, start_iso: range_start, end_iso: range_end
+        )
+        expected_totals = legacy_aggregate_totals.call(activities, range_start, range_end)
+        expect(actual_totals).to eq(expected_totals), "iter #{i}: totals mismatch"
+
+        # 2. Referrers
+        top_n = rng.rand(0..10)
+        actual_refs = described_class.analytics_aggregate_referrers(
+          ref_jsons, start_iso: range_start, end_iso: range_end, top: top_n
+        )
+        expected_refs = legacy_aggregate_referrers.call(activities, range_start, range_end, top_n)
+        expect(actual_refs).to eq(expected_refs), "iter #{i}: referrers mismatch"
+
+        # 3. Grouped by day (Ruby Hash + streaming JSON)
+        actual_grouped = described_class.analytics_aggregate_grouped_by_day(
+          pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+          start_iso: start_iso, end_iso: end_iso,
+          weekly_bucketing: weekly, weekly_start_iso: weekly_start_iso, cutoff_iso: cutoff_iso
+        )
+        expected_grouped = legacy_grouped_by_day.call(
+          activities, follows_by_iso, start_iso, end_iso, weekly, weekly_start_iso, cutoff_iso
+        )
+        expect(actual_grouped).to eq(expected_grouped), "iter #{i}: grouped_by_day mismatch"
+
+        actual_grouped_json = described_class.analytics_grouped_by_day_json(
+          pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+          start_iso: start_iso, end_iso: end_iso,
+          weekly_bucketing: weekly, weekly_start_iso: weekly_start_iso, cutoff_iso: cutoff_iso
+        )
+        expect(actual_grouped_json).not_to be_nil, "iter #{i}: grouped_by_day_json returned nil"
+        expect(actual_grouped_json).to eq(expected_grouped.to_json),
+                                       "iter #{i}: grouped_by_day_json mismatch"
+
+        # 4. Fused Tier 2 dashboard JSON
+        all_totals_arr = legacy_aggregate_totals.call(activities, nil, nil)
+        expected_all_totals = {
+          comments: { total: all_totals_arr[0] },
+          follows: { total: follows_total },
+          reactions: {
+            total: all_totals_arr[1], like: all_totals_arr[2], readinglist: all_totals_arr[3],
+            unicorn: all_totals_arr[4], exploding_head: all_totals_arr[5],
+            raised_hands: all_totals_arr[6], fire: all_totals_arr[7], unique_reactors: all_totals_arr[8]
+          },
+          page_views: {
+            total: all_totals_arr[9], average_read_time_in_seconds: all_totals_arr[10],
+            total_read_time_in_seconds: all_totals_arr[11]
+          }
+        }
+        expected_dash_refs = {
+          domains: legacy_aggregate_referrers.call(activities, start_iso, end_iso, 20)
+            .map { |d, c| { domain: d, count: c } }
+        }
+        expected_dashboard = {
+          historical: expected_grouped,
+          totals: expected_all_totals,
+          referrers: expected_dash_refs,
+          top_contributors: [],
+          follower_engagement: { total_followers: follows_total, engaged_followers: 0, ratio: 0.0 },
+          start_date_floor: start_iso
+        }
+        actual_dash_json = described_class.analytics_dashboard_json(
+          [pv_jsons, rx_jsons, cm_jsons, ref_jsons],
+          follows_by_iso: follows_by_iso,
+          follows_total: follows_total,
+          window: [start_iso, end_iso, weekly, weekly_start_iso, cutoff_iso],
+          top_referrers: 20,
+          top_contributors_json: "[]",
+          # `ratio` is a Float, which `ForemNative.encode_json` intentionally declines,
+          # so serialize the engagement payload with ActiveSupport like the service does.
+          follower_engagement_json: expected_dashboard[:follower_engagement].to_json,
+          start_date_floor_iso: start_iso,
+        )
+        expect(actual_dash_json).not_to be_nil, "iter #{i}: dashboard_json returned nil"
+        expect(actual_dash_json).to eq(expected_dashboard.to_json),
+                                    "iter #{i}: dashboard_json mismatch"
+      end
+    end
+  end
 end

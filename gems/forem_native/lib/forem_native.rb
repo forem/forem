@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_sitemap_urlset_xml
+  LATEST_NATIVE_SYMBOL = :analytics_dashboard_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2444,6 +2444,72 @@ module ForemNative
       return unless rows.instance_of?(Array)
 
       Native.serialize_sitemap_urlset_xml(base_url, path_prefix, rows)
+    end
+
+    # Single-pass Rust aggregator over raw `article_activities` JSONB text columns for
+    # `AnalyticsService#totals_from_activities`. Returns a 12-element Array or `nil` on
+    # out-of-domain JSON types so the caller transparently falls back to Ruby.
+    def analytics_aggregate_totals(pv_jsons, rx_jsons, cm_jsons, start_iso: nil, end_iso: nil)
+      return unless Native.respond_to?(:analytics_aggregate_totals)
+      return unless pv_jsons.instance_of?(Array) && rx_jsons.instance_of?(Array) && cm_jsons.instance_of?(Array)
+
+      Native.analytics_aggregate_totals(pv_jsons, rx_jsons, cm_jsons, start_iso, end_iso)
+    end
+
+    # Single-pass Rust aggregator over raw `daily_referrers` JSONB text columns for
+    # `AnalyticsService#referrers_from_activities`. Returns `[[domain, count], ...]` or `nil`.
+    def analytics_aggregate_referrers(ref_jsons, start_iso: nil, end_iso: nil, top: 20)
+      return unless Native.respond_to?(:analytics_aggregate_referrers)
+      return unless ref_jsons.instance_of?(Array) && valid_i64_integer?(top)
+
+      Native.analytics_aggregate_referrers(ref_jsons, start_iso, end_iso, top)
+    end
+
+    # Single-pass Rust daily/weekly bucket aggregator for `AnalyticsService#grouped_by_day_from_activities`.
+    # Returns the nested Hash `{ "YYYY-MM-DD" => { comments:, follows:, reactions:, page_views: } }` or `nil`.
+    def analytics_aggregate_grouped_by_day(pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+                                           start_iso:, end_iso:, weekly_bucketing: false,
+                                           weekly_start_iso: nil, cutoff_iso: nil)
+      return unless Native.respond_to?(:analytics_aggregate_grouped_by_day)
+      return unless pv_jsons.instance_of?(Array) && rx_jsons.instance_of?(Array) && cm_jsons.instance_of?(Array)
+      return unless follows_by_iso.nil? || follows_by_iso.instance_of?(Hash)
+
+      Native.analytics_aggregate_grouped_by_day(
+        pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+        start_iso, end_iso, weekly_bucketing ? true : false, weekly_start_iso, cutoff_iso
+      )
+    end
+
+    # Single-pass Rust streaming JSON serializer for `AnalyticsService#grouped_by_day_json`.
+    def analytics_grouped_by_day_json(pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+                                      start_iso:, end_iso:, weekly_bucketing: false,
+                                      weekly_start_iso: nil, cutoff_iso: nil)
+      return unless Native.respond_to?(:analytics_grouped_by_day_json)
+      return unless pv_jsons.instance_of?(Array) && rx_jsons.instance_of?(Array) && cm_jsons.instance_of?(Array)
+      return unless follows_by_iso.nil? || follows_by_iso.instance_of?(Hash)
+
+      Native.analytics_grouped_by_day_json(
+        pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+        start_iso, end_iso, weekly_bucketing ? true : false, weekly_start_iso, cutoff_iso
+      )
+    end
+
+    # Tier 2 fused kernel: scans raw `article_activities` JSONB columns once to compute
+    # `historical`, all-time `totals`, and `referrers` simultaneously, streaming the full
+    # `/api/analytics/dashboard` JSON payload into a single pre-sized UTF-8 String.
+    def analytics_dashboard_json(activity_columns, follows_by_iso:, follows_total:, window:,
+                                 top_contributors_json:, follower_engagement_json:,
+                                 start_date_floor_iso:, top_referrers: 20)
+      return unless Native.respond_to?(:analytics_dashboard_json)
+      return unless activity_columns.instance_of?(Array) && activity_columns.size == 4
+      return unless window.instance_of?(Array) && window.size == 5
+      return unless follows_by_iso.nil? || follows_by_iso.instance_of?(Hash)
+      return unless valid_i64_integer?(follows_total) && valid_i64_integer?(top_referrers)
+
+      Native.analytics_dashboard_json(
+        activity_columns, follows_by_iso, follows_total, window, top_referrers,
+        top_contributors_json, follower_engagement_json, start_date_floor_iso
+      )
     end
 
     private

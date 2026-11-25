@@ -7,6 +7,7 @@
 //! 3. Compiled to `wasm32-unknown-unknown` (Option B) or standalone Rust services in future phases.
 
 pub mod ahoy_link;
+pub mod analytics;
 pub mod api_articles;
 pub mod api_collections;
 pub mod api_comments;

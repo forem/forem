@@ -8403,6 +8403,375 @@ fn serialize_sitemap_urlset_xml(
     Ok(xml.map(|s| ruby.str_new(&s)))
 }
 
+/// Borrows UTF-8 `&str` slices directly from a Ruby `Array` of UTF-8-compatible `String`s.
+///
+/// # Safety
+/// - `val` (and every `RString` element inside it) must remain rooted on the Ruby stack for the
+///   entire lifetime `'a` of the returned slices (e.g. a direct FFI argument or an element of a
+///   rooted container argument).
+/// - The caller must hold the Ruby GVL and must not invoke any Ruby VM allocation, GC, or method
+///   call while any returned `&str` slice is alive, so GC compaction cannot move or mutate the
+///   backing buffers.
+unsafe fn borrow_rarray_utf8_slices<'a>(val: &'a Value) -> Option<Vec<&'a str>> {
+    let arr = RArray::from_value(*val)?;
+    let slice = arr.as_slice();
+    let mut out = Vec::with_capacity(slice.len());
+    for &v in slice {
+        let s = RString::from_value(v)?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let raw = s.as_slice();
+        // SAFETY: `s` is rooted inside `*val` for `'a`; caller holds the GVL and makes no Ruby
+        // VM calls while the returned slices are alive.
+        let bytes: &'a [u8] = std::slice::from_raw_parts(raw.as_ptr(), raw.len());
+        let st = std::str::from_utf8(bytes).ok()?;
+        out.push(st);
+    }
+    Some(out)
+}
+
+fn collect_follows_map(ruby: &Ruby, val: Value) -> Option<std::collections::HashMap<String, i64>> {
+    let mut out = std::collections::HashMap::new();
+    if val.is_nil() {
+        return Some(out);
+    }
+    let hash = RHash::from_value(val)?;
+    let pairs = collect_hash_pairs(ruby, hash)?;
+    let slice = pairs.as_slice();
+    out.reserve(slice.len());
+    for &(k, v) in slice {
+        let ks = RString::from_value(k)?;
+        if !ks.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let key_str = std::str::from_utf8(unsafe { ks.as_slice() })
+            .ok()?
+            .to_owned();
+        let count = Integer::from_value(v)?.to_i64().ok()?;
+        out.insert(key_str, count);
+    }
+    Some(out)
+}
+
+fn extract_opt_utf8_string(val: Value) -> Option<Option<String>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let s = RString::from_value(val)?;
+    if !s.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let st = std::str::from_utf8(unsafe { s.as_slice() })
+        .ok()?
+        .to_owned();
+    Some(Some(st))
+}
+
+fn analytics_aggregate_totals(
+    ruby: &Ruby,
+    pv_val: Value,
+    rx_val: Value,
+    cm_val: Value,
+    start_val: Value,
+    end_val: Value,
+) -> Option<RArray> {
+    let start_iso = extract_opt_utf8_string(start_val)?;
+    let end_iso = extract_opt_utf8_string(end_val)?;
+
+    let res = {
+        // SAFETY: `pv_val`, `rx_val`, and `cm_val` are rooted FFI arguments; we hold the GVL
+        // and perform no Ruby VM calls or allocations within this block.
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_val) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_val) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_val) }?;
+        forem_core::analytics::analytics_aggregate_totals(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            start_iso.as_deref(),
+            end_iso.as_deref(),
+        )?
+    };
+
+    let arr = ruby.ary_new_capa(12);
+    arr.push(res.comments_total).ok()?;
+    arr.push(res.reactions.total).ok()?;
+    arr.push(res.reactions.like).ok()?;
+    arr.push(res.reactions.readinglist).ok()?;
+    arr.push(res.reactions.unicorn).ok()?;
+    arr.push(res.reactions.exploding_head).ok()?;
+    arr.push(res.reactions.raised_hands).ok()?;
+    arr.push(res.reactions.fire).ok()?;
+    arr.push(res.reactions.unique_reactors).ok()?;
+    arr.push(res.page_views.total).ok()?;
+    arr.push(res.page_views.average_read_time_in_seconds).ok()?;
+    arr.push(res.page_views.total_read_time_in_seconds).ok()?;
+    Some(arr)
+}
+
+fn analytics_aggregate_referrers(
+    ruby: &Ruby,
+    ref_val: Value,
+    start_val: Value,
+    end_val: Value,
+    top_val: Value,
+) -> Option<RArray> {
+    let start_iso = extract_opt_utf8_string(start_val)?;
+    let end_iso = extract_opt_utf8_string(end_val)?;
+    let top_i64 = Integer::from_value(top_val)?.to_i64().ok()?;
+    if top_i64 < 0 {
+        return None;
+    }
+    let top = usize::try_from(top_i64).ok()?;
+
+    let ranked = {
+        // SAFETY: `ref_val` is a rooted FFI argument; we hold the GVL and perform no Ruby VM
+        // calls or allocations within this block.
+        let ref_slices = unsafe { borrow_rarray_utf8_slices(&ref_val) }?;
+        forem_core::analytics::analytics_aggregate_referrers(
+            &ref_slices,
+            start_iso.as_deref(),
+            end_iso.as_deref(),
+            top,
+        )?
+    };
+
+    let out = ruby.ary_new_capa(ranked.len());
+    for (domain, count) in ranked {
+        let pair = ruby.ary_new_capa(2);
+        pair.push(ruby.str_new(&domain)).ok()?;
+        pair.push(count).ok()?;
+        out.push(pair).ok()?;
+    }
+    Some(out)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn analytics_aggregate_grouped_by_day(
+    ruby: &Ruby,
+    pv_val: Value,
+    rx_val: Value,
+    cm_val: Value,
+    follows_val: Value,
+    start_val: Value,
+    end_val: Value,
+    weekly_bucketing: bool,
+    weekly_start_val: Value,
+    cutoff_val: Value,
+) -> Option<RHash> {
+    let follows_owned = collect_follows_map(ruby, follows_val)?;
+    let start_iso = extract_opt_utf8_string(start_val)??;
+    let end_iso = extract_opt_utf8_string(end_val)??;
+    let weekly_start_iso = extract_opt_utf8_string(weekly_start_val)?;
+    let cutoff_iso = extract_opt_utf8_string(cutoff_val)?;
+
+    let buckets = {
+        // SAFETY: `pv_val`, `rx_val`, and `cm_val` are rooted FFI arguments; we hold the GVL
+        // and perform no Ruby VM calls or allocations within this block.
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_val) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_val) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_val) }?;
+        let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
+            .iter()
+            .map(|(k, &v)| (k.as_str(), v))
+            .collect();
+        forem_core::analytics::analytics_aggregate_grouped_by_day(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            &follows_ref,
+            &start_iso,
+            &end_iso,
+            weekly_bucketing,
+            weekly_start_iso.as_deref(),
+            cutoff_iso.as_deref(),
+        )?
+    };
+
+    let sym_comments = ruby.to_symbol("comments");
+    let sym_follows = ruby.to_symbol("follows");
+    let sym_reactions = ruby.to_symbol("reactions");
+    let sym_page_views = ruby.to_symbol("page_views");
+    let sym_total = ruby.to_symbol("total");
+    let sym_like = ruby.to_symbol("like");
+    let sym_readinglist = ruby.to_symbol("readinglist");
+    let sym_unicorn = ruby.to_symbol("unicorn");
+    let sym_exploding_head = ruby.to_symbol("exploding_head");
+    let sym_raised_hands = ruby.to_symbol("raised_hands");
+    let sym_fire = ruby.to_symbol("fire");
+    let sym_unique_reactors = ruby.to_symbol("unique_reactors");
+    let sym_avg_read = ruby.to_symbol("average_read_time_in_seconds");
+    let sym_total_read = ruby.to_symbol("total_read_time_in_seconds");
+
+    let out = ruby.hash_new_capa(buckets.len());
+    for b in buckets {
+        let cm_hash = ruby.hash_new_capa(1);
+        cm_hash.aset(sym_total, b.comments_total).ok()?;
+
+        let fl_hash = ruby.hash_new_capa(1);
+        fl_hash.aset(sym_total, b.follows_total).ok()?;
+
+        let rx_hash = ruby.hash_new_capa(8);
+        rx_hash.aset(sym_total, b.reactions.total).ok()?;
+        rx_hash.aset(sym_like, b.reactions.like).ok()?;
+        rx_hash
+            .aset(sym_readinglist, b.reactions.readinglist)
+            .ok()?;
+        rx_hash.aset(sym_unicorn, b.reactions.unicorn).ok()?;
+        rx_hash
+            .aset(sym_exploding_head, b.reactions.exploding_head)
+            .ok()?;
+        rx_hash
+            .aset(sym_raised_hands, b.reactions.raised_hands)
+            .ok()?;
+        rx_hash.aset(sym_fire, b.reactions.fire).ok()?;
+        rx_hash
+            .aset(sym_unique_reactors, b.reactions.unique_reactors)
+            .ok()?;
+
+        let pv_hash = ruby.hash_new_capa(3);
+        pv_hash.aset(sym_total, b.page_views.total).ok()?;
+        pv_hash
+            .aset(sym_avg_read, b.page_views.average_read_time_in_seconds)
+            .ok()?;
+        pv_hash
+            .aset(sym_total_read, b.page_views.total_read_time_in_seconds)
+            .ok()?;
+
+        let day_hash = ruby.hash_new_capa(4);
+        day_hash.aset(sym_comments, cm_hash).ok()?;
+        day_hash.aset(sym_follows, fl_hash).ok()?;
+        day_hash.aset(sym_reactions, rx_hash).ok()?;
+        day_hash.aset(sym_page_views, pv_hash).ok()?;
+
+        out.aset(ruby.str_new(&b.iso), day_hash).ok()?;
+    }
+    Some(out)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn analytics_grouped_by_day_json(
+    ruby: &Ruby,
+    pv_val: Value,
+    rx_val: Value,
+    cm_val: Value,
+    follows_val: Value,
+    start_val: Value,
+    end_val: Value,
+    weekly_bucketing: bool,
+    weekly_start_val: Value,
+    cutoff_val: Value,
+) -> Option<RString> {
+    let follows_owned = collect_follows_map(ruby, follows_val)?;
+    let start_iso = extract_opt_utf8_string(start_val)??;
+    let end_iso = extract_opt_utf8_string(end_val)??;
+    let weekly_start_iso = extract_opt_utf8_string(weekly_start_val)?;
+    let cutoff_iso = extract_opt_utf8_string(cutoff_val)?;
+
+    let json = {
+        // SAFETY: `pv_val`, `rx_val`, and `cm_val` are rooted FFI arguments; we hold the GVL
+        // and perform no Ruby VM calls or allocations within this block.
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_val) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_val) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_val) }?;
+        let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
+            .iter()
+            .map(|(k, &v)| (k.as_str(), v))
+            .collect();
+        forem_core::analytics::analytics_grouped_by_day_json(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            &follows_ref,
+            &start_iso,
+            &end_iso,
+            weekly_bucketing,
+            weekly_start_iso.as_deref(),
+            cutoff_iso.as_deref(),
+        )?
+    };
+
+    Some(ruby.str_new(&json))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn analytics_dashboard_json(
+    ruby: &Ruby,
+    activity_columns_val: Value,
+    follows_val: Value,
+    follows_total_val: Value,
+    window_val: Value,
+    top_referrers_val: Value,
+    top_contributors_json_val: Value,
+    follower_engagement_json_val: Value,
+    start_date_floor_iso_val: Value,
+) -> Option<RString> {
+    let cols_arr = RArray::from_value(activity_columns_val)?;
+    if cols_arr.len() != 4 {
+        return None;
+    }
+
+    let follows_owned = collect_follows_map(ruby, follows_val)?;
+    let follows_total = Integer::from_value(follows_total_val)?.to_i64().ok()?;
+
+    let win_arr = RArray::from_value(window_val)?;
+    if win_arr.len() != 5 {
+        return None;
+    }
+    let start_iso = extract_opt_utf8_string(win_arr.entry(0).ok()?)??;
+    let end_iso = extract_opt_utf8_string(win_arr.entry(1).ok()?)??;
+    let weekly_bucketing = win_arr.entry::<Value>(2).ok()?.to_bool();
+    let weekly_start_iso = extract_opt_utf8_string(win_arr.entry(3).ok()?)?;
+    let cutoff_iso = extract_opt_utf8_string(win_arr.entry(4).ok()?)?;
+
+    let top_i64 = Integer::from_value(top_referrers_val)?.to_i64().ok()?;
+    if top_i64 < 0 {
+        return None;
+    }
+    let top_referrers = usize::try_from(top_i64).ok()?;
+
+    let top_contributors_json = extract_opt_utf8_string(top_contributors_json_val)??;
+    let follower_engagement_json = extract_opt_utf8_string(follower_engagement_json_val)??;
+    let start_date_floor_iso = extract_opt_utf8_string(start_date_floor_iso_val)??;
+
+    let json = {
+        // SAFETY: `activity_columns_val` and its nested column arrays/strings are rooted FFI
+        // arguments; we hold the GVL and perform no Ruby VM calls or allocations within this block.
+        let pv_col: Value = cols_arr.entry(0).ok()?;
+        let rx_col: Value = cols_arr.entry(1).ok()?;
+        let cm_col: Value = cols_arr.entry(2).ok()?;
+        let ref_col: Value = cols_arr.entry(3).ok()?;
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_col) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_col) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_col) }?;
+        let ref_slices = unsafe { borrow_rarray_utf8_slices(&ref_col) }?;
+        let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
+            .iter()
+            .map(|(k, &v)| (k.as_str(), v))
+            .collect();
+        forem_core::analytics::analytics_dashboard_json(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            &ref_slices,
+            &follows_ref,
+            follows_total,
+            &start_iso,
+            &end_iso,
+            weekly_bucketing,
+            weekly_start_iso.as_deref(),
+            cutoff_iso.as_deref(),
+            top_referrers,
+            &top_contributors_json,
+            &follower_engagement_json,
+            &start_date_floor_iso,
+        )?
+    };
+
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -9088,6 +9457,26 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_sitemap_urlset_xml",
         function!(serialize_sitemap_urlset_xml, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_aggregate_totals",
+        function!(analytics_aggregate_totals, 5),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_aggregate_referrers",
+        function!(analytics_aggregate_referrers, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_aggregate_grouped_by_day",
+        function!(analytics_aggregate_grouped_by_day, 9),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_grouped_by_day_json",
+        function!(analytics_grouped_by_day_json, 9),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_dashboard_json",
+        function!(analytics_dashboard_json, 8),
     )?;
     Ok(())
 }

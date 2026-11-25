@@ -102,6 +102,7 @@ namespace :forem_native do
     benchmark_billboard_html
     benchmark_redcarpet_pipeline
     benchmark_sitemap_xml
+    benchmark_analytics_activity
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -2974,6 +2975,235 @@ namespace :forem_native do
     [
       ["sitemap_urlset_xml (750 rows)", legacy_urlset, native_urlset],
       ["sitemap_index_xml (251 pages)", legacy_index, native_index],
+    ].each do |label, legacy_fn, native_fn|
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark AnalyticsService activity aggregation & streaming JSON (ForemNative vs legacy Ruby)"
+  task benchmark_analytics_activity: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    rng = Random.new(24_932)
+    start_d = Date.new(2025, 11, 25)
+    end_d = Date.new(2026, 11, 25)
+    start_iso = start_d.iso8601
+    end_iso = end_d.iso8601
+    cutoff_d = end_d - AnalyticsService::DAILY_HISTORY_DAYS
+    weekly_start_d = start_d.beginning_of_week
+    weekly_start_iso = weekly_start_d.iso8601
+    cutoff_iso = cutoff_d.iso8601
+    domains_pool = %w[google.com dev.to github.com t.co reddit.com news.ycombinator.com sub.example.org]
+    reaction_categories = ArticleActivity::REACTION_CATEGORIES
+
+    activities = Array.new(50) do
+      pv = {}
+      rx = {}
+      cm = {}
+      rf = {}
+      60.times do
+        day = (start_d + rng.rand(0..365)).iso8601
+        pv[day] = {
+          "total" => rng.rand(5..400),
+          "sum_read_seconds" => rng.rand(30..5_000),
+          "logged_in_count" => rng.rand(1..30)
+        }
+        counts = reaction_categories.index_with { rng.rand(0..8) }
+        counts["total"] = counts.values.sum
+        counts["reactor_ids"] = Array.new(rng.rand(1..6)) { rng.rand(1..500) }
+        rx[day] = counts
+        cm[day] = rng.rand(0..10)
+        rf[day] = { domains_pool[rng.rand(domains_pool.size)] => rng.rand(1..50) }
+      end
+      { daily_page_views: pv, daily_reactions: rx, daily_comments: cm, daily_referrers: rf }
+    end
+
+    pv_jsons = activities.map { |a| JSON.generate(a[:daily_page_views]) }
+    rx_jsons = activities.map { |a| JSON.generate(a[:daily_reactions]) }
+    cm_jsons = activities.map { |a| JSON.generate(a[:daily_comments]) }
+    ref_jsons = activities.map { |a| JSON.generate(a[:daily_referrers]) }
+    follows_by_iso = { weekly_start_iso => 4, end_iso => 2 }
+    follows_total = 42
+    window = [start_iso, end_iso, true, weekly_start_iso, cutoff_iso]
+    engagement_hash = { total_followers: 42, engaged_followers: 10, ratio: 23.8 }
+    engagement_json = engagement_hash.to_json
+
+    legacy_grouped = lambda do
+      parsed = pv_jsons.each_index.map do |i|
+        {
+          daily_page_views: JSON.parse(pv_jsons[i]),
+          daily_reactions: JSON.parse(rx_jsons[i]),
+          daily_comments: JSON.parse(cm_jsons[i])
+        }
+      end
+      pv_raw = Hash.new { |h, k| h[k] = { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 } }
+      rx_raw = Hash.new do |h, k|
+        h[k] = { "total" => 0, "like" => 0, "readinglist" => 0, "unicorn" => 0,
+                 "exploding_head" => 0, "raised_hands" => 0, "fire" => 0, "reactor_ids" => [] }
+      end
+      cm_raw = Hash.new(0)
+      parsed.each do |a|
+        a[:daily_page_views].each do |iso, raw|
+          next unless iso >= start_iso && iso <= end_iso
+
+          pv_raw[iso]["total"] += raw["total"].to_i
+          pv_raw[iso]["sum_read_seconds"] += raw["sum_read_seconds"].to_i
+          pv_raw[iso]["logged_in_count"] += raw["logged_in_count"].to_i
+        end
+        a[:daily_reactions].each do |iso, raw|
+          next unless iso >= start_iso && iso <= end_iso
+
+          reaction_categories.each { |c| rx_raw[iso][c] += raw[c].to_i }
+          rx_raw[iso]["total"] += raw["total"].to_i
+          rx_raw[iso]["reactor_ids"].concat(Array(raw["reactor_ids"]))
+        end
+        a[:daily_comments].each do |iso, n|
+          cm_raw[iso] += n.to_i if iso >= start_iso && iso <= end_iso
+        end
+      end
+      bucket_dates = []
+      week = weekly_start_d
+      while week < cutoff_d
+        bucket_dates << week
+        week += 7
+      end
+      bucket_dates.concat(([cutoff_d, start_d].max..end_d).to_a)
+      stats = {}
+      bucket_dates.each do |date|
+        iso = date.iso8601
+        keys = if date < cutoff_d
+                 ([date, start_d].max..[date + 6, cutoff_d - 1, end_d].min).map(&:iso8601)
+               else
+                 [iso]
+               end
+        rset = Set.new
+        rx_b = { total: 0, like: 0, readinglist: 0, unicorn: 0,
+                 exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 }
+        pv_t = 0
+        pv_s = 0
+        pv_l = 0
+        keys.each do |d|
+          if (sub = rx_raw[d]).present?
+            rx_b[:total] += sub["total"].to_i
+            reaction_categories.each { |c| rx_b[c.to_sym] += sub[c].to_i }
+            sub["reactor_ids"].each { |uid| rset << uid }
+          end
+          sub = pv_raw[d]
+          next if sub.blank?
+
+          pv_t += sub["total"].to_i
+          pv_s += sub["sum_read_seconds"].to_i
+          pv_l += sub["logged_in_count"].to_i
+        end
+        rx_b[:unique_reactors] = rset.size
+        pv_avg = pv_l.positive? ? (pv_s.to_f / pv_l).round : 0
+        stats[iso] = {
+          comments: { total: keys.sum { |d| cm_raw[d].to_i } },
+          follows: { total: follows_by_iso[iso] || 0 },
+          reactions: rx_b,
+          page_views: { total: pv_t, average_read_time_in_seconds: pv_avg,
+                        total_read_time_in_seconds: pv_t * pv_avg }
+        }
+      end
+      stats
+    end
+
+    legacy_grouped_json = -> { legacy_grouped.call.to_json }
+    native_grouped_json = lambda do
+      ForemNative.analytics_grouped_by_day_json(
+        pv_jsons, rx_jsons, cm_jsons, follows_by_iso,
+        start_iso: start_iso, end_iso: end_iso,
+        weekly_bucketing: true, weekly_start_iso: weekly_start_iso, cutoff_iso: cutoff_iso
+      )
+    end
+
+    legacy_dashboard_json = lambda do
+      historical = legacy_grouped.call
+      ref_counts = Hash.new(0)
+      ref_jsons.each do |raw|
+        JSON.parse(raw).each do |iso, day_hash|
+          next unless iso >= start_iso && iso <= end_iso
+
+          day_hash.each { |domain, n| ref_counts[domain] += n.to_i }
+        end
+      end
+      pv_t = 0
+      pv_s = 0
+      pv_l = 0
+      pv_jsons.each do |raw|
+        JSON.parse(raw).each_value do |day|
+          pv_t += day["total"].to_i
+          pv_s += day["sum_read_seconds"].to_i
+          pv_l += day["logged_in_count"].to_i
+        end
+      end
+      pv_avg = pv_l.positive? ? (pv_s.to_f / pv_l).round : 0
+      rx_t = { total: 0, like: 0, readinglist: 0, unicorn: 0,
+               exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 }
+      rset = Set.new
+      rx_jsons.each do |raw|
+        JSON.parse(raw).each_value do |day|
+          rx_t[:total] += day["total"].to_i
+          reaction_categories.each { |c| rx_t[c.to_sym] += day[c].to_i }
+          Array(day["reactor_ids"]).each { |uid| rset << uid }
+        end
+      end
+      rx_t[:unique_reactors] = rset.size
+      cm_t = cm_jsons.sum { |raw| JSON.parse(raw).values.sum(&:to_i) }
+      domains = ref_counts.each_with_index
+        .sort_by { |(_, n), idx| [-n, idx] }
+        .first(20)
+        .map { |(d, n), _| { domain: d, count: n } }
+      {
+        historical: historical,
+        totals: {
+          comments: { total: cm_t },
+          follows: { total: follows_total },
+          reactions: rx_t,
+          page_views: { total: pv_t, average_read_time_in_seconds: pv_avg,
+                        total_read_time_in_seconds: pv_t * pv_avg }
+        },
+        referrers: { domains: domains },
+        top_contributors: [],
+        follower_engagement: engagement_hash,
+        start_date_floor: start_iso
+      }.to_json
+    end
+
+    native_dashboard_json = lambda do
+      ForemNative.analytics_dashboard_json(
+        [pv_jsons, rx_jsons, cm_jsons, ref_jsons],
+        follows_by_iso: follows_by_iso,
+        follows_total: follows_total,
+        window: window,
+        top_referrers: 20,
+        top_contributors_json: "[]",
+        follower_engagement_json: engagement_json,
+        start_date_floor_iso: start_iso,
+      )
+    end
+
+    [
+      ["analytics_grouped_by_day_json (50 articles, 366d)", legacy_grouped_json, native_grouped_json],
+      ["analytics_dashboard_json (50 articles, 366d)", legacy_dashboard_json, native_dashboard_json],
     ].each do |label, legacy_fn, native_fn|
       raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
 
