@@ -1,0 +1,30 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 74-76,145-146,355-363
+app/services/notifications.rb
+  h_f968154a99632d 110,130-139,142-143
+app/services/notifications/co_author/send.rb
+  h_f968154a99632d 49
+app/services/notifications/notifiable_action/send.rb
+  h_f968154a99632d 67
+gems/forem_native/crates/forem_core/src/notifications.rs
+  h_f968154a99632d 220,500-513
+lib/tasks/forem_native.rake
+  h_f968154a99632d 109,3543-3626
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 13215,13252,13265-13270
+spec/services/notifications/co_author/send_spec.rb
+  h_f968154a99632d 115-144
+spec/services/notifications/notifiable_action/send_spec.rb
+  h_f968154a99632d 289-297,299-303,305-311,314-317,319-377
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8594f7bea7c773156dd1362a10c4cae1d9bc57aa",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
