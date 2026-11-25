@@ -54,8 +54,8 @@ class SearchController < ApplicationController
   VALID_SORT_DIRECTIONS = %i[asc desc].freeze
 
   def tags
-    result = Search::Tag.search_documents(term: params[:name])
-    render json: { result: result }
+    result = Search::Tag.search_documents(term: params[:name], format: :json)
+    render_search_result(result)
   end
 
   def listings
@@ -72,9 +72,10 @@ class SearchController < ApplicationController
       priority_user_ids: priority_ids,
       recent_user_ids: current_user&.cached_recent_user_ids,
       requesting_user_id: current_user&.id,
+      format: :json,
     )
 
-    render json: { result: result }
+    render_search_result(result)
   end
 
   # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
@@ -141,6 +142,7 @@ class SearchController < ApplicationController
           sort_by: feed_params[:sort_by],
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
+          format: :json,
         )
       elsif class_name.Organization?
         Search::Organization.search_documents(
@@ -149,6 +151,7 @@ class SearchController < ApplicationController
           sort_by: feed_params[:sort_by],
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
+          format: :json,
         )
       elsif class_name.PodcastEpisode?
         Search::PodcastEpisode.search_documents(
@@ -157,6 +160,7 @@ class SearchController < ApplicationController
           sort_by: feed_params[:sort_by],
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
+          format: :json,
         )
       elsif class_name.User?
         Search::User.search_documents(
@@ -165,6 +169,7 @@ class SearchController < ApplicationController
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
           sort_direction: feed_params[:sort_direction],
+          format: :json,
         )
       elsif class_name.Article?
         search_postgres_article(format: :json)
@@ -173,14 +178,11 @@ class SearchController < ApplicationController
           term: feed_params[:search_fields],
           page: feed_params[:page],
           per_page: feed_params[:per_page],
+          format: :json,
         )
       end
 
-    if result.is_a?(Homepage::ArticleSerializer::EncodedJson)
-      render json: result.to_str
-    else
-      render json: { result: result }
-    end
+    render_search_result(result)
   end
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
@@ -195,12 +197,25 @@ class SearchController < ApplicationController
       tags: reaction_params[:tag_names],
       term: reaction_params[:search_fields],
       subforem_id: RequestStore.store[:subforem_id],
+      format: :json,
     )
 
-    render json: { result: result[:items], total: result[:total] }
+    if result.is_a?(Homepage::ArticleSerializer::EncodedJson)
+      render json: result.to_str
+    else
+      render json: { result: result[:items], total: result[:total] }
+    end
   end
 
   private
+
+  def render_search_result(result)
+    if result.is_a?(Homepage::ArticleSerializer::EncodedJson)
+      render json: result.to_str
+    else
+      render json: { result: result }
+    end
+  end
 
   def commentable_context(context_type)
     context_type.constantize if Comment::COMMENTABLE_TYPES.include?(context_type)

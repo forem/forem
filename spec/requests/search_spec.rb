@@ -286,6 +286,47 @@ RSpec.describe "Search", :proper_status do
         expect(response.parsed_body["result"].first).to include("name" => tag.name)
       end
     end
+
+    it "matches the Ruby serializer fallback bit-for-bit across all search entity types", :aggregate_failures do
+      sign_in authorized_user
+      Time.use_zone("UTC") do
+        expect(ForemNative.available?).to be(true)
+
+        article = create(:article, user: authorized_user, with_tags: false, title: "Rust <Native> & Search")
+        article.update_columns(cached_tag_list: "rust, ruby")
+        create(:reaction, category: :readinglist, reactable: article, user: authorized_user)
+        create(:comment, user: authorized_user, commentable: article, body_markdown: "Rails & Rust rocks!")
+        org = create(:organization, name: "Forem <Org>")
+        create(:podcast_episode, title: "Rust Episode", body: "Discussing Rails & Rust")
+        create(:tag, name: "rustlang", supported: true, short_summary: "Systems <lang>")
+
+        requests = [
+          search_reactions_path,
+          search_tags_path(name: "rust"),
+          search_usernames_path(username: authorized_user.username),
+          search_feed_content_path(class_name: "Comment", page: 0, per_page: 10),
+          search_feed_content_path(class_name: "Comment", search_fields: "rails", page: 0, per_page: 10),
+          search_feed_content_path(class_name: "Organization", search_fields: org.name, page: 0, per_page: 10),
+          search_feed_content_path(class_name: "PodcastEpisode", search_fields: "rails", page: 0, per_page: 10),
+          search_feed_content_path(class_name: "Tag", search_fields: "rust", page: 0, per_page: 10),
+          search_feed_content_path(class_name: "User", search_fields: authorized_user.name, page: 0, per_page: 10),
+        ]
+
+        native_bodies = requests.map do |path|
+          get path
+          expect(response).to have_http_status(:ok)
+          response.body
+        end
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+
+        requests.each_with_index do |path, idx|
+          get path
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq(native_bodies[idx]), "mismatch for #{path}"
+        end
+      end
+    end
   end
 
   describe "GET /search/reactions" do

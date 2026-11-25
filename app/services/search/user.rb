@@ -15,7 +15,8 @@ module Search
       DESC
     }.squish).freeze
 
-    def self.search_documents(term: nil, sort_by: :nil, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE)
+    def self.search_documents(term: nil, sort_by: :nil, sort_direction: :desc, page: 0, per_page: DEFAULT_PER_PAGE,
+                              format: :hash)
       # NOTE: we should eventually update the frontend
       # to start from page 1
       page = page.to_i + 1
@@ -34,6 +35,11 @@ module Search
       relation = sort(relation, sort_by, sort_direction)
 
       relation = relation.page(page).per(per_page)
+
+      if format == :json && ForemNative.available?
+        json = serialize_json_natively(relation)
+        return Homepage::ArticleSerializer::EncodedJson.new(json) if json
+      end
 
       serialize(relation)
     end
@@ -68,5 +74,18 @@ module Search
         .pluck(:attributes)
     end
     private_class_method :serialize
+
+    def self.serialize_json_natively(users)
+      users_flat = []
+      users.each do |user|
+        users_flat.push(user.id, user.name, user.profile_image_90, user.username)
+      end
+
+      ForemNative.serialize_search_users_json(
+        users_flat,
+        escape_html: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+      )
+    end
+    private_class_method :serialize_json_natively
   end
 end

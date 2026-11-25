@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :gsub_literal
+  LATEST_NATIVE_SYMBOL = :serialize_search_usernames_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2565,6 +2565,74 @@ module ForemNative
         reaction_categories_flat,
         config,
       )
+    end
+
+    # Streams `{"result":[...],"total":N}` for `Search::ReadingList` / `SearchController#reactions`.
+    def serialize_search_reading_list_json(items_flat, users_flat, total, current_year, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_reading_list_json)
+      return unless items_flat.is_a?(Array) && users_flat.is_a?(Array) &&
+        valid_i64_integer?(total) && valid_i64_integer?(current_year)
+
+      Native.serialize_search_reading_list_json(
+        items_flat,
+        users_flat,
+        total,
+        current_year,
+        escape_html ? true : false,
+      )
+    end
+
+    # Streams `{"result":[...]}` for `Search::Comment` / `SearchController#feed_content`.
+    def serialize_search_comments_json(comments_flat, users_flat, current_year, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_comments_json)
+      return unless comments_flat.is_a?(Array) && users_flat.is_a?(Array) && valid_i64_integer?(current_year)
+
+      Native.serialize_search_comments_json(
+        comments_flat,
+        users_flat,
+        current_year,
+        escape_html ? true : false,
+      )
+    end
+
+    # Streams `{"result":[...]}` for `Search::Organization` / `SearchController#feed_content`.
+    def serialize_search_organizations_json(orgs_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_organizations_json)
+      return unless orgs_flat.is_a?(Array)
+
+      Native.serialize_search_organizations_json(orgs_flat, escape_html ? true : false)
+    end
+
+    # Streams `{"result":[...]}` for `Search::PodcastEpisode` / `SearchController#feed_content`.
+    def serialize_search_podcast_episodes_json(episodes_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_podcast_episodes_json)
+      return unless episodes_flat.is_a?(Array)
+
+      Native.serialize_search_podcast_episodes_json(episodes_flat, escape_html ? true : false)
+    end
+
+    # Streams `{"result":[...]}` for `Search::Tag` / `SearchController#tags` & `feed_content`.
+    def serialize_search_tags_json(tags_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_tags_json)
+      return unless tags_flat.is_a?(Array)
+
+      Native.serialize_search_tags_json(tags_flat, escape_html ? true : false)
+    end
+
+    # Streams `{"result":[...]}` for `Search::User` (`Search::SimpleUserSerializer`).
+    def serialize_search_users_json(users_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_users_json)
+      return unless users_flat.is_a?(Array)
+
+      Native.serialize_search_users_json(users_flat, escape_html ? true : false)
+    end
+
+    # Streams `{"result":[...]}` for `Search::Username` (`Search::NestedUserSerializer`).
+    def serialize_search_usernames_json(users_flat, escape_html: true)
+      return unless Native.respond_to?(:serialize_search_usernames_json)
+      return unless users_flat.is_a?(Array)
+
+      Native.serialize_search_usernames_json(users_flat, escape_html ? true : false)
     end
 
     private

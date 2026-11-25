@@ -12,12 +12,16 @@ module Search
     DEFAULT_SORT_DIRECTION = :desc
     private_constant :DEFAULT_SORT_DIRECTION
 
+    ORG_ATTRIBUTES = %i[id name summary profile_image twitter_username slug].freeze
+    private_constant :ORG_ATTRIBUTES
+
     def self.search_documents(
       term: nil,
       sort_by: DEFAULT_SORT_BY,
       sort_direction: DEFAULT_SORT_DIRECTION,
       page: 0,
-      per_page: DEFAULT_PER_PAGE
+      per_page: DEFAULT_PER_PAGE,
+      format: :hash
     )
 
       page = page.to_i + 1
@@ -29,11 +33,32 @@ module Search
 
       relation = sort(relation, term, sort_by, sort_direction).page(page).per(per_page)
 
+      if format == :json && ForemNative.available?
+        json = serialize_json_natively(relation.select(*ORG_ATTRIBUTES))
+        return Homepage::ArticleSerializer::EncodedJson.new(json) if json
+      end
+
       Search::OrganizationSerializer
         .new(relation, is_collection: true)
         .serializable_hash[:data]
         .pluck(:attributes)
     end
+
+    def self.serialize_json_natively(relation)
+      orgs_flat = []
+      relation.each do |org|
+        uploader = org.profile_image
+        return nil unless uploader.is_a?(CarrierWave::Uploader::Base)
+
+        orgs_flat.push(org.id, org.name, org.summary, uploader.url, org.twitter_username, org.slug)
+      end
+
+      ForemNative.serialize_search_organizations_json(
+        orgs_flat,
+        escape_html: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+      )
+    end
+    private_class_method :serialize_json_natively
 
     def self.sort(relation, term, sort_by, sort_direction)
       return relation if term.present? && sort_by.blank?
