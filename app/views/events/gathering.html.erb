@@ -13,8 +13,6 @@
 <%
   type_key = @event.meetup? ? "meetups" : "conferences"
   type_landing_path = @event.meetup? ? meetups_path : conferences_path
-  banner_1x = event_banner_image_url(@event, width: 1600)
-  banner_2x = event_banner_image_url(@event, width: 3200)
   now = Time.current
   external_url = safe_event_url(@event.data&.dig("registration_url") || @event.data&.dig("website_url"))
   external_cta_label = @event.data&.dig("registration_url").present? ? t("views.events.gathering.register_external") : t("views.events.gathering.visit_website")
@@ -25,16 +23,7 @@
 
 <%= render "event_tabs" %>
 
-<div class="event-brand-shell" style="--event-brand-color: <%= @event.background_hex_color %>;">
-  <% if banner_1x.present? %>
-    <div class="event-brand-cover">
-      <img src="<%= banner_1x %>"
-           <% if banner_2x.present? && banner_2x != banner_1x %>srcset="<%= banner_1x %> 1x, <%= banner_2x %> 2x"<% end %>
-           alt="<%= @event.title %>">
-    </div>
-  <% end %>
-  <div class="event-brand-line" aria-hidden="true"></div>
-</div>
+<%= render "brand_banner", event: @event %>
 
 <div class="event-show-layout event-page-container">
   <% if !@event.published? %>
@@ -164,66 +153,7 @@
     </main>
 
     <aside class="event-detail-columns__aside">
-      <div class="crayons-card p-5 mb-5">
-        <% if @event.end_time > now %>
-          <div class="event-sidebar-block">
-            <h3 class="event-sidebar-heading mb-1"><%= t("views.events.gathering.register_heading") %></h3>
-            <p class="fs-s color-base-60 mb-3 mt-0"><%= t("views.events.gathering.register_description") %></p>
-            <%= render "signup_button", event: @event, extra_classes: "w-100 text-center justify-center" %>
-            <a href="<%= event_google_calendar_url(@event) %>"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="crayons-btn crayons-btn--secondary w-100 text-center justify-center mt-2">
-              <%= t("views.events.stream.add_to_calendar") %>
-            </a>
-          </div>
-        <% end %>
-
-        <div class="<%= 'event-sidebar-block event-sidebar-block--divided' if @event.end_time > now %>">
-          <h3 class="event-sidebar-heading"><%= t("views.events.gathering.details") %></h3>
-          <ul class="event-details-list">
-            <li>
-              <span class="event-details-list__label"><%= t("views.events.gathering.dates") %></span>
-              <span class="event-details-list__value">
-                <time class="js-event-local-time"
-                      datetime="<%= @event.start_time.iso8601 %>"
-                      data-start-iso="<%= @event.start_time.iso8601 %>"
-                      data-end-iso="<%= @event.end_time.iso8601 %>">
-                  <%= event_datetime_range(@event) %>
-                </time>
-              </span>
-            </li>
-            <li>
-              <span class="event-details-list__label"><%= t("views.events.gathering.location") %></span>
-              <span class="event-details-list__value"><%= @event.location_display %></span>
-            </li>
-            <li>
-              <span class="event-details-list__label"><%= t("views.events.gathering.format") %></span>
-              <span class="event-details-list__value"><%= @event.format_pill_label %></span>
-            </li>
-            <% if host.present? %>
-              <li>
-                <span class="event-details-list__label"><%= t("views.events.gathering.host") %></span>
-                <span class="event-details-list__value">
-                  <% if host_path.present? %>
-                    <a href="<%= host_path %>" class="c-link c-link--branded fw-medium"><%= host.name %></a>
-                  <% else %>
-                    <%= host.name %>
-                  <% end %>
-                </span>
-              </li>
-            <% end %>
-          </ul>
-
-          <% if external_url.present? %>
-            <div class="mt-4 pt-4 border-t">
-              <a href="<%= external_url %>" target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--outlined w-100 text-center justify-center">
-                <%= external_cta_label %>
-              </a>
-            </div>
-          <% end %>
-        </div>
-      </div>
+      <%= render "gathering_sidebar", event: @event, now: now %>
     </aside>
   </div>
 

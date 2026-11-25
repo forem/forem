@@ -28,9 +28,11 @@
 <% else %>
   <%= render "event_tabs" %>
 
+  <%= render "brand_banner", event: @event, fallback_to_cover: @event.challenge? %>
+
   <div class="event-show-layout event-page-container">
     <% if !@event.published? %>
-      <div class="crayons-notice crayons-notice--warning mb-5 p-4 text-center">
+      <div class="crayons-notice crayons-notice--warning mb-5 p-3 fs-s text-center">
         <strong><%= t("views.events.draft_notice.heading") %></strong> <%= t("views.events.draft_notice.body") %>
         <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2"><%= t("views.events.draft_notice.edit") %></a>
       </div>
@@ -40,42 +42,46 @@
 
     <%= render "live_ribbon" %>
 
-    <main id="main-content">
-      <article class="crayons-card event-subpage-card">
-        <% unless is_showcase_view %>
-          <header class="event-subpage-card__header">
-            <div class="event-subpage-card__header-main">
-              <div class="event-subpage-card__eyebrow">
-                <a href="<%= event_path(@event.event_name_slug, @event.event_variation_slug) %>" class="c-link c-link--branded fw-medium">
-                  <%= @event.title %>
-                </a>
-                <span aria-hidden="true">&middot;</span>
-                <time class="js-event-local-time"
-                      datetime="<%= @event.start_time.iso8601 %>"
-                      data-start-iso="<%= @event.start_time.iso8601 %>"
-                      data-end-iso="<%= @event.end_time.iso8601 %>">
-                  <%= event_datetime_range(@event) %>
-                </time>
+    <div class="event-detail-columns">
+      <main class="event-detail-columns__main" id="main-content">
+        <article class="crayons-card event-subpage-card">
+          <% unless is_showcase_view %>
+            <header class="event-subpage-card__header">
+              <div class="event-subpage-card__header-main">
+                <div class="event-subpage-card__eyebrow">
+                  <a href="<%= event_path(@event.event_name_slug, @event.event_variation_slug) %>" class="c-link c-link--branded fw-medium">
+                    <%= @event.title %>
+                  </a>
+                  <span aria-hidden="true">&middot;</span>
+                  <time class="js-event-local-time"
+                        datetime="<%= @event.start_time.iso8601 %>"
+                        data-start-iso="<%= @event.start_time.iso8601 %>"
+                        data-end-iso="<%= @event.end_time.iso8601 %>">
+                    <%= event_datetime_range(@event) %>
+                  </time>
+                </div>
+                <h1 class="event-subpage-card__title"><%= @event_page.title %></h1>
+                <% if @event_page.description.present? %>
+                  <p class="event-subpage-card__desc"><%= @event_page.description %></p>
+                <% end %>
               </div>
-              <h1 class="event-subpage-card__title"><%= @event_page.title %></h1>
-              <% if @event_page.description.present? %>
-                <p class="event-subpage-card__desc"><%= @event_page.description %></p>
-              <% end %>
-            </div>
+            </header>
+          <% end %>
 
-            <% if @event.end_time > now %>
-              <div class="event-subpage-card__actions">
-                <%= render "signup_button", event: @event %>
-              </div>
-            <% end %>
-          </header>
+          <div class="event-subpage-card__body crayons-article__body text-styles event-page-body">
+            <%= @event_page.processed_html.html_safe %>
+          </div>
+        </article>
+      </main>
+
+      <aside class="event-detail-columns__aside">
+        <% if @event.challenge? %>
+          <%= render "challenge_sidebar", event: @event, now: now %>
+        <% else %>
+          <%= render "gathering_sidebar", event: @event, now: now %>
         <% end %>
-
-        <div class="event-subpage-card__body crayons-article__body text-styles event-page-body">
-          <%= @event_page.processed_html.html_safe %>
-        </div>
-      </article>
-    </main>
+      </aside>
+    </div>
 
     <%= render "local_time_script" %>
   </div>

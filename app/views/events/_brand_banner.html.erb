@@ -1,0 +1,16 @@
+<%
+  event = local_assigns[:event] || @event
+  fallback_to_cover = local_assigns.fetch(:fallback_to_cover, false)
+  banner_1x = event_banner_image_url(event, width: 1600, fallback_to_cover: fallback_to_cover)
+  banner_2x = event_banner_image_url(event, width: 3200, fallback_to_cover: fallback_to_cover)
+%>
+<div class="event-brand-shell" style="--event-brand-color: <%= event.background_hex_color %>;">
+  <% if banner_1x.present? %>
+    <div class="event-brand-cover">
+      <img src="<%= banner_1x %>"
+           <% if banner_2x.present? && banner_2x != banner_1x %>srcset="<%= banner_1x %> 1x, <%= banner_2x %> 2x"<% end %>
+           alt="<%= event.title %>">
+    </div>
+  <% end %>
+  <div class="event-brand-line" aria-hidden="true"></div>
+</div>

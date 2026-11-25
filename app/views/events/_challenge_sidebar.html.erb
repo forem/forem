@@ -1,0 +1,81 @@
+<%
+  event = local_assigns[:event] || @event
+  now = local_assigns[:now] || Time.current
+%>
+<% if event.end_time > now %>
+  <% challenge_signed_up = @signed_up_event_ids ? @signed_up_event_ids.include?(event.id) : (current_user && current_user.event_signups.exists?(event: event)) %>
+  <div class="crayons-card p-4 mb-6 text-center">
+    <h3 class="font-bold mb-2">Join the Challenge</h3>
+    <p class="fs-s color-base-70 mb-4">Express interest to receive challenge reminders and updates.</p>
+    <button data-event-signup-button="true"
+            data-event-name-slug="<%= event.event_name_slug %>"
+            data-event-variation-slug="<%= event.event_variation_slug %>"
+            data-signup-confirm-message="Are you sure you want to cancel your interest?"
+            data-signed-up-class="crayons-btn--outlined"
+            data-unsigned-up-class="crayons-btn--primary"
+            class="crayons-btn w-100 text-center justify-center <%= challenge_signed_up ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+            data-signed-up="<%= challenge_signed_up ? 'true' : 'false' %>">
+      <template data-signed-up-html>
+        <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Joined
+      </template>
+      <template data-unsigned-up-html>
+        Join Challenge
+      </template>
+
+      <% if challenge_signed_up %>
+        <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Joined
+      <% else %>
+        Join Challenge
+      <% end %>
+    </button>
+  </div>
+<% end %>
+
+<div class="crayons-card p-4 mb-6">
+  <h3 class="font-bold mb-4">Key Dates</h3>
+  <ul class="space-y-3 fs-s color-base-80">
+    <li>
+      <div class="font-bold">Contest Start</div>
+      <div><%= event.start_time.in_time_zone(event.time_zone).strftime("%B %d, %Y") %></div>
+    </li>
+    <li>
+      <div class="font-bold">Submissions Due</div>
+      <div><%= event.end_time.in_time_zone(event.time_zone).strftime("%B %d, %Y") %></div>
+    </li>
+    <% winners_announced = event.data&.dig('winners_announced_date') %>
+    <% if winners_announced.present? %>
+      <li>
+        <div class="font-bold">Winners Announced</div>
+        <div><%= winners_announced %></div>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<% badges = event.data&.dig('badge_rewards') %>
+<% if badges.is_a?(Array) && badges.any? %>
+  <div class="crayons-card p-4 mb-6">
+    <h3 class="font-bold mb-4">Badge Rewards</h3>
+    <div class="grid grid-cols-2 gap-4">
+      <% badges.each do |badge| %>
+        <div class="text-center">
+          <img src="<%= badge['image_url'] %>" alt="<%= badge['name'] %>" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto 8px;">
+          <div class="fs-xs font-bold leading-tight"><%= badge['name'] %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% launch_post_url = event.data&.dig('launch_post_url') %>
+<% if launch_post_url.present? && launch_post_url.to_s.start_with?("/", "http://", "https://") %>
+  <div class="crayons-card p-4 mb-6">
+    <h3 class="font-bold mb-2">Find Out More</h3>
+    <p class="fs-s color-base-70 mb-4">Ask questions and share your ideas on the Launch Post.</p>
+    <a href="<%= launch_post_url %>" class="crayons-btn crayons-btn--outlined w-100 text-center justify-center">
+      View Launch Post
+    </a>
+  </div>
+<% end %>
