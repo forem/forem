@@ -60,6 +60,19 @@ RSpec.describe "Search", :proper_status do
       expect(response.parsed_body["result"]).to be_present
     end
 
+    it "pages through articles with the same published_at without repeats or gaps" do
+      published_at = 1.day.ago
+      articles = create_list(:article, 5, with_tags: false)
+      articles.each { |article| article.update_columns(published_at: published_at) }
+
+      paged_ids = (0..2).flat_map do |page|
+        get search_feed_content_path(homepage_params.merge(page: page, per_page: 2))
+        response.parsed_body["result"].pluck("id")
+      end
+
+      expect(paged_ids).to eq(articles.map(&:id).sort.reverse)
+    end
+
     it "returns empty result without querying articles when page exceeds MAX_PAGE" do
       allow(Homepage::FetchArticles).to receive(:call)
       allow(Search::Article).to receive(:search_documents)
