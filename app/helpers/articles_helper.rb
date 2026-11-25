@@ -92,20 +92,24 @@ module ArticlesHelper
     t("views.articles.comment_cue.#{bucket}")
   end
 
-  # Sanitizing an article body for RSS (a Nokogiri parse in plain_html plus a Loofah
-  # scrub of every node) costs several ms per item, and the result depends only on
-  # processed_html, so it is cached per distinct body and fetched in one round-trip.
+  # Sanitizing an article body for RSS (a Nokogiri parse in plain_html when highlight
+  # panels or character references are present plus a Loofah scrub of every node) costs
+  # several ms per item, and the result depends only on processed_html, so non-empty bodies
+  # are cached per distinct body in one batched fetch_multi round-trip.
   def feed_item_descriptions(articles, **sanitize_options)
-    keys_by_article_id = articles.to_h do |article|
-      [article.id, "rss_feed_description/v1/#{Digest::MD5.hexdigest(article.processed_html.to_s)}"]
-    end
-    articles_by_key = articles.index_by { |article| keys_by_article_id[article.id] }
+    return {} if articles.blank?
+
+    keys_by_article_id, articles_by_key, result = partition_feed_description_keys(articles)
+    return result if articles_by_key.empty?
 
     descriptions = Rails.cache.fetch_multi(*articles_by_key.keys, expires_in: 6.hours) do |key|
       sanitize(articles_by_key[key].plain_html, **sanitize_options).to_str
     end
 
-    keys_by_article_id.transform_values { |key| descriptions[key] }
+    keys_by_article_id.each do |article_id, key|
+      result[article_id] = descriptions[key]
+    end
+    result
   end
 
   # Builds the /api/v0/articles index payload directly as Hashes so Jbuilder avoids
@@ -185,5 +189,25 @@ module ArticlesHelper
       comment.body_markdown.to_s.include?("youtube") ||
         (sub_comments.present? && comment_tree_includes_youtube?(sub_comments))
     end
+  end
+
+  def partition_feed_description_keys(articles)
+    keys_by_article_id = {}
+    articles_by_key = {}
+    result = {}
+
+    articles.each do |article|
+      html = article.processed_html.to_s
+      if html.empty?
+        result[article.id] = ""
+        next
+      end
+
+      key = "rss_feed_description/v1/#{Digest::MD5.hexdigest(html)}"
+      keys_by_article_id[article.id] = key
+      articles_by_key[key] ||= article
+    end
+
+    [keys_by_article_id, articles_by_key, result]
   end
 end

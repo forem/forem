@@ -196,4 +196,53 @@ describe ArticlesHelper do
       expect(helper.should_show_updated_on?(article)).to be false
     end
   end
+
+  describe "#feed_item_descriptions" do
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before { allow(Rails).to receive(:cache).and_return(memory_store) }
+
+    it "batches cache misses into a single write_multi and skips Nokogiri unless panels or entities are present" do
+      plain = build(:article, id: 101, processed_html: "<p>Hello world</p>")
+      panel = build(:article, id: 102, processed_html: '<div class="highlight__panel">x</div><p>Code</p>')
+      encoded_html = '<div class="highlight&#95;_panel">x</div><p>Encoded</p>'
+      encoded_panel = build(:article, id: 103, processed_html: encoded_html)
+      blank_article = build(:article, id: 104, processed_html: nil)
+
+      allow(Nokogiri::HTML).to receive(:fragment).and_call_original
+      allow(memory_store).to receive(:write_multi).and_call_original
+      allow(memory_store).to receive(:write)
+
+      descriptions = helper.feed_item_descriptions([plain, panel, encoded_panel, blank_article],
+                                                   scrubber: FeedMarkdownScrubber.new)
+
+      expect(descriptions).to eq(101 => "<p>Hello world</p>", 102 => "<p>Code</p>", 103 => "<p>Encoded</p>", 104 => "")
+      expect(memory_store).to have_received(:write_multi).once
+      expect(memory_store).not_to have_received(:write)
+      expect(Nokogiri::HTML).to have_received(:fragment).twice
+    end
+
+    it "reuses cached descriptions across duplicate bodies while batching only misses" do
+      warm_html = "<p>Cached body</p>"
+      new_html = "<p>Fresh body</p>"
+      helper.feed_item_descriptions([build(:article, id: 105, processed_html: warm_html)],
+                                    scrubber: FeedMarkdownScrubber.new)
+
+      allow(helper).to receive(:sanitize).and_call_original
+      allow(memory_store).to receive(:write_multi).and_call_original
+
+      first_cached = build(:article, id: 106, processed_html: warm_html)
+      second_cached = build(:article, id: 107, processed_html: warm_html)
+      uncached = build(:article, id: 108, processed_html: new_html)
+
+      descriptions = helper.feed_item_descriptions([first_cached, second_cached, uncached],
+                                                   scrubber: FeedMarkdownScrubber.new)
+
+      new_key = "rss_feed_description/v1/#{Digest::MD5.hexdigest(new_html)}"
+      expect(descriptions).to eq(106 => warm_html, 107 => warm_html, 108 => new_html)
+      expect(helper).to have_received(:sanitize).with(new_html, scrubber: kind_of(FeedMarkdownScrubber)).once
+      expect(memory_store).to have_received(:write_multi).with({ new_key => new_html },
+                                                               hash_including(expires_in: 6.hours)).once
+    end
+  end
 end

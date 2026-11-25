@@ -1347,7 +1347,10 @@ class Article < ApplicationRecord
   end
 
   def plain_html
-    doc = Nokogiri::HTML.fragment(processed_html)
+    html = processed_html.to_s
+    return html unless html.include?("highlight__panel") || html.include?("&")
+
+    doc = Nokogiri::HTML.fragment(html)
     doc.search(".highlight__panel").each(&:remove)
     doc.to_html
   end
