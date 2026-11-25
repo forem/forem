@@ -94,6 +94,33 @@ RSpec.describe "Admin::Events" do
         expect(response.body).to include(event.title)
         expect(response.body).to include("No signups for this event yet.")
       end
+
+      it "sanitizes unsafe external banner_image_url values and matches sub-event label for/id on show" do
+        event.update!(data: { "banner_image_url" => "javascript:alert(1)" })
+        create(:event, title: "Candidate Sub Event")
+
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include('src="javascript:alert(1)"')
+        expect(response.body).not_to include('href="javascript:alert(1)"')
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.at_css('label[for="attach-sub-event-select"]')).to be_present
+        expect(doc.at_css("select#attach-sub-event-select")).to be_present
+      end
+
+      it "sanitizes unsafe external banner_image_url values and wires branding anchor and label ids on edit" do
+        event.update!(data: { "banner_image_url" => "javascript:alert(1)" })
+
+        get edit_admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include('src="javascript:alert(1)"')
+        expect(response.body).not_to include('href="javascript:alert(1)"')
+        edit_doc = Nokogiri::HTML(response.body)
+        expect(edit_doc.at_css("section#branding")).to be_present
+        expect(edit_doc.at_css('label[for="event_name_slug_input"]')).to be_present
+        expect(edit_doc.at_css('label[for="event_variation_slug_input"]')).to be_present
+        expect(edit_doc.at_css('label[for="admin-event-color-hex"]')).to be_present
+      end
     end
 
     context "when logged in as a normal user" do
@@ -301,9 +328,21 @@ RSpec.describe "Admin::Events" do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "renders a blank new event form when no fork parameter is passed" do
-        get new_admin_event_path
+      it "renders a blank new event form without scanning the organizations table" do
+        create_list(:organization, 2)
+        unbounded_org_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql].to_s
+          unbounded_org_queries << sql if sql.include?('FROM "organizations"') && sql.exclude?("LIMIT")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get new_admin_event_path
+        end
+
         expect(response).to have_http_status(:success)
+        expect(unbounded_org_queries).to be_empty
+        expect(response.body).to include('name="event[organization_id]"', 'type="number"')
       end
 
       it "pre-fills the form with attributes from the original event when fork_from_id is passed" do

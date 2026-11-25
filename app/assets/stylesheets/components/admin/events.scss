@@ -570,29 +570,33 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-  }
 
-  &__item {
-    display: flex !important;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--base-10);
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: background-color 0.12s ease;
+    .admin-event-parent-picker__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--base-10);
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background-color 0.12s ease;
 
-    &:last-child {
-      border-bottom: none;
-    }
+      &[hidden] {
+        display: none;
+      }
 
-    &:hover {
-      background: var(--base-5);
-    }
+      &:last-child {
+        border-bottom: none;
+      }
 
-    &.is-selected {
-      background: rgba(var(--accent-brand-rgb), 0.08);
+      &:hover {
+        background: var(--base-5);
+      }
+
+      &.is-selected {
+        background: rgba(var(--accent-brand-rgb), 0.08);
+      }
     }
   }
 

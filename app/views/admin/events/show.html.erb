@@ -5,8 +5,9 @@
   hierarchy_count = @parent_memberships.size + @child_memberships.size
   billboards_count = @event.billboards.size
   signups_count = @event_signups.total_count
-  banner_preview_url = @event.banner_image_url
-  social_preview_url = @event.social_image_url
+  uploaded_banner_url = @event.banner_image.present? ? safe_event_url(@event.banner_image.banner.url || @event.banner_image.url) : nil
+  external_banner_url = safe_event_url(@event.data&.dig("banner_image_url") || @event.data&.dig(:banner_image_url))
+  social_preview_url = @event.cover_image.present? ? safe_event_url(@event.cover_image.url) : nil
 %>
 
 <div class="admin-events-page">
@@ -138,7 +139,7 @@
       <div class="mb-6">
         <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
           <h2 class="text-lg font-bold m-0"><%= t("views.admin.events.show.media_heading") %></h2>
-          <%= link_to "Edit Media", edit_admin_event_path(@event, anchor: "branding"), class: "c-btn c-btn--secondary c-btn--sm" %>
+          <%= link_to t("views.admin.events.show.edit_media"), edit_admin_event_path(@event, anchor: "branding"), class: "c-btn c-btn--secondary c-btn--sm" %>
         </div>
         <div class="admin-event-media-grid">
           <div class="admin-event-media-box">
@@ -147,8 +148,13 @@
               <span class="admin-event-media-box__ratio-badge">1600×320 · 5:1</span>
             </div>
             <div class="admin-event-media-box__preview admin-event-media-box__preview--banner">
-              <% if banner_preview_url.present? %>
-                <img src="<%= banner_preview_url %>" alt="<%= t('views.admin.events.form.banner_image_preview_alt') %>" />
+              <% if uploaded_banner_url.present? %>
+                <img src="<%= uploaded_banner_url %>" alt="<%= t('views.admin.events.form.banner_image_preview_alt') %>" />
+              <% elsif external_banner_url.present? %>
+                <span class="admin-event-media-box__placeholder">
+                  <%= t("views.admin.events.form.external_banner_configured") %>
+                  <%= link_to external_banner_url, external_banner_url, target: "_blank", rel: "noopener noreferrer", class: "c-link" %>
+                </span>
               <% else %>
                 <span class="admin-event-media-box__placeholder"><%= t("views.admin.events.show.not_configured") %></span>
               <% end %>
@@ -164,7 +170,7 @@
               <% if social_preview_url.present? %>
                 <img src="<%= social_preview_url %>" alt="<%= t('views.admin.events.form.social_image_preview_alt') %>" />
               <% else %>
-                <span class="admin-event-media-box__placeholder"><%= t("views.admin.events.show.not_configured") %></span>
+                <span class="admin-event-media-box__placeholder"><%= t("views.admin.events.show.using_site_default_social") %></span>
               <% end %>
             </div>
           </div>
@@ -352,7 +358,7 @@
           </div>
           <%= form_with url: admin_event_memberships_path(@event), scope: :event_membership, method: :post, local: true, class: "flex items-end flex-wrap gap-3" do |mf| %>
             <div class="crayons-field flex-1" style="min-width: 240px;">
-              <%= mf.label :child_event_id, t("views.admin.event_memberships.select_event"), class: "crayons-field__label" %>
+              <%= mf.label :child_event_id, t("views.admin.event_memberships.select_event"), for: "attach-sub-event-select", class: "crayons-field__label" %>
               <%= mf.select :child_event_id,
                             @available_sub_events.map { |candidate|
                               status_tag = candidate.published? ? "" : " [#{t('views.admin.events.status.draft')}]"
@@ -581,13 +587,30 @@
       const diffHours = (diffMs / (1000 * 60 * 60)).toFixed(1);
       const relativeInfo = diffHours >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
 
-      el.innerHTML = `
-        <div style="background-color: var(--card-bg, var(--base-0)); border: 1px solid var(--base-20); border-left: 3px solid var(--accent-brand); border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-size: var(--fs-xs);">
-          <div style="margin-bottom: 2px;"><strong>UTC:</strong> ${utcString}</div>
-          <div style="margin-bottom: 2px; color: var(--accent-brand);"><strong>Local:</strong> ${localString}</div>
-          <div class="opacity-75"><em>${relativeInfo}</em></div>
-        </div>
-      `;
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "background-color: var(--card-bg, var(--base-0)); border: 1px solid var(--base-20); border-left: 3px solid var(--accent-brand); border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-size: var(--fs-xs);";
+
+      const utcRow = document.createElement("div");
+      utcRow.style.marginBottom = "2px";
+      const utcStrong = document.createElement("strong");
+      utcStrong.textContent = "UTC: ";
+      utcRow.append(utcStrong, document.createTextNode(utcString));
+
+      const localRow = document.createElement("div");
+      localRow.style.marginBottom = "2px";
+      localRow.style.color = "var(--accent-brand)";
+      const localStrong = document.createElement("strong");
+      localStrong.textContent = "Local: ";
+      localRow.append(localStrong, document.createTextNode(localString));
+
+      const relRow = document.createElement("div");
+      relRow.className = "opacity-75";
+      const relEm = document.createElement("em");
+      relEm.textContent = relativeInfo;
+      relRow.append(relEm);
+
+      wrap.append(utcRow, localRow, relRow);
+      el.replaceChildren(wrap);
     });
 
     const filterInput = document.getElementById("attach-sub-event-filter");

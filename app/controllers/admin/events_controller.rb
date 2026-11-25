@@ -144,7 +144,6 @@ module Admin
       scope = Event.select(:id, :title, :type_of, :start_time, :published).order(start_time: :desc, title: :asc)
       scope = scope.where.not(id: excluded_ids) if excluded_ids.any?
       @available_parent_events = scope.to_a
-      @available_organizations = Organization.select(:id, :name, :slug).order(:name).to_a
     end
 
     def available_sub_event_candidates(event)

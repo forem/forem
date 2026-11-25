@@ -1,9 +1,9 @@
 <%
   available_parents = @available_parent_events || []
   selected_parent_ids = Array(@selected_parent_event_ids).map(&:to_i)
-  available_orgs = @available_organizations || []
-  current_banner_url = event.banner_image_url
-  current_social_url = event.cover_image.presence&.url
+  uploaded_banner_url = event.banner_image.present? ? safe_event_url(event.banner_image.banner.url || event.banner_image.url) : nil
+  external_banner_url = safe_event_url(event.data&.dig("banner_image_url") || event.data&.dig(:banner_image_url))
+  current_social_url = event.cover_image.present? ? safe_event_url(event.cover_image.url) : nil
   common_time_zones = %w[
     UTC
     America/New_York
@@ -53,7 +53,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="crayons-field">
-          <%= form.label :event_name_slug, "Event Name Slug", class: "crayons-field__label" do %>
+          <%= form.label :event_name_slug, "Event Name Slug", for: "event_name_slug_input", class: "crayons-field__label" do %>
             Event Name Slug *
             <p class="crayons-field__description">Root grouping slug (lowercase letters, numbers, dashes — e.g. 'aie-europe').</p>
           <% end %>
@@ -61,7 +61,7 @@
         </div>
 
         <div class="crayons-field">
-          <%= form.label :event_variation_slug, "Event Variation Slug", class: "crayons-field__label" do %>
+          <%= form.label :event_variation_slug, "Event Variation Slug", for: "event_variation_slug_input", class: "crayons-field__label" do %>
             Event Variation Slug *
             <p class="crayons-field__description">Unique edition or session identifier (e.g. '2027' or 'opening-keynote').</p>
           <% end %>
@@ -98,10 +98,16 @@
             <%= t("views.admin.events.form.host_organization") %>
             <p class="crayons-field__description"><%= t("views.admin.events.form.host_organization_description") %></p>
           <% end %>
-          <%= form.select :organization_id,
-                          available_orgs.map { |org| ["#{org.name} (@#{org.slug})", org.id] },
-                          { include_blank: t("views.admin.events.form.no_organization") },
-                          class: "crayons-select" %>
+          <%= form.number_field :organization_id,
+                                min: 1,
+                                class: "crayons-textfield",
+                                placeholder: t("views.admin.events.form.host_organization_placeholder"),
+                                autocomplete: "off" %>
+          <% if event.organization.present? %>
+            <p class="fs-xs color-base-70 mt-1 mb-0">
+              <%= t("views.admin.events.form.current_organization", name: event.organization.name, slug: event.organization.slug) %>
+            </p>
+          <% end %>
         </div>
       </div>
     </div>
@@ -201,7 +207,7 @@
   </section>
 
   <!-- 3. Visual Branding & Media (Distinct Wide Banner vs Social/Card Image) -->
-  <section class="admin-event-form-section">
+  <section id="branding" class="admin-event-form-section">
     <div class="admin-event-form-section__header">
       <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.sections.branding") %></h2>
       <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.sections.branding_subtitle") %></p>
@@ -218,8 +224,13 @@
           <p class="crayons-field__description m-0"><%= t("views.admin.events.form.banner_image_description") %></p>
 
           <div class="admin-event-media-box__preview admin-event-media-box__preview--banner" id="banner-image-preview-box">
-            <% if current_banner_url.present? %>
-              <img src="<%= current_banner_url %>" alt="<%= t("views.admin.events.form.banner_image_preview_alt") %>" id="banner-image-preview-img" />
+            <% if uploaded_banner_url.present? %>
+              <img src="<%= uploaded_banner_url %>" alt="<%= t("views.admin.events.form.banner_image_preview_alt") %>" id="banner-image-preview-img" />
+            <% elsif external_banner_url.present? %>
+              <span class="admin-event-media-box__placeholder" id="banner-image-preview-empty">
+                <%= t("views.admin.events.form.external_banner_configured") %>
+                <%= link_to external_banner_url, external_banner_url, target: "_blank", rel: "noopener noreferrer", class: "c-link" %>
+              </span>
             <% else %>
               <span class="admin-event-media-box__placeholder" id="banner-image-preview-empty">
                 <%= t("views.admin.events.form.banner_image_empty") %>
@@ -227,7 +238,7 @@
             <% end %>
           </div>
 
-          <%= form.file_field :banner_image, accept: "image/*", class: "crayons-file-field", data: { preview_target: "banner-image-preview-box" } %>
+          <%= form.file_field :banner_image, accept: "image/png,image/jpeg,image/gif,image/webp,image/avif", class: "crayons-file-field", data: { preview_kind: "banner" } %>
 
           <% if event.banner_image.present? %>
             <label class="crayons-field crayons-field--checkbox flex items-center gap-2">
@@ -267,7 +278,7 @@
             <% end %>
           </div>
 
-          <%= form.file_field :cover_image, accept: "image/*", class: "crayons-file-field", data: { preview_target: "social-image-preview-box" } %>
+          <%= form.file_field :cover_image, accept: "image/png,image/jpeg,image/gif,image/webp,image/avif", class: "crayons-file-field", data: { preview_kind: "social" } %>
 
           <% if event.cover_image.present? %>
             <label class="crayons-field crayons-field--checkbox flex items-center gap-2">
@@ -279,15 +290,15 @@
       </div>
 
       <div class="crayons-field">
-        <%= form.label :bg_color_hex, "Brand Accent Color", class: "crayons-field__label" do %>
-          Brand Accent Color
-          <p class="crayons-field__description">6-digit hex color used for the top brand line, navigation dot, and fallback card styling.</p>
+        <%= form.label :bg_color_hex, t("views.admin.events.form.brand_accent_color"), for: "admin-event-color-hex", class: "crayons-field__label" do %>
+          <%= t("views.admin.events.form.brand_accent_color") %>
+          <p class="crayons-field__description"><%= t("views.admin.events.form.brand_accent_color_description") %></p>
         <% end %>
         <div class="flex items-center flex-wrap gap-3">
           <input type="color"
                  id="admin-event-color-picker"
                  value="<%= event.background_hex_color %>"
-                 aria-label="Brand color picker"
+                 aria-label="<%= t('views.admin.events.form.brand_color_picker_aria') %>"
                  style="width: 40px; height: 36px; border: 1px solid var(--base-20); border-radius: var(--radius); padding: 2px; background: transparent; cursor: pointer;" />
           <%= form.text_field :bg_color_hex, class: "crayons-textfield", placeholder: "#3B49DF", style: "max-width: 160px;", id: "admin-event-color-hex" %>
           <div class="admin-event-color-swatches">
@@ -297,7 +308,7 @@
                       data-color="<%= hex %>"
                       style="background: <%= hex %>;"
                       title="<%= hex %>"
-                      aria-label="Set brand color to <%= hex %>"></button>
+                      aria-label="<%= t('views.admin.events.form.brand_color_preset_aria', color: hex) %>"></button>
             <% end %>
           </div>
         </div>
@@ -547,7 +558,7 @@
     function updateTimeInfo(inputEl, displayElId) {
       const displayEl = document.getElementById(displayElId);
       if (!displayEl || !inputEl.value) {
-        if (displayEl) displayEl.innerHTML = "";
+        if (displayEl) displayEl.replaceChildren();
         return;
       }
       const utcTime = new Date(inputEl.value + "Z");
@@ -558,12 +569,22 @@
       const diffHours = ((utcTime - new Date()) / (1000 * 60 * 60)).toFixed(1);
       const relativeInfo = Number(diffHours) >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
 
-      displayEl.innerHTML = `
-        <div style="background-color: var(--base-5); border: 1px solid var(--base-20); border-left: 3px solid var(--accent-brand); border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-size: var(--fs-xs);">
-          <div><strong>UTC:</strong> ${utcString}</div>
-          <div style="color: var(--accent-brand);"><strong>Your local time:</strong> ${localString} (${relativeInfo})</div>
-        </div>
-      `;
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "background-color: var(--base-5); border: 1px solid var(--base-20); border-left: 3px solid var(--accent-brand); border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-size: var(--fs-xs);";
+
+      const utcRow = document.createElement("div");
+      const utcStrong = document.createElement("strong");
+      utcStrong.textContent = "UTC: ";
+      utcRow.append(utcStrong, document.createTextNode(utcString));
+
+      const localRow = document.createElement("div");
+      localRow.style.color = "var(--accent-brand)";
+      const localStrong = document.createElement("strong");
+      localStrong.textContent = "Your local time: ";
+      localRow.append(localStrong, document.createTextNode(`${localString} (${relativeInfo})`));
+
+      wrap.append(utcRow, localRow);
+      displayEl.replaceChildren(wrap);
     }
     if (startInput) {
       startInput.addEventListener("input", () => updateTimeInfo(startInput, "start_time_info"));
@@ -594,18 +615,30 @@
       });
     }
 
-    // 4. Instant file upload preview for Wide Banner & Social Image
-    document.querySelectorAll('input[type="file"][data-preview-target]').forEach(function(input) {
+    // 4. Instant raster-image preview for Wide Banner & Social Image (FileReader, no SVG/HTML blobs)
+    const previewBoxes = {
+      banner: document.getElementById("banner-image-preview-box"),
+      social: document.getElementById("social-image-preview-box")
+    };
+    const allowedPreviewTypes = /^image\/(png|jpeg|gif|webp|avif)$/i;
+    const allowedDataUrlPrefix = /^data:image\/(png|jpeg|gif|webp|avif);base64,/i;
+
+    document.querySelectorAll('input[type="file"][data-preview-kind]').forEach(function(input) {
       input.addEventListener("change", function() {
-        const box = document.getElementById(input.dataset.previewTarget);
+        const box = previewBoxes[input.dataset.previewKind];
         const file = input.files && input.files[0];
-        if (!box || !file) return;
-        const objectUrl = URL.createObjectURL(file);
-        box.innerHTML = "";
-        const img = document.createElement("img");
-        img.src = objectUrl;
-        img.alt = "Image preview";
-        box.appendChild(img);
+        if (!box || !file || !allowedPreviewTypes.test(file.type)) return;
+
+        const reader = new FileReader();
+        reader.onload = function() {
+          const dataUrl = reader.result;
+          if (typeof dataUrl !== "string" || !allowedDataUrlPrefix.test(dataUrl)) return;
+          const img = document.createElement("img");
+          img.src = dataUrl;
+          img.alt = "Image preview";
+          box.replaceChildren(img);
+        };
+        reader.readAsDataURL(file);
       });
     });
 
@@ -630,7 +663,7 @@
           const matchesQuery = !q || hay.includes(q);
           const matchesType = !activeType || itemType === activeType;
           const show = matchesQuery && matchesType;
-          item.style.display = show ? "" : "none";
+          item.hidden = !show;
           if (show) visibleCount += 1;
         });
         if (emptyState) emptyState.style.display = visibleCount === 0 ? "" : "none";
