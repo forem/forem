@@ -261,7 +261,9 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       it "breaks ties between equally ranked articles by id", :aggregate_failures do
         published_at = 1.day.ago
         articles = create_list(:article, 3)
-        articles.each { |article| article.update_columns(published_at: published_at, public_reactions_count: 5) }
+        articles.each do |article|
+          article.update_columns(published_at: published_at, public_reactions_count: 5, hotness_score: 100)
+        end
 
         %i[published_at public_reactions_count hotness_score].each do |sort_by|
           result = described_class.call(sort_by: sort_by, sort_direction: :desc).ids
