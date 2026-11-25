@@ -344,6 +344,31 @@ RSpec.describe "UserSettings" do
       expect(response.body).to include('checked="checked"')
     end
 
+    context "when changing the account email with Customer.io delivery on" do
+      let(:new_email) { "changed-#{SecureRandom.hex(4)}@example.com" }
+
+      let(:api_client) { instance_double(Customerio::APIClient, send_email: { "delivery_id" => "x" }) }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        stub_const("CUSTOMERIO_API", api_client)
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "hands the verification mail to Customer.io for the new address instead of holding it", :aggregate_failures do
+        perform_enqueued_jobs do
+          put "/users/#{user.id}", params: { user: { tab: "account", email: new_email } }
+        end
+
+        expect(user.reload.unconfirmed_email).to eq(new_email)
+        expect(flash[:settings_notice]).to be_present
+        expect(api_client).to have_received(:send_email).once
+      end
+    end
+
     it "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")

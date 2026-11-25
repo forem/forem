@@ -58,7 +58,7 @@ module Deliverable
     return unless @_mail_was_called
 
     if deliver_via_customerio?
-      return hold_until_linked if customerio_recipient && customerio_mlh_uid.blank?
+      return hold_until_linked if hold_for_link?
 
       # Deliverable on a Customer.io-only instance (no SMTP creds) must still
       # send, so the per-message flag overrides the SMTP-based default above.
@@ -152,11 +152,29 @@ module Deliverable
   end
 
   # People in Customer.io are keyed by MLH Core user id (DEV profiles were
-  # stitched via the dev:<id> anonymous id). Users are never keyed by email --
-  # hold_until_linked waits for the id instead -- so email only identifies
-  # recipients who are not users at all.
+  # stitched via the dev:<id> anonymous id). Users are not keyed by email --
+  # hold_until_linked waits for the id instead -- so email identifies
+  # recipients who are not users, plus the one email-change case below.
   def customerio_identifiers
-    customerio_recipient ? { id: customerio_mlh_uid } : { email: Array(mail.to).first }
+    customerio_mlh_uid.present? ? { id: customerio_mlh_uid } : { email: Array(mail.to).first }
+  end
+
+  def hold_for_link?
+    customerio_recipient.present? && customerio_mlh_uid.blank? && !email_change_reconfirmation?
+  end
+
+  # Devise mails the confirmation link to the new address of a user who is
+  # already confirmed and has asked to change it. That is not the signup race:
+  # no identity is about to land, so holding would only end in a silent drop and
+  # the link would never arrive. Send it now, keyed by the address it goes to.
+  # That can leave an email-keyed person in Customer.io, but it only carries
+  # this one transactional send, which beats dropping the link.
+  def email_change_reconfirmation?
+    return false unless action_name == "confirmation_instructions"
+
+    user = customerio_recipient
+    user.confirmed_at.present? && user.unconfirmed_email.present? &&
+      user.unconfirmed_email.casecmp?(Array(mail.to).first.to_s)
   end
 
   def customerio_mlh_uid

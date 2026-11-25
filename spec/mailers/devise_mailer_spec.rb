@@ -169,6 +169,47 @@ RSpec.describe DeviseMailer, type: :mailer do
         expect(replay.perform_deliveries).to be(true)
         expect(replay.delivery_method.settings[:identifiers]).to eq(id: "core-7")
       end
+
+      it "still holds the confirmation mail of an unconfirmed new user" do
+        fresh = create(:user, confirmed_at: nil)
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[fresh])
+
+        message = described_class.confirmation_instructions(fresh, "faketoken").message
+
+        expect(message.perform_deliveries).to be(false)
+      end
+    end
+
+    # A confirmed user changing their address is not the signup race: nothing
+    # is going to link an identity, so holding would end in a silent drop.
+    context "when a confirmed user with no mlh identity changes their email under Customer.io" do
+      let(:new_email) { "changed-#{SecureRandom.hex(4)}@example.com" }
+      let(:message) do
+        described_class.confirmation_instructions(user, "faketoken", to: user.unconfirmed_email).message
+      end
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        user.update!(email: new_email)
+        user.reload
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "does not hold the reconfirmation mail" do
+        expect { message }.not_to have_enqueued_mail(described_class, :confirmation_instructions)
+        expect(message.perform_deliveries).to be(true)
+      end
+
+      it "does not log a dropped message even after the hold window" do
+        allow(Rails.logger).to receive(:warn)
+        described_class.with(customerio_link_hold: Deliverable::CUSTOMERIO_LINK_HOLD_ATTEMPTS)
+          .confirmation_instructions(user, "faketoken", to: new_email).message
+
+        expect(Rails.logger).not_to have_received(:warn).with(/dropped/)
+      end
     end
   end
 
