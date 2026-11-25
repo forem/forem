@@ -13,13 +13,14 @@ module Search
     # @param context [Article] or [PodcastEpisode]
     #   - used to rank search results by prior comment activity
     #   - connected to comment via polymorphic Commentable
-    def self.search_documents(term, context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil, limit: MAX_RESULTS)
+    def self.search_documents(term, context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil,
+                              limit: MAX_RESULTS, format: :hash)
       new(
-        context: context, 
+        context: context,
         priority_user_ids: priority_user_ids,
         recent_user_ids: recent_user_ids,
-        requesting_user_id: requesting_user_id
-      ).search(term, limit)
+        requesting_user_id: requesting_user_id,
+      ).search(term, limit, format: format)
     end
 
     def self.serialize(results)
@@ -29,12 +30,25 @@ module Search
         .pluck(:attributes)
     end
 
+    def self.serialize_json_natively(users)
+      users_flat = []
+      users.each do |user|
+        users_flat.push(user.id, user.name, user.profile_image_90, user.username)
+      end
+
+      ForemNative.serialize_search_usernames_json(
+        users_flat,
+        escape_html: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+      )
+    end
+    private_class_method :serialize_json_natively
+
     def initialize(context: nil, priority_user_ids: [], recent_user_ids: nil, requesting_user_id: nil)
       frontend_provided_priorities = priority_user_ids.present?
 
       @priority_user_ids = Array(priority_user_ids).compact_blank.map(&:to_i)
       @requesting_user_id = requesting_user_id
-      
+
       if context
         @priority_user_ids << context.try(:user_id)
         @priority_user_ids += context.co_author_ids if context&.co_author_ids.present?
@@ -43,12 +57,12 @@ module Search
           @priority_user_ids += ::Comment.where(commentable: context).pluck(:user_id)
         end
       end
-      
+
       @priority_user_ids = @priority_user_ids.compact.uniq
       @recent_user_ids = Array(recent_user_ids).compact_blank.map(&:to_i)
     end
 
-    def search(term, limit)
+    def search(term, limit, format: :hash)
       users = []
 
       if @priority_user_ids.any?
@@ -71,10 +85,19 @@ module Search
         users += global_scope.search_by_name_and_username(term).order(score: :desc).limit(limit - users.size).to_a
       end
 
-      self.class.send(:serialize, users)
+      format_results(users, format)
     end
 
     private
+
+    def format_results(users, format)
+      if format == :json && ForemNative.available?
+        json = self.class.__send__(:serialize_json_natively, users)
+        return Homepage::ArticleSerializer::EncodedJson.new(json) if json
+      end
+
+      self.class.__send__(:serialize, users)
+    end
 
     def scope_without_context
       ::User.select(*ATTRIBUTES)

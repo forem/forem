@@ -9093,6 +9093,267 @@ fn serialize_stories_feed_json(
     Some(out)
 }
 
+unsafe fn parse_search_nested_users<'a>(
+    users_slice: &'a [Value],
+) -> Option<Vec<forem_core::search_results::SearchNestedUser<'a>>> {
+    if users_slice.len() % 3 != 0 {
+        return None;
+    }
+    let mut users = Vec::with_capacity(users_slice.len() / 3);
+    for chunk in users_slice.chunks_exact(3) {
+        users.push(forem_core::search_results::SearchNestedUser {
+            name: unsafe { borrow_opt_utf8_str(chunk[0]) }?,
+            profile_image_90: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+            username: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+        });
+    }
+    Some(users)
+}
+
+fn serialize_search_reading_list_json(
+    ruby: &Ruby,
+    items_flat: RArray,
+    users_flat: RArray,
+    total: i64,
+    current_year: i64,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `items_flat` and `users_flat`; `forem_core` never calls
+        // into Ruby, and all borrows end before `ruby.str_new` allocates.
+        let items_slice = unsafe { items_flat.as_slice() };
+        let users_slice = unsafe { users_flat.as_slice() };
+        if items_slice.len() % 9 != 0 {
+            return None;
+        }
+        let users = unsafe { parse_search_nested_users(users_slice) }?;
+        let mut items = Vec::with_capacity(items_slice.len() / 9);
+        for chunk in items_slice.chunks_exact(9) {
+            let user_idx_i64 = Integer::from_value(chunk[8])?.to_i64().ok()?;
+            let user_idx = usize::try_from(user_idx_i64).ok()?;
+            items.push(forem_core::search_results::SearchReadingListItem {
+                reaction_id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                reaction_user_id: Integer::from_value(chunk[1])?.to_i64().ok()?,
+                path: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+                published_at_sec: extract_opt_i64(chunk[3])?,
+                crossposted_at_sec: extract_opt_i64(chunk[4])?,
+                reading_time: extract_opt_i64(chunk[5])?,
+                cached_tag_list: unsafe { borrow_opt_utf8_str(chunk[6]) }?,
+                title: unsafe { borrow_opt_utf8_str(chunk[7]) }?,
+                user_idx,
+            });
+        }
+        forem_core::search_results::serialize_search_reading_list_json(
+            &items,
+            &users,
+            total,
+            current_year,
+            escape_html,
+        )?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_search_comments_json(
+    ruby: &Ruby,
+    comments_flat: RArray,
+    users_flat: RArray,
+    current_year: i64,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `comments_flat` and `users_flat`; `forem_core` never calls
+        // into Ruby, and all borrows end before `ruby.str_new` allocates.
+        let comments_slice = unsafe { comments_flat.as_slice() };
+        let users_slice = unsafe { users_flat.as_slice() };
+        if comments_slice.len() % 10 != 0 {
+            return None;
+        }
+        let users = unsafe { parse_search_nested_users(users_slice) }?;
+        let mut comments = Vec::with_capacity(comments_slice.len() / 10);
+        for chunk in comments_slice.chunks_exact(10) {
+            let millis_i64 = Integer::from_value(chunk[7])?.to_i64().ok()?;
+            let created_at_millis = u32::try_from(millis_i64).ok()?;
+            if created_at_millis > 999 {
+                return None;
+            }
+            let user_idx_raw = Integer::from_value(chunk[9])?.to_i64().ok()?;
+            let user_idx = if user_idx_raw < 0 {
+                None
+            } else {
+                Some(usize::try_from(user_idx_raw).ok()?)
+            };
+            comments.push(forem_core::search_results::SearchCommentItem {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                public_reactions_count: Integer::from_value(chunk[1])?.to_i64().ok()?,
+                body_text: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+                has_highlight: extract_opt_bool(ruby, chunk[3])??,
+                highlight_body_text: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                hotness_score: extract_opt_i64(chunk[5])?,
+                created_at_sec: Integer::from_value(chunk[6])?.to_i64().ok()?,
+                created_at_millis,
+                title: unsafe { borrow_opt_utf8_str(chunk[8]) }?,
+                user_idx,
+            });
+        }
+        forem_core::search_results::serialize_search_comments_json(
+            &comments,
+            &users,
+            current_year,
+            escape_html,
+        )?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_search_organizations_json(
+    ruby: &Ruby,
+    orgs_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `orgs_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { orgs_flat.as_slice() };
+        if slice.len() % 6 != 0 {
+            return None;
+        }
+        let mut orgs = Vec::with_capacity(slice.len() / 6);
+        for chunk in slice.chunks_exact(6) {
+            orgs.push(forem_core::search_results::SearchOrganizationItem {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                name: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                summary: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+                profile_image_url: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+                twitter_username: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                slug: unsafe { borrow_opt_utf8_str(chunk[5]) }?,
+            });
+        }
+        forem_core::search_results::serialize_search_organizations_json(&orgs, escape_html)
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_search_podcast_episodes_json(
+    ruby: &Ruby,
+    episodes_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `episodes_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { episodes_flat.as_slice() };
+        if slice.len() % 14 != 0 {
+            return None;
+        }
+        let mut episodes = Vec::with_capacity(slice.len() / 14);
+        for chunk in slice.chunks_exact(14) {
+            let millis_i64 = Integer::from_value(chunk[6])?.to_i64().ok()?;
+            let published_at_millis = u32::try_from(millis_i64).ok()?;
+            if published_at_millis > 999 {
+                return None;
+            }
+            episodes.push(forem_core::search_results::SearchPodcastEpisodeItem {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                body_text: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                comments_count: extract_opt_i64(chunk[2])?,
+                slug: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+                podcast_slug: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                published_at_sec: extract_opt_i64(chunk[5])?,
+                published_at_millis,
+                quote: unsafe { borrow_opt_utf8_str(chunk[7]) }?,
+                reactions_count: extract_opt_i64(chunk[8])?,
+                subtitle: unsafe { borrow_opt_utf8_str(chunk[9]) }?,
+                summary: unsafe { borrow_opt_utf8_str(chunk[10]) }?,
+                title: unsafe { borrow_opt_utf8_str(chunk[11]) }?,
+                website_url: unsafe { borrow_opt_utf8_str(chunk[12]) }?,
+                podcast_image_url: unsafe { borrow_opt_utf8_str(chunk[13]) }?,
+            });
+        }
+        forem_core::search_results::serialize_search_podcast_episodes_json(&episodes, escape_html)?
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_search_tags_json(
+    ruby: &Ruby,
+    tags_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `tags_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { tags_flat.as_slice() };
+        if slice.len() % 9 != 0 {
+            return None;
+        }
+        let mut tags = Vec::with_capacity(slice.len() / 9);
+        for chunk in slice.chunks_exact(9) {
+            tags.push(forem_core::search_results::SearchTagItem {
+                id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+                name: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+                hotness_score: extract_opt_i64(chunk[2])?,
+                supported: extract_opt_bool(ruby, chunk[3])?,
+                short_summary: unsafe { borrow_opt_utf8_str(chunk[4]) }?,
+                rules_html: unsafe { borrow_opt_utf8_str(chunk[5]) }?,
+                bg_color_hex: unsafe { borrow_opt_utf8_str(chunk[6]) }?,
+                has_badge: extract_opt_bool(ruby, chunk[7])??,
+                badge_image_url: unsafe { borrow_opt_utf8_str(chunk[8]) }?,
+            });
+        }
+        forem_core::search_results::serialize_search_tags_json(&tags, escape_html)
+    };
+    Some(ruby.str_new(&json))
+}
+
+unsafe fn parse_search_user_items<'a>(
+    slice: &'a [Value],
+) -> Option<Vec<forem_core::search_results::SearchUserItem<'a>>> {
+    if slice.len() % 4 != 0 {
+        return None;
+    }
+    let mut users = Vec::with_capacity(slice.len() / 4);
+    for chunk in slice.chunks_exact(4) {
+        users.push(forem_core::search_results::SearchUserItem {
+            id: Integer::from_value(chunk[0])?.to_i64().ok()?,
+            name: unsafe { borrow_opt_utf8_str(chunk[1]) }?,
+            profile_image_90: unsafe { borrow_opt_utf8_str(chunk[2]) }?,
+            username: unsafe { borrow_opt_utf8_str(chunk[3]) }?,
+        });
+    }
+    Some(users)
+}
+
+fn serialize_search_users_json(
+    ruby: &Ruby,
+    users_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `users_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { users_flat.as_slice() };
+        let users = unsafe { parse_search_user_items(slice) }?;
+        forem_core::search_results::serialize_search_users_json(&users, escape_html)
+    };
+    Some(ruby.str_new(&json))
+}
+
+fn serialize_search_usernames_json(
+    ruby: &Ruby,
+    users_flat: RArray,
+    escape_html: bool,
+) -> Option<RString> {
+    let json = {
+        // SAFETY: Zero-copy borrows of `users_flat`; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let slice = unsafe { users_flat.as_slice() };
+        let users = unsafe { parse_search_user_items(slice) }?;
+        forem_core::search_results::serialize_search_usernames_json(&users, escape_html)
+    };
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -9807,6 +10068,34 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_stories_feed_json",
         function!(serialize_stories_feed_json, 8),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_reading_list_json",
+        function!(serialize_search_reading_list_json, 5),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_comments_json",
+        function!(serialize_search_comments_json, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_organizations_json",
+        function!(serialize_search_organizations_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_podcast_episodes_json",
+        function!(serialize_search_podcast_episodes_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_tags_json",
+        function!(serialize_search_tags_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_users_json",
+        function!(serialize_search_users_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_search_usernames_json",
+        function!(serialize_search_usernames_json, 2),
     )?;
     Ok(())
 }

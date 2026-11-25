@@ -13,6 +13,17 @@ module Search
     ].freeze
     REACTION_ATTRIBUTES = %i[id reactable_id user_id].freeze
     USER_ATTRIBUTES = %i[id name profile_image username].freeze
+    NATIVE_PLUCK_COLUMNS = [
+      Arel.sql("reactions.id"),
+      Arel.sql("reactions.user_id"),
+      Arel.sql("articles.path"),
+      Arel.sql("articles.published_at"),
+      Arel.sql("articles.crossposted_at"),
+      Arel.sql("articles.reading_time"),
+      Arel.sql("articles.cached_tag_list"),
+      Arel.sql("articles.title"),
+      Arel.sql("articles.user_id"),
+    ].freeze
 
     DEFAULT_STATUSES = %w[confirmed valid].freeze
 
@@ -31,7 +42,8 @@ module Search
     #
     # @return [Hash<Symbol,Object>] with keys :items and :total.
     #         :total is an Integer and :items is an Array of serialized data.
-    def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE, subforem_id: nil)
+    def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE,
+                              subforem_id: nil, format: :hash)
       return {} unless user
 
       statuses = statuses.presence || DEFAULT_STATUSES
@@ -52,21 +64,19 @@ module Search
         subforem_id: subforem_id,
       )
 
-      # NOTE: [@rhymes] an earlier version used `Article.includes(:user)`
-      # to preload users, unfortunately it's not possible in Rails to specify
-      # which fields of the included relation's table to select ahead of time.
-      # The `users` table is massive (115 columns on March 2021) and thus we
-      # shouldn't load it all in memory just to select a few fields.
-      # For these reasons I decided to avoid preloading altogether and issue
-      # an additional SQL query to load User objects
-      # (see https://github.com/forem/forem/pull/4744#discussion_r345698674
-      # and https://github.com/rails/rails/issues/15185#issuecomment-351868335
-      # for additional context)
-      user_ids = result[:items].pluck(:user_id)
+      if format == :json && native_json_serializable?(result[:items])
+        json = serialize_json_natively(result[:items], result[:total])
+        return Homepage::ArticleSerializer::EncodedJson.new(json) if json
+      end
+
+      # Materialize once so we don't execute the articles query twice (once for pluck(:user_id)
+      # and again when iterating inside ReadingListArticleSerializer).
+      articles = result[:items].to_a
+      user_ids = articles.map(&:user_id).uniq
       users = find_users(user_ids)
 
       {
-        items: serialize(result[:items], users),
+        items: serialize(articles, users),
         total: result[:total]
       }
     end
@@ -129,5 +139,61 @@ module Search
         .pluck(:attributes)
     end
     private_class_method :serialize
+
+    def self.native_json_serializable?(relation)
+      ForemNative.available? &&
+        relation.is_a?(ActiveRecord::Relation) &&
+        !relation.loaded? &&
+        I18n.locale == :en &&
+        Time.zone&.tzinfo&.name == "Etc/UTC"
+    end
+    private_class_method :native_json_serializable?
+
+    def self.serialize_json_natively(relation, total)
+      rows = relation.unscope(:select).pluck(*NATIVE_PLUCK_COLUMNS)
+      return %({"result":[],"total":#{total.to_i}}) if rows.empty?
+
+      user_ids = rows.filter_map { |row| row[8] }.uniq
+      users_by_id = find_users(user_ids)
+
+      users_flat = []
+      user_idx_by_id = {}
+      user_ids.each do |uid|
+        user = users_by_id[uid]
+        return nil unless user
+
+        user_idx_by_id[uid] = users_flat.size / 3
+        users_flat.push(user.name, user.profile_image_90, user.username)
+      end
+
+      items_flat = []
+      rows.each do |row|
+        user_idx = user_idx_by_id[row[8]]
+        return nil unless user_idx
+
+        published_sec = extract_epoch_sec(row[3])
+        crossposted_sec = extract_epoch_sec(row[4])
+        return nil if published_sec == :invalid || crossposted_sec == :invalid
+
+        items_flat.push(row[0], row[1], row[2], published_sec, crossposted_sec, row[5], row[6], row[7], user_idx)
+      end
+
+      ForemNative.serialize_search_reading_list_json(
+        items_flat,
+        users_flat,
+        total,
+        Time.current.year,
+        escape_html: ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+      )
+    end
+    private_class_method :serialize_json_natively
+
+    def self.extract_epoch_sec(value)
+      return if value.nil?
+      return value.tv_sec if value.respond_to?(:tv_sec) && value.respond_to?(:utc_offset) && value.utc_offset.zero?
+
+      :invalid
+    end
+    private_class_method :extract_epoch_sec
   end
 end

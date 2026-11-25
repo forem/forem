@@ -72,6 +72,13 @@ on:
       - "app/services/html/parser.rb"
       - "app/services/markdown_processor/parser.rb"
       - "app/services/search/article.rb"
+      - "app/services/search/comment.rb"
+      - "app/services/search/organization.rb"
+      - "app/services/search/podcast_episode.rb"
+      - "app/services/search/reading_list.rb"
+      - "app/services/search/tag.rb"
+      - "app/services/search/user.rb"
+      - "app/services/search/username.rb"
       - "app/services/stories/feed_serializer.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
@@ -326,6 +333,20 @@ jobs:
             html_same = "<p>no match</p>"
             raise "Unexpected gsub_literal unchanged!" unless ForemNative.gsub_literal(html_same, "old.cdn", "new.cdn").equal?(html_same)
             raise "Unexpected gsub_literal replaced!" unless ForemNative.gsub_literal("<img src=\"https://old.cdn/a.png\">", "old.cdn", "new.cdn") == "<img src=\"https://new.cdn/a.png\">"
+            sr_rl = ForemNative.serialize_search_reading_list_json([10, 7, "/ada/hi", 1_772_323_200, nil, 5, "rust, ruby", "Hi <3", 0], ["Ada", "/a90.png", "ada"], 1, 2026)
+            raise "Unexpected serialize_search_reading_list_json!" unless sr_rl.is_a?(String) && sr_rl.include?("\"total\":1") && sr_rl.include?("\"tag_list\":[\"rust\",\"ruby\"]")
+            sr_cm = ForemNative.serialize_search_comments_json([1000, 3, "Hello & hi", false, nil, 9, 1_772_323_200, 125, "Post", 0], ["Ada", "/a90.png", "ada"], 2026)
+            raise "Unexpected serialize_search_comments_json!" unless sr_cm.is_a?(String) && sr_cm.include?("\"path\":\"/ada/comment/1cc\"") && sr_cm.include?("\"published_at\":\"2026-03-01T00:00:00.125Z\"")
+            sr_org = ForemNative.serialize_search_organizations_json([4, "Forem", "Build", "/o.png", "forem", "forem"])
+            raise "Unexpected serialize_search_organizations_json!" unless sr_org.is_a?(String) && sr_org.include?("\"class_name\":\"Organization\"")
+            sr_ep = ForemNative.serialize_search_podcast_episodes_json([5, "Body", 2, "ep-1", "pod", 1_772_323_200, 500, nil, 4, nil, "Sum", "Ep 1", "https://pod.example", "/p90.png"])
+            raise "Unexpected serialize_search_podcast_episodes_json!" unless sr_ep.is_a?(String) && sr_ep.include?("\"path\":\"/pod/ep-1\"")
+            sr_tag = ForemNative.serialize_search_tags_json([8, "rust", 42, true, "Fast", "<p>Rules</p>", "#000", true, "/badge.png"])
+            raise "Unexpected serialize_search_tags_json!" unless sr_tag.is_a?(String) && sr_tag.include?("\"class_name\":\"Tag\"") && sr_tag.include?("\"badge_image\":{\"url\":\"/badge.png\"}")
+            sr_user = ForemNative.serialize_search_users_json([9, "Ada", "/a90.png", "ada"])
+            raise "Unexpected serialize_search_users_json!" unless sr_user.is_a?(String) && sr_user.include?("\"class_name\":\"User\"")
+            sr_uname = ForemNative.serialize_search_usernames_json([9, "Ada", "/a90.png", "ada"])
+            raise "Unexpected serialize_search_usernames_json!" unless sr_uname.is_a?(String) && sr_uname.include?("\"username\":\"ada\"") && !sr_uname.include?("\"class_name\"")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

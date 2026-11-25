@@ -286,6 +286,99 @@ RSpec.describe "Search", :proper_status do
         expect(response.parsed_body["result"].first).to include("name" => tag.name)
       end
     end
+
+    it "matches the Ruby serializer fallback bit-for-bit across all search entity types", :aggregate_failures do
+      sign_in authorized_user
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("DESYNC_TIMEZONE").and_return("true")
+      Time.use_zone("UTC") do
+        expect(ForemNative.available?).to be(true)
+
+        other_user = create(:user, username: "rustacean_match", name: "Rust <Dev>")
+        article = create(:article, user: authorized_user, with_tags: false, title: "Rust <Native> & Search")
+        article.update_columns(cached_tag_list: "rust, ruby")
+        other_article = create(:article, user: other_user, with_tags: false, title: "Other User Reading List")
+        create(:reaction, category: :readinglist, reactable: article, user: authorized_user)
+        create(:reaction, category: :readinglist, reactable: other_article, user: other_user)
+        visible_comment = create(:comment, user: authorized_user, commentable: article,
+                                           body_markdown: "Rails & Rust rocks!")
+        hidden_comment = create(:comment, user: authorized_user, commentable: article,
+                                          body_markdown: "Hidden Rails & Rust secret",
+                                          hidden_by_commentable_user: true)
+        org = create(:organization, name: "Forem <Org>")
+        episode = create(:podcast_episode, title: "Rust Episode", body: "Discussing Rails & Rust")
+        tag = create(:tag, name: "rustlang", supported: true, short_summary: "Systems <lang>")
+
+        native_methods = %i[
+          serialize_search_reading_list_json
+          serialize_search_comments_json
+          serialize_search_organizations_json
+          serialize_search_podcast_episodes_json
+          serialize_search_tags_json
+          serialize_search_users_json
+          serialize_search_usernames_json
+        ]
+        native_returns = Hash.new { |h, k| h[k] = [] }
+        native_methods.each do |method_name|
+          allow(ForemNative).to receive(method_name).and_wrap_original do |original, *args, **kwargs|
+            result = original.call(*args, **kwargs)
+            native_returns[method_name] << result
+            result
+          end
+        end
+
+        requests = [
+          [search_reactions_path, :serialize_search_reading_list_json],
+          [search_tags_path(name: "rust"), :serialize_search_tags_json],
+          [search_usernames_path(username: "rustacean_match"), :serialize_search_usernames_json],
+          [search_feed_content_path(class_name: "Comment", page: 0, per_page: 10), :serialize_search_comments_json],
+          [search_feed_content_path(class_name: "Comment", search_fields: "rails", page: 0, per_page: 10),
+           :serialize_search_comments_json],
+          [search_feed_content_path(class_name: "Organization", search_fields: org.name, page: 0, per_page: 10),
+           :serialize_search_organizations_json],
+          [search_feed_content_path(class_name: "PodcastEpisode", search_fields: "rails", page: 0, per_page: 10),
+           :serialize_search_podcast_episodes_json],
+          [search_feed_content_path(class_name: "Tag", search_fields: "rust", page: 0, per_page: 10),
+           :serialize_search_tags_json],
+          [search_feed_content_path(class_name: "User", search_fields: authorized_user.name, page: 0, per_page: 10),
+           :serialize_search_users_json],
+        ]
+
+        native_bodies = requests.map do |path, _method_name|
+          get path
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body["result"]).not_to be_empty, "expected non-empty result for #{path}"
+          response.body
+        end
+
+        native_methods.each do |method_name|
+          expect(native_returns[method_name]).not_to be_empty, "expected #{method_name} to be called"
+          expect(native_returns[method_name]).to all(be_a(String)), "expected #{method_name} to return String"
+        end
+
+        # Verify positive inclusion and negative isolation on native responses.
+        expect(native_bodies[0]).to include("Rust \\u003cNative\\u003e \\u0026 Search")
+        expect(native_bodies[0]).not_to include("Other User Reading List")
+        expect(native_bodies[1]).to include(tag.name)
+        expect(native_bodies[2]).to include(other_user.username)
+        expect(native_bodies[3]).to include(visible_comment.body_markdown.gsub("&", "\\u0026"))
+        expect(native_bodies[3]).not_to include("comment_#{hidden_comment.id}")
+        expect(native_bodies[3]).not_to include("Hidden")
+        expect(native_bodies[4]).not_to include("Hidden")
+        expect(native_bodies[5]).to include(org.slug)
+        expect(native_bodies[6]).to include(episode.title)
+        expect(native_bodies[7]).to include(tag.name)
+        expect(native_bodies[8]).to include(authorized_user.username)
+
+        allow(ForemNative).to receive(:available?).and_return(false)
+
+        requests.each_with_index do |(path, _method_name), idx|
+          get path
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to eq(native_bodies[idx]), "mismatch for #{path}"
+        end
+      end
+    end
   end
 
   describe "GET /search/reactions" do

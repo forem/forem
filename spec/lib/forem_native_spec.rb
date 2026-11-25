@@ -12873,4 +12873,338 @@ RSpec.describe ForemNative do
       expect { ProcessedHtmlFinalizable.rewrite_cloudflare_images_domain(nil) }.to raise_error(NoMethodError)
     end
   end
+
+  describe "search results streaming JSON serializers" do
+    require "active_support/json"
+
+    let(:legacy_readable_date) do
+      lambda do |epoch_sec, current_year|
+        return if epoch_sec.nil?
+
+        t = Time.at(epoch_sec).utc
+        t.year == current_year ? t.strftime("%b %-d") : t.strftime("%b %-d '%y")
+      end
+    end
+
+    let(:legacy_iso8601_millis) do
+      lambda do |epoch_sec, millis|
+        return if epoch_sec.nil?
+
+        t = Time.at(epoch_sec).utc
+        "#{t.strftime('%Y-%m-%dT%H:%M:%S')}.#{millis.to_s.rjust(3, '0')}Z"
+      end
+    end
+
+    let(:encode_json) do
+      lambda do |obj, escape_html:|
+        ActiveSupport::JSON.encode(obj, escape_html_entities: escape_html)
+      end
+    end
+
+    it "returns nil on out-of-domain inputs across all search serializers", :aggregate_failures do
+      expect(described_class.serialize_search_reading_list_json([1, 2], [], 0, 2025)).to be_nil
+      expect(described_class.serialize_search_reading_list_json([1, 2, "/a", nil, nil, 1, nil, "t", 5], [], 1,
+                                                                2025)).to be_nil
+      expect(described_class.serialize_search_comments_json([1, 2], [], 2025)).to be_nil
+      expect(described_class.serialize_search_comments_json([-1, 0, "b", false, nil, 0, 1_700_000_000, 0, "t", -1],
+                                                            [], 2025)).to be_nil
+      expect(described_class.serialize_search_comments_json([1, 0, "b", false, nil, 0, 1_700_000_000, 1000, "t", -1],
+                                                            [], 2025)).to be_nil
+      expect(described_class.serialize_search_organizations_json([1, "only_two"])).to be_nil
+      expect(described_class.serialize_search_podcast_episodes_json([1, "bad"])).to be_nil
+      expect(described_class.serialize_search_tags_json([1, "bad"])).to be_nil
+      expect(described_class.serialize_search_users_json([1, "bad"])).to be_nil
+      expect(described_class.serialize_search_usernames_json([1, "bad"])).to be_nil
+      binary = "abc\xFF".b
+      expect(described_class.serialize_search_usernames_json([1, binary, nil, "u"])).to be_nil
+    end
+
+    it "matches ActiveSupport::JSON bit-for-bit across 1,000 randomized payloads for all 7 search serializers" do
+      rng = Random.new(424_242)
+      text_pool = [
+        nil, "", "plain", "Hello <world> & \"quotes\"", "Emoji 🎉 日本語",
+        "line1\nline2\r\n\t\\slash", "<b>highlighted</b>", "ruby, rails, ", "rust, , webdev, "
+      ]
+      url_pool = [nil, "", "/uploads/img.png", "https://cdn.example.com/a?x=1&y=2"]
+      slug_pool = [nil, "", "dev-pod", "my_slug-1", "a/b"]
+
+      1_000.times do |iter|
+        escape_html = iter.even?
+        current_year = rng.rand(2020..2026)
+
+        # 1. Reading list
+        user_count = rng.rand(1..3)
+        users_ruby = Array.new(user_count) do |u|
+          {
+            name: text_pool.sample(random: rng),
+            profile_image_90: url_pool.sample(random: rng),
+            username: "user_#{u}_#{rng.rand(100)}"
+          }
+        end
+        users_flat = users_ruby.flat_map { |u| [u[:name], u[:profile_image_90], u[:username]] }
+        rl_items_ruby = Array.new(rng.rand(0..4)) do
+          uidx = rng.rand(0...user_count)
+          pub = rng.rand < 0.7 ? rng.rand(1_577_836_800..1_798_761_600) : nil
+          cross = rng.rand < 0.3 ? rng.rand(1_577_836_800..1_798_761_600) : nil
+          raw_tags = text_pool.sample(random: rng)
+          tags = raw_tags.to_s.split(", ")
+          {
+            reaction_id: rng.rand(1..10_000),
+            reaction_user_id: rng.rand(1..1_000),
+            path: url_pool.sample(random: rng),
+            pub: pub,
+            cross: cross,
+            reading_time: rng.rand < 0.8 ? rng.rand(0..30) : nil,
+            raw_tags: raw_tags,
+            tags: tags,
+            title: text_pool.sample(random: rng),
+            uidx: uidx
+          }
+        end
+        rl_flat = rl_items_ruby.flat_map do |it|
+          [it[:reaction_id], it[:reaction_user_id], it[:path], it[:pub], it[:cross],
+           it[:reading_time], it[:raw_tags], it[:title], it[:uidx]]
+        end
+        total = rng.rand(0..500)
+        rl_expected = encode_json.call(
+          {
+            result: rl_items_ruby.map do |it|
+              {
+                id: it[:reaction_id],
+                user_id: it[:reaction_user_id],
+                reactable: {
+                  path: it[:path],
+                  readable_publish_date_string: legacy_readable_date.call(it[:cross] || it[:pub], current_year),
+                  reading_time: it[:reading_time],
+                  tag_list: it[:tags],
+                  tags: it[:tags].map { |t| { name: t } },
+                  title: it[:title],
+                  user: users_ruby[it[:uidx]]
+                }
+              }
+            end,
+            total: total
+          },
+          escape_html: escape_html,
+        )
+        rl_actual = described_class.serialize_search_reading_list_json(
+          rl_flat, users_flat, total, current_year, escape_html: escape_html
+        )
+        expect(rl_actual).to eq(rl_expected), "reading_list iter #{iter}"
+
+        # 2. Comments
+        comments_ruby = Array.new(rng.rand(0..4)) do
+          has_user = rng.rand < 0.8
+          uidx = has_user ? rng.rand(0...user_count) : -1
+          has_hl = rng.rand < 0.5
+          {
+            id: rng.rand(0..100_000),
+            prc: rng.rand(0..500),
+            body: text_pool.sample(random: rng),
+            has_hl: has_hl,
+            hl: has_hl ? text_pool.sample(random: rng) : nil,
+            score: rng.rand < 0.8 ? rng.rand(-50..500) : nil,
+            sec: rng.rand(1_577_836_800..1_798_761_600),
+            millis: rng.rand(0..999),
+            title: text_pool.sample(random: rng),
+            uidx: uidx
+          }
+        end
+        comments_flat = comments_ruby.flat_map do |c|
+          [c[:id], c[:prc], c[:body], c[:has_hl], c[:hl], c[:score], c[:sec], c[:millis], c[:title], c[:uidx]]
+        end
+        comments_expected = encode_json.call(
+          {
+            result: comments_ruby.map do |c|
+              u = c[:uidx] >= 0 ? users_ruby[c[:uidx]] : nil
+              {
+                id: "comment_#{c[:id]}",
+                path: u ? "/#{u[:username]}/comment/#{c[:id].to_s(26)}" : "/404.html",
+                public_reactions_count: c[:prc],
+                body_text: c[:body],
+                class_name: "Comment",
+                highlight: { body_text: c[:has_hl] ? [c[:hl]] : [] },
+                hotness_score: c[:score],
+                published: true,
+                published_at: legacy_iso8601_millis.call(c[:sec], c[:millis]),
+                readable_publish_date_string: legacy_readable_date.call(c[:sec], current_year),
+                title: c[:title],
+                user: u || {}
+              }
+            end
+          },
+          escape_html: escape_html,
+        )
+        comments_actual = described_class.serialize_search_comments_json(
+          comments_flat, users_flat, current_year, escape_html: escape_html
+        )
+        expect(comments_actual).to eq(comments_expected), "comments iter #{iter}"
+
+        # 3. Organizations
+        orgs_ruby = Array.new(rng.rand(0..3)) do
+          {
+            id: rng.rand(1..10_000),
+            name: text_pool.sample(random: rng),
+            summary: text_pool.sample(random: rng),
+            profile_image_url: url_pool.sample(random: rng),
+            twitter_username: slug_pool.sample(random: rng),
+            slug: slug_pool.sample(random: rng)
+          }
+        end
+        orgs_flat = orgs_ruby.flat_map do |o|
+          [o[:id], o[:name], o[:summary], o[:profile_image_url], o[:twitter_username], o[:slug]]
+        end
+        orgs_expected = encode_json.call(
+          {
+            result: orgs_ruby.map do |o|
+              {
+                class_name: "Organization",
+                id: o[:id],
+                name: o[:name],
+                summary: o[:summary],
+                profile_image: { url: o[:profile_image_url] },
+                twitter_username: o[:twitter_username],
+                slug: o[:slug]
+              }
+            end
+          },
+          escape_html: escape_html,
+        )
+        expect(described_class.serialize_search_organizations_json(orgs_flat, escape_html: escape_html))
+          .to eq(orgs_expected), "orgs iter #{iter}"
+
+        # 4. Podcast episodes
+        eps_ruby = Array.new(rng.rand(0..3)) do
+          pub = rng.rand < 0.8 ? rng.rand(1_577_836_800..1_798_761_600) : nil
+          {
+            id: rng.rand(1..10_000),
+            body: text_pool.sample(random: rng),
+            comments_count: rng.rand < 0.8 ? rng.rand(0..50) : nil,
+            slug: slug_pool.sample(random: rng),
+            podcast_slug: slug_pool.sample(random: rng),
+            pub_sec: pub,
+            pub_millis: pub ? rng.rand(0..999) : 0,
+            quote: text_pool.sample(random: rng),
+            reactions_count: rng.rand < 0.8 ? rng.rand(0..50) : nil,
+            subtitle: text_pool.sample(random: rng),
+            summary: text_pool.sample(random: rng),
+            title: text_pool.sample(random: rng),
+            website_url: url_pool.sample(random: rng),
+            image_url: url_pool.sample(random: rng)
+          }
+        end
+        eps_flat = eps_ruby.flat_map do |e|
+          [e[:id], e[:body], e[:comments_count], e[:slug], e[:podcast_slug], e[:pub_sec], e[:pub_millis],
+           e[:quote], e[:reactions_count], e[:subtitle], e[:summary], e[:title], e[:website_url], e[:image_url]]
+        end
+        eps_expected = encode_json.call(
+          {
+            result: eps_ruby.map do |e|
+              {
+                id: "podcast_episode_#{e[:id]}",
+                body_text: e[:body],
+                comments_count: e[:comments_count],
+                path: e[:podcast_slug] ? "/#{e[:podcast_slug]}/#{e[:slug]}" : nil,
+                published_at: legacy_iso8601_millis.call(e[:pub_sec], e[:pub_millis]),
+                quote: e[:quote],
+                reactions_count: e[:reactions_count],
+                subtitle: e[:subtitle],
+                summary: e[:summary],
+                title: e[:title],
+                website_url: e[:website_url],
+                class_name: "PodcastEpisode",
+                highlight: { body_text: [] },
+                hotness_score: 0,
+                main_image: e[:image_url],
+                podcast: { slug: e[:podcast_slug], image_url: e[:image_url], title: e[:title] },
+                public_reactions_count: 0,
+                published: true,
+                search_score: 0,
+                slug: e[:podcast_slug],
+                user: {}
+              }
+            end
+          },
+          escape_html: escape_html,
+        )
+        expect(described_class.serialize_search_podcast_episodes_json(eps_flat, escape_html: escape_html))
+          .to eq(eps_expected), "podcast_episodes iter #{iter}"
+
+        # 5. Tags
+        tags_ruby = Array.new(rng.rand(0..3)) do
+          has_badge = rng.rand < 0.5
+          {
+            id: rng.rand(1..10_000),
+            name: slug_pool.sample(random: rng),
+            hotness_score: rng.rand < 0.8 ? rng.rand(0..1000) : nil,
+            supported: [true, false, nil].sample(random: rng),
+            short_summary: text_pool.sample(random: rng),
+            rules_html: text_pool.sample(random: rng),
+            bg_color_hex: [nil, "#000000", "#dea584"].sample(random: rng),
+            has_badge: has_badge,
+            badge_image_url: has_badge ? url_pool.sample(random: rng) : nil
+          }
+        end
+        tags_flat = tags_ruby.flat_map do |t|
+          [t[:id], t[:name], t[:hotness_score], t[:supported], t[:short_summary],
+           t[:rules_html], t[:bg_color_hex], t[:has_badge], t[:badge_image_url]]
+        end
+        tags_expected = encode_json.call(
+          {
+            result: tags_ruby.map do |t|
+              {
+                class_name: "Tag",
+                id: t[:id],
+                name: t[:name],
+                hotness_score: t[:hotness_score],
+                supported: t[:supported],
+                short_summary: t[:short_summary],
+                rules_html: t[:rules_html],
+                bg_color_hex: t[:bg_color_hex],
+                badge: t[:has_badge] ? { badge_image: { url: t[:badge_image_url] } } : nil
+              }
+            end
+          },
+          escape_html: escape_html,
+        )
+        expect(described_class.serialize_search_tags_json(tags_flat, escape_html: escape_html))
+          .to eq(tags_expected), "tags iter #{iter}"
+
+        # 6 & 7. Users & Usernames
+        search_users_ruby = Array.new(rng.rand(0..4)) do |idx|
+          {
+            id: rng.rand(1..10_000),
+            name: text_pool.sample(random: rng),
+            profile_image_90: url_pool.sample(random: rng),
+            username: rng.rand < 0.9 ? "u#{idx}_#{rng.rand(99)}" : nil
+          }
+        end
+        search_users_flat = search_users_ruby.flat_map { |u| [u[:id], u[:name], u[:profile_image_90], u[:username]] }
+
+        users_expected = encode_json.call(
+          {
+            result: search_users_ruby.map do |u|
+              {
+                class_name: "User",
+                id: u[:id],
+                path: "/#{u[:username]}",
+                title: u[:name],
+                user: { name: u[:username], profile_image_90: u[:profile_image_90], username: u[:username] }
+              }
+            end
+          },
+          escape_html: escape_html,
+        )
+        expect(described_class.serialize_search_users_json(search_users_flat, escape_html: escape_html))
+          .to eq(users_expected), "users iter #{iter}"
+
+        usernames_expected = encode_json.call(
+          { result: search_users_ruby },
+          escape_html: escape_html,
+        )
+        expect(described_class.serialize_search_usernames_json(search_users_flat, escape_html: escape_html))
+          .to eq(usernames_expected), "usernames iter #{iter}"
+      end
+    end
+  end
 end
