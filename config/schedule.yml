@@ -247,4 +247,10 @@ evaluate_concept_thresholds:
   cron: "0 */3 * * *"
   class: "Concepts::EvaluateThresholdsWorker"
 
+edge_feed_sync_snapshots:
+  description: "Mirrors qualified home-feed articles, active FeedConfigs, story cards, and embeddings to Fastly KV Store (runs every 2 minutes when :fastly_edge_feed_mirror is enabled)"
+  cron: "*/2 * * * *"
+  class: "EdgeFeed::SyncSnapshotsWorker"
+
+
 

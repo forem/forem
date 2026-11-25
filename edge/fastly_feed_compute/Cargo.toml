@@ -1,0 +1,16 @@
+[package]
+name = "forem-edge-feed-compute"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Proof-of-concept Fastly Compute service for Forem's FeedConfig-derived home feed"
+
+[dependencies]
+fastly = "0.11"
+forem_core = { path = "../../gems/forem_native/crates/forem_core" }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
