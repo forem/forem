@@ -11212,4 +11212,292 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".billboard_prepare_shadow_inner_html and .billboard_wrap_shadow_dom" do
+    let(:script_mime) { "application/x-forem-billboard-script" }
+    let(:exec_regex) do
+      %r{\A\s*(?:text/javascript|application/javascript|text/ecmascript|application/ecmascript|module)\s*(?:;.*)?\z}ix
+    end
+
+    def legacy_prepare_shadow_inner_html(raw_html)
+      return "" if raw_html.blank?
+
+      fragment = Nokogiri::HTML5.fragment(raw_html)
+      fragment.css("base").remove
+      fragment.css("meta[http-equiv]").each do |meta|
+        meta.remove if meta["http-equiv"].to_s.strip.casecmp?("refresh")
+      end
+      fragment.css("script").each do |script|
+        original_type = script["type"].to_s.strip
+        next if original_type.present? && !exec_regex.match?(original_type)
+
+        script["data-original-type"] = original_type if original_type.present?
+        script["type"] = script_mime
+        script["data-billboard-script"] = "true"
+        next if script["src"].blank?
+
+        script["data-billboard-script-src"] = script["src"]
+        script.remove_attribute("src")
+      end
+      fragment.to_html
+    end
+
+    def legacy_wrap_shadow_dom(raw_html, billboard_id, template, base_styles, bootstrap_script)
+      prepared = legacy_prepare_shadow_inner_html(raw_html)
+      escaped_id = ERB::Util.html_escape(billboard_id.to_s)
+      escaped_template = ERB::Util.html_escape(template.to_s)
+      %(<div class="billboard-shadow-host" data-billboard-shadow-host="true" data-billboard-id="#{escaped_id}" ) +
+        %(data-billboard-template="#{escaped_template}"><template shadowrootmode="open">) +
+        %(<style data-billboard-base-styles="true">#{base_styles}</style>) +
+        %(<div class="billboard-shadow-body">#{prepared}</div></template></div>) +
+        %(<script data-billboard-shadow-bootstrap="true">#{bootstrap_script}</script>)
+    end
+
+    it "defers to nil on stray template tags, unbalanced markup, and tables, and matches script edge cases" do
+      expect(
+        described_class.billboard_prepare_shadow_inner_html("<div>Safe</template><div>More", script_mime),
+      ).to be_nil
+      expect(described_class.billboard_prepare_shadow_inner_html("<div>Unclosed", script_mime)).to be_nil
+      expect(
+        described_class.billboard_prepare_shadow_inner_html("<table><tr><td>x</td></tr></table>", script_mime),
+      ).to be_nil
+      expect(described_class.billboard_prepare_shadow_inner_html("<p><div>Nested</div></p>", script_mime)).to be_nil
+
+      [
+        "<script type=\"module; note=first\nsecond\">window.x = 1;</script>",
+        '<script src="&nbsp;"></script>',
+        '<script src="https://cdn.example.com/a.js?x=1&amp;y=2"></script>',
+      ].each do |edge_html|
+        actual = described_class.billboard_prepare_shadow_inner_html(edge_html, script_mime)
+        expect(actual).to eq(legacy_prepare_shadow_inner_html(edge_html)), edge_html.inspect
+      end
+    end
+
+    it "matches Nokogiri::HTML5.fragment across 1,000 randomized billboard payloads" do
+      rng = Random.new(424_242)
+      snippets = [
+        "<style>h1 { color: red; } a > span { font-weight: bold; }</style>",
+        '<div class="promo"><h1>Hello &amp; Welcome</h1><p>Check a &lt; b &gt; c</p></div>',
+        '<base href="https://evil.example.com/">',
+        '<meta http-equiv=" Refresh " content="0;url=https://evil.example.com/">',
+        '<meta name="author" content="DEV">',
+        "<script>if (1 < 2 && 3 > 1) { window.x = 1; }</script>",
+        '<script type="text/javascript">window.y = 2;</script>',
+        '<script type="module">export const z = 3;</script>',
+        '<script src="https://cdn.example.com/widget.js" defer></script>',
+        '<script type="application/json" id="cfg">{"ok":true}</script>',
+        '<img src="https://cdn.example.com/banner.png" alt="Banner" />',
+        '<a href="https://example.com?a=1&amp;b=2" target="_blank">CTA &nbsp; Now</a>',
+        "<!-- promo comment -->",
+      ]
+
+      1_000.times do |i|
+        count = rng.rand(1..5)
+        raw_html = Array.new(count) { snippets[rng.rand(snippets.size)] }.join("\n")
+        bb_id = (i % 7).zero? ? "#{i}&<>\"'" : i.to_s
+        template = %w[authorship_box plain inline_cta].sample(random: rng)
+
+        actual = described_class.billboard_wrap_shadow_dom(
+          raw_html, bb_id, template, "@layer { :host { display: block; } }", "console.log(1);", script_mime
+        )
+        expected = legacy_wrap_shadow_dom(
+          raw_html, bb_id, template, "@layer { :host { display: block; } }", "console.log(1);"
+        )
+
+        expect(actual).to eq(expected), "iteration #{i}: #{raw_html.inspect}"
+      end
+    end
+  end
+
+  describe ".billboard_append_bb_param" do
+    def legacy_with_bb_param(html, id)
+      return html if html.strip.empty?
+
+      full_html = "<html><head></head><body>#{html}</body></html>"
+      doc = Nokogiri::HTML(full_html)
+      doc.css("a").each do |link|
+        href = link["href"]
+        next unless href && !href.strip.empty? && href.start_with?("http", "/")
+
+        begin
+          uri = URI.parse(href)
+        rescue URI::InvalidURIError
+          next
+        end
+        existing_params = URI.decode_www_form(uri.query || "")
+        bb_param_index = existing_params.find_index { |param| param[0] == "bb" }
+        if bb_param_index
+          existing_params[bb_param_index][1] = id.to_s
+        else
+          existing_params << ["bb", id.to_s]
+        end
+        uri.query = URI.encode_www_form(existing_params)
+        link["href"] = uri.to_s
+      end
+      modified_html = doc.at("body").inner_html
+      modified_html.gsub!(/href="([^"]*)&amp;([^"]*)"/, 'href="\1&\2"')
+      modified_html
+    end
+
+    it "defers to nil on bare top-level text, percent-encoded query params, ports, plus IDs, and HTML4 entities" do
+      expect(described_class.billboard_append_bb_param("bare text", "42")).to be_nil
+      expect(
+        described_class.billboard_append_bb_param('<p><a href="https://example.com?q=a%20b">x</a></p>', "42"),
+      ).to be_nil
+      expect(
+        described_class.billboard_append_bb_param('<p><a href="https://example.com:443/offer">x</a></p>', "42"),
+      ).to be_nil
+      expect(described_class.billboard_append_bb_param('<p><a href="/offer">x</a></p>', "A+B")).to be_nil
+      expect(
+        described_class.billboard_append_bb_param('<p><a href="/x" title="a&quot;b">link</a></p>', "42"),
+      ).to be_nil
+      expect(described_class.billboard_append_bb_param('<p>a&nbsp;b <a href="/x">link</a></p>', "42")).to be_nil
+    end
+
+    it "matches Nokogiri::HTML + URI across 1,000 randomized billboard HTML snippets" do
+      rng = Random.new(424_242)
+      links = [
+        '<a href="https://example.com">One</a>',
+        "<a href='https://example.com?bb=123'>Two</a>",
+        "<a href='https://example.com?foo=bar'>Three</a>",
+        '<a href="https://example.com?foo=bar&amp;baz=1">Four</a>',
+        '<a href="https://example.com/path?a=1#frag">Five</a>',
+        "<a href='mailto:test@example.com'>Mail</a>",
+        '<a href="/articles/123?bb=9&amp;x=2">Rel</a>',
+        '<a href="#section">Anchor</a>',
+        '<img src="https://cdn.example.com/a.png" alt="pic" />',
+      ]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..4)) { links[rng.rand(links.size)] }
+        html = "<p>Intro #{i} #{parts.join(' ')} outro.</p>"
+        bb_id = (i + 1).to_s
+
+        actual = described_class.billboard_append_bb_param(html, bb_id)
+        expected = legacy_with_bb_param(html, bb_id)
+
+        expect(actual).to eq(expected), "iteration #{i}: #{html.inspect}"
+      end
+    end
+
+    it "replays libxml2 formatting newlines around block-level elements" do
+      html = '<style>.billyb { color: red }</style><div class="billyb">This is a raw div ' \
+             '<a href="https://example.com">hello</a></div>'
+
+      expect(described_class.billboard_append_bb_param(html, "50")).to eq(legacy_with_bb_param(html, "50"))
+      expect(described_class.billboard_append_bb_param(html, "50")).to eq(
+        "<style>.billyb { color: red }</style>\n<div class=\"billyb\">This is a raw div " \
+        "<a href=\"https://example.com?bb=50\">hello</a>\n</div>",
+      )
+    end
+
+    it "matches Nokogiri::HTML serialization across 1,000 randomized nested block structures" do
+      rng = Random.new(20_261_125)
+      tags = %w[div p section article header footer h2 blockquote ul ol dl dd dt li aside nav figure form
+                center address menu fieldset legend span b i a em small strong]
+      leaves = ['<a href="https://example.com?x=1">L</a>', "<b>b</b>", "<span>s</span>",
+                '<img src="/i.png" alt="a">', "<br>", "<hr>", "text", " ", "\n", "<em>e</em>"]
+      build = lambda do |depth|
+        Array.new(rng.rand(0..4)) do
+          if depth < 3 && rng.rand < 0.5
+            tag = tags[rng.rand(tags.size)]
+            "<#{tag}>#{build.call(depth + 1)}</#{tag}>"
+          else
+            leaves[rng.rand(leaves.size)]
+          end
+        end.join
+      end
+      top_level = %w[div p section h2 ul ol blockquote form center style hr]
+
+      1_000.times do |i|
+        html = Array.new(rng.rand(1..3)) do
+          tag = top_level[rng.rand(top_level.size)]
+          case tag
+          when "style" then "<style>.a { color: red }</style>"
+          when "hr" then "<hr>"
+          else "<#{tag}>#{build.call(1)}</#{tag}>"
+          end
+        end.join(["", "\n", " "][rng.rand(3)])
+        bb_id = (i + 1).to_s
+
+        actual = described_class.billboard_append_bb_param(html, bb_id)
+        next if actual.nil?
+
+        expect(actual).to eq(legacy_with_bb_param(html, bb_id)), "iteration #{i}: #{html.inspect}"
+      end
+    end
+  end
+
+  describe ".billboard_extract_internal_article_paths" do
+    def legacy_extract_path(href, internal_hosts)
+      return if href.nil? || href.strip.empty? || !href.start_with?("http", "/")
+
+      uri = URI.parse(href)
+      host = uri.host&.downcase&.delete_prefix("www.")
+      return unless host.nil? || internal_hosts.include?(host)
+
+      path = uri.path
+      path.chomp("/").downcase if path && !path.strip.empty? && path != "/"
+    rescue URI::InvalidURIError
+      nil
+    end
+
+    def legacy_extract_internal_article_paths(html, internal_hosts)
+      return [] if html.strip.empty?
+
+      doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
+      doc.css("a").filter_map { |link| legacy_extract_path(link["href"], internal_hosts) }.uniq
+    end
+
+    it "defers to nil on entity-encoded, invalid percent-escape, ambiguous comment, or invalid URI hrefs" do
+      expect(
+        described_class.billboard_extract_internal_article_paths('<a href="/a&#47;b">x</a>', ["dev.to"]),
+      ).to be_nil
+      expect(
+        described_class.billboard_extract_internal_article_paths('<a href="https://dev.to/bad path">x</a>', ["dev.to"]),
+      ).to be_nil
+      expect(
+        described_class.billboard_extract_internal_article_paths('<a href="/ben/offer%">x</a>', ["dev.to"]),
+      ).to be_nil
+      expect(
+        described_class.billboard_extract_internal_article_paths(
+          '<!-- note --!><a href="/ben/my-post">Post</a><!-- tail -->', ["dev.to"]
+        ),
+      ).to be_nil
+      expect(
+        described_class.billboard_extract_internal_article_paths(
+          '<a href="/ben/one">1</a><a_widget href="/ben/other">2</a_widget>', ["dev.to"]
+        ),
+      ).to be_nil
+    end
+
+    it "matches Nokogiri::HTML + URI across 1,000 randomized billboard HTML snippets" do
+      rng = Random.new(424_242)
+      internal_hosts = ["dev.to", "sub.dev.to", "customdomain.com"]
+      hrefs = [
+        "/ben/my-post",
+        "/Ben/My-Post/",
+        "https://dev.to/alice/post-1?utm=1#top",
+        "https://dev.to/alice/post-1?utm_source=bb&amp;utm_medium=sidebar#top",
+        "https://www.dev.to/alice/Post-1/",
+        "https://sub.dev.to/org/article-2",
+        "http://customdomain.com:8080/team/hello-world/",
+        "//www.dev.to/proto/relative",
+        "https://external.example.com/other/post",
+        "/",
+        "mailto:hi@example.com",
+        "#fragment",
+      ]
+
+      1_000.times do |i|
+        anchors = Array.new(rng.rand(0..5)) { %(<a href="#{hrefs[rng.rand(hrefs.size)]}">Link</a>) }
+        html = "<div><p>Promo #{i}</p>#{anchors.join(' ')}</div>"
+
+        actual = described_class.billboard_extract_internal_article_paths(html, internal_hosts)
+        expected = legacy_extract_internal_article_paths(html, internal_hosts)
+
+        expect(actual).to eq(expected), "iteration #{i}: #{html.inspect}"
+      end
+    end
+  end
 end

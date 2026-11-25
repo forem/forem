@@ -167,6 +167,19 @@ module Billboards
     end
 
     def call
+      native_wrapped = ForemNative.billboard_wrap_shadow_dom(
+        @html, @billboard_id.to_s, @template, BASE_STYLES, BOOTSTRAP_SCRIPT, SCRIPT_MIME_TYPE
+      )
+      # rubocop:disable Rails/OutputSafety
+      return native_wrapped.html_safe if native_wrapped
+      # rubocop:enable Rails/OutputSafety
+
+      legacy_call
+    end
+
+    private
+
+    def legacy_call
       prepared_html = prepare_inner_html(@html)
       escaped_id = ERB::Util.html_escape(@billboard_id.to_s)
       escaped_template = ERB::Util.html_escape(@template)
@@ -177,8 +190,6 @@ module Billboards
       HTML
       # rubocop:enable Rails/OutputSafety
     end
-
-    private
 
     def prepare_inner_html(raw_html)
       return "" if raw_html.blank?

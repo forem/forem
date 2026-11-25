@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Billboards::EnforceDeliveryLimits do
-  let(:now) { Time.zone.local(2026, 11, 24, 18, 0, 0) }
+  let(:now) { Time.current.change(usec: 0) }
 
   before do
     allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
