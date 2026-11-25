@@ -8298,6 +8298,112 @@ fn redcarpet_render_link(
     }
 }
 
+fn format_iso_date(ruby: &Ruby, unix_secs: i64, utc_offset_secs: i32) -> Option<RString> {
+    forem_core::sitemap::format_iso_date(unix_secs, utc_offset_secs).map(|s| ruby.str_new(&s))
+}
+
+fn serialize_sitemap_index_xml(
+    ruby: &Ruby,
+    base_url: RString,
+    articles_count: i64,
+    page_limit: i64,
+    include_users_and_tags: bool,
+) -> Option<RString> {
+    let xml = {
+        // SAFETY: Pure Rust borrow of `base_url`; ends before `ruby.str_new` allocates.
+        let base = unsafe { borrow_req_utf8_str(base_url.as_value()) }?;
+        forem_core::sitemap::serialize_sitemap_index_xml(
+            base,
+            articles_count,
+            page_limit,
+            include_users_and_tags,
+        )?
+    };
+    Some(ruby.str_new(&xml))
+}
+
+fn serialize_sitemap_urlset_xml(
+    ruby: &Ruby,
+    base_url: RString,
+    path_prefix: RString,
+    rows: RArray,
+) -> Result<Option<RString>, Error> {
+    // Copy small strings and outer `Value` handles before any Ruby VM calls (`funcall`)
+    // so no `as_slice()` borrow is ever held across a Ruby VM call or GC point.
+    let base_url_str = match unsafe { borrow_req_utf8_str(base_url.as_value()) } {
+        Some(s) => s.to_owned(),
+        None => return Ok(None),
+    };
+    let path_prefix_str = match unsafe { borrow_req_utf8_str(path_prefix.as_value()) } {
+        Some(s) => s.to_owned(),
+        None => return Ok(None),
+    };
+    let row_vals: Vec<Value> = unsafe { rows.as_slice() }.to_vec();
+
+    let mut path_arena = String::with_capacity(row_vals.len().saturating_mul(32));
+    let mut entries: Vec<(usize, usize, i64, i32)> = Vec::with_capacity(row_vals.len());
+    let id_to_i = ruby.intern("to_i");
+    let id_utc_offset = ruby.intern("utc_offset");
+
+    for row_val in row_vals {
+        let Some(pair) = RArray::from_value(row_val) else {
+            return Ok(None);
+        };
+        let (path_val, time_val) = {
+            let slice = unsafe { pair.as_slice() };
+            if slice.len() != 2 {
+                return Ok(None);
+            }
+            (slice[0], slice[1])
+        };
+
+        let start = path_arena.len();
+        match unsafe { borrow_req_utf8_str(path_val) } {
+            Some(p) => path_arena.push_str(p),
+            None => return Ok(None),
+        }
+        let end = path_arena.len();
+
+        if time_val.is_nil() {
+            return Ok(None);
+        }
+        if !time_val.respond_to(id_to_i, false)? || !time_val.respond_to(id_utc_offset, false)? {
+            return Ok(None);
+        }
+        let secs_val: Value = match time_val.funcall(id_to_i, ()) {
+            Ok(v) => v,
+            Err(_) => return Ok(None),
+        };
+        let Some(secs_int) = Integer::from_value(secs_val) else {
+            return Ok(None);
+        };
+        let Ok(secs) = secs_int.to_i64() else {
+            return Ok(None);
+        };
+
+        let offset_val: Value = match time_val.funcall(id_utc_offset, ()) {
+            Ok(v) => v,
+            Err(_) => return Ok(None),
+        };
+        let Some(offset_int) = Integer::from_value(offset_val) else {
+            return Ok(None);
+        };
+        let Ok(offset) = offset_int.to_i32() else {
+            return Ok(None);
+        };
+
+        entries.push((start, end, secs, offset));
+    }
+
+    let xml = forem_core::sitemap::serialize_sitemap_urlset_xml_indexed(
+        &base_url_str,
+        &path_prefix_str,
+        &path_arena,
+        &entries,
+    );
+    Ok(xml.map(|s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -8975,5 +9081,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod
         .define_singleton_method("redcarpet_render_link", function!(redcarpet_render_link, 6))?;
+    native_mod.define_singleton_method("format_iso_date", function!(format_iso_date, 2))?;
+    native_mod.define_singleton_method(
+        "serialize_sitemap_index_xml",
+        function!(serialize_sitemap_index_xml, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_sitemap_urlset_xml",
+        function!(serialize_sitemap_urlset_xml, 3),
+    )?;
     Ok(())
 }

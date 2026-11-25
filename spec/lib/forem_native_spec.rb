@@ -11794,4 +11794,165 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".format_iso_date" do
+    it "matches Time#strftime('%F') across edge dates and timezone offsets" do
+      [
+        [0, 0],
+        [0, -18_000],
+        [-1, 0],
+        [1_583_019_000, 0],
+        [1_583_019_000, 7_200],
+        [951_782_400, 0], # 2000-02-29
+        [1_700_000_000, 19_800], # UTC+05:30
+        [1_700_000_000, -28_800], # UTC-08:00
+      ].each do |secs, offset|
+        expected = Time.at(secs, in: offset).strftime("%F")
+        expect(described_class.format_iso_date(secs, offset)).to eq(expected)
+      end
+    end
+
+    it "returns nil for out-of-domain years and non-integer inputs" do
+      expect(described_class.format_iso_date(253_402_300_800, 0)).to be_nil
+      expect(described_class.format_iso_date(-62_167_219_201, 0)).to be_nil
+      expect(described_class.format_iso_date("123", 0)).to be_nil
+      expect(described_class.format_iso_date(0, "0")).to be_nil
+    end
+
+    it "matches Time#strftime('%F') across 1,000 randomized timestamps and offsets" do
+      rng = Random.new(424_242)
+      offsets = [-43_200, -28_800, -18_000, -14_400, 0, 3_600, 7_200, 19_800, 32_400, 50_400]
+
+      1_000.times do |i|
+        secs = rng.rand(-2_208_988_800..4_102_444_800) # 1900..2100
+        offset = offsets[rng.rand(offsets.size)]
+        expected = Time.at(secs, in: offset).strftime("%F")
+        actual = described_class.format_iso_date(secs, offset)
+        expect(actual).to eq(expected), "iter #{i}: secs=#{secs} offset=#{offset}"
+      end
+    end
+  end
+
+  describe ".serialize_sitemap_index_xml" do
+    let(:legacy_sitemap_index_xml) do
+      lambda do |base_url, articles_count, page_limit, include_users_and_tags|
+        out = +"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
+               "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+        if articles_count > page_limit
+          (0..(articles_count / page_limit)).each do |n|
+            loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-posts-#{n}.xml"))
+            out << "      <sitemap>\n          <loc>#{loc}</loc>\n      </sitemap>\n"
+          end
+        else
+          loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-posts.xml"))
+          out << "      <sitemap>\n        <loc>#{loc}</loc>\n    </sitemap>\n"
+        end
+        if include_users_and_tags
+          users_loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-users.xml"))
+          tags_loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-tags.xml"))
+          out << "  <sitemap>\n      <loc>#{users_loc}</loc>\n  </sitemap>\n"
+          out << "  <sitemap>\n      <loc>#{tags_loc}</loc>\n  </sitemap>\n"
+        end
+        out << "</sitemapindex>\n"
+        out
+      end
+    end
+
+    it "returns nil for out-of-domain inputs" do
+      expect(described_class.serialize_sitemap_index_xml("https://dev.to", -1, 750)).to be_nil
+      expect(described_class.serialize_sitemap_index_xml("https://dev.to", 10, 0)).to be_nil
+      expect(described_class.serialize_sitemap_index_xml("ftp://dev.to", 10, 750)).to be_nil
+      expect(described_class.serialize_sitemap_index_xml(nil, 10, 750)).to be_nil
+    end
+
+    it "matches app/views/sitemaps/index.xml.erb across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      base_urls = [
+        "https://dev.to",
+        "http://localhost:3000",
+        "https://blog.mlh.com",
+        "https://DEV.TO:443",
+      ]
+
+      1_000.times do |i|
+        base_url = base_urls[rng.rand(base_urls.size)]
+        page_limit = [1, 5, 25, 750][rng.rand(4)]
+        articles_count = rng.rand(0..(page_limit * 5))
+        include_users_and_tags = rng.rand(2).zero?
+
+        actual = described_class.serialize_sitemap_index_xml(
+          base_url, articles_count, page_limit, include_users_and_tags: include_users_and_tags
+        )
+        expected = legacy_sitemap_index_xml.call(
+          base_url, articles_count, page_limit, include_users_and_tags
+        )
+        expect(actual).to eq(expected),
+                          "iter #{i}: base=#{base_url} count=#{articles_count} limit=#{page_limit}"
+      end
+    end
+  end
+
+  describe ".serialize_sitemap_urlset_xml" do
+    let(:legacy_sitemap_urlset_xml) do
+      lambda do |base_url, rows, path_prefix:|
+        out = +"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
+               "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+        rows.each do |raw_path, timestamp|
+          loc = ERB::Util.html_escape(described_class.join_url(base_url, "#{path_prefix}#{raw_path}"))
+          lastmod = ERB::Util.html_escape(timestamp.strftime("%F"))
+          out << "    <url>\n        <loc>#{loc}</loc>\n        <lastmod>#{lastmod}</lastmod>\n    </url>\n"
+        end
+        out << "</urlset>\n"
+        out
+      end
+    end
+
+    it "returns nil for out-of-domain rows so SitemapsController falls back to ERB" do
+      now = Time.utc(2024, 6, 15, 12, 0, 0)
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["café", now]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a/../b", now]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a", nil]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a", Date.new(2024, 6, 15)]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [[nil, now]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a"]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", nil)).to be_nil
+    end
+
+    it "matches app/views/sitemaps/{posts,users,tags}.xml.erb across 1,000 randomized batches" do
+      rng = Random.new(424_242)
+      base_urls = ["https://dev.to", "http://blog.mlh.com", "http://localhost:3000"]
+      prefixes = ["", "/", "/t/"]
+      paths = [
+        "/ben/hello-world-123",
+        "/alice/rust-and-ruby-42",
+        "my-custom-slug",
+        "ruby",
+        "c_sharp",
+        "user_42",
+        "/org/post?a=1&b=2",
+        "/org/it's-a-test",
+      ]
+      offsets = [-28_800, -18_000, 0, 7_200, 19_800]
+
+      1_000.times do |i|
+        base_url = base_urls[rng.rand(base_urls.size)]
+        path_prefix = prefixes[rng.rand(prefixes.size)]
+        rows = Array.new(rng.rand(0..8)) do
+          p = paths[rng.rand(paths.size)]
+          t = Time.at(rng.rand(1_262_304_000..1_893_456_000), in: offsets[rng.rand(offsets.size)])
+          [p, t]
+        end
+
+        actual = described_class.serialize_sitemap_urlset_xml(base_url, rows, path_prefix: path_prefix)
+        if rows.any? { |raw_path, _| described_class.join_url(base_url, "#{path_prefix}#{raw_path}").nil? }
+          expect(actual).to be_nil,
+                            "iter #{i}: expected nil deferral for out-of-domain URL"
+        else
+          expected = legacy_sitemap_urlset_xml.call(base_url, rows, path_prefix: path_prefix)
+          expect(actual).to eq(expected),
+                            "iter #{i}: base=#{base_url} prefix=#{path_prefix.inspect} rows=#{rows.size}"
+        end
+      end
+    end
+  end
 end

@@ -186,6 +186,17 @@ RSpec.describe "Sitemaps" do
         expect(response.body).not_to include(org_article.path)
         expect(response.body).not_to include(other_article.slug)
       end
+
+      it "matches the ERB fallback byte-for-byte when native serialization returns nil" do
+        org_article
+        get "http://blog.mlh.com/sitemap-posts.xml"
+        native_body = response.body
+
+        allow(ForemNative).to receive(:serialize_sitemap_urlset_xml).and_return(nil)
+        get "http://blog.mlh.com/sitemap-posts.xml"
+        expect(response.body).to eq(native_body)
+        expect(response.media_type).to eq("application/xml")
+      end
     end
 
     describe "GET other resource sitemaps" do
