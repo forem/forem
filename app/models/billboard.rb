@@ -1,6 +1,7 @@
 class Billboard < ApplicationRecord
   include LiquidEmbeddable
   include Taggable
+  include ProcessedHtmlFinalizable
   acts_as_taggable_on :tags
   resourcify
   belongs_to :creator, class_name: "User", optional: true
@@ -387,18 +388,6 @@ class Billboard < ApplicationRecord
     index ? ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[index] : area.to_s
   end
 
-  def processed_html_final
-    # This is a final non-database-driven step to adjust processed html
-    # It is sort of a hack to avoid having to reprocess all articles
-    # It is currently only for this one cloudflare domain change
-    # It is duplicated across article, bullboard and comment where it is most needed
-    # In the future this could be made more customizable. For now it's just this one thing.
-    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
-
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
-                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
-  end
-
   def type_of_display
     type_of.gsub("external", "partner")
   end
@@ -615,6 +604,12 @@ class Billboard < ApplicationRecord
   end
 
   private
+
+  # Billboards never contain legacy `{% runkit %}` embeds, so `processed_html_final` only applies
+  # the Cloudflare Images domain rewrite.
+  def finalize_legacy_code_html?
+    false
+  end
 
   def legacy_with_bb_param(html)
     # Parse the html with Nokogiri

@@ -526,27 +526,6 @@ fn push_truncated_escaped(out: &mut String, text: &str, max_chars: usize) {
 }
 
 /// Appends `processed_html` to `out`, applying Cloudflare domain replacement if configured.
-fn push_processed_html_final(
-    out: &mut String,
-    processed_html: &str,
-    prior_domain: Option<&str>,
-    current_domain: Option<&str>,
-) {
-    if let (Some(prior), Some(current)) = (prior_domain, current_domain) {
-        if !prior.is_empty() && !current.is_empty() {
-            let mut rest = processed_html;
-            while let Some(pos) = rest.find(prior) {
-                out.push_str(&rest[..pos]);
-                out.push_str(current);
-                rest = &rest[pos + prior.len()..];
-            }
-            out.push_str(rest);
-            return;
-        }
-    }
-    out.push_str(processed_html);
-}
-
 fn prepare_author(
     author: &CommentAuthorInput<'_>,
     static_ctx: &CommentStaticContext<'_>,
@@ -1124,7 +1103,7 @@ fn render_single_comment(
             out.push_str("element-hidden-by-commentable-user");
         }
         out.push_str("\n          \">\n          ");
-        push_processed_html_final(
+        crate::processed_html::push_processed_html_final(
             out,
             node.processed_html,
             static_ctx.prior_cloudflare_domain,

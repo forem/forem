@@ -377,27 +377,6 @@ fn push_escaped_count_template(out: &mut String, template: &str, count: i64) {
 
 /// Appends `processed_html`, applying `PRIOR_CLOUDFLARE_IMAGES_DOMAIN` -> `CLOUDFLARE_IMAGES_DOMAIN`
 /// replacement if configured (`Article#processed_html_final`).
-fn push_processed_html_final(
-    out: &mut String,
-    processed_html: &str,
-    prior_domain: Option<&str>,
-    current_domain: Option<&str>,
-) {
-    if let (Some(prior), Some(current)) = (prior_domain, current_domain) {
-        if !prior.is_empty() && !current.is_empty() {
-            let mut rest = processed_html;
-            while let Some(pos) = rest.find(prior) {
-                out.push_str(&rest[..pos]);
-                out.push_str(current);
-                rest = &rest[pos + prior.len()..];
-            }
-            out.push_str(rest);
-            return;
-        }
-    }
-    out.push_str(processed_html);
-}
-
 fn prepare_story_author(
     author: &StoryAuthorInput<'_>,
     static_ctx: &StoryCardStaticContext<'_>,
@@ -899,7 +878,7 @@ fn render_single_card(
         if let Some(raw_preview) = card.status_body_preview_html {
             if is_ruby_present(raw_preview) {
                 let mut preview_final = String::with_capacity(raw_preview.len());
-                push_processed_html_final(
+                crate::processed_html::push_processed_html_final(
                     &mut preview_final,
                     raw_preview,
                     static_ctx.prior_cloudflare_domain,
