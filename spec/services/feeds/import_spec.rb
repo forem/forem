@@ -443,5 +443,59 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       described_class.call(users_scope: User.where(id: user.id))
       expect(Parallel).not_to have_received(:map)
     end
+
+    it "skips importing org-attributed articles when the source owner is no longer an active org member" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      org = create(:organization)
+      membership = create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+      source = create(:feed_source, user: user, organization: org, feed_url: "https://example.com/revoked-org.xml")
+      membership.destroy!
+
+      xml = <<~XML
+        <?xml version="1.0"?>
+        <rss version="2.0"><channel><title>Org Feed</title>
+          <item><title>Revoked Org Post</title><link>https://example.com/revoked-org/1</link>
+          <description>Body</description><pubDate>#{1.hour.ago.rfc2822}</pubDate></item>
+        </channel></rss>
+      XML
+      fragment_class = Class.new(String) { def code = 200 }
+      allow(HTTParty).to receive(:get).and_yield(fragment_class.new(xml.b))
+
+      expect(described_class.call(users_scope: User.where(id: user.id))).to eq(0)
+      expect(Article.where(organization_id: org.id)).to be_empty
+      expect(user.articles).to be_empty
+
+      log = Feeds::ImportLog.where(feed_source: source).last
+      expect(log.status).to eq("failed")
+      expect(log.error_message).to include("no longer an active member")
+    end
+
+    it "skips creating articles for a suspended resolved org author" do
+      org_admin = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      suspended_member = create(:user, :suspended, email: "suspended-author@example.com")
+      org = create(:organization)
+      create(:organization_membership, user: org_admin, organization: org, type_of_user: "admin")
+      create(:organization_membership, user: suspended_member, organization: org, type_of_user: "member")
+      source = create(:feed_source, user: org_admin, organization: org, feed_url: "https://example.com/org-suspended.xml")
+
+      xml = <<~XML
+        <?xml version="1.0"?>
+        <rss version="2.0"><channel><title>Org Feed</title>
+          <item><title>Suspended Member Post</title><link>https://example.com/org-suspended/1</link>
+          <author>suspended-author@example.com</author><description>Body</description>
+          <pubDate>#{1.hour.ago.rfc2822}</pubDate></item>
+        </channel></rss>
+      XML
+      fragment_class = Class.new(String) { def code = 200 }
+      allow(HTTParty).to receive(:get).and_yield(fragment_class.new(xml.b))
+
+      expect(described_class.call(users_scope: User.where(id: org_admin.id))).to eq(0)
+      expect(suspended_member.articles).to be_empty
+      expect(Article.where(organization_id: org.id)).to be_empty
+
+      log = Feeds::ImportLog.where(feed_source: source).last
+      expect(log.items_failed).to eq(1)
+      expect(log.import_items.last.status).to eq("failed")
+    end
   end
 end

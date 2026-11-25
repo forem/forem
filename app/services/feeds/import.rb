@@ -175,6 +175,11 @@ module Feeds
       start_time = Time.current
       articles = []
       user = feed_source.user
+      unless authorized_organization_membership?(feed_source, user)
+        record_unauthorized_organization_import(feed_source, user, start_time)
+        return articles
+      end
+
       entries = select_recent_entries(feed.entries)
       import_log = Feeds::ImportLog.create!(
         user: user,
@@ -205,8 +210,8 @@ module Feeds
           previously_skipped_urls, authors_cache, existing_identifiers_by_author_id
         )
         case outcome
-        when :skipped
-          items_skipped += 1
+        when :skipped then items_skipped += 1
+        when :failed then items_failed += 1
         when Article
           articles.append(outcome)
           items_imported += 1
@@ -255,6 +260,11 @@ module Feeds
       author_key = item.try(:author).to_s.strip
       author = authors_cache[author_key] ||= Feeds::ResolveAuthor.call(item, feed_source)
 
+      unless author_eligible_to_publish?(author)
+        record_import_item(import_log, item, :failed, error_message: "Resolved author is not eligible to publish")
+        return :failed
+      end
+
       if item_previously_imported?(item, author, entries, existing_identifiers_by_author_id)
         item_url = item.url.to_s.strip.truncate(500)
         record_import_item(import_log, item, :skipped_duplicate) unless previously_skipped_urls.include?(item_url)
@@ -276,6 +286,31 @@ module Feeds
       subscribe_author_to_comments(author, article)
       record_import_item(import_log, item, :imported, article: article)
       article
+    end
+
+    def authorized_organization_membership?(feed_source, user)
+      return true if feed_source.organization_id.blank?
+
+      OrganizationMembership.active.exists?(user_id: user.id, organization_id: feed_source.organization_id)
+    end
+
+    def record_unauthorized_organization_import(feed_source, user, start_time)
+      Feeds::ImportLog.create!(
+        user: user,
+        feed_source: feed_source,
+        status: :failed,
+        feed_url: feed_source.feed_url,
+        error_message: "User is no longer an active member of the selected organization",
+        duration_seconds: Time.current - start_time,
+      )
+      feed_source.update_health!(success: false)
+    end
+
+    def author_eligible_to_publish?(author)
+      return false if author.spam_or_suspended?
+      return true unless ArticlePolicy.limit_post_creation_to_admins?
+
+      author.any_admin?
     end
 
     def item_previously_imported?(item, author, entries, cache)

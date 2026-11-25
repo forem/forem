@@ -194,11 +194,11 @@ class UsersController < ApplicationController
   def add_org_admin
     adminable = User.find(params[:user_id])
     org = Organization.find_by(id: params[:organization_id])
+    membership = OrganizationMembership.active.find_by(user_id: adminable.id, organization_id: org&.id)
 
-    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable,
-                                                                                         organization: org)
+    not_authorized unless current_user.org_admin?(org) && membership
 
-    OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
+    membership.update(type_of_user: "admin")
     flash[:settings_notice] = I18n.t("users_controller.added_admin", name: adminable.name)
     redirect_to organization_settings_path(org.slug)
   end

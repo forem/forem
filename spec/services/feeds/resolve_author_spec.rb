@@ -77,6 +77,52 @@ RSpec.describe Feeds::ResolveAuthor do
         result = described_class.call(item, feed_source)
         expect(result).to eq(feed_owner)
       end
+
+      it "falls back to feed owner when configured default author is no longer an active org member" do
+        pending_user = create(:user)
+        create(:organization_membership, user: pending_user, organization: organization, type_of_user: "pending")
+        feed_source.author = pending_user
+
+        item = item_with_author("Unknown Person")
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
+      end
+    end
+
+    context "when feed source has an organization and owner is a non-admin member" do
+      let(:organization) { create(:organization) }
+      let(:feed_source) do
+        create(:organization_membership, user: feed_owner, organization: organization, type_of_user: "member")
+        build(:feed_source, user: feed_owner, organization: organization)
+      end
+
+      it "does not resolve another organization member by email" do
+        other_member = create(:user, email: "admin@example.com")
+        create(:organization_membership, user: other_member, organization: organization, type_of_user: "admin")
+        item = item_with_author("admin@example.com")
+
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
+      end
+
+      it "does not resolve another organization member by name" do
+        other_member = create(:user, name: "Org Admin")
+        create(:organization_membership, user: other_member, organization: organization, type_of_user: "admin")
+        item = item_with_author("Org Admin")
+
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
+      end
+
+      it "falls back to feed owner when a stale default author is set" do
+        other_member = create(:user)
+        create(:organization_membership, user: other_member, organization: organization, type_of_user: "member")
+        feed_source.author = other_member
+
+        item = item_with_author("Unknown Person")
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
+      end
     end
 
     context "when feed source has no organization" do
@@ -111,6 +157,15 @@ RSpec.describe Feeds::ResolveAuthor do
         expect(result).to eq(feed_owner)
       end
 
+      it "falls back to feed owner even if a legacy source has a third-party author_user_id" do
+        other_user = create(:user)
+        feed_source.author = other_user
+        item = item_with_author("Unknown Person")
+
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
+      end
+
       it "resolves against preloaded feed_source.user in memory without issuing User SQL queries" do
         persisted_source = create(:feed_source, user: feed_owner)
         loaded_source = Feeds::Source.includes(:user).find(persisted_source.id)
@@ -124,12 +179,15 @@ RSpec.describe Feeds::ResolveAuthor do
     end
 
     context "when RSS author does not match any user" do
-      it "falls back to feed source default author" do
+      it "falls back to feed source default author for an org-scoped feed" do
+        organization = create(:organization)
         default_author = create(:user)
-        feed_source.author = default_author
+        create(:organization_membership, user: feed_owner, organization: organization, type_of_user: "admin")
+        create(:organization_membership, user: default_author, organization: organization, type_of_user: "member")
+        org_feed_source = build(:feed_source, user: feed_owner, organization: organization, author: default_author)
 
         item = item_with_author("Unknown Person")
-        result = described_class.call(item, feed_source)
+        result = described_class.call(item, org_feed_source)
         expect(result).to eq(default_author)
       end
 

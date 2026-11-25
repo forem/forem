@@ -136,7 +136,7 @@ class DashboardsController < ApplicationController
   def feed_imports
     fetch_and_authorize_user
     @feed_sources = @user.feed_sources.includes(:organization, :author).order(:created_at)
-    @user_organizations = @user.organizations
+    @user_organizations = @user.organizations.merge(OrganizationMembership.active)
     admin_org_ids = OrganizationMembership
       .where(user_id: @user.id, type_of_user: "admin")
       .pluck(:organization_id)

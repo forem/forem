@@ -142,6 +142,15 @@ RSpec.describe "UserOrganization" do
       expect { post "/users/add_org_admin", params: { user_id: user2.id, organization_id: org_member_org_id } }
         .to raise_error Pundit::NotAuthorizedError
     end
+
+    it "raises not_authorized when target user only has a pending invitation" do
+      pending_membership = create(:organization_membership, user_id: user2.id, organization_id: org_id,
+                                                            type_of_user: "pending")
+      sign_in org_admin
+      expect { post "/users/add_org_admin", params: { user_id: user2.id, organization_id: org_id } }
+        .to raise_error Pundit::NotAuthorizedError
+      expect(pending_membership.reload.type_of_user).to eq("pending")
+    end
   end
 
   context "when removing an org admin" do

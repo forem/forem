@@ -61,6 +61,13 @@ RSpec.describe Feeds::Source do
       source = build(:feed_source, user: user, organization: org)
       expect(source).to be_valid
     end
+
+    it "rejects organization when user only has a pending invitation" do
+      create(:organization_membership, user: user, organization: org, type_of_user: "pending")
+      source = build(:feed_source, user: user, organization: org)
+      expect(source).not_to be_valid
+      expect(source.errors[:organization]).to include("you must be a member of this organization")
+    end
   end
 
   describe "author validation" do
@@ -96,6 +103,36 @@ RSpec.describe Feeds::Source do
     it "rejects author who is not an org member" do
       create(:organization_membership, user: user, organization: org, type_of_user: "admin")
       source = build(:feed_source, user: user, organization: org, author_user_id: author.id)
+      expect(source).not_to be_valid
+      expect(source.errors[:author_user_id]).to include("must be a member of the selected organization")
+    end
+
+    it "rejects author who only has a pending invitation" do
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+      create(:organization_membership, user: author, organization: org, type_of_user: "pending")
+      source = build(:feed_source, user: user, organization: org, author_user_id: author.id)
+      expect(source).not_to be_valid
+      expect(source.errors[:author_user_id]).to include("must be a member of the selected organization")
+    end
+
+    it "re-validates author when organization is cleared" do
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+      create(:organization_membership, user: author, organization: org, type_of_user: "member")
+      source = create(:feed_source, user: user, organization: org, author_user_id: author.id)
+
+      source.organization = nil
+      expect(source).not_to be_valid
+      expect(source.errors[:author_user_id]).to include("can only be set when an organization is selected")
+    end
+
+    it "re-validates author when organization is changed" do
+      other_org = create(:organization)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+      create(:organization_membership, user: author, organization: org, type_of_user: "member")
+      create(:organization_membership, user: user, organization: other_org, type_of_user: "admin")
+      source = create(:feed_source, user: user, organization: org, author_user_id: author.id)
+
+      source.organization = other_org
       expect(source).not_to be_valid
       expect(source.errors[:author_user_id]).to include("must be a member of the selected organization")
     end

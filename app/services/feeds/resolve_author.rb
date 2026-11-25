@@ -10,7 +10,7 @@ module Feeds
     end
 
     def call
-      find_by_email || find_by_name || feed_source.effective_author
+      find_by_email || find_by_name || fallback_author
     end
 
     private
@@ -31,19 +31,38 @@ module Feeds
         ]
     end
 
-    # Scope author lookup to users who could legitimately own articles for this
-    # feed source: organization members when an org is set, otherwise only the
-    # feed owner themselves.
+    # Scope author lookup to active organization members when the feed owner is an
+    # admin of the selected organization; otherwise only the feed owner themselves.
     def eligible_users
-      @eligible_users ||= if feed_source.organization_id.present?
+      @eligible_users ||= if can_assign_org_authors?
                             feed_source.organization.active_users
                           else
                             User.where(id: feed_source.user_id)
                           end
     end
 
+    def can_assign_org_authors?
+      return @can_assign_org_authors if defined?(@can_assign_org_authors)
+
+      @can_assign_org_authors =
+        feed_source.organization_id.present? && feed_source.user.org_admin?(feed_source.organization_id)
+    end
+
+    def fallback_author
+      return feed_source.user if feed_source.author_user_id.blank? || feed_source.author_user_id == feed_source.user_id
+
+      active_org_author? ? feed_source.effective_author : feed_source.user
+    end
+
+    def active_org_author?
+      can_assign_org_authors? && OrganizationMembership.active.exists?(
+        user_id: feed_source.author_user_id,
+        organization_id: feed_source.organization_id,
+      )
+    end
+
     def preloaded_owner
-      return if feed_source.organization_id.present?
+      return if can_assign_org_authors?
       return unless feed_source.association(:user).loaded?
 
       feed_source.user
