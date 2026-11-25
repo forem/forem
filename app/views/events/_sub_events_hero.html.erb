@@ -10,7 +10,7 @@
     hero_host = hero.organization || hero.user
     hero_backdrop = safe_event_url(hero.cover_image.presence&.url || hero.data&.dig("banner_image_url"))
   %>
-  <section class="event-hero-stage event-hero-stage--live mb-6" aria-label="<%= t("views.events.hierarchy.live_hero_aria") %>">
+  <section class="event-hero-stage event-hero-stage--live crayons-card mb-6" aria-label="<%= t("views.events.hierarchy.live_hero_aria") %>">
     <div class="event-hero-stage__topbar">
       <div class="flex items-center flex-wrap gap-2">
         <span class="event-status-badge event-status-badge--live">
@@ -18,7 +18,7 @@
           <%= t("views.events.hierarchy.happening_now") %>
         </span>
         <% if hero_membership.role.present? %>
-          <span class="event-role-chip event-role-chip--on-dark"><%= hero_membership.role %></span>
+          <span class="event-role-chip"><%= hero_membership.role %></span>
         <% end %>
         <% unless hero.published? %>
           <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
@@ -42,10 +42,9 @@
                     scrolling="no"></iframe>
           </div>
         </div>
-      <% else %>
-        <div class="event-hero-stage__visual"
-             style="<%= hero_backdrop ? "background-image: linear-gradient(180deg, rgba(10,12,20,0.2), rgba(10,12,20,0.75)), url('#{ERB::Util.html_escape(hero_backdrop)}');" : "background: #{hero.gradient_background_css};" %>">
-          <span class="event-pill <%= event_pill_class(hero) %>"><%= hero.format_pill_label %></span>
+      <% elsif hero_backdrop.present? %>
+        <div class="event-hero-stage__visual">
+          <img src="<%= hero_backdrop %>" alt="<%= hero.title %>">
         </div>
       <% end %>
 
@@ -83,7 +82,7 @@
             <%= hero.primary_stream_url.present? ? t("views.events.hierarchy.watch_with_chat") : t("views.events.hierarchy.join_session") %>
             <span aria-hidden="true">→</span>
           </a>
-          <a href="#event-schedule" class="event-hero-stage__ghost-btn">
+          <a href="#event-schedule" class="crayons-btn crayons-btn--secondary">
             <%= t("views.events.hierarchy.full_schedule_cta", count: schedule.total_count) %>
           </a>
         </div>
@@ -132,21 +131,19 @@
     next_membership = schedule.hero_membership
     next_event = next_membership.child_event
     next_host = next_event.organization || next_event.user
-    next_backdrop = safe_event_url(next_event.cover_image.presence&.url || next_event.data&.dig("banner_image_url"))
   %>
-  <section class="event-hero-stage event-hero-stage--upcoming mb-6"
-           style="<%= next_backdrop ? "--hero-backdrop-image: url('#{ERB::Util.html_escape(next_backdrop)}');" : "--hero-backdrop-gradient: #{next_event.gradient_background_css};" %>"
+  <section class="event-hero-stage event-hero-stage--upcoming crayons-card mb-6"
+           style="--event-accent: <%= parent_event.background_hex_color %>;"
            aria-label="<%= t("views.events.hierarchy.upcoming_hero_aria") %>">
-    <div class="event-hero-stage__backdrop" aria-hidden="true"></div>
     <div class="event-hero-stage__upcoming-inner">
       <div class="event-hero-stage__upcoming-main">
-        <div class="flex items-center flex-wrap gap-2 mb-3">
-          <span class="event-status-badge event-status-badge--upcoming">
+        <div class="flex items-center flex-wrap gap-2 mb-2">
+          <span class="event-status-badge event-status-badge--upcoming-subtle">
             <span class="event-status-badge__dot" aria-hidden="true"></span>
             <%= t("views.events.hierarchy.up_next") %>
           </span>
           <% if next_membership.role.present? %>
-            <span class="event-role-chip event-role-chip--on-dark"><%= next_membership.role %></span>
+            <span class="event-role-chip"><%= next_membership.role %></span>
           <% end %>
           <span class="event-pill <%= event_pill_class(next_event) %>"><%= next_event.format_pill_label %></span>
           <% unless next_event.published? %>
@@ -185,10 +182,9 @@
           </a>
           <%= render "signup_button",
                      event: next_event,
-                     extra_classes: "stream-coming-soon__rsvp-btn",
-                     signed_up_class: "stream-coming-soon__rsvp-btn--signed",
-                     unsigned_up_class: "event-hero-stage__ghost-btn" %>
-          <a href="#event-schedule" class="event-hero-stage__ghost-btn">
+                     signed_up_class: "crayons-btn--outlined",
+                     unsigned_up_class: "crayons-btn--secondary" %>
+          <a href="#event-schedule" class="crayons-btn crayons-btn--ghost-dimmed">
             <%= t("views.events.hierarchy.browse_upcoming", count: schedule.upcoming_count) %>
           </a>
         </div>
@@ -198,7 +194,7 @@
            data-hero-countdown="<%= next_event.start_time.iso8601 %>"
            id="hero-countdown-<%= next_event.id %>">
         <div class="event-hero-stage__countdown-label"><%= t("views.events.hierarchy.starts_in") %></div>
-        <div class="stream-countdown-tiles stream-countdown-tiles--compact">
+        <div class="stream-countdown-tiles stream-countdown-tiles--compact stream-countdown-tiles--surface">
           <div class="stream-countdown-tile" data-unit="days" style="display: none;">
             <span class="stream-countdown-tile__value tabular-nums" data-countdown-days>00</span>
             <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.days") %></span>
@@ -266,7 +262,7 @@
   </script>
 
 <% elsif schedule.all_ended? %>
-  <section class="event-hero-stage event-hero-stage--archive mb-6">
+  <section class="event-hero-stage event-hero-stage--archive crayons-card mb-6">
     <div class="event-hero-stage__archive-inner">
       <div>
         <span class="event-status-badge event-status-badge--ended mb-2"><%= t("views.events.hierarchy.archive_badge") %></span>

@@ -25,6 +25,12 @@ function renderPage(currentUser) {
         const following = followedTag?.points >= 0;
         const hidden = followedTag?.points < 0;
 
+        const container = document.getElementById(
+          `tag-buttons-${element.dataset.tagId}`,
+        );
+        if (!container) return;
+        container.textContent = '';
+
         render(
           <Tag
             id={element.dataset.tagId}
@@ -32,7 +38,7 @@ function renderPage(currentUser) {
             isFollowing={following || hidden}
             isHidden={hidden}
           />,
-          document.getElementById(`tag-buttons-${element.dataset.tagId}`),
+          container,
         );
       });
     })

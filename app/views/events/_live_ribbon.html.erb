@@ -3,14 +3,14 @@
 <% hero = schedule.hero_event %>
 <% hero_membership = schedule.hero_membership %>
 
-<div class="event-live-ribbon mb-4" role="region" aria-label="<%= t("views.events.hierarchy.happening_now") %>">
+<div class="event-live-ribbon mb-5" role="region" aria-label="<%= t("views.events.hierarchy.happening_now") %>">
   <div class="event-live-ribbon__content">
     <span class="event-status-badge event-status-badge--live">
       <span class="event-status-badge__dot" aria-hidden="true"></span>
       <%= t("views.events.hierarchy.happening_now") %>
     </span>
     <% if hero_membership&.role.present? %>
-      <span class="event-role-chip event-role-chip--on-dark"><%= hero_membership.role %></span>
+      <span class="event-role-chip"><%= hero_membership.role %></span>
     <% end %>
     <strong class="event-live-ribbon__title"><%= hero.title %></strong>
     <% if schedule.live_count > 1 %>
