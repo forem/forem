@@ -1,0 +1,78 @@
+app/controllers/admin/event_memberships_controller.rb
+  h_f968154a99632d 101
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 98,108,140,142
+app/controllers/events_controller.rb
+  h_f968154a99632d 17,19,27-28
+app/helpers/events_helper.rb
+  h_f968154a99632d 173,175-178,181-187,189-191,203,206,217-220
+app/models/event.rb
+  h_f968154a99632d 70-76
+app/models/event_membership.rb
+  h_f968154a99632d 4-6,14-15,31-34,85-107,122
+app/services/events/hierarchy_tree.rb
+  h_f968154a99632d 4,6-8,12-13,19-21,57,137-138,141-160,162-172,182
+app/services/events/sync_memberships.rb
+  h_f968154a99632d 4,8-12,19-25,27,29,32,34-35,37-39,45,47-54,56-62,65-66,68-72,74,76-79,81-82,84-92,95-110
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 148-150,158-160,168-170,191,204
+app/views/admin/events/_tree_node.html.erb
+  h_f968154a99632d 72-77,96,98
+app/views/admin/events/index.html.erb
+  h_f968154a99632d 26-29,32,35-36
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 134,144,211,258
+app/views/events/_local_time_script.html.erb
+  h_f968154a99632d 30-34,37-42
+app/views/events/_stream_player.html.erb
+  h_f968154a99632d 152,204-210,216,222,282-288,314-331,340,343
+app/views/events/_sub_event_row.html.erb
+  h_f968154a99632d 21
+app/views/events/_sub_events_schedule.html.erb
+  h_f968154a99632d 41,119,131
+app/views/events/challenge.html.erb
+  h_f968154a99632d 16-17
+app/views/events/gathering.html.erb
+  h_f968154a99632d 27-28
+app/views/events/page.html.erb
+  h_f968154a99632d 34-35
+app/views/events/show.html.erb
+  h_f968154a99632d 25-26
+config/locales/views/admin/en.yml
+  h_f968154a99632d 767-769,777-779,794-796,809-814,841
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 758-760,768-770,785-787,800-805,832
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 666-668,676-678,693-695,708-713,740
+config/locales/views/events/en.yml
+  h_f968154a99632d 82,89-92
+config/locales/views/events/fr.yml
+  h_f968154a99632d 82,89-92
+config/locales/views/events/pt.yml
+  h_f968154a99632d 82,89-92
+spec/helpers/events_helper_spec.rb
+  h_f968154a99632d 186-223
+spec/models/event_membership_spec.rb
+  h_f968154a99632d 90-97
+spec/requests/admin/event_memberships_spec.rb
+  h_f968154a99632d 68-93
+spec/requests/api/v0/event_memberships_spec.rb
+  h_f968154a99632d 165-173,255-268
+spec/requests/events_hierarchy_ui_spec.rb
+  h_f968154a99632d 169-181
+spec/swagger_helper.rb
+  h_f968154a99632d 1018-1021
+swagger/v1/api_v1.json
+  h_f968154a99632d 10272
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "334b770c09c13b7d4d50b26dac9eed218712c946",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
