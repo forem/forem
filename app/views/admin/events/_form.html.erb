@@ -142,6 +142,91 @@
       </div>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="crayons-field">
+        <%= form.fields_for :data, event.data || {} do |data_form| %>
+          <%= data_form.label :time_zone, "Display Time Zone", class: "crayons-field__label" do %>
+            Display Time Zone
+            <p class="crayons-field__description">Optional IANA zone (e.g. 'America/New_York', 'UTC').</p>
+          <% end %>
+          <input type="text" name="event[data][time_zone]" id="event_data_time_zone" class="crayons-textfield" value="<%= event.data&.dig('time_zone') || event.data&.dig(:time_zone) %>" placeholder="America/New_York">
+        <% end %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.fields_for :data, event.data || {} do |data_form| %>
+          <%= data_form.label :registration_url, "External Registration URL", class: "crayons-field__label" do %>
+            External Registration URL
+            <p class="crayons-field__description">Optional link for conference/meetup registration.</p>
+          <% end %>
+          <input type="text" name="event[data][registration_url]" id="event_data_registration_url" class="crayons-textfield" value="<%= event.data&.dig('registration_url') || event.data&.dig(:registration_url) %>" placeholder="https://example.com/register">
+        <% end %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.fields_for :data, event.data || {} do |data_form| %>
+          <%= data_form.label :website_url, "Event Website URL", class: "crayons-field__label" do %>
+            Event Website URL
+            <p class="crayons-field__description">Optional external website link.</p>
+          <% end %>
+          <input type="text" name="event[data][website_url]" id="event_data_website_url" class="crayons-textfield" value="<%= event.data&.dig('website_url') || event.data&.dig(:website_url) %>" placeholder="https://example.com">
+        <% end %>
+      </div>
+    </div>
+
+    <% available_parents = @available_parent_events || [] %>
+    <% selected_parent_ids = Array(@selected_parent_event_ids).map(&:to_i) %>
+    <div class="crayons-field">
+      <label class="crayons-field__label">
+        <%= t("views.admin.events.form.parent_events") %>
+        <p class="crayons-field__description"><%= t("views.admin.events.form.parent_events_description") %></p>
+      </label>
+      <input type="hidden" name="event[parent_event_ids][]" value="" />
+      <% if available_parents.any? %>
+        <div class="admin-event-parent-picker">
+          <input type="search"
+                 id="parent-event-search"
+                 class="crayons-textfield"
+                 placeholder="<%= t("views.admin.events.form.search_parent_events") %>"
+                 autocomplete="off" />
+          <div class="admin-event-parent-picker__list" id="parent-event-picker-list">
+            <% available_parents.each do |parent_option| %>
+              <label class="admin-event-parent-picker__item" data-parent-search-text="<%= "#{parent_option.title} #{parent_option.type_of}".downcase %>">
+                <input type="checkbox"
+                       name="event[parent_event_ids][]"
+                       value="<%= parent_option.id %>"
+                       class="crayons-checkbox"
+                       <%= "checked" if selected_parent_ids.include?(parent_option.id) %> />
+                <span class="font-medium"><%= parent_option.title %></span>
+                <span class="c-indicator fs-xs"><%= parent_option.type_of.titleize %></span>
+                <% unless parent_option.published? %>
+                  <span class="c-indicator c-indicator--warning fs-xs">Draft</span>
+                <% end %>
+                <span class="fs-xs opacity-75 ml-auto"><%= parent_option.start_time.to_fs(:short) %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+        <script>
+          (function() {
+            const searchInput = document.getElementById("parent-event-search");
+            const list = document.getElementById("parent-event-picker-list");
+            if (!searchInput || !list) return;
+
+            searchInput.addEventListener("input", function() {
+              const q = searchInput.value.trim().toLowerCase();
+              list.querySelectorAll(".admin-event-parent-picker__item").forEach(function(item) {
+                const hay = item.dataset.parentSearchText || "";
+                item.style.display = !q || hay.includes(q) ? "" : "none";
+              });
+            });
+          })();
+        </script>
+      <% else %>
+        <p class="fs-s color-base-60 italic m-0"><%= t("views.admin.events.form.no_parent_events_available") %></p>
+      <% end %>
+    </div>
+
     <div class="crayons-field">
       <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
         Tags

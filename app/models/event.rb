@@ -13,6 +13,18 @@ class Event < ApplicationRecord
   has_many :emails, dependent: :nullify
   has_many :pages, inverse_of: :event, dependent: :destroy
   has_many :articles, dependent: :nullify
+  has_many :child_event_memberships,
+           class_name: "EventMembership",
+           foreign_key: :parent_event_id,
+           inverse_of: :parent_event,
+           dependent: :destroy
+  has_many :sub_events, through: :child_event_memberships, source: :child_event
+  has_many :parent_event_memberships,
+           class_name: "EventMembership",
+           foreign_key: :child_event_id,
+           inverse_of: :child_event,
+           dependent: :destroy
+  has_many :parent_events, through: :parent_event_memberships, source: :parent_event
 
   enum :type_of, { live_stream: 0, takeover: 1, other: 2, challenge: 3, meetup: 4, conference: 5 }
   enum :broadcast_config, { no_broadcast: 0, tagged_broadcast: 1, global_broadcast: 2 }
@@ -47,6 +59,14 @@ class Event < ApplicationRecord
 
   scope :published, -> { where(published: true) }
   scope :elevated, -> { where(elevated: true) }
+  scope :top_level, -> { where.not(id: EventMembership.select(:child_event_id)) }
+  scope :top_level_published, lambda {
+    where.not(
+      id: EventMembership.joins(:parent_event)
+                         .where(parent_event: { published: true })
+                         .select(:child_event_id),
+    )
+  }
 
   DEFAULT_HEX_COLORS = ["#3B49DF", "#0D9488", "#7C3AED", "#DB2777", "#D97706"].freeze
 
@@ -271,6 +291,27 @@ class Event < ApplicationRecord
     "#{page_slug_prefix}/embed/#{suffix}"
   end
 
+  def sub_event_schedule(include_drafts: false, at: Time.current, memberships: nil)
+    Events::SubEventSchedule.new(self, include_drafts: include_drafts, at: at, memberships: memberships)
+  end
+
+  def ancestor_event_ids
+    return [] if id.blank?
+
+    EventMembership.ancestor_depths_for(id).keys
+  end
+
+  def descendant_event_ids
+    return [] if id.blank?
+
+    EventMembership.descendant_depths_for(id).keys
+  end
+
+  def purge_hierarchy_edge_cache!
+    EdgeCache::PurgeByKeyWorker.perform_async(record_key, event_edge_cache_fallback_paths)
+    bust_upcoming_events_cache if elevated?
+  end
+
   private
 
   def validate_owned_page_slug_sync
@@ -325,6 +366,9 @@ class Event < ApplicationRecord
     return unless destroyed? || previous_changes.except("updated_at").any?
 
     EdgeCache::PurgeByKeyWorker.perform_async(record_key, event_edge_cache_fallback_paths)
+    return if destroyed?
+
+    parent_events.find_each(&:purge_hierarchy_edge_cache!)
   end
 
   def event_edge_cache_fallback_paths

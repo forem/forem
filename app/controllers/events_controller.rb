@@ -8,17 +8,26 @@ class EventsController < ApplicationController
   EVENT_ARTICLES_LIMIT = 15
   COMMUNITY_ARTICLES_LIMIT = 15
   PAST_LANDING_LIMIT = 12
+  SIBLING_SESSIONS_LIMIT = 4
   private_constant :SHOW_ARTICLE_COLUMNS, :EVENT_ARTICLE_COLUMNS, :SHOW_USER_COLUMNS,
-                   :EVENT_ARTICLES_LIMIT, :COMMUNITY_ARTICLES_LIMIT, :PAST_LANDING_LIMIT
+                   :EVENT_ARTICLES_LIMIT, :COMMUNITY_ARTICLES_LIMIT, :PAST_LANDING_LIMIT,
+                   :SIBLING_SESSIONS_LIMIT
 
   def index
     @events = Event.published.includes(:page, :organization, :user)
       .where("end_time >= ?", Time.current)
       .order(start_time: :asc)
-    return unless params[:type_of].present? && Event.type_ofs.key?(params[:type_of])
 
-    @active_type_of = params[:type_of]
-    @events = @events.where(type_of: @active_type_of)
+    if params[:type_of].present? && Event.type_ofs.key?(params[:type_of])
+      @active_type_of = params[:type_of]
+      @events = @events.where(type_of: @active_type_of).to_a
+      preload_parent_context(@events)
+    else
+      # Hide sub-events that belong to a published parent so the main directory stays hierarchical.
+      @events = @events.top_level_published.to_a
+    end
+
+    preload_sub_event_summaries(@events)
   end
 
   def meetups
@@ -30,18 +39,11 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find_by(
-      event_name_slug: params[:event_name_slug],
-      event_variation_slug: params[:event_variation_slug],
-    )
+    @event = find_event_by_slugs
+    return handle_missing_event if @event.nil?
 
-    if @event.nil?
-      raise ActiveRecord::RecordNotFound if params[:page_suffix].present?
-
-      return check_for_page_fallback
-    end
-
-    raise ActionController::RoutingError, "Not Found" unless @event.published? || current_user&.any_admin?
+    @include_draft_hierarchy = current_user&.any_admin? || false
+    raise ActionController::RoutingError, "Not Found" unless @event.published? || @include_draft_hierarchy
 
     if params[:page_suffix].blank? && @event.delegate_to_page? && @event.page.present?
       redirect_to @event.page.path
@@ -49,8 +51,29 @@ class EventsController < ApplicationController
     end
 
     load_event_pages
+    load_event_hierarchy
+    load_signed_up_event_ids
     return if render_event_custom_or_showcase_page
 
+    render_native_event_view
+  end
+
+  private
+
+  def find_event_by_slugs
+    Event.find_by(
+      event_name_slug: params[:event_name_slug],
+      event_variation_slug: params[:event_variation_slug],
+    )
+  end
+
+  def handle_missing_event
+    raise ActiveRecord::RecordNotFound if params[:page_suffix].present?
+
+    check_for_page_fallback
+  end
+
+  def render_native_event_view
     if @event.challenge?
       load_event_tagged_articles
       preload_article_authors(@event_articles)
@@ -62,14 +85,98 @@ class EventsController < ApplicationController
     render "gathering" if @event.meetup? || @event.conference?
   end
 
-  private
-
   def load_event_pages
     @event_pages = @event.ordered_pages.select do |page|
       FeatureFlag.accessible?(page.feature_flag_name, current_user)
     end
     @showcase_page = @event_pages.detect(&:event_showcase?)
     @event_nav_pages = @event_pages.select { |page| page.show_in_navigation? && page != @showcase_page }
+  end
+
+  def load_event_hierarchy
+    @sub_event_schedule = @event.sub_event_schedule(include_drafts: @include_draft_hierarchy)
+
+    @parent_memberships = @event.parent_event_memberships
+      .ordered
+      .includes(parent_event: %i[page organization])
+      .select { |m| m.parent_event.present? && (@include_draft_hierarchy || m.parent_event.published?) }
+    @parent_events = @parent_memberships.map(&:parent_event)
+
+    load_sibling_sessions
+  end
+
+  def load_sibling_sessions
+    @primary_parent_event = @parent_events.first
+    @sibling_memberships = []
+    return if @primary_parent_event.nil?
+
+    now = Time.current
+    parent_schedule = @primary_parent_event.sub_event_schedule(
+      include_drafts: @include_draft_hierarchy,
+      at: now,
+    )
+    candidates = (parent_schedule.live_memberships + parent_schedule.upcoming_memberships)
+      .reject { |m| m.child_event_id == @event.id }
+    @sibling_memberships = candidates.first(SIBLING_SESSIONS_LIMIT)
+  end
+
+  def load_signed_up_event_ids
+    @signed_up_event_ids = Set.new
+    return if current_user.blank?
+
+    now = Time.current
+    target_ids = []
+    target_ids << @event.id if @event.end_time > now
+    @sub_event_schedule.all_events.each do |sub_event|
+      target_ids << sub_event.id if sub_event.end_time > now
+    end
+    return if target_ids.empty?
+
+    @signed_up_event_ids = current_user.event_signups
+      .where(event_id: target_ids.uniq)
+      .pluck(:event_id)
+      .to_set
+  end
+
+  def preload_sub_event_summaries(events)
+    @sub_event_summaries = {}
+    event_ids = events.map(&:id)
+    return if event_ids.empty?
+
+    now = Time.current
+    memberships = EventMembership.where(parent_event_id: event_ids)
+      .ordered
+      .includes(:child_event)
+      .to_a
+
+    memberships.group_by(&:parent_event_id).each do |parent_id, list|
+      published_children = list.filter_map { |m| m.child_event if m.child_event&.published? }
+      next if published_children.empty?
+
+      live_children = published_children.select { |child| child.live?(now) }
+      @sub_event_summaries[parent_id] = {
+        total_count: published_children.size,
+        live_count: live_children.size,
+        live_title: live_children.first&.title
+      }
+    end
+  end
+
+  def preload_parent_context(events)
+    @parent_events_by_child_id = Hash.new { |h, k| h[k] = [] }
+    event_ids = events.map(&:id)
+    return if event_ids.empty?
+
+    EventMembership.where(child_event_id: event_ids)
+      .ordered
+      .includes(:parent_event)
+      .to_a
+      .each do |membership|
+        parent = membership.parent_event
+        next unless parent&.published?
+
+        @parent_events_by_child_id[membership.child_event_id] << parent
+      end
   end
 
   def render_event_custom_or_showcase_page
@@ -175,6 +282,9 @@ class EventsController < ApplicationController
     base_scope = Event.published.public_send(@event_type).includes(:page, :organization, :user)
     @events = base_scope.where("end_time >= ?", now).order(start_time: :asc).to_a
     @past_events = base_scope.where("end_time < ?", now).order(start_time: :desc).limit(PAST_LANDING_LIMIT).to_a
+    all_loaded = @events + @past_events
+    preload_sub_event_summaries(all_loaded)
+    preload_parent_context(all_loaded)
     render :landing
   end
 

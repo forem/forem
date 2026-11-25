@@ -1,0 +1,109 @@
+<%
+  event = node.event
+  membership = node.membership
+  has_children = node.children.any?
+  branch_id = "#{parent_branch_id}-#{event.id}"
+  now = Time.current
+  event_live = event.live?(now)
+  any_child_live = has_children && node.children.any? { |child_node| child_node.event.live?(now) }
+%>
+<tr class="<%= node.depth.positive? ? 'admin-event-row--child' : 'admin-event-row--root' %>"
+    data-tree-row="true"
+    data-branch-id="<%= branch_id %>"
+    <% if parent_branch_id.present? %>data-parent-branch="<%= parent_branch_id %>"<% end %>
+    data-depth="<%= node.depth %>">
+  <td>
+    <div class="admin-event-tree-cell" style="padding-left: <%= node.depth * 24 %>px;">
+      <% if node.depth.positive? %>
+        <span class="admin-event-tree-indent" aria-hidden="true">└─</span>
+      <% end %>
+
+      <% if has_children %>
+        <button type="button"
+                class="admin-event-tree-toggle js-event-tree-toggle"
+                data-toggle-branch="<%= branch_id %>"
+                aria-expanded="true"
+                aria-label="<%= t("views.admin.events.index.toggle_sub_events", title: event.title) %>">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      <% elsif node.depth.zero? && !flat_mode %>
+        <span class="admin-event-tree-spacer" aria-hidden="true"></span>
+      <% end %>
+
+      <div class="admin-event-title-wrap">
+        <div>
+          <%= link_to event.title, admin_event_path(event), class: "admin-event-title-wrap__title" %>
+        </div>
+        <div class="admin-event-title-wrap__meta">
+          <code class="fs-xs opacity-75"><%= event.event_name_slug %>/<%= event.event_variation_slug %></code>
+
+          <% if event_live %>
+            <span class="admin-event-chip admin-event-chip--live"><%= t("views.events.gathering.live") %></span>
+          <% elsif any_child_live %>
+            <span class="admin-event-chip admin-event-chip--live"><%= t("views.admin.events.index.sub_event_live") %></span>
+          <% end %>
+
+          <% if has_children %>
+            <span class="admin-event-chip admin-event-chip--subcount">
+              <%= t("views.admin.events.index.sub_events_count", count: node.children.size) %>
+            </span>
+          <% end %>
+
+          <% if membership&.role.present? %>
+            <span class="admin-event-chip admin-event-chip--role"><%= membership.role %></span>
+          <% end %>
+
+          <% if membership&.featured? %>
+            <span class="admin-event-chip admin-event-chip--featured">★ <%= t("views.admin.events.index.featured") %></span>
+          <% end %>
+
+          <% if node.parent_count > 1 %>
+            <span class="admin-event-chip admin-event-chip--shared">
+              <%= t("views.admin.events.index.shared_parents", count: node.parent_count) %>
+            </span>
+          <% elsif flat_mode && node.parent_count == 1 %>
+            <span class="admin-event-chip admin-event-chip--shared">
+              <%= t("views.admin.events.index.sub_event_badge") %>
+            </span>
+          <% end %>
+
+          <% if node.pages_count.positive? %>
+            <span class="admin-event-chip admin-event-chip--pages">
+              <%= t("views.admin.events.index.pages_count", count: node.pages_count) %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </td>
+  <td class="whitespace-nowrap">
+    <div class="fs-s"><%= event.start_time&.to_fs(:short) %></div>
+    <% if event.end_time.present? %>
+      <div class="fs-xs opacity-75">→ <%= event.end_time.to_fs(:short) %></div>
+    <% end %>
+  </td>
+  <td class="whitespace-nowrap"><%= event.type_of.titleize %></td>
+  <td class="whitespace-nowrap">
+    <% if event.published? %>
+      <span class="c-indicator c-indicator--success">Published</span>
+    <% else %>
+      <span class="c-indicator c-indicator--warning">Draft</span>
+    <% end %>
+  </td>
+  <td>
+    <div class="flex flex-wrap gap-2">
+      <%= link_to "Show", admin_event_path(event), class: "c-btn c-btn--primary btn-sm" %>
+      <%= link_to "Edit", edit_admin_event_path(event), class: "c-btn c-btn--secondary btn-sm" %>
+      <%= link_to t("views.admin.events.index.add_sub_event"), new_admin_event_path(parent_event_id: event.id), class: "c-btn c-btn--secondary btn-sm" %>
+      <%= link_to t("views.admin.event_pages.pages_button"), admin_event_pages_path(event), class: "c-btn c-btn--secondary btn-sm" %>
+      <%= link_to t("views.admin.events.fork"), new_admin_event_path(fork_from_id: event.id), class: "c-btn c-btn--secondary btn-sm" %>
+      <%= link_to "Public", event_path(event.event_name_slug, event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary btn-sm" %>
+      <%= link_to "Delete", admin_event_path(event), method: :delete, data: { confirm: "Are you sure?" }, class: "c-btn c-btn--destructive btn-sm" %>
+    </div>
+  </td>
+</tr>
+<% node.children.each do |child_node| %>
+  <%= render "tree_node", node: child_node, parent_branch_id: branch_id, flat_mode: flat_mode %>
+<% end %>

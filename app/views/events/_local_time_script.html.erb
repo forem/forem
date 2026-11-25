@@ -1,0 +1,69 @@
+<script>
+  (function() {
+    document.querySelectorAll(".js-event-local-time").forEach(function(el) {
+      if (el.dataset.localized === "true") return;
+      const startIso = el.dataset.startIso;
+      const endIso = el.dataset.endIso;
+      if (!startIso) return;
+
+      const start = new Date(startIso);
+      const end = endIso ? new Date(endIso) : null;
+      if (isNaN(start)) return;
+
+      const format = el.dataset.format || "range";
+      const sameDay = end && !isNaN(end) &&
+        start.getFullYear() === end.getFullYear() &&
+        start.getMonth() === end.getMonth() &&
+        start.getDate() === end.getDate();
+
+      try {
+        if (format === "full") {
+          el.textContent = start.toLocaleString(undefined, {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            timeZoneName: "short"
+          });
+        } else if (format === "time_only" && sameDay) {
+          const startStr = start.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+          const endStr = end.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+          el.textContent = startStr + " – " + endStr;
+        } else if (sameDay) {
+          const dayStr = start.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+          const startStr = start.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+          const endStr = end.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+          el.textContent = dayStr + " · " + startStr + " – " + endStr;
+        } else if (end && !isNaN(end)) {
+          const startStr = start.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+          const endStr = end.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+          el.textContent = startStr + " – " + endStr;
+        }
+        el.dataset.localized = "true";
+      } catch (e) {
+        // Keep server-rendered fallback
+      }
+    });
+
+    document.querySelectorAll(".js-copy-event-link").forEach(function(btn) {
+      if (btn.dataset.initialized === "true") return;
+      btn.dataset.initialized = "true";
+      btn.addEventListener("click", function() {
+        const url = btn.dataset.copyUrl || window.location.href;
+        const label = btn.querySelector("[data-copy-label]");
+        const originalText = label ? label.textContent : btn.textContent;
+        const copiedText = btn.dataset.copiedText || "Copied!";
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function() {
+            if (label) label.textContent = copiedText;
+            setTimeout(function() {
+              if (label) label.textContent = originalText;
+            }, 2000);
+          }).catch(function() {});
+        }
+      });
+    });
+  })();
+</script>

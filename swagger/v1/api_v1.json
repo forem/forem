@@ -3208,7 +3208,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`, `meetup`, `conference`).",
+        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`, `meetup`, `conference`).\n- **scope**: Set to `top_level` to exclude sub-events that belong to a parent event.\n- **members**: Set to `true` to expand `parent_events`, `sub_events`, and `schedule` metadata inline.\n- **parent_event_id**: Filter to sub-events belonging to a specific parent event ID.\n- **child_event_id**: Filter to parent events containing a specific child event ID.",
         "operationId": "getEvents",
         "parameters": [
           {
@@ -3226,6 +3226,45 @@
                 "meetup",
                 "conference"
               ]
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "description": "Set to `top_level` to return only root events.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "top_level"
+              ]
+            }
+          },
+          {
+            "name": "members",
+            "in": "query",
+            "required": false,
+            "description": "Set to `true` to expand `sub_events`, `parent_events`, and `schedule`.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "parent_event_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter to sub-events belonging to the given parent event ID.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "child_event_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter to parent events containing the given sub-event ID.",
+            "schema": {
+              "type": "integer"
             }
           }
         ],
@@ -3250,7 +3289,7 @@
         "tags": [
           "events"
         ],
-        "description": "Create a new event. Requires administrator privileges.\n\nSuccessful writes log `api_event_create` with the actor and target ids in the admin API audit log.",
+        "description": "Create a new event. Requires administrator privileges.\nOptionally pass `parent_event_ids`, `sub_event_ids`, or `sub_event_memberships` to link hierarchy relationships atomically.\n\nSuccessful writes log `api_event_create` with the actor and target ids in the admin API audit log.",
         "operationId": "createEvent",
         "parameters": [
 
@@ -3288,7 +3327,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a single event by ID.",
+        "description": "Retrieve a single event by ID with visible `parent_events`, `sub_events`, and `schedule`.",
         "operationId": "getEventById",
         "parameters": [
           {
@@ -3319,7 +3358,7 @@
         "tags": [
           "events"
         ],
-        "description": "Update an existing event. Requires administrator privileges.\n\nSuccessful writes log `api_event_update` with the actor and target ids in the admin API audit log.",
+        "description": "Update an existing event. Requires administrator privileges.\nOptionally pass `parent_event_ids`, `sub_event_ids`, or `sub_event_memberships` to synchronize hierarchy relationships atomically.\n\nSuccessful writes log `api_event_update` with the actor and target ids in the admin API audit log.",
         "operationId": "updateEvent",
         "parameters": [
           {
@@ -3376,6 +3415,168 @@
         "responses": {
           "204": {
             "description": "Event deleted"
+          }
+        }
+      }
+    },
+    "/api/events/{event_id}/memberships": {
+      "get": {
+        "summary": "Retrieve event hierarchy memberships and schedule",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve an event's parent events, sub-events, and live/upcoming/past schedule hero resolution.",
+        "operationId": "getEventMemberships",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event hierarchy memberships",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventMembershipsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Attach a sub-event to a parent event",
+        "tags": [
+          "events"
+        ],
+        "description": "Attach an existing event as a sub-event of the given parent event. Requires administrator privileges.\nEnforces self-reference, duplicate, cycle, and maximum depth safeguards.\n\nSuccessful writes log `api_event_membership_create` in the admin API audit log.",
+        "operationId": "createEventMembership",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the parent event.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Event membership created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventMembership"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventMembershipInput"
+              }
+            }
+          },
+          "description": "Sub-event membership attributes."
+        }
+      }
+    },
+    "/api/events/{event_id}/memberships/{id}": {
+      "patch": {
+        "summary": "Update a sub-event membership",
+        "tags": [
+          "events"
+        ],
+        "description": "Update ordering, track/role label, or featured flag on a sub-event membership. Requires administrator privileges.\n\nSuccessful writes log `api_event_membership_update` in the admin API audit log.",
+        "operationId": "updateEventMembership",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the parent event.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event membership.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event membership updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventMembership"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventMembershipInput"
+              }
+            }
+          },
+          "description": "Updated membership attributes."
+        }
+      },
+      "delete": {
+        "summary": "Detach a sub-event from a parent event",
+        "tags": [
+          "events"
+        ],
+        "description": "Remove the membership link between a parent event and a sub-event without deleting either event. Requires administrator privileges.\n\nSuccessful writes log `api_event_membership_destroy` in the admin API audit log.",
+        "operationId": "deleteEventMembership",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the parent event.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event membership.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Event membership deleted"
           }
         }
       }
@@ -9810,6 +10011,344 @@
           "cover_image_url"
         ]
       },
+      "EventSummary": {
+        "description": "Compact event summary with hierarchy membership metadata",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "membership_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "event_name_slug": {
+            "type": "string"
+          },
+          "event_variation_slug": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "live_stream",
+              "takeover",
+              "other",
+              "challenge",
+              "meetup",
+              "conference"
+            ]
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "primary_stream_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "cover_image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "live",
+              "upcoming",
+              "ended"
+            ]
+          },
+          "position": {
+            "type": "integer"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_name_slug",
+          "event_variation_slug",
+          "path",
+          "type_of",
+          "start_time",
+          "end_time",
+          "published",
+          "status"
+        ]
+      },
+      "EventScheduleSummary": {
+        "description": "Live and upcoming sub-event schedule summary for a parent event",
+        "type": "object",
+        "properties": {
+          "hero_state": {
+            "type": "string",
+            "enum": [
+              "live",
+              "upcoming",
+              "past",
+              "empty"
+            ]
+          },
+          "hero_sub_event": {
+            "$ref": "#/components/schemas/EventSummary",
+            "nullable": true
+          },
+          "live_count": {
+            "type": "integer"
+          },
+          "upcoming_count": {
+            "type": "integer"
+          },
+          "past_count": {
+            "type": "integer"
+          },
+          "total_count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "hero_state",
+          "live_count",
+          "upcoming_count",
+          "past_count",
+          "total_count"
+        ]
+      },
+      "EventMembership": {
+        "description": "Many-to-many parent/child relationship between two events",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parent_event_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "child_event_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "child_event": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "title": {
+                "type": "string"
+              },
+              "event_name_slug": {
+                "type": "string"
+              },
+              "event_variation_slug": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "type_of": {
+                "type": "string",
+                "enum": [
+                  "live_stream",
+                  "takeover",
+                  "other",
+                  "challenge",
+                  "meetup",
+                  "conference"
+                ]
+              },
+              "start_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "end_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "published": {
+                "type": "boolean"
+              },
+              "primary_stream_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "bg_color_hex": {
+                "type": "string",
+                "nullable": true
+              },
+              "cover_image_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "live",
+                  "upcoming",
+                  "ended"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "parent_event_id",
+          "child_event_id",
+          "position",
+          "featured",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "EventMembershipInput": {
+        "description": "Parameters to attach or update a sub-event membership",
+        "type": "object",
+        "properties": {
+          "event_membership": {
+            "type": "object",
+            "properties": {
+              "child_event_id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "position": {
+                "type": "integer",
+                "default": 0
+              },
+              "role": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 64
+              },
+              "featured": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          }
+        },
+        "required": [
+          "event_membership"
+        ]
+      },
+      "EventMembershipsResponse": {
+        "description": "Full hierarchy and categorized sub-event schedule for an event",
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "hero_state": {
+            "type": "string",
+            "enum": [
+              "live",
+              "upcoming",
+              "past",
+              "empty"
+            ]
+          },
+          "hero_sub_event": {
+            "$ref": "#/components/schemas/EventSummary",
+            "nullable": true
+          },
+          "live_sub_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          },
+          "upcoming_sub_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          },
+          "past_sub_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          },
+          "sub_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          },
+          "parent_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          }
+        },
+        "required": [
+          "event_id",
+          "hero_state",
+          "live_sub_events",
+          "upcoming_sub_events",
+          "past_sub_events",
+          "sub_events",
+          "parent_events"
+        ]
+      },
       "Event": {
         "description": "Representation of an event",
         "type": "object",
@@ -9911,6 +10450,35 @@
             "type": "string",
             "nullable": true
           },
+          "parent_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "sub_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "parent_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          },
+          "sub_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSummary"
+            }
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/EventScheduleSummary"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -9953,6 +10521,10 @@
                 "type": "string",
                 "nullable": true
               },
+              "body_markdown": {
+                "type": "string",
+                "nullable": true
+              },
               "full_details": {
                 "type": "string",
                 "nullable": true,
@@ -9966,9 +10538,17 @@
                 "type": "boolean",
                 "default": false
               },
+              "elevated": {
+                "type": "boolean",
+                "default": false
+              },
               "allow_articles": {
                 "type": "boolean",
                 "default": false
+              },
+              "bg_color_hex": {
+                "type": "string",
+                "nullable": true
               },
               "start_time": {
                 "type": "string",
@@ -9996,6 +10576,45 @@
               "tag_list": {
                 "type": "string",
                 "nullable": true
+              },
+              "parent_event_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              },
+              "sub_event_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              },
+              "sub_event_memberships": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "child_event_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "position": {
+                      "type": "integer"
+                    },
+                    "role": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "featured": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "child_event_id"
+                  ]
+                }
               },
               "data": {
                 "type": "object",

@@ -934,6 +934,110 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             },
             required: %w[id domain root name description logo_image_url cover_image_url]
           },
+          EventSummary: {
+            description: "Compact event summary with hierarchy membership metadata",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              membership_id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              event_name_slug: { type: :string },
+              event_variation_slug: { type: :string },
+              path: { type: :string },
+              description: { type: :string, nullable: true },
+              type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
+              start_time: { type: :string, format: "date-time" },
+              end_time: { type: :string, format: "date-time" },
+              published: { type: :boolean },
+              primary_stream_url: { type: :string, nullable: true },
+              bg_color_hex: { type: :string, nullable: true },
+              cover_image_url: { type: :string, nullable: true },
+              status: { type: :string, enum: %w[live upcoming ended] },
+              position: { type: :integer },
+              role: { type: :string, nullable: true },
+              featured: { type: :boolean }
+            },
+            required: %w[id title event_name_slug event_variation_slug path type_of start_time end_time published status]
+          },
+          EventScheduleSummary: {
+            description: "Live and upcoming sub-event schedule summary for a parent event",
+            type: :object,
+            properties: {
+              hero_state: { type: :string, enum: %w[live upcoming past empty] },
+              hero_sub_event: { "$ref": "#/components/schemas/EventSummary", nullable: true },
+              live_count: { type: :integer },
+              upcoming_count: { type: :integer },
+              past_count: { type: :integer },
+              total_count: { type: :integer }
+            },
+            required: %w[hero_state live_count upcoming_count past_count total_count]
+          },
+          EventMembership: {
+            description: "Many-to-many parent/child relationship between two events",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              parent_event_id: { type: :integer, format: :int64 },
+              child_event_id: { type: :integer, format: :int64 },
+              position: { type: :integer },
+              role: { type: :string, nullable: true },
+              featured: { type: :boolean },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" },
+              child_event: {
+                type: :object,
+                nullable: true,
+                properties: {
+                  id: { type: :integer, format: :int64 },
+                  title: { type: :string },
+                  event_name_slug: { type: :string },
+                  event_variation_slug: { type: :string },
+                  path: { type: :string },
+                  description: { type: :string, nullable: true },
+                  type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
+                  start_time: { type: :string, format: "date-time" },
+                  end_time: { type: :string, format: "date-time" },
+                  published: { type: :boolean },
+                  primary_stream_url: { type: :string, nullable: true },
+                  bg_color_hex: { type: :string, nullable: true },
+                  cover_image_url: { type: :string, nullable: true },
+                  status: { type: :string, enum: %w[live upcoming ended] }
+                }
+              }
+            },
+            required: %w[id parent_event_id child_event_id position featured created_at updated_at]
+          },
+          EventMembershipInput: {
+            description: "Parameters to attach or update a sub-event membership",
+            type: :object,
+            properties: {
+              event_membership: {
+                type: :object,
+                properties: {
+                  child_event_id: { type: :integer, format: :int64 },
+                  position: { type: :integer, default: 0 },
+                  role: { type: :string, nullable: true, maxLength: 64 },
+                  featured: { type: :boolean, default: false }
+                }
+              }
+            },
+            required: %w[event_membership]
+          },
+          EventMembershipsResponse: {
+            description: "Full hierarchy and categorized sub-event schedule for an event",
+            type: :object,
+            properties: {
+              event_id: { type: :integer, format: :int64 },
+              hero_state: { type: :string, enum: %w[live upcoming past empty] },
+              hero_sub_event: { "$ref": "#/components/schemas/EventSummary", nullable: true },
+              live_sub_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } },
+              upcoming_sub_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } },
+              past_sub_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } },
+              sub_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } },
+              parent_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } }
+            },
+            required: %w[event_id hero_state live_sub_events upcoming_sub_events past_sub_events sub_events parent_events]
+          },
           Event: {
             description: "Representation of an event",
             type: :object,
@@ -959,6 +1063,11 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               data: { type: :object, nullable: true },
               tags_array: { type: :array, items: { type: :string } },
               cached_tag_list: { type: :string, nullable: true },
+              parent_event_ids: { type: :array, items: { type: :integer, format: :int64 } },
+              sub_event_ids: { type: :array, items: { type: :integer, format: :int64 } },
+              parent_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } },
+              sub_events: { type: :array, items: { "$ref": "#/components/schemas/EventSummary" } },
+              schedule: { "$ref": "#/components/schemas/EventScheduleSummary" },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
@@ -975,15 +1084,33 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   event_name_slug: { type: :string },
                   event_variation_slug: { type: :string },
                   description: { type: :string, nullable: true },
+                  body_markdown: { type: :string, nullable: true },
                   full_details: { type: :string, nullable: true, description: "Full text dump of all event details." },
                   primary_stream_url: { type: :string, nullable: true },
                   published: { type: :boolean, default: false },
+                  elevated: { type: :boolean, default: false },
                   allow_articles: { type: :boolean, default: false },
+                  bg_color_hex: { type: :string, nullable: true },
                   start_time: { type: :string, format: "date-time" },
                   end_time: { type: :string, format: "date-time" },
                   type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
                   organization_id: { type: :integer, nullable: true },
                   tag_list: { type: :string, nullable: true },
+                  parent_event_ids: { type: :array, items: { type: :integer, format: :int64 } },
+                  sub_event_ids: { type: :array, items: { type: :integer, format: :int64 } },
+                  sub_event_memberships: {
+                    type: :array,
+                    items: {
+                      type: :object,
+                      properties: {
+                        child_event_id: { type: :integer, format: :int64 },
+                        position: { type: :integer },
+                        role: { type: :string, nullable: true },
+                        featured: { type: :boolean }
+                      },
+                      required: %w[child_event_id]
+                    }
+                  },
                   data: { type: :object, nullable: true }
                 },
                 required: %w[title event_name_slug event_variation_slug start_time end_time]

@@ -11,6 +11,15 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 <div class="crayons-layout event-show-layout container grid-cols-1">
+  <% if !@event.published? %>
+    <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
+      <strong>This event is not published!</strong> Only admins can see this page.
+      <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+    </div>
+  <% end %>
+
+  <%= render "parent_context_bar" %>
+
   <!-- Banner Image -->
   <% banner_image = @event.cover_image.presence&.url || @event.data&.dig('banner_image_url') %>
   <% if banner_image.present? %>
@@ -20,6 +29,8 @@
   <% end %>
 
   <%= render "event_tabs" %>
+
+  <%= render "sub_events_hero", event: @event, schedule: @sub_event_schedule %>
 
   <div class="flex flex-col m:flex-row gap-6">
     <!-- Main Content Left Column -->
@@ -142,11 +153,14 @@
           </div>
         </div>
       <% end %>
+
+      <%= render "sub_events_schedule", event: @event, schedule: @sub_event_schedule %>
     </main>
 
     <!-- Sidebar Right Column -->
     <aside class="w-100 m:w-25 shrink-0">
       <% if @event.end_time > Time.current %>
+        <% challenge_signed_up = @signed_up_event_ids ? @signed_up_event_ids.include?(@event.id) : (current_user && current_user.event_signups.exists?(event: @event)) %>
         <div class="crayons-card p-4 mb-6 text-center">
           <h3 class="font-bold mb-2">Join the Challenge</h3>
           <p class="fs-s color-base-70 mb-4">Express interest to receive challenge reminders and updates.</p>
@@ -156,8 +170,8 @@
                   data-signup-confirm-message="Are you sure you want to cancel your interest?"
                   data-signed-up-class="crayons-btn--outlined"
                   data-unsigned-up-class="crayons-btn--primary"
-                  class="crayons-btn w-100 text-center justify-center <%= current_user && current_user.event_signups.exists?(event: @event) ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
-                  data-signed-up="<%= current_user && current_user.event_signups.exists?(event: @event) ? 'true' : 'false' %>">
+                  class="crayons-btn w-100 text-center justify-center <%= challenge_signed_up ? 'crayons-btn--outlined' : 'crayons-btn--primary' %>"
+                  data-signed-up="<%= challenge_signed_up ? 'true' : 'false' %>">
             <template data-signed-up-html>
               <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               Joined
@@ -166,7 +180,7 @@
               Join Challenge
             </template>
 
-            <% if current_user && current_user.event_signups.exists?(event: @event) %>
+            <% if challenge_signed_up %>
               <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               Joined
             <% else %>
@@ -226,6 +240,10 @@
   </div>
 
   <%= render "event_articles", articles: @event_articles, event: @event, previews: @event_article_previews %>
+
+  <% if @sub_event_schedule&.any? %>
+    <%= render "local_time_script" %>
+  <% end %>
 </div>
 
 <%= javascript_include_tag "tagFollows", defer: true %>

@@ -1,0 +1,39 @@
+<% parent_memberships = local_assigns[:parent_memberships] || @parent_memberships || [] %>
+<% return if parent_memberships.empty? %>
+
+<div class="event-parent-bar mb-4" aria-label="<%= t("views.events.hierarchy.part_of_aria") %>">
+  <div class="event-parent-bar__inner">
+    <span class="event-parent-bar__eyebrow">
+      <svg class="c-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <%= t("views.events.hierarchy.part_of") %>
+    </span>
+
+    <div class="event-parent-bar__links">
+      <% parent_memberships.each do |pm| %>
+        <% parent = pm.parent_event %>
+        <% next unless parent %>
+        <a href="<%= event_link_target(parent) %>" class="event-parent-pill">
+          <span class="event-parent-pill__dot" style="background: <%= parent.background_hex_color %>;" aria-hidden="true"></span>
+          <span class="event-parent-pill__title"><%= parent.title %></span>
+          <% if pm.role.present? %>
+            <span class="event-parent-pill__role"><%= pm.role %></span>
+          <% end %>
+          <% unless parent.published? %>
+            <span class="event-parent-pill__draft"><%= t("views.events.hierarchy.draft") %></span>
+          <% end %>
+        </a>
+      <% end %>
+    </div>
+
+    <% primary_parent = parent_memberships.first&.parent_event %>
+    <% if primary_parent %>
+      <a href="<%= event_path(primary_parent.event_name_slug, primary_parent.event_variation_slug, mode: primary_parent.readme_page? ? 'overview' : nil, anchor: 'event-schedule') %>"
+         class="event-parent-bar__cta">
+        <%= t("views.events.hierarchy.view_full_schedule") %>
+        <span aria-hidden="true">→</span>
+      </a>
+    <% end %>
+  </div>
+</div>

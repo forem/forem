@@ -11,57 +11,250 @@
   <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
+<%
+  now = Time.current
+  forced_live = params[:state] == "forced_live"
+  is_live = (@event.start_time <= now && @event.end_time >= now) || forced_live
+  is_upcoming = @event.start_time > now && !forced_live
+  host = @event.organization || @event.user
+  duration = event_duration_label(@event)
+%>
 <div class="container crayons-layout event-show-layout">
-    <% if !@event.published? %>
-      <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">
-        <strong>This event is not published!</strong> Only admins can see this page.
-        <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
-      </div>
-    <% end %>
-    
-    <div class="event-header">
+  <% if !@event.published? %>
+    <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
+      <strong>This event is not published!</strong> Only admins can see this page.
+      <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+    </div>
+  <% end %>
+
+  <%= render "parent_context_bar" %>
+
+  <header class="event-stage-header crayons-card p-6 mb-4" style="--event-accent: <%= @event.background_hex_color %>;">
+    <nav aria-label="Breadcrumbs" class="event-breadcrumbs mb-3 fs-s color-base-60">
+      <% event_breadcrumb_links(@event).each do |label, path| %>
+        <a href="<%= path %>" class="c-link c-link--branded font-bold"><%= label %></a>
+        <span aria-hidden="true">/</span>
+      <% end %>
+      <% if @primary_parent_event.present? %>
+        <a href="<%= event_link_target(@primary_parent_event) %>" class="c-link c-link--branded font-bold"><%= @primary_parent_event.title %></a>
+        <span aria-hidden="true">/</span>
+      <% end %>
+      <span><%= @event.title %></span>
+    </nav>
+
+    <div class="event-header event-header--stage">
+      <div class="event-header__main">
+        <div class="flex items-center flex-wrap gap-2 mb-2">
+          <span class="event-pill <%= event_pill_class(@event) %>"><%= @event.format_pill_label %></span>
+          <% if is_live %>
+            <span class="live-indicator">LIVE</span>
+          <% elsif is_upcoming %>
+            <span class="event-status-badge event-status-badge--upcoming-subtle"><%= t("views.events.stream.coming_soon") %></span>
+          <% else %>
+            <span class="event-status-badge event-status-badge--ended"><%= t("views.events.gathering.ended") %></span>
+          <% end %>
+          <% if @parent_memberships&.first&.role.present? %>
+            <span class="event-role-chip"><%= @parent_memberships.first.role %></span>
+          <% end %>
+        </div>
+
         <h1><%= @event.title %></h1>
-        <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
-          <span class="live-indicator">LIVE</span>
+
+        <% if @event.description.present? %>
+          <p class="event-stage-header__lead"><%= @event.description %></p>
         <% end %>
-        
-        <% if @event.start_time > Time.current %>
-          <div class="event-signup-container ml-auto">
+
+        <div class="event-stage-header__meta">
+          <span class="event-meta-chip">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <time class="js-event-local-time"
+                  datetime="<%= @event.start_time.iso8601 %>"
+                  data-start-iso="<%= @event.start_time.iso8601 %>"
+                  data-end-iso="<%= @event.end_time.iso8601 %>"
+                  data-format="full">
+              <%= event_time_slot_label(@event) %>
+            </time>
+          </span>
+
+          <% if duration.present? %>
+            <span class="event-meta-chip">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <%= duration %>
+            </span>
+          <% end %>
+
+          <% if host.present? %>
+            <span class="event-meta-chip">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <%= host.name %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="event-header__actions">
+        <% if @event.start_time > now %>
+          <div class="event-signup-container">
             <%= render "signup_button", event: @event %>
           </div>
+          <a href="<%= event_google_calendar_url(@event) %>"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="crayons-btn crayons-btn--secondary">
+            <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span><%= t("views.events.stream.add_to_calendar") %></span>
+          </a>
         <% end %>
+
+        <button type="button"
+                class="crayons-btn crayons-btn--outlined js-copy-event-link"
+                data-copy-url="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>"
+                data-copied-text="<%= t("views.events.stream.link_copied") %>">
+          <svg class="c-icon mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span data-copy-label><%= t("views.events.stream.share") %></span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <%= render "event_tabs" %>
+  <%= render "event_tabs" %>
 
-    <%= render "stream_player", event: @event %>
+  <%= render "stream_player", event: @event %>
 
-    <div class="info-section crayons-card p-6 mt-4">
-        <div class="mb-4 text-lg crayons-article__body">
-            <%= @event.body_html %>
+  <% if @sub_event_schedule&.any? %>
+    <div class="mt-6">
+      <%= render "sub_events_hero", event: @event, schedule: @sub_event_schedule %>
+      <%= render "sub_events_schedule", event: @event, schedule: @sub_event_schedule %>
+    </div>
+  <% end %>
+
+  <div class="event-detail-columns mt-6">
+    <main class="event-detail-columns__main" id="main-content">
+      <div class="info-section crayons-card p-6">
+        <h2 class="event-section-label"><%= t("views.events.stream.about_session") %></h2>
+        <div class="text-lg crayons-article__body text-styles">
+          <%= @event.body_html %>
         </div>
 
         <% if @event.organization %>
           <a href="<%= organization_path(@event.organization) %>" class="profile-card">
-              <img src="<%= @event.organization.profile_image_url %>" alt="<%= @event.organization.name %> Logo">
-              <div>
-                  <strong><%= @event.organization.name %></strong>
-                  <span>@<%= @event.organization.slug %></span>
-              </div>
+            <img src="<%= @event.organization.profile_image_url %>" alt="<%= @event.organization.name %> Logo">
+            <div>
+              <strong><%= @event.organization.name %></strong>
+              <span>@<%= @event.organization.slug %></span>
+            </div>
           </a>
         <% elsif @event.user %>
           <a href="<%= user_path(@event.user) %>" class="profile-card">
-              <img src="<%= @event.user.profile_image_90 %>" alt="<%= @event.user.name %> Silhouette">
-              <div>
-                  <strong><%= @event.user.name %></strong>
-                  <span>@<%= @event.user.username %></span>
-              </div>
+            <img src="<%= @event.user.profile_image_90 %>" alt="<%= @event.user.name %> Silhouette">
+            <div>
+              <strong><%= @event.user.name %></strong>
+              <span>@<%= @event.user.username %></span>
+            </div>
           </a>
         <% end %>
-    </div>
+      </div>
+    </main>
 
-    <%= render "event_articles", articles: @event_articles, event: @event, previews: @event_article_previews %>
+    <aside class="event-detail-columns__aside">
+      <div class="crayons-card p-5 mb-4">
+        <h3 class="event-sidebar-heading"><%= t("views.events.gathering.details") %></h3>
+        <ul class="event-details-list">
+          <li>
+            <span class="event-details-list__label"><%= t("views.events.gathering.dates") %></span>
+            <span class="event-details-list__value">
+              <time class="js-event-local-time"
+                    datetime="<%= @event.start_time.iso8601 %>"
+                    data-start-iso="<%= @event.start_time.iso8601 %>"
+                    data-end-iso="<%= @event.end_time.iso8601 %>">
+                <%= event_datetime_range(@event) %>
+              </time>
+            </span>
+          </li>
+          <% if duration.present? %>
+            <li>
+              <span class="event-details-list__label"><%= t("views.events.stream.duration_label") %></span>
+              <span class="event-details-list__value"><%= duration %></span>
+            </li>
+          <% end %>
+          <li>
+            <span class="event-details-list__label"><%= t("views.events.gathering.location") %></span>
+            <span class="event-details-list__value"><%= @event.location_display %></span>
+          </li>
+          <li>
+            <span class="event-details-list__label"><%= t("views.events.gathering.format") %></span>
+            <span class="event-details-list__value"><%= @event.format_pill_label %></span>
+          </li>
+        </ul>
+      </div>
 
-    <% tag_name = defined?(@tag_name) ? @tag_name : @event.tags.first&.name %>
-    <%= render "community_articles", articles: @articles, tag_name: tag_name %>
+      <% if @primary_parent_event.present? && @sibling_memberships.present? %>
+        <div class="crayons-card p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <h3 class="event-sidebar-heading m-0"><%= t("views.events.hierarchy.more_from_parent", title: @primary_parent_event.title) %></h3>
+          </div>
+          <div class="event-sibling-list">
+            <% @sibling_memberships.each do |sib_membership| %>
+              <% sibling = sib_membership.child_event %>
+              <a href="<%= event_link_target(sibling) %>" class="event-sibling-item">
+                <div class="flex items-center gap-2 mb-1">
+                  <% if sibling.live?(now) %>
+                    <span class="event-status-badge event-status-badge--live event-status-badge--xs">
+                      <span class="event-status-badge__dot" aria-hidden="true"></span>
+                      <%= t("views.events.gathering.live") %>
+                    </span>
+                  <% else %>
+                    <span class="fs-xs color-base-60">
+                      <time class="js-event-local-time"
+                            datetime="<%= sibling.start_time.iso8601 %>"
+                            data-start-iso="<%= sibling.start_time.iso8601 %>"
+                            data-end-iso="<%= sibling.end_time.iso8601 %>">
+                        <%= event_time_slot_label(sibling, time_zone: @primary_parent_event.time_zone) %>
+                      </time>
+                    </span>
+                  <% end %>
+                  <% if sib_membership.role.present? %>
+                    <span class="event-role-chip event-role-chip--xs"><%= sib_membership.role %></span>
+                  <% end %>
+                </div>
+                <div class="event-sibling-item__title"><%= sibling.title %></div>
+              </a>
+            <% end %>
+          </div>
+          <a href="<%= event_link_target(@primary_parent_event) %>" class="crayons-btn crayons-btn--outlined w-100 text-center justify-center mt-3">
+            <%= t("views.events.hierarchy.view_full_schedule") %>
+          </a>
+        </div>
+      <% end %>
+    </aside>
+  </div>
+
+  <%= render "event_articles", articles: @event_articles, event: @event, previews: @event_article_previews %>
+
+  <% tag_name = defined?(@tag_name) ? @tag_name : @event.tags.first&.name %>
+  <%= render "community_articles", articles: @articles, tag_name: tag_name %>
+
+  <%= render "local_time_script" %>
 </div>

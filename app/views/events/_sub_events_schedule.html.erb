@@ -1,0 +1,141 @@
+<% schedule = local_assigns[:schedule] || @sub_event_schedule %>
+<% return unless schedule&.any? %>
+<% parent_event = local_assigns[:event] || @event %>
+<% roles = schedule.roles %>
+<% has_filters = roles.size > 1 || (roles.any? && schedule.memberships.any? { |m| m.role.blank? }) %>
+
+<section id="event-schedule" class="event-schedule-section mb-6" aria-labelledby="event-schedule-heading">
+  <div class="crayons-card p-6">
+    <div class="event-schedule__header">
+      <div>
+        <div class="flex items-center flex-wrap gap-2">
+          <h2 id="event-schedule-heading" class="crayons-title m-0">
+            <%= t("views.events.hierarchy.schedule_heading") %>
+          </h2>
+          <span class="event-schedule__count-pill">
+            <%= t("views.events.hierarchy.sessions_count", count: schedule.total_count) %>
+          </span>
+        </div>
+        <p class="fs-s color-base-60 mt-1 mb-0">
+          <%= t("views.events.hierarchy.schedule_subtitle") %>
+        </p>
+      </div>
+
+      <div class="event-schedule__stats">
+        <% if schedule.live_count.positive? %>
+          <span class="event-status-badge event-status-badge--live">
+            <span class="event-status-badge__dot" aria-hidden="true"></span>
+            <%= t("views.events.hierarchy.live_count", count: schedule.live_count) %>
+          </span>
+        <% end %>
+        <% if schedule.upcoming_count.positive? %>
+          <span class="event-status-badge event-status-badge--upcoming-subtle">
+            <%= t("views.events.hierarchy.upcoming_count", count: schedule.upcoming_count) %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <% if has_filters %>
+      <div class="event-schedule__filters" role="tablist" aria-label="<%= t("views.events.hierarchy.filter_tracks") %>" data-schedule-filters="true">
+        <button type="button" class="event-schedule__filter-pill event-schedule__filter-pill--active" data-filter-role="all" aria-pressed="true">
+          <%= t("views.events.hierarchy.all_tracks") %>
+        </button>
+        <% roles.each do |role_name| %>
+          <button type="button" class="event-schedule__filter-pill" data-filter-role="<%= role_name.downcase %>" aria-pressed="false">
+            <%= role_name %>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if schedule.live_memberships.any? %>
+      <div class="event-schedule__group" data-schedule-group="live">
+        <h3 class="event-schedule__group-title event-schedule__group-title--live">
+          <span class="event-status-badge__dot event-status-badge__dot--red" aria-hidden="true"></span>
+          <%= t("views.events.hierarchy.live_now_section") %>
+        </h3>
+        <div class="event-schedule__list">
+          <% schedule.live_memberships.each do |membership| %>
+            <%= render "sub_event_row", membership: membership, parent_event: parent_event, state: :live %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if schedule.upcoming_by_day.any? %>
+      <div class="event-schedule__group" data-schedule-group="upcoming">
+        <h3 class="event-schedule__group-title">
+          <%= t("views.events.hierarchy.upcoming_section") %>
+        </h3>
+        <% schedule.upcoming_by_day.each do |day, day_memberships| %>
+          <div class="event-schedule__day-block" data-schedule-day-block="true">
+            <div class="event-schedule__day-header">
+              <span class="event-schedule__day-label"><%= l(day, format: "%A, %B %-d") %></span>
+              <span class="event-schedule__day-count"><%= t("views.events.hierarchy.sessions_count", count: day_memberships.size) %></span>
+            </div>
+            <div class="event-schedule__list">
+              <% day_memberships.each do |membership| %>
+                <%= render "sub_event_row", membership: membership, parent_event: parent_event, state: :upcoming %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if schedule.past_memberships.any? %>
+      <div class="event-schedule__group event-schedule__group--past" data-schedule-group="past">
+        <details <%= "open" if schedule.all_ended? %> class="event-schedule__past-details">
+          <summary class="event-schedule__group-title event-schedule__past-summary">
+            <span><%= t("views.events.hierarchy.past_section", count: schedule.past_count) %></span>
+            <svg class="event-schedule__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="event-schedule__list mt-3">
+            <% schedule.past_memberships.each do |membership| %>
+              <%= render "sub_event_row", membership: membership, parent_event: parent_event, state: :past %>
+            <% end %>
+          </div>
+        </details>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<% if has_filters %>
+  <script>
+    (function() {
+      const filterBar = document.querySelector('#event-schedule [data-schedule-filters="true"]');
+      if (!filterBar || filterBar.dataset.initialized === "true") return;
+      filterBar.dataset.initialized = "true";
+
+      filterBar.addEventListener("click", function(e) {
+        const pill = e.target.closest("[data-filter-role]");
+        if (!pill) return;
+
+        const targetRole = pill.dataset.filterRole;
+        filterBar.querySelectorAll("[data-filter-role]").forEach(function(btn) {
+          const active = btn === pill;
+          btn.classList.toggle("event-schedule__filter-pill--active", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+
+        const container = document.getElementById("event-schedule");
+        if (!container) return;
+
+        container.querySelectorAll("[data-session-row]").forEach(function(row) {
+          const rowRole = row.dataset.sessionRole || "";
+          const show = targetRole === "all" || rowRole === targetRole;
+          row.style.display = show ? "" : "none";
+        });
+
+        container.querySelectorAll("[data-schedule-day-block]").forEach(function(block) {
+          const visibleRows = block.querySelectorAll('[data-session-row]:not([style*="display: none"])');
+          block.style.display = visibleRows.length > 0 ? "" : "none";
+        });
+      });
+    })();
+  </script>
+<% end %>

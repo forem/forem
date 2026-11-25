@@ -1,103 +1,323 @@
-<div class="stream-grid">
-  <div class="video-wrapper" style="position: relative; background: #000; overflow: hidden; border-radius: var(--radius); min-height: 300px; display: flex; align-items: center; justify-content: center;">
-    <% if event.primary_stream_url.present? %>
-      <div class="overlay-post absolute inset-0 z-10 flex flex-col items-center justify-center hidden" id="overlay-post-<%= event.id %>" style="background: #000; color: #fff; width: 100%; height: 100%;">
-        <div class="text-xl mb-2 fw-medium">Stream starts in…</div>
-        <div id="countdown-post-<%= event.id %>" class="tabular-nums text-4xl fw-bold">--:--:--</div>
-      </div>
-      <div class="player-container-post w-100 h-100" id="player-container-post-<%= event.id %>" style="width: 100%; height: 100%;"></div>
-    <% else %>
-      <div class="crayons-card p-8 text-center flex items-center justify-center h-100 w-100">
-        <p class="color-base-60">Stream URL not configured.</p>
-      </div>
-    <% end %>
+<%
+  now = Time.current
+  forced_live = params[:state] == "forced_live"
+  is_upcoming = event.upcoming?(now) && !forced_live
+  is_ended = event.ended?(now) && !forced_live
+  is_live = !is_upcoming && !is_ended
+  chat_url = event.data&.dig("chat_url") || event.data&.dig(:chat_url)
+  has_chat = chat_url.present?
+  backdrop_image = event.cover_image.presence&.url || event.data&.dig("banner_image_url")
+  safe_backdrop = safe_event_url(backdrop_image)
+  stream_wrapper_classes = ["stream-stage"]
+  stream_wrapper_classes << "stream-stage--live" if is_live
+  stream_wrapper_classes << "stream-stage--upcoming" if is_upcoming
+  stream_wrapper_classes << "stream-stage--ended" if is_ended
+%>
+
+<section class="<%= stream_wrapper_classes.join(' ') %>" id="stream-stage-<%= event.id %>" data-stream-stage="true">
+  <div class="stream-stage__bar">
+    <div class="stream-stage__bar-left">
+      <% if is_live %>
+        <span class="event-status-badge event-status-badge--live" id="stream-status-badge-<%= event.id %>">
+          <span class="event-status-badge__dot" aria-hidden="true"></span>
+          <%= t("views.events.stream.live_now") %>
+        </span>
+      <% elsif is_upcoming %>
+        <span class="event-status-badge event-status-badge--upcoming" id="stream-status-badge-<%= event.id %>">
+          <span class="event-status-badge__dot" aria-hidden="true"></span>
+          <%= t("views.events.stream.coming_soon") %>
+        </span>
+      <% else %>
+        <span class="event-status-badge event-status-badge--ended" id="stream-status-badge-<%= event.id %>">
+          <%= t("views.events.stream.replay_badge") %>
+        </span>
+      <% end %>
+
+      <span class="stream-stage__time">
+        <time class="js-event-local-time"
+              datetime="<%= event.start_time.iso8601 %>"
+              data-start-iso="<%= event.start_time.iso8601 %>"
+              data-end-iso="<%= event.end_time.iso8601 %>">
+          <%= event_time_slot_label(event) %>
+        </time>
+      </span>
+    </div>
+
+    <div class="stream-stage__bar-right">
+      <% if has_chat %>
+        <button type="button"
+                class="stream-stage__theater-btn js-stream-theater-toggle"
+                data-target="stream-grid-<%= event.id %>"
+                aria-pressed="false"
+                title="<%= t("views.events.stream.theater_mode") %>">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <line x1="15" y1="4" x2="15" y2="20"></line>
+          </svg>
+          <span><%= t("views.events.stream.theater_mode") %></span>
+        </button>
+      <% end %>
+    </div>
   </div>
 
-  <% chat_url = event.data&.dig('chat_url') || event.data&.dig(:chat_url) %>
-  <% if chat_url.present? %>
-    <div class="chat-wrapper">
-      <iframe id="chat-frame" width="100%" height="100%" src="<%= chat_url %>" frameborder="0" title="Event Chat" loading="lazy"></iframe>
+  <div class="stream-grid <%= has_chat ? 'stream-grid--with-chat' : 'stream-grid--no-chat' %>" id="stream-grid-<%= event.id %>">
+    <div class="video-wrapper">
+      <% if event.primary_stream_url.present? %>
+        <div class="overlay-post stream-coming-soon <%= 'hidden' unless is_upcoming %>"
+             id="overlay-post-<%= event.id %>"
+             style="<%= safe_backdrop ? "--stream-backdrop-image: url('#{ERB::Util.html_escape(safe_backdrop)}');" : "--stream-backdrop-gradient: #{event.gradient_background_css};" %>">
+          <div class="stream-coming-soon__bg" aria-hidden="true"></div>
+          <div class="stream-coming-soon__grid-pattern" aria-hidden="true"></div>
+
+          <div class="stream-coming-soon__card">
+            <div class="stream-coming-soon__eyebrow">
+              <span class="stream-coming-soon__pulse" aria-hidden="true"></span>
+              <%= t("views.events.stream.starts_in_label") %>
+            </div>
+
+            <div class="stream-countdown-tiles" id="countdown-tiles-<%= event.id %>" aria-hidden="true">
+              <div class="stream-countdown-tile" data-unit="days" style="display: none;">
+                <span class="stream-countdown-tile__value tabular-nums" data-countdown-days>00</span>
+                <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.days") %></span>
+              </div>
+              <div class="stream-countdown-tile">
+                <span class="stream-countdown-tile__value tabular-nums" data-countdown-hours>00</span>
+                <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.hours") %></span>
+              </div>
+              <span class="stream-countdown-sep">:</span>
+              <div class="stream-countdown-tile">
+                <span class="stream-countdown-tile__value tabular-nums" data-countdown-minutes>00</span>
+                <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.minutes") %></span>
+              </div>
+              <span class="stream-countdown-sep">:</span>
+              <div class="stream-countdown-tile">
+                <span class="stream-countdown-tile__value tabular-nums" data-countdown-seconds>00</span>
+                <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.seconds") %></span>
+              </div>
+            </div>
+
+            <div id="countdown-post-<%= event.id %>" class="sr-only tabular-nums" aria-live="off">--:--:--</div>
+
+            <p class="stream-coming-soon__schedule">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <time class="js-event-local-time"
+                    datetime="<%= event.start_time.iso8601 %>"
+                    data-start-iso="<%= event.start_time.iso8601 %>"
+                    data-end-iso="<%= event.end_time.iso8601 %>"
+                    data-format="full">
+                <%= event.start_time.in_time_zone(event.time_zone).strftime("%a, %b %-d at %-I:%M %p %Z") %>
+              </time>
+            </p>
+
+            <% if event.description.present? %>
+              <p class="stream-coming-soon__desc"><%= truncate(event.description, length: 160) %></p>
+            <% end %>
+
+            <div class="stream-coming-soon__actions">
+              <% if event.start_time > now %>
+                <%= render "signup_button",
+                           event: event,
+                           extra_classes: "stream-coming-soon__rsvp-btn",
+                           signed_up_class: "stream-coming-soon__rsvp-btn--signed",
+                           unsigned_up_class: "crayons-btn--primary" %>
+              <% end %>
+              <a href="<%= event_google_calendar_url(event) %>"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="stream-coming-soon__cal-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span><%= t("views.events.stream.add_to_calendar") %></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="player-container-post w-100 h-100" id="player-container-post-<%= event.id %>"></div>
+      <% else %>
+        <div class="stream-coming-soon stream-coming-soon--placeholder"
+             style="<%= safe_backdrop ? "--stream-backdrop-image: url('#{ERB::Util.html_escape(safe_backdrop)}');" : "--stream-backdrop-gradient: #{event.gradient_background_css};" %>">
+          <div class="stream-coming-soon__bg" aria-hidden="true"></div>
+          <div class="stream-coming-soon__card">
+            <div class="stream-coming-soon__eyebrow">
+              <%= is_upcoming ? t("views.events.stream.coming_soon") : t("views.events.stream.stream_not_configured_eyebrow") %>
+            </div>
+            <p class="stream-coming-soon__desc m-0">
+              <%= is_upcoming ? t("views.events.stream.stream_coming_soon_placeholder") : "Stream URL not configured." %>
+            </p>
+            <% if is_upcoming %>
+              <div class="stream-coming-soon__actions mt-4">
+                <%= render "signup_button",
+                           event: event,
+                           extra_classes: "stream-coming-soon__rsvp-btn",
+                           signed_up_class: "stream-coming-soon__rsvp-btn--signed",
+                           unsigned_up_class: "crayons-btn--primary" %>
+                <a href="<%= event_google_calendar_url(event) %>"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="stream-coming-soon__cal-btn">
+                  <span><%= t("views.events.stream.add_to_calendar") %></span>
+                </a>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
     </div>
-    <script>
-      (function() {
-        const chatFrame = document.getElementById("chat-frame");
-        if (!chatFrame) return;
 
-        function isDark() {
-          return document.body.classList.contains("dark-theme") ||
-            (localStorage.getItem("config_body_class") || "").includes("dark-theme");
-        }
+    <% if has_chat %>
+      <div class="chat-wrapper">
+        <div class="chat-wrapper__header">
+          <span class="chat-wrapper__title">
+            <span class="chat-wrapper__dot <%= is_live ? 'chat-wrapper__dot--live' : '' %>" aria-hidden="true"></span>
+            <%= t("views.events.stream.live_chat") %>
+          </span>
+          <% if is_upcoming %>
+            <span class="chat-wrapper__hint"><%= t("views.events.stream.chat_pre_show") %></span>
+          <% end %>
+        </div>
+        <div class="chat-wrapper__body">
+          <iframe id="chat-frame" width="100%" height="100%" src="<%= chat_url %>" frameborder="0" title="Event Chat" loading="lazy"></iframe>
+        </div>
+      </div>
+      <script>
+        (function() {
+          const chatFrame = document.getElementById("chat-frame");
+          if (!chatFrame) return;
 
-        function applyThemeToChatUrl() {
-          try {
-            const url = new URL(chatFrame.src);
-            const dark = isDark();
-
-            if (url.hostname.includes("youtube.com")) {
-              if (dark) {
-                url.searchParams.set("dark_theme", "1");
-              } else {
-                url.searchParams.delete("dark_theme");
-              }
-            } else if (url.hostname.includes("twitch.tv")) {
-              if (dark) {
-                url.searchParams.set("darkpopout", "");
-              } else {
-                url.searchParams.delete("darkpopout");
-              }
-            }
-
-            if (url.toString() !== chatFrame.src) {
-              chatFrame.src = url.toString();
-            }
-          } catch (e) {
-            // ignore invalid URLs
+          if (window.__foremChatThemeObserver) {
+            window.__foremChatThemeObserver.disconnect();
+            window.__foremChatThemeObserver = null;
           }
-        }
 
-        applyThemeToChatUrl();
+          function isDark() {
+            return document.body.classList.contains("dark-theme") ||
+              (localStorage.getItem("config_body_class") || "").includes("dark-theme");
+          }
 
-        const observer = new MutationObserver(function() {
+          function applyThemeToChatUrl() {
+            try {
+              const url = new URL(chatFrame.src);
+              const dark = isDark();
+
+              if (url.hostname.includes("youtube.com")) {
+                if (dark) {
+                  url.searchParams.set("dark_theme", "1");
+                } else {
+                  url.searchParams.delete("dark_theme");
+                }
+              } else if (url.hostname.includes("twitch.tv")) {
+                if (dark) {
+                  url.searchParams.set("darkpopout", "");
+                } else {
+                  url.searchParams.delete("darkpopout");
+                }
+              }
+
+              if (url.toString() !== chatFrame.src) {
+                chatFrame.src = url.toString();
+              }
+            } catch (e) {
+              // ignore invalid URLs
+            }
+          }
+
           applyThemeToChatUrl();
-        });
-        observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-      })();
-    </script>
-  <% end %>
-</div>
+
+          const observer = new MutationObserver(function() {
+            applyThemeToChatUrl();
+          });
+          observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+          window.__foremChatThemeObserver = observer;
+
+          window.addEventListener("beforeunload", function() {
+            if (window.__foremChatThemeObserver) {
+              window.__foremChatThemeObserver.disconnect();
+              window.__foremChatThemeObserver = null;
+            }
+          }, { once: true });
+        })();
+      </script>
+    <% end %>
+  </div>
+</section>
+
+<script>
+  (function() {
+    document.querySelectorAll(".js-stream-theater-toggle").forEach(function(btn) {
+      if (btn.dataset.initialized === "true") return;
+      btn.dataset.initialized = "true";
+      btn.addEventListener("click", function() {
+        const grid = document.getElementById(btn.dataset.target);
+        if (!grid) return;
+        const expanded = grid.classList.toggle("stream-grid--theater");
+        btn.setAttribute("aria-pressed", expanded ? "true" : "false");
+      });
+    });
+  })();
+</script>
 
 <% if event.primary_stream_url.present? %>
   <script>
     (function() {
       const TARGET_TIME = new Date(<%= event.start_time.iso8601.to_json.html_safe %>).getTime();
+      const END_TIME = new Date(<%= event.end_time.iso8601.to_json.html_safe %>).getTime();
       const IFRAME_SRC = <%= event.primary_stream_url.to_json.html_safe %>;
       const IS_FORCED_LIVE = <%= params[:state] == 'forced_live' %>;
+      const EVENT_ID = "<%= event.id %>";
 
       function update() {
-        const overlay = document.getElementById("overlay-post-<%= event.id %>");
-        const countdownEl = document.getElementById("countdown-post-<%= event.id %>");
-        const playerContainer = document.getElementById("player-container-post-<%= event.id %>");
+        const overlay = document.getElementById("overlay-post-" + EVENT_ID);
+        const countdownEl = document.getElementById("countdown-post-" + EVENT_ID);
+        const tilesWrap = document.getElementById("countdown-tiles-" + EVENT_ID);
+        const playerContainer = document.getElementById("player-container-post-" + EVENT_ID);
+        const stage = document.getElementById("stream-stage-" + EVENT_ID);
+        const badge = document.getElementById("stream-status-badge-" + EVENT_ID);
         const now = Date.now();
 
+        if (!playerContainer) {
+          if (window.liveStreamIntervals && window.liveStreamIntervals[EVENT_ID]) {
+            clearInterval(window.liveStreamIntervals[EVENT_ID]);
+            delete window.liveStreamIntervals[EVENT_ID];
+          }
+          return;
+        }
+
         if (now >= TARGET_TIME || IS_FORCED_LIVE) {
-          if (window.liveStreamIntervals && window.liveStreamIntervals["<%= event.id %>"]) {
-            clearInterval(window.liveStreamIntervals["<%= event.id %>"]);
-            delete window.liveStreamIntervals["<%= event.id %>"];
+          if (window.liveStreamIntervals && window.liveStreamIntervals[EVENT_ID]) {
+            clearInterval(window.liveStreamIntervals[EVENT_ID]);
+            delete window.liveStreamIntervals[EVENT_ID];
           }
           if (overlay) overlay.classList.add("hidden");
 
-          if (playerContainer && !playerContainer.querySelector("iframe")) {
+          const isReplay = now > END_TIME && !IS_FORCED_LIVE;
+          if (!isReplay && stage) {
+            stage.classList.remove("stream-stage--upcoming");
+            stage.classList.add("stream-stage--live");
+          }
+          if (!isReplay && badge && !badge.classList.contains("event-status-badge--live")) {
+            badge.className = "event-status-badge event-status-badge--live";
+            badge.innerHTML = '<span class="event-status-badge__dot" aria-hidden="true"></span> ' + <%= t("views.events.stream.live_now").to_json.html_safe %>;
+          }
+
+          if (!playerContainer.querySelector("iframe")) {
             const iframe = document.createElement("iframe");
 
             let finalSrc = IFRAME_SRC;
             try {
               const url = new URL(finalSrc);
               if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
-                url.searchParams.set("autoplay", "1");
-                url.searchParams.set("mute", "1");
+                url.searchParams.set("autoplay", isReplay ? "0" : "1");
+                if (!isReplay) url.searchParams.set("mute", "1");
               } else if (url.hostname.includes("twitch.tv")) {
-                url.searchParams.set("autoplay", "true");
-                url.searchParams.set("muted", "true");
+                url.searchParams.set("autoplay", isReplay ? "false" : "true");
+                if (!isReplay) url.searchParams.set("muted", "true");
               }
               finalSrc = url.toString();
             } catch (e) {
@@ -105,7 +325,8 @@
             }
 
             iframe.src = finalSrc;
-            iframe.allow = "autoplay; fullscreen";
+            iframe.title = <%= event.title.to_json.html_safe %>;
+            iframe.allow = "autoplay; fullscreen; picture-in-picture";
             iframe.allowFullscreen = true;
             iframe.setAttribute("frameborder", "0");
             iframe.setAttribute("scrolling", "no");
@@ -118,20 +339,42 @@
 
         if (overlay) overlay.classList.remove("hidden");
 
+        const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
+        const days = Math.floor(diffSeconds / 86400);
+        const hoursTotal = Math.floor(diffSeconds / 3600);
+        const hoursMod = Math.floor((diffSeconds % 86400) / 3600);
+        const minutes = Math.floor((diffSeconds % 3600) / 60);
+        const seconds = diffSeconds % 60;
+
         if (countdownEl) {
-          const diffSeconds = Math.max(0, Math.floor((TARGET_TIME - now) / 1000));
-          const hours = String(Math.floor(diffSeconds / 3600)).padStart(2, "0");
-          const minutes = String(Math.floor((diffSeconds % 3600) / 60)).padStart(2, "0");
-          const seconds = String(diffSeconds % 60).padStart(2, "0");
-          countdownEl.textContent = `${hours}:${minutes}:${seconds}`;
+          countdownEl.textContent =
+            String(hoursTotal).padStart(2, "0") + ":" +
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+        }
+
+        if (tilesWrap) {
+          const daysTile = tilesWrap.querySelector('[data-unit="days"]');
+          const daysEl = tilesWrap.querySelector("[data-countdown-days]");
+          const hoursEl = tilesWrap.querySelector("[data-countdown-hours]");
+          const minsEl = tilesWrap.querySelector("[data-countdown-minutes]");
+          const secsEl = tilesWrap.querySelector("[data-countdown-seconds]");
+
+          if (daysTile && daysEl) {
+            daysTile.style.display = days > 0 ? "" : "none";
+            daysEl.textContent = String(days).padStart(2, "0");
+          }
+          if (hoursEl) hoursEl.textContent = String(days > 0 ? hoursMod : hoursTotal).padStart(2, "0");
+          if (minsEl) minsEl.textContent = String(minutes).padStart(2, "0");
+          if (secsEl) secsEl.textContent = String(seconds).padStart(2, "0");
         }
       }
 
       window.liveStreamIntervals = window.liveStreamIntervals || {};
-      if (window.liveStreamIntervals["<%= event.id %>"]) {
-        clearInterval(window.liveStreamIntervals["<%= event.id %>"]);
+      if (window.liveStreamIntervals[EVENT_ID]) {
+        clearInterval(window.liveStreamIntervals[EVENT_ID]);
       }
-      window.liveStreamIntervals["<%= event.id %>"] = setInterval(update, 1000);
+      window.liveStreamIntervals[EVENT_ID] = setInterval(update, 1000);
       update();
     })();
   </script>

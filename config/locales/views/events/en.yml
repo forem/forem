@@ -51,6 +51,98 @@ en:
         register_description: Let organizers know you're interested and receive event reminders.
         visit_website: Visit Event Website
         register_external: Register for Event
+        about_heading: About This Event
+        explore_pages: Event Pages
+      duration:
+        days:
+          one: "1 day"
+          other: "%{count} days"
+        hours:
+          one: "1 hour"
+          other: "%{count} hours"
+        hours_minutes: "%{hours}h %{minutes}m"
+        minutes:
+          one: "1 min"
+          other: "%{count} min"
+      stream:
+        live_now: LIVE NOW
+        coming_soon: COMING SOON
+        replay_badge: BROADCAST ENDED · REPLAY
+        replay_short: REPLAY
+        theater_mode: Theater Mode
+        starts_in_label: Live stream starts in
+        units:
+          days: Days
+          hours: Hours
+          minutes: Min
+          seconds: Sec
+        add_to_calendar: Add to Calendar
+        stream_not_configured_eyebrow: Stream Coming Soon
+        stream_coming_soon_placeholder: The broadcast player will appear here once the stream link is published. Express interest below to get reminded when we go live!
+        live_chat: Live Chat
+        chat_pre_show: Pre-show chat
+        share: Share
+        link_copied: Copied!
+        about_session: About This Session
+        duration_label: Duration
+      hierarchy:
+        part_of_aria: Parent events
+        part_of: Part of
+        part_of_inline: "Part of %{title}"
+        draft: Draft
+        view_full_schedule: View full schedule
+        happening_now: HAPPENING NOW
+        more_live_count:
+          one: "+1 other session live"
+          other: "+%{count} other sessions live"
+        watch_live: Watch Live
+        join_session: Join Session
+        live_hero_aria: Currently live session
+        open_full_stream_chat: Open full stream & chat
+        open_session: Open session page
+        hosted_by: "Hosted by %{name}"
+        watch_with_chat: Watch with Live Chat
+        full_schedule_cta:
+          one: "Full Schedule (1 session)"
+          other: "Full Schedule (%{count} sessions)"
+        also_live_now: Also Live Right Now
+        upcoming_hero_aria: Next upcoming session
+        up_next: UP NEXT
+        view_session: View Session
+        browse_upcoming:
+          one: "Browse 1 upcoming session"
+          other: "Browse all %{count} upcoming sessions"
+        starts_in: Starts in
+        archive_badge: EVENT CONCLUDED
+        archive_heading: Watch Sessions On Demand
+        archive_subtitle:
+          one: "1 session from this event is available in the schedule archive below."
+          other: "All %{count} sessions from this event are available in the schedule archive below."
+        browse_replays: Browse Replays
+        schedule_heading: Schedule & Sessions
+        sessions_count:
+          one: "1 session"
+          other: "%{count} sessions"
+        schedule_subtitle: Times are automatically adjusted to your local time zone.
+        live_count:
+          one: "1 Live Now"
+          other: "%{count} Live Now"
+        upcoming_count:
+          one: "1 Upcoming"
+          other: "%{count} Upcoming"
+        filter_tracks: Filter sessions by track
+        all_tracks: All Tracks
+        live_now_section: Live Now
+        upcoming_section: Upcoming Schedule
+        past_section:
+          one: "Completed & Replays (1)"
+          other: "Completed & Replays (%{count})"
+        featured: Featured
+        details: Details
+        watch_replay: Watch Replay
+        recap: View Recap
+        more_from_parent: "More from %{title}"
+        live_now_inline: LIVE NOW
       pages:
         breadcrumbs:
           challenges: Challenges

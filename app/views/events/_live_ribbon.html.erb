@@ -1,0 +1,26 @@
+<% schedule = local_assigns[:schedule] || @sub_event_schedule %>
+<% return unless schedule&.live? %>
+<% hero = schedule.hero_event %>
+<% hero_membership = schedule.hero_membership %>
+
+<div class="event-live-ribbon mb-4" role="region" aria-label="<%= t("views.events.hierarchy.happening_now") %>">
+  <div class="event-live-ribbon__content">
+    <span class="event-status-badge event-status-badge--live">
+      <span class="event-status-badge__dot" aria-hidden="true"></span>
+      <%= t("views.events.hierarchy.happening_now") %>
+    </span>
+    <% if hero_membership&.role.present? %>
+      <span class="event-role-chip event-role-chip--on-dark"><%= hero_membership.role %></span>
+    <% end %>
+    <strong class="event-live-ribbon__title"><%= hero.title %></strong>
+    <% if schedule.live_count > 1 %>
+      <span class="event-live-ribbon__more">
+        <%= t("views.events.hierarchy.more_live_count", count: schedule.live_count - 1) %>
+      </span>
+    <% end %>
+  </div>
+  <a href="<%= event_link_target(hero) %>" class="crayons-btn crayons-btn--primary event-live-ribbon__cta">
+    <%= hero.primary_stream_url.present? ? t("views.events.hierarchy.watch_live") : t("views.events.hierarchy.join_session") %>
+    <span aria-hidden="true">→</span>
+  </a>
+</div>

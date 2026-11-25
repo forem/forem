@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_23_122600) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_25_150200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -802,6 +802,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_23_122600) do
     t.index ["event_id"], name: "index_emails_on_event_id"
     t.index ["onboarding_subforem_id"], name: "index_emails_on_onboarding_subforem_id"
     t.index ["user_query_id"], name: "index_emails_on_user_query_id"
+  end
+
+  create_table "event_memberships", force: :cascade do |t|
+    t.bigint "child_event_id", null: false
+    t.datetime "created_at", null: false
+    t.boolean "featured", default: false, null: false
+    t.bigint "parent_event_id", null: false
+    t.integer "position", default: 0, null: false
+    t.string "role", limit: 64
+    t.datetime "updated_at", null: false
+    t.index ["child_event_id", "parent_event_id"], name: "index_event_memberships_on_child_and_parent"
+    t.index ["parent_event_id", "child_event_id"], name: "index_event_memberships_on_parent_and_child", unique: true
+    t.index ["parent_event_id", "position", "id"], name: "index_event_memberships_on_parent_position_id"
+    t.check_constraint "parent_event_id <> child_event_id", name: "event_memberships_no_self_reference"
   end
 
   create_table "event_signups", force: :cascade do |t|
@@ -2371,6 +2385,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_23_122600) do
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "emails", "audience_segments"
   add_foreign_key "emails", "user_queries"
+  add_foreign_key "event_memberships", "events", column: "child_event_id", on_delete: :cascade
+  add_foreign_key "event_memberships", "events", column: "parent_event_id", on_delete: :cascade
   add_foreign_key "event_signups", "events"
   add_foreign_key "event_signups", "users"
   add_foreign_key "events", "organizations"

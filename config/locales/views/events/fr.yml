@@ -51,6 +51,98 @@ fr:
         register_description: Faites savoir aux organisateurs que vous êtes intéressé et recevez des rappels.
         visit_website: Visiter le site de l'événement
         register_external: S'inscrire à l'événement
+        about_heading: À propos de cet événement
+        explore_pages: Pages de l'événement
+      duration:
+        days:
+          one: "1 jour"
+          other: "%{count} jours"
+        hours:
+          one: "1 heure"
+          other: "%{count} heures"
+        hours_minutes: "%{hours} h %{minutes} min"
+        minutes:
+          one: "1 min"
+          other: "%{count} min"
+      stream:
+        live_now: EN DIRECT
+        coming_soon: BIENTÔT
+        replay_badge: DIFFUSION TERMINÉE · REDIFFUSION
+        replay_short: REDIFFUSION
+        theater_mode: Mode cinéma
+        starts_in_label: Le direct commence dans
+        units:
+          days: Jours
+          hours: Heures
+          minutes: Min
+          seconds: Sec
+        add_to_calendar: Ajouter au calendrier
+        stream_not_configured_eyebrow: Diffusion bientôt disponible
+        stream_coming_soon_placeholder: Le lecteur vidéo apparaîtra ici dès que le lien de diffusion sera publié. Indiquez votre intérêt ci-dessous pour recevoir un rappel !
+        live_chat: Chat en direct
+        chat_pre_show: Chat d'avant-diffusion
+        share: Partager
+        link_copied: Copié !
+        about_session: À propos de cette session
+        duration_label: Durée
+      hierarchy:
+        part_of_aria: Événements parents
+        part_of: Fait partie de
+        part_of_inline: "Fait partie de %{title}"
+        draft: Brouillon
+        view_full_schedule: Voir le programme complet
+        happening_now: EN CE MOMENT
+        more_live_count:
+          one: "+1 autre session en direct"
+          other: "+%{count} autres sessions en direct"
+        watch_live: Regarder en direct
+        join_session: Rejoindre la session
+        live_hero_aria: Session en direct actuellement
+        open_full_stream_chat: Ouvrir le direct et le chat
+        open_session: Ouvrir la page de la session
+        hosted_by: "Présenté par %{name}"
+        watch_with_chat: Regarder avec le chat en direct
+        full_schedule_cta:
+          one: "Programme complet (1 session)"
+          other: "Programme complet (%{count} sessions)"
+        also_live_now: Également en direct maintenant
+        upcoming_hero_aria: Prochaine session à venir
+        up_next: À SUIVRE
+        view_session: Voir la session
+        browse_upcoming:
+          one: "Voir 1 session à venir"
+          other: "Voir les %{count} sessions à venir"
+        starts_in: Commence dans
+        archive_badge: ÉVÉNEMENT TERMINÉ
+        archive_heading: Regarder les sessions à la demande
+        archive_subtitle:
+          one: "1 session de cet événement est disponible dans les archives ci-dessous."
+          other: "Les %{count} sessions de cet événement sont disponibles dans les archives ci-dessous."
+        browse_replays: Voir les rediffusions
+        schedule_heading: Programme et sessions
+        sessions_count:
+          one: "1 session"
+          other: "%{count} sessions"
+        schedule_subtitle: Les horaires sont automatiquement ajustés à votre fuseau horaire local.
+        live_count:
+          one: "1 en direct"
+          other: "%{count} en direct"
+        upcoming_count:
+          one: "1 à venir"
+          other: "%{count} à venir"
+        filter_tracks: Filtrer les sessions par piste
+        all_tracks: Toutes les pistes
+        live_now_section: En direct maintenant
+        upcoming_section: Programme à venir
+        past_section:
+          one: "Terminées et rediffusions (1)"
+          other: "Terminées et rediffusions (%{count})"
+        featured: À la une
+        details: Détails
+        watch_replay: Voir la rediffusion
+        recap: Voir le récapitulatif
+        more_from_parent: "Plus de %{title}"
+        live_now_inline: EN DIRECT
       pages:
         breadcrumbs:
           challenges: Défis
