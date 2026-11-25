@@ -8338,24 +8338,23 @@ fn serialize_sitemap_urlset_xml(
         Some(s) => s.to_owned(),
         None => return Ok(None),
     };
-    let row_vals: Vec<Value> = unsafe { rows.as_slice() }.to_vec();
+    let row_count = rows.len();
 
-    let mut path_arena = String::with_capacity(row_vals.len().saturating_mul(32));
-    let mut entries: Vec<(usize, usize, i64, i32)> = Vec::with_capacity(row_vals.len());
+    let mut path_arena = String::with_capacity(row_count.saturating_mul(32));
+    let mut entries: Vec<(usize, usize, i64, i32)> = Vec::with_capacity(row_count);
     let id_to_i = ruby.intern("to_i");
     let id_utc_offset = ruby.intern("utc_offset");
 
-    for row_val in row_vals {
+    for idx in 0..row_count {
+        let row_val: Value = rows.entry(idx as isize)?;
         let Some(pair) = RArray::from_value(row_val) else {
             return Ok(None);
         };
-        let (path_val, time_val) = {
-            let slice = unsafe { pair.as_slice() };
-            if slice.len() != 2 {
-                return Ok(None);
-            }
-            (slice[0], slice[1])
-        };
+        if pair.len() != 2 {
+            return Ok(None);
+        }
+        let path_val: Value = pair.entry(0)?;
+        let time_val: Value = pair.entry(1)?;
 
         let start = path_arena.len();
         match unsafe { borrow_req_utf8_str(path_val) } {

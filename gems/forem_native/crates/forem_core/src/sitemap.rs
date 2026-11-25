@@ -144,8 +144,9 @@ fn write_sitemap_loc(
 /// into `"https://dev.to"` (without trailing `/`), returning `None` if `base_url` contains a
 /// subpath, query string, or fragment so relative path joins cannot diverge from `Addressable::URI`.
 fn normalize_root_base_origin(base_url: &str) -> Option<String> {
-    let normalized = join_url(base_url, "")?;
-    if normalized != join_url(base_url, "/")? {
+    let bare = base_url.strip_suffix('/').unwrap_or(base_url);
+    let normalized = join_url(bare, "")?;
+    if normalized != join_url(bare, "/")? {
         return None;
     }
     normalized.strip_suffix('/').map(str::to_owned)
@@ -258,12 +259,12 @@ pub fn serialize_sitemap_urlset_xml_indexed(
         let raw_path = path_arena.get(start..end)?;
         out.push_str("    <url>\n        <loc>");
         if path_prefix.is_empty() {
-            write_sitemap_loc(&mut out, base_url, base_origin, raw_path)?;
+            write_sitemap_loc(&mut out, base_origin, base_origin, raw_path)?;
         } else {
             path_buf.clear();
             path_buf.push_str(path_prefix);
             path_buf.push_str(raw_path);
-            write_sitemap_loc(&mut out, base_url, base_origin, &path_buf)?;
+            write_sitemap_loc(&mut out, base_origin, base_origin, &path_buf)?;
         }
         out.push_str("</loc>\n        <lastmod>");
         write_iso_date(&mut out, unix_secs, utc_offset_secs)?;
@@ -426,6 +427,16 @@ mod tests {
         );
 
         let ok_rows = [("ben", 1_700_000_000, 0)];
+        assert!(
+            serialize_sitemap_urlset_xml("https://DEV.TO:443/", "", &ok_rows)
+                .unwrap()
+                .contains("<loc>https://dev.to/ben</loc>")
+        );
+        assert!(
+            serialize_sitemap_index_xml("https://DEV.TO:443/", 5, 750, false)
+                .unwrap()
+                .contains("<loc>https://dev.to/sitemap-posts.xml</loc>")
+        );
         assert_eq!(
             serialize_sitemap_urlset_xml("https://dev.to/sub/", "", &ok_rows),
             None
