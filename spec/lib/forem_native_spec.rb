@@ -2863,10 +2863,8 @@ RSpec.describe ForemNative do
         actual = described_class.comment_title(html, length)
         expect(actual || expected).to eq(expected), "length #{length}"
       end
-      if ForemNative::Native.respond_to?(:comment_title)
-        expect(described_class.comment_title(html, 500)).to eq(legacy_comment_title.call(html, 500))
-        expect(described_class.comment_title(html, 500)).to include("Rust & Ruby <3 —", "café", "東京 tower")
-      end
+      expect(described_class.comment_title(html, 500)).to eq(legacy_comment_title.call(html, 500))
+      expect(described_class.comment_title(html, 500)).to include("Rust & Ruby <3 —", "café", "東京 tower")
     end
 
     it "matches edge cases" do
@@ -2874,17 +2872,17 @@ RSpec.describe ForemNative do
       [
         "plain", "  padded \n", "<p>a &amp; b &lt; c &gt; d</p>", "<p>\"Hi\" it's <b>bold</b></p>",
         "&amp;&lt;&gt;&quot;&#39;&apos;", "😀" * 200, "東京" * 100, "<p>#{'x' * 80}</p>", "<p>#{'x' * 81}</p>",
-        "<p>#{'x' * 72}&amp;yyyyyyyy</p>", "<p>a\u0085b</p>", "<p>tab\there</p>", "<pre>\n  code\n</pre>"
+        "<p>#{'x' * 72}&amp;yyyyyyyy</p>", "<p>a\u0085b</p>", "<p>tab\there</p>", "<pre>\n  code\n</pre>",
+        "<p>&amp;lt;script&amp;gt; &amp;amp; &amp;#39;</p>", "<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>",
+        "<p>&nbsp;</p>"
       ].each do |html|
         title_lengths.each do |length|
           expected = legacy_comment_title.call(html, length)
           actual = described_class.comment_title(html, length)
           expect(actual || expected).to eq(expected), "#{html.inspect} length #{length}"
         end
-        if ForemNative::Native.respond_to?(:comment_title)
-          # Only a truncation cutting through a character reference may defer to Ruby here.
-          expect(described_class.comment_title(html, 1_000)).to eq(legacy_comment_title.call(html, 1_000)), html.inspect
-        end
+        # Only a truncation cutting through a character reference may defer to Ruby here.
+        expect(described_class.comment_title(html, 1_000)).to eq(legacy_comment_title.call(html, 1_000)), html.inspect
       end
     end
 
@@ -2937,7 +2935,7 @@ RSpec.describe ForemNative do
         expect(native || expected).to eq(expected), "iteration #{iteration} (length #{length}): #{html.inspect}"
       end
 
-      expect(native_hits).to be > 500 if ForemNative::Native.respond_to?(:comment_title)
+      expect(native_hits).to be > 500
     end
   end
 

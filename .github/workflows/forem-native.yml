@@ -49,6 +49,7 @@ on:
       - "app/models/page_view.rb"
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
+      - "app/models/comment.rb"
       - "app/models/reaction.rb"
       - "app/queries/billboards/filtered_ads_query.rb"
       - "app/serializers/homepage/article_serializer.rb"
@@ -74,6 +75,7 @@ on:
       - "spec/lib/forem_native_spec.rb"
       - "spec/lib/redcarpet/render/html_rouge_spec.rb"
       - "spec/models/billboard_spec.rb"
+      - "spec/models/comment_spec.rb"
       - "spec/models/geolocation_spec.rb"
       - "spec/models/feed_config_spec.rb"
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
@@ -101,6 +103,7 @@ on:
       - "spec/requests/api/v1/docs/comments_spec.rb"
       - "spec/requests/articles/articles_feed_spec.rb"
       - "spec/requests/billboards_spec.rb"
+      - "spec/requests/comments_spec.rb"
       - "spec/requests/reactions_spec.rb"
       - "spec/requests/search_spec.rb"
       - "spec/serializers/homepage/article_serializer_spec.rb"
@@ -270,6 +273,7 @@ jobs:
             raise "Unexpected wrap_all_figures_with_tags!" unless ForemNative.wrap_all_figures_with_tags("<p>A</p>\n<figcaption>B</figcaption>") == "<figure><p>A</p>\n<figcaption>B</figcaption></figure>\n"
             fused_html = ForemNative.postprocess_rendered_html("<p><img src=\"https://media.giphy.com/media/abc/giphy.gif\"></p>\n<figcaption>Cap</figcaption>\n<blockquote>\n<p>[!NOTE]\nHi</p>\n</blockquote>", app_domain: "dev.to", prefix_images_config: ["880", "dev.to", nil, nil, "cdn-cgi"], alert_labels: %w[Note Tip Important Warning Caution])
             raise "Unexpected postprocess_rendered_html_full!" unless fused_html.is_a?(String) && fused_html.include?("<figure>") && fused_html.include?("data-alert=\"note\"")
+            raise "Unexpected comment_title!" unless ForemNative.comment_title("<p>Rust &amp; Ruby &lt;3</p>", 80) == "Rust & Ruby <3"
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 
