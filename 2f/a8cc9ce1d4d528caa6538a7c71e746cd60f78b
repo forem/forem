@@ -1,0 +1,32 @@
+app/assets/stylesheets/components/admin/events.scss
+  h_f968154a99632d 574-587,589-591,593-595,597-599
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 4-6,56,64,101-110,210,227-233,241,281,293-295,301,311,561,572-587,618-626,628,630-641,666
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 8-10,142,151-157,173,361,590-613
+config/locales/views/admin/en.yml
+  h_f968154a99632d 812-815,830,836-839,864,868
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 803-806,821,827-830,855,859
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 711-714,729,735-738,763,767
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 97-123,331-342,344-345
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 225-287
+spec/swagger_helper.rb
+  h_f968154a99632d 1105-1116
+swagger/v1/api_v1.json
+  h_f968154a99632d 10594-10605
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2fa8cc9ce1d4d528caa6538a7c71e746cd60f78b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
