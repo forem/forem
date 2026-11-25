@@ -8403,6 +8403,372 @@ fn serialize_sitemap_urlset_xml(
     Ok(xml.map(|s| ruby.str_new(&s)))
 }
 
+fn collect_rstrings(val: Value) -> Option<Vec<RString>> {
+    let arr = RArray::from_value(val)?;
+    let vals: Vec<Value> = unsafe { arr.as_slice() }.to_vec();
+    let mut out = Vec::with_capacity(vals.len());
+    for v in vals {
+        let s = RString::from_value(v)?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        out.push(s);
+    }
+    Some(out)
+}
+
+unsafe fn borrow_rstring_slices(strs: &[RString]) -> Option<Vec<&str>> {
+    let mut out = Vec::with_capacity(strs.len());
+    for s in strs {
+        let slice = std::str::from_utf8(s.as_slice()).ok()?;
+        out.push(slice);
+    }
+    Some(out)
+}
+
+fn collect_follows_map(ruby: &Ruby, val: Value) -> Option<std::collections::HashMap<String, i64>> {
+    let mut out = std::collections::HashMap::new();
+    if val.is_nil() {
+        return Some(out);
+    }
+    let hash = RHash::from_value(val)?;
+    let pairs = collect_hash_pairs(ruby, hash)?;
+    let slice = pairs.as_slice();
+    out.reserve(slice.len());
+    for &(k, v) in slice {
+        let ks = RString::from_value(k)?;
+        if !ks.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let key_str = std::str::from_utf8(unsafe { ks.as_slice() })
+            .ok()?
+            .to_owned();
+        let count = Integer::from_value(v)?.to_i64().ok()?;
+        out.insert(key_str, count);
+    }
+    Some(out)
+}
+
+fn extract_opt_utf8_string(val: Value) -> Option<Option<String>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let s = RString::from_value(val)?;
+    if !s.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let st = std::str::from_utf8(unsafe { s.as_slice() })
+        .ok()?
+        .to_owned();
+    Some(Some(st))
+}
+
+fn analytics_aggregate_totals(
+    ruby: &Ruby,
+    pv_val: Value,
+    rx_val: Value,
+    cm_val: Value,
+    start_val: Value,
+    end_val: Value,
+) -> Option<RArray> {
+    let pv_rstrs = collect_rstrings(pv_val)?;
+    let rx_rstrs = collect_rstrings(rx_val)?;
+    let cm_rstrs = collect_rstrings(cm_val)?;
+    let start_iso = extract_opt_utf8_string(start_val)?;
+    let end_iso = extract_opt_utf8_string(end_val)?;
+
+    let res = {
+        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
+        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
+        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        forem_core::analytics::analytics_aggregate_totals(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            start_iso.as_deref(),
+            end_iso.as_deref(),
+        )?
+    };
+
+    let arr = ruby.ary_new_capa(12);
+    arr.push(res.comments_total).ok()?;
+    arr.push(res.reactions.total).ok()?;
+    arr.push(res.reactions.like).ok()?;
+    arr.push(res.reactions.readinglist).ok()?;
+    arr.push(res.reactions.unicorn).ok()?;
+    arr.push(res.reactions.exploding_head).ok()?;
+    arr.push(res.reactions.raised_hands).ok()?;
+    arr.push(res.reactions.fire).ok()?;
+    arr.push(res.reactions.unique_reactors).ok()?;
+    arr.push(res.page_views.total).ok()?;
+    arr.push(res.page_views.average_read_time_in_seconds).ok()?;
+    arr.push(res.page_views.total_read_time_in_seconds).ok()?;
+    Some(arr)
+}
+
+fn analytics_aggregate_referrers(
+    ruby: &Ruby,
+    ref_val: Value,
+    start_val: Value,
+    end_val: Value,
+    top_val: Value,
+) -> Option<RArray> {
+    let ref_rstrs = collect_rstrings(ref_val)?;
+    let start_iso = extract_opt_utf8_string(start_val)?;
+    let end_iso = extract_opt_utf8_string(end_val)?;
+    let top_i64 = Integer::from_value(top_val)?.to_i64().ok()?;
+    if top_i64 < 0 {
+        return None;
+    }
+    let top = usize::try_from(top_i64).ok()?;
+
+    let ranked = {
+        let ref_slices = unsafe { borrow_rstring_slices(&ref_rstrs) }?;
+        forem_core::analytics::analytics_aggregate_referrers(
+            &ref_slices,
+            start_iso.as_deref(),
+            end_iso.as_deref(),
+            top,
+        )?
+    };
+
+    let out = ruby.ary_new_capa(ranked.len());
+    for (domain, count) in ranked {
+        let pair = ruby.ary_new_capa(2);
+        pair.push(ruby.str_new(&domain)).ok()?;
+        pair.push(count).ok()?;
+        out.push(pair).ok()?;
+    }
+    Some(out)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn analytics_aggregate_grouped_by_day(
+    ruby: &Ruby,
+    pv_val: Value,
+    rx_val: Value,
+    cm_val: Value,
+    follows_val: Value,
+    start_val: Value,
+    end_val: Value,
+    weekly_bucketing: bool,
+    weekly_start_val: Value,
+    cutoff_val: Value,
+) -> Option<RHash> {
+    let pv_rstrs = collect_rstrings(pv_val)?;
+    let rx_rstrs = collect_rstrings(rx_val)?;
+    let cm_rstrs = collect_rstrings(cm_val)?;
+    let follows_owned = collect_follows_map(ruby, follows_val)?;
+    let start_iso = extract_opt_utf8_string(start_val)??;
+    let end_iso = extract_opt_utf8_string(end_val)??;
+    let weekly_start_iso = extract_opt_utf8_string(weekly_start_val)?;
+    let cutoff_iso = extract_opt_utf8_string(cutoff_val)?;
+
+    let buckets = {
+        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
+        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
+        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
+            .iter()
+            .map(|(k, &v)| (k.as_str(), v))
+            .collect();
+        forem_core::analytics::analytics_aggregate_grouped_by_day(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            &follows_ref,
+            &start_iso,
+            &end_iso,
+            weekly_bucketing,
+            weekly_start_iso.as_deref(),
+            cutoff_iso.as_deref(),
+        )?
+    };
+
+    let sym_comments = ruby.to_symbol("comments");
+    let sym_follows = ruby.to_symbol("follows");
+    let sym_reactions = ruby.to_symbol("reactions");
+    let sym_page_views = ruby.to_symbol("page_views");
+    let sym_total = ruby.to_symbol("total");
+    let sym_like = ruby.to_symbol("like");
+    let sym_readinglist = ruby.to_symbol("readinglist");
+    let sym_unicorn = ruby.to_symbol("unicorn");
+    let sym_exploding_head = ruby.to_symbol("exploding_head");
+    let sym_raised_hands = ruby.to_symbol("raised_hands");
+    let sym_fire = ruby.to_symbol("fire");
+    let sym_unique_reactors = ruby.to_symbol("unique_reactors");
+    let sym_avg_read = ruby.to_symbol("average_read_time_in_seconds");
+    let sym_total_read = ruby.to_symbol("total_read_time_in_seconds");
+
+    let out = ruby.hash_new_capa(buckets.len());
+    for b in buckets {
+        let cm_hash = ruby.hash_new_capa(1);
+        cm_hash.aset(sym_total, b.comments_total).ok()?;
+
+        let fl_hash = ruby.hash_new_capa(1);
+        fl_hash.aset(sym_total, b.follows_total).ok()?;
+
+        let rx_hash = ruby.hash_new_capa(8);
+        rx_hash.aset(sym_total, b.reactions.total).ok()?;
+        rx_hash.aset(sym_like, b.reactions.like).ok()?;
+        rx_hash
+            .aset(sym_readinglist, b.reactions.readinglist)
+            .ok()?;
+        rx_hash.aset(sym_unicorn, b.reactions.unicorn).ok()?;
+        rx_hash
+            .aset(sym_exploding_head, b.reactions.exploding_head)
+            .ok()?;
+        rx_hash
+            .aset(sym_raised_hands, b.reactions.raised_hands)
+            .ok()?;
+        rx_hash.aset(sym_fire, b.reactions.fire).ok()?;
+        rx_hash
+            .aset(sym_unique_reactors, b.reactions.unique_reactors)
+            .ok()?;
+
+        let pv_hash = ruby.hash_new_capa(3);
+        pv_hash.aset(sym_total, b.page_views.total).ok()?;
+        pv_hash
+            .aset(sym_avg_read, b.page_views.average_read_time_in_seconds)
+            .ok()?;
+        pv_hash
+            .aset(sym_total_read, b.page_views.total_read_time_in_seconds)
+            .ok()?;
+
+        let day_hash = ruby.hash_new_capa(4);
+        day_hash.aset(sym_comments, cm_hash).ok()?;
+        day_hash.aset(sym_follows, fl_hash).ok()?;
+        day_hash.aset(sym_reactions, rx_hash).ok()?;
+        day_hash.aset(sym_page_views, pv_hash).ok()?;
+
+        out.aset(ruby.str_new(&b.iso), day_hash).ok()?;
+    }
+    Some(out)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn analytics_grouped_by_day_json(
+    ruby: &Ruby,
+    pv_val: Value,
+    rx_val: Value,
+    cm_val: Value,
+    follows_val: Value,
+    start_val: Value,
+    end_val: Value,
+    weekly_bucketing: bool,
+    weekly_start_val: Value,
+    cutoff_val: Value,
+) -> Option<RString> {
+    let pv_rstrs = collect_rstrings(pv_val)?;
+    let rx_rstrs = collect_rstrings(rx_val)?;
+    let cm_rstrs = collect_rstrings(cm_val)?;
+    let follows_owned = collect_follows_map(ruby, follows_val)?;
+    let start_iso = extract_opt_utf8_string(start_val)??;
+    let end_iso = extract_opt_utf8_string(end_val)??;
+    let weekly_start_iso = extract_opt_utf8_string(weekly_start_val)?;
+    let cutoff_iso = extract_opt_utf8_string(cutoff_val)?;
+
+    let json = {
+        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
+        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
+        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
+            .iter()
+            .map(|(k, &v)| (k.as_str(), v))
+            .collect();
+        forem_core::analytics::analytics_grouped_by_day_json(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            &follows_ref,
+            &start_iso,
+            &end_iso,
+            weekly_bucketing,
+            weekly_start_iso.as_deref(),
+            cutoff_iso.as_deref(),
+        )?
+    };
+
+    Some(ruby.str_new(&json))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn analytics_dashboard_json(
+    ruby: &Ruby,
+    activity_columns_val: Value,
+    follows_val: Value,
+    follows_total_val: Value,
+    window_val: Value,
+    top_referrers_val: Value,
+    top_contributors_json_val: Value,
+    follower_engagement_json_val: Value,
+    start_date_floor_iso_val: Value,
+) -> Option<RString> {
+    let cols_arr = RArray::from_value(activity_columns_val)?;
+    let cols: Vec<Value> = unsafe { cols_arr.as_slice() }.to_vec();
+    if cols.len() != 4 {
+        return None;
+    }
+    let pv_rstrs = collect_rstrings(cols[0])?;
+    let rx_rstrs = collect_rstrings(cols[1])?;
+    let cm_rstrs = collect_rstrings(cols[2])?;
+    let ref_rstrs = collect_rstrings(cols[3])?;
+
+    let follows_owned = collect_follows_map(ruby, follows_val)?;
+    let follows_total = Integer::from_value(follows_total_val)?.to_i64().ok()?;
+
+    let win_arr = RArray::from_value(window_val)?;
+    let win: Vec<Value> = unsafe { win_arr.as_slice() }.to_vec();
+    if win.len() != 5 {
+        return None;
+    }
+    let start_iso = extract_opt_utf8_string(win[0])??;
+    let end_iso = extract_opt_utf8_string(win[1])??;
+    let weekly_bucketing = win[2].to_bool();
+    let weekly_start_iso = extract_opt_utf8_string(win[3])?;
+    let cutoff_iso = extract_opt_utf8_string(win[4])?;
+
+    let top_i64 = Integer::from_value(top_referrers_val)?.to_i64().ok()?;
+    if top_i64 < 0 {
+        return None;
+    }
+    let top_referrers = usize::try_from(top_i64).ok()?;
+
+    let top_contributors_json = extract_opt_utf8_string(top_contributors_json_val)??;
+    let follower_engagement_json = extract_opt_utf8_string(follower_engagement_json_val)??;
+    let start_date_floor_iso = extract_opt_utf8_string(start_date_floor_iso_val)??;
+
+    let json = {
+        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
+        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
+        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        let ref_slices = unsafe { borrow_rstring_slices(&ref_rstrs) }?;
+        let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
+            .iter()
+            .map(|(k, &v)| (k.as_str(), v))
+            .collect();
+        forem_core::analytics::analytics_dashboard_json(
+            &pv_slices,
+            &rx_slices,
+            &cm_slices,
+            &ref_slices,
+            &follows_ref,
+            follows_total,
+            &start_iso,
+            &end_iso,
+            weekly_bucketing,
+            weekly_start_iso.as_deref(),
+            cutoff_iso.as_deref(),
+            top_referrers,
+            &top_contributors_json,
+            &follower_engagement_json,
+            &start_date_floor_iso,
+        )?
+    };
+
+    Some(ruby.str_new(&json))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -9088,6 +9454,26 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_sitemap_urlset_xml",
         function!(serialize_sitemap_urlset_xml, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_aggregate_totals",
+        function!(analytics_aggregate_totals, 5),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_aggregate_referrers",
+        function!(analytics_aggregate_referrers, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_aggregate_grouped_by_day",
+        function!(analytics_aggregate_grouped_by_day, 9),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_grouped_by_day_json",
+        function!(analytics_grouped_by_day_json, 9),
+    )?;
+    native_mod.define_singleton_method(
+        "analytics_dashboard_json",
+        function!(analytics_dashboard_json, 8),
     )?;
     Ok(())
 }
