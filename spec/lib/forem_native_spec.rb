@@ -12494,11 +12494,7 @@ RSpec.describe ForemNative do
         h["subforem_logo"] = item[:subforem_logo]
         h["context_note"] = item[:context_note]
 
-        prev = ActiveSupport::JSON::Encoding.escape_html_entities_in_json
-        ActiveSupport::JSON::Encoding.escape_html_entities_in_json = escape_html
-        ActiveSupport::JSON.encode(h)
-      ensure
-        ActiveSupport::JSON::Encoding.escape_html_entities_in_json = prev
+        ActiveSupport::JSON.encode(h, escape_html_entities: escape_html)
       end
     end
 

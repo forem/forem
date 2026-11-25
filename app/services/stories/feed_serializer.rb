@@ -26,11 +26,12 @@ module Stories
         !Images::Optimizer.cloudinary_enabled?
     end
 
-    def self.cache_key_for(record)
+    def self.cache_key_for(record, escape_html: ActiveSupport::JSON::Encoding.escape_html_entities_in_json)
       cache_generation = ENV["RAILS_CACHE_ID"].presence || ENV["RAILS_APP_VERSION"].presence
       prefix = cache_generation ? "#{CACHE_KEY_PREFIX}/#{cache_generation}" : CACHE_KEY_PREFIX
       [
         prefix,
+        escape_html ? "esc1" : "esc0",
         record.id,
         record.updated_at,
         record.edited_at,
@@ -91,6 +92,7 @@ module Stories
       @cache_writes_enabled = cache_writes_enabled
       @cached_subforem_logo = cached_subforem_logo
       @cached_subforem_logos = cached_subforem_logos
+      @escape_html_entities = ActiveSupport::JSON::Encoding.escape_html_entities_in_json ? true : false
     end
 
     def call
@@ -125,7 +127,9 @@ module Stories
         next if cached_fragment
 
         uncached_articles << article
-        uncached_cache_keys << (cache_key || self.class.cache_key_for(article)) if @cache_writes_enabled
+        if @cache_writes_enabled
+          uncached_cache_keys << (cache_key || self.class.cache_key_for(article, escape_html: @escape_html_entities))
+        end
       end
 
       uncached_data = build_uncached_payloads(uncached_articles)
@@ -217,7 +221,7 @@ module Stories
 
     def extract_utc_edited_at(edited_at)
       return [nil, nil] unless edited_at
-      return [nil, nil] unless edited_at.utc_offset.zero?
+      return [nil, nil] unless edited_at.utc?
 
       [edited_at.to_i, edited_at.usec / 1000]
     end
@@ -340,7 +344,7 @@ module Stories
         cf_enabled ? 1 : 0,
         cf_enabled ? ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"] : nil,
         Images::Optimizer::CLOUDFLARE_DIRECTORY,
-        ActiveSupport::JSON::Encoding.escape_html_entities_in_json,
+        @escape_html_entities,
         I18n.t("models.article.ai_disclosure.some_ai"),
         I18n.t("models.article.ai_disclosure.fully_autonomous"),
         I18n.t("models.article.ai_disclosure.no_ai"),

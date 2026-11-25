@@ -1035,7 +1035,10 @@ RSpec.describe "Stories::Feeds" do
         ActionController::Base.perform_caching = original_perform_caching
       end
 
-      before { allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new) }
+      before do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+        allow(Images::Optimizer).to receive_messages(imgproxy_enabled?: false, cloudinary_enabled?: false)
+      end
 
       it "returns a fresh card after the article is favorited" do
         get stories_feed_path
