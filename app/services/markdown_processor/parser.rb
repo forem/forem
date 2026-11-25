@@ -9,6 +9,13 @@ module MarkdownProcessor
 
     CODE_BLOCKS_REGEX = /(~{3}|`{3}|`{2}|`)[\s\S]*?\1/
 
+    # Fenced blocks, then inline code spans. A span stops at a blank line, as in CommonMark.
+    ESCAPE_LIQUID_CODE_REGEX = /
+      ([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2
+      |`{2}(?:(?!\n[ \t\r]*\n).)+?`{2}
+      |`{1}(?:(?!\n[ \t\r]*\n).)+?`{1}
+    /mx
+
     WORDS_READ_PER_MINUTE = 275.0
 
     # Redcarpet drops list item text beyond this indentation depth
@@ -274,7 +281,9 @@ module MarkdownProcessor
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
     # invalid byte sequences).
     def legacy_escape_liquid_tags_in_codeblock(content)
-      content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      # Like CommonMark, an inline code span cannot cross a blank line, so a stray backtick
+      # does not pair up with one in a later paragraph or fenced block.
+      content.gsub(ESCAPE_LIQUID_CODE_REGEX) do |codeblock|
         codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
         codeblock.gsub!("{% raw %}", "{----% raw %----}")
         if codeblock.match?(/[[:space:]]*`{3,}/)

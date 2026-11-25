@@ -881,7 +881,9 @@ RSpec.describe ForemNative do
   describe ".escape_liquid_tags_in_codeblock" do
     let(:legacy_escape_liquid_tags_in_codeblock) do
       lambda do |content|
-        content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+        blank_line_free = /(?:(?!\n[ \t\r]*\n).)/m
+        regex = /([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}#{blank_line_free}+?`{2}|`{1}#{blank_line_free}+?`{1}/m
+        content.gsub(regex) do |codeblock|
           codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
           codeblock.gsub!("{% raw %}", "{----% raw %----}")
           if codeblock.match?(/[[:space:]]*`{3,}/)
@@ -902,7 +904,9 @@ RSpec.describe ForemNative do
         "a\n```js\n{{ x }}\n```\nb", "```\r\ncode\r\n```\r\n", " 　 ```x```", "​```x```",
         "᠎```x```", "﻿`x`", "`é` and `日本` 🚀", "`\n`", "{% raw %}`{% raw %}x{% endraw %}`",
         "```\n{% raw %}some text{% endraw %}\n```", "``{% raw %}some text{% endraw %}``", "`{% endraw %}`",
-        "`{% raw {% raw %}%}`", "~~~\n{% endraw %}{% raw %}\n~~~", "#{' ' * 500}```x", "~~~~#{" 　~~ x\t" * 50}"
+        "`{% raw {% raw %}%}`", "~~~\n{% endraw %}{% raw %}\n~~~", "#{' ' * 500}```x", "~~~~#{" 　~~ x\t" * 50}",
+        "a ` b\n\n```go\nx\n```\n", "a ` b\n \t\n`c`", "a ``b\r\n\r\nc`` d", "a `b\nc` d", "``a`\n\nb`",
+        "`a\n b`", "a `\n\n`", "`\n\n\n`"
       ]
     end
 
@@ -946,7 +950,7 @@ RSpec.describe ForemNative do
       rng = Random.new(424_242)
       tokens = ["`", "``", "```", "````", "`````", "~", "~~", "~~~", "~~~~", " ", "  ", "\t", "\n", "\r\n", " ",
                 "　", " ", "​", "\u0085", "word", "x", "é", "🚀", "日本", "{% raw %}", "{% endraw %}",
-                "{%", "%}", "{{ x }}", "{% tag %}", "```ruby\n", "~~~js\n", "\\", "|", "#"]
+                "{%", "%}", "{{ x }}", "{% tag %}", "```ruby\n", "~~~js\n", "\\", "|", "#", "\n\n", "\n \n"]
 
       1_000.times do |iteration|
         sample = Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join

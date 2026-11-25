@@ -167,7 +167,7 @@ fn find_byte(bytes: &[u8], from: usize, needle: u8) -> Option<usize> {
 /// Equivalent of `MarkdownProcessor::Parser#escape_liquid_tags_in_codeblock`:
 ///
 /// ```ruby
-/// content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+/// content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}#{SPAN}+?`{2}|`{1}#{SPAN}+?`{1}/m) do |codeblock|
 ///   codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
 ///   codeblock.gsub!("{% raw %}", "{----% raw %----}")
 ///   if codeblock.match?(/[[:space:]]*`{3,}/)
@@ -177,6 +177,9 @@ fn find_byte(bytes: &[u8], from: usize, needle: u8) -> Option<usize> {
 ///   end
 /// end
 /// ```
+///
+/// where `SPAN` is `(?:(?!\n[ \t\r]*\n).)`: like CommonMark, an inline code span stops at a
+/// blank line, so a stray backtick cannot swallow the paragraphs (and fences) after it.
 ///
 /// Onigmo's `[[:space:]]` on UTF-8 strings is the Unicode `White_Space` property, the same set
 /// as `char::is_whitespace`. Every other delimiter is an ASCII byte, so slicing never splits a
@@ -279,6 +282,8 @@ struct CodeScanner<'a> {
     bytes: &'a [u8],
     // `absent_from[fence][k - 1]`: no run of `k` fence bytes starts at or after this offset.
     absent_from: [[usize; MEMO_RUN_CAP]; 2],
+    // `(from, found)`: the first blank line at or after `from` starts at `found`.
+    blank_line: Option<(usize, usize)>,
 }
 
 impl<'a> CodeScanner<'a> {
@@ -286,6 +291,7 @@ impl<'a> CodeScanner<'a> {
         Self {
             bytes,
             absent_from: [[usize::MAX; MEMO_RUN_CAP]; 2],
+            blank_line: None,
         }
     }
 
@@ -301,24 +307,51 @@ impl<'a> CodeScanner<'a> {
             .take_while(|&&b| b == fence)
             .count();
         (3..=run).rev().find_map(|len| {
-            self.find_run(fence, len, start + len)
+            self.find_run(fence, len, start + len, usize::MAX)
                 .map(|close| close + len)
         })
     }
 
-    /// `` `{2}.+?`{2}|`{1}.+?`{1} `` at `start` (a backtick). `.+?` must consume at least
-    /// one character, and a backtick is never part of a multi-byte one.
+    /// `` `{2}SPAN+?`{2}|`{1}SPAN+?`{1} `` at `start` (a backtick), where `SPAN` is any
+    /// character except one that starts a blank line. `SPAN+?` must consume at least one
+    /// character, and a backtick is never part of a multi-byte one.
     fn inline_code_end(&mut self, start: usize) -> Option<usize> {
+        let limit = self.blank_line_start(start + 1);
         if self.bytes.get(start + 1) == Some(&b'`') {
-            if let Some(close) = self.find_run(b'`', 2, start + 3) {
+            if let Some(close) = self.find_run(b'`', 2, start + 3, limit) {
                 return Some(close + 2);
             }
         }
-        self.find_run(b'`', 1, start + 2).map(|close| close + 1)
+        self.find_run(b'`', 1, start + 2, limit)
+            .map(|close| close + 1)
     }
 
-    /// Offset of the first run of `len` consecutive `fence` bytes starting at or after `from`.
-    fn find_run(&mut self, fence: u8, len: usize, from: usize) -> Option<usize> {
+    /// Offset of the first `\n[ \t\r]*\n` at or after `from`, or the end of the input.
+    ///
+    /// Every query comes from a later position than the one before it, so the last answer
+    /// is reused while it is still ahead; a document without blank lines is scanned once.
+    fn blank_line_start(&mut self, from: usize) -> usize {
+        if let Some((cached_from, found)) = self.blank_line {
+            if from >= cached_from && from <= found {
+                return found;
+            }
+        }
+        let found = (from..self.bytes.len())
+            .find(|&i| {
+                self.bytes[i] == b'\n'
+                    && self.bytes[i + 1..]
+                        .iter()
+                        .find(|&&b| !matches!(b, b' ' | b'\t' | b'\r'))
+                        == Some(&b'\n')
+            })
+            .unwrap_or(self.bytes.len());
+        self.blank_line = Some((from, found));
+        found
+    }
+
+    /// Offset of the first run of `len` consecutive `fence` bytes that starts at or after
+    /// `from` and lies entirely before `limit`.
+    fn find_run(&mut self, fence: u8, len: usize, from: usize, limit: usize) -> Option<usize> {
         let memo = &mut self.absent_from[usize::from(fence == b'~')];
         if memo[..len.min(MEMO_RUN_CAP)]
             .iter()
@@ -328,7 +361,13 @@ impl<'a> CodeScanner<'a> {
         }
 
         let mut count = 0;
-        for (i, &b) in self.bytes.iter().enumerate().skip(from) {
+        for (i, &b) in self
+            .bytes
+            .iter()
+            .enumerate()
+            .skip(from)
+            .take(limit.saturating_sub(from))
+        {
             if b == fence {
                 count += 1;
                 if count == len {
@@ -339,7 +378,8 @@ impl<'a> CodeScanner<'a> {
             }
         }
 
-        if len <= MEMO_RUN_CAP {
+        // Only a search that ran to the end of the input proves the run is absent for good.
+        if len <= MEMO_RUN_CAP && limit >= self.bytes.len() {
             memo[len - 1] = memo[len - 1].min(from);
         }
         None
@@ -1680,6 +1720,25 @@ mod tests {
             escape("\u{200b}```x```"),
             "\u{200b}\n{% raw %}\n```x```\n{% endraw %}\n"
         );
+    }
+
+    #[test]
+    fn inline_code_stops_at_a_blank_line() {
+        // A stray backtick must not pair with a backtick in a later paragraph or fence.
+        assert_eq!(
+            escape("a ` b\n\n```go\nx\n```\n"),
+            "a ` b\n{% raw %}\n\n\n```go\nx\n```\n{% endraw %}\n\n"
+        );
+        assert_eq!(escape("a ` b\n\nc ` d"), "a ` b\n\nc ` d");
+        assert_eq!(escape("a `` b\n \t\r\nc `` d"), "a `` b\n \t\r\nc `` d");
+        assert_eq!(escape("a `` b\r\n\r\nc `` d"), "a `` b\r\n\r\nc `` d");
+        // A span can still wrap lines as long as none of them is blank.
+        assert_eq!(escape("a `b\nc` d"), "a {% raw %}`b\nc`{% endraw %} d");
+        assert_eq!(escape("a ``b\nc`` d"), "a {% raw %}``b\nc``{% endraw %} d");
+        // A closing backtick before the blank line is still found after a failed double.
+        assert_eq!(escape("``a`\n\nb`"), "{% raw %}``a`{% endraw %}\n\nb`");
+        // The blank line must be a whole line: text after the newline keeps the span going.
+        assert_eq!(escape("`a\n b`"), "{% raw %}`a\n b`{% endraw %}");
     }
 
     #[test]
