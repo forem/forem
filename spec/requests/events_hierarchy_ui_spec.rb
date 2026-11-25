@@ -106,6 +106,22 @@ RSpec.describe "Event Hierarchy Public UI and Livestream Experience" do
       expect(response).to have_http_status(:success)
       expect(response.body.index("event-top-nav")).to be < response.body.index("event-show-layout")
     end
+
+    it "renders community and event articles inside the main column alongside the sticky sidebar" do
+      conference.update!(tag_list: "aieconf", allow_articles: true)
+      author = create(:user)
+      create(:article, user: author, title: "Tagged Community Post", tags: "aieconf", published: true)
+      create(:article, user: author, title: "Official Event Post", event: conference, published: true)
+
+      get event_path(conference.event_name_slug, conference.event_variation_slug)
+      expect(response).to have_http_status(:success)
+
+      doc = Nokogiri::HTML(response.body)
+      main_col = doc.at_css(".event-detail-columns__main")
+      expect(main_col).to be_present
+      expect(main_col.text).to include("Official Event Post", "Tagged Community Post")
+      expect(doc.at_css(".event-detail-columns__aside")).to be_present
+    end
   end
 
   describe "draft conference preview for admins" do
