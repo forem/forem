@@ -365,7 +365,13 @@ RSpec.describe "UserSettings" do
 
         expect(user.reload.unconfirmed_email).to eq(new_email)
         expect(flash[:settings_notice]).to be_present
-        expect(api_client).to have_received(:send_email).once
+        expect(api_client).to have_received(:send_email).once.with(
+          satisfy do |request|
+            request.message[:to] == new_email &&
+              request.message[:identifiers] == { email: new_email } &&
+              request.message[:disable_message_retention] == true
+          end,
+        )
       end
     end
 

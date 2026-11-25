@@ -168,7 +168,8 @@ module Deliverable
   # no identity is about to land, so holding would only end in a silent drop and
   # the link would never arrive. Send it now, keyed by the address it goes to.
   # That can leave an email-keyed person in Customer.io, but it only carries
-  # this one transactional send, which beats dropping the link.
+  # this one transactional send, which beats dropping the link. A user who has
+  # not confirmed yet is still held: for them the signup race is real.
   def email_change_reconfirmation?
     return false unless action_name == "confirmation_instructions"
 
@@ -187,8 +188,10 @@ module Deliverable
   # within 2m), but signup-time mail (confirmation, magic link) goes out first.
   # Keying that send by email would mint a Customer.io person Core's id-keyed
   # person never merges with, so skip it and re-run the same mailer call once
-  # the link has had time to land. Users who never link are ones Core rejected
-  # (disposable domains, no email); after ~1h they are dropped, not mailed.
+  # the link has had time to land. Users who never link are mostly ones Core
+  # rejected (disposable domains, no email), though older accounts can also lack
+  # an identity; after ~1h they are dropped, not mailed. The one exception is
+  # the email-change reconfirmation below.
   def hold_until_linked
     message.perform_deliveries = false
     attempt = params.to_h.fetch(:customerio_link_hold, 0) + 1

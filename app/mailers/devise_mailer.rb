@@ -59,6 +59,8 @@ class DeviseMailer < Devise::Mailer
 
     customerio_delivery_options(
       transactional_message_id: "dev_confirmation_instructions",
+      # The body carries a live confirmation link, so keep it out of delivery history.
+      disable_message_retention: true,
       message_data: {
         "confirmation_url" => user_confirmation_url(confirmation_token: token, host: @subforem_domain),
         "name" => @name,
