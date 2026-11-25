@@ -104,6 +104,7 @@ namespace :forem_native do
     benchmark_sitemap_xml
     benchmark_analytics_activity
     benchmark_stories_feed
+    benchmark_processed_html_final
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -3356,6 +3357,49 @@ namespace :forem_native do
         x.config(time: 2, warmup: 1)
         x.report("Ruby (#{label})") { legacy_fn.call }
         x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark ProcessedHtmlFinalizable Cloudflare domain rewrite (ForemNative.gsub_literal vs String#gsub)"
+  task benchmark_processed_html_final: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    prior = "media2.dev.to"
+    current = "media.dev.to"
+    paragraph = "<p>Writing fast Ruby extensions in Rust keeps tail latency predictable across articles.</p>\n"
+    article_no_match = paragraph * 180
+    article_with_matches = (
+      (paragraph * 20) +
+      "<p><img src=\"https://#{prior}/dynamic/image/width=800/a.png\" loading=\"lazy\"></p>\n"
+    ) * 8
+    comment_with_match = "<p>Nice post! <img src=\"https://#{prior}/c.png\"></p>" + (paragraph * 10)
+
+    [
+      ["17 KB article (no match)", article_no_match],
+      ["17 KB article (8 matches)", article_with_matches],
+      ["1 KB comment (1 match)", comment_with_match],
+    ].each do |label, html|
+      legacy_fn = -> { html.gsub(prior, current) }
+      native_fn = -> { ForemNative.gsub_literal(html, prior, current) }
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { 100.times { legacy_fn.call } }
+      rust_mem = MemoryProfiler.report { 100.times { native_fn.call } }
+      puts "\n=== #{label} (100 calls) ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby String#gsub (#{label})") { legacy_fn.call }
+        x.report("Rust ForemNative.gsub_literal (#{label})") { native_fn.call }
         x.compare!
       end
     end
