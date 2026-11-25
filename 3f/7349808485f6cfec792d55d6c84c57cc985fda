@@ -1,0 +1,24 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 59,91,101,155,368-374
+app/models/article_activity.rb
+  h_f968154a99632d 192-196
+config/initializers/honeycomb.rb
+  h_f968154a99632d 42-47
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 13
+lib/tasks/forem_native.rake
+  h_f968154a99632d 110,3628-3707
+spec/models/article_activity_spec.rb
+  h_f968154a99632d 207-214,216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3f7349808485f6cfec792d55d6c84c57cc985fda",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
