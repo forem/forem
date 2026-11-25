@@ -34,8 +34,30 @@ module Notifications
         pending_ids = recipient_ids - already_notified
         return if pending_ids.empty?
 
+        existing_ids = User.where(id: pending_ids).ids
+        return if existing_ids.empty?
+
         now = Time.current
-        attributes = User.where(id: pending_ids).ids.map do |user_id|
+        bulk_sql = Notifications.article_bulk_upsert_sql(
+          user_ids: existing_ids,
+          article: article,
+          action: ACTION,
+          now: now,
+        )
+
+        if bulk_sql
+          Notification.connection.execute(bulk_sql)
+        else
+          legacy_upsert_notifications(existing_ids, now)
+        end
+      end
+
+      private
+
+      attr_reader :article
+
+      def legacy_upsert_notifications(user_ids, now)
+        attributes = user_ids.map do |user_id|
           {
             user_id: user_id,
             notifiable_id: article.id,
@@ -48,7 +70,6 @@ module Notifications
             updated_at: now
           }
         end
-        return if attributes.empty?
 
         # upsert rather than insert: a unique index covers
         # (user_id, notifiable_id, notifiable_type, action), and two publishes
@@ -58,10 +79,6 @@ module Notifications
           unique_by: :index_notifications_on_user_notifiable_and_action_not_null,
         )
       end
-
-      private
-
-      attr_reader :article
 
       # Co-authors who accepted an invitation to an already-published post learned about it from
       # the invitation itself, so a "published" notification on top would be redundant.

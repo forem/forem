@@ -279,4 +279,43 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end.to change(Notification, :count).by(4)
     end
   end
+
+  context "with ForemNative bulk upsert SQL fast path and legacy fallback" do
+    before do
+      user2.follow(user)
+      user3.follow(organization)
+    end
+
+    it "preserves special characters, quotes, and Unicode in json_data via the native unnest bulk upsert" do
+      article.update_columns(title: "O'Reilly's <fast> & \"clean\" 🚀 guide", cached_tag_list: "rust, ruby")
+
+      described_class.call(article.reload, "Published")
+
+      notification = Notification.find_by!(user_id: user2.id, notifiable_id: article.id, action: "Published")
+      expect(notification.json_data["article"]["title"]).to eq("O'Reilly's <fast> & \"clean\" 🚀 guide")
+      expect(notification.json_data["article"]["cached_tag_list_array"]).to eq(%w[rust ruby])
+    end
+
+    it "upserts notifications when action is nil using the action IS NULL partial unique index" do
+      expect do
+        described_class.call(article, nil)
+      end.to change(Notification, :count).by(2)
+
+      expect do
+        described_class.call(article, nil)
+      end.not_to change(Notification, :count)
+    end
+
+    it "falls back transparently to legacy_upsert_notifications when native SQL returns nil" do
+      allow(ForemNative).to receive(:build_article_notification_bulk_upsert_sql).and_return(nil)
+
+      expect do
+        described_class.call(article, "Published")
+      end.to change(Notification, :count).by(2)
+
+      notification = Notification.find_by!(user_id: user2.id, notifiable_id: article.id, action: "Published")
+      expect(notification.json_data["article"]["id"]).to eq(article.id)
+      expect(notification.json_data["user"]["id"]).to eq(user.id)
+    end
+  end
 end

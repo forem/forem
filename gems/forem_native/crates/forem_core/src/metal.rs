@@ -809,7 +809,7 @@ fn push_two_digits(out: &mut String, val: u32) {
 
 /// Quotes an optional SQL string literal (`NULL` or `'...'` with `'` doubled to `''`),
 /// rejecting strings containing NUL (`\0`) bytes so callers can fall back if needed.
-fn push_quoted_nullable_sql_str(out: &mut String, value: Option<&str>) -> Option<()> {
+pub(crate) fn push_quoted_nullable_sql_str(out: &mut String, value: Option<&str>) -> Option<()> {
     let Some(s) = value else {
         out.push_str("NULL");
         return Some(());

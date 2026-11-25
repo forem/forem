@@ -28,14 +28,6 @@ module Notifications
           return
         end
 
-        json_data = {
-          user: user_data(notifiable.user),
-          article: article_data(notifiable)
-        }
-        json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
-
-        notifications_attributes = []
-
         # If a user was mentioned in the article, they will have already received a mention.
         # We explicitly need to exclude them from the article_followers array if they already
         # have a mention in order to avoid sending a user multiple notifications for one article.
@@ -59,31 +51,23 @@ module Notifications
           .reorder(Arel.sql("(users.updated_at + INTERVAL '0 seconds') DESC"))
           .distinct
 
-        article_followers.each do |follower|
-          now = Time.current
-          notifications_attributes.push(
-            user_id: follower.id,
-            notifiable_id: notifiable.id,
-            notifiable_type: notifiable.class.name,
-            subforem_id: notifiable.subforem_id,
-            action: action,
-            json_data: json_data,
-            created_at: now,
-            notified_at: now,
-            updated_at: now,
-          )
-        end
+        follower_ids = User.connection.select_values(article_followers.to_sql)
+        return if follower_ids.empty?
 
-        return if notifications_attributes.blank?
-
-        upsert_index = choose_upsert_index(action)
+        now = Time.current
+        bulk_sql = Notifications.article_bulk_upsert_sql(
+          user_ids: follower_ids,
+          article: notifiable,
+          action: action,
+          now: now,
+        )
 
         ActiveRecord::Base.transaction do
-          Notification.upsert_all(
-            notifications_attributes,
-            unique_by: upsert_index,
-            returning: %i[id],
-          )
+          if bulk_sql
+            Notification.connection.execute(bulk_sql)
+          else
+            legacy_upsert_notifications(follower_ids, now)
+          end
 
           upsert_context_notification
         end
@@ -92,6 +76,34 @@ module Notifications
       private
 
       attr_reader :notifiable, :action
+
+      def legacy_upsert_notifications(follower_ids, now)
+        json_data = {
+          user: user_data(notifiable.user),
+          article: article_data(notifiable)
+        }
+        json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
+
+        notifications_attributes = follower_ids.map do |follower_id|
+          {
+            user_id: follower_id,
+            notifiable_id: notifiable.id,
+            notifiable_type: notifiable.class.name,
+            subforem_id: notifiable.subforem_id,
+            action: action,
+            json_data: json_data,
+            created_at: now,
+            notified_at: now,
+            updated_at: now
+          }
+        end
+
+        Notification.upsert_all(
+          notifications_attributes,
+          unique_by: choose_upsert_index(action),
+          returning: %i[id],
+        )
+      end
 
       # Computes the maximum number of followers to notify for this article.
       # For the 3rd+ non-status article published by the author within 24 hours,

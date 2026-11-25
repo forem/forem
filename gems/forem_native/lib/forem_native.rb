@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_search_usernames_json
+  LATEST_NATIVE_SYMBOL = :build_article_notification_bulk_upsert_sql
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2633,6 +2633,47 @@ module ForemNative
       return unless users_flat.is_a?(Array)
 
       Native.serialize_search_usernames_json(users_flat, escape_html ? true : false)
+    end
+
+    # Streams `{user:...,article:...,organization?:...}` JSON for article notifications.
+    def serialize_article_notification_json(user_fields, article_fields, org_fields = nil)
+      return unless Native.respond_to?(:serialize_article_notification_json)
+      return unless user_fields.is_a?(Array) && article_fields.is_a?(Array)
+      return unless org_fields.nil? || org_fields.is_a?(Array)
+
+      Native.serialize_article_notification_json(user_fields, article_fields, org_fields)
+    end
+
+    # Builds a single-statement PostgreSQL `unnest` bulk upsert SQL query for `notifications`.
+    def build_notification_bulk_upsert_sql(user_ids, notifiable_id, notifiable_type, subforem_id,
+                                           action, json_data, now_sec, now_usec, returning_id: false)
+      return unless Native.respond_to?(:build_notification_bulk_upsert_sql)
+      return unless user_ids.is_a?(Array) && valid_i64_integer?(notifiable_id)
+      return unless utf8_compatible_string?(notifiable_type) && utf8_compatible_string?(json_data)
+      return unless action.nil? || utf8_compatible_string?(action)
+      return unless valid_i64_integer?(now_sec) && valid_i64_integer?(now_usec)
+
+      Native.build_notification_bulk_upsert_sql(
+        user_ids, notifiable_id, notifiable_type, subforem_id, action, json_data,
+        now_sec, now_usec, returning_id ? true : false
+      )
+    end
+
+    # Fused Tier 2 kernel: serializes article notification JSON and builds the bulk upsert SQL in one FFI call.
+    def build_article_notification_bulk_upsert_sql(user_ids, notifiable_type, subforem_id, action,
+                                                   user_fields, article_fields, org_fields,
+                                                   now_sec, now_usec, returning_id: false)
+      return unless Native.respond_to?(:build_article_notification_bulk_upsert_sql)
+      return unless user_ids.is_a?(Array) && utf8_compatible_string?(notifiable_type)
+      return unless action.nil? || utf8_compatible_string?(action)
+      return unless user_fields.is_a?(Array) && article_fields.is_a?(Array)
+      return unless org_fields.nil? || org_fields.is_a?(Array)
+      return unless valid_i64_integer?(now_sec) && valid_i64_integer?(now_usec)
+
+      Native.build_article_notification_bulk_upsert_sql(
+        user_ids, notifiable_type, subforem_id, action, user_fields, article_fields, org_fields,
+        now_sec, now_usec, returning_id ? true : false
+      )
     end
 
     private

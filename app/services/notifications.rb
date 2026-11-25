@@ -59,6 +59,82 @@ module Notifications
     }
   end
 
+  def self.native_article_payload(article)
+    user = article.user
+    return unless user
+
+    user_created_sec, user_created_ms = utc_sec_millis(user.created_at)
+    return if user_created_sec == :defer
+
+    article_updated_sec, article_updated_ms = utc_sec_millis(article.updated_at)
+    return if article_updated_sec == :defer
+
+    article_published_sec, article_published_ms = utc_sec_millis(article.published_at)
+    return if article_published_sec == :defer
+
+    user_fields = [
+      user.id,
+      user.name,
+      user.username,
+      user.path,
+      user.profile_image_90,
+      user.comments_count,
+      user_created_sec,
+      user_created_ms,
+    ]
+
+    article_fields = [
+      article.id,
+      article.cached_tag_list,
+      article.title,
+      article.path,
+      article_updated_sec,
+      article_updated_ms,
+      article_published_sec,
+      article_published_ms,
+      article.readable_publish_date,
+      article.reading_time,
+    ]
+
+    org_fields = if article.organization_id
+                   org = article.organization
+                   return unless org
+
+                   [org.id, org.name, org.slug, org.path, org.profile_image_90]
+                 end
+
+    [user_fields, article_fields, org_fields]
+  end
+
+  def self.article_bulk_upsert_sql(user_ids:, article:, action:, now:, returning_id: false)
+    return if user_ids.empty? || !now.respond_to?(:utc_offset) || !now.utc_offset.zero?
+
+    payload = native_article_payload(article)
+    return unless payload
+
+    user_fields, article_fields, org_fields = payload
+    ForemNative.build_article_notification_bulk_upsert_sql(
+      user_ids,
+      article.class.name,
+      article.subforem_id,
+      action,
+      user_fields,
+      article_fields,
+      org_fields,
+      now.tv_sec,
+      now.usec,
+      returning_id: returning_id,
+    )
+  end
+
+  def self.utc_sec_millis(time)
+    return [nil, nil] if time.nil?
+    return [:defer, nil] unless time.respond_to?(:utc_offset) && time.utc_offset.zero?
+
+    [time.tv_sec, time.nsec / 1_000_000]
+  end
+  private_class_method :utc_sec_millis
+
   def self.ancestor_data(comment)
     comment.ancestors.includes(:user).map do |ancestor|
       {
