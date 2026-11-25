@@ -13207,4 +13207,211 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Notifications bulk upsert SQL & JSON payload kernels" do
+    let(:encode_active_support_json) do
+      lambda do |obj|
+        require "active_support/json"
+        ActiveSupport::JSON.encode(obj, escape_html_entities: true)
+      end
+    end
+
+    let(:legacy_bulk_upsert_sql) do
+      lambda do |user_ids:, notifiable_id:, notifiable_type:, subforem_id:, action:, json_data:, now:, returning_id:|
+        quote_str = ->(s) { "'#{s.gsub("'", "''")}'" }
+        ts = now.utc.strftime("%Y-%m-%d %H:%M:%S")
+        ts = "#{ts}.#{format('%06d', now.utc.usec)}" if now.utc.usec.positive?
+        quoted_ts = "'#{ts}'"
+        deduped_ids = user_ids.uniq
+
+        conflict_clause = if action
+                            'ON CONFLICT ("user_id","notifiable_id","notifiable_type","action") ' \
+                              'WHERE (action IS NOT NULL) DO UPDATE SET ' \
+                              '"subforem_id"=excluded."subforem_id","json_data"=excluded."json_data",' \
+                              '"created_at"=excluded."created_at","notified_at"=excluded."notified_at",' \
+                              '"updated_at"=excluded."updated_at"'
+                          else
+                            'ON CONFLICT ("user_id","notifiable_id","notifiable_type") ' \
+                              'WHERE (action IS NULL) DO UPDATE SET ' \
+                              '"subforem_id"=excluded."subforem_id","action"=excluded."action",' \
+                              '"json_data"=excluded."json_data","created_at"=excluded."created_at",' \
+                              '"notified_at"=excluded."notified_at","updated_at"=excluded."updated_at"'
+                          end
+
+        sql = "INSERT INTO \"notifications\" (\"user_id\",\"notifiable_id\",\"notifiable_type\"," \
+              "\"subforem_id\",\"action\",\"json_data\",\"created_at\",\"notified_at\",\"updated_at\") " \
+              "SELECT u_id, #{notifiable_id}, #{quote_str.call(notifiable_type)}, " \
+              "#{subforem_id.nil? ? 'NULL' : subforem_id}, #{action.nil? ? 'NULL' : quote_str.call(action)}, " \
+              "#{quote_str.call(json_data)}::jsonb, #{quoted_ts}, #{quoted_ts}, #{quoted_ts} " \
+              "FROM unnest(ARRAY[#{deduped_ids.join(',')}]::bigint[]) AS u_id #{conflict_clause}"
+        sql = "#{sql} RETURNING \"id\"" if returning_id
+        sql
+      end
+    end
+
+    it "returns nil for out-of-domain inputs so callers transparently fall back to legacy Ruby", :aggregate_failures do
+      valid_user = [1, "Ada", "ada", "/ada", nil, 0, 1_700_000_000, 0]
+      valid_article = [10, "ruby", "Title", "/ada/title", 1_700_000_000, 0, 1_700_000_000, 0, "Nov 14", 3]
+
+      expect(described_class.build_notification_bulk_upsert_sql(
+               [], 10, "Article", 1, "Published", "{}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_notification_bulk_upsert_sql(
+               [1, 0], 10, "Article", 1, "Published", "{}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_notification_bulk_upsert_sql(
+               [1], 10, "Article", 1, "   ", "{}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_notification_bulk_upsert_sql(
+               [1], 10, "Article", 1, "\u00A0", "{}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_article_notification_bulk_upsert_sql(
+               [1], "Article", 1, "\u3000", valid_user, valid_article, nil, 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_notification_bulk_upsert_sql(
+               [1], 10, "Article", 1, "Published", "{\"a\":\"\0\"}", 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.build_article_notification_bulk_upsert_sql(
+               [], "Article", 1, "Published", valid_user, valid_article, nil, 1_700_000_000, 0
+             )).to be_nil
+      expect(described_class.serialize_article_notification_json(
+               [1, "Ada", "ada", "/ada", nil, 0, 1_700_000_000, 1000], valid_article, nil
+             )).to be_nil
+      expect(described_class.serialize_article_notification_json(
+               valid_user, valid_article, [1, 2]
+             )).to be_nil
+
+      # Ruby `Module#name` returns a US-ASCII string; verify US-ASCII notifiable_type is accepted.
+      ascii_type = "Article".encode(Encoding::US_ASCII)
+      expect(described_class.build_article_notification_bulk_upsert_sql(
+               [1, 2], ascii_type, 1, "Published", valid_user, valid_article, nil, 1_700_000_000, 0
+             )).to include("unnest(ARRAY[1,2]::bigint[])")
+    end
+
+    it "matches ActiveSupport::JSON.encode and legacy bulk upsert SQL across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      text_pool = [
+        nil, "", "Plain Title", "It's <fast> & \"clean\" \\ slash",
+        "Emoji 🚀 & 日本語 café", "Line1\nLine2\tTab", "\u2028\u2029sep",
+        "O'Reilly's Guide to 'PostgreSQL' & JSONB"
+      ]
+      tag_list_pool = [
+        nil, "", "ruby", "ruby, rust, performance", ", ruby, ", "a, b, , c, ",
+        "tag<1>, tag&2, \"quoted\""
+      ]
+      action_pool = [nil, "Published", "CoAuthor", "Custom'Action"]
+
+      rand_utc_time = -> { Time.at(rng.rand(1_500_000_000..1_800_000_000), rng.rand(0..999_999), :usec).utc }
+
+      1_000.times do |iter|
+        user_created = rng.rand < 0.85 ? rand_utc_time.call : nil
+        art_updated = rng.rand < 0.9 ? rand_utc_time.call : nil
+        art_published = rng.rand < 0.85 ? rand_utc_time.call : nil
+        now = Time.at(rng.rand(1_600_000_000..1_800_000_000), rng.rand < 0.2 ? 0 : rng.rand(1..999_999), :usec).utc
+
+        user_id = rng.rand(1..100_000)
+        user_name = text_pool.sample(random: rng)
+        user_username = "user_#{rng.rand(1..9999)}"
+        user_path = "/#{user_username}"
+        user_img = rng.rand < 0.8 ? "https://cdn.example.com/#{user_username}.png" : nil
+        user_comments_count = rng.rand(0..500)
+
+        art_id = rng.rand(1..1_000_000)
+        art_tag_list = tag_list_pool.sample(random: rng)
+        art_title = text_pool.sample(random: rng)
+        art_path = "/#{user_username}/slug-#{iter}"
+        art_rpd = rng.rand < 0.9 ? "Nov 14" : ""
+        art_rt = rng.rand(0..45)
+
+        has_org = rng.rand < 0.5
+        org_fields = if has_org
+                       [
+                         rng.rand(1..50_000),
+                         text_pool.sample(random: rng),
+                         "org-#{iter}",
+                         "/org-#{iter}",
+                         rng.rand < 0.7 ? "https://cdn.example.com/org-#{iter}.png" : nil,
+                       ]
+                     end
+
+        user_fields = [
+          user_id, user_name, user_username, user_path, user_img, user_comments_count,
+          user_created&.tv_sec, user_created ? (user_created.nsec / 1_000_000) : nil
+        ]
+        article_fields = [
+          art_id, art_tag_list, art_title, art_path,
+          art_updated&.tv_sec, art_updated ? (art_updated.nsec / 1_000_000) : nil,
+          art_published&.tv_sec, art_published ? (art_published.nsec / 1_000_000) : nil,
+          art_rpd, art_rt
+        ]
+
+        ruby_hash = {
+          user: {
+            id: user_id,
+            class: { name: "User" },
+            name: user_name,
+            username: user_username,
+            path: user_path,
+            profile_image_90: user_img,
+            comments_count: user_comments_count,
+            created_at: user_created
+          },
+          article: {
+            id: art_id,
+            cached_tag_list_array: (art_tag_list || "").split(", "),
+            class: { name: "Article" },
+            title: art_title,
+            path: art_path,
+            updated_at: art_updated,
+            published_at: art_published,
+            readable_publish_date: art_rpd,
+            reading_time: art_rt
+          }
+        }
+        if org_fields
+          ruby_hash[:organization] = {
+            id: org_fields[0],
+            class: { name: "Organization" },
+            name: org_fields[1],
+            slug: org_fields[2],
+            path: org_fields[3],
+            profile_image_90: org_fields[4]
+          }
+        end
+
+        expected_json = encode_active_support_json.call(ruby_hash)
+        actual_json = described_class.serialize_article_notification_json(user_fields, article_fields, org_fields)
+        expect(actual_json).to eq(expected_json), "json iter #{iter}"
+
+        # Include occasional duplicate user_ids to verify order-preserving deduplication
+        raw_ids = Array.new(rng.rand(1..12)) { rng.rand(1..20) }
+        subforem_id = rng.rand < 0.7 ? rng.rand(1..5) : nil
+        action = action_pool.sample(random: rng)
+        returning_id = rng.rand < 0.5
+
+        expected_sql = legacy_bulk_upsert_sql.call(
+          user_ids: raw_ids,
+          notifiable_id: art_id,
+          notifiable_type: "Article",
+          subforem_id: subforem_id,
+          action: action,
+          json_data: expected_json,
+          now: now,
+          returning_id: returning_id,
+        )
+
+        tier1_sql = described_class.build_notification_bulk_upsert_sql(
+          raw_ids, art_id, "Article", subforem_id, action, expected_json,
+          now.tv_sec, now.usec, returning_id: returning_id
+        )
+        expect(tier1_sql).to eq(expected_sql), "tier1 sql iter #{iter}"
+
+        tier2_sql = described_class.build_article_notification_bulk_upsert_sql(
+          raw_ids, "Article", subforem_id, action, user_fields, article_fields, org_fields,
+          now.tv_sec, now.usec, returning_id: returning_id
+        )
+        expect(tier2_sql).to eq(expected_sql), "tier2 sql iter #{iter}"
+      end
+    end
+  end
 end

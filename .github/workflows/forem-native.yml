@@ -71,6 +71,9 @@ on:
       - "app/services/homepage/fetch_articles.rb"
       - "app/services/html/parser.rb"
       - "app/services/markdown_processor/parser.rb"
+      - "app/services/notifications.rb"
+      - "app/services/notifications/co_author/send.rb"
+      - "app/services/notifications/notifiable_action/send.rb"
       - "app/services/search/article.rb"
       - "app/services/search/comment.rb"
       - "app/services/search/organization.rb"
@@ -139,6 +142,8 @@ on:
       - "spec/services/html/parser_spec.rb"
       - "spec/services/markdown_processor/parser_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
+      - "spec/services/notifications/co_author/send_spec.rb"
+      - "spec/services/notifications/notifiable_action/send_spec.rb"
       - "spec/services/stories/feed_serializer_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
       - "spec/services/images/**"
@@ -347,6 +352,15 @@ jobs:
             raise "Unexpected serialize_search_users_json!" unless sr_user.is_a?(String) && sr_user.include?("\"class_name\":\"User\"")
             sr_uname = ForemNative.serialize_search_usernames_json([9, "Ada", "/a90.png", "ada"])
             raise "Unexpected serialize_search_usernames_json!" unless sr_uname.is_a?(String) && sr_uname.include?("\"username\":\"ada\"") && !sr_uname.include?("\"class_name\"")
+            n_user = [42, "Ada", "ada", "/ada", "/a90.png", 5, 1_700_000_000, 123]
+            n_art = [9001, "rust, ruby", "Fast <SQL>", "/ada/fast", 1_700_000_500, 45, 1_700_000_400, 0, "Nov 14", 4]
+            n_json = ForemNative.serialize_article_notification_json(n_user, n_art, nil)
+            raise "Unexpected serialize_article_notification_json!" unless n_json.is_a?(String) && n_json.include?("\"cached_tag_list_array\":[\"rust\",\"ruby\"]")
+            n_sql1 = ForemNative.build_notification_bulk_upsert_sql([10, 20, 10], 9001, "Article", 1, "Published", n_json, 1_700_000_600, 0)
+            raise "Unexpected build_notification_bulk_upsert_sql!" unless n_sql1.is_a?(String) && n_sql1.include?("unnest(ARRAY[10,20]::bigint[])")
+            n_sql2 = ForemNative.build_article_notification_bulk_upsert_sql([10, 20, 10], "Article", 1, "Published", n_user, n_art, nil, 1_700_000_600, 0)
+            raise "Unexpected build_article_notification_bulk_upsert_sql!" unless n_sql2 == n_sql1
+            raise "Expected Unicode whitespace action to return nil!" unless ForemNative.build_notification_bulk_upsert_sql([10], 9001, "Article", 1, "\u00A0", "{}", 1_700_000_600, 0).nil?
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

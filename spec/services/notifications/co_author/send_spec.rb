@@ -112,4 +112,34 @@ RSpec.describe Notifications::CoAuthor::Send, type: :service do
       expect(co_author_notifications(article).pluck(:user_id)).to eq([co_author.id])
     end
   end
+
+  context "with ForemNative bulk upsert SQL fast path and legacy fallback" do
+    it "persists identical rows via the native unnest upsert and legacy fallback", :aggregate_failures do
+      Time.use_zone("UTC") do
+        article = co_authored_article
+        article.update_columns(title: "CoAuthor <Parity> & 'Quotes' 🚀")
+        frozen_now = (article.published_at + 1.minute).utc
+        allow(Time).to receive(:current).and_return(frozen_now)
+
+        generated = []
+        allow(Notifications).to receive(:article_bulk_upsert_sql).and_wrap_original do |original, **kwargs|
+          sql = original.call(**kwargs)
+          generated << sql
+          sql
+        end
+
+        described_class.call(article.reload)
+        expect(generated).to contain_exactly(a_kind_of(String))
+        native_attrs = co_author_notifications(article).first!.attributes.except("id")
+
+        co_author_notifications(article).delete_all
+        allow(ForemNative).to receive(:build_article_notification_bulk_upsert_sql).and_return(nil)
+
+        described_class.call(article.reload)
+        legacy_attrs = co_author_notifications(article).first!.attributes.except("id")
+
+        expect(native_attrs).to eq(legacy_attrs)
+      end
+    end
+  end
 end

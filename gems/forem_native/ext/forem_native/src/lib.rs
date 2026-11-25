@@ -9354,6 +9354,190 @@ fn serialize_search_usernames_json(
     Some(ruby.str_new(&json))
 }
 
+unsafe fn parse_opt_utc_millis(sec_val: Value, millis_val: Value) -> Option<Option<(i64, u32)>> {
+    let sec = extract_opt_i64(sec_val)?;
+    let millis = extract_opt_i64(millis_val)?;
+    match (sec, millis) {
+        (None, None) => Some(None),
+        (Some(s), Some(m)) if (0..1000).contains(&m) => Some(Some((s, m as u32))),
+        _ => None,
+    }
+}
+
+unsafe fn parse_article_notification_payload<'a>(
+    user_slice: &'a [Value],
+    article_slice: &'a [Value],
+    org_slice: Option<&'a [Value]>,
+) -> Option<forem_core::notifications::ArticleNotificationPayload<'a>> {
+    if user_slice.len() != 8 || article_slice.len() != 10 {
+        return None;
+    }
+
+    let user = forem_core::notifications::NotificationUserData {
+        id: extract_opt_i64(user_slice[0])?,
+        name: unsafe { borrow_opt_utf8_str(user_slice[1]) }?,
+        username: unsafe { borrow_opt_utf8_str(user_slice[2]) }?,
+        path: unsafe { borrow_opt_utf8_str(user_slice[3]) }?,
+        profile_image_90: unsafe { borrow_opt_utf8_str(user_slice[4]) }?,
+        comments_count: extract_opt_i64(user_slice[5])?,
+        created_at: unsafe { parse_opt_utc_millis(user_slice[6], user_slice[7]) }?,
+    };
+
+    let article = forem_core::notifications::NotificationArticleData {
+        id: extract_opt_i64(article_slice[0])?,
+        cached_tag_list: unsafe { borrow_opt_utf8_str(article_slice[1]) }?,
+        title: unsafe { borrow_opt_utf8_str(article_slice[2]) }?,
+        path: unsafe { borrow_opt_utf8_str(article_slice[3]) }?,
+        updated_at: unsafe { parse_opt_utc_millis(article_slice[4], article_slice[5]) }?,
+        published_at: unsafe { parse_opt_utc_millis(article_slice[6], article_slice[7]) }?,
+        readable_publish_date: unsafe { borrow_opt_utf8_str(article_slice[8]) }?,
+        reading_time: extract_opt_i64(article_slice[9])?,
+    };
+
+    let organization = match org_slice {
+        None => None,
+        Some(os) => {
+            if os.len() != 5 {
+                return None;
+            }
+            Some(forem_core::notifications::NotificationOrganizationData {
+                id: extract_opt_i64(os[0])?,
+                name: unsafe { borrow_opt_utf8_str(os[1]) }?,
+                slug: unsafe { borrow_opt_utf8_str(os[2]) }?,
+                path: unsafe { borrow_opt_utf8_str(os[3]) }?,
+                profile_image_90: unsafe { borrow_opt_utf8_str(os[4]) }?,
+            })
+        }
+    };
+
+    Some(forem_core::notifications::ArticleNotificationPayload {
+        user,
+        article,
+        organization,
+    })
+}
+
+fn serialize_article_notification_json(
+    ruby: &Ruby,
+    user_fields: RArray,
+    article_fields: RArray,
+    org_fields: Value,
+) -> Option<RString> {
+    let org_arr = if org_fields.is_nil() {
+        None
+    } else {
+        Some(RArray::from_value(org_fields)?)
+    };
+    let json = {
+        // SAFETY: Zero-copy borrows of flat arrays; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let user_slice = unsafe { user_fields.as_slice() };
+        let article_slice = unsafe { article_fields.as_slice() };
+        let org_slice = org_arr.as_ref().map(|a| unsafe { a.as_slice() });
+        let payload =
+            unsafe { parse_article_notification_payload(user_slice, article_slice, org_slice) }?;
+        forem_core::notifications::serialize_article_notification_json(&payload)?
+    };
+    Some(ruby.str_new(&json))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn build_notification_bulk_upsert_sql(
+    ruby: &Ruby,
+    user_ids: RArray,
+    notifiable_id: i64,
+    notifiable_type: RString,
+    subforem_id: Value,
+    action: Value,
+    json_data: RString,
+    now_sec: i64,
+    now_usec: i64,
+    returning_id: bool,
+) -> Option<RString> {
+    if !(0..1_000_000).contains(&now_usec) {
+        return None;
+    }
+    let subforem_opt = extract_opt_i64(subforem_id)?;
+    let sql = {
+        // SAFETY: Zero-copy borrows; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let id_slice = unsafe { user_ids.as_slice() };
+        let mut ids = Vec::with_capacity(id_slice.len());
+        for &val in id_slice {
+            ids.push(Integer::from_value(val)?.to_i64().ok()?);
+        }
+        let ntype = std::str::from_utf8(unsafe { notifiable_type.as_slice() }).ok()?;
+        let action_opt = unsafe { borrow_opt_utf8_str(action) }?;
+        let json_str = std::str::from_utf8(unsafe { json_data.as_slice() }).ok()?;
+        forem_core::notifications::build_notification_bulk_upsert_sql(
+            &forem_core::notifications::NotificationBulkUpsert {
+                user_ids: &ids,
+                notifiable_id,
+                notifiable_type: ntype,
+                subforem_id: subforem_opt,
+                action: action_opt,
+                json_data: json_str,
+                now_sec,
+                now_usec: now_usec as u32,
+                returning_id,
+            },
+        )?
+    };
+    Some(ruby.str_new(&sql))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn build_article_notification_bulk_upsert_sql(
+    ruby: &Ruby,
+    user_ids: RArray,
+    notifiable_type: RString,
+    subforem_id: Value,
+    action: Value,
+    user_fields: RArray,
+    article_fields: RArray,
+    org_fields: Value,
+    now_sec: i64,
+    now_usec: i64,
+    returning_id: bool,
+) -> Option<RString> {
+    if !(0..1_000_000).contains(&now_usec) {
+        return None;
+    }
+    let subforem_opt = extract_opt_i64(subforem_id)?;
+    let org_arr = if org_fields.is_nil() {
+        None
+    } else {
+        Some(RArray::from_value(org_fields)?)
+    };
+    let sql = {
+        // SAFETY: Zero-copy borrows; `forem_core` never calls into Ruby,
+        // and all borrows end before `ruby.str_new` allocates.
+        let id_slice = unsafe { user_ids.as_slice() };
+        let mut ids = Vec::with_capacity(id_slice.len());
+        for &val in id_slice {
+            ids.push(Integer::from_value(val)?.to_i64().ok()?);
+        }
+        let ntype = std::str::from_utf8(unsafe { notifiable_type.as_slice() }).ok()?;
+        let action_opt = unsafe { borrow_opt_utf8_str(action) }?;
+        let user_slice = unsafe { user_fields.as_slice() };
+        let article_slice = unsafe { article_fields.as_slice() };
+        let org_slice = org_arr.as_ref().map(|a| unsafe { a.as_slice() });
+        let payload =
+            unsafe { parse_article_notification_payload(user_slice, article_slice, org_slice) }?;
+        forem_core::notifications::build_article_notification_bulk_upsert_sql(
+            &ids,
+            ntype,
+            subforem_opt,
+            action_opt,
+            &payload,
+            now_sec,
+            now_usec as u32,
+            returning_id,
+        )?
+    };
+    Some(ruby.str_new(&sql))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -10096,6 +10280,18 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "serialize_search_usernames_json",
         function!(serialize_search_usernames_json, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_article_notification_json",
+        function!(serialize_article_notification_json, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_notification_bulk_upsert_sql",
+        function!(build_notification_bulk_upsert_sql, 9),
+    )?;
+    native_mod.define_singleton_method(
+        "build_article_notification_bulk_upsert_sql",
+        function!(build_article_notification_bulk_upsert_sql, 10),
     )?;
     Ok(())
 }

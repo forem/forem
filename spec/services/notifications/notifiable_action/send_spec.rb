@@ -279,4 +279,114 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end.to change(Notification, :count).by(4)
     end
   end
+
+  context "with ForemNative bulk upsert SQL fast path and legacy fallback" do
+    before do
+      user2.follow(user)
+      user3.follow(organization)
+    end
+
+    def capture_native_sql
+      generated = []
+      allow(Notifications).to receive(:article_bulk_upsert_sql).and_wrap_original do |original, **kwargs|
+        sql = original.call(**kwargs)
+        generated << sql
+        sql
+      end
+      generated
+    end
+
+    it "preserves special characters, quotes, and Unicode in json_data via the native unnest bulk upsert",
+       :aggregate_failures do
+      Time.use_zone("UTC") do
+        generated = capture_native_sql
+        article.update_columns(title: "O'Reilly's <fast> & \"clean\" 🚀 guide", cached_tag_list: "rust, ruby")
+
+        described_class.call(article.reload, "Published")
+
+        expect(generated).to contain_exactly(a_kind_of(String))
+        notification = Notification.find_by!(user_id: user2.id, notifiable_id: article.id, action: "Published")
+        expect(notification.json_data["article"]["title"]).to eq("O'Reilly's <fast> & \"clean\" 🚀 guide")
+        expect(notification.json_data["article"]["cached_tag_list_array"]).to eq(%w[rust ruby])
+      end
+    end
+
+    it "upserts notifications when action is nil using the action IS NULL partial unique index",
+       :aggregate_failures do
+      Time.use_zone("UTC") do
+        generated = capture_native_sql
+
+        expect do
+          described_class.call(article.reload, nil)
+        end.to change(Notification, :count).by(2)
+
+        expect do
+          described_class.call(article.reload, nil)
+        end.not_to change(Notification, :count)
+
+        expect(generated.size).to eq(2)
+        expect(generated).to all(be_a(String))
+      end
+    end
+
+    it "persists identical rows and preserves untouched columns vs legacy upsert_all for both action branches",
+       :aggregate_failures do
+      Time.use_zone("UTC") do
+        frozen_initial = Time.utc(2026, 11, 25, 12, 0, 0)
+        frozen_update = Time.utc(2026, 11, 25, 13, 0, 0)
+        read_timestamp = Time.utc(2026, 11, 25, 12, 30, 0)
+        article.update_columns(title: "Parity <Test> & 'Quotes' 🚀", cached_tag_list: "rust, rails")
+
+        ["Published", nil].each do |action_value|
+          snapshot = lambda do |use_native:|
+            Notification.where(notifiable: article).delete_all
+            ContextNotification.where(context: article).delete_all
+
+            if use_native
+              allow(ForemNative).to receive(:build_article_notification_bulk_upsert_sql).and_call_original
+              generated = capture_native_sql
+            else
+              allow(ForemNative).to receive(:build_article_notification_bulk_upsert_sql).and_return(nil)
+            end
+
+            allow(Time).to receive(:current).and_return(frozen_initial)
+            described_class.call(article.reload, action_value)
+            Notification.where(user_id: user2.id, notifiable: article).update_all(read: true, read_at: read_timestamp)
+
+            allow(Time).to receive(:current).and_return(frozen_update)
+            described_class.call(article.reload, action_value)
+
+            if use_native
+              expect(generated.size).to eq(2)
+              expect(generated).to all(be_a(String))
+            end
+
+            Notification.where(notifiable: article).order(:user_id).map do |row|
+              row.attributes.except("id")
+            end
+          end
+
+          native_rows = snapshot.call(use_native: true)
+          legacy_rows = snapshot.call(use_native: false)
+
+          expect(native_rows).to eq(legacy_rows)
+          expect(native_rows.first["read"]).to be(true)
+          expect(native_rows.first["read_at"]).to eq(read_timestamp)
+          expect(native_rows.first["organization_id"]).to be_nil
+        end
+      end
+    end
+
+    it "falls back transparently to legacy_upsert_notifications when native SQL returns nil" do
+      allow(ForemNative).to receive(:build_article_notification_bulk_upsert_sql).and_return(nil)
+
+      expect do
+        described_class.call(article, "Published")
+      end.to change(Notification, :count).by(2)
+
+      notification = Notification.find_by!(user_id: user2.id, notifiable_id: article.id, action: "Published")
+      expect(notification.json_data["article"]["id"]).to eq(article.id)
+      expect(notification.json_data["user"]["id"]).to eq(user.id)
+    end
+  end
 end
