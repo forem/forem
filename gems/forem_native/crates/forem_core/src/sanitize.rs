@@ -140,6 +140,80 @@ pub fn sanitized_text_preview(html: &str, length: usize) -> Option<String> {
     Some(escaped)
 }
 
+/// Tier 2: computes `Comment#title`'s visible-text pipeline in a single pass:
+///
+/// ```ruby
+/// text = strip_tags(processed_html).strip
+/// truncated = truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+/// Nokogiri::HTML.fragment(truncated).text
+/// ```
+///
+/// `strip_tags` is [`full_sanitize`], whose only character references are `&amp;`, `&lt;`,
+/// `&gt;`, and `&nbsp;`. `truncate` cuts that serialized text at `length - 3` characters and
+/// HTML-escapes it; the two `gsub` calls undo the escaping of `&` and `'` (leaving `"`, `<`, and
+/// `>` as references libxml2 decodes straight back), so the libxml2 parse only ever decodes the
+/// four sanitizer references. This kernel decodes them directly.
+///
+/// Returns `None` (so `Comment` falls back to the Ruby pipeline) when:
+/// * `length` is outside `3..=MAX_PREVIEW_LENGTH`, or [`full_sanitize`] declines the HTML;
+/// * the stripped text is blank (`String#blank?`), where `Comment#title` may answer with the
+///   image-only label instead;
+/// * `truncate` cuts through a character reference (`&am...`), which libxml2 decodes leniently;
+/// * the text contains characters libxml2 drops or rewrites: C0 controls other than tab and
+///   line feed (`\r`, `\f`, `\v`, NUL, ...), U+FEFF, U+FFFE, or U+FFFF.
+pub fn comment_title(html: &str, length: usize) -> Option<String> {
+    if !(TRUNCATE_OMISSION.len()..=MAX_PREVIEW_LENGTH).contains(&length) {
+        return None;
+    }
+    let sanitized = full_sanitize(html)?;
+    // `String#strip`: ASCII whitespace and NUL. Interior NULs and other controls are declined
+    // below, so trimming them here is only ever observable through `None`.
+    let text = sanitized
+        .trim_matches(|c: char| matches!(c, ' ' | '\t' | '\n' | '\x0B' | '\x0C' | '\r' | '\0'));
+    if text.chars().all(char::is_whitespace) {
+        return None;
+    }
+
+    let (kept, omission) = match text.char_indices().nth(length) {
+        None => (text, ""),
+        Some(_) => {
+            let stop = length - TRUNCATE_OMISSION.len();
+            let cut = text
+                .char_indices()
+                .nth(stop)
+                .map_or(text.len(), |(idx, _)| idx);
+            (&text[..cut], TRUNCATE_OMISSION)
+        }
+    };
+
+    let mut title = String::with_capacity(kept.len() + omission.len());
+    let mut rest = kept;
+    while let Some(pos) = rest.find(|c: char| c == '&' || is_libxml2_mangled_char(c)) {
+        title.push_str(&rest[..pos]);
+        let tail = &rest[pos..];
+        let (decoded, consumed) = [
+            ("&amp;", '&'),
+            ("&lt;", '<'),
+            ("&gt;", '>'),
+            ("&nbsp;", '\u{A0}'),
+        ]
+        .into_iter()
+        .find(|(entity, _)| tail.starts_with(entity))
+        .map(|(entity, ch)| (ch, entity.len()))?;
+        title.push(decoded);
+        rest = &tail[consumed..];
+    }
+    title.push_str(rest);
+    title.push_str(omission);
+    Some(title)
+}
+
+/// Characters libxml2's HTML parser drops or rewrites inside text (see [`comment_title`]).
+#[inline]
+fn is_libxml2_mangled_char(c: char) -> bool {
+    (c < ' ' && c != '\t' && c != '\n') || matches!(c, '\u{FEFF}' | '\u{FFFE}' | '\u{FFFF}')
+}
+
 /// Appends `text` escaped like `ERB::Util.html_escape` (`&`, `<`, `>`, `"`, `'`).
 pub fn erb_html_escape_into(out: &mut String, text: &str) {
     let mut start = 0;
@@ -1442,5 +1516,73 @@ mod tests {
         let mut out = String::new();
         erb_html_escape_into(&mut out, "a&b<c>d\"e'f😀");
         assert_eq!(out, "a&amp;b&lt;c&gt;d&quot;e&#39;f😀");
+    }
+
+    #[test]
+    fn comment_title_decodes_sanitizer_references() {
+        assert_eq!(
+            comment_title("<p>a &amp; b &lt; c &gt; d</p>", 80).as_deref(),
+            Some("a & b < c > d")
+        );
+        assert_eq!(
+            comment_title("<p>q&nbsp;r \"s\" 't' &copy; &hellip;</p>", 80).as_deref(),
+            Some("q\u{A0}r \"s\" 't' © …")
+        );
+        assert_eq!(
+            comment_title("  <p>\n日本語 🚀 <b>bold</b></p>\n\n", 80).as_deref(),
+            Some("日本語 🚀 bold")
+        );
+        assert_eq!(
+            comment_title("<p>a\u{85}b</p>", 80).as_deref(),
+            Some("a\u{85}b")
+        );
+    }
+
+    #[test]
+    fn comment_title_truncates_serialized_text() {
+        let exact = "x".repeat(80);
+        assert_eq!(comment_title(&exact, 80).as_deref(), Some(exact.as_str()));
+        let long = format!("{}yz", "x".repeat(79));
+        assert_eq!(
+            comment_title(&long, 80),
+            Some(format!("{}...", "x".repeat(77)))
+        );
+        // `&amp;` counts as five characters before the cut, then decodes to one.
+        let html = format!("<p>{}&amp;yyyy</p>", "x".repeat(72));
+        assert_eq!(
+            comment_title(&html, 80),
+            Some(format!("{}&...", "x".repeat(72)))
+        );
+        let emoji = "🚀".repeat(200);
+        assert_eq!(
+            comment_title(&emoji, 150),
+            Some(format!("{}...", "🚀".repeat(147)))
+        );
+    }
+
+    #[test]
+    fn comment_title_declines_out_of_domain_inputs() {
+        // Cut through a character reference.
+        assert_eq!(
+            comment_title(&format!("<p>{}&amp;yy</p>", "x".repeat(76)), 80),
+            None
+        );
+        assert_eq!(
+            comment_title(&format!("<p>{}&lt;yy</p>", "x".repeat(75)), 80),
+            None
+        );
+        // Blank text (the image-only label is decided in Ruby).
+        assert_eq!(comment_title("", 80), None);
+        assert_eq!(comment_title("<img src=x>", 80), None);
+        assert_eq!(comment_title("<p> \u{2003} </p>", 80), None);
+        // Characters libxml2 drops or rewrites.
+        assert_eq!(comment_title("<p>a\u{0C}b</p>", 80), None);
+        assert_eq!(comment_title("<p>a\u{0B}b</p>", 80), None);
+        assert_eq!(comment_title("<p>a&#13;b</p>", 80), None);
+        assert_eq!(comment_title("\u{FEFF}abc", 80), None);
+        assert_eq!(comment_title("ab\u{FFFF}c", 80), None);
+        // Lengths outside the preview domain.
+        assert_eq!(comment_title("abc", 2), None);
+        assert_eq!(comment_title("abc", MAX_PREVIEW_LENGTH + 1), None);
     }
 }

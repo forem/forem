@@ -256,6 +256,20 @@ RSpec.describe Comment do
         expect(subject).not_to be_valid
         expect(subject.errors[:base]).to include(I18n.t("models.comment.mention_rate_limit_reached"))
       end
+
+      it "skips the Nokogiri parse when no mention markup is present" do
+        subject.processed_html = "<p>No mentions here, just <code>don&#39;t</code> and <a href=\"/x\">a link</a>.</p>"
+        allow(Nokogiri).to receive(:HTML).and_call_original
+
+        expect(subject.__send__(:mentioned_user_link_count)).to eq(0)
+        expect(Nokogiri).not_to have_received(:HTML)
+      end
+
+      it "still counts mention links spelled with numeric character references" do
+        subject.processed_html = '<a class="mentioned&#45;user" href="/x">@x</a>'
+
+        expect(subject.__send__(:mentioned_user_link_count)).to eq(1)
+      end
     end
     # rubocop:enable RSpec/NamedSubject
 
@@ -513,6 +527,32 @@ RSpec.describe Comment do
       comment.validate!
       expect(comment.title).to eq("élan")
     end
+
+    context "with HTML the native kernel handles or declines" do
+      let(:titles_html) do
+        [
+          "<p>Tom &amp; Jerry &lt;3 \"quotes\" 'apostrophes' &copy; 🚀</p>",
+          "<p>#{'x' * 72}&amp;yyyyyyyy</p>",
+          "<p>#{'x' * 76}&amp;yy</p>", # truncation cuts the reference: falls back to Ruby
+          "<p>a&#13;b</p>", # carriage return: falls back to Ruby
+          "<p>\u2003</p>", # blank text without images: falls back to Ruby
+        ]
+      end
+
+      it "matches the legacy pipeline" do
+        titles_html.each do |html|
+          comment.processed_html = html
+          expect(comment.title).to eq(comment.__send__(:legacy_title, 80)), html
+        end
+      end
+    end
+
+    it "falls back to the legacy pipeline when the native kernel declines" do
+      comment.processed_html = "<p><img src=\"https://example.com/a.png\"></p>"
+      allow(ForemNative).to receive(:comment_title).and_call_original
+      expect(comment.title).to eq("[image]")
+      expect(ForemNative).to have_received(:comment_title).with(comment.processed_html, 80)
+    end
   end
 
   describe "#custom_css" do
@@ -655,6 +695,16 @@ RSpec.describe Comment do
       allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
       comment = create(:comment, user: user, commentable: article)
       expect(comment.score).to eq(-5)
+    end
+
+    it "produces the same spam score via native title extraction and the legacy fallback" do
+      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(["buy & win"])
+      native_comment = create(:comment, user: user, commentable: article, body_markdown: "buy &amp; win")
+      allow(ForemNative).to receive(:comment_title).and_return(nil)
+      # A separate article keeps identical markdown from tripping the scoped uniqueness validation.
+      legacy_comment = create(:comment, user: user, commentable: create(:article, user: user),
+                                        body_markdown: "buy &amp; win")
+      expect([native_comment.score, legacy_comment.score]).to eq([-5, -5])
     end
   end
 

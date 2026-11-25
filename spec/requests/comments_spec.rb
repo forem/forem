@@ -31,6 +31,23 @@ RSpec.describe "Comments" do
       expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
     end
 
+    it "keeps decoded comment title text HTML-escaped inside the rendered <title> tag", :aggregate_failures do
+      xss_comment = create(
+        :comment,
+        commentable: article,
+        user: user,
+        body_markdown: "Rust &amp; Ruby &lt;script&gt;alert(1)&lt;/script&gt;",
+      )
+      expect(xss_comment.title).not_to be_html_safe
+
+      get xss_comment.path
+
+      expect(response).to have_http_status(:ok)
+      title_tag = response.body[%r{<title>.*?</title>}m]
+      expect(title_tag).to include("Rust &amp; Ruby &lt;script&gt;alert(1)&lt;/script&gt;")
+      expect(title_tag).not_to include("<script>")
+    end
+
     it "short-circuits entity lookup on user match and reuses the loaded user", :aggregate_failures do
       allow(Organization).to receive(:find_by).and_call_original
       allow(Podcast).to receive(:find_by).and_call_original

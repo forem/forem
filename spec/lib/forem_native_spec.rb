@@ -2833,6 +2833,114 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".comment_title (Comment#title)" do
+    # Mirrors the visible-text pipeline of `Comment#title` (`legacy_title`) with the app's HTML5
+    # sanitizer vendor; `nil` marks the image-only label, which stays in Ruby.
+    let(:view_helpers) do
+      Class.new do
+        include ActionView::Helpers::SanitizeHelper
+        include ActionView::Helpers::TextHelper
+      end.new
+    end
+    let(:legacy_comment_title) do
+      lambda do |html, length|
+        text = view_helpers.strip_tags(html).strip
+        next nil if text.blank? && html.include?("<img")
+
+        truncated = view_helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+        Nokogiri::HTML.fragment(truncated).text
+      end
+    end
+
+    it "matches Comment#title on rendered comment HTML" do
+      html = <<~HTML
+        <p>Thanks <a class="mentioned-user" href="https://dev.to/ben">@ben</a>! Rust &amp; Ruby &lt;3 &mdash;
+        "quoted" it's caf&eacute; 😀 東京&nbsp;tower.</p>
+        <div class="highlight js-code-highlight"><pre class="highlight ruby"><code>a &lt; b &amp;&amp; c</code></pre></div>
+      HTML
+      [3, 5, 10, 30, 80, 150, 500].each do |length|
+        expected = legacy_comment_title.call(html, length)
+        actual = described_class.comment_title(html, length)
+        expect(actual || expected).to eq(expected), "length #{length}"
+      end
+      if ForemNative::Native.respond_to?(:comment_title)
+        expect(described_class.comment_title(html, 500)).to eq(legacy_comment_title.call(html, 500))
+        expect(described_class.comment_title(html, 500)).to include("Rust & Ruby <3 —", "café", "東京 tower")
+      end
+    end
+
+    it "matches edge cases" do
+      title_lengths = [5, 80, 150]
+      [
+        "plain", "  padded \n", "<p>a &amp; b &lt; c &gt; d</p>", "<p>\"Hi\" it's <b>bold</b></p>",
+        "&amp;&lt;&gt;&quot;&#39;&apos;", "😀" * 200, "東京" * 100, "<p>#{'x' * 80}</p>", "<p>#{'x' * 81}</p>",
+        "<p>#{'x' * 72}&amp;yyyyyyyy</p>", "<p>a\u0085b</p>", "<p>tab\there</p>", "<pre>\n  code\n</pre>"
+      ].each do |html|
+        title_lengths.each do |length|
+          expected = legacy_comment_title.call(html, length)
+          actual = described_class.comment_title(html, length)
+          expect(actual || expected).to eq(expected), "#{html.inspect} length #{length}"
+        end
+        if ForemNative::Native.respond_to?(:comment_title)
+          # Only a truncation cutting through a character reference may defer to Ruby here.
+          expect(described_class.comment_title(html, 1_000)).to eq(legacy_comment_title.call(html, 1_000)), html.inspect
+        end
+      end
+    end
+
+    it "returns nil outside the fast path so Comment#title falls back to legacy_title" do
+      [
+        "<p>#{'x' * 76}&amp;yy</p>", "<p>#{'x' * 75}&lt;yy</p>", "<p>#{'x' * 74}&nbsp;yyy</p>", # cut references
+        "", "   ", "<img src=\"x.png\">", "<p> </p>", "<p><img src=\"x\">   </p>", # blank text
+        "<p>a\fb</p>", "<p>a\vb</p>", "<p>a&#13;b</p>", "﻿abc", "a￿b", # libxml2-mangled characters
+        "<math><mi>x</mi></math>", "<p>x &notanentity; y</p>" # full_sanitize edge cases
+      ].each do |html|
+        expect(described_class.comment_title(html, 80)).to be_nil, html.inspect
+      end
+    end
+
+    it "returns nil for non-String, non-UTF-8, or invalid inputs and out-of-range lengths" do
+      expect(described_class.comment_title(nil, 80)).to be_nil
+      expect(described_class.comment_title(ActiveSupport::SafeBuffer.new("abc"), 80)).to be_nil
+      expect(described_class.comment_title("abc".b, 80)).to be_nil
+      expect(described_class.comment_title("bad \xFF utf8", 80)).to be_nil
+      expect(described_class.comment_title("abc", 2)).to be_nil
+      expect(described_class.comment_title("abc", 100_001)).to be_nil
+      expect(described_class.comment_title("abc", 80.0)).to be_nil
+    end
+
+    it "passes differential equivalence across 1,000 seeded comment documents and lengths" do
+      rng = Random.new(424_242)
+      pieces = [
+        "", "hello", "world", " ", "\n", "\t", " ", "é", "日本", "🚀", "\"q\"", "it's", "'", "\"",
+        "&", "&amp;", "&lt;", "&gt;", "&quot;", "&apos;", "&nbsp;", "&copy;", "&mdash;", "&eacute;",
+        "&#39;", "&#x25B8;", "&#160;", "&#128;", "&#128512;", "a < b", "x > y", "<p>", "</p>", "<br>",
+        "<em>", "</em>", "<code>", "</code>", "<blockquote>", "</blockquote>",
+        "<a class=\"mentioned-user\" href=\"https://dev.to/ben\">@ben</a>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\" rel=\"nofollow\">", "</a>", "<img src=\"x.png\" alt=\"a & b\">",
+        "<!-- comment -->", "<pre><code>\ncode &lt;T&gt;</code></pre>", "Lorem ipsum dolor sit amet. " * 3
+      ]
+      # Constructs the fast path declines; mixed into every other document.
+      declined_pieces = ["\f", "\v", "&#13;", "﻿", " ", "<math><mi>x</mi></math>", "&unknown;"]
+      lengths = [3, 4, 5, 10, 30, 80, 150, 200]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        in_domain = iteration.even?
+        pool = in_domain ? pieces : pieces + declined_pieces
+        html = Array.new(rng.rand(1..24)) { pool.sample(random: rng) }.join
+        length = rng.rand < 0.5 ? lengths.sample(random: rng) : rng.rand(3..300)
+
+        expected = legacy_comment_title.call(html, length)
+        native = described_class.comment_title(html, length)
+        native_hits += 1 unless native.nil?
+        expect(native || expected).to eq(expected), "iteration #{iteration} (length #{length}): #{html.inspect}"
+      end
+
+      expect(native_hits).to be > 500 if ForemNative::Native.respond_to?(:comment_title)
+    end
+  end
+
   describe ".slugify_heading_anchor (AgentSessionRenderers::HeadingAnchors.slugify)" do
     let(:legacy_slugify_heading_anchor) do
       lambda do |heading_html|

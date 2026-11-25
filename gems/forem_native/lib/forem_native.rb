@@ -455,6 +455,21 @@ module ForemNative
       Native.sanitized_text_preview(html, length)
     end
 
+    # Computes `Comment#title`'s visible text (`strip_tags(processed_html).strip`, truncated to
+    # `length` characters with `"..."`, with HTML character references decoded) in a single pass,
+    # without Loofah's HTML5 DOM or the follow-up `Nokogiri::HTML.fragment(...).text` parse.
+    # Returns nil for non-Strings, lengths outside 3..100_000, blank text (where the image-only
+    # label may apply), truncations that cut through a character reference, characters libxml2
+    # drops or rewrites (C0 controls other than tab and newline, U+FEFF, U+FFFE, U+FFFF), and the
+    # HTML5 edge cases `full_sanitize` declines, so `Comment` can fall back to `legacy_title`.
+    def comment_title(html, length)
+      return unless Native.respond_to?(:comment_title)
+      return unless html.instance_of?(String) && length.instance_of?(Integer)
+      return unless length.between?(3, 100_000)
+
+      Native.comment_title(html, length)
+    end
+
     # Strips `<[^>]*>` tags, unescapes basic and numeric HTML entities, strips ASCII whitespace,
     # lowercases, removes `HeadingAnchors::SLUG_DISALLOWED` characters, and turns spaces into
     # hyphens, matching `AgentSessionRenderers::HeadingAnchors.slugify`.

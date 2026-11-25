@@ -594,6 +594,16 @@ fn sanitized_text_preview(html: RString, length: usize) -> Option<String> {
     forem_core::sanitize::sanitized_text_preview(unsafe { html.test_as_str() }?, length)
 }
 
+fn comment_title(html: RString, length: usize) -> Option<String> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `None` lets `Comment#title` fall back to its
+    // `strip_tags` + `truncate` + `Nokogiri::HTML.fragment(...).text` pipeline.
+    forem_core::sanitize::comment_title(unsafe { html.test_as_str() }?, length)
+}
+
 fn slugify_heading_anchor(heading_html: RString) -> Option<String> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
     // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
@@ -8159,6 +8169,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "sanitized_text_preview",
         function!(sanitized_text_preview, 2),
     )?;
+    native_mod.define_singleton_method("comment_title", function!(comment_title, 2))?;
     native_mod.define_singleton_method(
         "slugify_heading_anchor",
         function!(slugify_heading_anchor, 1),
