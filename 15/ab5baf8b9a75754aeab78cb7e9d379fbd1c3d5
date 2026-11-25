@@ -1,0 +1,27 @@
+app/controllers/stories/feeds_controller.rb
+  s_06f75d9121673f::t_4fc82873029571 41-44,46,242-243,245,276-279,292-295,305-315
+gems/forem_native/ext/forem_native/src/lib.rs
+  s_06f75d9121673f::t_75d4e8a0778dc3 8818-8819,9054,9058-9059
+spec/lib/forem_native_spec.rb
+  s_06f75d9121673f::t_32f4abfee76050 12437-12441,12465-12466,12469-12472,12517-12519,12562
+spec/requests/stories/feeds_spec.rb
+  s_06f75d9121673f::t_4102768378968e 1092-1106
+spec/services/stories/feed_serializer_spec.rb
+  s_06f75d9121673f::t_214b8d985bacfe 273-304
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "15ab5baf8b9a75754aeab78cb7e9d379fbd1c3d5",
+  "prompts": {},
+  "sessions": {
+    "s_06f75d9121673f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a213f2-e941-7483-84d4-06bc3b1747a2",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
