@@ -117,6 +117,22 @@ RSpec.describe "OmniAuth Callbacks Failure" do
     expect(response).to redirect_to(new_user_session_url)
   end
 
+  it "does not notify Honeybadger and notifies Datadog on Facebook NoAuthorizationCodeError", :aggregate_failures do
+    error = OmniAuth::Strategies::Facebook::NoAuthorizationCodeError.new(
+      "must pass either a `code` (via URL or by an `fbsr_XXX` signed request cookie)",
+    )
+    omniauth_setup_authentication_error(error)
+    omniauth_setup_invalid_credentials(:facebook)
+
+    post "/users/auth/facebook"
+    follow_redirect!
+
+    expect(Rails.error).not_to have_received(:report)
+    args = omniauth_failure_args(error, "facebook", "{}")
+    expect(ForemStatsClient).to have_received(:increment).with("omniauth.failure", *args)
+    expect(response).to redirect_to(new_user_session_url)
+  end
+
   it "does not notify Honeybadger on StandardError with 'access_token was nil'" do
     error = StandardError.new("access_token was nil when checking expiration")
     omniauth_setup_authentication_error(error)
