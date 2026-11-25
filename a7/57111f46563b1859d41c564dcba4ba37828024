@@ -1,0 +1,38 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 11-12,14,98-100
+app/controllers/concerns/valid_request.rb
+  h_f968154a99632d 5,14-36,53
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 1-323
+app/models/page_view.rb
+  h_f968154a99632d 30-39
+app/models/subforem.rb
+  h_f968154a99632d 50,56,80,87,122,157-160,164,167
+config/initializers/middlewares.rb
+  h_f968154a99632d 1,8
+gems/forem_native/crates/forem_core/src/metal.rs
+  h_f968154a99632d 1062-1763,1920-2063
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2410-2589,2841-2854
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1010-1050
+lib/memory_first_cache.rb
+  h_f968154a99632d 76,78,86
+lib/tasks/forem_native.rake
+  h_f968154a99632d 493-552
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 4755-4941
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 262-295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a757111f46563b1859d41c564dcba4ba37828024",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

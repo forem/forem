@@ -1,0 +1,20 @@
+app/controllers/api/v1/organization_article_analytics_controller.rb
+  h_f968154a99632d 4,8-10,13-14,20-22,24-44,46-50
+spec/policies/organization_policy_spec.rb
+  h_f968154a99632d 76-103
+spec/requests/admin/organizations_org_features_spec.rb
+  h_f968154a99632d 221-233
+spec/requests/api/v1/organization_article_analytics_spec.rb
+  h_f968154a99632d 12-13,16-18,33,36-44,49-55,71,81-85,90-114,124-130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "654753af2ee3d5998fc0a07fb46c8c27112273e2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

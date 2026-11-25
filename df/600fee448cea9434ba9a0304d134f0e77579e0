@@ -1,0 +1,18 @@
+app/javascript/Snackbar/addSnackbarItem.js
+  h_f968154a99632d 1-5
+app/javascript/utilities/__tests__/locale.test.js
+  h_f968154a99632d 65-88
+app/javascript/utilities/locale.js
+  h_f968154a99632d 6-25,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "df600fee448cea9434ba9a0304d134f0e77579e0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

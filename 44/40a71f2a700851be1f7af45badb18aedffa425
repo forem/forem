@@ -1,0 +1,20 @@
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 108-113
+app/javascript/packs/initializers/initializeNotifications.js
+  h_f968154a99632d 5-30,86-91
+app/javascript/packs/notificationPage.js
+  h_f968154a99632d 207-216,234-239
+app/views/layouts/application.html.erb
+  h_f968154a99632d 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4440a71f2a700851be1f7af45badb18aedffa425",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

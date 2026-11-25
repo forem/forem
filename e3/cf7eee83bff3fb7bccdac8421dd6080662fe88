@@ -1,0 +1,24 @@
+app/models/user.rb
+  h_f968154a99632d 1306-1307,1309
+config/initializers/betterstack.rb
+  h_f968154a99632d 27,29,31,33-36
+lib/betterstack/request_context.rb
+  h_f968154a99632d 4-9,12-73,88-89,91-92
+spec/initializers/betterstack_spec.rb
+  h_f968154a99632d 58-70
+spec/lib/betterstack/request_context_spec.rb
+  h_f968154a99632d 5,7-16,38-93
+spec/models/user_spec.rb
+  h_f968154a99632d 2095-2101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e3cf7eee83bff3fb7bccdac8421dd6080662fe88",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

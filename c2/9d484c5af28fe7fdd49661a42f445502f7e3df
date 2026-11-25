@@ -1,0 +1,20 @@
+app/controllers/application_metal_controller.rb
+  h_f968154a99632d 11,34,43-46,100-102,104
+app/controllers/concerns/session_current_user.rb
+  h_f968154a99632d 16,30,41,52-66
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 101,118,199,224,269,276-277,342,391
+spec/requests/notification_counts_spec.rb
+  h_f968154a99632d 52-76,82,91-92,102-103,123,141-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c29d484c5af28fe7fdd49661a42f445502f7e3df",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

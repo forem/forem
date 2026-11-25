@@ -1,0 +1,32 @@
+.env_sample
+  h_f968154a99632d 103-104
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 42,47,68-74,97-99,111-113,135-136,148-153,163,171,185-188,198-201,208-211,222-226,230-233,237-249,254-256,259-261,1133,1139-1144,1146
+app/helpers/application_helper.rb
+  h_f968154a99632d 34-37
+app/javascript/utilities/__tests__/betterstackErrorsAdapter.test.js
+  h_f968154a99632d 1-5,25-37,199-241,243,245-247,249-253,256-291,294,306-320,323-324,331-335,348-352,357,359-360,363-416
+app/javascript/utilities/__tests__/frontendErrorTracking.test.js
+  h_f968154a99632d 15,129,138-140,146,150-189
+app/javascript/utilities/betterstackErrorsAdapter.js
+  h_f968154a99632d 9-10,26-27,35,37,39,41-45,48-181,215-219,223,225-232,238-264,266-270,311-339,342-347,349-355,357-374,431-435,482-484,498-500,542,557-564,634-639,657-659,670-677,710-718,761-773
+app/javascript/utilities/frontendErrorTracking.js
+  h_f968154a99632d 1,12,15-25,27,53,73-79,81-91,108-110,135-136,151-156,166,174,219-222,233-236,244-247,260-264,269-272,277-290,295-297,299,303-305,360,382-386
+app/views/layouts/admin.html.erb
+  h_f968154a99632d 31-33
+app/views/layouts/application.html.erb
+  h_f968154a99632d 105-107
+spec/requests/frontend_error_tracking_spec.rb
+  h_f968154a99632d 30,34-45,107-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7390f00f98d6ea3224855d9a83e413a75672c885",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

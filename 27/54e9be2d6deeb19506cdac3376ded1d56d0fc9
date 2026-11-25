@@ -1,0 +1,26 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 24,61,87,98,120,301-312
+app/services/analytics_service.rb
+  h_f968154a99632d 83-85,89-90,97-98,108-109
+gems/forem_native/crates/forem_core/src/analytics.rs
+  h_f968154a99632d 100-102,591-593,700-703,1184-1187,1399-1426
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 8406-8419,8424-8429,8483-8487,8529-8531,8570-8574,8673-8677,8711,8719,8722-8726,8739-8748
+lib/tasks/forem_native.rake
+  h_f968154a99632d 105,2994-3222
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 12158-12174
+spec/services/analytics_service_spec.rb
+  h_f968154a99632d 628-636,641-642,652-654,667
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2754e9be2d6deeb19506cdac3376ded1d56d0fc9",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

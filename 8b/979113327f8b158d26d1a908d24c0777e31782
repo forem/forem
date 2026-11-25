@@ -1,0 +1,16 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 66
+Containerfile
+  h_f968154a99632d 2,5-9,19,21,25,31,33-42,44,48-63,65-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8b979113327f8b158d26d1a908d24c0777e31782",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

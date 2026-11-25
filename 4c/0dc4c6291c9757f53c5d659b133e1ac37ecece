@@ -1,0 +1,42 @@
+app/controllers/flag_appeals_controller.rb
+  h_a5e25bc086eb00 39-41,43,50-53
+app/models/settings/general.rb
+  h_a5e25bc086eb00 14-16
+app/models/settings/rate_limit.rb
+  h_a5e25bc086eb00 14
+app/services/appeals/resolver.rb
+  h_a5e25bc086eb00 14-49,66,69,71-72,74,109-133,162-163
+app/services/rate_limit_checker.rb
+  h_a5e25bc086eb00 10
+app/services/spam/handler.rb
+  h_a5e25bc086eb00 212-215,225,227
+app/workers/appeals/ai_review_worker.rb
+  h_a5e25bc086eb00 24-27
+config/locales/views/admin/flag_appeals/en.yml
+  h_a5e25bc086eb00 63,65
+config/locales/views/admin/flag_appeals/fr.yml
+  h_a5e25bc086eb00 63,65
+config/locales/views/admin/flag_appeals/pt.yml
+  h_a5e25bc086eb00 63,65
+spec/requests/flag_appeals_spec.rb
+  h_a5e25bc086eb00 126-171
+spec/services/appeals/resolver_spec.rb
+  h_a5e25bc086eb00 152-300
+spec/services/rate_limit_checker_spec.rb
+  h_a5e25bc086eb00 52-67
+spec/services/spam/handler_spec.rb
+  h_a5e25bc086eb00 1128-1157
+spec/workers/appeals/ai_review_worker_spec.rb
+  h_a5e25bc086eb00 30-31,45-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4c0dc4c6291c9757f53c5d659b133e1ac37ecece",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+app/assets/stylesheets/admin.scss
+  h_f968154a99632d 7
+app/assets/stylesheets/components/admin/permissions.scss
+  h_f968154a99632d 1-916
+app/controllers/admin/permissions_controller.rb
+  h_f968154a99632d 6-7,10-22,28-36,52,57,60,64,71,76-106,113,123-141,153,159,170-179,194-319
+app/helpers/admin/permissions_helper.rb
+  h_f968154a99632d 1-160
+app/javascript/admin/__tests__/controllers/permissions_grant_controller.test.js
+  h_f968154a99632d 1-140
+app/javascript/admin/__tests__/controllers/sub_permissions_editor_controller.test.js
+  h_f968154a99632d 1-122
+app/javascript/admin/controllers/permissions_grant_controller.js
+  h_f968154a99632d 1-175
+app/javascript/admin/controllers/sub_permissions_editor_controller.js
+  h_f968154a99632d 1-120
+app/lib/sub_permissions.rb
+  h_f968154a99632d 37-44
+app/views/admin/permissions/_grant_form.html.erb
+  h_f968154a99632d 1-130
+app/views/admin/permissions/_member_row.html.erb
+  h_f968154a99632d 1-104
+app/views/admin/permissions/_sub_permissions_editor.html.erb
+  h_f968154a99632d 1-184
+app/views/admin/permissions/_toolbar.html.erb
+  h_f968154a99632d 1-57
+app/views/admin/permissions/index.html.erb
+  h_f968154a99632d 1,3-4,6-7,9,11-13,15-16,18-34,36-39,41-52
+config/locales/lib/en.yml
+  h_f968154a99632d 307,313-319
+config/locales/lib/fr.yml
+  h_f968154a99632d 307,313-319
+config/locales/lib/pt.yml
+  h_f968154a99632d 307,313-319
+config/locales/views/admin/permissions/en.yml
+  h_f968154a99632d 1-74
+config/locales/views/admin/permissions/fr.yml
+  h_f968154a99632d 1-74
+config/locales/views/admin/permissions/pt.yml
+  h_f968154a99632d 1-74
+spec/helpers/admin/permissions_helper_spec.rb
+  h_f968154a99632d 1-63
+spec/lib/sub_permissions_spec.rb
+  h_f968154a99632d 20-21,23-27,33-35
+spec/requests/admin/permissions_spec.rb
+  h_f968154a99632d 70-95,164-225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1faa00f3c986b659745689e18f55824152120e9f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

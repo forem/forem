@@ -1,0 +1,18 @@
+app/services/follows/check_cached.rb
+  h_f968154a99632d 49,60
+spec/requests/follows_bulk_show_spec.rb
+  h_f968154a99632d 103-117
+spec/services/follows/check_cached_spec.rb
+  h_f968154a99632d 80-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eb82e81a88def7420773eee7960a3849498404e3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

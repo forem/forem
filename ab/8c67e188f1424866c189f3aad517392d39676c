@@ -1,0 +1,28 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 21,40,46-47,71-72,199-202
+app/serializers/homepage/article_serializer.rb
+  h_f968154a99632d 194,198,200,243-244,249,256-263
+gems/forem_native/crates/forem_core/src/homepage_articles.rs
+  h_f968154a99632d 25,237-238,240,249,252,268
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 6167-6198,6208-6209,6239,6312-6313
+lib/tasks/forem_native.rake
+  h_f968154a99632d 91,1867-2012
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 8579-8580,8587-8589,8597-8599,8664,8668,8673-8681
+spec/requests/search_spec.rb
+  h_f968154a99632d 171-222
+spec/serializers/homepage/article_serializer_spec.rb
+  h_f968154a99632d 109,121-146,151-174,178-181,184,188-190,192-224,226-227,230-231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ab8c67e188f1424866c189f3aad517392d39676c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

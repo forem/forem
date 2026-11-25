@@ -1,0 +1,35 @@
+app/javascript/__tests__/utilities/http/errors.test.js
+  h_b2f6efe2daa9cd 1-82
+app/javascript/analytics/__tests__/client.test.js
+  h_b2f6efe2daa9cd 1-192
+app/javascript/utilities/http/errors.js
+  f0eae6a24f98aab0 9-18
+app/javascript/analytics/client.js
+  f0eae6a24f98aab0 3-23,34-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "cfc8d6b35080461504f279978697c2cef2ed714f",
+  "prompts": {
+    "f0eae6a24f98aab0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje",
+      "messages": [],
+      "total_additions": 38,
+      "total_deletions": 122,
+      "accepted_lines": 38,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3c1b1088347455d9f4eb4650d5bc13647a8e70975014183bd94bdaff0d82d628"
+    }
+  },
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

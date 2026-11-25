@@ -1,0 +1,35 @@
+app/controllers/sidebars_controller.rb
+  s_543950f8b0825c::t_cd0df16bcc45ae 35
+  s_543950f8b0825c::t_9a3ecc2f98ef51 59-65
+  s_543950f8b0825c::t_c3f818a9ed93eb 3
+spec/requests/sidebars_spec.rb
+  s_543950f8b0825c::t_98be498a07a220 12-20
+  s_543950f8b0825c::t_f9600d8e1e2ee9 93-95,103-105,111-116,119-125,128-139
+  s_543950f8b0825c::t_41818803c83e86 117-118
+  s_543950f8b0825c::t_8ac5a8d92a1e20 126-127
+  s_1b4cacf506c8d4::t_7bb35d0522162a 140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "687e76f993efd045d0b2406017f54c0eed6ee44e",
+  "prompts": {},
+  "sessions": {
+    "s_1b4cacf506c8d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ad87735c-3655-4625-91fd-c994ee041f6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_543950f8b0825c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ecda4f4-6334-4cb1-9119-dbb1c1b1d1dc",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

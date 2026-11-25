@@ -1,0 +1,20 @@
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 30,56,110,114-121,127,149-165,300-303
+config/initializers/rack_attack.rb
+  h_f968154a99632d 12,61-64,66,70,81-82,148,157-158
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 516-587
+spec/requests/api/v1/pages_embed_html_spec.rb
+  h_f968154a99632d 66,81,120-121,125,130,135,204-233,445-460,480-498
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "932621973644c64208ec7b993327d16c3e8724b0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

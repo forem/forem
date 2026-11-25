@@ -1,0 +1,28 @@
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 8,11-12,97-115,137-144,146
+app/helpers/application_helper.rb
+  h_f968154a99632d 558-575
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 52-56
+app/views/layouts/_bottom_scripts.html.erb
+  h_f968154a99632d 3-11,21,24-25,27,32,34,36-40,47-56,58-62,65-108
+app/views/layouts/application.html.erb
+  h_f968154a99632d 227
+spec/helpers/application_helper_spec.rb
+  h_f968154a99632d 659-705
+spec/requests/auth_passes_spec.rb
+  h_f968154a99632d 98-170
+spec/requests/custom_domain_auth_redirect_spec.rb
+  h_f968154a99632d 1-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "f893a4381ccf4d134655190521e2180d4b36f485",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

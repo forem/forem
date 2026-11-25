@@ -1,0 +1,20 @@
+app/javascript/packs/__tests__/billboard.test.js
+  h_f968154a99632d 148-222
+app/javascript/packs/billboard.js
+  h_f968154a99632d 8,99,105
+app/javascript/utilities/__tests__/runtime.test.js
+  h_f968154a99632d 1-230
+app/javascript/utilities/runtime.js
+  h_f968154a99632d 153-232
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d5ba533b657bed25c5bb51f5c0de4d0907854f0d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

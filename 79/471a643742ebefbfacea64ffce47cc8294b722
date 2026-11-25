@@ -1,0 +1,18 @@
+Gemfile
+  h_f968154a99632d 88
+config/initializers/rack_host_redirect_monkey_patch.rb
+  h_f968154a99632d 1-31
+spec/initializers/rack_host_redirect_monkey_patch_spec.rb
+  h_f968154a99632d 1-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "79471a643742ebefbfacea64ffce47cc8294b722",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

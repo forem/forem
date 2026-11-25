@@ -1,0 +1,72 @@
+.cursorrules
+  h_f968154a99632d 53,56-65
+.github/copilot-instructions.md
+  h_f968154a99632d 53,56-65
+.windsurfrules
+  h_f968154a99632d 53,56-65
+AGENTS.md
+  h_f968154a99632d 53,56-65
+app/helpers/favorites_helper.rb
+  h_f968154a99632d 2-9,17,96-99,115-129
+app/javascript/crayons/Modal/Modal.jsx
+  h_f968154a99632d 9-22,28,65,103
+app/javascript/crayons/Modal/__tests__/Modal.test.jsx
+  h_f968154a99632d 34-53
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 2-3,82-102,115-122,141-144,172,175-176,207,217,220-221,251-317,374-380,387-401,434,436-438,455,474
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_f968154a99632d 2-3,35-39,114-115,140-141,153-154,172-173,193-194,209,229-230,245-246,266-267,330-815
+app/javascript/packs/application.jsx
+  h_f968154a99632d 247-252,254,256-259,262-264
+app/javascript/packs/commentDropdowns.js
+  h_f968154a99632d 126-132
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 35-38,75-78
+app/javascript/packs/initializers/initializeNotifications.js
+  h_f968154a99632d 1,3-4,6,8-9,12-34,55-127,148-210,212,222-223,225-230
+app/javascript/packs/notificationPage.js
+  h_f968154a99632d 8,10,12
+app/javascript/packs/tagFollows.jsx
+  h_f968154a99632d 1-2,5,8,16-41,51,74-78,80,84,103-110
+app/javascript/utilities/__tests__/loadAssetBundle.test.js
+  h_f968154a99632d 1-4,7-18,21-26,29-31,33-35,37-42,44-47,49-50,52-53,55-78,80
+app/javascript/utilities/commentTextAreaLoader.js
+  h_f968154a99632d 1-16,20-21,28,32
+app/javascript/utilities/emojiPickerLoader.js
+  h_f968154a99632d 1-10,18,22
+app/javascript/utilities/gist.js
+  h_f968154a99632d 1,3-7,9-13,15-16,20
+app/javascript/utilities/loadAssetBundle.js
+  h_f968154a99632d 1-95
+app/javascript/utilities/mediaPlaybackLoader.js
+  h_f968154a99632d 1-16,67,71
+app/javascript/utilities/mermaidDiagrams.js
+  h_f968154a99632d 16-18
+app/javascript/utilities/windowModalLoader.js
+  h_f968154a99632d 1,3,5-9,11,14,22,25,30-34,36-43,47
+app/views/layouts/application.html.erb
+  h_f968154a99632d 37,39
+app/views/notifications/index.html.erb
+  h_f968154a99632d 18-19,69
+config/locales/en.yml
+  h_f968154a99632d 14-20
+config/locales/fr.yml
+  h_f968154a99632d 14-20
+config/locales/pt.yml
+  h_f968154a99632d 14-20
+spec/helpers/favorites_helper_spec.rb
+  h_f968154a99632d 1-78
+spec/services/broadcasts/welcome_notification/generator_spec.rb
+  h_f968154a99632d 4-8,11-22,31-54,60-65,75,85-86,148,156-159,164-165,174-175,177,183-185,191-192,197-202,207,221-223,230,238-240,247,249-250,253-255,264-266,275-277,285-286,298,300-301,303-307,309-313
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "32e80e28ffabad0803699a90990d148487db212e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

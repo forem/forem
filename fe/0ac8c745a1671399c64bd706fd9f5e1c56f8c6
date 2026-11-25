@@ -1,0 +1,14 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 40,46-53,55-71,175,179-183,210-221,223-225,228-230
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fe0ac8c745a1671399c64bd706fd9f5e1c56f8c6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

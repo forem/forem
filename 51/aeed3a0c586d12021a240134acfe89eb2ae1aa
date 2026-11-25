@@ -1,0 +1,89 @@
+app/controllers/admin/feed_configs_controller.rb
+  s_ec7b7b3eb43adb::t_c25b2c4a4a3f89 64-65
+app/controllers/feed_config_visits_controller.rb
+  s_ec7b7b3eb43adb::t_d7b1412218c090 1-28
+app/controllers/stories/feeds_controller.rb
+  s_ec7b7b3eb43adb::t_715a89978385b6 19-21,30-33,78,131-141
+app/javascript/articles/Feed.jsx
+  s_ec7b7b3eb43adb::t_c60d60a62c2215 2,7,23-24,27-28,57-59,79-83,99,101-116,118-142,144-158,160-161,166-179,355
+app/javascript/articles/__tests__/Feed.test.jsx
+  s_ec7b7b3eb43adb::t_38fe17f366d0a0 2,43-157
+app/javascript/articles/__tests__/feedConfigVisits.test.js
+  s_ec7b7b3eb43adb::t_1e8a5a1c73fad3 1-269
+app/javascript/articles/feedConfigVisits.js
+  s_ec7b7b3eb43adb::t_0a67bc77a93533 1-129
+app/javascript/packs/feedEvents.js
+  s_ec7b7b3eb43adb::t_e56d03acdf308d 1-2
+app/javascript/utilities/createEventId.js
+  s_ec7b7b3eb43adb::t_5fc6f93f07a7db 1-10
+app/lib/constants/settings/user_experience.rb
+  s_ec7b7b3eb43adb::t_e1022350e6c426 42-50
+app/models/feed_config.rb
+  s_ec7b7b3eb43adb::t_9a4e6c08648c4b 4,145-148,174-186,370-371
+app/models/feed_config_assignment.rb
+  s_ec7b7b3eb43adb::t_a18aa125dfb269 1-17
+app/models/feed_event.rb
+  s_ec7b7b3eb43adb::t_fc977798f2a838 128,132-134,136,197
+app/models/feed_event_receipt.rb
+  s_ec7b7b3eb43adb::t_dd37e024ac895f 1
+app/models/settings/user_experience.rb
+  s_ec7b7b3eb43adb::t_9c65e0bbdff7f7 21-29
+app/services/feeds/record_config_visit.rb
+  s_ec7b7b3eb43adb::t_49a26965758fbe 1-76
+app/services/feeds/sticky_config.rb
+  s_ec7b7b3eb43adb::t_dad0a186ce080e 1-37
+app/views/admin/feed_configs/index.html.erb
+  s_ec7b7b3eb43adb::t_11adcc25ae2ea0 133,167
+app/views/admin/feed_configs/show.html.erb
+  s_ec7b7b3eb43adb::t_0788d489583b64 53-56
+app/views/admin/settings/forms/_user_experience.html.erb
+  s_ec7b7b3eb43adb::t_330f064131b155 24-34
+config/locales/lib/en.yml
+  s_ec7b7b3eb43adb::t_ef5496fefaea16 257-267
+config/locales/lib/fr.yml
+  s_ec7b7b3eb43adb::t_455b5f036f5562 257-267
+config/locales/lib/pt.yml
+  s_ec7b7b3eb43adb::t_aede4cea14edaf 257-267
+config/routes.rb
+  s_ec7b7b3eb43adb::t_55a1412f84df75 325
+db/migrate/20261102120000_add_sticky_feed_config_assignments.rb
+  s_ec7b7b3eb43adb::t_6431a4e9ee59f1 1-29
+db/schema.rb
+  s_ec7b7b3eb43adb::t_7648294bec6bdd 13,836-849,863,866,2340-2342
+docs/analytics/feed_impressions.md
+  s_ec7b7b3eb43adb::t_d4753583531836 3-81
+spec/factories/feed_config_assignments.rb
+  s_ec7b7b3eb43adb::t_075ded1501689f 1-8
+spec/models/feed_config_spec.rb
+  s_ec7b7b3eb43adb::t_5ae7626939fd55 490-493,501-503,783-798
+spec/models/feed_event_spec.rb
+  s_ec7b7b3eb43adb::t_65dddab451c413 321-357
+spec/models/settings/user_experience_spec.rb
+  s_ec7b7b3eb43adb::t_22b7a4232527c8 7-39
+spec/requests/admin/configs_spec.rb
+  s_ec7b7b3eb43adb::t_58377c6966c1cf 638-651
+spec/requests/feed_config_visits_spec.rb
+  s_ec7b7b3eb43adb::t_694446e18cd977 1-199
+spec/requests/stories/feeds_spec.rb
+  s_ec7b7b3eb43adb::t_52334728b63acf 18-106
+spec/requests/stories_index_spec.rb
+  s_ec7b7b3eb43adb::t_46ee94aa1316b3 20-38
+spec/services/feeds/sticky_config_spec.rb
+  s_ec7b7b3eb43adb::t_9b68875554120a 1-261
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "51aeed3a0c586d12021a240134acfe89eb2ae1aa",
+  "prompts": {},
+  "sessions": {
+    "s_ec7b7b3eb43adb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19c69-6dea-7933-a9b9-0558a8ea9cae",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

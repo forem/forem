@@ -1,0 +1,44 @@
+app/controllers/admin/audience_segments_controller.rb
+  h_f968154a99632d 99-101,115-120,122-123,126-127,138-143,148,150-156,186-189,192-193,195-196
+app/controllers/admin/emails_controller.rb
+  h_f968154a99632d 26,31,38-42,45,62,70-75,77-80
+app/models/audience_segment.rb
+  h_f968154a99632d 108
+app/services/segmented_users/user_identifier_parser.rb
+  h_f968154a99632d 11,40,43,65,78,146,154-155,157,159
+app/views/admin/audience_segments/show.html.erb
+  h_f968154a99632d 87-94,96-103,105-141,150-164
+app/views/admin/emails/_form.html.erb
+  h_f968154a99632d 13
+app/views/admin/emails/show.html.erb
+  h_f968154a99632d 18
+config/locales/controllers/admin/en.yml
+  h_f968154a99632d 112-117
+config/locales/controllers/admin/fr.yml
+  h_f968154a99632d 112-117
+config/locales/controllers/admin/pt.yml
+  h_f968154a99632d 77-82
+config/routes/admin.rb
+  h_f968154a99632d 143
+spec/models/audience_segment_spec.rb
+  h_f968154a99632d 138-139,144-148
+spec/requests/admin/audience_segments_spec.rb
+  h_f968154a99632d 87-97,195-207,227-236,239,250,256-275,300-301,311-321
+spec/requests/admin/emails_spec.rb
+  h_f968154a99632d 52-59,200-206
+spec/services/segmented_users/user_identifier_parser_spec.rb
+  h_f968154a99632d 66-88
+spec/workers/emails/enqueue_custom_batch_send_worker_spec.rb
+  h_f968154a99632d 53-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a38f8be9595afe952759179f5463e8035d9f1070",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+app/controllers/billboard_events_controller.rb
+  h_f968154a99632d 10,18-19,34-35,37-42,45,47-52,55
+app/services/articles/get_user_stickies.rb
+  h_f968154a99632d 5,7,14
+app/services/articles/page_view_updater.rb
+  h_f968154a99632d 19-22
+app/services/articles/suggest_stickies.rb
+  h_f968154a99632d 44,69,74
+app/services/edge_cache/bust_article.rb
+  h_f968154a99632d 26-28,42-43,49-51,57,75-77
+app/workers/articles/update_page_views_worker.rb
+  h_f968154a99632d 25,27,30-31,35-36,38-39,41,43-48,51-91
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 54,56,58-59
+spec/services/articles/get_user_stickies_spec.rb
+  h_f968154a99632d 56,58-70,72,74-75
+spec/services/articles/page_view_updater_spec.rb
+  h_f968154a99632d 10,12-14,16
+spec/services/articles/suggest_stickies_spec.rb
+  h_f968154a99632d 90,92-101
+spec/services/edge_cache/bust_article_spec.rb
+  h_f968154a99632d 78-99
+spec/workers/articles/update_page_views_worker_spec.rb
+  h_f968154a99632d 91-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "51c9491b5bcbbd213d24fcd0d55de28c3fe63d78",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

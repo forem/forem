@@ -1,0 +1,16 @@
+gems/forem_native/crates/forem_core/src/billboard_html.rs
+  h_f968154a99632d 320-324,653-656,1016-1036,1241-1246,1791-1812
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 11467-11471
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3e0236af2a31f017aa63a91d81e1dd0bc8ba9ec3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

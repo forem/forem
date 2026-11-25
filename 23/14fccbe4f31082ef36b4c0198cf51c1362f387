@@ -1,0 +1,20 @@
+db/migrate/20261125150100_add_indexes_to_event_memberships.rb
+  h_f968154a99632d 4-38,41-49,55-86,88-92
+db/migrate/20261125150200_validate_foreign_keys_on_event_memberships.rb
+  h_f968154a99632d 2-68
+spec/lib/migrations/add_indexes_to_event_memberships_spec.rb
+  h_f968154a99632d 1-146
+spec/lib/migrations/validate_foreign_keys_on_event_memberships_spec.rb
+  h_f968154a99632d 1-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2314fccbe4f31082ef36b4c0198cf51c1362f387",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

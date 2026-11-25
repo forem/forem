@@ -1,0 +1,18 @@
+config/locales/en.yml
+  h_f968154a99632d 271
+config/locales/fr.yml
+  h_f968154a99632d 310
+config/locales/pt.yml
+  h_f968154a99632d 302
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6cf43f6703a8a2897568619ebafa23dbd623ac8b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

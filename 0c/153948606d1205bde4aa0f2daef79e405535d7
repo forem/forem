@@ -1,0 +1,20 @@
+app/controllers/admin/permissions_controller.rb
+  h_f968154a99632d 159
+app/helpers/admin/permissions_helper.rb
+  h_f968154a99632d 24-27,55
+spec/helpers/admin/permissions_helper_spec.rb
+  h_f968154a99632d 5,7,9-13,16-17,19,22,41-51,55-58,67-68,70-74,83-93
+spec/requests/admin/permissions_spec.rb
+  h_f968154a99632d 529-645
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0c153948606d1205bde4aa0f2daef79e405535d7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

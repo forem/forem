@@ -1,0 +1,20 @@
+spec/initializers/mlh_omniauth_setup_spec.rb
+  s_1f0ef0afa958d1::t_11b5a1f6936bba 44-45,48-52,54-57
+  s_1f0ef0afa958d1::t_acc348ddeca2c7 6-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9462d0f29c51dc3811a755b14d2f76b2bc031853",
+  "prompts": {},
+  "sessions": {
+    "s_1f0ef0afa958d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "30b0a1d3-2de5-4bfd-abc2-973b13619dd3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

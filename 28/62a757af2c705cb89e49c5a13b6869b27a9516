@@ -1,0 +1,41 @@
+spec/requests/admin/community_leaders_spec.rb
+  s_bb1e6f72e5c99d::t_061818aad2c0ee 1-36
+app/services/articles/feeds/leadership.rb
+  s_bb1e6f72e5c99d::t_40e746733fa867 1-26
+config/locales/views/admin/fr.yml
+  s_bb1e6f72e5c99d::t_63e44804a15f6a 554-563
+app/services/community_leaders/impact_leaderboard.rb
+  s_bb1e6f72e5c99d::t_6c960117a08df0 1-12,17-27,34-48,55,60,63-71,73-75
+  s_bb1e6f72e5c99d::t_ac67123ce70c67 13-16,28-33,49-54,56-58,61-62,72
+  s_bb1e6f72e5c99d::t_40829256532bda 59
+config/routes/admin.rb
+  s_bb1e6f72e5c99d::t_0705a1f2eeb3f7 109
+spec/services/articles/feeds/leadership_spec.rb
+  s_bb1e6f72e5c99d::t_eecf5feb4067b3 1-53
+spec/services/community_leaders/impact_leaderboard_spec.rb
+  s_bb1e6f72e5c99d::t_f785148bf7f354 1-76
+config/locales/views/admin/pt.yml
+  s_bb1e6f72e5c99d::t_5888934ce381d9 451-460
+app/controllers/admin/community_leaders_controller.rb
+  s_bb1e6f72e5c99d::t_5ee33e427c42d7 1-25
+app/views/admin/community_leaders/index.html.erb
+  s_bb1e6f72e5c99d::t_3718dda2d5e62d 1-35
+config/locales/views/admin/en.yml
+  s_bb1e6f72e5c99d::t_dbb76f79ac7064 565-574
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "2862a757af2c705cb89e49c5a13b6869b27a9516",
+  "prompts": {},
+  "sessions": {
+    "s_bb1e6f72e5c99d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8b3bd2ea-dd1f-470a-b878-0d75561be60e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+app/assets/javascripts/initializers/initScrolling.js
+  h_f968154a99632d 336-338
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 51-54,337-348
+app/javascript/__tests__/feedEvents.test.js
+  h_f968154a99632d 2,353-411
+app/javascript/articles/Feed.jsx
+  h_f968154a99632d 91-105,125-129,139,143-159,172-173,180,189,192,200,223-236,253-269
+app/javascript/articles/QuickiesBox.jsx
+  h_f968154a99632d 173,187-192
+app/javascript/articles/__tests__/Feed.test.jsx
+  h_f968154a99632d 663-713
+app/javascript/packs/feedEvents.js
+  h_f968154a99632d 350-380
+app/javascript/packs/storiesList.js
+  h_f968154a99632d 58-86
+app/models/feed_config.rb
+  h_f968154a99632d 13-16,25-32,41-45,84,98-111,214-218,300,793-798
+app/models/feed_event.rb
+  h_f968154a99632d 27,34,257-265,279-280
+app/services/feeds/sticky_config.rb
+  h_f968154a99632d 5-6,8,19-21,38,57,72
+db/migrate/20261105144500_add_context_type_to_feed_config_assignments.rb
+  h_f968154a99632d 1-5
+db/migrate/20261105144501_update_unique_indexes_on_feed_config_assignments.rb
+  h_f968154a99632d 1-26
+db/schema.rb
+  h_f968154a99632d 13,837,848-849
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 1159-1176,1178-1182,1187,1191-1198
+spec/services/feeds/sticky_config_spec.rb
+  h_f968154a99632d 142,146-152,156-169,331-337,339-346
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f648b25900cf331db407f37d077838ac17d54c06",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

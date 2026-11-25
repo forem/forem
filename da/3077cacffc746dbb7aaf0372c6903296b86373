@@ -1,0 +1,21 @@
+app/workers/emails/send_user_digest_worker.rb
+  s_7d090fe663c96a::t_66fdba8288ef80 11-19
+spec/workers/emails/send_user_digest_worker_spec.rb
+  s_7d090fe663c96a::t_71ba0ead2c34c6 34-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "da3077cacffc746dbb7aaf0372c6903296b86373",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

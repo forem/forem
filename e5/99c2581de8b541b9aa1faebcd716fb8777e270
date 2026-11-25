@@ -1,0 +1,20 @@
+app/services/feeds/import.rb
+  h_f968154a99632d 178-182,213-214,263-267,291-315
+app/services/feeds/resolve_author.rb
+  h_f968154a99632d 52,54
+spec/services/feeds/import_spec.rb
+  h_f968154a99632d 446-499
+spec/services/feeds/resolve_author_spec.rb
+  h_f968154a99632d 160-168,182-183,185-187,190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e599c2581de8b541b9aa1faebcd716fb8777e270",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

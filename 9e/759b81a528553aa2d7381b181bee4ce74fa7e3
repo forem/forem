@@ -1,0 +1,14 @@
+app/views/articles/chat.html.erb
+  h_f968154a99632d 695-700,706-709,711,714-718,726,730-732,735,744-745,751-752,992,1006-1011,1029-1041,1044-1045,1047-1070,1185-1188,1190,1193,1201-1202,1347,1355,1369
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9e759b81a528553aa2d7381b181bee4ce74fa7e3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

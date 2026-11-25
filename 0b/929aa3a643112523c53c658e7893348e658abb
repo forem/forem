@@ -1,0 +1,57 @@
+app/controllers/rating_votes_controller.rb
+  s_dbe798b300b456::t_823c4a65f5b010 7,28-30,32-51,54
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  s_dbe798b300b456::t_13b00e476ff1dd 148-149,153-155
+app/models/billboard_event.rb
+  s_dbe798b300b456::t_8cbb3fff3a2fc5 96-97
+app/models/media_store.rb
+  s_dbe798b300b456::t_e80b8e1611f4c8 11-12
+app/services/articles/creator.rb
+  s_dbe798b300b456::t_65b8ea87d1cbaa 3,105-106
+app/services/articles/deadlock_retry.rb
+  s_dbe798b300b456::t_f2afc4c41d7bf3 1-24
+app/services/articles/enrich_image_attributes.rb
+  s_dbe798b300b456::t_487fa110eba8fa 18-19,111-112,123
+app/services/articles/updater.rb
+  s_dbe798b300b456::t_9f7980f5e5c777 3,44-45
+app/services/content_renderer.rb
+  s_dbe798b300b456::t_b457203a450dd0 34-35
+app/services/delivery_methods/customer_io.rb
+  s_dbe798b300b456::t_fec0cadcc3efa7 24-25,46-50
+app/services/delivery_methods/customer_io_event.rb
+  s_dbe798b300b456::t_b8c7e2c96992ec 29-33,43
+app/uploaders/article_image_uploader.rb
+  s_dbe798b300b456::t_c65cfc261cf3d3 1-3,5-10,18-21,26-69,78-79,81-82,84,86,90,94-132
+app/workers/push_notifications/deliver_worker.rb
+  s_dbe798b300b456::t_d179718175c565 7-12,17,19,21-22
+config/initializers/acts_as_taggable_on.rb
+  s_dbe798b300b456::t_d672e2f22626c8 10-11,39-40,63-64
+config/initializers/rpush.rb
+  s_dbe798b300b456::t_36d4fe7f3fab6e 11-12,48-49
+config/initializers/timeout.rb
+  s_dbe798b300b456::t_4a4e5192426a5d 67-68,106
+spec/requests/rating_votes_spec.rb
+  s_dbe798b300b456::t_c9325cbaa4e9cb 52,64-78
+spec/services/delivery_methods/customer_io_event_spec.rb
+  s_dbe798b300b456::t_b1f602b0e044d6 95-96,98-136,139-148
+spec/services/delivery_methods/customer_io_spec.rb
+  s_dbe798b300b456::t_240ee81e479db4 205-208,218,221-255
+spec/workers/push_notifications/deliver_worker_spec.rb
+  s_dbe798b300b456::t_c97c8b5b0b97bb 22-61,65-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b929aa3a643112523c53c658e7893348e658abb",
+  "prompts": {},
+  "sessions": {
+    "s_dbe798b300b456": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5bf901bf-ac4f-4368-8a96-6baac65d665d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

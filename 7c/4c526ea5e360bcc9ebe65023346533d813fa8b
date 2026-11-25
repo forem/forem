@@ -1,0 +1,94 @@
+app/assets/stylesheets/ltags/LiquidTags.scss
+  h_f968154a99632d 13
+app/assets/stylesheets/ltags/PageTag.scss
+  h_f968154a99632d 1-214
+app/controllers/admin/pages_controller.rb
+  h_f968154a99632d 11
+app/controllers/dashboards_controller.rb
+  h_f968154a99632d 18,191-194
+app/controllers/organization_embeds_controller.rb
+  h_f968154a99632d 40,43,58,62-63,65,68,71-91,94,100,110,113,118,121,123-125,134-136
+app/controllers/user_embed_pages_controller.rb
+  h_f968154a99632d 1-111
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 11,286
+app/javascript/packs/articlePage.jsx
+  h_f968154a99632d 2,159
+app/javascript/utilities/__tests__/pageEmbedFullscreen.test.js
+  h_f968154a99632d 1-106
+app/javascript/utilities/pageEmbedFullscreen.js
+  h_f968154a99632d 1-131
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 12,62-98,177,180,217,229,233-234,238-239,241-242,244-271,273,275-276,279,285,287,289,295,345,370,400,410-411,425-428,435-440
+app/models/page.rb
+  h_f968154a99632d 6-7,18,23,96,153-170,179,184-187,197,199,248,254-255,258-259,261-263
+app/models/settings/rate_limit.rb
+  h_f968154a99632d 36-37
+app/models/user.rb
+  h_f968154a99632d 131,364-371,939-954,1370-1372
+app/services/edge_cache/bust_page.rb
+  h_f968154a99632d 3,8,21-26
+app/services/rate_limit_checker.rb
+  h_f968154a99632d 16-17
+app/views/admin/pages/index.html.erb
+  h_f968154a99632d 26-33,39,43-46
+app/views/dashboards/_actions.html.erb
+  h_f968154a99632d 126-136
+app/views/dashboards/_actions_mobile.html.erb
+  h_f968154a99632d 9-11
+app/views/dashboards/_header_and_action.html.erb
+  h_f968154a99632d 1,8,10-21,26,34,40,46,52,58,64,77,83,93-100,111,137
+app/views/liquids/_page.html.erb
+  h_f968154a99632d 1-36,38-42,44
+app/views/user_embed_pages/_form.html.erb
+  h_f968154a99632d 1-132
+app/views/user_embed_pages/edit.html.erb
+  h_f968154a99632d 1-11
+app/views/user_embed_pages/index.html.erb
+  h_f968154a99632d 1-59
+app/views/user_embed_pages/new.html.erb
+  h_f968154a99632d 1-11
+app/workers/pages/bust_cache_worker.rb
+  h_f968154a99632d 3,7-8
+config/locales/models/en.yml
+  h_f968154a99632d 117-118,120-123
+config/locales/models/fr.yml
+  h_f968154a99632d 116-117,119-122
+config/locales/models/pt.yml
+  h_f968154a99632d 116-117,119-122
+config/locales/views/dashboard/en.yml
+  h_f968154a99632d 18,21,36-48
+config/locales/views/dashboard/fr.yml
+  h_f968154a99632d 17-18,20-21,36-48
+config/locales/views/dashboard/pt.yml
+  h_f968154a99632d 17-18,20-21,36-48
+config/routes.rb
+  h_f968154a99632d 572-574
+db/migrate/20261112120000_add_user_id_to_pages.rb
+  h_f968154a99632d 1-13
+db/migrate/20261112120100_add_index_to_pages_user_id.rb
+  h_f968154a99632d 1-18
+db/migrate/20261112120200_validate_user_id_on_pages.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,1409,1414,2381
+lib/data_update_scripts/20261112120000_add_user_embed_pages_feature_flag.rb
+  h_f968154a99632d 1-8
+spec/lib/data_update_scripts/add_user_embed_pages_feature_flag_spec.rb
+  h_f968154a99632d 1-13
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 233-383
+spec/requests/user_embed_pages_spec.rb
+  h_f968154a99632d 1-370
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7c4c526ea5e360bcc9ebe65023346533d813fa8b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+app/models/billboard.rb
+  h_f968154a99632d 696-697
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "adbdb9129616a4914950b1a54a37c44a6d7ed028",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+gems/forem_native/crates/forem_core/src/social_image/decode.rs
+  h_f968154a99632d 45-83,117-118,125,162,170,251,253
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ebf785de6bb4ea69cc3c5b783dbda3df7964dea7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

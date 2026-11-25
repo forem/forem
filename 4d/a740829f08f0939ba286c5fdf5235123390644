@@ -1,0 +1,24 @@
+app/models/concerns/liquid_embeddable.rb
+  h_f968154a99632d 69,71-77,83-90,97
+app/models/liquid_embed_reference.rb
+  h_f968154a99632d 3,7-27,58-81,95,97-98,100-102,105,107,112-113,118-127,129-133,136,138-141,143-147,149-164,167-193,195-197,199,203,206-214,218-238,240-244,248
+app/workers/articles/update_dependent_embeds_worker.rb
+  h_f968154a99632d 9-11,13,31,35,54,56,59-70,79,93-104,118-119,125-126,143,145,157-165,179,186-222,231-235,237-243,245-249,251-259,321,325,327-333,335-337,339-341,343-345,347-349,351-358,362-394
+app/workers/sync_liquid_embed_references_worker.rb
+  h_f968154a99632d 46
+spec/models/liquid_embed_reference_spec.rb
+  h_f968154a99632d 3,6,14-25,47,66-88
+spec/workers/articles/update_dependent_embeds_worker_spec.rb
+  h_f968154a99632d 58-97,339-378
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4da740829f08f0939ba286c5fdf5235123390644",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

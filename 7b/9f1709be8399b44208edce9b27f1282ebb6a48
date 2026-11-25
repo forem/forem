@@ -1,0 +1,87 @@
+app/workers/emails/merge_email_keyed_customerio_profiles_worker.rb
+  s_6b97fb5f790bb3::t_76508121b086c9 1-26
+spec/workers/emails/merge_email_keyed_customerio_profiles_worker_spec.rb
+  s_6b97fb5f790bb3::t_a8cfb9b66671a1 1-34
+spec/lib/data_update_scripts/merge_email_keyed_customerio_profiles_spec.rb
+  s_6b97fb5f790bb3::t_de4966de68033c 3
+  s_6b97fb5f790bb3::t_939b339e4cf197 15
+  s_6b97fb5f790bb3::t_ced24765d0a0e7 7,9-10,16,19-20,25
+lib/data_update_scripts/20260923030000_merge_email_keyed_customerio_profiles.rb
+  s_6b97fb5f790bb3::t_3c98124f4ef793 8-27
+spec/requests/mlh_oauth_callbacks_spec.rb
+  s_6f4c095b5c7bc3::t_aa8f178a76a65e 89-120
+app/controllers/omniauth_callbacks_controller.rb
+  s_6f4c095b5c7bc3::t_dc47519fa6cdf5 179,254-274
+app/assets/stylesheets/config/_colors.css
+  s_fee9952e8048f4::t_350e146facc868 404
+  s_fee9952e8048f4::t_b81bbc0554bf71 61-62,67,409-410
+  s_fee9952e8048f4::t_815ae8d83fc1a9 411
+  s_fee9952e8048f4::t_1a372ec81886ef 46
+app/assets/stylesheets/components/dropdowns.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 14
+app/assets/stylesheets/config/_variables.scss
+  s_fee9952e8048f4::t_156a5c3505b3cf 37-41,48,56-57
+app/assets/stylesheets/base/typography.scss
+  s_fee9952e8048f4::t_2fda69fb2014ed 47-58
+app/assets/stylesheets/components/header.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 11
+app/assets/stylesheets/components/stories.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 50,54-60,124,217,242
+app/assets/stylesheets/components/links.scss
+  s_fee9952e8048f4::t_b6e46f8131c35c 17-18,45-48
+  s_fee9952e8048f4::t_9539fd37c79e92 43-44
+app/assets/stylesheets/themes/dark.css
+  s_fee9952e8048f4::t_3e4c5add0e44b7 404
+  s_fee9952e8048f4::t_b81bbc0554bf71 77-78,83
+  s_fee9952e8048f4::t_350e146facc868 400
+app/assets/stylesheets/components/forms.scss
+  s_fee9952e8048f4::t_350e146facc868 22
+app/assets/stylesheets/components/modals.scss
+  s_fee9952e8048f4::t_c63e3ce36a70a8 229,255,288,326
+app/assets/stylesheets/components/cards.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 7,15
+app/assets/stylesheets/views/article.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 36-38
+app/assets/stylesheets/base/reset.scss
+  s_fee9952e8048f4::t_2fda69fb2014ed 40-42
+app/assets/stylesheets/components/ctas.scss
+  s_fee9952e8048f4::t_b6e46f8131c35c 23-24
+app/views/sidebars/_homepage_content.html.erb
+  s_fee9952e8048f4::t_e60815333038fd 2
+app/assets/stylesheets/base/layout.scss
+  s_fee9952e8048f4::t_e60815333038fd 210-229
+app/views/articles/index.html.erb
+  s_fee9952e8048f4::t_e60815333038fd 74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7b9f1709be8399b44208edce9b27f1282ebb6a48",
+  "prompts": {},
+  "sessions": {
+    "s_6b97fb5f790bb3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b6961385-84f2-410e-87d1-75974e7139b7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_6f4c095b5c7bc3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8af965a0-f9d9-49ce-a606-a0f91e3fda39",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_fee9952e8048f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5bc6aa76-d7ec-40dc-90c5-498a7b21b853",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

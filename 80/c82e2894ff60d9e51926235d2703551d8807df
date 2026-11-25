@@ -1,0 +1,16 @@
+app/mailers/verification_mailer.rb
+  h_f968154a99632d 38-40
+spec/mailers/verification_mailer_spec.rb
+  h_f968154a99632d 122-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "80c82e2894ff60d9e51926235d2703551d8807df",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

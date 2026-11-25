@@ -1,0 +1,48 @@
+app/assets/javascripts/initializers/initializeBillboardVisibility.js
+  h_f968154a99632d 37,110
+app/controllers/ahoy/email_clicks_controller.rb
+  h_f968154a99632d 51-52
+app/controllers/billboard_events_controller.rb
+  h_f968154a99632d 64,66
+app/controllers/incoming_webhooks/stripe_events_controller.rb
+  h_f968154a99632d 79
+app/javascript/__tests__/billboardImpressionBotGate.test.js
+  h_f968154a99632d 81,83-84,91-102
+app/javascript/packs/billboardAfterRenderActions.js
+  h_f968154a99632d 194,267
+app/services/billboard_event_rollup.rb
+  h_f968154a99632d 3
+app/workers/billboards/track_email_click_worker.rb
+  h_f968154a99632d 13,16,27-28
+config/initializers/ahoy_messages_controller_monkeypatch.rb
+  h_f968154a99632d 10
+db/migrate/20261023120000_add_user_agent_to_display_ad_events.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,676
+spec/controllers/billboard_events_controller_spec.rb
+  h_f968154a99632d 30-35
+spec/requests/ahoy/email_clicks_spec.rb
+  h_f968154a99632d 35-37,43-45
+spec/requests/ahoy/external_email_clicks_spec.rb
+  h_f968154a99632d 24,26-28,32
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 49-96,106-110,115
+spec/requests/incoming_webhooks/stripe/stripe_events_spec.rb
+  h_f968154a99632d 15-16,68
+spec/services/billboard_event_rollup_spec.rb
+  h_f968154a99632d 149-160
+spec/workers/billboards/track_email_click_worker_spec.rb
+  h_f968154a99632d 1-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0bc71199d789ae3f8923124433ad449834ba3a36",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

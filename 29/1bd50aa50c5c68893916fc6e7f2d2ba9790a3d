@@ -1,0 +1,48 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 186-192,209,230,343,345-347,350-352,355,363,392,412-414,616-624,645-648,650,652,654,664,678,684-687,1004,1006,1008,1013-1017,1019-1024,1060
+app/assets/javascripts/subforemSelectionModal.js
+  h_f968154a99632d 9-10
+app/javascript/packs/application.jsx
+  h_f968154a99632d 128-132,140-152,155-159,171,174-175,191-195,236-238,273-276
+app/javascript/packs/honeybadgerClient.js
+  h_f968154a99632d 2-4
+app/javascript/utilities/__tests__/animatedImageUtils.test.jsx
+  h_f968154a99632d 1-101
+app/javascript/utilities/__tests__/honeybadgerSanitizer.test.js
+  h_f968154a99632d 1-203
+app/javascript/utilities/__tests__/instantClickNavigation.test.js
+  h_f968154a99632d 1-273
+app/javascript/utilities/animatedImageUtils.jsx
+  h_f968154a99632d 7-8,10-12,21-35,38-90,96,98,100-103,105-109,111-113,115-116,136,138-151
+app/javascript/utilities/honeybadgerSanitizer.js
+  h_f968154a99632d 1-222
+app/views/devise/registrations/_registration_form.html.erb
+  h_f968154a99632d 91-95,101-110
+app/views/layouts/_bottom_scripts.html.erb
+  h_f968154a99632d 17
+app/views/layouts/_main_side_bar.html.erb
+  h_f968154a99632d 47,163
+app/views/layouts/_user_config.html.erb
+  h_f968154a99632d 13,16,29-31
+app/views/layouts/application.html.erb
+  h_f968154a99632d 119-143
+app/views/magic_links/create.html.erb
+  h_f968154a99632d 32-38,40-55
+app/views/shared/_subforem_selection_modal.html.erb
+  h_f968154a99632d 45
+app/views/users/confirm_destroy.html.erb
+  h_f968154a99632d 34-46
+spec/requests/instant_click_layout_scripts_spec.rb
+  h_f968154a99632d 1-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "291bd50aa50c5c68893916fc6e7f2d2ba9790a3d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

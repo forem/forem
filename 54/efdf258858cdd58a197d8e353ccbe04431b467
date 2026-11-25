@@ -1,0 +1,14 @@
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 140,143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "54efdf258858cdd58a197d8e353ccbe04431b467",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

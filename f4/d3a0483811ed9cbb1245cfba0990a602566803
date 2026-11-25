@@ -1,0 +1,31 @@
+app/services/feeds/resolve_author.rb
+  fb06c9a920648eec 24-35,43,53
+spec/services/feeds/import_spec.rb
+  fb06c9a920648eec 111-140
+app/services/feeds/import.rb
+  fb06c9a920648eec 97,304-316
+app/services/feeds/validate_url.rb
+  fb06c9a920648eec 15-16
+spec/services/feeds/resolve_author_spec.rb
+  fb06c9a920648eec 16-61,63-84,87,90-91,94,97-100,103,106-108,111,154-182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "f4d3a0483811ed9cbb1245cfba0990a602566803",
+  "prompts": {
+    "fb06c9a920648eec": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "cd885abc-b90a-4177-994d-e209933b5944",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 174,
+      "total_deletions": 28,
+      "accepted_lines": 174,
+      "overriden_lines": 0
+    }
+  }
+}

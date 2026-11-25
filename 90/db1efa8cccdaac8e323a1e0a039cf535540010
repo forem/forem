@@ -1,0 +1,24 @@
+app/controllers/magic_links_controller.rb
+  h_f968154a99632d 2-3,5-7,84
+spec/requests/magic_links_spec.rb
+  h_f968154a99632d 119,240-251,253-264,267-272
+app/views/magic_links/create.html.erb
+  h_f968154a99632d 28
+app/models/user.rb
+  h_f968154a99632d 936
+app/views/mailers/verification_mailer/magic_link.html.erb
+  h_f968154a99632d 45
+spec/requests/rack_attack_magic_links_spec.rb
+  h_f968154a99632d 6,39,43,50,55,65,68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90db1efa8cccdaac8e323a1e0a039cf535540010",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

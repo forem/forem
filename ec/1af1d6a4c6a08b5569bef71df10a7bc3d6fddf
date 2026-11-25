@@ -1,0 +1,44 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 38,53,149
+app/services/images/generate_social_image_magickally.rb
+  h_f968154a99632d 254-258,260,264,268,274,278,320,322-323,329,334-335,342,351,355,359,363,368,561,563,567-568,574-577
+gems/forem_native/Cargo.lock
+  h_f968154a99632d 5-10,35,44-69,96-104,111-145,149-155,165-173,180-189,241,256-275,286-304,314-319,350,359-372,426-456,468-489,496-501,507-571
+gems/forem_native/crates/forem_core/Cargo.toml
+  h_f968154a99632d 12-20
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 23
+gems/forem_native/crates/forem_core/src/social_image/canvas.rs
+  h_f968154a99632d 1-233
+gems/forem_native/crates/forem_core/src/social_image/card.rs
+  h_f968154a99632d 1-639
+gems/forem_native/crates/forem_core/src/social_image/decode.rs
+  h_f968154a99632d 1-347
+gems/forem_native/crates/forem_core/src/social_image/draw.rs
+  h_f968154a99632d 1-776
+gems/forem_native/crates/forem_core/src/social_image/filter.rs
+  h_f968154a99632d 1-468
+gems/forem_native/crates/forem_core/src/social_image/mod.rs
+  h_f968154a99632d 1-57
+gems/forem_native/crates/forem_core/src/social_image/text.rs
+  h_f968154a99632d 1-1003
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2-3,5,9,3632-4159,4545-4604
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1398-1537,1540-1546
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 6180-6289
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_f968154a99632d 240,254,260,286-288,296,303,307,312,525-527,530,536-538,545,549,564,575,585-587,590,600,603,607,614,616,628-629,632,637-638,644,650,683,690-692,698-699,705,712,720,738-739,749,755-756,770
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ec1af1d6a4c6a08b5569bef71df10a7bc3d6fddf",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

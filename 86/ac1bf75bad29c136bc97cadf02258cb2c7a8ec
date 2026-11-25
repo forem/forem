@@ -1,0 +1,23 @@
+app/models/user.rb
+  s_d5201375061060::t_bab40104d269dd 1231-1233
+app/workers/spam/domain_detector_worker.rb
+  s_d5201375061060::t_1da0c9fde97f4d 1-14
+spec/models/user_spam_detection_spec.rb
+  s_d5201375061060::t_f12f93cb84343f 20,26,32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "86ac1bf75bad29c136bc97cadf02258cb2c7a8ec",
+  "prompts": {},
+  "sessions": {
+    "s_d5201375061060": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc09e331-90ef-494e-8f9d-c9f39fbfae5a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

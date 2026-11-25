@@ -1,0 +1,14 @@
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 895-896
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc54749385eb7dc174095b2e32af04fddb93aa97",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

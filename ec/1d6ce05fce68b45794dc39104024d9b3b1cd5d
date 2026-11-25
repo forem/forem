@@ -1,0 +1,22 @@
+app/services/articles/suggest_stickies.rb
+  h_f968154a99632d 29-31,36,41,48,62
+db/migrate/20261022140000_add_suggest_stickies_index_to_articles.rb
+  h_f968154a99632d 1-60
+db/schema.rb
+  h_f968154a99632d 13,264
+spec/requests/stories_performance_fix_spec.rb
+  h_f968154a99632d 21
+spec/services/articles/suggest_stickies_spec.rb
+  h_f968154a99632d 7,11,17,103-156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ec1d6ce05fce68b45794dc39104024d9b3b1cd5d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

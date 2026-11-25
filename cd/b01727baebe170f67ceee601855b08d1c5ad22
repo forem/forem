@@ -1,0 +1,21 @@
+docs/local_redis_cache.md
+  s_f831849363d5ae::t_3a0cb00bf71208 177-180,186-187
+spec/lib/local_redis/connection_spec.rb
+  s_f831849363d5ae::t_3a0cb00bf71208 11-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cdb01727baebe170f67ceee601855b08d1c5ad22",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

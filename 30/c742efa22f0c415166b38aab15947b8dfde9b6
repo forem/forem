@@ -1,0 +1,70 @@
+config/locales/views/main/en.yml
+  h_c527e33bbdbde8 36
+spec/decorators/user_decorator_spec.rb
+  h_c527e33bbdbde8 80-81,91-92,103-104,114-115,126-127,140,250
+config/locales/views/main/pt.yml
+  h_c527e33bbdbde8 35
+spec/services/articles/feeds/engagement_candidates_spec.rb
+  h_c527e33bbdbde8 1-46
+app/decorators/user_decorator.rb
+  h_c527e33bbdbde8 112
+app/views/leadership_dashboards/_discussion_row.html.erb
+  h_c527e33bbdbde8 1-22
+config/routes.rb
+  h_c527e33bbdbde8 520-522
+app/views/leadership_dashboards/_curation.html.erb
+  h_c527e33bbdbde8 1-17
+config/locales/views/leadership/fr.yml
+  h_c527e33bbdbde8 1-17
+app/services/favorites/fetch.rb
+  h_c527e33bbdbde8 1-66
+config/locales/views/leadership/en.yml
+  h_c527e33bbdbde8 1-17
+app/assets/stylesheets/scaffolds.scss
+  h_c527e33bbdbde8 112-119
+spec/models/user_spec.rb
+  s_1e049bdc81f15e::t_200517095efa6d 1010,1019,1028,1037
+app/controllers/leadership_dashboards_controller.rb
+  h_c527e33bbdbde8 1-32
+app/views/leadership_dashboards/show.html.erb
+  h_c527e33bbdbde8 1-16
+spec/requests/leadership_dashboards_spec.rb
+  h_c527e33bbdbde8 1-102
+spec/services/favorites/fetch_spec.rb
+  h_c527e33bbdbde8 1-83
+app/views/layouts/_nav_menu.html.erb
+  h_c527e33bbdbde8 27-29
+config/locales/views/leadership/pt.yml
+  h_c527e33bbdbde8 1-17
+app/views/leadership_dashboards/_favorited_row.html.erb
+  h_c527e33bbdbde8 1-28
+config/locales/views/main/fr.yml
+  h_c527e33bbdbde8 35
+app/services/articles/feeds/engagement_candidates.rb
+  h_c527e33bbdbde8 1-23
+app/views/leadership_dashboards/_nav_menu.html.erb
+  h_c527e33bbdbde8 1-33
+app/views/leadership_dashboards/_discussion.html.erb
+  h_c527e33bbdbde8 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "30c742efa22f0c415166b38aab15947b8dfde9b6",
+  "prompts": {},
+  "humans": {
+    "h_c527e33bbdbde8": {
+      "author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}

@@ -1,0 +1,19 @@
+spec/services/articles/destroyer_spec.rb
+  s_8de33eb8f08f1e::t_e730d0e923eeda 13-16,19,23-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0df871b571dd91e075878c0f7a1151a2b0963fe9",
+  "prompts": {},
+  "sessions": {
+    "s_8de33eb8f08f1e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e4ed8cd7-7072-43bf-ac74-729e2990cb08",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

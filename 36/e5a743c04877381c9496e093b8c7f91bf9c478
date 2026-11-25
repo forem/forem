@@ -1,0 +1,42 @@
+app/services/ai/editor_helper_service.rb
+  h_a5e25bc086eb00 70
+app/views/articles/_v2_form.html.erb
+  h_a5e25bc086eb00 186
+app/views/organization_settings/edit.html.erb
+  h_a5e25bc086eb00 866
+app/views/pages/_editor_guide_text.en.html.erb
+  h_a5e25bc086eb00 14
+app/views/pages/_editor_guide_text.fr.html.erb
+  h_a5e25bc086eb00 14
+app/views/pages/_editor_guide_text.pt.html.erb
+  h_a5e25bc086eb00 14
+app/views/pages/_editor_liquid_help.fr.html.erb
+  h_a5e25bc086eb00 64,69,72,78,80,84,88,91,96,99,105-106,109,111-112,119,121,124,129-130
+app/views/pages/_editor_liquid_help.pt.html.erb
+  h_a5e25bc086eb00 64,69,72,78,80,84,88,91,96,99,105-106,109,111-112,119,121,124,129-130
+app/views/pages/_supported_nonurl_embeds_list.fr.html.erb
+  h_a5e25bc086eb00 14,18,22,30,32,36,38,41,43,46,48-49,52,54-55,59,61,64,66-67
+app/views/pages/_supported_nonurl_embeds_list.pt.html.erb
+  h_a5e25bc086eb00 14,18,22,30,32,36,38,41,43,46,48-49,52,54-55,59,61,64,66-67
+app/views/pages/_supported_url_embeds_list.en.html.erb
+  h_a5e25bc086eb00 50
+app/views/pages/_supported_url_embeds_list.fr.html.erb
+  h_a5e25bc086eb00 1-2,42,44-45,47-52
+app/views/pages/_supported_url_embeds_list.pt.html.erb
+  h_a5e25bc086eb00 1-2,42,44-45,47-52
+app/views/pages/_v1_editor_guide_preamble.fr.html.erb
+  h_a5e25bc086eb00 3-5,11,15-20,30,32-39
+app/views/pages/_v1_editor_guide_preamble.pt.html.erb
+  h_a5e25bc086eb00 3-5,11,15-20,30,32-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "36e5a743c04877381c9496e093b8c7f91bf9c478",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

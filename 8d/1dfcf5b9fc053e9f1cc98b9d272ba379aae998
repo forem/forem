@@ -1,0 +1,16 @@
+app/javascript/article-form/components/__tests__/Form.test.jsx
+  h_a5e25bc086eb00 122,148-149
+app/views/pages/_editor_guide_text.en.html.erb
+  h_a5e25bc086eb00 18-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8d1dfcf5b9fc053e9f1cc98b9d272ba379aae998",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

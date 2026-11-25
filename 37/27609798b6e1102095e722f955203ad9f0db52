@@ -1,0 +1,50 @@
+config/locales/views/moderations/fr.yml
+  s_1e049bdc81f15e::t_66b2d8030962de 162-163
+app/views/admin/comments/_comment.html.erb
+  s_1e049bdc81f15e::t_94efcc92455e46 52-59
+config/locales/controllers/admin/pt.yml
+  s_1e049bdc81f15e::t_c3e1e5f62c1290 8-10
+config/locales/controllers/admin/fr.yml
+  s_1e049bdc81f15e::t_42ec3e9a1f0aff 43-45
+app/controllers/admin/articles_controller.rb
+  s_1e049bdc81f15e::t_08bae674fa2b51 95-97,99-103
+  s_1e049bdc81f15e::t_fe0c859c21a3f9 98
+config/locales/views/moderations/pt.yml
+  s_1e049bdc81f15e::t_68245a28fc3a37 163-164
+config/routes/admin.rb
+  s_1e049bdc81f15e::t_b9e153b8933467 95
+  s_1e049bdc81f15e::t_6bc36ed572a7ac 109-113
+config/locales/views/moderations/en.yml
+  s_1e049bdc81f15e::t_c1c9fbc799e450 163-164
+spec/services/favorites/remove_spec.rb
+  s_1e049bdc81f15e::t_f9807b3767f968 3
+  s_1e049bdc81f15e::t_91de1df1a39113 1-2
+  s_1e049bdc81f15e::t_4baa9f337787e3 4-6
+app/controllers/admin/comments_controller.rb
+  s_1e049bdc81f15e::t_f989b7b950e77e 35
+  s_1e049bdc81f15e::t_9907dba4b38d0c 32-34,36-40
+app/views/admin/articles/_article_item.html.erb
+  s_1e049bdc81f15e::t_44c86da6406399 127-134
+config/locales/controllers/admin/en.yml
+  s_1e049bdc81f15e::t_a213995402b5f3 43-45
+app/services/favorites/remove.rb
+  s_1e049bdc81f15e::t_8e213aaa86bccb 3
+  s_1e049bdc81f15e::t_c3b8d22dd2d301 1-2
+  s_1e049bdc81f15e::t_01c996b7548dfc 4-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "3727609798b6e1102095e722f955203ad9f0db52",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}

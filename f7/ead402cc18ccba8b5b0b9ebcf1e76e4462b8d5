@@ -1,0 +1,20 @@
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 283-287,324,327
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2291-2304,2345,2348,2562,2565
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 4848,4889-4894,4906-4914
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 311-326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f7ead402cc18ccba8b5b0b9ebcf1e76e4462b8d5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

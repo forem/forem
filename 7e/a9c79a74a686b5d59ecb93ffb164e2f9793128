@@ -1,0 +1,17 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "7ea9c79a74a686b5d59ecb93ffb164e2f9793128",
+  "prompts": {},
+  "sessions": {
+    "s_bb1e6f72e5c99d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8b3bd2ea-dd1f-470a-b878-0d75561be60e",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

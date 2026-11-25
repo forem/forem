@@ -1,0 +1,54 @@
+app/javascript/__tests__/asyncUserStatusCheck.test.js
+  h_f968154a99632d 75-86
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 2-5,83-124,184,217,227,259
+app/javascript/packs/asyncUserStatusCheck.js
+  h_f968154a99632d 4-7
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 9-13,42-53
+app/javascript/packs/followButtons.js
+  h_f968154a99632d 468-480
+app/javascript/packs/initializers/initializeNotifications.js
+  h_f968154a99632d 14-17,28,34-36,41-47
+app/javascript/packs/notificationPage.js
+  h_f968154a99632d 2-4,11-182,184-195,198
+app/javascript/packs/tagFollows.jsx
+  h_f968154a99632d 3,6,13-131,133-197,199-202,211
+app/javascript/utilities/__tests__/debounceAction.test.js
+  h_f968154a99632d 1-58
+app/javascript/utilities/__tests__/getUserDataAndCsrfToken.test.js
+  h_f968154a99632d 38,134-146
+app/javascript/utilities/debounceAction.js
+  h_f968154a99632d 2,5,18-83
+app/javascript/utilities/getUserDataAndCsrfToken.js
+  h_f968154a99632d 122-130
+app/liquid_tags/twitter_timeline_tag.rb
+  h_f968154a99632d 10-18
+app/views/articles/_full_comment_area.html.erb
+  h_f968154a99632d 73-75
+app/views/articles/show.html.erb
+  h_f968154a99632d 320
+app/views/comments/_form.html.erb
+  h_f968154a99632d 2,51-56,58-63,65-70
+app/views/comments/index.html.erb
+  h_f968154a99632d 92-95,208-210
+app/views/notifications/index.html.erb
+  h_f968154a99632d 67
+app/views/users/show.html.erb
+  h_f968154a99632d 181-194
+spec/liquid_tags/twitter_timeline_tag_spec.rb
+  h_f968154a99632d 38-44
+spec/requests/favorites_spec.rb
+  h_f968154a99632d 124,132-139
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c0b2efd060142354d7d9f142eb5a83f9e72fba84",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

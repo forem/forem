@@ -1,0 +1,46 @@
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_f968154a99632d 399,495-501,511-512
+app/assets/stylesheets/components/stories.scss
+  h_f968154a99632d 13-59,184-191,193,197-229,327-328,330-331,337-344,346-347,349,351-358,361-367,370,381-383,405-406,409-417,420-421,430,433-440,636-779
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 225-230,233-253,256,261
+app/javascript/articles/Article.jsx
+  h_f968154a99632d 2,12-13,34-50,55-61,79-87,96,124-126,143-160,206-213,219,221-231,271-280,282-290
+app/javascript/articles/Feed.jsx
+  h_f968154a99632d 407-411,415
+app/javascript/articles/__tests__/Article.test.jsx
+  h_f968154a99632d 3,20,324-473
+app/javascript/articles/__tests__/utilities/articleUtilities.js
+  h_f968154a99632d 415-446
+app/javascript/articles/components/CommentsCount.jsx
+  h_f968154a99632d 6-12,25-62,117-118
+app/javascript/articles/components/ContentTitle.jsx
+  h_f968154a99632d 4-7,9-10,12-22,24-54
+app/javascript/articles/components/Meta.jsx
+  h_f968154a99632d 88-117
+app/javascript/articles/components/QuickieCommentSection.jsx
+  h_f968154a99632d 1-298
+app/javascript/articles/components/QuickieReactions.jsx
+  h_f968154a99632d 1-348
+app/javascript/articles/components/index.js
+  h_f968154a99632d 8-9
+app/views/articles/_quickie_form.html.erb
+  h_f968154a99632d 4-15,24,26,39-40,43
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 1,121-127,231-235
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 488-499
+spec/views/articles/_single_story.html.erb_spec.rb
+  h_f968154a99632d 88-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb01aaf7a9dec6257558b232a525cb6753d7758e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

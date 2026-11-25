@@ -1,0 +1,21 @@
+app/controllers/concerns/caching_headers.rb
+  s_cf83192a7509c5::t_4820a8ba27f288 47,56-57,76
+spec/requests/stories_index_spec.rb
+  s_cf83192a7509c5::t_0b962243aa9d5d 589,593-625
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4d9cf138264e81318f9a896998e11416cd046994",
+  "prompts": {},
+  "sessions": {
+    "s_cf83192a7509c5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "233839b6-5731-4055-834e-f569ce1c6f85",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

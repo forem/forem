@@ -1,0 +1,52 @@
+app/controllers/api/v0/articles_controller.rb
+  h_f968154a99632d 8,14,16
+app/controllers/api/v0/comments_controller.rb
+  h_f968154a99632d 6,8
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 8,11
+app/controllers/api/v1/billboards_controller.rb
+  h_f968154a99632d 43-54,57-65
+app/controllers/api/v1/comments_controller.rb
+  h_f968154a99632d 6
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 70-90,93-105
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 166-187,190-224
+app/controllers/concerns/api/comments_controller.rb
+  h_f968154a99632d 49-61
+app/models/billboard.rb
+  h_f968154a99632d 503-516,660
+config/routes.rb
+  h_f968154a99632d 92,97,107-109
+config/routes/api.rb
+  h_f968154a99632d 11,22-26
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 2333-2401
+spec/requests/api/v1/billboards_spec.rb
+  h_f968154a99632d 186-212
+spec/requests/api/v1/comments_spec.rb
+  h_f968154a99632d 338-364
+spec/requests/api/v1/docs/articles_spec.rb
+  h_f968154a99632d 666-725
+spec/requests/api/v1/docs/billboards_spec.rb
+  h_f968154a99632d 266-327
+spec/requests/api/v1/docs/comments_spec.rb
+  h_f968154a99632d 93-143
+spec/requests/api/v1/docs/pages_spec.rb
+  h_f968154a99632d 257-314
+spec/requests/api/v1/pages_spec.rb
+  h_f968154a99632d 452-518
+swagger/v1/api_v1.json
+  h_f968154a99632d 1251-1325,2175-2272,2375-2426,4221-4283
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a81880e856f8afb1c85f0e683cf5c24dd7b7d8bc",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

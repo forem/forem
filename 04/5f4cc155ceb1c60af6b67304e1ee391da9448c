@@ -1,0 +1,18 @@
+app/models/article.rb
+  h_f968154a99632d 577,591,2185-2187
+app/models/settings/base.rb
+  h_f968154a99632d 29-30
+spec/models/async_info_spec.rb
+  h_f968154a99632d 82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "045f4cc155ceb1c60af6b67304e1ee391da9448c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

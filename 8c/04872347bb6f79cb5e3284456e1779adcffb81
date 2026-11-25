@@ -1,0 +1,54 @@
+app/services/feed_events/bulk_upsert.rb
+  s_dc9014473ae01a::t_a3440063e8d483 29,38-48,112-113
+app/workers/feed_events/feedback_worker.rb
+  s_dc9014473ae01a::t_a3440063e8d483 1-16
+spec/requests/feed_events_spec.rb
+  s_dc9014473ae01a::t_64ac4861cccf75 15-22,73-103
+  s_dc9014473ae01a::t_c4bb250b96b161 104
+app/javascript/packs/feedEvents.js
+  s_dc9014473ae01a::t_b9fb3ce4dfbf3a 54,238,241,272,283
+  s_dc9014473ae01a::t_a06f4ded61ea7c 273
+  s_dc9014473ae01a::t_b4e8b062b19555 5-7,53,55,125,129,186-192,198-237,239-240,242-246,248-253,266,271,274-282,284,287,294,296-307,310-313,317
+  s_dc9014473ae01a::t_4e4146a911b621 314-316
+spec/services/feed_events/bulk_upsert_spec.rb
+  s_dc9014473ae01a::t_64ac4861cccf75 7-12,54,235,238,357-391,403-423
+  s_dc9014473ae01a::t_eb95756c62b141 244,248
+  s_dc9014473ae01a::t_480d92d8830da6 424
+spec/workers/feed_events/feedback_worker_spec.rb
+  s_dc9014473ae01a::t_64ac4861cccf75 1-11,13,25-30
+  s_dc9014473ae01a::t_3eadc84fc79986 12,14-24
+app/models/feed_event.rb
+  s_dc9014473ae01a::t_a3440063e8d483 198-204
+app/javascript/__tests__/feedEvents.test.js
+  s_dc9014473ae01a::t_91da3c72753342 188
+  s_dc9014473ae01a::t_b9fb3ce4dfbf3a 218-220,222,225,229-230,232-233,274-275,277,280-282,342-352
+  s_dc9014473ae01a::t_a06f4ded61ea7c 168,223,285,287,290-341
+  s_dc9014473ae01a::t_d005b7eb6ab570 13-14,50-51,114,217,221,224,226-228,231,234-273,276,278-279,283-284,286,288-289
+app/controllers/feed_events_controller.rb
+  s_dc9014473ae01a::t_91da3c72753342 21,23,37
+  s_dc9014473ae01a::t_a3440063e8d483 15-17,19-20,22,24-27,30,36,38
+  s_dc9014473ae01a::t_76c10bcb830ba0 39
+docs/analytics/feed_impressions.md
+  s_dc9014473ae01a::t_be4129ec47e89b 33-34,37-46,60-85,93-96,111-113,118-123
+  s_dc9014473ae01a::t_b9fb3ce4dfbf3a 35-36
+  s_dc9014473ae01a::t_69d62350d50a2c 124-125
+spec/workers/emails/send_user_digest_worker_spec.rb
+  s_dc9014473ae01a::t_a06f4ded61ea7c 344
+  s_dc9014473ae01a::t_f111cc85a6ceec 360-362
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8c04872347bb6f79cb5e3284456e1779adcffb81",
+  "prompts": {},
+  "sessions": {
+    "s_dc9014473ae01a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188d2-ba82-7bf1-8e44-f416e70d3e4f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

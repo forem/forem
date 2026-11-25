@@ -1,0 +1,54 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 178-373
+app/controllers/comments_controller.rb
+  h_f968154a99632d 246,264-266,398
+app/controllers/events_controller.rb
+  h_f968154a99632d 3-7,11-12,127,131,135-147
+app/helpers/comments_helper.rb
+  h_f968154a99632d 30,62
+app/models/comment.rb
+  h_f968154a99632d 15,403
+app/models/concerns/algolia_searchable/searchable_comment.rb
+  h_f968154a99632d 38
+app/models/notification.rb
+  h_f968154a99632d 113-114,156
+app/policies/comment_policy.rb
+  h_f968154a99632d 98
+app/services/ai/comment_check.rb
+  h_f968154a99632d 86,196
+app/views/events/_event_articles.html.erb
+  h_f968154a99632d 2,16,18-24,26-74,76-95
+app/views/events/challenge.html.erb
+  h_f968154a99632d 228
+app/views/events/gathering.html.erb
+  h_f968154a99632d 142
+app/views/events/show.html.erb
+  h_f968154a99632d 63
+config/locales/views/events/en.yml
+  h_f968154a99632d 66-76
+config/locales/views/events/fr.yml
+  h_f968154a99632d 65-76
+config/locales/views/events/pt.yml
+  h_f968154a99632d 66-76
+db/migrate/20261119161000_add_allow_articles_to_events.rb
+  h_f968154a99632d 1,3,8
+spec/models/event_spec.rb
+  h_f968154a99632d 510-511,517,519,521,523,526-529,532-533,535,537,539,541,546,550,552,563,567,569
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 191,193,196,198,238-239,246,282
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 215,217
+spec/requests/events_spec.rb
+  h_f968154a99632d 225,250-277
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4599ace2c00b8bf783dde39d71cac0d4a5dec045",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

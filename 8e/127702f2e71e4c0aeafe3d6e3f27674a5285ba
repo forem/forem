@@ -1,0 +1,24 @@
+app/controllers/ai_chats_controller.rb
+  h_f968154a99632d 26,28-31
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 269,274,278,288-310
+app/services/ai/editor_helper_service.rb
+  h_f968154a99632d 3-57,61-67,71,75,82-110,115-117,120-126,137-198,200-395,397-424,426-443,446-450,452-459,462-463,465-466,468-469,471-1166
+app/views/ai_chats/_chat_interface.html.erb
+  h_f968154a99632d 31,35,71-92,104-112,118
+spec/controllers/ai_chats_controller_spec.rb
+  h_f968154a99632d 3,70,75-105
+spec/services/ai/editor_helper_service_spec.rb
+  h_f968154a99632d 11,16-18,22-23,25,34-56,58-382
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8e127702f2e71e4c0aeafe3d6e3f27674a5285ba",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

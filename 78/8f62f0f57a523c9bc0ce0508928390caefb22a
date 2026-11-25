@@ -1,0 +1,20 @@
+app/helpers/comments_helper.rb
+  h_f968154a99632d 8-10,121-127
+app/views/articles/_comments_actions.html.erb
+  h_f968154a99632d 10-11,13
+spec/helpers/comments_helper_spec.rb
+  h_f968154a99632d 97-148
+spec/requests/stories_show_spec.rb
+  h_f968154a99632d 254-289
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "788f62f0f57a523c9bc0ce0508928390caefb22a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

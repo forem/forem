@@ -1,0 +1,16 @@
+spec/controllers/feeds/xml_imports_controller_spec.rb
+  h_a5e25bc086eb00 1-64
+spec/services/feeds/check_item_previously_imported_spec.rb
+  h_a5e25bc086eb00 1-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "237e27b9081e4706f9fd8c3da109c02e9f623971",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

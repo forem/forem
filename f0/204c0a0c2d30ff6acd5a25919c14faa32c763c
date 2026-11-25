@@ -1,0 +1,18 @@
+config/environments/production.rb
+  h_f968154a99632d 43-44
+config/initializers/assets.rb
+  h_f968154a99632d 3-28,32
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 1-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f0204c0a0c2d30ff6acd5a25919c14faa32c763c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

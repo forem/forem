@@ -1,0 +1,30 @@
+bin/knapsack_pro_rspec
+  h_f968154a99632d 14-20,23-25
+spec/requests/discussion_locks_spec.rb
+  h_f968154a99632d 81-147
+spec/requests/podcasts/podcast_episodes_index_spec.rb
+  h_f968154a99632d 10-21,23-25,28-33
+spec/requests/podcasts/podcast_episodes_show_spec.rb
+  h_f968154a99632d 9,12-63
+spec/requests/stories/articles_by_timeframe_spec.rb
+  h_f968154a99632d 3,26-28,30-32,34-36,38,40-69,72,75-86
+spec/requests/user/user_destroy_spec.rb
+  h_f968154a99632d 141-143,145,149-150,153,158-160
+spec/support/ci/schema_railtie.rb
+  h_f968154a99632d 16-43
+spec/system/organization/user_views_an_organization_spec.rb
+  h_f968154a99632d 14,76,103
+spec/system/user/view_user_index_spec.rb
+  h_f968154a99632d 17,54-65,74,95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7e515b3968c46df3793c15d759cf44886aeff6a2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

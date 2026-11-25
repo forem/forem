@@ -1,0 +1,23 @@
+config/locales/views/users/fr.yml
+  s_1e049bdc81f15e::t_aa8f783977d781 60-64
+app/views/users/_sidebar.html.erb
+  s_1e049bdc81f15e::t_aa8f783977d781 52,66-71
+config/locales/views/users/en.yml
+  s_1e049bdc81f15e::t_aa8f783977d781 60-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1f33f48583d70b7727d3ac8575f8b96ae209d247",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

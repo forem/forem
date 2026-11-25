@@ -1,0 +1,22 @@
+app/controllers/api/v0/articles_controller.rb
+  h_f968154a99632d 11-12
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 10
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 239-240,243,327-331
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 1374-1384
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 2352-2374
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4a76b9c5bf3ace3a008c88b29157736081b6c4fb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 180-181,198
+docs/rust_native_extensions.md
+  h_f968154a99632d 37
+scripts/build_forem_native_linux.sh
+  h_f968154a99632d 2-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0ab75fbac85405783adcc8d7bc6b93d6d5448d31",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

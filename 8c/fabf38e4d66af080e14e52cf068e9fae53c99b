@@ -1,0 +1,30 @@
+app/models/billboard_campaign.rb
+  h_f968154a99632d 58
+app/services/billboards/campaign_pacing.rb
+  h_f968154a99632d 39,41,69-74,77-87,104-109
+app/services/billboards/traffic_profile.rb
+  h_f968154a99632d 151-152,154
+app/workers/billboards/titrate_campaign_impressions_worker.rb
+  h_f968154a99632d 33,37-38,50-66,110,178-182,204
+db/migrate/20261120160000_add_ideal_daily_impressions_to_billboard_campaigns.rb
+  h_f968154a99632d 3-7
+lib/memory_first_cache.rb
+  h_f968154a99632d 49-60
+spec/services/billboards/campaign_pacing_spec.rb
+  h_f968154a99632d 208-224,254-277,279
+spec/services/billboards/traffic_profile_spec.rb
+  h_f968154a99632d 110-128
+spec/workers/billboards/titrate_campaign_impressions_worker_spec.rb
+  h_f968154a99632d 130-182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8cfabf38e4d66af080e14e52cf068e9fae53c99b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

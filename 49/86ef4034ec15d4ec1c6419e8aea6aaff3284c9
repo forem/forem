@@ -1,0 +1,28 @@
+spec/requests/api/v0/mobile_auth_spec.rb
+  s_3c0a181bee957c::t_0aacad1e227159 219-220
+  s_3c0a181bee957c::t_87ecdf6f405494 205-206
+  s_3c0a181bee957c::t_6c708e29c6b9c9 218,221,223
+  s_3c0a181bee957c::t_eab70f88dad8a9 37-40,98-101,108-109,156,163,203
+  s_3c0a181bee957c::t_eb0af41c1b3cfb 95-97,102-107,110-112,149-155,157-162,164-202,204,207-217,222,224-225
+  s_3c0a181bee957c::t_b91323b6265ee5 226
+app/controllers/api/v0/mobile_auth_controller.rb
+  s_3c0a181bee957c::t_f101d39727ca54 108-111,113-114
+  s_3c0a181bee957c::t_eab70f88dad8a9 112,159
+  s_3c0a181bee957c::t_036bc1b5de09b3 157-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4986ef4034ec15d4ec1c6419e8aea6aaff3284c9",
+  "prompts": {},
+  "sessions": {
+    "s_3c0a181bee957c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be724a0e-0581-401b-a9e5-218e9fd3ded2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

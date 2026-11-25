@@ -1,0 +1,24 @@
+app/models/profile.rb
+  h_f968154a99632d 84
+app/services/ai/profile_moderation_labeler.rb
+  h_f968154a99632d 72-80,83,95-99,107-108,158-171,204-208,227,241-258
+app/services/spam/handler.rb
+  h_f968154a99632d 464-467
+spec/models/profile_spec.rb
+  h_f968154a99632d 146,152-165
+spec/services/ai/profile_moderation_labeler_spec.rb
+  h_f968154a99632d 17-51,62,66-82
+spec/services/spam/handler_spec.rb
+  h_f968154a99632d 1228-1242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ea2c80cbb7ef7f7572ae9c79e4e90883735a7903",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 283-289
+gems/forem_native/crates/forem_core/src/redcarpet.rs
+  h_f968154a99632d 385,535-536,870-905
+lib/tasks/forem_native.rake
+  h_f968154a99632d 103,2860-2927
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 11723-11725,11761-11763
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0deee44168dcd14ee7595d79b99aad1eaa7f2eb4",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

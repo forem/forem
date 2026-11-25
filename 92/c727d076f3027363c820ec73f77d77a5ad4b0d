@@ -1,0 +1,24 @@
+app/assets/stylesheets/base/layout.scss
+  h_f968154a99632d 217,261
+app/assets/stylesheets/preact/onboarding-modal.scss
+  h_f968154a99632d 77,397
+app/assets/stylesheets/views/dashboard.scss
+  h_f968154a99632d 218
+config/environments/production.rb
+  h_f968154a99632d 48
+lib/tasks/post_precompile_assets.rake
+  h_f968154a99632d 1-11
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 18-22,54-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "92c727d076f3027363c820ec73f77d77a5ad4b0d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

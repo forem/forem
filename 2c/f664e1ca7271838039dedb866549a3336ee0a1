@@ -1,0 +1,29 @@
+spec/services/edge_cache/bust_spec.rb
+  s_790a4d6601ee2b::t_e4ae9939bbad0b 92-93
+  s_790a4d6601ee2b::t_b0a87b94b10f72 91,94-122
+app/services/edge_cache/bust/fastly.rb
+  s_790a4d6601ee2b::t_e4ae9939bbad0b 51
+  s_790a4d6601ee2b::t_56fc908f41f894 15-17,37-50,52-54
+  s_790a4d6601ee2b::t_ed2bca03c51880 55
+app/services/edge_cache/bust_organization.rb
+  s_790a4d6601ee2b::t_56fc908f41f894 6-10
+spec/services/edge_cache/bust_organization_spec.rb
+  s_790a4d6601ee2b::t_b0a87b94b10f72 12,21-24
+  s_790a4d6601ee2b::t_eea9f60196ee88 25-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2cf664e1ca7271838039dedb866549a3336ee0a1",
+  "prompts": {},
+  "sessions": {
+    "s_790a4d6601ee2b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "daf2ddf1-6aa2-4807-b62c-4dd508850dd9",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

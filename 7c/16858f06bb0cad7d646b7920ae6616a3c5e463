@@ -1,0 +1,19 @@
+app/assets/stylesheets/views/organizations_showcase.scss
+  s_836ff945145894::t_b4d115c7f7a60b 207-214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7c16858f06bb0cad7d646b7920ae6616a3c5e463",
+  "prompts": {},
+  "sessions": {
+    "s_836ff945145894": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d2062a72-a5ab-4ca2-b465-45d9687c8610",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

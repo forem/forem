@@ -1,0 +1,28 @@
+swagger/v1/api_v1.json
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 6,5247,5265-5267,6016-6019
+  s_e2c0a862c0c53d::t_20db4e868226b5 6020
+spec/requests/api/v1/docs/users_spec.rb
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 14-21,54-66,68-76
+  s_e2c0a862c0c53d::t_0dd9f6b894a697 67
+  s_e2c0a862c0c53d::t_3513c5e929a3df 77-79
+spec/swagger_helper.rb
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 26-29,41
+docs/delegated_access.md
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 34-39,73-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "05f0940e625b6d39deb64c8869751b9c084ef21d",
+  "prompts": {},
+  "sessions": {
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

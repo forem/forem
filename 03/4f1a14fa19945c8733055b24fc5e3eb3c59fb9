@@ -1,0 +1,39 @@
+lib/data_update_scripts/20260807000000_resave_articles_for_community_leaders.rb
+  s_1e049bdc81f15e::t_2403ec1ce14897 1-14
+spec/services/favorites/create_spec.rb
+  s_1e049bdc81f15e::t_e328a1fc8983c1 124-185
+  s_1e049bdc81f15e::t_4c6506831a48b8 123
+spec/services/community_leaders/prune_inactive_spec.rb
+  s_1e049bdc81f15e::t_304198fc796e4c 7-8,13,17-24,74-100,105,135
+  s_1e049bdc81f15e::t_1c53d505ecaba3 102,104,120,126-134
+  s_1e049bdc81f15e::t_d9b87c959c3f0b 101,103,106,136
+app/services/community_leaders/prune_inactive.rb
+  s_1e049bdc81f15e::t_7547885364ae52 7-10,22,36-45,47,50-52,55,57-61,64-69
+app/services/favorites/create.rb
+  s_1e049bdc81f15e::t_477e1062aa983a 108-109
+  s_1e049bdc81f15e::t_bb6c7064bf2d67 44-46,48-52,58-59,61-66,73-84
+  s_1e049bdc81f15e::t_1a1ec2736b53e5 95-97
+  s_1e049bdc81f15e::t_a7eed7f2094b92 85-86
+spec/workers/community_leaders/prune_inactive_worker_spec.rb
+  s_1e049bdc81f15e::t_5dfe84765ced90 10,14-20
+app/models/user.rb
+  s_1e049bdc81f15e::t_865fd0fdda9d1d 240-243
+spec/lib/data_update_scripts/resave_articles_for_community_leaders_spec.rb
+  s_1e049bdc81f15e::t_f047bd6e13022a 1-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "034f1a14fa19945c8733055b24fc5e3eb3c59fb9",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

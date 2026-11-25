@@ -1,0 +1,52 @@
+app/assets/javascripts/initializers/initializeBodyData.js
+  h_f968154a99632d 71-80
+app/assets/stylesheets/base/main.scss
+  h_f968154a99632d 18-21
+app/controllers/application_controller.rb
+  h_f968154a99632d 277-278,356-360
+app/controllers/stories_controller.rb
+  h_f968154a99632d 829
+app/liquid_tags/forem_tag.rb
+  h_f968154a99632d 23,53
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 1-320
+app/liquid_tags/unified_embed/registry.rb
+  h_f968154a99632d 30-41,63-68,70
+app/liquid_tags/unified_embed/tag.rb
+  h_f968154a99632d 29,33-35,37,44-78
+app/views/layouts/_user_config.html.erb
+  h_f968154a99632d 40-41
+app/views/layouts/application.html.erb
+  h_f968154a99632d 90,96,120-121,137,160-164,166-167,179,196-201,209
+app/views/liquids/_page.html.erb
+  h_f968154a99632d 1-12
+app/views/organizations/show_readme.html.erb
+  h_f968154a99632d 10-13
+app/views/pages/show.en.html.erb
+  h_f968154a99632d 20,24,46-49
+app/views/pages/show.fr.html.erb
+  h_f968154a99632d 20,24,46-49
+app/views/pages/show.pt.html.erb
+  h_f968154a99632d 20,24,46-49
+config/locales/liquid_tags/en.yml
+  h_f968154a99632d 83-84
+config/locales/liquid_tags/fr.yml
+  h_f968154a99632d 83-84
+config/locales/liquid_tags/pt.yml
+  h_f968154a99632d 83-84
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 1-167
+spec/requests/pages_spec.rb
+  h_f968154a99632d 581-666
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "12a5f6c2ab5dcb3107c122a45e9cf29625336744",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

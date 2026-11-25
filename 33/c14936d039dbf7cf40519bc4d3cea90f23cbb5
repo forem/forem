@@ -1,0 +1,36 @@
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 71,73,75
+app/models/feed_config.rb
+  h_f968154a99632d 78-81,173-185
+app/models/user.rb
+  h_f968154a99632d 546-552
+app/models/user_language.rb
+  h_f968154a99632d 5-12
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 14,17,22,32-33,61-63,67-68,72,75-88,107-111
+db/migrate/20260903120000_add_feed_lookback_index_to_articles.rb
+  h_f968154a99632d 1-21,8,22-27,28-33,34,35-48,49-53,54-56,57,58-60,61,62,63,64-65
+db/migrate/20260903120001_add_user_expires_at_index_to_recommended_articles_lists.rb
+  h_f968154a99632d 1-19,8,20-25,26-31,32,33-46,47-51,52-54,55,56-58,59,60,61,62-63
+db/schema.rb
+  h_f968154a99632d 13,262,1579
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 195-205
+spec/models/user_language_spec.rb
+  h_f968154a99632d 22-30,31,32-47
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 827-851
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 652-667
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "33c14936d039dbf7cf40519bc4d3cea90f23cbb5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

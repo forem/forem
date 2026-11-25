@@ -1,0 +1,19 @@
+spec/requests/api/v0/articles_spec.rb
+  s_91155b3c625ef9::t_2adbd2580e2b39 163-164,174-196,1608-1622
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "db0536f3db5fdc8bdb5b319b6f50e7800658b181",
+  "prompts": {},
+  "sessions": {
+    "s_91155b3c625ef9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1fab3-2b39-71f0-ba7b-fbb2aed68f91",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

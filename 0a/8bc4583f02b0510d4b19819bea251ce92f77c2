@@ -1,0 +1,20 @@
+app/mailers/verification_mailer.rb
+  h_f968154a99632d 38-39,57,60-67
+spec/mailers/previews/verification_mailer_preview.rb
+  h_f968154a99632d 9-11
+spec/mailers/verification_mailer_spec.rb
+  h_f968154a99632d 96-105,139-148
+spec/requests/magic_links_spec.rb
+  h_f968154a99632d 90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0a8bc4583f02b0510d4b19819bea251ce92f77c2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

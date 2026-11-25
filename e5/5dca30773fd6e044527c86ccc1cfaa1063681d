@@ -1,0 +1,80 @@
+.env.kamal.example
+  h_f968154a99632d 31
+.github/workflows/forem-native.yml
+  h_f968154a99632d 66
+.ruby-version
+  h_f968154a99632d 1
+Containerfile
+  h_f968154a99632d 1-71,180-181
+Gemfile.lock
+  h_f968154a99632d 1322
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 8-9,11-15,34-35,39,54,64-65,69-73,118-176,201-208,210,212-214,232-237,243-244,246-251,253,283-309,313,331-335,355-358
+app/models/event.rb
+  h_f968154a99632d 42,281-286,296-304,306,310-319,323-327
+app/models/page.rb
+  h_f968154a99632d 9,28,43,227-241
+app/services/html/parser.rb
+  h_f968154a99632d 24-31,49-50,111-118,121-131,137,151-152,242-243,376-403,408
+app/services/markdown_processor/parser.rb
+  h_f968154a99632d 64,135-136,307-379,383,387-392
+config/deploy.yml
+  h_f968154a99632d 166-168
+config/initializers/rack_attack.rb
+  h_f968154a99632d 12,61-64,66,70,81-82,148,157-158
+config/locales/models/en.yml
+  h_f968154a99632d 129
+config/locales/models/fr.yml
+  h_f968154a99632d 128
+config/locales/models/pt.yml
+  h_f968154a99632d 128
+docs/kamal-deployment.md
+  h_f968154a99632d 14,16-20,29,43,176,198-199
+gems/forem_native/crates/forem_core/src/html.rs
+  h_f968154a99632d 59,100,108,187,292,2059-3221,3338-3426
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 1927-2043,2830,5248-5267
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 13,844-904
+lib/tasks/forem_native.rake
+  h_f968154a99632d 86-91,1366-1453
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 516-587
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 4070-4079,4085-4088,4153-4296
+spec/models/event_spec.rb
+  h_f968154a99632d 484-496,499-504
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 1027-1030
+spec/models/page_spec.rb
+  h_f968154a99632d 106-138
+spec/requests/api/v1/docs/pages_spec.rb
+  h_f968154a99632d 30-33,44-46,55-62,78,83-89,103-105,165,193,244
+spec/requests/api/v1/pages_embed_html_spec.rb
+  h_f968154a99632d 1-518
+spec/requests/api/v1/pages_organization_page_management_spec.rb
+  h_f968154a99632d 115,118-119,121-122
+spec/requests/api/v1/pages_spec.rb
+  h_f968154a99632d 158,171-172,177-198
+spec/requests/organization_embeds_spec.rb
+  h_f968154a99632d 324-325,340,342-343
+spec/services/html/parser_spec.rb
+  h_f968154a99632d 460-522
+spec/services/markdown_processor/parser_spec.rb
+  h_f968154a99632d 1101-1174
+spec/swagger_helper.rb
+  h_f968154a99632d 336-337
+swagger/v1/api_v1.json
+  h_f968154a99632d 4081,4102-4113,4129-4131,4140,4175-4183,4244,4277,4326,7772-7776
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e55dca30773fd6e044527c86ccc1cfaa1063681d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

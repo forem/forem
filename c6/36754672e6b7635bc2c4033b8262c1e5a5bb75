@@ -1,0 +1,14 @@
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c636754672e6b7635bc2c4033b8262c1e5a5bb75",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

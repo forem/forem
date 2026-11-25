@@ -1,0 +1,23 @@
+app/services/spam/handler.rb
+  s_219345621af37a::t_97b6fca8bf0602 283-287,290-294,299,303-306,328-329,539
+spec/services/spam/handler_spec.rb
+  s_219345621af37a::t_97b6fca8bf0602 985-995,997-999,1025-1035
+  s_219345621af37a::t_d23f6d2d92f030 996
+  s_219345621af37a::t_65fe03153e7a51 1036
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "31b868f4bc1db5569201fe4bd2ee522f10642168",
+  "prompts": {},
+  "sessions": {
+    "s_219345621af37a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2cbef256-22bb-4006-b4eb-9b6aaafa4099",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

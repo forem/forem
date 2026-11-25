@@ -1,0 +1,18 @@
+app/assets/javascripts/initializers/initScrolling.js
+  h_f968154a99632d 105-142,148-162,168-197,206,293,296-299,309,382
+spec/system/dashboards/user_scrolls_down_dashboard_follows_spec.rb
+  h_f968154a99632d 32-34,36,40-43,60-78
+spec/system/videos/user_visits_videos_spec.rb
+  h_f968154a99632d 22,33-41,46-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1bb9f3db48d66bbaee6b6e65c82d0e767cab7977",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

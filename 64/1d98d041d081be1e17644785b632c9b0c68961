@@ -1,0 +1,19 @@
+app/models/admin_menu.rb
+  s_466a0b955e0e8c::t_c9126179fbcddd 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "641d98d041d081be1e17644785b632c9b0c68961",
+  "prompts": {},
+  "sessions": {
+    "s_466a0b955e0e8c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0273f7e6-6eef-4b6e-9c27-0ec6228e6bab",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

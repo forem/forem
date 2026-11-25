@@ -1,0 +1,22 @@
+app/javascript/article-form/components/EditorActions.jsx
+  h_f968154a99632d 4-7,162
+app/javascript/article-form/components/__tests__/EditorActions.test.jsx
+  h_f968154a99632d 1-48
+app/javascript/packs/CommentTextArea/CommentTextArea.jsx
+  h_f968154a99632d 92-112
+app/views/comments/_form.html.erb
+  h_f968154a99632d 3,5
+app/views/notifications/index.html.erb
+  h_f968154a99632d 69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7097f320b64293f4921e3f55bfc5c79ddf3acdb1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

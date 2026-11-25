@@ -1,0 +1,28 @@
+app/controllers/admin/tools_controller.rb
+  h_f968154a99632d 51-53
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 105
+app/controllers/stories/tagged_articles_controller.rb
+  h_f968154a99632d 79-84
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 104-105,293,295,299
+spec/requests/stories/feed_comment_preloading_spec.rb
+  h_f968154a99632d 23,25-28,85-86,95,106,140,156-157,187
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 132-133,141-142,144-145
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 1056-1075
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 256-283
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4eb2f84396f57142be2ec934255c89b2e8bebb1b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

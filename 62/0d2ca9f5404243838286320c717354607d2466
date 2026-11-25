@@ -1,0 +1,48 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 175
+app/helpers/application_helper.rb
+  h_f968154a99632d 503-504,603,608-609,612,614
+app/services/fastly_config/custom_domain_dictionary.rb
+  h_f968154a99632d 10-11,13-15,18,25,28-30,32-34,36-38,45-46,50,53-55,57-67,75-76,127-130,141-193,247-267,270-294,296-297
+app/services/fastly_config/dictionaries.rb
+  h_f968154a99632d 33-38
+app/services/fastly_config/snippets.rb
+  h_f968154a99632d 89,97,102-108
+app/views/layouts/_bottom_scripts.html.erb
+  h_f968154a99632d 27
+app/workers/organizations/sync_custom_domain_dictionary_worker.rb
+  h_f968154a99632d 10-23
+config/fastly/snippets/check_for_remember_user_token_in_cookie_to_set_header.vcl
+  h_f968154a99632d 73-77,84,90,93-97,101,133,140,175-176,186,211,243,250,267,277,285
+lib/flipper_org_custom_domain_sync.rb
+  h_f968154a99632d 3-4,7-11,15-19,23-27,31-35,40-47,55-58,64-78,82,90,98-104
+lib/tasks/fastly.rake
+  h_f968154a99632d 2-7,10,12-15,17-19,29
+spec/initializers/flipper_spec.rb
+  h_f968154a99632d 53,57-62,66-94
+spec/models/organization_custom_domain_dictionary_spec.rb
+  h_f968154a99632d 28-51
+spec/requests/custom_domain_auth_redirect_spec.rb
+  h_f968154a99632d 3,35-38,51,70
+spec/requests/org_custom_domain_spec.rb
+  h_f968154a99632d 262-277
+spec/services/fastly_config/custom_domain_dictionary_spec.rb
+  h_f968154a99632d 9,16,22,42,49-56,58,64-75,77,90-91,99-115,161-182,195-203
+spec/services/fastly_config/snippets_spec.rb
+  h_f968154a99632d 55-61
+spec/tasks/fastly_spec.rb
+  h_f968154a99632d 6,8,19,28,38-76
+spec/workers/organizations/sync_custom_domain_dictionary_worker_spec.rb
+  h_f968154a99632d 36-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "620d2ca9f5404243838286320c717354607d2466",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

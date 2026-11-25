@@ -1,0 +1,128 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 4-19
+app/assets/stylesheets/views/organizations_showcase.scss
+  h_f968154a99632d 6-7
+app/controllers/admin/event_pages_controller.rb
+  h_f968154a99632d 1-241
+app/controllers/admin/pages_controller.rb
+  h_f968154a99632d 11
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 12-15,224
+app/controllers/events_controller.rb
+  h_f968154a99632d 27-28,31-32,34-35,37,39-41,43-53,58-120,136,138,140-153,155
+app/controllers/organization_embeds_controller.rb
+  h_f968154a99632d 81-85,95-107
+app/controllers/pages_controller.rb
+  h_f968154a99632d 184
+app/helpers/events_helper.rb
+  h_f968154a99632d 98-130
+app/javascript/orgPageEditor/OrgPageEditor.jsx
+  h_f968154a99632d 11-16,145
+app/javascript/packs/orgPageEditor.jsx
+  h_f968154a99632d 4,14-24,34,38,48,57-63
+app/liquid_tags/page_tag.rb
+  h_f968154a99632d 100-107,246-249,254-290,418,443-444
+app/models/event.rb
+  h_f968154a99632d 14,37,196-223,226-239
+app/models/page.rb
+  h_f968154a99632d 19,25,39-40,51,93-100,112,137-140,142,145,147,163,173,194,211-224,241,262-269,318,325-326,329,332-334
+app/services/edge_cache/bust_page.rb
+  h_f968154a99632d 3,8,28-36
+app/views/admin/event_pages/_embed_form.html.erb
+  h_f968154a99632d 1-61
+app/views/admin/event_pages/_form.html.erb
+  h_f968154a99632d 1-138
+app/views/admin/event_pages/edit.html.erb
+  h_f968154a99632d 1-15
+app/views/admin/event_pages/index.html.erb
+  h_f968154a99632d 1-146
+app/views/admin/event_pages/new.html.erb
+  h_f968154a99632d 1-15
+app/views/admin/events/index.html.erb
+  h_f968154a99632d 34
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 6,102-146
+app/views/admin/pages/edit.html.erb
+  h_f968154a99632d 7-11
+app/views/admin/pages/index.html.erb
+  h_f968154a99632d 47-50
+app/views/events/_event_tabs.html.erb
+  h_f968154a99632d 1-57
+app/views/events/_signup_button.html.erb
+  h_f968154a99632d 1-24
+app/views/events/challenge.html.erb
+  h_f968154a99632d 22-23
+app/views/events/gathering.html.erb
+  h_f968154a99632d 36-37,96
+app/views/events/page.html.erb
+  h_f968154a99632d 1-88
+app/views/events/show.html.erb
+  h_f968154a99632d 30,35-36
+app/workers/pages/bust_cache_worker.rb
+  h_f968154a99632d 3,7-10
+config/locales/models/en.yml
+  h_f968154a99632d 125-126
+config/locales/models/fr.yml
+  h_f968154a99632d 124-125
+config/locales/models/pt.yml
+  h_f968154a99632d 124-125
+config/locales/views/admin/en.yml
+  h_f968154a99632d 772-796
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 763-787
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 671-695
+config/locales/views/events/en.yml
+  h_f968154a99632d 54-63
+config/locales/views/events/fr.yml
+  h_f968154a99632d 54-63
+config/locales/views/events/pt.yml
+  h_f968154a99632d 54-63
+config/routes.rb
+  h_f968154a99632d 218-220
+config/routes/admin.rb
+  h_f968154a99632d 174-182
+db/migrate/20261119120000_add_event_id_and_showcase_to_pages.rb
+  h_f968154a99632d 1-19
+db/migrate/20261119120100_add_index_to_pages_event_id.rb
+  h_f968154a99632d 1-25
+db/migrate/20261119120200_validate_event_id_on_pages.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,1396,1405,1414-1415,2387
+spec/liquid_tags/page_tag_spec.rb
+  h_f968154a99632d 421-438
+spec/models/event_spec.rb
+  h_f968154a99632d 416-445
+spec/models/page_spec.rb
+  h_f968154a99632d 421-481
+spec/requests/admin/event_pages_spec.rb
+  h_f968154a99632d 1-179
+spec/requests/api/v1/docs/pages_spec.rb
+  h_f968154a99632d 37-39,65-67,88-91
+spec/requests/api/v1/pages_spec.rb
+  h_f968154a99632d 97-116,269,292
+spec/requests/events_spec.rb
+  h_f968154a99632d 272-360
+spec/requests/organization_embeds_spec.rb
+  h_f968154a99632d 345-384
+spec/services/edge_cache/bust_page_spec.rb
+  h_f968154a99632d 68-88
+spec/swagger_helper.rb
+  h_f968154a99632d 343-350
+spec/workers/pages/bust_cache_worker_spec.rb
+  h_f968154a99632d 47-53
+swagger/v1/api_v1.json
+  h_f968154a99632d 4092-4101,4125,4175-4184,7768-7778
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6890f887d53251d2e2e80e17fa2d47ed84d72c50",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

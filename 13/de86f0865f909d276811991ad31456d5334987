@@ -1,0 +1,70 @@
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 140-142
+app/controllers/community_controller.rb
+  h_f968154a99632d 15-18,73
+app/controllers/registrations_controller.rb
+  h_f968154a99632d 9-10
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 269
+app/controllers/stories_controller.rb
+  h_f968154a99632d 55-57
+app/helpers/application_helper.rb
+  h_f968154a99632d 432,435-436
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 21-26
+app/lib/url.rb
+  h_f968154a99632d 99-100,113,127-128,186-187
+app/liquid_tags/feed_tag.rb
+  h_f968154a99632d 120
+app/mailers/application_mailer.rb
+  h_f968154a99632d 83-85,87,89
+app/mailers/devise_mailer.rb
+  h_f968154a99632d 124-126,128,130
+app/mailers/digest_mailer.rb
+  h_f968154a99632d 55-57
+app/mailers/notify_mailer.rb
+  h_f968154a99632d 398-399
+app/models/article.rb
+  h_f968154a99632d 577,581,585,591,595
+app/models/feed_config.rb
+  h_f968154a99632d 453-454,624,694
+app/models/settings/base.rb
+  h_f968154a99632d 28-35
+app/models/subforem.rb
+  h_f968154a99632d 68,78-84,119
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 230-232
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 228-234
+app/services/search/reading_list.rb
+  h_f968154a99632d 95
+app/services/users/email_footer_payload.rb
+  h_f968154a99632d 34
+app/workers/emails/drip_email_worker.rb
+  h_f968154a99632d 35
+app/workers/tags/resave_supported_tags_worker.rb
+  h_f968154a99632d 12
+spec/lib/url_spec.rb
+  h_f968154a99632d 206-213
+spec/models/article_spec.rb
+  h_f968154a99632d 475-477
+spec/models/settings/base_spec.rb
+  h_f968154a99632d 340-359
+spec/models/subforem_spec.rb
+  h_f968154a99632d 184-207
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 100-108
+spec/workers/tags/resave_supported_tags_worker_spec.rb
+  h_f968154a99632d 19-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "13de86f0865f909d276811991ad31456d5334987",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

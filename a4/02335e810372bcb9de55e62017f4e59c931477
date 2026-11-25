@@ -1,0 +1,32 @@
+app/controllers/async_info_controller.rb
+  h_f968154a99632d 55-61
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 47,57,194-198
+app/controllers/concerns/session_current_user.rb
+  h_f968154a99632d 22-56,60-69
+app/controllers/follows_controller.rb
+  h_f968154a99632d 12-13,16-18,45-46,49,139-145,148,150-154,156-157
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 20,22-26,67-85,89,92
+spec/requests/async_info_spec.rb
+  h_f968154a99632d 63-72
+spec/requests/follows_bulk_show_spec.rb
+  h_f968154a99632d 96-118
+spec/requests/follows_show_spec.rb
+  h_f968154a99632d 73-84
+spec/requests/notification_counts_spec.rb
+  h_f968154a99632d 8,14,16,24-51
+spec/requests/reactions_spec.rb
+  h_f968154a99632d 60,62,70-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a402335e810372bcb9de55e62017f4e59c931477",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

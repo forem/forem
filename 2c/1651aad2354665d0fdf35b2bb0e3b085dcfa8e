@@ -1,0 +1,50 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 176,200
+app/controllers/application_controller.rb
+  h_f968154a99632d 427,447,471-476
+app/controllers/articles_controller.rb
+  h_f968154a99632d 183,200-202
+app/models/feed_config.rb
+  h_f968154a99632d 57-60,251-258,345-346,386-401,468,512-513,542-543,734-743
+app/models/user.rb
+  h_f968154a99632d 600-604
+app/services/articles/attributes.rb
+  h_f968154a99632d 6
+app/views/admin/feed_configs/_form.html.erb
+  h_f968154a99632d 108-117
+db/migrate/20261103170000_add_region_to_articles.rb
+  h_f968154a99632d 1-5
+db/migrate/20261103170100_add_location_match_weights_to_feed_configs.rb
+  h_f968154a99632d 1-8
+db/schema.rb
+  h_f968154a99632d 13,217,847,872
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_f968154a99632d 667-668,698-699,1106-1137,2595-2596,2633-2634,2651-2691
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 932,965-966,971,1129-1148,1172-1173
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 615
+lib/tasks/forem_native.rake
+  h_f968154a99632d 115-116,147-148
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 3013,3021,3054-3055,3102,3111,3117,3128-3129,3143,3145,3163
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 402-403,448-449,482-483,667-686,1136-1195,1197-1198,1202,1251-1252,1271-1274
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 17-19,174-175,182-183,187-188
+spec/requests/articles/articles_create_spec.rb
+  h_f968154a99632d 292-339
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 867-909
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2c1651aad2354665d0fdf35b2bb0e3b085dcfa8e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

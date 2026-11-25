@@ -1,0 +1,16 @@
+docs/README.md
+  h_f968154a99632d 23
+docs/billboards.md
+  h_f968154a99632d 1-574
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1c024b16555192be2c329f04eb763facf396853c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

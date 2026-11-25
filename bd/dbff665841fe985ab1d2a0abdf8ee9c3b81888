@@ -1,0 +1,16 @@
+app/lib/middlewares/set_subforem.rb
+  h_a5e25bc086eb00 65-67
+spec/lib/middlewares/set_subforem_spec.rb
+  h_a5e25bc086eb00 188-200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bddbff665841fe985ab1d2a0abdf8ee9c3b81888",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

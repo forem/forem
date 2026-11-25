@@ -1,0 +1,32 @@
+app/models/article.rb
+  h_f968154a99632d 349,360,366,1827,1862-1902
+app/models/comment.rb
+  h_f968154a99632d 73,82,86,503,538-577
+app/services/ai/phishing_signup_check.rb
+  h_f968154a99632d 35-42,52-56,93,111,120,142,155,166,175,188,240,257,294,339,344,353,358,365,370,375,380,387,393
+app/services/mentions/create_all.rb
+  h_f968154a99632d 14,18-22,24-26,31-48,68,74
+app/services/rate_limit_checker.rb
+  h_f968154a99632d 30-37,117,128,137,146,151,164,177-184,188-194,206-272,275-284,287-291,295-297,303-317,368,373,378-455,478
+app/services/spam/handler.rb
+  h_f968154a99632d 288-291,587-590,593,599-605,617-622,637-640,649-650,659-661,672-674,691-693,704-705,707-718
+app/workers/mentions/send_email_notification_worker.rb
+  h_f968154a99632d 6-7
+spec/services/ai/phishing_signup_check_spec.rb
+  h_f968154a99632d 47,49-50
+spec/services/rate_limit_checker_spec.rb
+  h_f968154a99632d 312-340
+spec/services/spam/handler_spec.rb
+  h_f968154a99632d 1286-1295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "12f14374f55658c1af4b00507792b42f2cf5eeda",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

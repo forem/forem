@@ -1,0 +1,18 @@
+scripts/build_containers.sh
+  h_f968154a99632d 10
+scripts/create_buildkite_pr_build.sh
+  h_f968154a99632d 47,54-57,59-60,62-105,108-109,170-173,175
+spec/lib/buildkite_container_triggers_spec.rb
+  h_f968154a99632d 70,189-190,214,218-223,237-240,242,264,269-314
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "53bc660fa913ba2d5624e021509c0534dcd75b84",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

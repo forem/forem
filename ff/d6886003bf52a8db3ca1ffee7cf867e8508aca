@@ -1,0 +1,118 @@
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_f968154a99632d 6-14,26-27,32,43-44,48,51-52,64-65,69,71,74,102-103,107,109,112,177,254,277,279,285,287,383-387,389,439
+app/controllers/organization_settings_controller.rb
+  h_f968154a99632d 26-27,33-37
+app/lib/redcarpet/render/html_rouge.rb
+  h_f968154a99632d 23-24,26-34,37,44-46,50,54,56-59,61,63,65,67,114-139
+app/lib/url_domain_helper.rb
+  h_f968154a99632d 5-8
+app/liquid_tags/bandcamp_tag.rb
+  h_f968154a99632d 7-9,13,30,32-34,88-93,186
+app/liquid_tags/concerns/liquid_tag_helpers.rb
+  h_f968154a99632d 17,48-53,56-58
+app/liquid_tags/cta_tag.rb
+  h_f968154a99632d 3,13-14
+app/liquid_tags/dotnet_fiddle_tag.rb
+  h_f968154a99632d 5,31
+app/liquid_tags/gist_tag.rb
+  h_f968154a99632d 5,61
+app/liquid_tags/git_pitch_tag.rb
+  h_f968154a99632d 3
+app/liquid_tags/kotlin_tag.rb
+  h_f968154a99632d 3,26
+app/liquid_tags/open_graph_tag.rb
+  h_f968154a99632d 9-13,16-18
+app/liquid_tags/poll_tag.rb
+  h_f968154a99632d 16-21,35
+app/liquid_tags/stackblitz_tag.rb
+  h_f968154a99632d 8,13,20,60
+app/liquid_tags/unified_embed/tag.rb
+  h_f968154a99632d 66-70
+app/liquid_tags/vimeo_tag.rb
+  h_f968154a99632d 4,6,31-36
+app/models/article.rb
+  h_f968154a99632d 786-787,791,793,871-873,877,879
+app/models/feedback_message.rb
+  h_f968154a99632d 63,147-156
+app/models/podcast.rb
+  h_f968154a99632d 20-21
+app/models/podcast_episode.rb
+  h_f968154a99632d 22-23
+app/sanitizers/comment_email_scrubber.rb
+  h_f968154a99632d 14-16
+app/sanitizers/rendered_markdown_scrubber.rb
+  h_f968154a99632d 5,22-23,28,69-70
+app/services/markdown_processor/parser.rb
+  h_f968154a99632d 109,288-303
+app/services/podcasts/create_episode.rb
+  h_f968154a99632d 39,47,57
+app/views/admin/feedback_messages/_feedback_message.html.erb
+  h_f968154a99632d 63-67
+app/views/admin/users/show/reports/_index.html.erb
+  h_f968154a99632d 24-25
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 8,12-13,153,200,209,217,234-235
+app/views/liquids/_open_graph.html.erb
+  h_f968154a99632d 2,4,8,15,39
+app/views/organizations/_header.html.erb
+  h_f968154a99632d 242-243
+app/views/organizations/_metadata.html.erb
+  h_f968154a99632d 7-8
+spec/lib/redcarpet/render/html_rouge_spec.rb
+  h_f968154a99632d 77-112
+spec/liquid_tags/bandcamp_tag_spec.rb
+  h_f968154a99632d 78-83
+spec/liquid_tags/cta_tag_spec.rb
+  h_f968154a99632d 46-89
+spec/liquid_tags/dotnet_fiddle_tag_spec.rb
+  h_f968154a99632d 11
+spec/liquid_tags/gist_tag_spec.rb
+  h_f968154a99632d 82,84-87
+spec/liquid_tags/git_pitch_tag_spec.rb
+  h_f968154a99632d 36,38-41
+spec/liquid_tags/kotlin_tag_spec.rb
+  h_f968154a99632d 49-52
+spec/liquid_tags/offer_tag_spec.rb
+  h_f968154a99632d 52-69
+spec/liquid_tags/poll_tag_spec.rb
+  h_f968154a99632d 9-15
+spec/liquid_tags/quote_tag_spec.rb
+  h_f968154a99632d 121-126
+spec/liquid_tags/slides_tag_spec.rb
+  h_f968154a99632d 95-104
+spec/liquid_tags/stackblitz_tag_spec.rb
+  h_f968154a99632d 97-101
+spec/liquid_tags/unified_embed/tag_spec.rb
+  h_f968154a99632d 332-338
+spec/liquid_tags/vimeo_tag_spec.rb
+  h_f968154a99632d 37-46
+spec/models/article_spec.rb
+  h_f968154a99632d 4149-4155
+spec/models/feedback_message_spec.rb
+  h_f968154a99632d 54-59
+spec/models/podcast_episode_spec.rb
+  h_f968154a99632d 36-45
+spec/models/podcast_spec.rb
+  h_f968154a99632d 63-70
+spec/requests/organization_settings_spec.rb
+  h_f968154a99632d 132-158
+spec/sanitizers/comment_email_scrubber_spec.rb
+  h_f968154a99632d 1-23
+spec/sanitizers/rendered_markdown_scrubber_spec.rb
+  h_f968154a99632d 82-113
+spec/services/markdown_processor/parser_spec.rb
+  h_f968154a99632d 978-1015
+spec/services/podcasts/create_episode_spec.rb
+  h_f968154a99632d 130-150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ffd6886003bf52a8db3ca1ffee7cf867e8508aca",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

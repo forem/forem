@@ -1,0 +1,19 @@
+app/services/edge_cache/bust_article.rb
+  s_51e0b71608a264::t_7a93be38a21c78 15-21,26,36,39-50,53-54,101,110,113,121,127-151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "15496ff97dde0f3633bee8734e672ebda0fc49e4",
+  "prompts": {},
+  "sessions": {
+    "s_51e0b71608a264": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2b834ce3-e642-426f-99f6-766eddfc1425",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

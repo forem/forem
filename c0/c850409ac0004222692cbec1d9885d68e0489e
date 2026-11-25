@@ -1,0 +1,20 @@
+app/models/article.rb
+  h_a5e25bc086eb00 1482
+app/services/notifications/co_author/remove.rb
+  h_a5e25bc086eb00 24
+spec/models/notification_spec.rb
+  h_a5e25bc086eb00 562-576
+spec/requests/notifications_spec.rb
+  h_a5e25bc086eb00 789-836
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c0c850409ac0004222692cbec1d9885d68e0489e",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

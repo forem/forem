@@ -1,0 +1,18 @@
+lib/local_redis/web.rb
+  h_f968154a99632d 8
+lib/local_redis/web_environment.rb
+  h_f968154a99632d 13-15,18-23,32,38-47,55-58,69,76-87,89,94,100,108,112,122-146,154-155,159,161,168-190,193-215,218,228
+spec/lib/local_redis/web_environment_spec.rb
+  h_f968154a99632d 1,12,14-16,18-21,32-34,36-39,50-62,66-70,78-79,81,104,115-135,139,142-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5c1f336d505bea7ba081a9407b25a394b128867f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

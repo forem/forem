@@ -1,0 +1,18 @@
+app/services/instrumentation.rb
+  h_f968154a99632d 8
+config/initializers/sentry.rb
+  h_f968154a99632d 22-23,30,34-36,68
+spec/initializers/sentry_spec.rb
+  h_f968154a99632d 49,54-57,73-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6c3ec6a8b13c280ec5f57fb52d12f9fbbe610737",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

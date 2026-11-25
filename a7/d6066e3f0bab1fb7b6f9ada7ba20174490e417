@@ -1,0 +1,18 @@
+gems/forem_native/crates/forem_core/src/syntax.rs
+  h_f968154a99632d 828-833,1154-1156,1161,1165-1171,1428,1431-1453,1495-1500,1579-1584,4349-4480
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 6143-6144,6149-6151,6181-6208
+spec/lib/redcarpet/render/html_rouge_spec.rb
+  h_f968154a99632d 152-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a7d6066e3f0bab1fb7b6f9ada7ba20174490e417",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

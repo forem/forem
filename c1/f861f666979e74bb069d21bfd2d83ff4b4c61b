@@ -1,0 +1,402 @@
+.env_sample
+  h_f968154a99632d 220-225,245-249
+.github/workflows/ci.yml
+  h_f968154a99632d 183-186
+Aptfile
+  h_f968154a99632d 1-2
+Containerfile
+  h_f968154a99632d 142-145,164
+Gemfile
+  h_f968154a99632d 97
+Gemfile.lock
+  h_f968154a99632d 833-834,1267
+Procfile
+  h_f968154a99632d 2
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_f968154a99632d 454-467,522-523
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 64-65
+app/controllers/admin/settings/base_controller.rb
+  h_f968154a99632d 11
+app/controllers/ai_image_generations_controller.rb
+  h_f968154a99632d 24,26,29,32,35
+app/controllers/api/v1/images_controller.rb
+  h_f968154a99632d 55-57,59-60
+app/controllers/collections_controller.rb
+  h_f968154a99632d 12,14
+app/controllers/comments_controller.rb
+  h_f968154a99632d 2-6,23-28,224,325-333,336
+app/controllers/feed_config_visits_controller.rb
+  h_f968154a99632d 1-28
+app/controllers/feedback_messages_controller.rb
+  h_f968154a99632d 24-25,59-62
+app/controllers/ga_events_controller.rb
+  h_f968154a99632d 14-15
+app/controllers/registrations_controller.rb
+  h_f968154a99632d 26-27,61-64
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 5-8,23-25,34-37,82,135-145,228,232-233,236
+app/controllers/stories_controller.rb
+  h_f968154a99632d 19,50,74-77,154-155,600-601,604
+app/controllers/users_controller.rb
+  h_f968154a99632d 110,349
+app/javascript/actionsPanel/__tests__/initializeActionsPanelToggle.test.js
+  h_f968154a99632d 19,43-67
+app/javascript/actionsPanel/initializeActionsPanelToggle.js
+  h_f968154a99632d 4-6,8-27,29-43,54-72,74-85
+app/javascript/article-form/actions.js
+  h_f968154a99632d 152-162,166-169,187-197,206,213-214
+app/javascript/article-form/components/ArticleCoverImage.jsx
+  h_f968154a99632d 213,267-275,590,601
+app/javascript/article-form/components/__tests__/ArticleCoverImage.test.jsx
+  h_f968154a99632d 330-376
+app/javascript/article-form/components/__tests__/Title.test.jsx
+  h_f968154a99632d 2,4,8-11,38-61
+app/javascript/articles/Article.jsx
+  h_f968154a99632d 183-196
+app/javascript/articles/Feed.jsx
+  h_f968154a99632d 2,7,23-24,27-28,57-59,79-83,99,101-116,118-142,144-158,160-161,166-179,355
+app/javascript/articles/__tests__/ArticleModerationButton.test.jsx
+  h_f968154a99632d 1-31
+app/javascript/articles/__tests__/Feed.test.jsx
+  h_f968154a99632d 2,43-157
+app/javascript/articles/__tests__/__snapshots__/Article.test.jsx.snap
+  h_f968154a99632d 184-185,187-189,191-198,297-319,459-460,462-464,466-473,572-594
+app/javascript/articles/__tests__/feedConfigVisits.test.js
+  h_f968154a99632d 1-301
+app/javascript/articles/feedConfigVisits.js
+  h_f968154a99632d 1-129
+app/javascript/initializers/__tests__/initializeTurnstile.test.js
+  h_f968154a99632d 1-210
+app/javascript/initializers/initializeTurnstile.js
+  h_f968154a99632d 1-59
+app/javascript/packs/__tests__/articleModerationTools.test.js
+  h_f968154a99632d 1-38
+app/javascript/packs/articleModerationTools.js
+  h_f968154a99632d 6-9,11,13,31,33-34
+app/javascript/packs/baseInitializers.js
+  h_f968154a99632d 7,23,33,36-37
+app/javascript/packs/feedEvents.js
+  h_f968154a99632d 1-2
+app/javascript/packs/followButtons.js
+  h_f968154a99632d 132-136,138-143,164-165,198,206-207,210-220,238,251,318,320-322,324,326-328,330,337-338
+app/javascript/utilities/calculateTextAreaHeight.js
+  h_f968154a99632d 12-13
+app/javascript/utilities/createEventId.js
+  h_f968154a99632d 1-10
+app/javascript/utilities/textAreaUtils.js
+  h_f968154a99632d 1,276,282,286,293-294,301,309
+app/lib/constants/settings/authentication.rb
+  h_f968154a99632d 30-32,104-111
+app/lib/constants/settings/user_experience.rb
+  h_f968154a99632d 42-50
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 65-67
+app/models/api_secret.rb
+  h_f968154a99632d 12
+app/models/feed_config.rb
+  h_f968154a99632d 4,142,145-156,175-177,182-194,378-379
+app/models/feed_config_assignment.rb
+  h_f968154a99632d 1-19
+app/models/feed_event.rb
+  h_f968154a99632d 128,132-134,136,151-153,199
+app/models/feed_event_receipt.rb
+  h_f968154a99632d 1
+app/models/settings/authentication.rb
+  h_f968154a99632d 37-39,41-42
+app/models/settings/general.rb
+  h_f968154a99632d 204-212
+app/models/settings/user_experience.rb
+  h_f968154a99632d 21-29
+app/models/user.rb
+  h_f968154a99632d 513-532,1306
+app/queries/billboards/filtered_ads_query.rb
+  h_f968154a99632d 257-265
+app/queries/comments/count.rb
+  h_f968154a99632d 26-29,32-36
+app/queries/comments/tree.rb
+  h_f968154a99632d 45
+app/services/ai/article_image_generator.rb
+  h_f968154a99632d 11-23,31-32,49-51,58-59,62-63,65
+app/services/ai/function_registry.rb
+  h_f968154a99632d 139-140
+app/services/ai/image_generator.rb
+  h_f968154a99632d 9-14,34,37-45,48-57,72-81,85-90,94,97,121,125-126,132-133,140,145,156,165-166,168-175,177-179,182-219,252-255,263-268,306-307,309-311,321-322,325-326,328,331-332,335,340,346,351,365-367,372,385,392-393,397,421
+app/services/ai/type_safe/client.rb
+  h_f968154a99632d 58
+app/services/articles/enrich_image_attributes.rb
+  h_f968154a99632d 18,45,62-64
+app/services/articles/feeds/basic.rb
+  h_f968154a99632d 19
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 16,19,24,34,74,104-106
+app/services/articles/feeds/large_forem_experimental.rb
+  h_f968154a99632d 83,122
+app/services/articles/feeds/variant_query.rb
+  h_f968154a99632d 94-95
+app/services/badges/award_contributor_from_github.rb
+  h_f968154a99632d 37-41,43-58,78,85-93,95,99,102,108-109,139-146,148,153-163,165-168,172-191,216-219,223-266,268,270,272-273,275,317-318,334,337,344
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 28,47-48,167-168,172,285,293-296
+app/services/feeds/record_config_visit.rb
+  h_f968154a99632d 1-76
+app/services/feeds/sticky_config.rb
+  h_f968154a99632d 1-64
+app/services/re_captcha/check_enabled.rb
+  h_f968154a99632d 18
+app/services/spam/reaction_ring_detector.rb
+  h_f968154a99632d 78,80-87,92-104,148,153
+app/services/turnstile/verify.rb
+  h_f968154a99632d 1-24
+app/views/admin/feed_configs/index.html.erb
+  h_f968154a99632d 133,167
+app/views/admin/feed_configs/show.html.erb
+  h_f968154a99632d 53-56
+app/views/admin/settings/forms/_authentication.html.erb
+  h_f968154a99632d 109,114-121,138-153
+app/views/admin/settings/forms/_user_experience.html.erb
+  h_f968154a99632d 24-34
+app/views/articles/_actions.html.erb
+  h_f968154a99632d 64,76,95,104,118,125,132,139,144
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 244-253
+app/views/articles/index.html.erb
+  h_f968154a99632d 74
+app/views/comments/_comment_header.html.erb
+  h_f968154a99632d 1-2,7,13,22,31
+app/views/dashboards/_actions_mobile.html.erb
+  h_f968154a99632d 8
+app/views/dashboards/_header_and_action.html.erb
+  h_f968154a99632d 83,85-87,90,92-101
+app/views/feedback_messages/_form.html.erb
+  h_f968154a99632d 71-72
+app/views/shared/_captcha.html.erb
+  h_f968154a99632d 1-5
+app/views/shared/authentication/_email_registration_form.html.erb
+  h_f968154a99632d 104-105
+app/views/users/_badges_area.html.erb
+  h_f968154a99632d 10-11
+app/views/users/show.html.erb
+  h_f968154a99632d 184
+app/workers/ga/track_event_worker.rb
+  h_f968154a99632d 1-19
+app/workers/organizations/track_promotional_billboard_impressions_worker.rb
+  h_f968154a99632d 15-17,105
+app/workers/sync_liquid_embed_references_worker.rb
+  h_f968154a99632d 5-7,16,28
+bin/redis-local-server
+  h_f968154a99632d 1-15
+bin/redis-local-sync
+  h_f968154a99632d 1-7
+bin/web
+  h_f968154a99632d 1-8
+config/environments/production.rb
+  h_f968154a99632d 80-89
+config/initializers/filter_parameter_logging.rb
+  h_f968154a99632d 5
+config/initializers/local_redis_cache.rb
+  h_f968154a99632d 1-4
+config/initializers/rack_attack.rb
+  h_f968154a99632d 1-5
+config/initializers/sidekiq.rb
+  h_f968154a99632d 10,56-59,61-62
+config/locales/controllers/en.yml
+  h_f968154a99632d 88,138
+config/locales/controllers/fr.yml
+  h_f968154a99632d 88,138
+config/locales/controllers/pt.yml
+  h_f968154a99632d 88,138
+config/locales/lib/en.yml
+  h_f968154a99632d 53-55,63-72,269-279
+config/locales/lib/fr.yml
+  h_f968154a99632d 53-55,63-72,269-279
+config/locales/lib/pt.yml
+  h_f968154a99632d 53-55,63-72,269-279
+config/routes.rb
+  h_f968154a99632d 325
+db/migrate/20261102120000_add_sticky_feed_config_assignments.rb
+  h_f968154a99632d 1-18
+db/migrate/20261102120001_add_indexes_to_feed_config_assignments.rb
+  h_f968154a99632d 1-15
+db/schema.rb
+  h_f968154a99632d 13,836-849,863,866,2340-2342
+docs/analytics/feed_impressions.md
+  h_f968154a99632d 3-87
+docs/captcha.md
+  h_f968154a99632d 1-43
+docs/local_redis_cache.md
+  h_f968154a99632d 1-279
+lib/active_support/cache/local_redis_cache_store.rb
+  h_f968154a99632d 1-222
+lib/local_redis/cache.rb
+  h_f968154a99632d 1-190
+lib/local_redis/connection.rb
+  h_f968154a99632d 1-48
+lib/local_redis/metrics.rb
+  h_f968154a99632d 1-76
+lib/local_redis/rack_attack_proxy.rb
+  h_f968154a99632d 1-12
+lib/local_redis/runtime.rb
+  h_f968154a99632d 1-7
+lib/local_redis/sync.rb
+  h_f968154a99632d 1-76
+lib/local_redis/web.rb
+  h_f968154a99632d 1-87
+lib/sidekiq/boot_memory_trimmer.rb
+  h_f968154a99632d 1-31
+lib/sidekiq/request_store_middleware.rb
+  h_f968154a99632d 2-4,16-17,23-32
+lib/tasks/badges.rake
+  h_f968154a99632d 17-30
+spec/factories/feed_config_assignments.rb
+  h_f968154a99632d 1-8
+spec/initializers/sentry_spec.rb
+  h_f968154a99632d 4-9,49-53,60-66
+spec/lib/active_support/cache/local_redis_cache_store_authorization_spec.rb
+  h_f968154a99632d 1-152
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  h_f968154a99632d 1-512
+spec/lib/local_redis/cache_spec.rb
+  h_f968154a99632d 1-25
+spec/lib/local_redis/connection_spec.rb
+  h_f968154a99632d 1-74
+spec/lib/local_redis/metrics_spec.rb
+  h_f968154a99632d 1-107
+spec/lib/local_redis/runtime_spec.rb
+  h_f968154a99632d 1-16
+spec/lib/local_redis/sync_spec.rb
+  h_f968154a99632d 1-158
+spec/lib/local_redis/web_launcher_spec.rb
+  h_f968154a99632d 1-87
+spec/lib/local_redis/web_spec.rb
+  h_f968154a99632d 1-99
+spec/lib/middlewares/set_subforem_spec.rb
+  h_f968154a99632d 188-200
+spec/lib/server_warmup_spec.rb
+  h_f968154a99632d 598-599,601,604,607
+spec/lib/sidekiq/boot_memory_trimmer_spec.rb
+  h_f968154a99632d 1-75
+spec/lib/sidekiq/request_store_middleware_spec.rb
+  h_f968154a99632d 22,32-48
+spec/models/api_secret_spec.rb
+  h_f968154a99632d 33-36,46-74,76,81-82
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 490-493,501-503,678-687,793-808
+spec/models/feed_event_spec.rb
+  h_f968154a99632d 94-96,306-317,327,334-377,381-382,384,386,388,390,418-420,477-478
+spec/models/settings/authentication_captcha_spec.rb
+  h_f968154a99632d 1-18
+spec/models/settings/user_experience_spec.rb
+  h_f968154a99632d 7-39
+spec/models/user_spec.rb
+  h_f968154a99632d 1387-1402,1423-1452
+spec/queries/billboards/filtered_ads_query_spec.rb
+  h_f968154a99632d 228-244
+spec/queries/comments/count_spec.rb
+  h_f968154a99632d 70-98
+spec/requests/admin/captcha_settings_spec.rb
+  h_f968154a99632d 1-41
+spec/requests/admin/configs_spec.rb
+  h_f968154a99632d 638-651
+spec/requests/ai_image_generations_spec.rb
+  h_f968154a99632d 148,169,202,230-239
+spec/requests/api/v1/docs/images_spec.rb
+  h_f968154a99632d 22-24
+spec/requests/api/v1/images_spec.rb
+  h_f968154a99632d 100-101,105,164,171-179,190
+spec/requests/collections_spec.rb
+  h_f968154a99632d 40-57
+spec/requests/comments_spec.rb
+  h_f968154a99632d 58-112,472-510
+spec/requests/conditional_registration_spec.rb
+  h_f968154a99632d 21-26,28,31-36,41-47,54-59,64-70,81-87,92-99
+spec/requests/dashboard_spec.rb
+  h_f968154a99632d 230-261
+spec/requests/feed_config_visits_spec.rb
+  h_f968154a99632d 1-233
+spec/requests/feedback_messages_spec.rb
+  h_f968154a99632d 178
+spec/requests/ga_events_spec.rb
+  h_f968154a99632d 24-58
+spec/requests/notifications_spec.rb
+  h_f968154a99632d 61-62,66,124,129-134,266-267,273-278,346,383-384,395-396,401-404,708,733
+spec/requests/org_custom_domain_spec.rb
+  h_f968154a99632d 122-150
+spec/requests/stories/feed_comment_preloading_spec.rb
+  h_f968154a99632d 1-207
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 18-106,473,483-486,503,699-704,706,709-711
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 20-38
+spec/requests/stories_show_spec.rb
+  h_f968154a99632d 48-67,76-101,237-262,298-305
+spec/requests/turnstile_captcha_spec.rb
+  h_f968154a99632d 1-113
+spec/requests/user/user_destroy_spec.rb
+  h_f968154a99632d 95,125-126,136
+spec/requests/user/user_profile_spec.rb
+  h_f968154a99632d 116-137,427-443
+spec/services/ai/article_image_generator_spec.rb
+  h_f968154a99632d 7-8,16-19,22-25,27-29,32-40,44-45,48,54-55
+spec/services/ai/image_generator_spec.rb
+  h_f968154a99632d 75,127,146,157,163,174-175,181,216,260,272,302,314,344,361-543,595,632
+spec/services/articles/enrich_image_attributes_spec.rb
+  h_f968154a99632d 210-251,303
+spec/services/articles/feeds/basic_spec.rb
+  h_f968154a99632d 40-50
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 611-616,618-619
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  h_f968154a99632d 62-74
+spec/services/articles/feeds/variant_query_spec.rb
+  h_f968154a99632d 113,121,139-151
+spec/services/badges/award_contributor_from_github_spec.rb
+  h_f968154a99632d 18-21,139,151-175,224-311
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 430-450
+spec/services/feeds/sticky_config_spec.rb
+  h_f968154a99632d 1-360
+spec/services/moderator/manage_activity_and_roles_spec.rb
+  h_f968154a99632d 154,163-168,180,182,192-201
+spec/services/spam/reaction_ring_detector_spec.rb
+  h_f968154a99632d 206,215,217-220,222,230
+spec/services/turnstile/verify_spec.rb
+  h_f968154a99632d 1-75
+spec/support/local_redis_servers.rb
+  h_f968154a99632d 1-53
+spec/support/shared_context.rb
+  h_f968154a99632d 2-3,5-9,13-14
+spec/system/admin/admin_awards_badges_spec.rb
+  h_f968154a99632d 28
+spec/system/events/challenge_layout_spec.rb
+  h_f968154a99632d 14-18
+spec/system/search/user_searches_users_spec.rb
+  h_f968154a99632d 1-43
+spec/views/articles/_actions.html.erb_spec.rb
+  h_f968154a99632d 1-52
+spec/views/articles/_single_story.html.erb_spec.rb
+  h_f968154a99632d 10-27
+spec/views/comments/_comment.html.erb_spec.rb
+  h_f968154a99632d 4-22
+spec/views/users/main_feed_spec.rb
+  h_f968154a99632d 111
+spec/workers/articles/label_cleanup_worker_spec.rb
+  h_f968154a99632d 5-18,20-24,26,28-41,44-45,47-49,51-53,55,57-59,64-65,67-70,75-86,93-94,96,99-101,105
+spec/workers/organizations/track_promotional_billboard_impressions_worker_spec.rb
+  h_f968154a99632d 389-405
+spec/workers/sync_liquid_embed_references_worker_spec.rb
+  h_f968154a99632d 10,12,20,29,31,56,63-77,83
+testSetup.js
+  h_f968154a99632d 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c1f861f666979e74bb069d21bfd2d83ff4b4c61b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

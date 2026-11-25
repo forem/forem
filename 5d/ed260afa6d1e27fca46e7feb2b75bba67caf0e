@@ -1,0 +1,30 @@
+.cursorrules
+  h_f968154a99632d 40,44
+.github/copilot-instructions.md
+  h_f968154a99632d 40,44
+.windsurfrules
+  h_f968154a99632d 40,44
+AGENTS.md
+  h_f968154a99632d 40,44
+db/migrate/20261119161200_add_event_id_index_to_articles.rb
+  h_f968154a99632d 5-14,18-28,34-63,65-68
+db/migrate/20261119161300_validate_event_id_on_articles.rb
+  h_f968154a99632d 2-65
+spec/lib/migrations/add_event_id_index_to_articles_spec.rb
+  h_f968154a99632d 1-136
+spec/lib/migrations/validate_event_id_on_articles_spec.rb
+  h_f968154a99632d 1-107
+spec/models/article_event_spec.rb
+  h_f968154a99632d 166-190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5ded260afa6d1e27fca46e7feb2b75bba67caf0e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

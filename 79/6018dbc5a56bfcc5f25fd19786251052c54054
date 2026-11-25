@@ -1,0 +1,22 @@
+app/services/ai/article_check.rb
+  h_f968154a99632d 66-67,145-147,150-159,161-163
+app/services/ai/article_quality_assessor.rb
+  h_f968154a99632d 164-166,169-178,180-182
+app/services/ai/content_moderation_labeler.rb
+  h_f968154a99632d 124-125,210-211,255-256,282-283,356-358,383-386,388-397,399-401,410-411,424-425,431-434,447-473,490-497,503-504
+app/services/ai/spam_escalation_check.rb
+  h_f968154a99632d 70-71,74,76-83
+spec/services/ai/content_moderation_labeler_spec.rb
+  h_f968154a99632d 47-48,50-51,73,77-78,87-103,106-107,116-129,335,339-340
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "796018dbc5a56bfcc5f25fd19786251052c54054",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

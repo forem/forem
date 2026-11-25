@@ -1,0 +1,21 @@
+spec/services/user_activity_heatmap_service_spec.rb
+  s_f0eae6a24f98aa::t_047368d789ae1c 77,85
+  s_f0eae6a24f98aa::t_fe98ee35286d3f 18-26,49,51,54-55,60-62,73-76,78-84,86-87,98,100,110
+  s_f0eae6a24f98aa::t_43e3013ec7d91f 39-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "a4a521ca22447eb17bf692deb63af9bd15a806e6",
+  "prompts": {},
+  "sessions": {
+    "s_f0eae6a24f98aa": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

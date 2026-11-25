@@ -1,0 +1,44 @@
+app/controllers/billboard_events_controller.rb
+  h_f968154a99632d 14-15,17,22,24,69-71
+.github/workflows/forem-native.yml
+  h_f968154a99632d 9-11,81-96
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 936-1009
+app/controllers/application_metal_controller.rb
+  h_f968154a99632d 54-89,93
+app/services/feeds/record_config_visit.rb
+  h_f968154a99632d 9-15,48
+app/models/billboard.rb
+  h_f968154a99632d 310-319
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 4499-4755
+app/models/billboard_event.rb
+  h_f968154a99632d 28-31,51-69,71,73,80,88-139,142-143,146,152
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2150-2409,2641-2660
+config/initializers/cors.rb
+  h_f968154a99632d 44
+app/controllers/feed_config_visits_controller.rb
+  h_f968154a99632d 18
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 50,59-62
+app/services/feed_events/bulk_upsert.rb
+  h_f968154a99632d 33-34
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 19
+gems/forem_native/crates/forem_core/src/metal.rs
+  h_f968154a99632d 1-1218
+lib/tasks/forem_native.rake
+  h_f968154a99632d 418-492
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8b0ed7db01279535c89b81aedbea14757fce1e92",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+app/models/notification.rb
+  h_f968154a99632d 16
+app/services/articles/updater.rb
+  h_f968154a99632d 86-87
+app/services/moderator/unpublish_all_articles.rb
+  h_f968154a99632d 59-61
+app/services/notifications/co_author/send.rb
+  h_f968154a99632d 22,47
+app/services/notifications/notifiable_action/send.rb
+  h_f968154a99632d 37
+spec/models/article_spec.rb
+  h_f968154a99632d 4200-4230
+spec/models/notification_spec.rb
+  h_f968154a99632d 698-740
+spec/services/articles/updater_spec.rb
+  h_f968154a99632d 303-309
+spec/services/notifications/co_author/send_spec.rb
+  h_f968154a99632d 72-88
+spec/services/notifications/notifiable_action/send_spec.rb
+  h_f968154a99632d 25-30
+spec/workers/notifications/co_author_worker_spec.rb
+  h_f968154a99632d 1-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6bb348369e16c0558ee444b37f4ee6f07f2341ab",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

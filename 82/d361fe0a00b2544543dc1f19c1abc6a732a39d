@@ -1,0 +1,30 @@
+app/controllers/api/v0/admin/users_controller.rb
+  h_f968154a99632d 9
+app/controllers/api/v0/api_controller.rb
+  h_f968154a99632d 28-42,142-153
+app/controllers/api/v0/articles_controller.rb
+  h_f968154a99632d 16
+app/controllers/api/v0/badge_achievements_controller.rb
+  h_f968154a99632d 8,11
+app/controllers/api/v0/badges_controller.rb
+  h_f968154a99632d 8,11
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 4
+app/controllers/api/v1/api_controller.rb
+  h_f968154a99632d 9,182-193
+app/controllers/concerns/valid_request.rb
+  h_f968154a99632d 11
+spec/requests/api/csrf_protection_spec.rb
+  h_f968154a99632d 1-271
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "82d361fe0a00b2544543dc1f19c1abc6a732a39d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+spec/requests/api/v0/videos_spec.rb
+  h_f968154a99632d 7,52-54,75,89
+spec/requests/api/v1/videos_spec.rb
+  h_f968154a99632d 9,54-56,77,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cb5ccb4b9b2f7ec98e22fef8ece5a147e86fd71f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+spec/swagger_helper.rb
+  s_eb2685879a6b8a::t_990c91c266d04e 64-69
+spec/requests/api/v1/docs/followers_spec.rb
+  s_eb2685879a6b8a::t_534ecc2b2a9567 24
+  s_eb2685879a6b8a::t_67b73e851da9f2 39-41
+docs/delegated_access.md
+  s_eb2685879a6b8a::t_6c4d6b9a816668 1-85
+spec/requests/api/v1/docs/readinglist_spec.rb
+  s_eb2685879a6b8a::t_d7f236eac8e167 19
+spec/requests/api/v1/docs/users_spec.rb
+  s_eb2685879a6b8a::t_67b73e851da9f2 396-399,523-526,593-596
+  s_eb2685879a6b8a::t_56b9b9873b46bc 28,30
+swagger/v1/api_v1.json
+  s_eb2685879a6b8a::t_e7ccfe0234dd90 868-879,917-928,966-977,1015-1026,2758-2769,2798-2809,3791-3802,4990-5002,5778-5783
+spec/requests/api/v1/docs/articles_spec.rb
+  s_eb2685879a6b8a::t_4ca9dcd89b2117 388,422,456,490
+  s_eb2685879a6b8a::t_67b73e851da9f2 592,613-614
+spec/requests/api/v1/docs/followed_tags_spec.rb
+  s_eb2685879a6b8a::t_e6aa5df7ef5a0a 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b2168c098ac25aa24ad07a3c599f473c02b5ebf0",
+  "prompts": {},
+  "sessions": {
+    "s_eb2685879a6b8a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0822e-e625-7990-a6af-8e45849e14e1",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": null
+    }
+  }
+}

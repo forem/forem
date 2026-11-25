@@ -1,0 +1,16 @@
+app/sanitizers/svg_icon_scrubber.rb
+  h_f968154a99632d 11,16-17,25,29,32,69,71,78-83,87-90
+spec/models/navigation_link_spec.rb
+  h_f968154a99632d 162-164,174-178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d0c97c5933ce88bbd0267d17b9c77d5ea87b4013",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

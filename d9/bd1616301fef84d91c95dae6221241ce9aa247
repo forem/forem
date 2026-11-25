@@ -1,0 +1,27 @@
+config/locales/views/dashboard/en.yml
+  s_f0eae6a24f98aa::t_9e58814f716065 37,45,55
+config/locales/views/dashboard/fr.yml
+  s_f0eae6a24f98aa::t_9e58814f716065 35,43,53
+config/locales/views/dashboard/pt.yml
+  s_f0eae6a24f98aa::t_9e58814f716065 35,43,53
+app/assets/stylesheets/views/dashboard.scss
+  s_f0eae6a24f98aa::t_9e58814f716065 175-177,183-188
+app/views/dashboards/analytics.erb
+  s_f0eae6a24f98aa::t_9e58814f716065 32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.0",
+  "base_commit_sha": "d9bd1616301fef84d91c95dae6221241ce9aa247",
+  "prompts": {},
+  "sessions": {
+    "s_f0eae6a24f98aa": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

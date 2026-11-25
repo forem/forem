@@ -1,0 +1,26 @@
+spec/services/markdown_processor/parser_spec.rb
+  cdf961d01143ac46 531-546
+app/liquid_tags/quote_tag.rb
+  cdf961d01143ac46 24,36-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "1d16ab32243f21df2ed6c627831e92973c2d6319",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 1,
+      "accepted_lines": 22,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/03ce276304417bcef15da226823880452892fcf916a3df1e7fdffe2db1fae60f"
+    }
+  }
+}

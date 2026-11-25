@@ -1,0 +1,32 @@
+app/controllers/api/v0/mobile_auth_controller.rb
+  h_f968154a99632d 45
+app/controllers/application_controller.rb
+  h_f968154a99632d 461,464
+app/controllers/application_metal_controller.rb
+  h_f968154a99632d 31-34,36,39
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 56,60-62,91,174,216
+app/controllers/sessions_controller.rb
+  h_f968154a99632d 4
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 465,467-469,474-477,479
+app/services/authentication/auth_token.rb
+  h_f968154a99632d 1-115
+config/initializers/filter_parameter_logging.rb
+  h_f968154a99632d 5
+spec/requests/auth_passes_spec.rb
+  h_f968154a99632d 9,16-20,22-23,98-171
+spec/requests/token_authentication_security_spec.rb
+  h_f968154a99632d 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "490ec001aeccf43090d234bc8a8af84a5aa12e27",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

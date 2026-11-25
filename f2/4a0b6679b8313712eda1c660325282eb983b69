@@ -1,0 +1,36 @@
+app/assets/javascripts/initializePage.js
+  h_f968154a99632d 138-140,159
+app/javascript/packs/commentsPage.js
+  h_f968154a99632d 287-288,291-292,294,298-301,308-312,314-322,324-351,353-354,357-359,363-380,383-387,404-405,502-512
+app/javascript/packs/initializers/initializeNotifications.js
+  h_f968154a99632d 129-136,139-144
+lib/tasks/seed_analytics.rake
+  h_f968154a99632d 157,160,162,179
+spec/lib/cypress_rails/finds_bin_spec.rb
+  h_f968154a99632d 2
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 41-44
+spec/rails_helper.rb
+  h_f968154a99632d 153-155
+spec/requests/community_spec.rb
+  h_f968154a99632d 39-43
+spec/requests/leaderboards_spec.rb
+  h_f968154a99632d 8-12
+spec/support/initializers/capybara.rb
+  h_f968154a99632d 25-32,36
+spec/support/initializers/cuprite.rb
+  h_f968154a99632d 3-28
+spec/tasks/seed_analytics_spec.rb
+  h_f968154a99632d 14-16,18,20,22,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f24a0b6679b8313712eda1c660325282eb983b69",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

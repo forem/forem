@@ -1,0 +1,34 @@
+app/lib/throttled_call.rb
+  h_f968154a99632d 11
+app/models/api_secret.rb
+  h_f968154a99632d 12
+app/models/user.rb
+  h_f968154a99632d 1307
+app/policies/authorizer.rb
+  h_f968154a99632d 186
+app/services/googlebot_verifier.rb
+  h_f968154a99632d 19
+config/initializers/rack_attack.rb
+  h_f968154a99632d 22
+docs/local_redis_cache.md
+  h_f968154a99632d 9-17,143-145,268-272
+spec/lib/active_support/cache/local_redis_cache_store_authorization_spec.rb
+  h_f968154a99632d 90-124,126-144,146-150
+spec/models/api_secret_spec.rb
+  h_f968154a99632d 33-36,46-74,76,81-82
+spec/policies/authorizer_spec.rb
+  h_f968154a99632d 77
+spec/services/moderator/manage_activity_and_roles_spec.rb
+  h_f968154a99632d 154,163-168,180,182,192-201
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ef12439a41c8320d3b8efdb2abde14971b58f245",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

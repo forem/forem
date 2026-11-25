@@ -1,0 +1,18 @@
+app/controllers/application_metal_controller.rb
+  h_f968154a99632d 11,60-68
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 45,196
+spec/requests/page_views_spec.rb
+  h_f968154a99632d 25,182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "49bd33bd470b4f35157660b2ac09d383adba5d92",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

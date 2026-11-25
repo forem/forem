@@ -1,0 +1,48 @@
+spec/requests/magic_links_spec.rb
+  s_66381dcf40a8b5::t_e68de1cf68ec7a 36-69,292
+  s_66381dcf40a8b5::t_7b5953bebce582 289-291
+  s_66381dcf40a8b5::t_d0f87e229e6846 293
+  s_66381dcf40a8b5::t_7e3310ae21a739 26,282-288
+  s_66381dcf40a8b5::t_6f0f0b70797046 265-266,273-281
+  s_66381dcf40a8b5::t_cef53962c6f4dc 31-35
+spec/requests/rack_attack_magic_links_spec.rb
+  s_66381dcf40a8b5::t_ad0083b23c2f56 3
+  s_66381dcf40a8b5::t_1bdbc34312805b 1-2
+  s_66381dcf40a8b5::t_8815ef378b6c85 4-5
+  s_66381dcf40a8b5::t_e18e7a74457606 15-18,19-38,51-53,83-85,93-108
+  s_66381dcf40a8b5::t_5b284859116b56 47-49,51-54,56-64,66-67,69-71,80,91-92
+  s_66381dcf40a8b5::t_4edfb84565289d 72-79,81-90
+  s_66381dcf40a8b5::t_51c4bebcd388ee 8-15
+app/controllers/magic_links_controller.rb
+  s_66381dcf40a8b5::t_705a9fc38924db 33-37
+  s_66381dcf40a8b5::t_375813e646968c 77-79,88-92
+  s_66381dcf40a8b5::t_40316fed811367 80-83,85-87
+  s_66381dcf40a8b5::t_7473c7ab52cadd 31
+app/views/magic_links/new.html.erb
+  s_66381dcf40a8b5::t_c40cb197e2f54b 53-58,69-73
+config/initializers/rack_attack.rb
+  s_66381dcf40a8b5::t_d75af2d6a3b280 171,173-175,177-179,181-184,186-188,190-191
+  s_66381dcf40a8b5::t_680e765bfa1959 172,176,180,185,189
+  s_66381dcf40a8b5::t_e6c3c5bdb1b450 14-15
+  s_66381dcf40a8b5::t_1175a2374848fc 57-77
+db/migrate/20261108160000_add_sign_in_token_index_to_users.rb
+  s_66381dcf40a8b5::t_759a148590f498 1-7
+db/schema.rb
+  s_66381dcf40a8b5::t_c2c96128944399 13,2193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1e7f7c5370f3b8a81927e35c2c555cf5b9ec02e2",
+  "prompts": {},
+  "sessions": {
+    "s_66381dcf40a8b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cdf79699-b56a-4de2-8ac0-1c2757b5f275",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

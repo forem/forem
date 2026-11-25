@@ -1,0 +1,50 @@
+app/controllers/api/v1/billboard_campaigns_controller.rb
+  h_f968154a99632d 54-55
+app/models/billboard_campaign.rb
+  h_f968154a99632d 11,13-19,46-59
+app/queries/billboards/filtered_ads_query.rb
+  h_f968154a99632d 95,112,278-287
+app/services/billboards/campaign_pacing.rb
+  h_f968154a99632d 1-192
+app/services/billboards/traffic_profile.rb
+  h_f968154a99632d 1-207
+app/workers/billboards/titrate_campaign_impressions_worker.rb
+  h_f968154a99632d 1-191
+config/schedule.yml
+  h_f968154a99632d 203-206
+db/migrate/20261120160000_add_ideal_daily_impressions_to_billboard_campaigns.rb
+  h_f968154a99632d 1-8
+db/migrate/20261120160100_add_ideal_daily_impressions_index_to_billboard_campaigns.rb
+  h_f968154a99632d 1-23
+db/schema.rb
+  h_f968154a99632d 13,345,347,353
+spec/models/billboard_campaign_spec.rb
+  h_f968154a99632d 8-53
+spec/queries/billboards/filtered_ads_query_spec.rb
+  h_f968154a99632d 593-625
+spec/requests/api/v1/billboard_campaigns_spec.rb
+  h_f968154a99632d 8-13,30-35,45,47-49,52-56
+spec/requests/api/v1/docs/billboard_campaigns_spec.rb
+  h_f968154a99632d 1-185
+spec/services/billboards/campaign_pacing_spec.rb
+  h_f968154a99632d 1-244
+spec/services/billboards/traffic_profile_spec.rb
+  h_f968154a99632d 1-134
+spec/swagger_helper.rb
+  h_f968154a99632d 542-564
+spec/workers/billboards/titrate_campaign_impressions_worker_spec.rb
+  h_f968154a99632d 1-131
+swagger/v1/api_v1.json
+  h_f968154a99632d 2032-2172,8668-8719
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c310602dd3754d3e2a09525c4167f90a99401f5d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

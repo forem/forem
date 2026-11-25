@@ -1,0 +1,36 @@
+app/controllers/application_controller.rb
+  h_f968154a99632d 624-627
+app/lib/middlewares/set_cookie_domain.rb
+  h_f968154a99632d 16-19
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 31-39
+config/initializers/session_store.rb
+  h_f968154a99632d 22-25,27-34
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 13
+gems/forem_native/crates/forem_core/src/psl_data.rs
+  h_f968154a99632d 1-2788
+gems/forem_native/crates/forem_core/src/url.rs
+  h_f968154a99632d 3-6,450-635,1011-1129
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 306-348,469-474
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 273-296
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 1756-1887
+spec/lib/middlewares/set_cookie_domain_spec.rb
+  h_f968154a99632d 1-39
+spec/lib/middlewares/set_subforem_spec.rb
+  h_f968154a99632d 157,159,165,167,171-188
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b4693597899f943b3617e043bed2a11eccf5b813",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

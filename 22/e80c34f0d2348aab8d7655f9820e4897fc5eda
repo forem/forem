@@ -1,0 +1,24 @@
+app/services/ai/spam_escalation_check.rb
+  s_4da727bc2810b3::t_acb5e164e6c26d 30-34,52,61-73
+  s_4da727bc2810b3::t_2b023c6e0183af 74
+spec/services/ai/spam_escalation_check_spec.rb
+  s_4da727bc2810b3::t_acb5e164e6c26d 42-64,75
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_4da727bc2810b3::t_acb5e164e6c26d 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "22e80c34f0d2348aab8d7655f9820e4897fc5eda",
+  "prompts": {},
+  "sessions": {
+    "s_4da727bc2810b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6e665fd5-120a-4d91-ab94-082199c64e39",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

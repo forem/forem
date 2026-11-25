@@ -1,0 +1,20 @@
+app/queries/articles/related_query.rb
+  h_f968154a99632d 64-65,70,73,75-76,78-85
+spec/queries/articles/related_query_spec.rb
+  h_f968154a99632d 54-72
+spec/requests/api/v1/docs/related_articles_spec.rb
+  h_f968154a99632d 23-25,41-44
+swagger/v1/api_v1.json
+  h_f968154a99632d 4779,4811
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2278033be504ee6a9744604c0b4ee1ec4b85bddb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

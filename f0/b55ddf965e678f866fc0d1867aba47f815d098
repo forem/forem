@@ -1,0 +1,22 @@
+app/controllers/admin/event_pages_controller.rb
+  h_f968154a99632d 77-81,125-138,141-145,147-152
+app/models/event.rb
+  h_f968154a99632d 278-283,287-302
+config/fastly/snippets/safe_params_list.vcl
+  h_f968154a99632d 5
+spec/models/event_spec.rb
+  h_f968154a99632d 456,458-467,472-477,483
+spec/requests/admin/event_pages_spec.rb
+  h_f968154a99632d 175-210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f0b55ddf965e678f866fc0d1867aba47f815d098",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

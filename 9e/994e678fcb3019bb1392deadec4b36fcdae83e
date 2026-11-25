@@ -1,0 +1,51 @@
+app/views/billboards/show.html.erb
+  s_6b38f4548ba35e::t_2627f8b38277a3 7
+app/models/billboard.rb
+  s_6b38f4548ba35e::t_2fa21463a89734 30
+  s_6b38f4548ba35e::t_832e6278079627 52,54-56
+  s_6b38f4548ba35e::t_71974ff55eb6f4 298-301
+  h_f968154a99632d 31,53,57,297
+config/initializers/cors.rb
+  s_6b38f4548ba35e::t_57ff09d30021de 34,37-38,40-46
+  s_6b38f4548ba35e::t_91ccbdf923632b 35-36,39
+app/controllers/billboard_events_controller.rb
+  s_6b38f4548ba35e::t_ad11622e14cb95 6-9,12-13
+  s_6b38f4548ba35e::t_dfacdc38b3bc17 64,67-69
+  s_6b38f4548ba35e::t_691083c29d9965 70
+spec/requests/billboard_events_spec.rb
+  s_6b38f4548ba35e::t_ef6ac6fc3be07a 48-49,51-53,56-90
+  h_f968154a99632d 50,54-55
+app/models/billboard_event.rb
+  s_6b38f4548ba35e::t_ac76b0788551d6 26-27
+app/views/shared/_billboard.html.erb
+  s_6b38f4548ba35e::t_b13f12bc1669da 26
+spec/requests/billboards_spec.rb
+  s_6b38f4548ba35e::t_a524dc6affa16f 808,811-812,816-824,825-826
+  h_f968154a99632d 809-810,813-815
+.env_sample
+  s_6b38f4548ba35e::t_2e201f1a9d35b2 139-141
+  h_f968154a99632d 138
+swagger/v1/api_v1.json
+  h_f968154a99632d 7109-7110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9e994e678fcb3019bb1392deadec4b36fcdae83e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_6b38f4548ba35e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c0a0f081-d4ac-4e90-aad4-360426e89728",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

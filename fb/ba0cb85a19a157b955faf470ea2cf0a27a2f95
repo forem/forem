@@ -1,0 +1,22 @@
+app/liquid_tags/reddit_tag.rb
+  h_f968154a99632d 5-7,38-45,49-51,61,64-65,76,78,82-98
+spec/liquid_tags/reddit_tag_spec.rb
+  h_f968154a99632d 4-12,102-174
+spec/liquid_tags/unified_embed/registry_spec.rb
+  h_f968154a99632d 283-284
+spec/requests/liquid_embeds_spec.rb
+  h_f968154a99632d 67-80
+spec/services/articles/enrich_image_attributes_spec.rb
+  h_f968154a99632d 127-131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fbba0cb85a19a157b955faf470ea2cf0a27a2f95",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
