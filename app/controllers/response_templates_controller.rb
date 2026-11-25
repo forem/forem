@@ -30,25 +30,27 @@ class ResponseTemplatesController < ApplicationController
   end
 
   def create
-    authorize ResponseTemplate
+    new_response_template = ResponseTemplate.new(permitted_attributes(ResponseTemplate))
+    authorize new_response_template
 
     unless tries_to_create_a_mod_response_template? && can_create_mod_response_templates?
-      response_template.user_id = current_user.id
-      response_template.type_of = "personal_comment"
+      new_response_template.user_id = current_user.id
+      new_response_template.type_of = "personal_comment"
     end
-    response_template.content_type = "body_markdown"
+    new_response_template.content_type = "body_markdown"
 
-    if response_template.save
+    if new_response_template.save
       flash[:settings_notice] =
-        I18n.t("response_templates_controller.created", title: response_template.title)
-      redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
+        I18n.t("response_templates_controller.created", title: new_response_template.title)
+      redirect_to user_settings_path(tab: "response-templates", id: new_response_template.id)
     else
       flash[:error] =
-        I18n.t("response_templates_controller.response_template_error", errors: response_template.errors_as_sentence)
+        I18n.t("response_templates_controller.response_template_error",
+               errors: new_response_template.errors_as_sentence)
       attributes = permitted_attributes(ResponseTemplate)
       redirect_to user_settings_path(
         tab: "response-templates",
-        id: response_template.id,
+        id: new_response_template.id,
         previous_title: attributes[:title],
         previous_content: attributes[:content],
       )
@@ -103,11 +105,7 @@ class ResponseTemplatesController < ApplicationController
   end
 
   def response_template
-    @response_template ||= if params[:id].present?
-                             ResponseTemplate.find(params[:id])
-                           else
-                             ResponseTemplate.new(permitted_attributes(ResponseTemplate))
-                           end
+    @response_template ||= ResponseTemplate.find(params[:id])
   end
 
   def ensure_json_request

@@ -13,25 +13,38 @@ function toggleTemplateTypeButton(form, e) {
     .classList.toggle('hidden');
 }
 
+const HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (ch) => HTML_ESCAPE_MAP[ch]);
+}
+
 const noResponsesHTML = `
 <div class="mod-response-wrapper mod-response-wrapper-empty">
   <p>🤔... It looks like you don't have any templates yet.</p>
 </div>
 `;
 
-function buildHTML(response, typeOf) {
+export function buildHTML(response, typeOf) {
   if (response.length === 0 && typeOf === 'personal_comment') {
     return noResponsesHTML;
   }
   if (typeOf === 'personal_comment') {
     return response
       .map((obj) => {
-        const content = obj.content.replaceAll('"', '&quot;');
+        const title = escapeHtml(obj.title);
+        const content = escapeHtml(obj.content);
         return `
           <div class="mod-response-wrapper flex mb-4">
             <div class="flex-1">
-              <h4>${obj.title}</h4>
-              <p>${obj.content}</p>
+              <h4>${title}</h4>
+              <p>${content}</p>
             </div>
             <div class="pl-2">
               <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${content}">Insert</button>
@@ -44,15 +57,17 @@ function buildHTML(response, typeOf) {
   if (typeOf === 'mod_comment') {
     return response
       .map((obj) => {
-        const content = obj.content.replaceAll('"', '&quot;');
+        const id = escapeHtml(obj.id);
+        const title = escapeHtml(obj.title);
+        const content = escapeHtml(obj.content);
         return `
             <div class="mod-response-wrapper mb-4 flex">
               <div class="flex-1">
-                <h4>${obj.title}</h4>
-                <p>${obj.content}</p>
+                <h4>${title}</h4>
+                <p>${content}</p>
               </div>
               <div class="flex flex-nowrap pl-2">
-                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${obj.id}">Send as Mod</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${id}">Send as Mod</button>
                 <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${content}">Insert</button>
               </div>
             </div>

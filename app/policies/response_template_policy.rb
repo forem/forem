@@ -1,12 +1,18 @@
 class ResponseTemplatePolicy < ApplicationPolicy
   PERMITTED_ATTRIBUTES = %i[content_type content title].freeze
+  MOD_TYPES = %w[mod_comment tag_adjustment].freeze
 
   class Scope < Scope
     def resolve
-      if Authorizer.for(user: user).accesses_mod_response_templates?
-        scope.where(user: user, type_of: "personal_comment").or(scope.where.not(type_of: "personal_comment"))
+      authorizer = Authorizer.for(user: user)
+      personal_scope = scope.where(user: user, type_of: "personal_comment")
+
+      if authorizer.any_admin?
+        personal_scope.or(scope.where.not(type_of: "personal_comment"))
+      elsif authorizer.accesses_mod_response_templates?
+        personal_scope.or(scope.where(type_of: MOD_TYPES))
       else
-        scope.where(user: user, type_of: "personal_comment")
+        personal_scope
       end
     end
   end
@@ -69,7 +75,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def user_moderator?
-    user_any_admin? || user.super_moderator? || user.moderator_for_tags&.present?
+    user_any_admin? || user.super_moderator? || user.moderator_for_tags.present?
   end
 
   def mod_comment?

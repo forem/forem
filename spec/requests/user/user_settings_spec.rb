@@ -141,6 +141,27 @@ RSpec.describe "UserSettings" do
 
         expect(response.body).to include("Edit comment template")
       end
+
+      it "does not render admin email templates for a non-admin moderator", :aggregate_failures do
+        moderator = create(:user, :tag_moderator)
+        own_template = create(:response_template, user: moderator, title: "Mod personal", content: "Personal body")
+        admin_template = create(
+          :response_template,
+          user: nil,
+          type_of: "email_reply",
+          content_type: "html",
+          title: "Admin email title",
+          content: "Admin email body",
+        )
+        sign_in moderator
+
+        get user_settings_path(tab: "response-templates", id: admin_template.id)
+        expect(response.body).not_to include(admin_template.title, admin_template.content)
+        expect(response.body).to include(own_template.title)
+
+        get user_settings_path(tab: "response-templates", id: own_template.id)
+        expect(response.body).to include("Edit comment template", own_template.title, own_template.content)
+      end
     end
 
     describe ":account" do

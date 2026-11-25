@@ -77,4 +77,69 @@ RSpec.describe ResponseTemplatePolicy, type: :policy do
       expect(response_template_policy).to forbid_actions(%i[admin_create update destroy])
     end
   end
+
+  describe ResponseTemplatePolicy::Scope do
+    subject(:resolved_scope) { described_class.new(user, ResponseTemplate.all).resolve }
+
+    let!(:personal_template) { create(:response_template, user: user, type_of: "personal_comment") }
+    let!(:other_personal_template) { create(:response_template, user: create(:user), type_of: "personal_comment") }
+    let!(:mod_template) { create(:response_template, user: nil, type_of: "mod_comment") }
+    let!(:tag_adjustment_template) { create(:response_template, user: nil, type_of: "tag_adjustment") }
+    let!(:email_reply_template) do
+      create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
+    end
+    let!(:abuse_report_template) do
+      create(:response_template, user: nil, type_of: "abuse_report_email_reply", content_type: "html")
+    end
+
+    context "when user is a regular user" do
+      let(:user) { create(:user) }
+
+      it "returns only the user's personal templates" do
+        expect(resolved_scope).to contain_exactly(personal_template)
+      end
+    end
+
+    context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+
+      it "returns personal and moderator templates without admin email templates" do
+        expect(resolved_scope).to contain_exactly(personal_template, mod_template, tag_adjustment_template)
+        expect(resolved_scope).not_to include(other_personal_template, email_reply_template, abuse_report_template)
+      end
+    end
+
+    context "when user is a tag moderator" do
+      let(:user) { create(:user, :tag_moderator) }
+
+      it "returns personal and moderator templates without admin email templates" do
+        expect(resolved_scope).to contain_exactly(personal_template, mod_template, tag_adjustment_template)
+        expect(resolved_scope).not_to include(other_personal_template, email_reply_template, abuse_report_template)
+      end
+    end
+
+    context "when user is a super moderator" do
+      let(:user) { create(:user, :super_moderator) }
+
+      it "returns personal and moderator templates without admin email templates" do
+        expect(resolved_scope).to contain_exactly(personal_template, mod_template, tag_adjustment_template)
+        expect(resolved_scope).not_to include(other_personal_template, email_reply_template, abuse_report_template)
+      end
+    end
+
+    context "when user is an admin" do
+      let(:user) { create(:user, :admin) }
+
+      it "returns personal, moderator, and admin email templates" do
+        expect(resolved_scope).to contain_exactly(
+          personal_template,
+          mod_template,
+          tag_adjustment_template,
+          email_reply_template,
+          abuse_report_template,
+        )
+        expect(resolved_scope).not_to include(other_personal_template)
+      end
+    end
+  end
 end

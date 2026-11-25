@@ -67,6 +67,8 @@ RSpec.describe "ResponseTemplate" do
       it "returns both personal and moderator response templates if type_of unspecified" do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
+        create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
+        create(:response_template, user: nil, type_of: "abuse_report_email_reply", content_type: "html")
         get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
         json = response.parsed_body
         expect(json.keys).to contain_exactly("mod_comment", "personal_comment")
@@ -80,6 +82,21 @@ RSpec.describe "ResponseTemplate" do
       end
     end
 
+    context "when signed in as a trusted user" do
+      before { sign_in trusted_user }
+
+      it "returns personal and moderator templates without admin email templates if type_of unspecified" do
+        create(:response_template, user: nil, type_of: "mod_comment")
+        create(:response_template, user: trusted_user, type_of: "personal_comment")
+        create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
+        create(:response_template, user: nil, type_of: "abuse_report_email_reply", content_type: "html")
+        get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
+        json = response.parsed_body
+        expect(json.keys).to contain_exactly("mod_comment", "personal_comment")
+        expect(json.values.flatten.count).to eq(2)
+      end
+    end
+
     context "when signed in as an admin" do
       before { sign_in admin }
 
@@ -88,6 +105,21 @@ RSpec.describe "ResponseTemplate" do
         get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
         expect(response.status_message).to eq "OK"
         expect(response.parsed_body.length).to eq 2
+      end
+
+      it "includes admin email templates when type_of is unspecified" do
+        create(:response_template, user: admin, type_of: "personal_comment")
+        create(:response_template, user: nil, type_of: "mod_comment")
+        create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
+        create(:response_template, user: nil, type_of: "abuse_report_email_reply", content_type: "html")
+        get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
+        json = response.parsed_body
+        expect(json.keys).to contain_exactly(
+          "personal_comment",
+          "mod_comment",
+          "email_reply",
+          "abuse_report_email_reply",
+        )
       end
     end
   end
@@ -132,6 +164,29 @@ RSpec.describe "ResponseTemplate" do
 
         response_template = ResponseTemplate.last
         expect(response_template.type_of).to eq "personal_comment"
+      end
+
+      it "ignores id params and leaves existing templates unchanged", :aggregate_failures do
+        existing = create(
+          :response_template,
+          user: nil,
+          type_of: "email_reply",
+          content_type: "html",
+          title: "Admin email",
+          content: "Admin email body",
+        )
+
+        post response_templates_path, params: {
+          id: existing.id,
+          response_template: { title: attributes[:title], content: attributes[:content] }
+        }
+
+        existing.reload
+        expect(existing.user_id).to be_nil
+        expect(existing.type_of).to eq("email_reply")
+        expect(existing.title).to eq("Admin email")
+        expect(existing.content).to eq("Admin email body")
+        expect(ResponseTemplate.where(user_id: user.id).count).to eq(1)
       end
     end
 
