@@ -78,7 +78,7 @@
     </div>
 
     <% authentication_enabled_providers_for_user.each do |provider| %>
-      <% onsubmit = "return confirm('#{t('views.settings.account.remove.confirm', provider: provider.official_name)}');" %>
+      <% onsubmit = "return confirm('#{j t('views.settings.account.remove.confirm', provider: provider.official_name)}');" %>
       <%= form_tag users_remove_identity_path, method: :delete, onsubmit: onsubmit do %>
         <%= hidden_field_tag :provider, provider.provider_name %>
 

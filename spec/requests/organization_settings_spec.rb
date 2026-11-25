@@ -43,6 +43,39 @@ RSpec.describe "OrganizationSettings" do
 
         expect(response.body).to include("organization_remove_cover_image")
       end
+
+      it "escapes apostrophes in member and organization names inside confirmation handlers", :aggregate_failures do
+        member = create(:user, name: "Pat O'Connor")
+        pending_user = create(:user, name: "Sam D'Angelo")
+        other_admin = create(:user, name: "Alex O'Brien")
+        create(:organization_membership, organization: organization, user: member, type_of_user: "member")
+        create(:organization_membership, organization: organization, user: pending_user, type_of_user: "pending")
+        create(:organization_membership, organization: organization, user: other_admin, type_of_user: "admin")
+
+        get "/#{organization.slug}/settings"
+
+        doc = Nokogiri::HTML(response.body)
+        onsubmit_values = doc.css("form[onsubmit]").pluck("onsubmit")
+
+        expect(onsubmit_values).to include(a_string_including("Pat O\\'Connor"))
+        expect(onsubmit_values).to include(a_string_including("Sam D\\'Angelo"))
+        expect(onsubmit_values).to include(a_string_including("Alex O\\'Brien"))
+        expect(onsubmit_values).not_to include(a_string_including("Pat O'Connor"))
+        expect(onsubmit_values).not_to include(a_string_including("Sam D'Angelo"))
+        expect(onsubmit_values).not_to include(a_string_including("Alex O'Brien"))
+      end
+
+      it "escapes apostrophes in the organization name inside the delete confirmation handler", :aggregate_failures do
+        organization.update!(name: "O'Reilly Dev")
+
+        get "/#{organization.slug}/settings"
+
+        doc = Nokogiri::HTML(response.body)
+        delete_form = doc.at_css("form[action='/organizations/#{organization.id}']")
+
+        expect(delete_form["onsubmit"]).to include("O\\'Reilly Dev")
+        expect(delete_form["onsubmit"]).not_to include("O'Reilly Dev")
+      end
     end
 
     context "when signed in as non-admin member" do
