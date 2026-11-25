@@ -17,7 +17,13 @@ class SitemapsController < ApplicationController
     set_cache_control_headers(@max_age,
                               stale_while_revalidate: @stale_while_revalidate,
                               stale_if_error: @stale_if_error)
-    render @view_template, layout: false
+    xml_body = render_sitemap_xml_natively
+    if xml_body
+      render xml: xml_body
+    else
+      prepare_legacy_sitemap_assigns
+      render @view_template, layout: false
+    end
   end
 
   private
@@ -42,6 +48,7 @@ class SitemapsController < ApplicationController
     case resource
     when "users"
       return not_found if @organization
+
       @users = User.order("comments_count DESC")
         .where("score > -1") # Spam mitigation
         .limit(RESULTS_LIMIT).offset(offset).pluck(:username, :profile_updated_at)
@@ -55,13 +62,13 @@ class SitemapsController < ApplicationController
       @articles = if @organization
                     articles_scope
                       .limit(RESULTS_LIMIT).offset(offset).pluck(:slug, :last_comment_at)
-                      .map { |slug, last_comment_at| ["/#{slug}", last_comment_at] }
                   else
                     articles_scope
                       .limit(RESULTS_LIMIT).offset(offset).pluck(:path, :last_comment_at)
                   end
     when "tags" # tags
       return not_found if @organization
+
       @tags = Tag.order("hotness_score DESC")
         .where(supported: true)
         .limit(RESULTS_LIMIT).offset(offset).pluck(:name, :updated_at)
@@ -111,5 +118,37 @@ class SitemapsController < ApplicationController
 
   def offset
     params[:sitemap].split("-")[2].to_i * RESULTS_LIMIT # evaluates to 0 if not present or not a number
+  end
+
+  def render_sitemap_xml_natively
+    base_url = native_sitemap_base_url
+    return unless base_url
+
+    case @view_template
+    when "index"
+      ForemNative.serialize_sitemap_index_xml(
+        base_url,
+        @articles_count,
+        @page_limit,
+        include_users_and_tags: @organization.nil?,
+      )
+    when "posts"
+      ForemNative.serialize_sitemap_urlset_xml(base_url, @articles, path_prefix: @organization ? "/" : "")
+    when "users"
+      ForemNative.serialize_sitemap_urlset_xml(base_url, @users)
+    when "tags"
+      ForemNative.serialize_sitemap_urlset_xml(base_url, @tags, path_prefix: "/t/")
+    end
+  end
+
+  def native_sitemap_base_url
+    domain = @organization&.custom_domain || RequestStore.store[:subforem_domain]
+    URL.url(nil, domain)
+  end
+
+  def prepare_legacy_sitemap_assigns
+    return unless @view_template == "posts" && @organization && @articles
+
+    @articles = @articles.map { |slug, last_comment_at| ["/#{slug}", last_comment_at] }
   end
 end

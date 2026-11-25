@@ -34,6 +34,7 @@ pub mod redcarpet;
 pub mod rss;
 pub mod sanitize;
 pub mod scrubber;
+pub mod sitemap;
 pub mod social_image;
 pub mod story_card;
 pub mod svg;

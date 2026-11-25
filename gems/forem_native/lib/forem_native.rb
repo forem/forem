@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :redcarpet_render_link
+  LATEST_NATIVE_SYMBOL = :serialize_sitemap_urlset_xml
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2407,6 +2407,43 @@ module ForemNative
         valid_utf8_string?(app_domain)
 
       Native.redcarpet_render_link(link, content, link_attrs_html, app_protocol, app_domain, raw_href ? true : false)
+    end
+
+    # Formats `(unix_secs, utc_offset_secs)` as `"YYYY-MM-DD"`, matching `Time#strftime("%F")`.
+    # Returns `nil` when the year falls outside `0000..=9999` or arguments are out of range.
+    def format_iso_date(unix_secs, utc_offset_secs = 0)
+      return unless Native.respond_to?(:format_iso_date)
+      return unless valid_i64_integer?(unix_secs)
+      return unless utc_offset_secs.is_a?(Integer) && utc_offset_secs >= -2**31 && utc_offset_secs < 2**31
+
+      Native.format_iso_date(unix_secs, utc_offset_secs)
+    end
+
+    # Streams `app/views/sitemaps/index.xml.erb` into a single pre-allocated UTF-8 XML string.
+    # Returns `nil` on out-of-domain inputs so the controller falls back to ERB.
+    def serialize_sitemap_index_xml(base_url, articles_count, page_limit, include_users_and_tags: true)
+      return unless Native.respond_to?(:serialize_sitemap_index_xml)
+      return unless utf8_compatible_string?(base_url)
+      return unless valid_i64_integer?(articles_count) && valid_i64_integer?(page_limit)
+
+      Native.serialize_sitemap_index_xml(
+        base_url,
+        articles_count,
+        page_limit,
+        include_users_and_tags ? true : false,
+      )
+    end
+
+    # Streams `app/views/sitemaps/{posts,users,tags}.xml.erb` for plucked `[path, timestamp]`
+    # pairs into a single pre-allocated UTF-8 XML string with an optional `path_prefix`
+    # (`""`, `"/"`, or `"/t/"`). Returns `nil` on any out-of-domain URL, non-String path,
+    # or non-Time timestamp so the controller transparently falls back to ERB.
+    def serialize_sitemap_urlset_xml(base_url, rows, path_prefix: "")
+      return unless Native.respond_to?(:serialize_sitemap_urlset_xml)
+      return unless utf8_compatible_string?(base_url) && utf8_compatible_string?(path_prefix)
+      return unless rows.instance_of?(Array)
+
+      Native.serialize_sitemap_urlset_xml(base_url, path_prefix, rows)
     end
 
     private
