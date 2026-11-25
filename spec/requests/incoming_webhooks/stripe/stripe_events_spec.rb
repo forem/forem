@@ -18,13 +18,19 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
     )
   end
 
+  let(:mailer_delivery) { instance_double(ActionMailer::MessageDelivery, deliver_now: true) }
+  let(:notify_mailer) { instance_double(NotifyMailer, base_subscriber_role_email: mailer_delivery) }
+
   before do
     allow(Settings::General).to receive(:stripe_api_key).and_return(stripe_endpoint_secret)
-    allow(NotifyMailer).to receive_message_chain(:with, :base_subscriber_role_email, :deliver_now)
+    allow(ApplicationConfig).to receive(:[]).and_call_original
+    allow(ApplicationConfig).to receive(:[]).with("STRIPE_SIGNING_SECRET").and_return(stripe_endpoint_secret)
+    allow(NotifyMailer).to receive(:with).and_return(notify_mailer)
   end
 
   describe "POST /incoming_webhooks/stripe_events" do
     let(:stripe_signature) { "test_signature" }
+
     before { allow(Stripe::Webhook).to receive(:construct_event).and_return(event) }
 
     shared_examples "a successful stripe event" do
@@ -35,12 +41,83 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
       end
     end
 
+    context "when webhook signing secret is not configured" do
+      let(:payload) { { "type" => "checkout.session.completed" }.to_json }
+      let(:event) { JSON.parse(payload) }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("STRIPE_SIGNING_SECRET").and_return("")
+      end
+
+      it "returns service unavailable without constructing the event" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:service_unavailable)
+        expect(Stripe::Webhook).not_to have_received(:construct_event)
+      end
+    end
+
+    context "when signature header is missing" do
+      let(:payload) { { "type" => "checkout.session.completed" }.to_json }
+      let(:event) { JSON.parse(payload) }
+
+      it "returns bad request without constructing the event" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: {}
+        expect(response).to have_http_status(:bad_request)
+        expect(Stripe::Webhook).not_to have_received(:construct_event)
+      end
+    end
+
+    context "when signature verification fails" do
+      let(:payload) { { "type" => "checkout.session.completed" }.to_json }
+      let(:event) { JSON.parse(payload) }
+
+      before do
+        allow(Stripe::Webhook).to receive(:construct_event)
+          .and_raise(Stripe::SignatureVerificationError.new("signature mismatch detail", stripe_signature))
+      end
+
+      it "returns a generic bad request error without logging the signing secret or exception details" do
+        logged_messages = []
+        allow(Rails.logger).to receive(:info) { |msg| logged_messages << msg.to_s }
+        allow(Rails.logger).to receive(:error) { |msg| logged_messages << msg.to_s }
+
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.parsed_body).to eq("error" => "Invalid signature")
+        expect(logged_messages.join("\n")).not_to include(stripe_endpoint_secret)
+        expect(logged_messages.join("\n")).not_to include("signature mismatch detail")
+      end
+    end
+
+    context "when payload JSON is invalid" do
+      let(:payload) { "not-json" }
+      let(:event) { nil }
+
+      before do
+        allow(Stripe::Webhook).to receive(:construct_event)
+          .and_raise(JSON::ParserError, "unexpected token at 'not-json'")
+      end
+
+      it "returns a generic bad request error without logging parser details" do
+        logged_messages = []
+        allow(Rails.logger).to receive(:error) { |msg| logged_messages << msg.to_s }
+
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.parsed_body).to eq("error" => "Invalid payload")
+        expect(logged_messages.join("\n")).not_to include("not-json")
+      end
+    end
+
     context "when checkout.session.completed" do
       let(:payload) do
         {
           "type" => "checkout.session.completed",
           "data" => {
             "object" => {
+              "payment_status" => "paid",
               "metadata" => { "user_id" => user.id.to_s }
             }
           }
@@ -90,6 +167,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
             "type" => "checkout.session.completed",
             "data" => {
               "object" => {
+                "payment_status" => "paid",
                 "metadata" => { "user_id" => user.id.to_s },
                 "customer" => customer_id
               }
@@ -182,6 +260,137 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
         user.reload
         expect(user.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
         expect(user.current_subscriber_status).to eq("not_subscribed")
+      end
+    end
+
+    context "when checkout.session.completed is unpaid" do
+      let(:payload) do
+        {
+          "type" => "checkout.session.completed",
+          "data" => {
+            "object" => {
+              "payment_status" => "unpaid",
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+
+      it "does not grant the base_subscriber role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.roles.pluck(:name)).not_to include("base_subscriber")
+      end
+    end
+
+    context "when checkout.session.completed is missing payment_status" do
+      let(:payload) do
+        {
+          "type" => "checkout.session.completed",
+          "data" => {
+            "object" => {
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+
+      it "does not grant the base_subscriber role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.roles.pluck(:name)).not_to include("base_subscriber")
+      end
+    end
+
+    context "when checkout.session.async_payment_succeeded" do
+      let(:payload) do
+        {
+          "type" => "checkout.session.async_payment_succeeded",
+          "data" => {
+            "object" => {
+              "payment_status" => "paid",
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+
+      it "grants the base_subscriber role and sets status" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.roles.pluck(:name)).to include("base_subscriber")
+        expect(user.current_subscriber_status).to eq("paying_subscription")
+      end
+    end
+
+    context "when customer.subscription.created has an inactive status" do
+      let(:payload) do
+        {
+          "type" => "customer.subscription.created",
+          "data" => {
+            "object" => {
+              "status" => "incomplete",
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+
+      it "does not grant the base_subscriber role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.roles.pluck(:name)).not_to include("base_subscriber")
+        expect(user.current_subscriber_status).to eq("not_subscribed")
+      end
+    end
+
+    context "when customer.subscription.updated has a canceled status" do
+      let(:payload) do
+        {
+          "type" => "customer.subscription.updated",
+          "data" => {
+            "object" => {
+              "status" => "canceled",
+              "metadata" => { "user_id" => user.id.to_s }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+
+      it "does not grant the base_subscriber role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.roles.pluck(:name)).not_to include("base_subscriber")
+        expect(user.current_subscriber_status).to eq("not_subscribed")
+      end
+    end
+
+    context "when customer.subscription.updated sets top-level cancel_at_period_end" do
+      let(:payload) do
+        {
+          "type" => "customer.subscription.updated",
+          "data" => {
+            "object" => {
+              "cancel_at_period_end" => true,
+              "status" => "active",
+              "metadata" => { "user_id" => user.id.to_s },
+              "items" => { "data" => [{ "price" => { "unit_amount" => 1000 } }] }
+            }
+          }
+        }.to_json
+      end
+      let(:event) { JSON.parse(payload) }
+
+      it "adds the impending_base_subscriber_cancellation role" do
+        post "/incoming_webhooks/stripe_events", params: payload, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.roles.pluck(:name)).to include("impending_base_subscriber_cancellation")
+        expect(user.current_subscriber_status).to eq("paying_subscription")
       end
     end
   end
