@@ -100,6 +100,7 @@ class Event < ApplicationRecord
   end
 
   mount_uploader :cover_image, EventCoverImageUploader
+  mount_uploader :banner_image, EventBannerImageUploader
 
   def set_default_bg_color_hex
     return if bg_color_hex.present?
@@ -141,6 +142,18 @@ class Event < ApplicationRecord
       end
     else
       Settings::General.main_social_image.to_s
+    end
+  end
+
+  def banner_image_url
+    if banner_image.present?
+      if banner_image.respond_to?(:banner) && banner_image.banner.present? && banner_image.banner.url.present?
+        banner_image.banner.url
+      else
+        banner_image.url
+      end
+    else
+      data&.dig("banner_image_url").presence
     end
   end
 

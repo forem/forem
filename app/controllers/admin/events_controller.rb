@@ -1,5 +1,7 @@
 module Admin
   class EventsController < Admin::ApplicationController
+    layout "admin"
+
     before_action :set_event, only: %i[show edit update destroy]
 
     def index
@@ -142,6 +144,7 @@ module Admin
       scope = Event.select(:id, :title, :type_of, :start_time, :published).order(start_time: :desc, title: :asc)
       scope = scope.where.not(id: excluded_ids) if excluded_ids.any?
       @available_parent_events = scope.to_a
+      @available_organizations = Organization.select(:id, :name, :slug).order(:name).to_a
     end
 
     def available_sub_event_candidates(event)
@@ -197,6 +200,8 @@ module Admin
         :delegate_to_page,
         :cover_image,
         :remove_cover_image,
+        :banner_image,
+        :remove_banner_image,
         :bg_color_hex,
         data: {},
       )

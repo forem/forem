@@ -95,8 +95,18 @@ module EventsHelper
     nil
   end
 
-  def event_banner_image_url(event, width: 1600)
-    raw_url = safe_event_url(event.cover_image.presence&.url || event.data&.dig("banner_image_url"))
+  def event_banner_image_url(event, width: 1600, fallback_to_cover: false)
+    candidate = event.banner_image_url
+    candidate = event.cover_image.presence&.url if candidate.blank? && fallback_to_cover
+    raw_url = safe_event_url(candidate)
+    return if raw_url.blank?
+
+    optimized_image_url(raw_url, width: width, random_fallback: false)
+  end
+
+  def event_card_image_url(event, width: 640)
+    candidate = event.cover_image.presence&.url || event.banner_image_url
+    raw_url = safe_event_url(candidate)
     return if raw_url.blank?
 
     optimized_image_url(raw_url, width: width, random_fallback: false)

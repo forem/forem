@@ -6,7 +6,7 @@
   is_live = !is_upcoming && !is_ended
   chat_url = event.data&.dig("chat_url") || event.data&.dig(:chat_url)
   has_chat = chat_url.present?
-  safe_backdrop = event_banner_image_url(event, width: 1200)
+  safe_backdrop = event_banner_image_url(event, width: 1200, fallback_to_cover: true)
   stream_wrapper_classes = ["stream-stage"]
   stream_wrapper_classes << "stream-stage--live" if is_live
   stream_wrapper_classes << "stream-stage--upcoming" if is_upcoming

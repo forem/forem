@@ -1,4 +1,12 @@
-<div class="crayons-card p-6">
-  <h1 class="crayons-title mb-4">New Event</h1>
+<div class="admin-events-page">
+  <div class="admin-events-header">
+    <div>
+      <div class="fs-xs color-base-60 mb-1">
+        <%= link_to "← #{t("views.admin.events.form.back_to_events")}", admin_events_path, class: "c-link" %>
+      </div>
+      <h1 class="crayons-title m-0">New Event</h1>
+    </div>
+  </div>
+
   <%= render "form", event: @event %>
 </div>

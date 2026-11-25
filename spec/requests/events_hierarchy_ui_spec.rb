@@ -122,6 +122,26 @@ RSpec.describe "Event Hierarchy Public UI and Livestream Experience" do
       expect(main_col.text).to include("Official Event Post", "Tagged Community Post")
       expect(doc.at_css(".event-detail-columns__aside")).to be_present
     end
+
+    it "keeps wide banner_image distinct from social cover_image on conference pages" do
+      image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+      conference.update!(cover_image: image_file)
+
+      get event_path(conference.event_name_slug, conference.event_variation_slug)
+      expect(response).to have_http_status(:success)
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.at_css('meta[property="og:image"]')["content"]).to include("cover_image")
+      expect(doc.at_css(".event-brand-cover")).to be_nil
+
+      banner_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+      conference.update!(banner_image: banner_file)
+
+      get event_path(conference.event_name_slug, conference.event_variation_slug)
+      expect(response).to have_http_status(:success)
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.at_css('meta[property="og:image"]')["content"]).to include("cover_image")
+      expect(doc.at_css(".event-brand-cover img")["src"]).to include("banner_image")
+    end
   end
 
   describe "draft conference preview for admins" do

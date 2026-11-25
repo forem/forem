@@ -10073,6 +10073,10 @@
             "type": "string",
             "nullable": true
           },
+          "banner_image_url": {
+            "type": "string",
+            "nullable": true
+          },
           "status": {
             "type": "string",
             "enum": [
@@ -10232,6 +10236,10 @@
                 "nullable": true
               },
               "cover_image_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "banner_image_url": {
                 "type": "string",
                 "nullable": true
               },
@@ -10407,6 +10415,16 @@
           "bg_color_hex": {
             "type": "string",
             "nullable": true
+          },
+          "banner_image_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "Wide page banner image URL (1600x320, 5:1)."
+          },
+          "social_image_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "Social sharing (og:image) and event card image URL (1200x630, 1.91:1)."
           },
           "broadcast_config": {
             "type": "string",

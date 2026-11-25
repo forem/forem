@@ -8,7 +8,7 @@
     hero = hero_membership.child_event
     other_live = schedule.other_live_memberships
     hero_host = hero.organization || hero.user
-    hero_backdrop = event_banner_image_url(hero, width: 1000)
+    hero_backdrop = event_banner_image_url(hero, width: 1000, fallback_to_cover: true)
   %>
   <section class="event-hero-stage event-hero-stage--live crayons-card mb-6" aria-label="<%= t("views.events.hierarchy.live_hero_aria") %>">
     <div class="event-hero-stage__topbar">

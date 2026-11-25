@@ -1,7 +1,16 @@
-<div class="crayons-card p-6">
-  <div class="flex items-center justify-between mb-4">
-    <h1 class="crayons-title">Edit Event</h1>
-    <%= link_to "View Event", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
+<div class="admin-events-page">
+  <div class="admin-events-header">
+    <div>
+      <div class="fs-xs color-base-60 mb-1">
+        <%= link_to "← #{t("views.admin.events.form.back_to_event")}", admin_event_path(@event), class: "c-link" %>
+      </div>
+      <h1 class="crayons-title m-0">Edit Event: <%= @event.title %></h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <%= link_to t("views.admin.events.show.manage_button"), admin_event_path(@event), class: "c-btn c-btn--secondary" %>
+      <%= link_to "View Event ↗", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
+    </div>
   </div>
+
   <%= render "form", event: @event %>
 </div>

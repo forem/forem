@@ -43,6 +43,8 @@ module Events
         )
 
         payload = event.as_json
+        payload["banner_image_url"] = event.banner_image_url
+        payload["social_image_url"] = event.social_image_url
         payload["parent_event_ids"] = parent_memberships.map(&:parent_event_id)
         payload["sub_event_ids"] = child_memberships.map(&:child_event_id)
 
@@ -180,6 +182,7 @@ module Events
         primary_stream_url: event.primary_stream_url,
         bg_color_hex: event.bg_color_hex,
         cover_image_url: event.cover_image.presence&.url,
+        banner_image_url: event.banner_image_url,
         status: timing_status(event)
       }
     end

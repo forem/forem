@@ -239,6 +239,39 @@ RSpec.describe EventsHelper do
 
       expect(helper.event_banner_image_url(event)).to be_nil
     end
+
+    it "keeps cover_image distinct from banner_image unless fallback_to_cover is true" do
+      image = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+      event = create(:event, cover_image: image)
+
+      expect(helper.event_banner_image_url(event)).to be_nil
+      expect(helper.event_banner_image_url(event, fallback_to_cover: true)).to be_present
+    end
+
+    it "prefers uploaded banner_image over data banner_image_url and cover_image" do
+      event = create(
+        :event,
+        cover_image: fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png"),
+        banner_image: fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png"),
+        data: { "banner_image_url" => "https://images.unsplash.com/photo-fallback" },
+      )
+
+      expect(helper.event_banner_image_url(event)).to include("banner_image")
+      expect(helper.event_card_image_url(event)).to include("cover_image")
+    end
+  end
+
+  describe "#event_card_image_url" do
+    it "falls back to banner_image_url when no cover_image is uploaded" do
+      event = build_stubbed(:event, data: { "banner_image_url" => "https://images.unsplash.com/photo-wide" })
+      allow(helper).to receive(:optimized_image_url)
+        .with("https://images.unsplash.com/photo-wide", width: 640, random_fallback: false)
+        .and_return("https://media.dev.to/cdn-cgi/image/width=640/https://images.unsplash.com/photo-wide")
+
+      expect(helper.event_card_image_url(event, width: 640)).to eq(
+        "https://media.dev.to/cdn-cgi/image/width=640/https://images.unsplash.com/photo-wide",
+      )
+    end
   end
 
   describe "#event_host_path" do
