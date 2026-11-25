@@ -1,0 +1,34 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 1-14,16-73,75-79,82,84-100,105-411,442,447-450,480,485,488-491,526,617,626-629,640,646,654,656,658-659,662,672-674,686,695-697,705-706,716,724-727,740,750-753,767-768,800,823,832,842-843,846,849,852,859,861-863,876,878,920,929-930,938,963-982,991,1020,1024-1025,1028,1032,1046-1047,1051,1053,1081-1082,1094-1103,1119,1124,1126-1131,1138,1158,1171-1172,1183,1201,1207,1222-1224,1232-1233,1250-1252,1254,1257-1258,1265,1274,1281,1287,1337,1339,1344,1375,1378-1379,1428,1451,1453-1454,1456,1459,1461,1534
+app/javascript/packs/tagFollows.jsx
+  h_f968154a99632d 28-33,41
+app/views/events/_event_tabs.html.erb
+  h_f968154a99632d 10,12-16,19,21-78
+app/views/events/_live_ribbon.html.erb
+  h_f968154a99632d 6,13
+app/views/events/_stream_player.html.erb
+  h_f968154a99632d 68,70,145,147
+app/views/events/_sub_events_hero.html.erb
+  h_f968154a99632d 13,21,45-47,85,135-136,140-141,146,185-187,197,265
+app/views/events/challenge.html.erb
+  h_f968154a99632d 13-14
+app/views/events/gathering.html.erb
+  h_f968154a99632d 24-36,38,46-80,82,84-86,88-105,108-109,111,113,115,117-120,122-140,147-148,157,159,165,167-169,180,223
+app/views/events/page.html.erb
+  h_f968154a99632d 29-31,33,41,43-57,61-67,69-72
+app/views/events/show.html.erb
+  h_f968154a99632d 22-24,26,34
+spec/requests/events_hierarchy_ui_spec.rb
+  h_f968154a99632d 94-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4230f035fd8df8f769fe9af449ad3e187c827afd",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
