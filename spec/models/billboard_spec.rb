@@ -884,6 +884,25 @@ RSpec.describe Billboard do
         billboard.processed_html = "Content with no images or domains."
         expect(billboard.processed_html_final).to eq("Content with no images or domains.")
       end
+
+      it "returns the stored processed_html without copying it when the prior domain is absent" do
+        billboard.processed_html = "Content with no images or domains."
+        expect(billboard.processed_html_final).to equal(billboard.processed_html)
+      end
+
+      it "falls back to String#gsub when the new domain contains a backslash" do
+        backslash_domain = "https://new.cdn.com/\\0"
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(backslash_domain)
+        html = "<img src='#{prior_domain}/image1.jpg'>"
+        billboard.processed_html = html
+        expect(billboard.processed_html_final).to eq(html.gsub(prior_domain, backslash_domain))
+      end
+
+      it "leaves legacy runkit markup untouched" do
+        html = "<div class='runkit-element'><code>pre</code><code>body</code></div> #{prior_domain}/a.png"
+        billboard.processed_html = html
+        expect(billboard.processed_html_final).to eq(html.gsub(prior_domain, new_domain))
+      end
     end
 
     context "when the application configuration for the domains is blank" do

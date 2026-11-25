@@ -12747,4 +12747,130 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".gsub_literal" do
+    let(:fuzz_alphabet) do
+      ["a", "b", ".", "/", "-", "é", "🎉", "日", "\\", "<", ">", "\"", "'", " ", "\n", "%2F",
+       "media2.dev.to", "media.dev.to", "https://"]
+    end
+
+    # `[].join` is US-ASCII (deferred to Ruby); database strings are always UTF-8.
+    def random_fuzz_string(rng, max_tokens)
+      Array.new(rng.rand(0..max_tokens)) { fuzz_alphabet.sample(random: rng) }.join.encode(Encoding::UTF_8)
+    end
+
+    it "returns the receiver itself (no copy) when the needle does not occur" do
+      html = +"<p>No images here</p>"
+      expect(described_class.gsub_literal(html, "media2.dev.to", "media.dev.to")).to equal(html)
+      expect(described_class.gsub_literal(+"", "media2.dev.to", "media.dev.to")).to eq("")
+    end
+
+    it "matches String#gsub for literal replacements, including encoding" do
+      [
+        ["<img src='https://media2.dev.to/a.png'><img src='https://media2.dev.to/b.png'>", "media2.dev.to",
+         "media.dev.to"],
+        %w[aaaa aa b],
+        %w[aaa aa b],
+        %w[abab ab ab],
+        ["xx", "x", ""],
+        ["héllo 🎉 old 日本 old", "old", "nëw"],
+        ["🎉🎉", "🎉", "x"],
+        ["a.b.c", ".", "*"],
+        ["a\\b", "\\", "/"],
+        ["a+b(c)", "+b(", "?"],
+        ["$1 \\0", "$1", "$2"],
+      ].each do |haystack, needle, replacement|
+        expected = haystack.gsub(needle, replacement)
+        actual = described_class.gsub_literal(haystack, needle, replacement)
+        expect(actual).to eq(expected)
+        expect(actual.encoding).to eq(expected.encoding)
+        expect(actual).not_to be_frozen
+      end
+    end
+
+    it "returns nil for non-String arguments, empty needles, and backslash replacements" do
+      expect(described_class.gsub_literal(nil, "a", "b")).to be_nil
+      expect(described_class.gsub_literal("abc", nil, "b")).to be_nil
+      expect(described_class.gsub_literal("abc", :b, "x")).to be_nil
+      expect(described_class.gsub_literal("abc", /b/, "x")).to be_nil
+      expect(described_class.gsub_literal("abc", "", "x")).to be_nil
+      expect(described_class.gsub_literal("abc", "b", "\\0")).to be_nil
+      expect(described_class.gsub_literal("abc", "b", "\\\\")).to be_nil
+    end
+
+    it "returns nil for String subclasses and non-UTF-8 or invalid strings" do
+      expect(described_class.gsub_literal(ActiveSupport::SafeBuffer.new("abc"), "b", "x")).to be_nil
+      expect(described_class.gsub_literal("abc".b, "b", "x")).to be_nil
+      expect(described_class.gsub_literal("abc".encode("US-ASCII"), "b", "x")).to be_nil
+      expect(described_class.gsub_literal("abc".encode("UTF-16LE"), "b", "x")).to be_nil
+      expect(described_class.gsub_literal((+"\xFFabc").force_encoding(Encoding::UTF_8), "a", "x")).to be_nil
+      expect(described_class.gsub_literal("abc", "b".encode("UTF-16LE"), "x")).to be_nil
+    end
+
+    it "matches String#gsub across 1,000 seeded random inputs" do
+      rng = Random.new(424_242)
+
+      1_000.times do |iter|
+        haystack = random_fuzz_string(rng, 40)
+        needle = if rng.rand(3).zero? && !haystack.empty?
+                   haystack[rng.rand(haystack.length), rng.rand(1..8)]
+                 else
+                   random_fuzz_string(rng, 3)
+                 end
+        replacement = random_fuzz_string(rng, 3)
+        actual = described_class.gsub_literal(haystack, needle, replacement)
+
+        if needle.empty? || replacement.include?("\\")
+          expect(actual).to be_nil, "iter #{iter}: expected a deferral for #{[haystack, needle, replacement].inspect}"
+        else
+          expected = haystack.gsub(needle, replacement)
+          expect(actual).to eq(expected), "iter #{iter}: #{[haystack, needle, replacement].inspect}"
+          expect(actual.encoding).to eq(expected.encoding)
+          expect(actual).to equal(haystack) unless haystack.include?(needle)
+        end
+      end
+    end
+  end
+
+  describe "ProcessedHtmlFinalizable (ForemNative.gsub_literal)" do
+    let(:legacy_rewrite) do
+      lambda do |html, prior, current|
+        prior.blank? || current.blank? ? html : html.gsub(prior, current)
+      end
+    end
+
+    def stub_cloudflare_domains(prior, current)
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("PRIOR_CLOUDFLARE_IMAGES_DOMAIN").and_return(prior)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(current)
+    end
+
+    it "matches the legacy gsub rewrite across 1,000 seeded documents and domain configurations" do
+      rng = Random.new(424_242)
+      domains = [nil, "", " ", "media2.dev.to", "media.dev.to", "https://old.cdn.com", "cdn\\0", "日本.example"]
+      fragments = ["<p>Hello 🎉 world</p>\n", "<img src=\"https://media2.dev.to/a.png\">",
+                   "<a href='https://old.cdn.com/x'>x</a>", "<code>media.dev.to\\1</code>", "日本.example/é", "\r\n"]
+
+      1_000.times do |iter|
+        prior = domains.sample(random: rng)
+        current = domains.sample(random: rng)
+        html = Array.new(rng.rand(0..12)) { fragments.sample(random: rng) }.join
+        stub_cloudflare_domains(prior, current)
+
+        actual = ProcessedHtmlFinalizable.rewrite_cloudflare_images_domain(html)
+        expected = legacy_rewrite.call(html, prior, current)
+        expect(actual).to eq(expected), "iter #{iter}: #{[html, prior, current].inspect}"
+        expect(actual.encoding).to eq(expected.encoding)
+      end
+    end
+
+    it "falls back to String#gsub (and its errors) outside the native domain" do
+      stub_cloudflare_domains("old.example", "new\\0")
+      expect(ProcessedHtmlFinalizable.rewrite_cloudflare_images_domain("a old.example b"))
+        .to eq("a old.example b".gsub("old.example", "new\\0"))
+
+      stub_cloudflare_domains("old.example", "new.example")
+      expect { ProcessedHtmlFinalizable.rewrite_cloudflare_images_domain(nil) }.to raise_error(NoMethodError)
+    end
+  end
 end

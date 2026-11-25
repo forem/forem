@@ -28,6 +28,7 @@ pub mod image_ops;
 pub mod json;
 pub mod markdown;
 pub mod metal;
+pub mod processed_html;
 pub(crate) mod psl_data;
 pub mod reactions;
 pub mod redaction_metadata;

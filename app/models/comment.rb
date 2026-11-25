@@ -8,6 +8,7 @@ class Comment < ApplicationRecord
   include Reactable
   include AlgoliaSearchable
   include ActivityTrackable
+  include ProcessedHtmlFinalizable
   include AiDisclosable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
@@ -251,38 +252,6 @@ class Comment < ApplicationRecord
     Comments::CalculateScoreWorker.perform_async(id)
   end
   alias async_score_calc calculate_score
-
-  def processed_html_final
-    processed_html = replace_legacy_code_html(self.processed_html)
-
-    return processed_html if ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"].blank? || ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].blank?
-
-    processed_html.gsub(ApplicationConfig["PRIOR_CLOUDFLARE_IMAGES_DOMAIN"],
-                        ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"])
-  end
-
-  def replace_legacy_code_html(html)
-    return html if html.blank?
-    return html unless html.include?("runkit-element")
-
-    fragment = Nokogiri::HTML.fragment(html)
-    fragment.css('.runkit-element').each do |element|
-      preamble = element.at_css('code:nth-of-type(1)')&.text.to_s
-      content = element.at_css('code:nth-of-type(2)')&.text.to_s
-
-      replacement_html = LegacyCodeTag.fallback_html(
-        preamble: preamble,
-        parsed_content: content,
-      )
-
-      element.replace(Nokogiri::HTML.fragment(replacement_html))
-    end
-
-    fragment.to_html
-  rescue StandardError
-    html
-  end
-  private :replace_legacy_code_html
 
   def subforem_id
     commentable&.subforem_id

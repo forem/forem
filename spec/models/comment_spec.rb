@@ -877,6 +877,19 @@ RSpec.describe Comment do
         comment.processed_html = "Content with no images or domains."
         expect(comment.processed_html_final).to eq("Content with no images or domains.")
       end
+
+      it "returns the stored processed_html without copying it when the prior domain is absent" do
+        comment.processed_html = "Content with no images or domains."
+        expect(comment.processed_html_final).to equal(comment.processed_html)
+      end
+
+      it "falls back to String#gsub when the new domain contains a backslash" do
+        backslash_domain = "https://new.cdn.com/\\0"
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(backslash_domain)
+        html = "<img src='#{prior_domain}/image1.jpg'>"
+        comment.processed_html = html
+        expect(comment.processed_html_final).to eq(html.gsub(prior_domain, backslash_domain))
+      end
     end
 
     context "when the application configuration for the domains is blank" do

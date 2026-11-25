@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_stories_feed_json
+  LATEST_NATIVE_SYMBOL = :gsub_literal
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -417,6 +417,19 @@ module ForemNative
       return unless strings.all?(String)
 
       Native.inline_svg_icon(svg, class_name, width, height, aria_hidden, title, title_id)
+    end
+
+    # `haystack.gsub(needle, replacement)` for literal Strings, used by
+    # `ProcessedHtmlFinalizable#processed_html_final`. Returns `haystack` itself (no copy) when
+    # `needle` does not occur, a new String when it does, and nil outside the fast-path domain
+    # (non-String arguments or String subclasses such as `ActiveSupport::SafeBuffer`, a non-UTF-8 or
+    # invalid `haystack`, an empty `needle`, or a backslash in `replacement`, which `gsub`
+    # interprets as a back-reference) so callers can fall back to `String#gsub`.
+    def gsub_literal(haystack, needle, replacement)
+      return unless Native.respond_to?(:gsub_literal)
+      return unless haystack.instance_of?(String) && needle.instance_of?(String) && replacement.instance_of?(String)
+
+      Native.gsub_literal(haystack, needle, replacement)
     end
 
     # Strips HTML tags, comments, and doctypes while decoding character references and re-escaping

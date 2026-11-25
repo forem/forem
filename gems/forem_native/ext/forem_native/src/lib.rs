@@ -564,6 +564,39 @@ fn inline_svg_icon(
     }
 }
 
+/// `haystack.gsub(needle, replacement)` for literal Strings (`ProcessedHtmlFinalizable`).
+/// Returns `haystack` itself when nothing matches (no copy), a new UTF-8 String when something
+/// does, and `nil` outside the fast-path domain (non-UTF-8 `haystack`, invalid UTF-8, empty
+/// `needle`, or a backslash in `replacement`) so the caller falls back to `String#gsub`.
+fn gsub_literal(ruby: &Ruby, haystack: RString, needle: RString, replacement: RString) -> Value {
+    if haystack.enc_get() != ruby.utf8_encindex()
+        || !needle.is_utf8_compatible_encoding()
+        || !replacement.is_utf8_compatible_encoding()
+    {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the borrows
+    // end before we allocate the result. `test_as_str` reuses Ruby's cached coderange and
+    // returns `None` for invalid UTF-8, which we defer to `String#gsub` (and its errors).
+    let outcome = unsafe {
+        match (
+            haystack.test_as_str(),
+            needle.test_as_str(),
+            replacement.test_as_str(),
+        ) {
+            (Some(h), Some(n), Some(r)) => forem_core::processed_html::gsub_literal(h, n, r),
+            _ => None,
+        }
+    };
+    match outcome {
+        None => ruby.qnil().as_value(),
+        Some(forem_core::processed_html::LiteralGsub::Unchanged) => haystack.as_value(),
+        Some(forem_core::processed_html::LiteralGsub::Replaced(out)) => {
+            ruby.str_new(&out).as_value()
+        }
+    }
+}
+
 fn full_sanitize(html: RString) -> Option<String> {
     if !html.is_utf8_compatible_encoding() {
         return None;
@@ -9160,6 +9193,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;
     native_mod.define_singleton_method("full_sanitize", function!(full_sanitize, 1))?;
+    native_mod.define_singleton_method("gsub_literal", function!(gsub_literal, 3))?;
     native_mod.define_singleton_method(
         "sanitize_strip_all_tags",
         function!(sanitize_strip_all_tags, 1),

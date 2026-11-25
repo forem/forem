@@ -251,10 +251,11 @@
                 data-cue-close-label="<%= t("views.articles.comment_cue.close") %>"
               <% end %>
               id="article-body">
-              <% if @article.type_of == "status" && @article.processed_html_final.present? %>
+              <% article_body_html = @article.processed_html_final %>
+              <% if @article.type_of == "status" && article_body_html.present? %>
                 <% if user_signed_in? %>
                   <div class="pt-2">
-                    <%= @article.processed_html_final.html_safe %>
+                    <%= article_body_html.html_safe %>
                   </div>
                 <% else %>
                   <a href="/enter?state=new-user" class="crayons-card p-4 fs-s block mt-2">
@@ -262,7 +263,7 @@
                   </a>
                 <% end %>
               <% else %>
-                <%= @article.processed_html_final.html_safe %>
+                <%= article_body_html.html_safe %>
               <% end %>
             </div>
 
