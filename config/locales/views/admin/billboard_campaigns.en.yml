@@ -3,12 +3,17 @@ en:
     admin:
       billboard_campaigns:
         title: Billboard campaigns
+        subtitle: Group billboards under shared end dates, impression/click caps, and automated daily pacing.
         new: New campaign
         edit: "Edit campaign: %{name}"
         back_to_billboards: Back to billboards
-        empty: No billboard campaigns yet.
+        empty: No billboard campaigns found.
+        empty_description: Create a campaign to manage shared caps, expiration dates, and pacing across multiple billboards.
         id: Campaign ID
+        campaign: Campaign
         name: Campaign name
+        organization_id: Organization ID (optional)
+        organization_id_placeholder: "e.g. 1234"
         expires_at: Campaign end date
         max_impressions_count: Impression cap
         max_clicks_count: Click cap
@@ -16,6 +21,74 @@ en:
         campaign_limits: Caps apply to all billboards in the campaign combined. Use 0 for no cap or to turn off the daily target. Saving an already-expired end date or a reached cap takes the campaign's billboards down immediately; ongoing limits and expirations are enforced every 5 minutes in the background.
         billboard_limits: These caps apply to this billboard only. Use 0 for no cap.
         delivery_controls: Delivery settings
-        membership_help_html: Leave blank for no campaign. Find IDs under %{campaigns}.
+        membership_help_html: Leave blank for no campaign. Manage campaigns under %{campaigns}.
         save: Save campaign
         saved: Campaign saved.
+        status:
+          active: Active
+          throttled: Throttled
+          idle: Idle
+          expired: Expired
+          capped: Capped
+        kpis:
+          aria_label: Campaign overview metrics
+          active: Active campaigns
+          live_billboards: "%{count} live billboards"
+          paced: Daily-paced campaigns
+          throttled_count: "%{count} throttled"
+          none_throttled: None currently throttled
+          ended: Ended / capped
+          total_delivery: Campaign impressions
+        filters:
+          aria_label: Filter campaigns
+          search_placeholder: Search by campaign name or #ID...
+          paced: Daily-paced
+        sort:
+          daily_target: Highest daily target
+          name: Name (A–Z)
+        table:
+          campaign: Campaign
+          status_schedule: Status & schedule
+          cap_progress: Cap progress
+          pacing: Daily pacing
+          performance: Performance
+          live_of_total: "%{live} / %{total} live"
+          day: day
+          pass_through: "%{pct}% pass-through"
+          full_rate: 100% pass-through
+          pacing_off: Pacing off
+        actions:
+          dashboard: Dashboard
+          edit_campaign: Edit campaign
+          add_billboard: "+ Add billboard"
+        show:
+          back_to_campaigns: Back to campaigns
+          created_at: "Created %{date}"
+          filter_in_billboards: Filter in billboards
+          kpis_aria: Campaign metrics
+          past_24h_pacing: Past 24h delivery
+          target_daily: "Target %{target}/day"
+          creatives: Live creatives
+          weight_range: "Weight %{min}–%{max}"
+          progress_heading: Delivery caps & schedule
+          progress_subtitle: Shared limits summed across all billboards in this campaign.
+          pacing_heading: Ideal daily pacing
+          pacing_subtitle: Automated 10-minute titration of weights, priority, and pass-through gate.
+          past_24h_vs_target: Trailing 24h vs. daily target
+          throttle_gate: Delivery pass-through rate
+          throttle_help: Below 100% indicates the admission gate is throttling excess delivery.
+          pacing_disabled_help: Daily pacing is turned off (ideal daily impressions is 0). Set a positive target to enable automated 10-minute titration.
+          configure_pacing: Configure pacing
+          daily_chart_heading: Daily delivery (last 14 days, UTC)
+          daily_chart_summary: "%{impressions} impressions · %{clicks} clicks · %{conversions} conversions"
+          daily_chart_timeout: Daily event breakdown timed out on the read replica. Lifetime campaign totals above remain up to date.
+          daily_chart_empty: No billboard events recorded in the last 14 days.
+          target_short: "Target %{target}"
+          placements_heading: Placement breakdown
+          placements_subtitle: Impression share and CTR by placement area.
+          members_heading: "Campaign billboards (%{count})"
+          members_subtitle: Live creatives are listed first, sorted by impressions.
+          no_billboards: No billboards assigned to this campaign yet.
+          no_billboards_help: Add a billboard to start delivering under this campaign's shared limits.
+          weight_share: Weight & share
+          share_abbr: share

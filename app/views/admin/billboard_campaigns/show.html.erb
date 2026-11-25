@@ -1,0 +1,447 @@
+<% content_for :h1, @campaign.name %>
+<% status = admin_campaign_status(@campaign, rollup: @rollup, now: @now) %>
+<% schedule = admin_bb_schedule_summary(@campaign.expires_at, created_at: @campaign.created_at, now: @now) %>
+<% imp_progress = admin_bb_cap_progress(@rollup.impressions_count, @campaign.max_impressions_count) %>
+<% click_progress = admin_bb_cap_progress(@rollup.clicks_count, @campaign.max_clicks_count) %>
+<% pacing_target = @campaign.ideal_daily_impressions.to_i %>
+<% pacing_progress = admin_bb_cap_progress(@daily_stats.past_24h_impressions, pacing_target) if pacing_target.positive? %>
+<% throttle_pct = (@campaign.delivery_throttle_rate.to_f * 100.0).clamp(0.0, 100.0) %>
+
+<div class="admin-bb">
+  <div>
+    <%= link_to admin_billboard_campaigns_path, class: "crayons-link fs-s" do %>
+      &larr; <%= t("views.admin.billboard_campaigns.show.back_to_campaigns") %>
+    <% end %>
+  </div>
+
+  <header class="admin-bb-header">
+    <div class="admin-bb-header__title-group">
+      <div class="admin-bb-header__title-row">
+        <h1 class="crayons-title admin-bb-header__title"><%= @campaign.name %></h1>
+        <span class="admin-bb-pill admin-bb-pill--<%= status[:tone] %>">
+          <span class="admin-bb-pill__dot" aria-hidden="true"></span>
+          <%= status[:label] %>
+        </span>
+      </div>
+      <p class="admin-bb-header__subtitle">
+        <%= t("views.admin.billboard_campaigns.id") %> #<%= @campaign.id %>
+        <% if @organization.present? %>
+          &middot; <%= link_to @organization.name, admin_organization_path(@organization), class: "c-link" %>
+        <% end %>
+        &middot; <%= t("views.admin.billboard_campaigns.show.created_at", date: l(@campaign.created_at, format: :short)) %>
+        <% if schedule %>
+          &middot; <span title="<%= l(@campaign.expires_at, format: :short) %>"><%= schedule[:label] %></span>
+        <% end %>
+      </p>
+    </div>
+    <div class="admin-bb-header__actions">
+      <%= link_to t("views.admin.billboard_campaigns.show.filter_in_billboards"),
+                  admin_billboards_path(billboard_campaign_id: @campaign.id),
+                  class: "crayons-btn crayons-btn--secondary" %>
+      <%= link_to t("views.admin.billboard_campaigns.actions.add_billboard"),
+                  new_admin_billboard_path(billboard_campaign_id: @campaign.id),
+                  class: "crayons-btn crayons-btn--secondary" %>
+      <%= link_to t("views.admin.billboard_campaigns.actions.edit_campaign"),
+                  edit_admin_billboard_campaign_path(@campaign),
+                  class: "crayons-btn" %>
+    </div>
+  </header>
+
+  <section class="admin-bb-kpis" aria-label="<%= t("views.admin.billboard_campaigns.show.kpis_aria") %>">
+    <div class="admin-bb-kpi admin-bb-kpi--brand">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.impressions") %></span>
+      <span class="admin-bb-kpi__value" title="<%= number_with_delimiter(@rollup.impressions_count) %>">
+        <%= admin_bb_compact_number(@rollup.impressions_count) %>
+      </span>
+      <span class="admin-bb-kpi__meta">
+        <% if imp_progress %>
+          <%= format("%.1f%%", imp_progress[:percent]) %> <%= t("views.admin.billboards.caps.of_cap", cap: admin_bb_compact_number(imp_progress[:cap])) %>
+        <% else %>
+          <%= t("views.admin.billboards.caps.uncapped") %>
+        <% end %>
+      </span>
+    </div>
+
+    <div class="admin-bb-kpi">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.clicks_ctr") %></span>
+      <span class="admin-bb-kpi__value"><%= number_with_delimiter(@rollup.clicks_count) %></span>
+      <span class="admin-bb-kpi__meta">
+        <span><%= t("views.admin.billboards.kpis.ctr_short", ctr: admin_bb_ctr_percentage(@rollup.clicks_count, @rollup.impressions_count)) %></span>
+        <% if click_progress %>
+          <span>&middot; <%= format("%.0f%%", click_progress[:percent]) %> <%= t("views.admin.billboards.caps.of_cap", cap: admin_bb_compact_number(click_progress[:cap])) %></span>
+        <% end %>
+      </span>
+    </div>
+
+    <div class="admin-bb-kpi <%= pacing_target.positive? ? 'admin-bb-kpi--success' : '' %>">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboard_campaigns.show.past_24h_pacing") %></span>
+      <span class="admin-bb-kpi__value" title="<%= number_with_delimiter(@daily_stats.past_24h_impressions) %>">
+        <%= admin_bb_compact_number(@daily_stats.past_24h_impressions) %>
+      </span>
+      <span class="admin-bb-kpi__meta">
+        <% if pacing_target.positive? %>
+          <span><%= t("views.admin.billboard_campaigns.show.target_daily", target: admin_bb_compact_number(pacing_target)) %></span>
+          <span>&middot; <%= t("views.admin.billboard_campaigns.table.pass_through", pct: throttle_pct.round(0)) %></span>
+        <% else %>
+          <span><%= t("views.admin.billboard_campaigns.table.pacing_off") %></span>
+        <% end %>
+      </span>
+    </div>
+
+    <div class="admin-bb-kpi">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboard_campaigns.show.creatives") %></span>
+      <span class="admin-bb-kpi__value">
+        <%= @rollup.live_billboards_count %>
+        <span class="fs-base fw-normal color-base-60">/ <%= @rollup.billboards_count %></span>
+      </span>
+      <span class="admin-bb-kpi__meta">
+        <span><%= t("views.admin.billboards.kpis.prioritized_count", count: @rollup.prioritized_count) %></span>
+        <% if @rollup.min_weight && @rollup.max_weight %>
+          <span>&middot; <%= t("views.admin.billboard_campaigns.show.weight_range", min: format("%.2f", @rollup.min_weight), max: format("%.2f", @rollup.max_weight)) %></span>
+        <% end %>
+      </span>
+    </div>
+
+    <div class="admin-bb-kpi">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.visibility") %></span>
+      <span class="admin-bb-kpi__value"><%= admin_bb_avg_seconds(@rollup.seconds_visible, @rollup.impressions_count) %></span>
+      <span class="admin-bb-kpi__meta">
+        <%= t("views.admin.billboards.show.total_seconds", count: admin_bb_compact_number(@rollup.seconds_visible)) %>
+      </span>
+    </div>
+  </section>
+
+  <section class="admin-bb-grid-2">
+    <div class="admin-bb-panel">
+      <div class="admin-bb-panel__header">
+        <div>
+          <h2 class="admin-bb-panel__title"><%= t("views.admin.billboard_campaigns.show.progress_heading") %></h2>
+          <p class="admin-bb-panel__subtitle"><%= t("views.admin.billboard_campaigns.show.progress_subtitle") %></p>
+        </div>
+      </div>
+
+      <% if imp_progress %>
+        <%= render "admin/billboards/progress_bar",
+                   label: t("views.admin.billboard_campaigns.max_impressions_count"),
+                   progress: imp_progress, large: true, show_remaining: true %>
+      <% else %>
+        <div class="fs-s color-base-60">
+          <strong><%= t("views.admin.billboard_campaigns.max_impressions_count") %>:</strong>
+          <%= t("views.admin.billboards.caps.uncapped") %>
+        </div>
+      <% end %>
+
+      <% if click_progress %>
+        <%= render "admin/billboards/progress_bar",
+                   label: t("views.admin.billboard_campaigns.max_clicks_count"),
+                   progress: click_progress, large: true, show_remaining: true %>
+      <% else %>
+        <div class="fs-s color-base-60">
+          <strong><%= t("views.admin.billboard_campaigns.max_clicks_count") %>:</strong>
+          <%= t("views.admin.billboards.caps.uncapped") %>
+        </div>
+      <% end %>
+
+      <% if schedule %>
+        <div class="admin-bb-progress">
+          <div class="admin-bb-progress__header">
+            <span class="admin-bb-progress__label"><%= t("views.admin.billboard_campaigns.expires_at") %></span>
+            <span class="admin-bb-progress__value"><%= l(@campaign.expires_at, format: :short) %></span>
+          </div>
+          <% if schedule[:elapsed_percent] %>
+            <div class="admin-bb-progress__track admin-bb-progress__track--lg"
+                 role="progressbar"
+                 aria-valuenow="<%= schedule[:elapsed_percent].round(1) %>"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-label="<%= t("views.admin.billboard_campaigns.expires_at") %>">
+              <div class="admin-bb-progress__fill admin-bb-progress__fill--<%= schedule[:tone] == 'neutral' ? 'brand' : schedule[:tone] %>"
+                   style="width: <%= format('%.1f%%', schedule[:elapsed_percent]) %>"></div>
+            </div>
+          <% end %>
+          <div class="fs-xs color-base-60"><%= schedule[:label] %></div>
+        </div>
+      <% else %>
+        <div class="fs-s color-base-60">
+          <strong><%= t("views.admin.billboard_campaigns.expires_at") %>:</strong>
+          <%= t("views.admin.billboards.schedule.no_end_date") %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="admin-bb-panel">
+      <div class="admin-bb-panel__header">
+        <div>
+          <h2 class="admin-bb-panel__title"><%= t("views.admin.billboard_campaigns.show.pacing_heading") %></h2>
+          <p class="admin-bb-panel__subtitle"><%= t("views.admin.billboard_campaigns.show.pacing_subtitle") %></p>
+        </div>
+      </div>
+
+      <% if pacing_target.positive? && pacing_progress %>
+        <%= render "admin/billboards/progress_bar",
+                   label: t("views.admin.billboard_campaigns.show.past_24h_vs_target"),
+                   progress: pacing_progress, large: true %>
+
+        <div class="admin-bb-progress">
+          <div class="admin-bb-progress__header">
+            <span class="admin-bb-progress__label"><%= t("views.admin.billboard_campaigns.show.throttle_gate") %></span>
+            <span class="admin-bb-progress__value"><%= format("%.1f%%", throttle_pct) %></span>
+          </div>
+          <div class="admin-bb-progress__track admin-bb-progress__track--lg"
+               role="progressbar"
+               aria-valuenow="<%= throttle_pct.round(1) %>"
+               aria-valuemin="0"
+               aria-valuemax="100"
+               aria-label="<%= t("views.admin.billboard_campaigns.show.throttle_gate") %>">
+            <div class="admin-bb-progress__fill admin-bb-progress__fill--<%= throttle_pct < 100.0 ? 'warning' : 'success' %>"
+                 style="width: <%= format('%.1f%%', throttle_pct) %>"></div>
+          </div>
+          <div class="fs-xs color-base-60">
+            <%= t("views.admin.billboard_campaigns.show.throttle_help") %>
+          </div>
+        </div>
+      <% else %>
+        <p class="fs-s color-base-60 m-0">
+          <%= t("views.admin.billboard_campaigns.show.pacing_disabled_help") %>
+        </p>
+        <div>
+          <%= link_to t("views.admin.billboard_campaigns.show.configure_pacing"),
+                      edit_admin_billboard_campaign_path(@campaign),
+                      class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="admin-bb-grid-main">
+    <div class="admin-bb-panel">
+      <div class="admin-bb-panel__header">
+        <div>
+          <h2 class="admin-bb-panel__title"><%= t("views.admin.billboard_campaigns.show.daily_chart_heading") %></h2>
+          <p class="admin-bb-panel__subtitle">
+            <%= t("views.admin.billboard_campaigns.show.daily_chart_summary",
+                  impressions: number_with_delimiter(@daily_stats.total_impressions),
+                  clicks: number_with_delimiter(@daily_stats.total_clicks),
+                  conversions: number_with_delimiter(@daily_stats.total_conversions)) %>
+          </p>
+        </div>
+      </div>
+
+      <% if @daily_stats.timed_out %>
+        <div class="crayons-notice crayons-notice--warning fs-s">
+          <%= t("views.admin.billboard_campaigns.show.daily_chart_timeout") %>
+        </div>
+      <% elsif @daily_stats.total_impressions.zero? && @daily_stats.total_clicks.zero? %>
+        <p class="fs-s color-base-60 m-0"><%= t("views.admin.billboard_campaigns.show.daily_chart_empty") %></p>
+      <% else %>
+        <% chart_max = [@daily_stats.max_daily_impressions, pacing_target, 1].max.to_f %>
+        <% chart_w = 680.0 %>
+        <% chart_h = 200.0 %>
+        <% pad_l = 48.0 %>
+        <% pad_r = 12.0 %>
+        <% pad_t = 16.0 %>
+        <% pad_b = 28.0 %>
+        <% plot_w = chart_w - pad_l - pad_r %>
+        <% plot_h = chart_h - pad_t - pad_b %>
+        <% step_w = plot_w / @daily_stats.points.size %>
+        <% bar_w = [step_w * 0.62, 6.0].max %>
+        <div class="admin-bb-chart">
+          <svg viewBox="0 0 <%= chart_w.to_i %> <%= chart_h.to_i %>"
+               role="img"
+               aria-label="<%= t("views.admin.billboard_campaigns.show.daily_chart_heading") %>">
+            <% [0.0, 0.5, 1.0].each do |frac| %>
+              <% y = pad_t + plot_h * (1.0 - frac) %>
+              <line x1="<%= pad_l %>" y1="<%= format('%.1f', y) %>" x2="<%= chart_w - pad_r %>" y2="<%= format('%.1f', y) %>" class="admin-bb-chart__gridline" />
+              <text x="<%= pad_l - 6 %>" y="<%= format('%.1f', y + 4) %>" text-anchor="end" class="admin-bb-chart__label">
+                <%= admin_bb_compact_number((chart_max * frac).round) %>
+              </text>
+            <% end %>
+
+            <% @daily_stats.points.each_with_index do |point, idx| %>
+              <% bar_h = (point.impressions / chart_max) * plot_h %>
+              <% x = pad_l + idx * step_w + (step_w - bar_w) / 2.0 %>
+              <% y = pad_t + plot_h - bar_h %>
+              <rect x="<%= format('%.1f', x) %>"
+                    y="<%= format('%.1f', y) %>"
+                    width="<%= format('%.1f', bar_w) %>"
+                    height="<%= format('%.1f', [bar_h, point.impressions.positive? ? 2.0 : 0.0].max) %>"
+                    rx="3"
+                    class="admin-bb-chart__bar">
+                <title><%= "#{point.date.strftime('%b %-d')}: #{number_with_delimiter(point.impressions)} imp, #{number_with_delimiter(point.clicks)} clicks (#{admin_bb_ctr_percentage(point.clicks, point.impressions)})" %></title>
+              </rect>
+              <% if idx.even? || idx == @daily_stats.points.size - 1 %>
+                <text x="<%= format('%.1f', x + bar_w / 2.0) %>"
+                      y="<%= (chart_h - 8).to_i %>"
+                      text-anchor="middle"
+                      class="admin-bb-chart__label">
+                  <%= point.date.strftime("%-m/%-d") %>
+                </text>
+              <% end %>
+            <% end %>
+
+            <% if pacing_target.positive? %>
+              <% target_y = pad_t + plot_h * (1.0 - (pacing_target / chart_max)) %>
+              <line x1="<%= pad_l %>" y1="<%= format('%.1f', target_y) %>" x2="<%= chart_w - pad_r %>" y2="<%= format('%.1f', target_y) %>" class="admin-bb-chart__target-line" />
+              <text x="<%= chart_w - pad_r %>" y="<%= format('%.1f', [target_y - 4, 12.0].max) %>" text-anchor="end" class="admin-bb-chart__target-label">
+                <%= t("views.admin.billboard_campaigns.show.target_short", target: admin_bb_compact_number(pacing_target)) %>
+              </text>
+            <% end %>
+          </svg>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="admin-bb-panel">
+      <div class="admin-bb-panel__header">
+        <div>
+          <h2 class="admin-bb-panel__title"><%= t("views.admin.billboard_campaigns.show.placements_heading") %></h2>
+          <p class="admin-bb-panel__subtitle"><%= t("views.admin.billboard_campaigns.show.placements_subtitle") %></p>
+        </div>
+      </div>
+
+      <% if @placement_breakdown.empty? %>
+        <p class="fs-s color-base-60 m-0"><%= t("views.admin.billboard_campaigns.show.no_billboards") %></p>
+      <% else %>
+        <div class="flex flex-col gap-3">
+          <% @placement_breakdown.each do |row| %>
+            <div class="admin-bb-progress">
+              <div class="admin-bb-progress__header">
+                <span class="admin-bb-progress__label">
+                  <%= link_to row.label,
+                              admin_billboards_path(billboard_campaign_id: @campaign.id, placement_area: row.placement_area),
+                              class: "c-link" %>
+                  <span class="color-base-60">(<%= row.live_count %>/<%= row.billboards_count %>)</span>
+                </span>
+                <span class="admin-bb-progress__value">
+                  <%= admin_bb_compact_number(row.impressions_count) %> &middot; <%= admin_bb_ctr_percentage(row.clicks_count, row.impressions_count) %>
+                </span>
+              </div>
+              <div class="admin-bb-progress__track">
+                <div class="admin-bb-progress__fill admin-bb-progress__fill--brand"
+                     style="width: <%= format('%.1f%%', row.impression_share * 100.0) %>"></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="admin-bb-panel">
+    <div class="admin-bb-panel__header">
+      <div>
+        <h2 class="admin-bb-panel__title">
+          <%= t("views.admin.billboard_campaigns.show.members_heading", count: @billboards.size) %>
+        </h2>
+        <p class="admin-bb-panel__subtitle"><%= t("views.admin.billboard_campaigns.show.members_subtitle") %></p>
+      </div>
+      <%= link_to t("views.admin.billboard_campaigns.actions.add_billboard"),
+                  new_admin_billboard_path(billboard_campaign_id: @campaign.id),
+                  class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+    </div>
+
+    <% if @billboards.empty? %>
+      <div class="admin-bb-empty">
+        <h3 class="admin-bb-empty__title"><%= t("views.admin.billboard_campaigns.show.no_billboards") %></h3>
+        <p class="mb-4"><%= t("views.admin.billboard_campaigns.show.no_billboards_help") %></p>
+        <%= link_to t("views.admin.billboard_campaigns.actions.add_billboard"),
+                    new_admin_billboard_path(billboard_campaign_id: @campaign.id),
+                    class: "crayons-btn" %>
+      </div>
+    <% else %>
+      <div class="admin-bb-table-wrap">
+        <table class="admin-bb-table">
+          <thead>
+            <tr>
+              <th scope="col"><%= t("views.admin.billboards.table.billboard") %></th>
+              <th scope="col"><%= t("views.admin.billboards.filters.status") %></th>
+              <th scope="col"><%= t("views.admin.billboards.filters.placement") %></th>
+              <th scope="col" class="admin-bb-table__num"><%= t("views.admin.billboard_campaigns.show.weight_share") %></th>
+              <th scope="col" class="admin-bb-table__num"><%= t("views.admin.billboards.table.delivery") %></th>
+              <th scope="col" class="admin-bb-table__num"><%= t("views.admin.billboards.table.performance") %></th>
+              <th scope="col" class="admin-bb-table__num"><%= t("views.admin.billboards.table.actions") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @billboards.each do |billboard| %>
+              <% billboard.association(:billboard_campaign).target = @campaign %>
+              <% bb_status = admin_bb_status(billboard, now: @now) %>
+              <% bb_imp_cap = admin_bb_cap_progress(billboard.impressions_count, billboard.max_impressions_count) %>
+              <% imp_share = @rollup.impressions_count.positive? ? (billboard.impressions_count.to_f / @rollup.impressions_count) * 100.0 : 0.0 %>
+              <% weight_share = (@total_live_weight.positive? && bb_status[:key] == :live) ? (billboard.weight.to_f / @total_live_weight) * 100.0 : nil %>
+              <tr>
+                <td>
+                  <div>
+                    <%= link_to billboard.name.presence || "Billboard ##{billboard.id}",
+                                admin_billboard_path(billboard),
+                                class: "admin-bb-table__title" %>
+                    <span class="fs-xs color-base-60 ml-1">#<%= billboard.id %></span>
+                  </div>
+                  <div class="admin-bb-table__sub">
+                    <span><%= billboard.type_of.titleize %></span>
+                    <% if billboard.priority? %>
+                      <span class="admin-bb-meta-tag admin-bb-meta-tag--priority"><%= t("views.admin.billboards.badges.priority") %></span>
+                    <% end %>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="admin-bb-pill admin-bb-pill--<%= bb_status[:tone] %>">
+                    <span class="admin-bb-pill__dot" aria-hidden="true"></span>
+                    <%= bb_status[:label] %>
+                  </span>
+                  <% if (bb_sched = admin_bb_schedule_summary(billboard.expires_at, now: @now)) %>
+                    <div class="admin-bb-table__sub"><%= bb_sched[:label] %></div>
+                  <% end %>
+                </td>
+
+                <td>
+                  <div class="fw-medium"><%= billboard.human_readable_placement_area %></div>
+                  <div class="admin-bb-table__sub"><%= billboard.display_to.humanize %></div>
+                </td>
+
+                <td class="admin-bb-table__num">
+                  <div class="fw-bold"><%= format("%.2f", billboard.weight.to_f) %></div>
+                  <% if weight_share %>
+                    <div class="fs-xs color-base-60"><%= format("%.0f%%", weight_share) %> <%= t("views.admin.billboard_campaigns.show.share_abbr") %></div>
+                  <% end %>
+                </td>
+
+                <td class="admin-bb-table__num">
+                  <div class="fw-bold" title="<%= number_with_delimiter(billboard.impressions_count.to_i) %>">
+                    <%= admin_bb_compact_number(billboard.impressions_count) %>
+                    <span class="fs-xs fw-normal color-base-60">(<%= format("%.0f%%", imp_share) %>)</span>
+                  </div>
+                  <div class="fs-xs color-base-60">
+                    <%= number_with_delimiter(billboard.clicks_count.to_i) %> <%= t("views.admin.billboards.table.clicks_abbr") %>
+                  </div>
+                  <% if bb_imp_cap %>
+                    <div class="mt-1">
+                      <%= render "admin/billboards/progress_bar", label: t("views.admin.billboards.caps.impressions_short"), progress: bb_imp_cap %>
+                    </div>
+                  <% end %>
+                </td>
+
+                <td class="admin-bb-table__num">
+                  <div class="fw-bold"><%= admin_bb_ctr_percentage(billboard.clicks_count, billboard.impressions_count) %></div>
+                  <div class="fs-xs color-base-60">
+                    <%= t("views.admin.billboards.table.score_short", score: format("%.4f", billboard.success_rate.to_f)) %>
+                  </div>
+                </td>
+
+                <td class="admin-bb-table__num">
+                  <div class="admin-bb-table__actions">
+                    <%= link_to t("views.admin.billboards.actions.details"), admin_billboard_path(billboard), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+                    <%= link_to t("views.admin.billboards.actions.edit"), edit_admin_billboard_path(billboard), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+                    <%= link_to t("views.admin.billboards.actions.preview"), admin_billboard_live_preview_path(billboard),
+                                class: "crayons-btn crayons-btn--s crayons-btn--ghost", target: "_blank", rel: "noopener" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </section>
+</div>

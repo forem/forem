@@ -1,0 +1,140 @@
+fr:
+  views:
+    admin:
+      billboards:
+        title: Encarts promotionnels
+        subtitle: Gérez les encarts, le ciblage, les limites de diffusion et les performances en direct.
+        new: Nouvel encart
+        confirm_destroy: Confirmer les modifications
+        empty_title: Aucun encart ne correspond à ces filtres
+        empty_description: Essayez d’ajuster ou de réinitialiser vos filtres, ou créez un nouvel encart.
+        yes_label: Oui
+        no_label: Non
+        subnav:
+          aria_label: Sections d’administration des encarts
+          billboards: Encarts
+          placement_configs: Emplacements
+        kpis:
+          aria_label: Indicateurs des encarts
+          live: Encarts actifs
+          prioritized_count: "%{count} prioritaires"
+          expiring_soon: "%{count} expirent <48 h"
+          inactive: Brouillon / en pause
+          expired_count: "%{count} expirés"
+          capped_count: "%{count} plafonnés"
+          active_campaigns: Campagnes actives
+          manage_campaigns: Gérer les campagnes →
+          live_delivery: Impressions actives
+          clicks_short: "%{count} clics"
+          ctr_short: "%{ctr} CTR"
+          all_time_short: "%{count} au total"
+        status:
+          live: Actif
+          draft: Brouillon
+          unapproved: Non approuvé
+          draft_or_paused: Brouillon / en pause
+          expired: Expiré
+          capped: Plafonné
+        badges:
+          priority: Prioritaire
+          raw: HTML brut
+          isolated_raw: Brut isolé
+        caps:
+          impressions_short: Lim. imp.
+          clicks_short: Lim. clics
+          uncapped: Illimité
+          uncapped_imp: imp. (illimité)
+          of_cap: "sur %{cap}"
+          reached: Limite atteinte
+          remaining: "%{count} restants"
+        schedule:
+          ends_in: "Expire dans %{time}"
+          expired_ago: "Expiré il y a %{time}"
+          no_end_date: Sans date de fin
+        filters:
+          aria_label: Filtrer et rechercher les encarts
+          search: Rechercher
+          search_placeholder: Nom, #ID, tag, emplacement ou HTML...
+          status: Statut
+          all_statuses: Tous les statuts
+          campaign: Campagne
+          all_campaigns: Toutes les campagnes
+          standalone: Autonome (sans campagne)
+          placement: Emplacement
+          all_placements: Tous les emplacements
+          sort: Trier par
+          apply: Filtrer
+          reset: Effacer
+          more_filters: Plus de filtres (type, audience, priorité, rendu, tag, org)
+          any: Tous
+          type: Type
+          audience: Audience
+          priority: Priorité
+          prioritized_only: Prioritaires uniquement
+          non_prioritized: Non prioritaires
+          render_mode: Mode de rendu
+          tag: Tag
+          org_id: ID d’organisation
+          remove_chip: "Retirer le filtre %{filter}"
+        sort:
+          newest: Plus récents (ID ↓)
+          impressions: Plus d’impressions
+          clicks: Plus de clics
+          success_rate: Meilleur taux de succès
+          weight: Poids le plus élevé
+          expiring_soon: Expiration la plus proche
+          updated: Mis à jour récemment
+        table:
+          billboard: Encart
+          status_campaign: Statut et campagne
+          placement_audience: Emplacement et audience
+          delivery: Diffusion
+          performance: Performance
+          actions: Actions
+          imp_abbr: imp.
+          clicks_abbr: clics
+          score_short: "Score %{score}"
+          visible_short: "Moy. %{time} visible"
+          weight_short: "Poids %{weight}"
+        actions:
+          details: Détails
+          edit: Modifier
+          preview: Aperçu
+          destroy: Supprimer
+        form:
+          weight: "Poids (0–10 000) :"
+          weight_help: Poids de sélection relatif dans la stratégie new_and_priority (aussi ajusté par le lissage de campagne).
+          dismissal_sku: "SKU de fermeture :"
+        show:
+          created_by: "Créé par %{name}"
+          metrics_aria: Métriques de performance de l’encart
+          impressions: Impressions
+          clicks_ctr: Clics et CTR
+          success_rate: Taux de succès
+          visibility: Visibilité moy.
+          total_seconds: "%{count} secondes au total"
+          delivery_limits_heading: Limites de diffusion et calendrier
+          open_campaign: Ouvrir la campagne →
+          expires_at: Expire le
+          config_heading: Configuration et ciblage
+          published: Publié
+          approved: Approuvé
+          display_to: Afficher à
+          placement_area: Emplacement
+          render_mode: Mode de rendu
+          template: Modèle
+          organization: Organisation
+          custom_display_label: Nom d’affichage personnalisé
+          tags: Tags ciblés
+          all_tags: Tous les tags
+          dismissal_sku: SKU de fermeture
+          target_geolocations: Géolocalisations ciblées
+          target_roles: Rôles ciblés
+          exclude_roles: Rôles exclus
+          recent_events_heading: Interactions récentes (30 derniers jours)
+          event_category: Événement
+          event_user: Membre
+          event_time: Date
+          no_recent_events: Aucun clic ou conversion connecté au cours des 30 derniers jours.
+          preview_heading: Aperçu rendu
+          view_source: Voir le source Markdown / HTML brut

@@ -1,74 +1,94 @@
-<header class="flex items-center mb-6">
-  <h1 class="crayons-title">Billboard Placement Area Configurations</h1>
-</header>
+<% content_for :h1, t("views.admin.billboards.subnav.placement_configs") %>
 
-<div class="crayons-notice crayons-notice--info mb-4" aria-live="polite">
-  <strong>Configure delivery rates and selection weights for each billboard placement area.</strong>
-  <p class="mt-2">
-    Selection weights control how billboards are chosen for display. The weights are relative to each other and don't need to add up to 100.
-  </p>
-</div>
+<div class="admin-bb">
+  <header class="admin-bb-header">
+    <div class="admin-bb-header__title-group">
+      <h1 class="crayons-title admin-bb-header__title">Billboard Placement Area Configurations</h1>
+      <p class="admin-bb-header__subtitle">Configure delivery rates, caching, visibility, and selection strategy weights per placement slot.</p>
+    </div>
+  </header>
 
-<div class="crayons-card p-6">
-  <table class="crayons-table">
-    <thead>
-      <tr>
-        <th scope="col">Placement Area</th>
-        <th scope="col">Signed In Rate (%)</th>
-        <th scope="col">Signed Out Rate (%)</th>
-        <th scope="col"><%= t("views.admin.billboard_placement_area_configs.index.visibility") %></th>
-        <th scope="col"><%= t("views.admin.billboard_placement_area_configs.index.caching") %></th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @configs.each do |config| %>
+  <%= render "admin/billboards/subnav", active: :placements %>
+
+  <div class="crayons-notice crayons-notice--info" aria-live="polite">
+    <strong>Configure delivery rates and selection weights for each billboard placement area.</strong>
+    <p class="mt-2 mb-0">
+      Selection weights control how billboards are chosen for display. The weights are relative to each other and don't need to add up to 100.
+    </p>
+  </div>
+
+  <div class="admin-bb-table-wrap">
+    <table class="admin-bb-table">
+      <thead>
         <tr>
-          <td><strong><%= config.human_readable_placement_area %></strong></td>
-          <td><%= config.signed_in_rate %>%</td>
-          <td><%= config.signed_out_rate %>%</td>
-          <td>
-            <% if config.hidden_by_default? %>
-              <%= t("views.admin.billboard_placement_area_configs.index.hidden_by_default") %>
-            <% else %>
-              <%= t("views.admin.billboard_placement_area_configs.index.visible") %>
-            <% end %>
-          </td>
-          <td>
-            <% if config.fully_cached? %>
-              <%= t("views.admin.billboard_placement_area_configs.index.fully_cached") %>
-            <% else %>
-              <%= t("views.admin.billboard_placement_area_configs.index.standard_caching") %>
-            <% end %>
-          </td>
-          <td>
-            <%= link_to "Edit Configuration", edit_admin_billboard_placement_area_config_path(config), class: "crayons-btn crayons-btn--secondary" %>
-          </td>
+          <th scope="col">Placement Area</th>
+          <th scope="col" class="admin-bb-table__num"><%= t("views.admin.billboards.kpis.live") %></th>
+          <th scope="col" class="admin-bb-table__num">Signed In Rate (%)</th>
+          <th scope="col" class="admin-bb-table__num">Signed Out Rate (%)</th>
+          <th scope="col"><%= t("views.admin.billboard_placement_area_configs.index.visibility") %></th>
+          <th scope="col"><%= t("views.admin.billboard_placement_area_configs.index.caching") %></th>
+          <th scope="col" class="admin-bb-table__num">Actions</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        <% @configs.each do |config| %>
+          <% live_count = @live_counts_by_area[config.placement_area].to_i %>
+          <tr>
+            <td>
+              <strong><%= config.human_readable_placement_area %></strong>
+              <div class="admin-bb-table__sub"><code><%= config.placement_area %></code></div>
+            </td>
+            <td class="admin-bb-table__num">
+              <%= link_to live_count,
+                          admin_billboards_path(placement_area: config.placement_area, status: "live"),
+                          class: "admin-bb-pill #{live_count.positive? ? 'admin-bb-pill--success' : 'admin-bb-pill--neutral'}" %>
+            </td>
+            <td class="admin-bb-table__num"><%= config.signed_in_rate %>%</td>
+            <td class="admin-bb-table__num"><%= config.signed_out_rate %>%</td>
+            <td>
+              <% if config.hidden_by_default? %>
+                <span class="admin-bb-pill admin-bb-pill--warning"><%= t("views.admin.billboard_placement_area_configs.index.hidden_by_default") %></span>
+              <% else %>
+                <span class="admin-bb-pill admin-bb-pill--neutral"><%= t("views.admin.billboard_placement_area_configs.index.visible") %></span>
+              <% end %>
+            </td>
+            <td>
+              <% if config.fully_cached? %>
+                <span class="admin-bb-pill admin-bb-pill--info"><%= t("views.admin.billboard_placement_area_configs.index.fully_cached") %></span>
+              <% else %>
+                <span class="fs-xs color-base-60"><%= t("views.admin.billboard_placement_area_configs.index.standard_caching") %></span>
+              <% end %>
+            </td>
+            <td class="admin-bb-table__num">
+              <div class="admin-bb-table__actions">
+                <%= link_to "Edit Configuration", edit_admin_billboard_placement_area_config_path(config), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-<div class="crayons-card p-6 mt-6">
-  <h2 class="crayons-subtitle-2 mb-4">Selection Strategy Definitions</h2>
-  <dl class="grid gap-4">
-    <div>
-      <dt class="font-bold">Random Selection</dt>
-      <dd class="ml-4">Completely random selection giving all billboards equal chance. Good for testing new ads.</dd>
-    </div>
-    <div>
-      <dt class="font-bold">New and Priority</dt>
-      <dd class="ml-4">Weighted selection favoring billboards with fewer impressions or marked as priority. Helps new ads gain traction.</dd>
-    </div>
-    <div>
-      <dt class="font-bold">New Only</dt>
-      <dd class="ml-4">Only shows billboards with fewer impressions. Ensures new ads get visibility.</dd>
-    </div>
-    <div>
-      <dt class="font-bold">Weighted Performance</dt>
-      <dd class="ml-4">Favors billboards with better performance metrics. Shows top-performing ads more frequently.</dd>
-    </div>
-  </dl>
+  <div class="admin-bb-panel">
+    <h2 class="admin-bb-panel__title">Selection Strategy Definitions</h2>
+    <dl class="admin-bb-dl">
+      <div>
+        <dt>Random Selection</dt>
+        <dd>Completely random selection giving all billboards equal chance. Good for testing new ads.</dd>
+      </div>
+      <div>
+        <dt>New and Priority</dt>
+        <dd>Weighted selection favoring billboards with fewer impressions or marked as priority. Helps new ads gain traction.</dd>
+      </div>
+      <div>
+        <dt>New Only</dt>
+        <dd>Only shows billboards with fewer impressions. Ensures new ads get visibility.</dd>
+      </div>
+      <div>
+        <dt>Weighted Performance</dt>
+        <dd>Favors billboards with better performance metrics. Shows top-performing ads more frequently.</dd>
+      </div>
+    </dl>
+  </div>
 </div>
-

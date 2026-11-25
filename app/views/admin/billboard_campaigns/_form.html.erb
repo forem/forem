@@ -1,8 +1,15 @@
 <div class="crayons-card p-6">
   <%= form_with model: [:admin, @campaign], local: true, class: "flex flex-col gap-4" do |form| %>
-    <div class="crayons-field">
-      <%= form.label :name, t("views.admin.billboard_campaigns.name"), class: "crayons-field__label" %>
-      <%= form.text_field :name, class: "crayons-textfield", required: true %>
+    <div class="grid l:grid-cols-2 gap-4">
+      <div class="crayons-field">
+        <%= form.label :name, t("views.admin.billboard_campaigns.name"), class: "crayons-field__label" %>
+        <%= form.text_field :name, class: "crayons-textfield", required: true %>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :organization_id, t("views.admin.billboard_campaigns.organization_id"), class: "crayons-field__label" %>
+        <%= form.number_field :organization_id, min: 1, class: "crayons-textfield", placeholder: t("views.admin.billboard_campaigns.organization_id_placeholder") %>
+      </div>
     </div>
 
     <div class="crayons-field">
@@ -22,6 +29,9 @@
 
     <div class="flex flex-wrap gap-2">
       <%= form.submit t("views.admin.billboard_campaigns.save"), class: "crayons-btn" %>
+      <% if @campaign.persisted? %>
+        <%= link_to t("views.admin.billboard_campaigns.actions.dashboard"), admin_billboard_campaign_path(@campaign), class: "crayons-btn crayons-btn--secondary" %>
+      <% end %>
       <%= link_to t("views.admin.billboard_campaigns.title"), admin_billboard_campaigns_path, class: "crayons-btn crayons-btn--secondary" %>
     </div>
   <% end %>

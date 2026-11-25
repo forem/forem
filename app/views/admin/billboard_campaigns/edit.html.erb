@@ -1,2 +1,14 @@
-<h1 class="crayons-title mb-4"><%= t("views.admin.billboard_campaigns.edit", name: @campaign.name) %></h1>
-<%= render "form" %>
+<% content_for :h1, t("views.admin.billboard_campaigns.edit", name: @campaign.name) %>
+
+<div class="admin-bb">
+  <header class="admin-bb-header">
+    <div class="admin-bb-header__title-group">
+      <h1 class="crayons-title admin-bb-header__title"><%= t("views.admin.billboard_campaigns.edit", name: @campaign.name) %></h1>
+    </div>
+    <div class="admin-bb-header__actions">
+      <%= link_to t("views.admin.billboard_campaigns.actions.dashboard"), admin_billboard_campaign_path(@campaign), class: "crayons-btn crayons-btn--secondary" %>
+    </div>
+  </header>
+
+  <%= render "form" %>
+</div>

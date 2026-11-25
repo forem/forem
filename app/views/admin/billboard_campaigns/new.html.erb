@@ -1,2 +1,11 @@
-<h1 class="crayons-title mb-4"><%= t("views.admin.billboard_campaigns.new") %></h1>
-<%= render "form" %>
+<% content_for :h1, t("views.admin.billboard_campaigns.new") %>
+
+<div class="admin-bb">
+  <header class="admin-bb-header">
+    <div class="admin-bb-header__title-group">
+      <h1 class="crayons-title admin-bb-header__title"><%= t("views.admin.billboard_campaigns.new") %></h1>
+    </div>
+  </header>
+
+  <%= render "form" %>
+</div>

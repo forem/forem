@@ -20,6 +20,7 @@ module Admin
       end
       
       @configs = BillboardPlacementAreaConfig.order(:placement_area) if missing_areas.any?
+      @live_counts_by_area = Billboard.approved_and_published.group(:placement_area).count
     end
 
     def edit

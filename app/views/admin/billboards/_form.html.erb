@@ -182,8 +182,13 @@
     <fieldset class="flex flex-col gap-4">
       <legend class="crayons-field__label mb-2"><%= t("views.admin.billboard_campaigns.delivery_controls") %></legend>
       <div class="crayons-field">
-        <%= label_tag :billboard_campaign_id, t("views.admin.billboard_campaigns.id"), class: "crayons-field__label" %>
-        <%= number_field_tag :billboard_campaign_id, @billboard.billboard_campaign_id, min: 1, class: "crayons-textfield", autocomplete: "off", aria: { describedby: "billboard-campaign-help" } %>
+        <%= label_tag :billboard_campaign_id, t("views.admin.billboard_campaigns.campaign"), class: "crayons-field__label" %>
+        <% campaign_select_options = (@campaigns_for_select || []).map { |c| ["#{c.name} (##{c.id})", c.id] } %>
+        <%= select_tag :billboard_campaign_id,
+                       options_for_select(campaign_select_options, selected: @billboard.billboard_campaign_id),
+                       include_blank: t("views.admin.billboards.filters.standalone"),
+                       class: "crayons-select",
+                       aria: { describedby: "billboard-campaign-help" } %>
         <p id="billboard-campaign-help" class="crayons-field__description">
           <%= t("views.admin.billboard_campaigns.membership_help_html", campaigns: link_to(t("views.admin.billboard_campaigns.title"), admin_billboard_campaigns_path, class: "c-link")) %>
         </p>
@@ -200,6 +205,17 @@
     <div class="crayons-field">
       <%= label_tag :priority, "Prioritized:", class: "crayons-field__label" %>
       <%= select_tag :priority, options_for_select([false, true], selected: @billboard.priority), class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :weight, t("views.admin.billboards.form.weight"), class: "crayons-field__label" %>
+      <%= number_field_tag :weight, @billboard.weight, min: 0, max: 10_000, step: "any", class: "crayons-textfield", autocomplete: "off" %>
+      <p class="crayons-field__description"><%= t("views.admin.billboards.form.weight_help") %></p>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :dismissal_sku, t("views.admin.billboards.form.dismissal_sku"), class: "crayons-field__label" %>
+      <%= text_field_tag :dismissal_sku, @billboard.dismissal_sku, class: "crayons-textfield", placeholder: "e.g. spring-promo-2026", autocomplete: "off" %>
     </div>
   </div>
   <div>

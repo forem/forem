@@ -1,0 +1,140 @@
+pt:
+  views:
+    admin:
+      billboards:
+        title: Anúncios
+        subtitle: Gerencie anúncios, segmentação, limites de veiculação e desempenho em tempo real.
+        new: Novo anúncio
+        confirm_destroy: Confirmar alterações
+        empty_title: Nenhum anúncio corresponde a esses filtros
+        empty_description: Tente ajustar ou limpar seus filtros, ou crie um novo anúncio.
+        yes_label: Sim
+        no_label: Não
+        subnav:
+          aria_label: Seções de administração de anúncios
+          billboards: Anúncios
+          placement_configs: Posicionamentos
+        kpis:
+          aria_label: Métricas gerais de anúncios
+          live: Anúncios ativos
+          prioritized_count: "%{count} priorizados"
+          expiring_soon: "%{count} expiram <48h"
+          inactive: Rascunho / pausado
+          expired_count: "%{count} expirados"
+          capped_count: "%{count} no limite"
+          active_campaigns: Campanhas ativas
+          manage_campaigns: Gerenciar campanhas →
+          live_delivery: Impressões ativas
+          clicks_short: "%{count} cliques"
+          ctr_short: "%{ctr} CTR"
+          all_time_short: "%{count} no total"
+        status:
+          live: Ativo
+          draft: Rascunho
+          unapproved: Não aprovado
+          draft_or_paused: Rascunho / Pausado
+          expired: Expirado
+          capped: No limite
+        badges:
+          priority: Prioridade
+          raw: HTML puro
+          isolated_raw: Puro isolado
+        caps:
+          impressions_short: Lim. imp.
+          clicks_short: Lim. cliques
+          uncapped: Sem limite
+          uncapped_imp: imp (sem limite)
+          of_cap: "de %{cap}"
+          reached: Limite atingido
+          remaining: "%{count} restantes"
+        schedule:
+          ends_in: "Termina em %{time}"
+          expired_ago: "Expirou há %{time}"
+          no_end_date: Sem data de término
+        filters:
+          aria_label: Filtrar e pesquisar anúncios
+          search: Pesquisar
+          search_placeholder: Nome, #ID, tag, posicionamento ou HTML...
+          status: Status
+          all_statuses: Todos os status
+          campaign: Campanha
+          all_campaigns: Todas as campanhas
+          standalone: Avulso (sem campanha)
+          placement: Área de posicionamento
+          all_placements: Todos os posicionamentos
+          sort: Ordenar por
+          apply: Filtrar
+          reset: Limpar
+          more_filters: Mais filtros (tipo, público, prioridade, renderização, tag, org)
+          any: Qualquer
+          type: Tipo
+          audience: Público
+          priority: Prioridade
+          prioritized_only: Somente priorizados
+          non_prioritized: Não priorizados
+          render_mode: Modo de renderização
+          tag: Tag
+          org_id: ID da organização
+          remove_chip: "Remover filtro %{filter}"
+        sort:
+          newest: Mais recentes (ID ↓)
+          impressions: Mais impressões
+          clicks: Mais cliques
+          success_rate: Maior taxa de sucesso
+          weight: Maior peso
+          expiring_soon: Expirando em breve
+          updated: Atualizados recentemente
+        table:
+          billboard: Anúncio
+          status_campaign: Status e campanha
+          placement_audience: Posicionamento e público
+          delivery: Veiculação
+          performance: Desempenho
+          actions: Ações
+          imp_abbr: imp
+          clicks_abbr: cliques
+          score_short: "Score %{score}"
+          visible_short: "Méd. %{time} visível"
+          weight_short: "Peso %{weight}"
+        actions:
+          details: Detalhes
+          edit: Editar
+          preview: Pré-visualizar
+          destroy: Excluir
+        form:
+          weight: "Peso (0–10.000):"
+          weight_help: Peso relativo na estratégia new_and_priority (também ajustado automaticamente pelo ritmo da campanha).
+          dismissal_sku: "SKU de dispensa:"
+        show:
+          created_by: "Criado por %{name}"
+          metrics_aria: Métricas de desempenho do anúncio
+          impressions: Impressões
+          clicks_ctr: Cliques e CTR
+          success_rate: Taxa de sucesso
+          visibility: Visibilidade méd.
+          total_seconds: "%{count} segundos no total"
+          delivery_limits_heading: Limites de veiculação e agenda
+          open_campaign: Abrir campanha →
+          expires_at: Expira em
+          config_heading: Configuração e segmentação
+          published: Publicado
+          approved: Aprovado
+          display_to: Exibir para
+          placement_area: Área de posicionamento
+          render_mode: Modo de renderização
+          template: Modelo
+          organization: Organização
+          custom_display_label: Rótulo de exibição personalizado
+          tags: Tags segmentadas
+          all_tags: Todas as tags
+          dismissal_sku: SKU de dispensa
+          target_geolocations: Geolocalizações alvo
+          target_roles: Cargos alvo
+          exclude_roles: Cargos excluídos
+          recent_events_heading: Interações recentes (últimos 30 dias)
+          event_category: Evento
+          event_user: Membro
+          event_time: Data e hora
+          no_recent_events: Nenhum evento de clique ou conversão autenticado nos últimos 30 dias.
+          preview_heading: Pré-visualização renderizada
+          view_source: Ver código-fonte Markdown / HTML
