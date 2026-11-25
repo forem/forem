@@ -2766,14 +2766,18 @@ RSpec.describe Article do
   end
 
   describe "#update_score" do
-    before do
-      allow(article).to receive(:reactions).and_return(reactions)
-      allow(article).to receive_messages(reactions: reactions, comments: comments)
-      allow(BlackBox).to receive(:article_hotness_score).and_return(100)
+    # Pin the article-level reaction / comment aggregates while keeping the real
+    # user-level aggregates (featured, negative, badges, ...) from the fused query.
+    def stub_article_aggregates(overrides)
+      allow(article).to receive(:score_aggregates).and_wrap_original do |original|
+        original.call.merge(overrides)
+      end
     end
 
-    let(:reactions) { double("reactions", sum: 10, privileged_category: double("privileged_category", sum: 5)) } # rubocop:disable RSpec/VerifiedDoubles
-    let(:comments) { double("comments", pluck: [3]) } # rubocop:disable RSpec/VerifiedDoubles
+    before do
+      stub_article_aggregates(reaction_points: 10, privileged_reaction_points: 5, comment_score_sum: 3)
+      allow(BlackBox).to receive(:article_hotness_score).and_return(100)
+    end
 
     it "stably sets the correct blackbox values" do
       article.update_score
@@ -2917,10 +2921,9 @@ RSpec.describe Article do
 
     context "comment_score with max_score limits" do
       before do
-        allow(article).to receive(:reactions).and_return(double(sum: 10, privileged_category: double(sum: 5)))
+        # Use the real comment scores from the fused aggregate query
+        stub_article_aggregates(reaction_points: 10, privileged_reaction_points: 5)
         allow(BlackBox).to receive(:article_hotness_score).and_return(100)
-        # Override the comments mock to allow real comment creation
-        allow(article).to receive(:comments).and_call_original
       end
 
       it "limits comment_score to article max_score when sum of comment scores exceeds it" do
@@ -3000,15 +3003,79 @@ RSpec.describe Article do
         expect(article.reload.comment_score).to eq(7)
       end
 
-      it "reads only comment scores instead of loading full comment rows" do
+      it "aggregates comment scores in SQL instead of plucking every comment row" do
         create(:comment, commentable: article, score: 4)
+        create(:comment, commentable: article, score: -9)
         queries = []
         callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
 
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { article.update_score }
 
-        expect(queries).to all(start_with('SELECT "comments"."score"'))
-        expect(article.reload.comment_score).to eq(4)
+        expect(queries.size).to eq(1)
+        expect(queries.first).to include('SUM(GREATEST("comments"."score", -1))')
+        expect(article.reload.comment_score).to eq(3)
+      end
+
+      it "falls back to the legacy pluck (and its error) when a comment score is NULL" do
+        comment = create(:comment, commentable: article, score: 4)
+        comment.update_column(:score, nil)
+
+        expect { article.update_score }.to raise_error(ArgumentError)
+      end
+    end
+
+    context "with the fused aggregate query" do
+      before do
+        allow(BlackBox).to receive(:article_hotness_score).and_call_original
+        allow(article).to receive(:score_aggregates).and_call_original
+      end
+
+      it "gathers the score aggregates in a single query" do
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:name] == "Article Score Aggregates"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { article.update_score }
+
+        expect(queries.size).to eq(1)
+      end
+
+      it "matches the legacy aggregate SQL fallback", :aggregate_failures do
+        reactor = create(:user, :trusted)
+        create(:reaction, reactable: article, user: reactor, category: "like")
+        create(:reaction, reactable: article, user: reactor, category: "thumbsup")
+        create(:reaction, reactable: user, user: reactor, category: "vomit")
+        create(:context_note, article: article)
+        create(:badge_achievement, user: user, badge: create(:badge, bonus_weight: 9))
+        create(:article, user: user, featured: true)
+        create(:comment, commentable: article, score: -7)
+
+        native = article.__send__(:score_aggregates)
+        allow(ForemNative).to receive(:article_score_aggregates_sql).and_return(nil)
+        legacy = article.__send__(:score_aggregates)
+
+        expect(native).to eq(legacy)
+        expect(native[:badge_bonus_weight_sum]).to eq(9)
+        expect(native[:context_note_count]).to eq(1)
+        expect(native[:comment_score_sum]).to eq(-1)
+      end
+
+      it "uses the in-memory organization when the association is loaded" do
+        allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(0)
+        org = create(:organization, baseline_score: 0)
+        article.update_column(:organization_id, org.id)
+        article.reload.organization.baseline_score = 7
+
+        expect(article.__send__(:score_aggregates)[:organization_baseline_score]).to eq(7)
+      end
+
+      it "produces the same score and comment score as the legacy formula" do
+        create(:comment, commentable: article, score: 12)
+        inputs = article.__send__(:update_score_inputs, article.__send__(:score_aggregates))
+
+        native = ForemNative.article_update_score(inputs)
+        expect(native).to eq(article.dup.__send__(:legacy_update_score_values, inputs))
       end
     end
 
