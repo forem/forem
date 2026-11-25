@@ -190,7 +190,7 @@ module Search
 
     def self.extract_epoch_sec(value)
       return if value.nil?
-      return value.tv_sec if value.respond_to?(:tv_sec)
+      return value.tv_sec if value.respond_to?(:tv_sec) && value.respond_to?(:utc_offset) && value.utc_offset.zero?
 
       :invalid
     end

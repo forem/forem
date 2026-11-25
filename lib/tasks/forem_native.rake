@@ -105,6 +105,7 @@ namespace :forem_native do
     benchmark_analytics_activity
     benchmark_stories_feed
     benchmark_processed_html_final
+    benchmark_search_results
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -3400,6 +3401,140 @@ namespace :forem_native do
         x.config(time: 2, warmup: 1)
         x.report("Ruby String#gsub (#{label})") { legacy_fn.call }
         x.report("Rust ForemNative.gsub_literal (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark SearchController & Search::* streaming JSON serializers"
+  task benchmark_search_results: :environment do
+    require "active_support/json"
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    current_year = 2026
+    base_sec = 1_772_323_200
+    users = Array.new(12) do |i|
+      { name: "Author <#{i}> & Co", profile_image_90: "https://media2.dev.to/90/#{i}.png", username: "author_#{i}" }
+    end
+    users_flat = users.flat_map { |u| [u[:name], u[:profile_image_90], u[:username]] }
+
+    rl_rows = Array.new(60) do |i|
+      {
+        id: 1000 + i, user_id: 42, path: "/author_#{i % 12}/post-#{i}",
+        published_at_sec: base_sec + (i * 3600), crossposted_at_sec: nil,
+        reading_time: 3 + (i % 7), cached_tag_list: "rust, ruby, performance",
+        title: "Search Reading List Item ##{i} <2026>", user_idx: i % 12
+      }
+    end
+    rl_flat = rl_rows.flat_map do |r|
+      [r[:id], r[:user_id], r[:path], r[:published_at_sec], r[:crossposted_at_sec],
+       r[:reading_time], r[:cached_tag_list], r[:title], r[:user_idx]]
+    end
+    legacy_rl = lambda do
+      items = rl_rows.map do |r|
+        t = Time.at(r[:published_at_sec]).utc
+        u = users[r[:user_idx]]
+        tags = r[:cached_tag_list].split(", ")
+        {
+          id: r[:id], user_id: r[:user_id],
+          reactable: {
+            path: r[:path],
+            readable_publish_date_string: t.year == current_year ? t.strftime("%b %-d") : t.strftime("%b %-d '%y"),
+            reading_time: r[:reading_time],
+            tag_list: tags,
+            tags: tags.map { |tag| { name: tag } },
+            title: r[:title],
+            user: { name: u[:name], profile_image_90: u[:profile_image_90], username: u[:username] }
+          }
+        }
+      end
+      ActiveSupport::JSON.encode({ result: items, total: 120 }, escape_html_entities: true)
+    end
+    native_rl = lambda do
+      ForemNative.serialize_search_reading_list_json(rl_flat, users_flat, 120, current_year, escape_html: true)
+    end
+
+    cm_rows = Array.new(60) do |i|
+      {
+        id: 5000 + i, reactions: i % 15, body: "Comment body ##{i} about Rails & <Rust>",
+        has_hl: false, hl: nil, score: i * 2, sec: base_sec + (i * 60), millis: (i * 17) % 1000,
+        title: "Article Title ##{i}", user_idx: i % 12
+      }
+    end
+    cm_flat = cm_rows.flat_map do |r|
+      [r[:id], r[:reactions], r[:body], r[:has_hl], r[:hl], r[:score], r[:sec], r[:millis], r[:title], r[:user_idx]]
+    end
+    legacy_cm = lambda do
+      items = cm_rows.map do |r|
+        t = Time.at(r[:sec]).utc
+        u = users[r[:user_idx]]
+        {
+          id: "comment_#{r[:id]}",
+          path: "/#{u[:username]}/comment/#{r[:id].to_s(26)}",
+          public_reactions_count: r[:reactions],
+          body_text: r[:body],
+          class_name: "Comment",
+          highlight: { body_text: [] },
+          hotness_score: r[:score],
+          published: true,
+          published_at: "#{t.strftime('%Y-%m-%dT%H:%M:%S')}.#{r[:millis].to_s.rjust(3, '0')}Z",
+          readable_publish_date_string: t.year == current_year ? t.strftime("%b %-d") : t.strftime("%b %-d '%y"),
+          title: r[:title],
+          user: { name: u[:name], profile_image_90: u[:profile_image_90], username: u[:username] }
+        }
+      end
+      ActiveSupport::JSON.encode({ result: items }, escape_html_entities: true)
+    end
+    native_cm = lambda do
+      ForemNative.serialize_search_comments_json(cm_flat, users_flat, current_year, escape_html: true)
+    end
+
+    tag_rows = Array.new(60) do |i|
+      {
+        id: 200 + i, name: "tag_#{i}", hotness_score: 1000 - i, supported: i.even?,
+        summary: "Short summary for tag <#{i}> & friends", rules_html: "<p>Be kind & helpful</p>",
+        bg: "#3b49df", has_badge: i.even?, badge_url: i.even? ? "/badges/#{i}.png" : nil
+      }
+    end
+    tag_flat = tag_rows.flat_map do |r|
+      [r[:id], r[:name], r[:hotness_score], r[:supported], r[:summary], r[:rules_html], r[:bg], r[:has_badge],
+       r[:badge_url]]
+    end
+    legacy_tags = lambda do
+      items = tag_rows.map do |r|
+        {
+          class_name: "Tag", id: r[:id], name: r[:name], hotness_score: r[:hotness_score],
+          supported: r[:supported], short_summary: r[:summary], rules_html: r[:rules_html],
+          bg_color_hex: r[:bg],
+          badge: r[:has_badge] ? { badge_image: { url: r[:badge_url] } } : nil
+        }
+      end
+      ActiveSupport::JSON.encode({ result: items }, escape_html_entities: true)
+    end
+    native_tags = -> { ForemNative.serialize_search_tags_json(tag_flat, escape_html: true) }
+
+    [
+      ["search reading_list (60 items)", legacy_rl, native_rl],
+      ["search comments (60 items)", legacy_cm, native_cm],
+      ["search tags (60 items)", legacy_tags, native_tags],
+    ].each do |label, legacy_fn, native_fn|
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
         x.compare!
       end
     end

@@ -40,13 +40,21 @@ module Search
       relation = sort(relation, sort_by, sort_direction)
       results = relation.page(page).per(per_page)
 
-      if format == :json && ForemNative.available? && Time.zone&.tzinfo&.name == "Etc/UTC"
+      if format == :json && native_json_serializable?
         json = serialize_json_natively(results)
         return Homepage::ArticleSerializer::EncodedJson.new(json) if json
       end
 
       serialize(results)
     end
+
+    def self.native_json_serializable?
+      ForemNative.available? &&
+        Time.zone&.tzinfo&.name == "Etc/UTC" &&
+        ActiveSupport::JSON::Encoding.use_standard_json_time_format &&
+        ActiveSupport::JSON::Encoding.time_precision == 3
+    end
+    private_class_method :native_json_serializable?
 
     def self.sort(relation, sort_by, sort_direction)
       return relation.reorder(sort_by => sort_direction) if sort_by && sort_direction
@@ -75,14 +83,17 @@ module Search
         if published_at.nil?
           pub_sec = nil
           pub_millis = 0
-        elsif published_at.respond_to?(:tv_sec) && published_at.respond_to?(:tv_nsec)
+        elsif published_at.respond_to?(:tv_sec) && published_at.respond_to?(:tv_nsec) &&
+            published_at.respond_to?(:utc?) && published_at.utc?
           pub_sec = published_at.tv_sec
           pub_millis = published_at.tv_nsec / 1_000_000
         else
           return nil
         end
 
-        podcast_image_url = podcast_images_by_id[podcast.id] ||= podcast.profile_image_url_for(length: 90)
+        podcast_image_url = podcast_images_by_id.fetch(podcast.id) do
+          podcast_images_by_id[podcast.id] = podcast.profile_image_url_for(length: 90)
+        end
         episodes_flat.push(
           ep.id, ep.body, ep.comments_count, ep.slug, podcast.slug,
           pub_sec, pub_millis, ep.quote, ep.reactions_count,

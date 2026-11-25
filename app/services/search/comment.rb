@@ -99,7 +99,9 @@ module Search
     def self.native_json_serializable?
       ForemNative.available? &&
         I18n.locale == :en &&
-        Time.zone&.tzinfo&.name == "Etc/UTC"
+        Time.zone&.tzinfo&.name == "Etc/UTC" &&
+        ActiveSupport::JSON::Encoding.use_standard_json_time_format &&
+        ActiveSupport::JSON::Encoding.time_precision == 3
     end
     private_class_method :native_json_serializable?
 
@@ -113,7 +115,8 @@ module Search
       comments_flat = []
       rows.each do |row|
         created_at = row[4]
-        return nil unless created_at.respond_to?(:tv_sec) && created_at.respond_to?(:tv_nsec)
+        return nil unless created_at.respond_to?(:tv_sec) && created_at.respond_to?(:tv_nsec) &&
+          created_at.respond_to?(:utc?) && created_at.utc?
 
         comments_flat.push(
           row[0], row[1], row[2], false, nil, row[3],
@@ -141,7 +144,8 @@ module Search
 
       comments.each do |comment|
         created_at = comment.created_at
-        return nil unless created_at.respond_to?(:tv_sec) && created_at.respond_to?(:tv_nsec)
+        return nil unless created_at.respond_to?(:tv_sec) && created_at.respond_to?(:tv_nsec) &&
+          created_at.respond_to?(:utc?) && created_at.utc?
 
         user = comment.user
         user_idx = if user

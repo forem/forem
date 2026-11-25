@@ -12897,11 +12897,7 @@ RSpec.describe ForemNative do
 
     let(:encode_json) do
       lambda do |obj, escape_html:|
-        prev = ActiveSupport::JSON::Encoding.escape_html_entities_in_json
-        ActiveSupport::JSON::Encoding.escape_html_entities_in_json = escape_html
-        ActiveSupport::JSON.encode(obj)
-      ensure
-        ActiveSupport::JSON::Encoding.escape_html_entities_in_json = prev
+        ActiveSupport::JSON.encode(obj, escape_html_entities: escape_html)
       end
     end
 
