@@ -58,6 +58,8 @@ on:
       - "app/services/articles/feeds/custom.rb"
       - "app/services/feed_events/bulk_upsert.rb"
       - "app/services/homepage/fetch_articles.rb"
+      - "app/services/html/parser.rb"
+      - "app/services/markdown_processor/parser.rb"
       - "app/services/search/article.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
@@ -106,6 +108,8 @@ on:
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
       - "spec/services/articles/detect_code_block_languages_spec.rb"
       - "spec/services/articles/feeds/custom_spec.rb"
+      - "spec/services/html/parser_spec.rb"
+      - "spec/services/markdown_processor/parser_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
       - "spec/services/images/**"
@@ -261,6 +265,11 @@ jobs:
             raise "Unexpected serialize_api_videos_json!" unless ForemNative.serialize_api_videos_json([9, "/a/v", nil, "https://v.example/a.m3u8", "Vid", 42, 125.5, nil, "Ada"], [0, nil, "cdn-cgi", true]).include?("\"video_duration_in_minutes\":\"02:05\"")
             rl_res = ForemNative.serialize_api_readinglist_json([7, "valid", 1_772_323_200], api_articles_row, [1, "Ada", "ada", nil, nil, nil, nil, nil], [], ["https://dev.to"], api_articles_cfg)
             raise "Unexpected serialize_api_readinglist_json!" unless rl_res.is_a?(String) && rl_res.start_with?("[{\"type_of\":\"readinglist\",\"id\":7,")
+            raise "Unexpected prefix_all_images!" unless ForemNative.prefix_all_images("<p><img src=\"https://media.giphy.com/media/abc/giphy.gif\"></p>").include?("https://i.giphy.com/media/abc/giphy.gif")
+            raise "Unexpected transform_markdown_alerts!" unless ForemNative.transform_markdown_alerts("<blockquote>\n<p>[!TIP]\nHi</p>\n</blockquote>", %w[Note Tip Important Warning Caution]).include?("data-alert=\"tip\"")
+            raise "Unexpected wrap_all_figures_with_tags!" unless ForemNative.wrap_all_figures_with_tags("<p>A</p>\n<figcaption>B</figcaption>") == "<figure><p>A</p>\n<figcaption>B</figcaption></figure>\n"
+            fused_html = ForemNative.postprocess_rendered_html("<p><img src=\"https://media.giphy.com/media/abc/giphy.gif\"></p>\n<figcaption>Cap</figcaption>\n<blockquote>\n<p>[!NOTE]\nHi</p>\n</blockquote>", app_domain: "dev.to", prefix_images_config: ["880", "dev.to", nil, nil, "cdn-cgi"], alert_labels: %w[Note Tip Important Warning Caution])
+            raise "Unexpected postprocess_rendered_html_full!" unless fused_html.is_a?(String) && fused_html.include?("<figure>") && fused_html.include?("data-alert=\"note\"")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

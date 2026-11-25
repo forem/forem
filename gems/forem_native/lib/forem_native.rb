@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :serialize_api_readinglist_json
+  LATEST_NATIVE_SYMBOL = :postprocess_rendered_html_full
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -912,25 +912,71 @@ module ForemNative
       Native.add_fullscreen_button_to_panel(html, action_html)
     end
 
+    # Rewrites `<img>` `src` attributes (Cloudflare Images / Giphy / passthrough) and sets
+    # `loading="lazy"` on canonical HTML4 fragments, matching `Html::Parser#prefix_all_images`
+    # when `synchronous_detail_detection` is `false`.
+    def prefix_all_images(html, width: 880, app_host: nil, asset_host: nil, cloudflare_domain: nil,
+                          cloudflare_directory: "cdn-cgi")
+      return unless Native.respond_to?(:prefix_all_images)
+      return unless valid_utf8_string?(html) && cloudflare_directory.is_a?(String)
+      return unless width.nil? || width.is_a?(Integer) || width.is_a?(String)
+      return unless [app_host, asset_host, cloudflare_domain].all? { |v| v.nil? || v.is_a?(String) }
+
+      Native.prefix_all_images(
+        html,
+        width.to_s,
+        app_host,
+        asset_host,
+        cloudflare_domain,
+        cloudflare_directory.to_s,
+      )
+    end
+
+    # Transforms GitHub-style Markdown alerts (`<blockquote><p>[!NOTE]...</p></blockquote>`)
+    # on canonical HTML4 fragments, matching `Html::Parser#transform_markdown_alerts`.
+    # `alert_labels` must be a 5-element Array of localized labels in `ALERT_TYPES` order:
+    # `[note, tip, important, warning, caution]`.
+    def transform_markdown_alerts(html, alert_labels)
+      return unless Native.respond_to?(:transform_markdown_alerts)
+      return unless valid_utf8_string?(html)
+      return unless alert_labels.is_a?(Array) && alert_labels.size == 5
+
+      Native.transform_markdown_alerts(html, alert_labels)
+    end
+
+    # Wraps `<figcaption>` elements (not already inside `<figure>`) together with their
+    # immediately preceding sibling element in `<figure>...</figure>`, matching
+    # `Html::Parser#wrap_all_figures_with_tags` on canonical HTML4 inputs.
+    def wrap_all_figures_with_tags(html)
+      return unless Native.respond_to?(:wrap_all_figures_with_tags)
+      return unless valid_utf8_string?(html)
+
+      Native.wrap_all_figures_with_tags(html)
+    end
+
     # Single-FFI HTML post-processing pipeline combining outbound link tagging, list `<br>`
-    # cleanup, image link wrapping, `<video>` normalization, fused codeblock enhancements,
-    # table wrapping, empty `<p>` pruning, colon-emoji replacement, raw-tag unescaping,
-    # `@mention` linking, and optional `Nokogiri::HTML` `body.inner_html` newline normalization.
+    # cleanup, image prefixing, image link wrapping, `<video>` normalization, fused codeblock
+    # enhancements, table wrapping, Markdown alert transformation, empty `<p>` pruning,
+    # colon-emoji replacement, raw-tag unescaping, `<figcaption>` wrapping, `@mention` linking,
+    # and optional `Nokogiri::HTML` `body.inner_html` newline normalization.
     def postprocess_rendered_html(html, app_domain:, fullscreen_action_html: "", existing_usernames: [],
-                                  base_url: "", run_target_blank: true, normalize_document: true)
+                                  base_url: "", run_target_blank: true, normalize_document: true,
+                                  prefix_images_config: nil, alert_labels: nil)
+      return unless valid_utf8_string?(html) && existing_usernames.is_a?(Array)
+      return unless [app_domain, fullscreen_action_html, base_url].all?(String)
+
+      if prefix_images_config || alert_labels
+        return postprocess_rendered_html_full(
+          html, app_domain, fullscreen_action_html, existing_usernames, base_url,
+          run_target_blank, normalize_document, prefix_images_config, alert_labels
+        )
+      end
+
       return unless Native.respond_to?(:postprocess_rendered_html)
-      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
-      return unless app_domain.is_a?(String) && fullscreen_action_html.is_a?(String)
-      return unless existing_usernames.is_a?(Array) && base_url.is_a?(String)
 
       Native.postprocess_rendered_html(
-        html,
-        app_domain.to_s,
-        fullscreen_action_html.to_s,
-        existing_usernames,
-        base_url.to_s,
-        run_target_blank ? true : false,
-        normalize_document ? true : false,
+        html, app_domain.to_s, fullscreen_action_html.to_s, existing_usernames,
+        base_url.to_s, run_target_blank ? true : false, normalize_document ? true : false
       )
     end
 
@@ -2336,6 +2382,23 @@ module ForemNative
 
     def valid_i64_integer?(value)
       value.is_a?(Integer) && value >= -2**63 && value < 2**63
+    end
+
+    def valid_utf8_string?(str)
+      str.instance_of?(String) && str.encoding == Encoding::UTF_8
+    end
+
+    def postprocess_rendered_html_full(html, app_domain, fullscreen_action_html, existing_usernames,
+                                       base_url, run_target_blank, normalize_document,
+                                       prefix_images_config, alert_labels)
+      return unless Native.respond_to?(:postprocess_rendered_html_full)
+      return unless [prefix_images_config, alert_labels].all? { |v| v.nil? || (v.is_a?(Array) && v.size == 5) }
+
+      Native.postprocess_rendered_html_full(
+        html, app_domain.to_s, fullscreen_action_html.to_s, existing_usernames,
+        base_url.to_s, run_target_blank ? true : false, normalize_document ? true : false,
+        prefix_images_config, alert_labels
+      )
     end
   end
 end

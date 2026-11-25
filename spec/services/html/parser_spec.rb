@@ -517,6 +517,74 @@ RSpec.describe Html::Parser, type: :service do
       expect(parsed_html).to include('data-gif-video="true"', 'autoplay="autoplay"', 'preload="metadata"')
     end
 
+    it "prefixes <img> elements in #prefix_all_images without DOM parsing" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      html = '<p><img src="https://media.giphy.com/media/abc/giphy.gif" alt="gif"></p>'
+      parsed_html = described_class.new(html).prefix_all_images.html
+
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(parsed_html).to eq('<p><img src="https://i.giphy.com/media/abc/giphy.gif" alt="gif" loading="lazy"></p>')
+    end
+
+    it "transforms markdown alerts in #transform_markdown_alerts without DOM parsing" do
+      allow(Nokogiri::HTML).to receive(:fragment)
+      html = "<blockquote>\n<p>[!TIP]\nUse Rust.</p>\n</blockquote>"
+      parsed_html = described_class.new(html).transform_markdown_alerts.html
+
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+      expect(parsed_html).to include('data-alert="tip"', 'data-alert-label="tip"', "<p>Use Rust.</p>")
+    end
+
+    it "wraps figcaptions in #wrap_all_figures_with_tags without DOM parsing" do
+      allow(Nokogiri).to receive(:HTML)
+      html = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
+      parsed_html = described_class.new(html).wrap_all_figures_with_tags.html
+
+      expect(Nokogiri).not_to have_received(:HTML)
+      expect(parsed_html).to eq("<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>\n")
+    end
+
+    it "defers cleanly in native_prefix_images_config when asset_host is a callable Proc" do
+      allow(ActionController::Base).to receive(:asset_host).and_return(->(_src) { "https://cdn.example.com" })
+
+      expect(described_class.native_prefix_images_config).to be_nil
+    end
+
+    it "preserves HTML5 elements, attributes, and image destinations across native and fallback #finalize",
+       :aggregate_failures do
+      alice = create(:user, username: "alice_native_finalize")
+      markdown = <<~MD
+        Hello @#{alice.username} and [external](https://example.com/docs).
+
+        ![gif](https://media.giphy.com/media/abc/giphy.gif)
+        <figcaption>Caption text</figcaption>
+
+        > [!TIP]
+        > Use Rust for hot paths.
+      MD
+      allow(described_class).to receive(:alert_labels)
+        .and_return(["Note", "Ask @#{alice.username}", "Important", "Warning", "Caution"])
+
+      native_results = []
+      allow(ForemNative).to receive(:postprocess_rendered_html).and_wrap_original do |method, *args, **kwargs|
+        method.call(*args, **kwargs).tap { |res| native_results << res }
+      end
+      native_html = MarkdownProcessor::Parser.new(markdown).finalize
+      expect(native_results.length).to eq(1)
+      expect(native_results.first).to be_a(String)
+
+      allow(ForemNative).to receive(:postprocess_rendered_html).and_return(nil)
+      fallback_html = MarkdownProcessor::Parser.new(markdown).finalize
+
+      expect(native_html).to eq(fallback_html)
+      native_doc = Nokogiri::HTML5.fragment(native_html)
+      fallback_doc = Nokogiri::HTML5.fragment(fallback_html)
+      expect(native_doc.css("*").map(&:name)).to eq(fallback_doc.css("*").map(&:name))
+      expect(native_doc.css("img").pluck("src")).to eq(fallback_doc.css("img").pluck("src"))
+      expect(native_doc.css("a").pluck("href")).to eq(fallback_doc.css("a").pluck("href"))
+      expect(native_doc.css("blockquote[data-alert='tip'] p[data-alert-label='tip'] a.mentioned-user").size).to eq(1)
+    end
+
     it "reuses FULLSCREEN_ACTION_CACHE without re-parsing inline SVGs on cache hits", :aggregate_failures do
       described_class.new("").fullscreen_action_html
 

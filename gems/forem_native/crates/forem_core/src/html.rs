@@ -57,6 +57,8 @@ enum Tag {
     A,
     Svg,
     Video,
+    Figure,
+    Figcaption,
     Html5Container,
     Inline,
 }
@@ -98,14 +100,16 @@ impl Tag {
             b"a" => Some(Self::A),
             b"svg" => Some(Self::Svg),
             b"video" => Some(Self::Video),
-            b"article" | b"aside" | b"del" | b"details" | b"figure" | b"footer" | b"header"
-            | b"ins" | b"main" | b"nav" | b"section" => Some(Self::Html5Container),
+            b"figure" => Some(Self::Figure),
+            b"figcaption" => Some(Self::Figcaption),
+            b"article" | b"aside" | b"del" | b"details" | b"footer" | b"header" | b"ins"
+            | b"main" | b"nav" | b"section" => Some(Self::Html5Container),
             b"abbr" | b"add" | b"b" | b"big" | b"circle" | b"cite" | b"defs" | b"dfn"
-            | b"ellipse" | b"em" | b"figcaption" | b"filter" | b"g" | b"i" | b"iframe" | b"kbd"
-            | b"line" | b"mark" | b"path" | b"polygon" | b"polyline" | b"q" | b"rect" | b"rp"
-            | b"rt" | b"ruby" | b"s" | b"samp" | b"small" | b"source" | b"span" | b"stop"
-            | b"strike" | b"strong" | b"sub" | b"summary" | b"sup" | b"time" | b"tt" | b"u"
-            | b"use" | b"var" => Some(Self::Inline),
+            | b"ellipse" | b"em" | b"filter" | b"g" | b"i" | b"iframe" | b"kbd" | b"line"
+            | b"mark" | b"path" | b"polygon" | b"polyline" | b"q" | b"rect" | b"rp" | b"rt"
+            | b"ruby" | b"s" | b"samp" | b"small" | b"source" | b"span" | b"stop" | b"strike"
+            | b"strong" | b"sub" | b"summary" | b"sup" | b"time" | b"tt" | b"u" | b"use"
+            | b"var" => Some(Self::Inline),
             _ => None,
         }
     }
@@ -185,6 +189,8 @@ impl Tag {
                 | Self::A
                 | Self::Svg
                 | Self::Video
+                | Self::Figure
+                | Self::Figcaption
                 | Self::Html5Container
                 | Self::Inline
         )
@@ -275,6 +281,7 @@ fn is_valid_child(parent: Option<Tag>, child: Tag, stack: &[Frame], in_code: boo
             | Tag::Dd
             | Tag::Td
             | Tag::Th
+            | Tag::Figure
             | Tag::Html5Container,
         ) => child.is_flow_child(),
         Some(
@@ -290,6 +297,7 @@ fn is_valid_child(parent: Option<Tag>, child: Tag, stack: &[Frame], in_code: boo
             | Tag::A
             | Tag::Code
             | Tag::Video
+            | Tag::Figcaption
             | Tag::Inline,
         ) => child.is_phrasing_child(),
         Some(Tag::Br | Tag::Img | Tag::Hr | Tag::Col) => false,
@@ -3102,7 +3110,1185 @@ fn apply_codeblock_enhancements<'a>(
 /// control class/panel/fullscreen-button insertion, table wrapping, empty `<p>` pruning,
 /// colon-emoji replacement, split `{----% raw %----}` unescaping, `@mention` linking, and
 /// optional `Nokogiri::HTML` `body.inner_html` newline normalization.
-pub fn postprocess_rendered_html<'a>(
+/// Configuration for `prefix_all_images`, mirroring `Html::Parser#prefix_all_images` in
+/// Cloudflare or passthrough mode (when `synchronous_detail_detection` is `false` and neither
+/// `imgproxy` nor `cloudinary` is active).
+#[derive(Clone, Copy, Debug)]
+pub struct PrefixImagesConfig<'a> {
+    pub width: &'a str,
+    pub app_host: Option<&'a str>,
+    pub asset_host: Option<&'a str>,
+    pub cloudflare_domain: Option<&'a str>,
+    pub cloudflare_directory: &'a str,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct SimpleImageUri<'a> {
+    is_root_relative: bool,
+    scheme: Option<&'a str>,
+    host: Option<&'a str>,
+    port: Option<u16>,
+    path: &'a str,
+    has_query: bool,
+    has_fragment: bool,
+}
+
+#[inline]
+fn is_valid_rfc3986_uri_byte(b: u8) -> bool {
+    matches!(
+        b,
+        b'A'..=b'Z'
+            | b'a'..=b'z'
+            | b'0'..=b'9'
+            | b'-'
+            | b'.'
+            | b'_'
+            | b'~'
+            | b':'
+            | b'/'
+            | b'?'
+            | b'#'
+            | b'@'
+            | b'!'
+            | b'$'
+            | b'&'
+            | b'\''
+            | b'('
+            | b')'
+            | b'*'
+            | b'+'
+            | b','
+            | b';'
+            | b'='
+            | b'%'
+    )
+}
+
+fn parse_simple_image_uri(src: &str) -> Option<SimpleImageUri<'_>> {
+    let bytes = src.as_bytes();
+    if bytes.is_empty() {
+        return None;
+    }
+
+    // Validate RFC 3986 ASCII characters and well-formed `%XX` escapes so invalid URIs
+    // defer to Ruby's `URI(src)` (which raises `URI::InvalidURIError`).
+    let mut i = 0usize;
+    let mut seen_fragment = false;
+    while i < bytes.len() {
+        let b = bytes[i];
+        if !is_valid_rfc3986_uri_byte(b) {
+            return None;
+        }
+        if b == b'#' {
+            if seen_fragment {
+                return None;
+            }
+            seen_fragment = true;
+        }
+        if b == b'%' {
+            let h1 = *bytes.get(i + 1)?;
+            let h2 = *bytes.get(i + 2)?;
+            if !h1.is_ascii_hexdigit() || !h2.is_ascii_hexdigit() {
+                return None;
+            }
+            i += 3;
+            continue;
+        }
+        i += 1;
+    }
+
+    // Root-relative path (e.g. `/assets/foo.png`, but NOT protocol-relative `//host/...`).
+    if bytes[0] == b'/' {
+        if bytes.get(1) == Some(&b'/') {
+            return None;
+        }
+        let path_end = bytes
+            .iter()
+            .position(|&b| b == b'?' || b == b'#')
+            .unwrap_or(bytes.len());
+        return Some(SimpleImageUri {
+            is_root_relative: true,
+            scheme: None,
+            host: None,
+            port: None,
+            path: &src[..path_end],
+            has_query: bytes.contains(&b'?'),
+            has_fragment: bytes.contains(&b'#'),
+        });
+    }
+
+    let (scheme, rest) = if let Some(rest) = src.strip_prefix("https://") {
+        ("https", rest)
+    } else {
+        ("http", src.strip_prefix("http://")?)
+    };
+
+    let rest_bytes = rest.as_bytes();
+    let auth_end = rest_bytes
+        .iter()
+        .position(|&b| b == b'/' || b == b'?' || b == b'#')
+        .unwrap_or(rest_bytes.len());
+    let authority = &rest[..auth_end];
+    if authority.is_empty() || authority.as_bytes().contains(&b'@') {
+        return None;
+    }
+
+    let (host, port) = if let Some(colon) = authority.find(':') {
+        let h = &authority[..colon];
+        let p_str = &authority[colon + 1..];
+        if h.is_empty() || p_str.is_empty() || !p_str.bytes().all(|b| b.is_ascii_digit()) {
+            return None;
+        }
+        let p = p_str.parse::<u16>().ok()?;
+        (h, Some(p))
+    } else {
+        (authority, None)
+    };
+
+    if !host
+        .bytes()
+        .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+    {
+        return None;
+    }
+
+    let after_auth = &rest[auth_end..];
+    let after_bytes = after_auth.as_bytes();
+    let path_end = after_bytes
+        .iter()
+        .position(|&b| b == b'?' || b == b'#')
+        .unwrap_or(after_bytes.len());
+    let path = &after_auth[..path_end];
+    let tail = &after_auth[path_end..];
+    let has_fragment = tail.as_bytes().contains(&b'#');
+    let has_query = tail.starts_with('?');
+
+    Some(SimpleImageUri {
+        is_root_relative: false,
+        scheme: Some(scheme),
+        host: Some(host),
+        port,
+        path,
+        has_query,
+        has_fragment,
+    })
+}
+
+#[inline]
+fn file_basename(path: &str) -> &str {
+    let trimmed = path.trim_end_matches('/');
+    if trimmed.is_empty() {
+        return if path.is_empty() { "" } else { "/" };
+    }
+    match trimmed.rfind('/') {
+        Some(idx) => &trimmed[idx + 1..],
+        None => trimmed,
+    }
+}
+
+#[inline]
+fn is_allowed_image_host(
+    uri: &SimpleImageUri<'_>,
+    app_host: Option<&str>,
+    asset_host: Option<&str>,
+) -> bool {
+    if uri.is_root_relative {
+        return true;
+    }
+    if let Some(host) = uri.host {
+        if app_host.is_some_and(|h| !h.is_empty() && host == h) {
+            return true;
+        }
+        if asset_host.is_some_and(|h| !h.is_empty() && host == h) {
+            return true;
+        }
+        if uri.scheme == Some("https") && host == "camo.githubusercontent.com" {
+            return true;
+        }
+        if uri.scheme == Some("https")
+            && host == "github.com"
+            && file_basename(uri.path) == "badge.svg"
+        {
+            return true;
+        }
+    }
+    false
+}
+
+#[inline]
+fn is_valid_giphy_image_url(uri: &SimpleImageUri<'_>) -> bool {
+    uri.scheme == Some("https")
+        && !uri.has_query
+        && !uri.has_fragment
+        && (uri.port.is_none() || uri.port == Some(443))
+        && matches!(uri.host, Some("media.giphy.com" | "i.giphy.com"))
+        && uri.path.ends_with(".gif")
+}
+
+fn push_html4_attr_escaped(out: &mut String, val: &str) {
+    for b in val.bytes() {
+        match b {
+            b'&' => out.push_str("&amp;"),
+            b'"' => out.push_str("&quot;"),
+            b'<' => out.push_str("&lt;"),
+            b'>' => out.push_str("&gt;"),
+            _ => out.push(b as char),
+        }
+    }
+}
+
+fn push_html4_text_escaped(out: &mut String, val: &str) {
+    for ch in val.chars() {
+        match ch {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            _ => out.push(ch),
+        }
+    }
+}
+
+/// Rewrites `<img>` `src` attributes (Cloudflare Images / Giphy / passthrough) and sets
+/// `loading="lazy"` on canonical `Nokogiri::HTML.fragment(html).to_html` inputs, matching
+/// `Html::Parser#prefix_all_images` when `synchronous_detail_detection` is `false`.
+pub fn prefix_all_images<'a>(
+    html: &'a str,
+    config: &PrefixImagesConfig<'_>,
+) -> Option<Cow<'a, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') {
+        return None;
+    }
+    if let Some(domain) = config.cloudflare_domain {
+        if domain.is_empty() {
+            return None;
+        }
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                if parsed.tag == Tag::Img {
+                    let (attrs, count) =
+                        parse_canonical_tag_attrs(bytes, parsed.name_end, parsed.tag_end);
+                    if count >= attrs.len() {
+                        return None;
+                    }
+                    let mut src_span: Option<AttrSpan> = None;
+                    let mut loading_span: Option<AttrSpan> = None;
+                    let mut ignore_prefix = false;
+                    for span in &attrs[..count] {
+                        match &bytes[span.name_start..span.name_end] {
+                            b"src" => src_span = Some(*span),
+                            b"loading" => loading_span = Some(*span),
+                            b"data-ignore-prefix"
+                                if &html[span.val_start..span.val_end] == "true" =>
+                            {
+                                ignore_prefix = true;
+                            }
+                            _ => {}
+                        }
+                    }
+
+                    if let Some(src) = src_span {
+                        let raw_src = &html[src.val_start..src.val_end];
+                        if !raw_src.is_ascii() {
+                            return None;
+                        }
+                        let decoded_src = decode_canonical_entities(raw_src);
+                        let parsed_uri = parse_simple_image_uri(decoded_src.as_ref())?;
+
+                        if !ignore_prefix
+                            && !is_allowed_image_host(
+                                &parsed_uri,
+                                config.app_host,
+                                config.asset_host,
+                            )
+                        {
+                            let new_src: String = if is_valid_giphy_image_url(&parsed_uri) {
+                                decoded_src.replace("https://media.", "https://i.")
+                            } else if decoded_src.contains("/agent_sessions/") {
+                                decoded_src.replace(',', "%2C")
+                            } else if let Some(cf_domain) = config.cloudflare_domain {
+                                // Defer already-prefixed Cloudflare URLs to Ruby's
+                                // `extract_suffix_url`.
+                                if let Some(after_https) = decoded_src.strip_prefix("https://") {
+                                    if let Some(after_dom) = after_https.strip_prefix(cf_domain) {
+                                        if let Some(after_slash) = after_dom.strip_prefix('/') {
+                                            if let Some(after_dir) = after_slash
+                                                .strip_prefix(config.cloudflare_directory)
+                                            {
+                                                if after_dir.starts_with("/image") {
+                                                    return None;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                let cf_url = crate::image::cloudflare_image_url(
+                                    cf_domain,
+                                    config.cloudflare_directory,
+                                    config.width,
+                                    "",
+                                    "scale-down",
+                                    decoded_src.as_ref(),
+                                    decoded_src.as_ref(),
+                                )?;
+                                cf_url.replace(',', "%2C")
+                            } else {
+                                decoded_src.replace(',', "%2C")
+                            };
+
+                            let mut encoded_new_src = String::with_capacity(new_src.len() + 8);
+                            push_html4_attr_escaped(&mut encoded_new_src, &new_src);
+                            let loading_ok = loading_span
+                                .is_some_and(|l| &html[l.val_start..l.val_end] == "lazy");
+
+                            if encoded_new_src != raw_src || !loading_ok {
+                                let buf = out
+                                    .get_or_insert_with(|| String::with_capacity(html.len() + 128));
+                                buf.push_str(&html[last_copied..i]);
+                                buf.push_str("<img");
+                                for span in &attrs[..count] {
+                                    match &bytes[span.name_start..span.name_end] {
+                                        b"src" => {
+                                            buf.push_str(" src=\"");
+                                            buf.push_str(&encoded_new_src);
+                                            buf.push('"');
+                                        }
+                                        b"loading" => {
+                                            buf.push_str(" loading=\"lazy\"");
+                                        }
+                                        _ => {
+                                            buf.push(' ');
+                                            buf.push_str(&html[span.name_start..span.name_end]);
+                                            buf.push_str("=\"");
+                                            buf.push_str(&html[span.val_start..span.val_end]);
+                                            buf.push('"');
+                                        }
+                                    }
+                                }
+                                if loading_span.is_none() {
+                                    buf.push_str(" loading=\"lazy\"");
+                                }
+                                buf.push('>');
+                                last_copied = parsed.tag_end;
+                            }
+                        }
+                    }
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_start = i;
+            while i < bytes.len() && bytes[i] != b'<' {
+                i += 1;
+            }
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[text_start..i], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut buf) => {
+            buf.push_str(&html[last_copied..]);
+            Some(Cow::Owned(buf))
+        }
+    }
+}
+
+const ALERT_TYPE_NAMES: [&str; 5] = ["note", "tip", "important", "warning", "caution"];
+
+#[inline]
+fn is_ruby_ascii_ws(b: u8) -> bool {
+    matches!(b, b' ' | b'\t' | b'\n' | b'\r' | 0x0b | 0x0c)
+}
+
+/// Matches `\A\[!(note|tip|important|warning|caution)\](?=\s|\z)\s*` (case-insensitive) on
+/// leading paragraph text. Returns `Some(Some((alert_idx, consumed_len)))` on match,
+/// `Some(None)` on definitive non-match, or `None` if an ambiguous character (like non-ASCII
+/// whitespace after `]`) requires Ruby.
+fn match_alert_token(text: &str) -> Option<Option<(usize, usize)>> {
+    let bytes = text.as_bytes();
+    if bytes.len() < 6 || bytes[0] != b'[' || bytes[1] != b'!' {
+        return Some(None);
+    }
+    let close_bracket = match bytes[2..bytes.len().min(12)]
+        .iter()
+        .position(|&b| b == b']')
+    {
+        Some(rel) => 2 + rel,
+        None => return Some(None),
+    };
+    let word = &bytes[2..close_bracket];
+    let alert_idx = if word.eq_ignore_ascii_case(b"note") {
+        0
+    } else if word.eq_ignore_ascii_case(b"tip") {
+        1
+    } else if word.eq_ignore_ascii_case(b"important") {
+        2
+    } else if word.eq_ignore_ascii_case(b"warning") {
+        3
+    } else if word.eq_ignore_ascii_case(b"caution") {
+        4
+    } else {
+        return Some(None);
+    };
+
+    let after_bracket = close_bracket + 1;
+    if after_bracket < bytes.len() {
+        let next_b = bytes[after_bracket];
+        if next_b >= 0x80 {
+            return None;
+        }
+        if !is_ruby_ascii_ws(next_b) {
+            return Some(None);
+        }
+    }
+
+    let mut pos = after_bracket;
+    while pos < bytes.len() {
+        let b = bytes[pos];
+        if b >= 0x80 {
+            return None;
+        }
+        if !is_ruby_ascii_ws(b) {
+            break;
+        }
+        pos += 1;
+    }
+
+    Some(Some((alert_idx, pos)))
+}
+
+/// Inspects a `<p>` element's inner HTML `[inner_start..inner_end]` after the `[!TYPE]\s*`
+/// token has been stripped (leaving `[after_token..inner_end]`), mimicking
+/// `Html::Parser#strip_alert_token`.
+///
+/// Returns `Some(None)` if the `<p>` becomes completely blank and should be removed,
+/// `Some(Some(rem_start))` if the `<p>` should be kept starting at `rem_start`, or `None`
+/// if an ambiguous entity or nested structure requires Ruby.
+fn strip_alert_p_inner(html: &str, after_token: usize, inner_end: usize) -> Option<Option<usize>> {
+    let bytes = html.as_bytes();
+    let mut pos = after_token;
+
+    // 1. Strip leading blank children (whitespace-only text nodes or `<br>` with any attrs).
+    while pos < inner_end {
+        if bytes[pos] == b'<' {
+            if let Some(br_tag) = parse_opening_tag(&bytes[..inner_end], pos) {
+                if br_tag.tag == Tag::Br {
+                    pos = br_tag.tag_end;
+                    continue;
+                }
+            }
+            break;
+        }
+        let text_start = pos;
+        while pos < inner_end && bytes[pos] != b'<' {
+            pos += 1;
+        }
+        let slice = &bytes[text_start..pos];
+        if slice.contains(&b'&') {
+            return None;
+        }
+        if slice.iter().all(|&b| b.is_ascii_whitespace()) {
+            continue;
+        }
+        // Non-blank text node: keep starting at `text_start`.
+        pos = text_start;
+        break;
+    }
+
+    if pos >= inner_end {
+        return Some(None);
+    }
+
+    // 2. Check if all remaining children in `[pos..inner_end]` are blank (`<br>` or whitespace).
+    let mut scan = pos;
+    let mut all_blank = true;
+    while scan < inner_end {
+        if bytes[scan] == b'<' {
+            if let Some(br_tag) = parse_opening_tag(&bytes[..inner_end], scan) {
+                if br_tag.tag == Tag::Br {
+                    scan = br_tag.tag_end;
+                    continue;
+                }
+            }
+            all_blank = false;
+            break;
+        }
+        let text_start = scan;
+        while scan < inner_end && bytes[scan] != b'<' {
+            scan += 1;
+        }
+        let slice = &bytes[text_start..scan];
+        if slice.contains(&b'&') {
+            return None;
+        }
+        if !slice.iter().all(|&b| b.is_ascii_whitespace()) {
+            all_blank = false;
+            break;
+        }
+    }
+
+    if all_blank {
+        Some(None)
+    } else {
+        Some(Some(pos))
+    }
+}
+
+/// Validates and locates the closing tag of an open element starting right after its opening
+/// tag at `start_pos`, ensuring canonical HTML4 structure and rejecting nested `<blockquote>`.
+fn find_matching_close_no_nested_bq(
+    bytes: &[u8],
+    start_pos: usize,
+    root_frame: Frame,
+    mut in_code: bool,
+) -> Option<(usize, usize)> {
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    stack[0] = root_frame;
+    let mut depth = 1usize;
+    let mut i = start_pos;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                if depth == 0 {
+                    return Some((i, close_end));
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                if parsed.tag == Tag::Blockquote {
+                    return None;
+                }
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_start = i;
+            while i < bytes.len() && bytes[i] != b'<' {
+                i += 1;
+            }
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[text_start..i], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+        }
+    }
+
+    None
+}
+
+/// Transforms GitHub-style Markdown alerts (`<blockquote><p>[!NOTE]...</p></blockquote>`) on
+/// canonical `Nokogiri::HTML.fragment(html).to_html` inputs, matching
+/// `Html::Parser#transform_markdown_alerts`.
+///
+/// `alert_labels` must contain the 5 localized labels in `Html::Parser::ALERT_TYPES` order:
+/// `[note, tip, important, warning, caution]`.
+pub fn transform_markdown_alerts<'a>(
+    html: &'a str,
+    alert_labels: &[&str; 5],
+) -> Option<Cow<'a, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') {
+        return None;
+    }
+
+    let bytes = html.as_bytes();
+    let last_alert_marker = html.rfind("[!").max(bytes.iter().rposition(|&b| b == b'&'));
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                if parsed.tag == Tag::Blockquote {
+                    let (bq_attrs, bq_attr_count) =
+                        parse_canonical_tag_attrs(bytes, parsed.name_end, parsed.tag_end);
+                    if bq_attrs[..bq_attr_count]
+                        .iter()
+                        .any(|a| &bytes[a.name_start..a.name_end] == b"data-alert")
+                    {
+                        return None;
+                    }
+
+                    // Peek past leading ASCII whitespace inside `<blockquote>`.
+                    let bq_inner_start = parsed.tag_end;
+                    let mut p_pos = bq_inner_start;
+                    while p_pos < bytes.len() && bytes[p_pos].is_ascii_whitespace() {
+                        p_pos += 1;
+                    }
+
+                    // If non-whitespace text precedes the first element child, defer to Ruby
+                    // when `[!` or `&` appears anywhere in the remainder (O(1) precomputed check).
+                    if p_pos < bytes.len() && bytes[p_pos] != b'<' {
+                        if last_alert_marker.is_some_and(|marker_pos| marker_pos >= p_pos) {
+                            return None;
+                        }
+                    } else if p_pos < bytes.len() && bytes.get(p_pos + 1) != Some(&b'/') {
+                        let p_parsed = parse_opening_tag(bytes, p_pos)?;
+                        if p_parsed.tag == Tag::P {
+                            let text_start = p_parsed.tag_end;
+                            let mut text_end = text_start;
+                            while text_end < bytes.len() && bytes[text_end] != b'<' {
+                                text_end += 1;
+                            }
+                            let leading_text = &html[text_start..text_end];
+                            if leading_text.as_bytes().contains(&b'&') {
+                                return None;
+                            }
+                            if let Some((alert_idx, consumed_len)) =
+                                match_alert_token(leading_text)?
+                            {
+                                // Validate and locate `</p>` and `</blockquote>`.
+                                let p_frame = Frame {
+                                    raw_name_start: p_parsed.name_start,
+                                    raw_name_end: p_parsed.name_end,
+                                    open_tag_start: p_pos,
+                                    open_tag_end: p_parsed.tag_end,
+                                    tag: Tag::P,
+                                    child_count: 0,
+                                    first_child_is_text: false,
+                                    last_child_is_text: false,
+                                    first_child_was_block_elem: false,
+                                    prev_child_was_block_elem: false,
+                                    flag: false,
+                                };
+                                let (p_close_start, p_close_end) =
+                                    find_matching_close_no_nested_bq(
+                                        bytes,
+                                        p_parsed.tag_end,
+                                        p_frame,
+                                        in_code,
+                                    )?;
+
+                                let mut bq_frame = Frame {
+                                    raw_name_start: parsed.name_start,
+                                    raw_name_end: parsed.name_end,
+                                    open_tag_start: i,
+                                    open_tag_end: parsed.tag_end,
+                                    tag: Tag::Blockquote,
+                                    child_count: 0,
+                                    first_child_is_text: false,
+                                    last_child_is_text: false,
+                                    first_child_was_block_elem: false,
+                                    prev_child_was_block_elem: false,
+                                    flag: false,
+                                };
+                                if p_pos > bq_inner_start {
+                                    bq_frame.child_count += 1;
+                                    bq_frame.first_child_is_text = true;
+                                }
+                                bq_frame.child_count += 1;
+                                bq_frame.first_child_was_block_elem = !bq_frame.first_child_is_text;
+                                bq_frame.prev_child_was_block_elem = true;
+
+                                let (bq_close_start, bq_close_end) =
+                                    find_matching_close_no_nested_bq(
+                                        bytes,
+                                        p_close_end,
+                                        bq_frame,
+                                        in_code,
+                                    )?;
+
+                                let rem_p_start = strip_alert_p_inner(
+                                    html,
+                                    text_start + consumed_len,
+                                    p_close_start,
+                                )?;
+                                let ws_before = &html[bq_inner_start..p_pos];
+                                let after_p = &html[p_close_end..bq_close_start];
+                                let alert_type = ALERT_TYPE_NAMES[alert_idx];
+                                let label = alert_labels[alert_idx];
+
+                                let mode = if rem_p_start.is_none()
+                                    && ws_before.is_empty()
+                                    && after_p.is_empty()
+                                {
+                                    1u8
+                                } else if rem_p_start.is_some()
+                                    && ws_before.is_empty()
+                                    && after_p.is_empty()
+                                {
+                                    2u8
+                                } else if ws_before == "\n" && after_p.ends_with('\n') {
+                                    3u8
+                                } else {
+                                    return None;
+                                };
+
+                                let buf = out
+                                    .get_or_insert_with(|| String::with_capacity(html.len() + 96));
+                                buf.push_str(&html[last_copied..i]);
+                                buf.push_str(&html[i..parsed.tag_end - 1]);
+                                buf.push_str(" data-alert=\"");
+                                buf.push_str(alert_type);
+                                buf.push_str("\">");
+
+                                match mode {
+                                    1 => {
+                                        buf.push_str("<p data-alert-label=\"");
+                                        buf.push_str(alert_type);
+                                        buf.push_str("\">");
+                                        push_html4_text_escaped(buf, label);
+                                        buf.push_str("</p></blockquote>");
+                                    }
+                                    2 => {
+                                        let rem_start = rem_p_start.unwrap();
+                                        buf.push_str("\n<p data-alert-label=\"");
+                                        buf.push_str(alert_type);
+                                        buf.push_str("\">");
+                                        push_html4_text_escaped(buf, label);
+                                        buf.push_str("</p>\n");
+                                        buf.push_str(&html[p_pos..p_parsed.tag_end]);
+                                        buf.push_str(&html[rem_start..p_close_end]);
+                                        buf.push_str("\n</blockquote>");
+                                    }
+                                    _ => {
+                                        buf.push_str("\n<p data-alert-label=\"");
+                                        buf.push_str(alert_type);
+                                        buf.push_str("\">");
+                                        push_html4_text_escaped(buf, label);
+                                        buf.push_str("</p>\n");
+                                        if let Some(rem_start) = rem_p_start {
+                                            buf.push_str(&html[p_pos..p_parsed.tag_end]);
+                                            buf.push_str(&html[rem_start..p_close_end]);
+                                        }
+                                        buf.push_str(after_p);
+                                        buf.push_str("</blockquote>");
+                                    }
+                                }
+
+                                last_copied = bq_close_end;
+                                i = bq_close_end;
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                if !parsed.tag.is_void() {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_start = i;
+            while i < bytes.len() && bytes[i] != b'<' {
+                i += 1;
+            }
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[text_start..i], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut buf) => {
+            buf.push_str(&html[last_copied..]);
+            Some(Cow::Owned(buf))
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
+struct PrevSiblingElem {
+    start: usize,
+    end: usize,
+    tag: Tag,
+    preceded_by_non_inline_without_ws: bool,
+    only_ws_since_end: bool,
+}
+
+/// Wraps `<figcaption>` elements (not already inside `<figure>`) together with their
+/// immediately preceding sibling element in `<figure>...</figure>`, matching
+/// `Html::Parser#wrap_all_figures_with_tags` on canonical HTML4 inputs.
+pub fn wrap_all_figures_with_tags(html: &str) -> Option<Cow<'_, str>> {
+    if html.is_empty() {
+        return Some(Cow::Borrowed(html));
+    }
+    if html.starts_with('\u{FEFF}') {
+        return None;
+    }
+    if !html.contains("<figcaption") {
+        return if is_canonical_html(html, false) {
+            Some(Cow::Borrowed(html))
+        } else {
+            None
+        };
+    }
+
+    let bytes = html.as_bytes();
+    let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
+    // `prev_sibling[d]` tracks the last completed child element at nesting depth `d`
+    // (0 = root level, `d` = inside `stack[d - 1]`).
+    let mut prev_sibling: [Option<PrevSiblingElem>; MAX_TAG_DEPTH + 1] = [None; MAX_TAG_DEPTH + 1];
+    let mut depth = 0usize;
+    let mut in_code = false;
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'<' {
+            if bytes.get(i + 1) == Some(&b'/') {
+                let (name_start, name_end, close_end) = parse_closing_tag_name(bytes, i)?;
+                if depth == 0 {
+                    return None;
+                }
+                depth -= 1;
+                let frame = stack[depth];
+                if !validate_closed_frame(&frame, bytes, name_start, name_end) {
+                    return None;
+                }
+                if frame.tag == Tag::Code {
+                    in_code = false;
+                }
+                prev_sibling[depth + 1] = None;
+                let preceded_non_inline_no_ws = prev_sibling[depth]
+                    .is_some_and(|p| p.tag.is_libxml_non_inline() && p.end == frame.open_tag_start);
+                prev_sibling[depth] = Some(PrevSiblingElem {
+                    start: frame.open_tag_start,
+                    end: close_end,
+                    tag: frame.tag,
+                    preceded_by_non_inline_without_ws: preceded_non_inline_no_ws,
+                    only_ws_since_end: true,
+                });
+                i = close_end;
+            } else {
+                let parsed = parse_opening_tag(bytes, i)?;
+                let active_stack = &stack[..depth];
+                let parent_tag = active_stack.last().map(|f| f.tag);
+                if !is_valid_child(parent_tag, parsed.tag, active_stack, in_code) {
+                    return None;
+                }
+                if !record_element_on_parent(&mut stack, depth, parsed.tag) {
+                    return None;
+                }
+
+                if parsed.tag == Tag::Figcaption && parent_tag != Some(Tag::Figure) {
+                    if let Some(prev) = prev_sibling[depth] {
+                        if !prev.only_ws_since_end || prev.start < last_copied {
+                            return None;
+                        }
+                        // Find matching `</figcaption>` while validating canonical inner HTML.
+                        let cap_frame = Frame {
+                            raw_name_start: parsed.name_start,
+                            raw_name_end: parsed.name_end,
+                            open_tag_start: i,
+                            open_tag_end: parsed.tag_end,
+                            tag: Tag::Figcaption,
+                            child_count: 0,
+                            first_child_is_text: false,
+                            last_child_is_text: false,
+                            first_child_was_block_elem: false,
+                            prev_child_was_block_elem: false,
+                            flag: false,
+                        };
+                        let (_cap_close_start, cap_close_end) = find_matching_close_no_nested_bq(
+                            bytes,
+                            parsed.tag_end,
+                            cap_frame,
+                            in_code,
+                        )?;
+                        // Reject nested `<figcaption>` inside `<figcaption>`.
+                        if html[parsed.tag_end..cap_close_end].contains("<figcaption") {
+                            return None;
+                        }
+
+                        let buf = out.get_or_insert_with(|| String::with_capacity(html.len() + 32));
+                        buf.push_str(&html[last_copied..prev.start]);
+                        if prev.preceded_by_non_inline_without_ws {
+                            buf.push('\n');
+                        }
+                        buf.push_str("<figure>");
+                        buf.push_str(&html[prev.start..prev.end]);
+                        if prev.tag.is_libxml_non_inline() {
+                            buf.push('\n');
+                        }
+                        buf.push_str(&html[i..cap_close_end]);
+                        buf.push_str("</figure>");
+                        // Preserve any whitespace between `prev` and `<figcaption>` after `</figure>`.
+                        buf.push_str(&html[prev.end..i]);
+
+                        last_copied = cap_close_end;
+                        prev_sibling[depth] = Some(PrevSiblingElem {
+                            start: prev.start,
+                            end: cap_close_end,
+                            tag: Tag::Figure,
+                            preceded_by_non_inline_without_ws: false,
+                            only_ws_since_end: true,
+                        });
+                        i = cap_close_end;
+                        continue;
+                    }
+                }
+
+                if parsed.tag.is_void() {
+                    let preceded_non_inline_no_ws = prev_sibling[depth]
+                        .is_some_and(|p| p.tag.is_libxml_non_inline() && p.end == i);
+                    prev_sibling[depth] = Some(PrevSiblingElem {
+                        start: i,
+                        end: parsed.tag_end,
+                        tag: parsed.tag,
+                        preceded_by_non_inline_without_ws: preceded_non_inline_no_ws,
+                        only_ws_since_end: true,
+                    });
+                } else {
+                    if depth >= MAX_TAG_DEPTH {
+                        return None;
+                    }
+                    if parsed.tag == Tag::Code {
+                        in_code = true;
+                    }
+                    stack[depth] = Frame {
+                        raw_name_start: parsed.name_start,
+                        raw_name_end: parsed.name_end,
+                        open_tag_start: i,
+                        open_tag_end: parsed.tag_end,
+                        tag: parsed.tag,
+                        child_count: 0,
+                        first_child_is_text: false,
+                        last_child_is_text: false,
+                        first_child_was_block_elem: false,
+                        prev_child_was_block_elem: false,
+                        flag: false,
+                    };
+                    depth += 1;
+                    prev_sibling[depth] = None;
+                }
+                i = parsed.tag_end;
+            }
+        } else {
+            let text_start = i;
+            while i < bytes.len() && bytes[i] != b'<' {
+                i += 1;
+            }
+            let parent_tag = if depth > 0 {
+                Some(stack[depth - 1].tag)
+            } else {
+                None
+            };
+            if !validate_text_node(&bytes[text_start..i], parent_tag) {
+                return None;
+            }
+            record_text_on_parent(&mut stack, depth);
+            if !bytes[text_start..i]
+                .iter()
+                .all(|&b| b.is_ascii_whitespace())
+            {
+                if let Some(prev) = &mut prev_sibling[depth] {
+                    prev.only_ws_since_end = false;
+                }
+            }
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut buf) => {
+            buf.push_str(&html[last_copied..]);
+            Some(Cow::Owned(buf))
+        }
+    }
+}
+
+/// Fused Tier 2 HTML post-processing pipeline for `MarkdownProcessor::Parser#finalize`.
+///
+/// Runs all deterministic HTML transforms across one FFI boundary in exact order:
+/// 1. `add_target_blank_to_outbound_links` (when `run_target_blank` is `true`)
+/// 2. `remove_nested_linebreak_in_list_fragment`
+/// 3. `prefix_all_images` (when `prefix_images_config` is `Some`)
+/// 4. `wrap_all_images_in_links`
+/// 5. `enforce_gif_like_videos`
+/// 6. `apply_codeblock_enhancements` (control class + control panel + fullscreen button)
+/// 7. `wrap_all_tables`
+/// 8. `transform_markdown_alerts` (when `alert_labels` is `Some`)
+/// 9. `remove_empty_paragraphs`
+/// 10. `escape_colon_emojis_in_codeblock`
+/// 11. `unescape_raw_tag_in_codeblocks`
+/// 12. `wrap_all_figures_with_tags`
+/// 13. `wrap_mentions_with_links`
+#[allow(clippy::too_many_arguments)]
+pub fn postprocess_rendered_html_full<'a>(
     html: &'a str,
     app_domain: &str,
     fullscreen_action_html: &str,
@@ -3110,6 +4296,8 @@ pub fn postprocess_rendered_html<'a>(
     base_url: &str,
     run_target_blank: bool,
     normalize_document: bool,
+    prefix_images_config: Option<&PrefixImagesConfig<'_>>,
+    alert_labels: Option<&[&str; 5]>,
 ) -> Option<Cow<'a, str>> {
     if html.is_empty() || html.bytes().all(|b| b.is_ascii_whitespace()) {
         return Some(Cow::Borrowed(html));
@@ -3157,6 +4345,13 @@ pub fn postprocess_rendered_html<'a>(
             cur = Cow::Owned(s);
         }
     }
+    if let Some(cfg) = prefix_images_config {
+        if cur.contains("<img") {
+            if let Cow::Owned(s) = prefix_all_images(cur.as_ref(), cfg)? {
+                cur = Cow::Owned(s);
+            }
+        }
+    }
     if cur.contains("<img") {
         if let Cow::Owned(s) = wrap_all_images_in_links(cur.as_ref())? {
             cur = Cow::Owned(s);
@@ -3178,6 +4373,13 @@ pub fn postprocess_rendered_html<'a>(
     if cur.contains("<table") {
         if let Cow::Owned(s) = wrap_all_tables(cur.as_ref())? {
             cur = Cow::Owned(s);
+        }
+    }
+    if let Some(labels) = alert_labels {
+        if cur.contains("<blockquote") && (cur.contains("[!") || cur.as_bytes().contains(&b'&')) {
+            if let Cow::Owned(s) = transform_markdown_alerts(cur.as_ref(), labels)? {
+                cur = Cow::Owned(s);
+            }
         }
     }
     if cur.contains("<p") {
@@ -3203,6 +4405,11 @@ pub fn postprocess_rendered_html<'a>(
             cur = Cow::Owned(s);
         }
     }
+    if cur.contains("<figcaption") {
+        if let Cow::Owned(s) = wrap_all_figures_with_tags(cur.as_ref())? {
+            cur = Cow::Owned(s);
+        }
+    }
     if !existing_usernames.is_empty() && cur.as_bytes().contains(&b'@') {
         if let Cow::Owned(s) = wrap_mentions_with_links(cur.as_ref(), existing_usernames, base_url)?
         {
@@ -3217,6 +4424,28 @@ pub fn postprocess_rendered_html<'a>(
     }
 
     Some(cur)
+}
+
+pub fn postprocess_rendered_html<'a>(
+    html: &'a str,
+    app_domain: &str,
+    fullscreen_action_html: &str,
+    existing_usernames: &[String],
+    base_url: &str,
+    run_target_blank: bool,
+    normalize_document: bool,
+) -> Option<Cow<'a, str>> {
+    postprocess_rendered_html_full(
+        html,
+        app_domain,
+        fullscreen_action_html,
+        existing_usernames,
+        base_url,
+        run_target_blank,
+        normalize_document,
+        None,
+        None,
+    )
 }
 
 #[cfg(test)]
@@ -3423,5 +4652,149 @@ mod tests {
         assert!(result.contains("js-fullscreen-code-action"));
         assert!(!result.contains("<p></p>"));
         assert!(result.ends_with("\n\n"));
+    }
+
+    #[test]
+    fn prefixes_images_with_cloudflare_giphy_and_allowed_hosts() {
+        let cf_config = PrefixImagesConfig {
+            width: "880",
+            app_host: Some("dev.to"),
+            asset_host: Some("assets.dev.to"),
+            cloudflare_domain: Some("media2.dev.to"),
+            cloudflare_directory: "dynamic",
+        };
+        let html = "<p><img src=\"https://example.com/photo.jpg\" alt=\"p\"></p>";
+        assert_eq!(
+            prefix_all_images(html, &cf_config).as_deref(),
+            Some(
+                "<p><img src=\"https://media2.dev.to/dynamic/image/width=880%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fexample.com%2Fphoto.jpg\" alt=\"p\" loading=\"lazy\"></p>"
+            )
+        );
+
+        let giphy = "<p><img src=\"https://media.giphy.com/media/abc/giphy.gif\"></p>";
+        assert_eq!(
+            prefix_all_images(giphy, &cf_config).as_deref(),
+            Some("<p><img src=\"https://i.giphy.com/media/abc/giphy.gif\" loading=\"lazy\"></p>")
+        );
+
+        // Allowed hosts and data-ignore-prefix remain borrowed with zero allocation.
+        let allowed = "<p><img src=\"https://dev.to/a.png\"><img src=\"https://camo.githubusercontent.com/x\"><img src=\"https://github.com/org/repo/actions/workflows/ci.yml/badge.svg\"><img src=\"/local.png\"><img src=\"https://example.com/b.png\" data-ignore-prefix=\"true\"></p>";
+        assert!(matches!(
+            prefix_all_images(allowed, &cf_config),
+            Some(Cow::Borrowed(_))
+        ));
+
+        // Invalid URI or already-prefixed Cloudflare URL defers to Ruby.
+        assert_eq!(
+            prefix_all_images(
+                "<p><img src=\"https://example.com/bad url.png\"></p>",
+                &cf_config
+            ),
+            None
+        );
+        assert_eq!(
+            prefix_all_images(
+                "<p><img src=\"https://media2.dev.to/dynamic/image/width=880/https://example.com/a.png\"></p>",
+                &cf_config
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn transforms_markdown_alerts_matching_nokogiri() {
+        let labels = ["Note", "Tip", "Important", "Warning", "Caution"];
+        assert_eq!(
+            transform_markdown_alerts("<blockquote><p>[!TIP] Body</p></blockquote>", &labels)
+                .as_deref(),
+            Some("<blockquote data-alert=\"tip\">\n<p data-alert-label=\"tip\">Tip</p>\n<p>Body</p>\n</blockquote>")
+        );
+        assert_eq!(
+            transform_markdown_alerts(
+                "<blockquote>\n<p>[!WARNING]\nCareful here.</p>\n</blockquote>",
+                &labels
+            )
+            .as_deref(),
+            Some("<blockquote data-alert=\"warning\">\n<p data-alert-label=\"warning\">Warning</p>\n<p>Careful here.</p>\n</blockquote>")
+        );
+        assert_eq!(
+            transform_markdown_alerts("<blockquote><p>[!TIP]<br>Body</p></blockquote>", &labels)
+                .as_deref(),
+            Some("<blockquote data-alert=\"tip\">\n<p data-alert-label=\"tip\">Tip</p>\n<p>Body</p>\n</blockquote>")
+        );
+        assert_eq!(
+            transform_markdown_alerts("<blockquote><p>[!TIP]</p></blockquote>", &labels).as_deref(),
+            Some("<blockquote data-alert=\"tip\"><p data-alert-label=\"tip\">Tip</p></blockquote>")
+        );
+        assert_eq!(
+            transform_markdown_alerts(
+                "<blockquote><blockquote><p>[!TIP] Inner</p></blockquote></blockquote>",
+                &labels
+            )
+            .as_deref(),
+            Some("<blockquote><blockquote data-alert=\"tip\">\n<p data-alert-label=\"tip\">Tip</p>\n<p>Inner</p>\n</blockquote></blockquote>")
+        );
+        let non_alert = "<blockquote><p>[!NOTE]worthy of attention</p></blockquote>";
+        assert!(matches!(
+            transform_markdown_alerts(non_alert, &labels),
+            Some(Cow::Borrowed(_))
+        ));
+    }
+
+    #[test]
+    fn wraps_figcaptions_matching_nokogiri() {
+        assert_eq!(
+            wrap_all_figures_with_tags(
+                "<p>case: </p><p>Statement</p>\n<figcaption>A fig</figcaption>"
+            )
+            .as_deref(),
+            Some("<p>case: </p>\n<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>\n")
+        );
+        assert_eq!(
+            wrap_all_figures_with_tags("<p>Statement</p><figcaption>A fig</figcaption>").as_deref(),
+            Some("<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>")
+        );
+        let already = "<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>";
+        assert!(matches!(
+            wrap_all_figures_with_tags(already),
+            Some(Cow::Borrowed(_))
+        ));
+        let orphan = "<figcaption>A fig</figcaption>";
+        assert!(matches!(
+            wrap_all_figures_with_tags(orphan),
+            Some(Cow::Borrowed(_))
+        ));
+    }
+
+    #[test]
+    fn postprocesses_full_article_with_images_alerts_and_figures() {
+        let cf_config = PrefixImagesConfig {
+            width: "800",
+            app_host: Some("forem.test"),
+            asset_host: None,
+            cloudflare_domain: Some("media2.dev.to"),
+            cloudflare_directory: "dynamic",
+        };
+        let labels = ["Note", "Tip", "Important", "Warning", "Caution"];
+        let html = "<p><img src=\"https://example.com/pic.png\" alt=\"pic\"></p>\n<figcaption>A caption</figcaption>\n<blockquote>\n<p>[!TIP]\nUse Rust.</p>\n</blockquote>";
+        let result = postprocess_rendered_html_full(
+            html,
+            "forem.test",
+            "",
+            &[],
+            "http://forem.test",
+            true,
+            true,
+            Some(&cf_config),
+            Some(&labels),
+        )
+        .unwrap();
+        assert!(result.contains("media2.dev.to/dynamic/image/width=800"));
+        assert!(result.contains("loading=\"lazy\""));
+        assert!(result.contains("class=\"article-body-image-wrapper\""));
+        assert!(result.contains("<figure><p><a href=\""));
+        assert!(result.contains("<figcaption>A caption</figcaption></figure>"));
+        assert!(result.contains("<blockquote data-alert=\"tip\">"));
+        assert!(result.contains("<p data-alert-label=\"tip\">Tip</p>"));
     }
 }
