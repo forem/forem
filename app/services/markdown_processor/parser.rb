@@ -343,19 +343,12 @@ module MarkdownProcessor
         return unless prepared_html
       end
 
-      usernames = if prepared_html.include?("@")
-                    ForemNative.extract_mention_usernames(prepared_html)
-                  else
-                    []
-                  end
+      alert_labels = native_alert_labels(prepared_html)
+      usernames = extract_native_mention_usernames(prepared_html, alert_labels)
       return unless usernames
 
       existing_usernames = Html::Parser.resolve_existing_usernames(usernames)
       action_html = prepared_html.include?("highlight") ? Html::Parser.new("").fullscreen_action_html : ""
-      alert_labels = if prepared_html.include?("<blockquote") &&
-          (prepared_html.include?("[!") || prepared_html.include?("&"))
-                       Html::Parser.alert_labels
-                     end
       app_domain = Settings::General.app_domain
       base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{app_domain}"
 
@@ -370,6 +363,27 @@ module MarkdownProcessor
         prefix_images_config: prefix_images_config,
         alert_labels: alert_labels,
       )
+    end
+
+    def native_alert_labels(prepared_html)
+      return unless prepared_html.include?("<blockquote")
+      return unless prepared_html.include?("[!") || prepared_html.include?("&")
+
+      Html::Parser.alert_labels
+    end
+
+    def extract_native_mention_usernames(prepared_html, alert_labels)
+      usernames = prepared_html.include?("@") ? ForemNative.extract_mention_usernames(prepared_html) : []
+      return unless usernames
+
+      mention_labels = alert_labels&.select { |label| label.include?("@") }
+      return usernames if mention_labels.blank?
+
+      label_html = mention_labels.map { |label| "<p>#{ERB::Util.html_escape(label)}</p>" }.join
+      label_usernames = ForemNative.extract_mention_usernames(label_html)
+      return unless label_usernames
+
+      (usernames + label_usernames).uniq
     end
 
     def legacy_add_target_blank_to_outbound_links(html, app_domain = Settings::General.app_domain)

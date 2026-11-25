@@ -10793,6 +10793,15 @@ RSpec.describe ForemNative do
   end
 
   describe ".prefix_all_images" do
+    let(:legacy_cloudflare_url) do
+      lambda do |domain, directory, width, img_src|
+        template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+        options = { width: width, height: nil, fit: "scale-down", gravity: "auto" }
+        options[:format] = "auto" unless img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
+        template.expand(domain: domain, directory: directory, options: options, src: img_src).to_s
+      end
+    end
+
     let(:legacy_prefix_all_images) do
       giphy_hosts = %w[media.giphy.com i.giphy.com]
       lambda do |html, width:, app_host:, asset_host:, cloudflare_domain:, cloudflare_directory:|
@@ -10818,9 +10827,8 @@ RSpec.describe ForemNative do
                        elsif src.include?("/agent_sessions/") || cloudflare_domain.nil?
                          src.gsub(",", "%2C")
                        else
-                         described_class.cloudflare_image_url(
-                           cloudflare_domain, cloudflare_directory, width, nil, "scale-down", src, src
-                         ).gsub(",", "%2C")
+                         legacy_cloudflare_url.call(cloudflare_domain, cloudflare_directory, width, src)
+                           .gsub(",", "%2C")
                        end
         end
         doc.to_html
@@ -10831,6 +10839,13 @@ RSpec.describe ForemNative do
       expect(described_class.prefix_all_images("")).to eq("")
       expect(described_class.prefix_all_images(nil)).to be_nil
       expect(described_class.prefix_all_images("<p><img src=\"https://example.com/bad url.png\"></p>")).to be_nil
+      expect(described_class.prefix_all_images("<p><img src=\"https://example.com/a.png#one#two\"></p>")).to be_nil
+      expect(described_class.prefix_all_images("<p><img src=\"/assets/a.png#one#two\"></p>")).to be_nil
+      expect(
+        described_class.prefix_all_images(
+          "<p><img src=\"https://example.com/a%ZZ.png\" data-ignore-prefix=\"true\"></p>",
+        ),
+      ).to be_nil
       expect(
         described_class.prefix_all_images(
           "<p><img src=\"https://media2.dev.to/dynamic/image/width=880/https://example.com/a.png\"></p>",
@@ -10945,6 +10960,9 @@ RSpec.describe ForemNative do
       expect(
         described_class.transform_markdown_alerts("<blockquote><p>&#91;!TIP] x</p></blockquote>", labels),
       ).to be_nil
+      attributed_br = "<blockquote><p>[!TIP]<br class=\"spacer\">Body</p></blockquote>"
+      expect(described_class.transform_markdown_alerts(attributed_br, labels))
+        .to eq(legacy_transform_markdown_alerts.call(attributed_br, labels))
     end
 
     it "matches Nokogiri::HTML.fragment output bit-for-bit across 1,000 randomized inputs" do

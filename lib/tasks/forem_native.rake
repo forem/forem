@@ -97,6 +97,7 @@ namespace :forem_native do
     benchmark_story_cards
     benchmark_image_ops
     benchmark_html_postprocess
+    benchmark_html_finalize
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -2704,6 +2705,63 @@ namespace :forem_native do
         x.report("Rust Magnus (#{label})") { native_fn.call }
         x.compare!
       end
+    end
+  end
+
+  desc "Benchmark fused Html::Parser finalize pipeline (prefix_all_images + alerts + figures)"
+  task benchmark_html_finalize: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    labels = %w[Note Tip Important Warning Caution]
+    prefix_cfg = ["880", "dev.to", "assets.dev.to", "media2.dev.to", "dynamic"]
+    sample_html = <<~HTML * 5
+      <p>Read more at <a href="https://example.com/docs">docs</a> @alice</p>
+      <p><img src="https://example.com/photo.jpg" alt="pic"></p>
+      <figcaption>Diagram caption</figcaption>
+      <blockquote>
+      <p>[!TIP]
+      Use single-pass Rust pipelines.</p>
+      </blockquote>
+    HTML
+
+    native = lambda do
+      ForemNative.postprocess_rendered_html(
+        sample_html,
+        app_domain: "dev.to",
+        fullscreen_action_html: "",
+        existing_usernames: ["alice"],
+        base_url: "https://dev.to",
+        run_target_blank: true,
+        normalize_document: true,
+        prefix_images_config: prefix_cfg,
+        alert_labels: labels,
+      )
+    end
+    legacy = lambda do
+      parser = Html::Parser.new(sample_html)
+      parser.__send__(:legacy_prefix_all_images, width: 880, synchronous_detail_detection: false, quality: "auto")
+      parser.__send__(:legacy_transform_markdown_alerts)
+      parser.__send__(:legacy_wrap_all_figures_with_tags)
+    end
+
+    puts "\n=== Html::Parser Fused Finalize Pipeline Benchmark (#{sample_html.bytesize} bytes) ==="
+    puts "Note: MemoryProfiler counts Ruby heap allocations only (not Rust/libxml2 C heap allocations)."
+    ruby_mem = MemoryProfiler.report { legacy.call }
+    rust_mem = MemoryProfiler.report { native.call }
+    puts "Finalize — Ruby/Nokogiri: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+         "vs Rust Magnus: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby/Nokogiri (prefix + alerts + figures)") { legacy.call }
+      x.report("Rust Magnus (postprocess_rendered_html_full)") { native.call }
+      x.compare!
     end
   end
 end

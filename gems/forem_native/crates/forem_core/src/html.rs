@@ -3173,10 +3173,17 @@ fn parse_simple_image_uri(src: &str) -> Option<SimpleImageUri<'_>> {
     // Validate RFC 3986 ASCII characters and well-formed `%XX` escapes so invalid URIs
     // defer to Ruby's `URI(src)` (which raises `URI::InvalidURIError`).
     let mut i = 0usize;
+    let mut seen_fragment = false;
     while i < bytes.len() {
         let b = bytes[i];
         if !is_valid_rfc3986_uri_byte(b) {
             return None;
+        }
+        if b == b'#' {
+            if seen_fragment {
+                return None;
+            }
+            seen_fragment = true;
         }
         if b == b'%' {
             let h1 = *bytes.get(i + 1)?;
@@ -3418,91 +3425,88 @@ pub fn prefix_all_images<'a>(
                     }
 
                     if let Some(src) = src_span {
-                        if !ignore_prefix {
-                            let raw_src = &html[src.val_start..src.val_end];
-                            if !raw_src.is_ascii() {
-                                return None;
-                            }
-                            let decoded_src = decode_canonical_entities(raw_src);
-                            let parsed_uri = parse_simple_image_uri(decoded_src.as_ref())?;
+                        let raw_src = &html[src.val_start..src.val_end];
+                        if !raw_src.is_ascii() {
+                            return None;
+                        }
+                        let decoded_src = decode_canonical_entities(raw_src);
+                        let parsed_uri = parse_simple_image_uri(decoded_src.as_ref())?;
 
-                            if !is_allowed_image_host(
+                        if !ignore_prefix
+                            && !is_allowed_image_host(
                                 &parsed_uri,
                                 config.app_host,
                                 config.asset_host,
-                            ) {
-                                let new_src: String = if is_valid_giphy_image_url(&parsed_uri) {
-                                    decoded_src.replace("https://media.", "https://i.")
-                                } else if decoded_src.contains("/agent_sessions/") {
-                                    decoded_src.replace(',', "%2C")
-                                } else if let Some(cf_domain) = config.cloudflare_domain {
-                                    // Defer already-prefixed Cloudflare URLs to Ruby's
-                                    // `extract_suffix_url`.
-                                    if let Some(after_https) = decoded_src.strip_prefix("https://")
-                                    {
-                                        if let Some(after_dom) = after_https.strip_prefix(cf_domain)
-                                        {
-                                            if let Some(after_slash) = after_dom.strip_prefix('/') {
-                                                if let Some(after_dir) = after_slash
-                                                    .strip_prefix(config.cloudflare_directory)
-                                                {
-                                                    if after_dir.starts_with("/image") {
-                                                        return None;
-                                                    }
+                            )
+                        {
+                            let new_src: String = if is_valid_giphy_image_url(&parsed_uri) {
+                                decoded_src.replace("https://media.", "https://i.")
+                            } else if decoded_src.contains("/agent_sessions/") {
+                                decoded_src.replace(',', "%2C")
+                            } else if let Some(cf_domain) = config.cloudflare_domain {
+                                // Defer already-prefixed Cloudflare URLs to Ruby's
+                                // `extract_suffix_url`.
+                                if let Some(after_https) = decoded_src.strip_prefix("https://") {
+                                    if let Some(after_dom) = after_https.strip_prefix(cf_domain) {
+                                        if let Some(after_slash) = after_dom.strip_prefix('/') {
+                                            if let Some(after_dir) = after_slash
+                                                .strip_prefix(config.cloudflare_directory)
+                                            {
+                                                if after_dir.starts_with("/image") {
+                                                    return None;
                                                 }
                                             }
                                         }
                                     }
-                                    let cf_url = crate::image::cloudflare_image_url(
-                                        cf_domain,
-                                        config.cloudflare_directory,
-                                        config.width,
-                                        "",
-                                        "scale-down",
-                                        decoded_src.as_ref(),
-                                        decoded_src.as_ref(),
-                                    )?;
-                                    cf_url.replace(',', "%2C")
-                                } else {
-                                    decoded_src.replace(',', "%2C")
-                                };
+                                }
+                                let cf_url = crate::image::cloudflare_image_url(
+                                    cf_domain,
+                                    config.cloudflare_directory,
+                                    config.width,
+                                    "",
+                                    "scale-down",
+                                    decoded_src.as_ref(),
+                                    decoded_src.as_ref(),
+                                )?;
+                                cf_url.replace(',', "%2C")
+                            } else {
+                                decoded_src.replace(',', "%2C")
+                            };
 
-                                let mut encoded_new_src = String::with_capacity(new_src.len() + 8);
-                                push_html4_attr_escaped(&mut encoded_new_src, &new_src);
-                                let loading_ok = loading_span
-                                    .is_some_and(|l| &html[l.val_start..l.val_end] == "lazy");
+                            let mut encoded_new_src = String::with_capacity(new_src.len() + 8);
+                            push_html4_attr_escaped(&mut encoded_new_src, &new_src);
+                            let loading_ok = loading_span
+                                .is_some_and(|l| &html[l.val_start..l.val_end] == "lazy");
 
-                                if encoded_new_src != raw_src || !loading_ok {
-                                    let buf = out.get_or_insert_with(|| {
-                                        String::with_capacity(html.len() + 128)
-                                    });
-                                    buf.push_str(&html[last_copied..i]);
-                                    buf.push_str("<img");
-                                    for span in &attrs[..count] {
-                                        match &bytes[span.name_start..span.name_end] {
-                                            b"src" => {
-                                                buf.push_str(" src=\"");
-                                                buf.push_str(&encoded_new_src);
-                                                buf.push('"');
-                                            }
-                                            b"loading" => {
-                                                buf.push_str(" loading=\"lazy\"");
-                                            }
-                                            _ => {
-                                                buf.push(' ');
-                                                buf.push_str(&html[span.name_start..span.name_end]);
-                                                buf.push_str("=\"");
-                                                buf.push_str(&html[span.val_start..span.val_end]);
-                                                buf.push('"');
-                                            }
+                            if encoded_new_src != raw_src || !loading_ok {
+                                let buf = out
+                                    .get_or_insert_with(|| String::with_capacity(html.len() + 128));
+                                buf.push_str(&html[last_copied..i]);
+                                buf.push_str("<img");
+                                for span in &attrs[..count] {
+                                    match &bytes[span.name_start..span.name_end] {
+                                        b"src" => {
+                                            buf.push_str(" src=\"");
+                                            buf.push_str(&encoded_new_src);
+                                            buf.push('"');
+                                        }
+                                        b"loading" => {
+                                            buf.push_str(" loading=\"lazy\"");
+                                        }
+                                        _ => {
+                                            buf.push(' ');
+                                            buf.push_str(&html[span.name_start..span.name_end]);
+                                            buf.push_str("=\"");
+                                            buf.push_str(&html[span.val_start..span.val_end]);
+                                            buf.push('"');
                                         }
                                     }
-                                    if loading_span.is_none() {
-                                        buf.push_str(" loading=\"lazy\"");
-                                    }
-                                    buf.push('>');
-                                    last_copied = parsed.tag_end;
                                 }
+                                if loading_span.is_none() {
+                                    buf.push_str(" loading=\"lazy\"");
+                                }
+                                buf.push('>');
+                                last_copied = parsed.tag_end;
                             }
                         }
                     }
@@ -3637,12 +3641,14 @@ fn strip_alert_p_inner(html: &str, after_token: usize, inner_end: usize) -> Opti
     let bytes = html.as_bytes();
     let mut pos = after_token;
 
-    // 1. Strip leading blank children (whitespace-only text nodes or `<br>`).
+    // 1. Strip leading blank children (whitespace-only text nodes or `<br>` with any attrs).
     while pos < inner_end {
         if bytes[pos] == b'<' {
-            if bytes[pos..inner_end].starts_with(b"<br>") {
-                pos += 4;
-                continue;
+            if let Some(br_tag) = parse_opening_tag(&bytes[..inner_end], pos) {
+                if br_tag.tag == Tag::Br {
+                    pos = br_tag.tag_end;
+                    continue;
+                }
             }
             break;
         }
@@ -3671,9 +3677,11 @@ fn strip_alert_p_inner(html: &str, after_token: usize, inner_end: usize) -> Opti
     let mut all_blank = true;
     while scan < inner_end {
         if bytes[scan] == b'<' {
-            if bytes[scan..inner_end].starts_with(b"<br>") {
-                scan += 4;
-                continue;
+            if let Some(br_tag) = parse_opening_tag(&bytes[..inner_end], scan) {
+                if br_tag.tag == Tag::Br {
+                    scan = br_tag.tag_end;
+                    continue;
+                }
             }
             all_blank = false;
             break;
@@ -3803,6 +3811,7 @@ pub fn transform_markdown_alerts<'a>(
     }
 
     let bytes = html.as_bytes();
+    let last_alert_marker = html.rfind("[!").max(bytes.iter().rposition(|&b| b == b'&'));
     let mut stack = [Frame::EMPTY; MAX_TAG_DEPTH];
     let mut depth = 0usize;
     let mut in_code = false;
@@ -3855,9 +3864,9 @@ pub fn transform_markdown_alerts<'a>(
                     }
 
                     // If non-whitespace text precedes the first element child, defer to Ruby
-                    // when `[!` or `&` appears anywhere in the remainder.
+                    // when `[!` or `&` appears anywhere in the remainder (O(1) precomputed check).
                     if p_pos < bytes.len() && bytes[p_pos] != b'<' {
-                        if html[p_pos..].contains("[!") || bytes[p_pos..].contains(&b'&') {
+                        if last_alert_marker.is_some_and(|marker_pos| marker_pos >= p_pos) {
                             return None;
                         }
                     } else if p_pos < bytes.len() && bytes.get(p_pos + 1) != Some(&b'/') {

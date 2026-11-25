@@ -43,6 +43,8 @@ module Html
       app_host = app_domain.present? ? URI("https://#{app_domain}").host : nil
       asset_host_raw = ActionController::Base.asset_host
       asset_host = if asset_host_raw.present?
+                     return unless asset_host_raw.is_a?(String)
+
                      URI("https://#{asset_host_raw.sub(%r{^https?://}, '')}").host
                    end
       cf_domain = Images::Optimizer.cloudflare_enabled? ? ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"] : nil
