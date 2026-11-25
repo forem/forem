@@ -1,97 +1,108 @@
-<div class="crayons-card p-6">
-  <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
-    <div>
-      <h1 class="crayons-title m-0">Events</h1>
-      <p class="fs-s color-base-60 mt-1 mb-0"><%= t("views.admin.events.index.subtitle") %></p>
+<div class="admin-events-page">
+  <div class="crayons-card p-6">
+    <div class="admin-events-header mb-4">
+      <div>
+        <h1 class="crayons-title m-0">Events</h1>
+        <p class="fs-s color-base-60 mt-1 mb-0"><%= t("views.admin.events.index.subtitle") %></p>
+      </div>
+      <%= link_to "+ New Event", new_admin_event_path, class: "c-btn c-btn--primary" %>
     </div>
-    <%= link_to "New Event", new_admin_event_path, class: "c-btn c-btn--primary" %>
-  </div>
 
-  <div class="admin-events-stats">
-    <span class="admin-events-stats__pill">
-      <strong><%= @hierarchy_tree.total_events_count %></strong> <%= t("views.admin.events.index.total_events") %>
-    </span>
-    <span class="admin-events-stats__pill">
-      <strong><%= @hierarchy_tree.total_roots_count %></strong>
-      <%= @view_mode == "flat" ? t("views.admin.events.index.matching_events") : t("views.admin.events.index.top_level_events") %>
-    </span>
-    <span class="admin-events-stats__pill">
-      <strong><%= @hierarchy_tree.total_sub_links_count %></strong> <%= t("views.admin.events.index.hierarchy_links") %>
-    </span>
-  </div>
+    <div class="admin-events-stats">
+      <span class="admin-events-stats__pill">
+        <strong><%= @hierarchy_tree.total_events_count %></strong> <%= t("views.admin.events.index.total_events") %>
+      </span>
+      <span class="admin-events-stats__pill">
+        <strong><%= @hierarchy_tree.total_roots_count %></strong>
+        <%= @view_mode == "flat" ? t("views.admin.events.index.matching_events") : t("views.admin.events.index.top_level_events") %>
+      </span>
+      <span class="admin-events-stats__pill">
+        <strong><%= @hierarchy_tree.total_sub_links_count %></strong> <%= t("views.admin.events.index.hierarchy_links") %>
+      </span>
+    </div>
 
-  <div class="admin-events-toolbar">
-    <%= form_with url: admin_events_path, method: :get, local: true, class: "admin-events-filters" do %>
-      <%= hidden_field_tag :view, @view_mode %>
-      <%= text_field_tag :q, @query,
-                         placeholder: t("views.admin.events.index.search_placeholder"),
-                         aria: { label: t("views.admin.events.index.search_label") },
-                         class: "crayons-textfield", style: "max-width: 240px;" %>
-      <%= select_tag :type_of,
-                     options_for_select([[t("views.admin.events.index.all_types"), ""]] + Event.type_ofs.keys.map { |k| [k.titleize, k] }, @type_filter),
-                     aria: { label: t("views.admin.events.index.filter_by_type") },
-                     class: "crayons-select", style: "max-width: 170px;" %>
-      <%= select_tag :status,
-                     options_for_select([[t("views.admin.events.index.all_statuses"), ""], [t("views.admin.events.status.published"), "published"], [t("views.admin.events.status.draft"), "draft"]], @status_filter),
-                     aria: { label: t("views.admin.events.index.filter_by_status") },
-                     class: "crayons-select", style: "max-width: 150px;" %>
-      <%= submit_tag t("views.admin.events.index.filter"), class: "c-btn c-btn--secondary btn-sm" %>
-      <% if @query.present? || @type_filter.present? || @status_filter.present? %>
-        <%= link_to t("views.admin.events.index.reset"), admin_events_path(view: @view_mode), class: "c-btn c-btn--secondary btn-sm" %>
+    <div class="admin-events-toolbar">
+      <%= form_with url: admin_events_path, method: :get, local: true, class: "admin-events-filters" do %>
+        <%= hidden_field_tag :view, @view_mode %>
+        <%= text_field_tag :q, @query,
+                           placeholder: t("views.admin.events.index.search_placeholder"),
+                           aria: { label: t("views.admin.events.index.search_label") },
+                           class: "crayons-textfield", style: "max-width: 240px;" %>
+        <%= select_tag :type_of,
+                       options_for_select([[t("views.admin.events.index.all_types"), ""]] + Event.type_ofs.keys.map { |k| [k.titleize, k] }, @type_filter),
+                       aria: { label: t("views.admin.events.index.filter_by_type") },
+                       class: "crayons-select", style: "max-width: 170px;" %>
+        <%= select_tag :status,
+                       options_for_select([[t("views.admin.events.index.all_statuses"), ""], [t("views.admin.events.status.published"), "published"], [t("views.admin.events.status.draft"), "draft"]], @status_filter),
+                       aria: { label: t("views.admin.events.index.filter_by_status") },
+                       class: "crayons-select", style: "max-width: 150px;" %>
+        <%= submit_tag t("views.admin.events.index.filter"), class: "c-btn c-btn--secondary c-btn--sm" %>
+        <% if @query.present? || @type_filter.present? || @status_filter.present? %>
+          <%= link_to t("views.admin.events.index.reset"), admin_events_path(view: @view_mode), class: "c-btn c-btn--secondary c-btn--sm" %>
+        <% end %>
       <% end %>
+
+      <div class="flex items-center gap-2">
+        <% if @view_mode == "hierarchy" %>
+          <button type="button" id="admin-events-toggle-all" class="c-btn c-btn--secondary c-btn--sm" data-expanded="true">
+            <%= t("views.admin.events.index.collapse_all") %>
+          </button>
+        <% end %>
+        <%= link_to t("views.admin.events.index.hierarchy_view"),
+                    admin_events_path(request.query_parameters.merge(view: "hierarchy", page: nil)),
+                    class: "c-btn c-btn--sm #{@view_mode == 'hierarchy' ? 'c-btn--primary' : 'c-btn--secondary'}" %>
+        <%= link_to t("views.admin.events.index.flat_view"),
+                    admin_events_path(request.query_parameters.merge(view: "flat", page: nil)),
+                    class: "c-btn c-btn--sm #{@view_mode == 'flat' ? 'c-btn--primary' : 'c-btn--secondary'}" %>
+      </div>
+    </div>
+
+    <% if @hierarchy_tree.roots.any? %>
+      <div style="overflow-x: auto; padding-bottom: 48px;">
+        <table class="crayons-table admin-events-table" id="admin-events-tree-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Schedule</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @hierarchy_tree.roots.each do |root_node| %>
+              <%= render "tree_node", node: root_node, parent_branch_id: "root", flat_mode: @hierarchy_tree.flat? %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-2">
+        <%= paginate @hierarchy_tree.paginated_scope %>
+      </div>
+    <% else %>
+      <div class="p-6 text-center color-base-60">
+        <%= t("views.admin.events.index.no_matching_events") %>
+      </div>
     <% end %>
-
-    <div class="flex items-center gap-2">
-      <% if @view_mode == "hierarchy" %>
-        <button type="button" id="admin-events-toggle-all" class="c-btn c-btn--secondary btn-sm" data-expanded="true">
-          <%= t("views.admin.events.index.collapse_all") %>
-        </button>
-      <% end %>
-      <%= link_to t("views.admin.events.index.hierarchy_view"),
-                  admin_events_path(request.query_parameters.merge(view: "hierarchy", page: nil)),
-                  class: "c-btn btn-sm #{@view_mode == 'hierarchy' ? 'c-btn--primary' : 'c-btn--secondary'}" %>
-      <%= link_to t("views.admin.events.index.flat_view"),
-                  admin_events_path(request.query_parameters.merge(view: "flat", page: nil)),
-                  class: "c-btn btn-sm #{@view_mode == 'flat' ? 'c-btn--primary' : 'c-btn--secondary'}" %>
-    </div>
   </div>
-
-  <% if @hierarchy_tree.roots.any? %>
-    <div style="overflow-x: auto;">
-      <table class="crayons-table admin-events-table" id="admin-events-tree-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Start Time</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @hierarchy_tree.roots.each do |root_node| %>
-            <%= render "tree_node", node: root_node, parent_branch_id: "root", flat_mode: @hierarchy_tree.flat? %>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="mt-4">
-      <%= paginate @hierarchy_tree.paginated_scope %>
-    </div>
-  <% else %>
-    <div class="p-6 text-center color-base-60">
-      <%= t("views.admin.events.index.no_matching_events") %>
-    </div>
-  <% end %>
 </div>
 
-<% if @view_mode == "hierarchy" %>
-  <script>
-    (function() {
-      const table = document.getElementById("admin-events-tree-table");
-      if (!table) return;
+<script>
+  (function() {
+    const table = document.getElementById("admin-events-tree-table");
+    if (!table) return;
 
+    // Close overflow dropdowns when clicking outside or opening another row menu
+    document.addEventListener("click", function(e) {
+      table.querySelectorAll("details.admin-event-more-menu[open]").forEach(function(menu) {
+        if (!menu.contains(e.target)) {
+          menu.removeAttribute("open");
+        }
+      });
+    });
+
+    <% if @view_mode == "hierarchy" %>
       function setBranchVisibility(branchId, expanded) {
         const rows = table.querySelectorAll('tr[data-tree-row="true"]');
         const prefix = branchId + "-";
@@ -138,6 +149,6 @@
           });
         });
       }
-    })();
-  </script>
-<% end %>
+    <% end %>
+  })();
+</script>

@@ -1,5 +1,7 @@
 module Admin
   class EventsController < Admin::ApplicationController
+    layout "admin"
+
     before_action :set_event, only: %i[show edit update destroy]
 
     def index
@@ -197,6 +199,8 @@ module Admin
         :delegate_to_page,
         :cover_image,
         :remove_cover_image,
+        :banner_image,
+        :remove_banner_image,
         :bg_color_hex,
         data: {},
       )

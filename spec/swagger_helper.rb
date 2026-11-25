@@ -952,6 +952,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               primary_stream_url: { type: :string, nullable: true },
               bg_color_hex: { type: :string, nullable: true },
               cover_image_url: { type: :string, nullable: true },
+              banner_image_url: { type: :string, nullable: true },
               status: { type: :string, enum: %w[live upcoming ended] },
               position: { type: :integer },
               role: { type: :string, nullable: true },
@@ -1001,6 +1002,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   primary_stream_url: { type: :string, nullable: true },
                   bg_color_hex: { type: :string, nullable: true },
                   cover_image_url: { type: :string, nullable: true },
+                  banner_image_url: { type: :string, nullable: true },
                   status: { type: :string, enum: %w[live upcoming ended] }
                 }
               }
@@ -1058,6 +1060,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               allow_articles: { type: :boolean },
               primary_stream_url: { type: :string, nullable: true },
               bg_color_hex: { type: :string, nullable: true },
+              banner_image_url: { type: :string, nullable: true, description: "Wide page banner image URL (1600x320, 5:1)." },
+              social_image_url: { type: :string, nullable: true, description: "Social sharing (og:image) and event card image URL (1200x630, 1.91:1)." },
               broadcast_config: { type: :string, enum: %w[no_broadcast tagged_broadcast global_broadcast] },
               broadcast_ended_at: { type: :string, format: "date-time", nullable: true },
               user_id: { type: :integer, format: :int64, nullable: true },
@@ -1098,6 +1102,18 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   end_time: { type: :string, format: "date-time" },
                   type_of: { type: :string, enum: %w[live_stream takeover other challenge meetup conference] },
                   organization_id: { type: :integer, nullable: true },
+                  cover_image: {
+                    type: :string,
+                    format: :binary,
+                    nullable: true,
+                    description: "Social sharing (og:image) and event card image upload (1200x630, 1.91:1; multipart/form-data)."
+                  },
+                  banner_image: {
+                    type: :string,
+                    format: :binary,
+                    nullable: true,
+                    description: "Wide page banner image upload (1600x320, 5:1; multipart/form-data)."
+                  },
                   tag_list: { type: :string, nullable: true },
                   parent_event_ids: { type: :array, items: { type: :integer, format: :int64 } },
                   sub_event_ids: { type: :array, items: { type: :integer, format: :int64 } },

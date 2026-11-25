@@ -184,6 +184,8 @@ module Api
           :type_of,
           :user_id,
           :organization_id,
+          :cover_image,
+          :banner_image,
           :tag_list,
           data: {},
         )

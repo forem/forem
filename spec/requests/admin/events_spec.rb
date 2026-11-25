@@ -8,10 +8,12 @@ RSpec.describe "Admin::Events" do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "renders the index template" do
+      it "renders the index template with the admin layout" do
         create(:event)
         get admin_events_path
         expect(response).to have_http_status(:success)
+        expect(response.body).to include("admin-events-page")
+        expect(response.body).to include("crayons-layout--admin")
       end
     end
 
@@ -33,10 +35,12 @@ RSpec.describe "Admin::Events" do
         login_as(event_admin)
       end
 
-      it "renders the index template" do
+      it "renders the index template with the admin layout" do
         create(:event)
         get admin_events_path
         expect(response).to have_http_status(:success)
+        expect(response.body).to include("admin-events-page")
+        expect(response.body).to include("crayons-layout--admin")
       end
     end
 
@@ -89,6 +93,33 @@ RSpec.describe "Admin::Events" do
         expect(response).to have_http_status(:success)
         expect(response.body).to include(event.title)
         expect(response.body).to include("No signups for this event yet.")
+      end
+
+      it "sanitizes unsafe external banner_image_url values and matches sub-event label for/id on show" do
+        event.update!(data: { "banner_image_url" => "javascript:alert(1)" })
+        create(:event, title: "Candidate Sub Event")
+
+        get admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include('src="javascript:alert(1)"')
+        expect(response.body).not_to include('href="javascript:alert(1)"')
+        doc = Nokogiri::HTML(response.body)
+        expect(doc.at_css('label[for="attach-sub-event-select"]')).to be_present
+        expect(doc.at_css("select#attach-sub-event-select")).to be_present
+      end
+
+      it "sanitizes unsafe external banner_image_url values and wires branding anchor and label ids on edit" do
+        event.update!(data: { "banner_image_url" => "javascript:alert(1)" })
+
+        get edit_admin_event_path(event)
+        expect(response).to have_http_status(:success)
+        expect(response.body).not_to include('src="javascript:alert(1)"')
+        expect(response.body).not_to include('href="javascript:alert(1)"')
+        edit_doc = Nokogiri::HTML(response.body)
+        expect(edit_doc.at_css("section#branding")).to be_present
+        expect(edit_doc.at_css('label[for="event_name_slug_input"]')).to be_present
+        expect(edit_doc.at_css('label[for="event_variation_slug_input"]')).to be_present
+        expect(edit_doc.at_css('label[for="admin-event-color-hex"]')).to be_present
       end
     end
 
@@ -168,6 +199,18 @@ RSpec.describe "Admin::Events" do
       end
     end
 
+    context "with banner_image" do
+      let(:image_file) { fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png") }
+      let(:attributes_with_banner) { valid_attributes.merge(banner_image: image_file) }
+
+      it "permits and uploads the wide banner image separately from cover_image" do
+        post admin_events_path, params: { event: attributes_with_banner }
+        created = Event.last
+        expect(created.banner_image).to be_present
+        expect(created.cover_image.file).to be_nil
+      end
+    end
+
     context "with full_details config" do
       let(:attributes_with_details) do
         valid_attributes.merge(full_details: "Comprehensive agenda and agent context notes")
@@ -235,6 +278,20 @@ RSpec.describe "Admin::Events" do
         expect(event.reload.cover_image.file).to be_nil
       end
 
+      it "uploads and removes the banner image independently of cover_image" do
+        image_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+        patch admin_event_path(event), params: { event: { banner_image: image_file } }
+
+        expect(response).to redirect_to(admin_events_path)
+        expect(event.reload.banner_image).to be_present
+        expect(event.cover_image.file).to be_nil
+
+        patch admin_event_path(event), params: { event: { remove_banner_image: "1" } }
+
+        expect(response).to redirect_to(admin_events_path)
+        expect(event.reload.banner_image.file).to be_nil
+      end
+
       it "updates allow_articles toggle and displays count on show" do
         patch admin_event_path(event), params: { event: { allow_articles: true } }
 
@@ -271,9 +328,21 @@ RSpec.describe "Admin::Events" do
     context "when logged in as an admin" do
       before { login_as(super_admin) }
 
-      it "renders a blank new event form when no fork parameter is passed" do
-        get new_admin_event_path
+      it "renders a blank new event form without scanning the organizations table" do
+        create_list(:organization, 2)
+        unbounded_org_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql].to_s
+          unbounded_org_queries << sql if sql.include?('FROM "organizations"') && sql.exclude?("LIMIT")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get new_admin_event_path
+        end
+
         expect(response).to have_http_status(:success)
+        expect(unbounded_org_queries).to be_empty
+        expect(response.body).to include('name="event[organization_id]"', 'type="number"')
       end
 
       it "pre-fills the form with attributes from the original event when fork_from_id is passed" do

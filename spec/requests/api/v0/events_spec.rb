@@ -222,4 +222,67 @@ RSpec.describe "Api::V0::Events" do
       expect(response.parsed_body["allow_articles"]).to be(true)
     end
   end
+
+  describe "multipart banner_image and cover_image uploads" do
+    let(:image_file) { fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png") }
+    let(:second_image_file) { fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png") }
+    let(:invalid_file) { fixture_file_upload(Rails.root.join("spec/fixtures/files/profile_fields.csv"), "text/csv") }
+    let(:admin_multipart_headers) { { "api-key" => admin_api_secret.secret } }
+    let(:user_multipart_headers) { { "api-key" => user_api_secret.secret } }
+
+    it "allows administrators to upload distinct banner_image and cover_image on POST /api/events" do
+      post "/api/events",
+           params: {
+             event: {
+               title: "Multipart Conf",
+               event_name_slug: "multipart-conf",
+               event_variation_slug: "2026",
+               start_time: 1.day.from_now.iso8601,
+               end_time: 2.days.from_now.iso8601,
+               type_of: "conference",
+               published: true,
+               banner_image: image_file,
+               cover_image: second_image_file
+             }
+           },
+           headers: admin_multipart_headers
+
+      expect(response).to have_http_status(:created)
+      created = Event.find(response.parsed_body["id"])
+      expect(created.banner_image).to be_present
+      expect(created.cover_image).to be_present
+      expect(response.parsed_body["banner_image_url"]).to include("banner_image")
+      expect(response.parsed_body["social_image_url"]).to include("cover_image")
+    end
+
+    it "allows administrators to upload banner_image on PATCH /api/events/:id" do
+      patch "/api/events/#{published_event.id}",
+            params: { event: { banner_image: image_file } },
+            headers: admin_multipart_headers
+
+      expect(response).to have_http_status(:success)
+      expect(published_event.reload.banner_image).to be_present
+      expect(published_event.cover_image.file).to be_nil
+      expect(response.parsed_body["banner_image_url"]).to include("banner_image")
+    end
+
+    it "denies non-admin users attempting multipart image upload" do
+      patch "/api/events/#{published_event.id}",
+            params: { event: { banner_image: image_file } },
+            headers: user_multipart_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(published_event.reload.banner_image.file).to be_nil
+    end
+
+    it "rejects invalid non-image file uploads with unprocessable_entity" do
+      patch "/api/events/#{published_event.id}",
+            params: { event: { banner_image: invalid_file } },
+            headers: admin_multipart_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to be_present
+      expect(published_event.reload.banner_image.file).to be_nil
+    end
+  end
 end

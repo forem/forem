@@ -1,6 +1,27 @@
-<%= form_with model: [:admin, event], local: true do |form| %>
+<%
+  available_parents = @available_parent_events || []
+  selected_parent_ids = Array(@selected_parent_event_ids).map(&:to_i)
+  uploaded_banner_url = event.banner_image.present? ? safe_event_url(event.banner_image.banner.url || event.banner_image.url) : nil
+  external_banner_url = safe_event_url(event.data&.dig("banner_image_url") || event.data&.dig(:banner_image_url))
+  current_social_url = event.cover_image.present? ? safe_event_url(event.cover_image.url) : nil
+  common_time_zones = %w[
+    UTC
+    America/New_York
+    America/Chicago
+    America/Denver
+    America/Los_Angeles
+    Europe/London
+    Europe/Berlin
+    Europe/Paris
+    Asia/Kolkata
+    Asia/Tokyo
+    Australia/Sydney
+  ]
+  color_presets = ["#3B49DF", "#E5484D", "#0D9488", "#7C3AED", "#DB2777", "#D97706", "#2563EB", "#111827"]
+%>
+<%= form_with model: [:admin, event], local: true, html: { class: "admin-event-form" } do |form| %>
   <% if event.errors.any? %>
-    <div class="crayons-notice crayons-notice--danger mb-4">
+    <div class="crayons-notice crayons-notice--danger">
       <h4><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h4>
       <ul class="list-disc list-inside mt-2">
         <% event.errors.full_messages.each do |message| %>
@@ -10,359 +31,698 @@
     </div>
   <% end %>
 
-  <div class="flex flex-col gap-4">
-    <div class="crayons-field">
-      <%= form.label :title, class: "crayons-field__label" %>
-      <%= form.text_field :title, class: "crayons-textfield", required: true %>
+  <!-- 1. Basics & Identity -->
+  <section class="admin-event-form-section">
+    <div class="admin-event-form-section__header">
+      <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.sections.basics") %></h2>
+      <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.sections.basics_subtitle") %></p>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="crayons-field">
-        <%= form.label :event_name_slug, "Event Name Slug", class: "crayons-field__label" do %>
-          Event Name Slug *
-          <p class="crayons-field__description">The root name grouping of the event. Requires lowercase alphanumerical and dashes (e.g., 'aws-industries').</p>
-        <% end %>
-        <%= form.text_field :event_name_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+" %>
-      </div>
-
-      <div class="crayons-field">
-        <%= form.label :event_variation_slug, "Event Variation Slug", class: "crayons-field__label" do %>
-          Event Variation Slug *
-          <p class="crayons-field__description">The unique date or subtitle identifier for this iteration. Requires lowercase alphanumerical and dashes (e.g., 'march-31-2026').</p>
-        <% end %>
-        <%= form.text_field :event_variation_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+" %>
-      </div>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.label :description, class: "crayons-field__label" do %>
-        Description
-        <p class="crayons-field__description">Keep this to one or two sentences. It is used for social previews, meta tags, event listings, and billboards, and as the event page body if the Page Body below is left blank.</p>
-      <% end %>
-      <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.label :body_markdown, "Page Body (Markdown)", class: "crayons-field__label" do %>
-        Page Body (Markdown)
-        <p class="crayons-field__description">Optional. The full body of the public event page. Supports the same markdown and liquid tags as articles and pages. If left blank, the description is shown instead.</p>
-      <% end %>
-      <%= form.text_area :body_markdown, class: "crayons-textfield", rows: 12 %>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.label :full_details, "Full Details (API Only / Agent Context)", class: "crayons-field__label" do %>
-        Full Details (API Only / Agent Context)
-        <p class="crayons-field__description">
-          Please dump <strong>all</strong> comprehensive details, schedule, notes, speaker bios, submission guidelines, rules, FAQs, and background context here. This field is exposed exclusively in the API for AI agents and integrations, and will <strong>not</strong> be displayed on the public event page.
-        </p>
-      <% end %>
-      <%= form.text_area :full_details, class: "crayons-textfield", rows: 8, placeholder: "Provide comprehensive event details, full schedule, rules, speaker bios, FAQs, and agent context..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.label :cover_image, "Cover Image", class: "crayons-field__label" do %>
-        Cover Image
-        <p class="crayons-field__description">Upload a cover image for this event. It will be used for social preview cards (og:image) and the events landing page.</p>
-      <% end %>
-      <% if event.cover_image.present? %>
-        <div class="mb-3">
-          <img src="<%= event.cover_image.url %>" alt="Cover Image Preview" style="max-width: 360px; height: auto; border-radius: var(--radius); display: block; margin-bottom: 8px; border: 1px solid var(--card-border);" />
-          <label class="crayons-field crayons-field--checkbox flex items-center gap-2">
-            <%= form.check_box :remove_cover_image, class: "crayons-checkbox" %>
-            <span class="fs-s">Remove cover image</span>
-          </label>
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="crayons-field md:col-span-2">
+          <%= form.label :title, class: "crayons-field__label" %>
+          <%= form.text_field :title, class: "crayons-textfield", required: true, placeholder: "e.g. AI Engineer Europe 2027" %>
         </div>
-      <% end %>
-      <%= form.file_field :cover_image, accept: "image/*", class: "crayons-file-field" %>
-    </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="crayons-field">
-        <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
-        <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+        <div class="crayons-field">
+          <%= form.label :type_of, "Event Type", class: "crayons-field__label" %>
+          <%= form.select :type_of, Event.type_ofs.keys.map { |type| [type.titleize, type] }, {}, class: "crayons-select" %>
+        </div>
       </div>
 
-      <div class="crayons-field">
-        <%= form.label :broadcast_config, "Billboard Broadcast Config", class: "crayons-field__label" do %>
-          Billboard Broadcast Config
-          <p class="crayons-field__description">Controls billboard auto-generation. No Broadcast = Billboards disabled. Tagged = Billboards target relevant tags only. Global = Billboards show to all users everywhere.</p>
-        <% end %>
-        <%= form.select :broadcast_config, Event.broadcast_configs.keys.map { |cfg| [cfg.titleize, cfg] }, {}, class: "crayons-select" %>
-      </div>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.label :primary_stream_url, "Primary Stream URL", class: "crayons-field__label" do %>
-        Primary Stream URL
-        <p class="crayons-field__description">The streaming embed URL (e.g., Twitch, YouTube, or Streamyard player src)</p>
-      <% end %>
-      <%= form.text_area :primary_stream_url, class: "crayons-textfield", rows: 2 %>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.fields_for :data, event.data || {} do |data_form| %>
-        <%= data_form.label :chat_url, "Chat Embed URL", class: "crayons-field__label" do %>
-          Chat Embed URL
-          <p class="crayons-field__description">Optional. The chat embed URL (e.g., Twitch Chat src)</p>
-        <% end %>
-        <input type="text" name="event[data][chat_url]" id="event_data_chat_url" class="crayons-textfield" value="<%= event.data&.dig('chat_url') || event.data&.dig(:chat_url) %>">
-      <% end %>
-    </div>
-
-    <div class="crayons-field">
-      <%= form.fields_for :data, event.data || {} do |data_form| %>
-        <%= data_form.label :auto_follow_tag_names, "Auto-Follow Tag Names on Signup (Challenges)", class: "crayons-field__label" do %>
-          Auto-Follow Tag Names on Signup (Challenges Only)
-          <p class="crayons-field__description">Optional. Comma-separated list of tag names (e.g., 'devchallenge, writeathon') that users will automatically follow when signing up for this challenge. Defaults to the event's first tag if left blank.</p>
-        <% end %>
-        <input type="text" name="event[data][auto_follow_tag_names]" id="event_data_auto_follow_tag_names" class="crayons-textfield" value="<%= event.data&.dig('auto_follow_tag_names') %>" placeholder="e.g., devchallenge, writeathon">
-      <% end %>
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
-      <div class="crayons-field">
-        <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :location, "Location Display", class: "crayons-field__label" do %>
-            Location Display
-            <p class="crayons-field__description">e.g. 'Everywhere, Worldwide, US' or 'Chennai, Tamilnadu, IN'</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="crayons-field">
+          <%= form.label :event_name_slug, "Event Name Slug", for: "event_name_slug_input", class: "crayons-field__label" do %>
+            Event Name Slug *
+            <p class="crayons-field__description">Root grouping slug (lowercase letters, numbers, dashes — e.g. 'aie-europe').</p>
           <% end %>
-          <input type="text" name="event[data][location]" id="event_data_location" class="crayons-textfield" value="<%= event.data&.dig('location') || event.data&.dig(:location) %>" placeholder="Everywhere, Worldwide, US">
-        <% end %>
+          <%= form.text_field :event_name_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+", id: "event_name_slug_input" %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :event_variation_slug, "Event Variation Slug", for: "event_variation_slug_input", class: "crayons-field__label" do %>
+            Event Variation Slug *
+            <p class="crayons-field__description">Unique edition or session identifier (e.g. '2027' or 'opening-keynote').</p>
+          <% end %>
+          <%= form.text_field :event_variation_slug, class: "crayons-textfield", required: true, pattern: "[a-z0-9-]+", id: "event_variation_slug_input" %>
+        </div>
+      </div>
+
+      <div>
+        <span class="admin-event-url-preview">
+          <span class="opacity-75"><%= t("views.admin.events.form.public_url_label") %>:</span>
+          <strong id="admin-event-url-preview-text">/events/<%= event.event_name_slug.presence || "name-slug" %>/<%= event.event_variation_slug.presence || "variation" %></strong>
+        </span>
       </div>
 
       <div class="crayons-field">
-        <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :format, "Event Format Badge", class: "crayons-field__label" do %>
-            Event Format Badge
-            <p class="crayons-field__description">e.g. 'DIGITAL', 'IN-PERSON', 'HYBRID' (defaults to type)</p>
-          <% end %>
-          <input type="text" name="event[data][format]" id="event_data_format" class="crayons-textfield" value="<%= event.data&.dig('format') || event.data&.dig(:format) %>" placeholder="DIGITAL">
+        <%= form.label :description, class: "crayons-field__label" do %>
+          Description
+          <p class="crayons-field__description">One or two sentences used for social previews, meta tags, event cards, and billboards (and as the page body if Page Body is blank).</p>
         <% end %>
+        <%= form.text_area :description, class: "crayons-textfield", rows: 3 %>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="crayons-field">
+          <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
+            Tags
+            <p class="crayons-field__description">Comma-separated tags. The first tag powers the related community articles section.</p>
+          <% end %>
+          <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "ai, agents, architecture" %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :organization_id, t("views.admin.events.form.host_organization"), class: "crayons-field__label" do %>
+            <%= t("views.admin.events.form.host_organization") %>
+            <p class="crayons-field__description"><%= t("views.admin.events.form.host_organization_description") %></p>
+          <% end %>
+          <%= form.number_field :organization_id,
+                                min: 1,
+                                class: "crayons-textfield",
+                                placeholder: t("views.admin.events.form.host_organization_placeholder"),
+                                autocomplete: "off" %>
+          <% if event.organization.present? %>
+            <p class="fs-xs color-base-70 mt-1 mb-0">
+              <%= t("views.admin.events.form.current_organization", name: event.organization.name, slug: event.organization.slug) %>
+            </p>
+          <% end %>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="crayons-field">
-        <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :time_zone, t("views.admin.events.form.time_zone"), class: "crayons-field__label" do %>
-            <%= t("views.admin.events.form.time_zone") %>
-            <p class="crayons-field__description"><%= t("views.admin.events.form.time_zone_description") %></p>
-          <% end %>
-          <input type="text" name="event[data][time_zone]" id="event_data_time_zone" class="crayons-textfield" value="<%= event.data&.dig('time_zone') || event.data&.dig(:time_zone) %>" placeholder="America/New_York">
-        <% end %>
-      </div>
-
-      <div class="crayons-field">
-        <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :registration_url, t("views.admin.events.form.registration_url"), class: "crayons-field__label" do %>
-            <%= t("views.admin.events.form.registration_url") %>
-            <p class="crayons-field__description"><%= t("views.admin.events.form.registration_url_description") %></p>
-          <% end %>
-          <input type="text" name="event[data][registration_url]" id="event_data_registration_url" class="crayons-textfield" value="<%= event.data&.dig('registration_url') || event.data&.dig(:registration_url) %>" placeholder="https://example.com/register">
-        <% end %>
-      </div>
-
-      <div class="crayons-field">
-        <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :website_url, t("views.admin.events.form.website_url"), class: "crayons-field__label" do %>
-            <%= t("views.admin.events.form.website_url") %>
-            <p class="crayons-field__description"><%= t("views.admin.events.form.website_url_description") %></p>
-          <% end %>
-          <input type="text" name="event[data][website_url]" id="event_data_website_url" class="crayons-textfield" value="<%= event.data&.dig('website_url') || event.data&.dig(:website_url) %>" placeholder="https://example.com">
-        <% end %>
-      </div>
+  <!-- 2. Schedule & Location -->
+  <section class="admin-event-form-section">
+    <div class="admin-event-form-section__header">
+      <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.sections.schedule") %></h2>
+      <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.sections.schedule_subtitle") %></p>
     </div>
 
-    <% available_parents = @available_parent_events || [] %>
-    <% selected_parent_ids = Array(@selected_parent_event_ids).map(&:to_i) %>
-    <div class="crayons-field">
-      <label class="crayons-field__label">
-        <%= t("views.admin.events.form.parent_events") %>
-        <p class="crayons-field__description"><%= t("views.admin.events.form.parent_events_description") %></p>
-      </label>
-      <input type="hidden" name="event[parent_event_ids][]" value="" />
-      <% if available_parents.any? %>
-        <div class="admin-event-parent-picker">
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="crayons-field">
+          <%= form.label :start_time, class: "crayons-field__label" do %>
+            Start Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
+          <% end %>
+          <%= form.datetime_field :start_time, class: "crayons-textfield", required: true %>
+          <div id="start_time_info"></div>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.label :end_time, class: "crayons-field__label" do %>
+            End Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
+          <% end %>
+          <%= form.datetime_field :end_time, class: "crayons-textfield", required: true %>
+          <div id="end_time_info"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :time_zone, t("views.admin.events.form.time_zone"), class: "crayons-field__label" do %>
+              <%= t("views.admin.events.form.time_zone") %>
+              <p class="crayons-field__description"><%= t("views.admin.events.form.time_zone_description") %></p>
+            <% end %>
+            <input type="text"
+                   name="event[data][time_zone]"
+                   id="event_data_time_zone"
+                   list="common-event-time-zones"
+                   class="crayons-textfield"
+                   value="<%= event.data&.dig('time_zone') || event.data&.dig(:time_zone) %>"
+                   placeholder="Europe/London">
+            <datalist id="common-event-time-zones">
+              <% common_time_zones.each do |tz| %>
+                <option value="<%= tz %>"></option>
+              <% end %>
+            </datalist>
+          <% end %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :location, "Location Display", class: "crayons-field__label" do %>
+              Location Display
+              <p class="crayons-field__description">e.g. 'ExCeL London, UK' or 'Online Worldwide'</p>
+            <% end %>
+            <input type="text" name="event[data][location]" id="event_data_location" class="crayons-textfield" value="<%= event.data&.dig('location') || event.data&.dig(:location) %>" placeholder="Everywhere, Worldwide">
+          <% end %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :format, "Event Format Badge", class: "crayons-field__label" do %>
+              Event Format Badge
+              <p class="crayons-field__description">e.g. 'DIGITAL', 'IN-PERSON', 'HYBRID'</p>
+            <% end %>
+            <input type="text" name="event[data][format]" id="event_data_format" class="crayons-textfield" value="<%= event.data&.dig('format') || event.data&.dig(:format) %>" placeholder="HYBRID">
+          <% end %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :registration_url, t("views.admin.events.form.registration_url"), class: "crayons-field__label" do %>
+              <%= t("views.admin.events.form.registration_url") %>
+              <p class="crayons-field__description"><%= t("views.admin.events.form.registration_url_description") %></p>
+            <% end %>
+            <input type="url" name="event[data][registration_url]" id="event_data_registration_url" class="crayons-textfield" value="<%= event.data&.dig('registration_url') || event.data&.dig(:registration_url) %>" placeholder="https://example.com/register">
+          <% end %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :website_url, t("views.admin.events.form.website_url"), class: "crayons-field__label" do %>
+              <%= t("views.admin.events.form.website_url") %>
+              <p class="crayons-field__description"><%= t("views.admin.events.form.website_url_description") %></p>
+            <% end %>
+            <input type="url" name="event[data][website_url]" id="event_data_website_url" class="crayons-textfield" value="<%= event.data&.dig('website_url') || event.data&.dig(:website_url) %>" placeholder="https://example.com">
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Visual Branding & Media (Distinct Wide Banner vs Social/Card Image) -->
+  <section id="branding" class="admin-event-form-section">
+    <div class="admin-event-form-section__header">
+      <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.sections.branding") %></h2>
+      <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.sections.branding_subtitle") %></p>
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <div class="admin-event-media-grid">
+        <!-- Wide Page Banner Image (5:1) -->
+        <div class="admin-event-media-box">
+          <div class="admin-event-media-box__header">
+            <%= form.label :banner_image, t("views.admin.events.form.banner_image"), class: "crayons-field__label m-0" %>
+            <span class="admin-event-media-box__ratio-badge">1600 × 320 · 5:1</span>
+          </div>
+          <p class="crayons-field__description m-0"><%= t("views.admin.events.form.banner_image_description") %></p>
+
+          <div class="admin-event-media-box__preview admin-event-media-box__preview--banner" id="banner-image-preview-box">
+            <% if uploaded_banner_url.present? %>
+              <img src="<%= uploaded_banner_url %>" alt="<%= t("views.admin.events.form.banner_image_preview_alt") %>" id="banner-image-preview-img" />
+            <% elsif external_banner_url.present? %>
+              <span class="admin-event-media-box__placeholder" id="banner-image-preview-empty">
+                <%= t("views.admin.events.form.external_banner_configured") %>
+                <%= link_to external_banner_url, external_banner_url, target: "_blank", rel: "noopener noreferrer", class: "c-link" %>
+              </span>
+            <% else %>
+              <span class="admin-event-media-box__placeholder" id="banner-image-preview-empty">
+                <%= t("views.admin.events.form.banner_image_empty") %>
+              </span>
+            <% end %>
+          </div>
+
+          <%= form.file_field :banner_image, accept: "image/png,image/jpeg,image/gif,image/webp,image/avif", class: "crayons-file-field", data: { preview_kind: "banner" } %>
+
+          <% if event.banner_image.present? %>
+            <label class="crayons-field crayons-field--checkbox flex items-center gap-2">
+              <%= form.check_box :remove_banner_image, class: "crayons-checkbox" %>
+              <span class="fs-s"><%= t("views.admin.events.form.remove_banner_image") %></span>
+            </label>
+          <% end %>
+
+          <div class="crayons-field">
+            <%= form.fields_for :data, event.data || {} do |data_form| %>
+              <%= data_form.label :banner_image_url, t("views.admin.events.form.banner_image_url_fallback"), class: "crayons-field__label fs-xs" %>
+              <input type="url"
+                     name="event[data][banner_image_url]"
+                     id="event_data_banner_image_url"
+                     class="crayons-textfield"
+                     value="<%= event.data&.dig('banner_image_url') || event.data&.dig(:banner_image_url) %>"
+                     placeholder="https://...">
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Social & Card Image (1200x630 / 1.91:1) -->
+        <div class="admin-event-media-box">
+          <div class="admin-event-media-box__header">
+            <%= form.label :cover_image, t("views.admin.events.form.social_image"), class: "crayons-field__label m-0" %>
+            <span class="admin-event-media-box__ratio-badge">1200 × 630 · 1.91:1</span>
+          </div>
+          <p class="crayons-field__description m-0"><%= t("views.admin.events.form.social_image_description") %></p>
+
+          <div class="admin-event-media-box__preview admin-event-media-box__preview--social" id="social-image-preview-box">
+            <% if current_social_url.present? %>
+              <img src="<%= current_social_url %>" alt="<%= t("views.admin.events.form.social_image_preview_alt") %>" id="social-image-preview-img" />
+            <% else %>
+              <span class="admin-event-media-box__placeholder" id="social-image-preview-empty">
+                <%= t("views.admin.events.form.social_image_empty") %>
+              </span>
+            <% end %>
+          </div>
+
+          <%= form.file_field :cover_image, accept: "image/png,image/jpeg,image/gif,image/webp,image/avif", class: "crayons-file-field", data: { preview_kind: "social" } %>
+
+          <% if event.cover_image.present? %>
+            <label class="crayons-field crayons-field--checkbox flex items-center gap-2">
+              <%= form.check_box :remove_cover_image, class: "crayons-checkbox" %>
+              <span class="fs-s"><%= t("views.admin.events.form.remove_social_image") %></span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="crayons-field">
+        <%= form.label :bg_color_hex, t("views.admin.events.form.brand_accent_color"), for: "admin-event-color-hex", class: "crayons-field__label" do %>
+          <%= t("views.admin.events.form.brand_accent_color") %>
+          <p class="crayons-field__description"><%= t("views.admin.events.form.brand_accent_color_description") %></p>
+        <% end %>
+        <div class="flex items-center flex-wrap gap-3">
+          <input type="color"
+                 id="admin-event-color-picker"
+                 value="<%= event.background_hex_color %>"
+                 aria-label="<%= t('views.admin.events.form.brand_color_picker_aria') %>"
+                 style="width: 40px; height: 36px; border: 1px solid var(--base-20); border-radius: var(--radius); padding: 2px; background: transparent; cursor: pointer;" />
+          <%= form.text_field :bg_color_hex, class: "crayons-textfield", placeholder: "#3B49DF", style: "max-width: 160px;", id: "admin-event-color-hex" %>
+          <div class="admin-event-color-swatches">
+            <% color_presets.each do |hex| %>
+              <button type="button"
+                      class="admin-event-color-swatch js-event-color-preset"
+                      data-color="<%= hex %>"
+                      style="background: <%= hex %>;"
+                      title="<%= hex %>"
+                      aria-label="<%= t('views.admin.events.form.brand_color_preset_aria', color: hex) %>"></button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Event Hierarchy (Parent Events) -->
+  <section class="admin-event-form-section">
+    <div class="admin-event-form-section__header">
+      <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.parent_events") %></h2>
+      <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.parent_events_description") %></p>
+    </div>
+
+    <input type="hidden" name="event[parent_event_ids][]" value="" />
+    <% if available_parents.any? %>
+      <div class="admin-event-parent-picker" id="admin-event-parent-picker">
+        <div class="admin-event-parent-picker__selected" id="parent-event-selected-chips">
+          <span class="admin-event-parent-picker__selected-label" id="parent-event-selected-count">
+            <%= t("views.admin.events.form.selected_parents_count", count: selected_parent_ids.size) %>
+          </span>
+          <span class="fs-xs color-base-60" id="parent-event-none-selected" style="<%= selected_parent_ids.any? ? 'display: none;' : '' %>">
+            <%= t("views.admin.events.form.top_level_hint") %>
+          </span>
+        </div>
+
+        <div class="admin-event-parent-picker__controls">
           <input type="search"
                  id="parent-event-search"
-                 class="crayons-textfield"
+                 class="crayons-textfield admin-event-parent-picker__search"
                  placeholder="<%= t("views.admin.events.form.search_parent_events") %>"
                  aria-label="<%= t("views.admin.events.form.search_parent_events") %>"
                  autocomplete="off" />
-          <div class="admin-event-parent-picker__list" id="parent-event-picker-list">
-            <% available_parents.each do |parent_option| %>
-              <label class="admin-event-parent-picker__item" data-parent-search-text="<%= "#{parent_option.title} #{parent_option.type_of}".downcase %>">
-                <input type="checkbox"
-                       name="event[parent_event_ids][]"
-                       value="<%= parent_option.id %>"
-                       class="crayons-checkbox"
-                       <%= "checked" if selected_parent_ids.include?(parent_option.id) %> />
-                <span class="font-medium"><%= parent_option.title %></span>
+
+          <div class="admin-event-parent-picker__type-pills" id="parent-event-type-pills" role="group" aria-label="<%= t("views.admin.events.index.filter_by_type") %>">
+            <button type="button" class="admin-event-parent-picker__type-pill is-active" data-parent-type-filter="">
+              <%= t("views.admin.events.index.all_types") %>
+            </button>
+            <% %w[conference meetup live_stream challenge].each do |type_key| %>
+              <button type="button" class="admin-event-parent-picker__type-pill" data-parent-type-filter="<%= type_key %>">
+                <%= type_key.titleize %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="admin-event-parent-picker__list" id="parent-event-picker-list">
+          <% available_parents.each do |parent_option| %>
+            <% is_checked = selected_parent_ids.include?(parent_option.id) %>
+            <label class="admin-event-parent-picker__item <%= 'is-selected' if is_checked %>"
+                   data-parent-search-text="<%= "#{parent_option.title} #{parent_option.type_of}".downcase %>"
+                   data-parent-type="<%= parent_option.type_of %>"
+                   data-parent-title="<%= parent_option.title %>"
+                   data-parent-id="<%= parent_option.id %>">
+              <input type="checkbox"
+                     name="event[parent_event_ids][]"
+                     value="<%= parent_option.id %>"
+                     class="crayons-checkbox js-parent-event-checkbox"
+                     <%= "checked" if is_checked %> />
+              <span class="admin-event-parent-picker__item-title"><%= parent_option.title %></span>
+              <span class="admin-event-parent-picker__item-meta">
                 <span class="c-indicator fs-xs"><%= parent_option.type_of.titleize %></span>
                 <% unless parent_option.published? %>
                   <span class="c-indicator c-indicator--warning fs-xs"><%= t("views.admin.events.status.draft") %></span>
                 <% end %>
-                <span class="fs-xs opacity-75 ml-auto"><%= parent_option.start_time.to_fs(:short) %></span>
-              </label>
+                <span class="fs-xs opacity-75 whitespace-nowrap"><%= parent_option.start_time.to_fs(:short) %></span>
+              </span>
+            </label>
+          <% end %>
+          <div class="admin-event-parent-picker__empty" id="parent-event-empty-state" style="display: none;">
+            <%= t("views.admin.events.index.no_matching_events") %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <p class="fs-s color-base-60 italic m-0"><%= t("views.admin.events.form.no_parent_events_available") %></p>
+    <% end %>
+  </section>
+
+  <!-- 5. Page Content & Agent Context -->
+  <section class="admin-event-form-section">
+    <div class="admin-event-form-section__header">
+      <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.sections.content") %></h2>
+      <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.sections.content_subtitle") %></p>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="crayons-field">
+        <%= form.label :body_markdown, "Page Body (Markdown)", class: "crayons-field__label" do %>
+          Page Body (Markdown)
+          <p class="crayons-field__description">Optional. Supports Markdown and Liquid tags. If left blank, the short Description is shown instead.</p>
+        <% end %>
+        <%= form.text_area :body_markdown, class: "crayons-textfield", rows: 10 %>
+      </div>
+
+      <details class="admin-details" <%= "open" if event.full_details.present? %>>
+        <summary class="py-2 font-bold fs-s cursor-pointer color-base-80">
+          Full Details (API Only / Agent Context)
+          <span class="fs-xs fw-normal color-base-60 ml-1"><%= event.full_details.present? ? "(populated)" : "(optional)" %></span>
+        </summary>
+        <div class="crayons-field pt-2 pb-3">
+          <p class="crayons-field__description mb-2">
+            Dump comprehensive details, schedule, speaker bios, rules, and FAQs here. Exposed exclusively via the API for AI agents and integrations — never rendered on the public page.
+          </p>
+          <%= form.text_area :full_details, class: "crayons-textfield", rows: 6, placeholder: "Provide comprehensive event details, full schedule, rules, speaker bios, FAQs, and agent context..." %>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 6. Livestream, Broadcast & Publishing -->
+  <section class="admin-event-form-section">
+    <div class="admin-event-form-section__header">
+      <h2 class="admin-event-form-section__title"><%= t("views.admin.events.form.sections.publishing") %></h2>
+      <p class="admin-event-form-section__subtitle"><%= t("views.admin.events.form.sections.publishing_subtitle") %></p>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="crayons-field">
+          <%= form.label :primary_stream_url, "Primary Stream URL", class: "crayons-field__label" do %>
+            Primary Stream URL
+            <p class="crayons-field__description">YouTube, Twitch, or Streamyard URL (automatically normalized to embed format on save).</p>
+          <% end %>
+          <%= form.text_field :primary_stream_url, class: "crayons-textfield", placeholder: "https://www.youtube.com/watch?v=..." %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :chat_url, "Chat Embed URL", class: "crayons-field__label" do %>
+              Chat Embed URL
+              <p class="crayons-field__description">Optional live chat embed URL (YouTube or Twitch chat).</p>
+            <% end %>
+            <input type="text" name="event[data][chat_url]" id="event_data_chat_url" class="crayons-textfield" value="<%= event.data&.dig('chat_url') || event.data&.dig(:chat_url) %>">
+          <% end %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="crayons-field">
+          <%= form.label :broadcast_config, "Billboard Broadcast Config", class: "crayons-field__label" do %>
+            Billboard Broadcast Config
+            <p class="crayons-field__description">No Broadcast = disabled. Tagged = targets event tags. Global = all users.</p>
+          <% end %>
+          <%= form.select :broadcast_config, Event.broadcast_configs.keys.map { |cfg| [cfg.titleize, cfg] }, {}, class: "crayons-select" %>
+        </div>
+
+        <div class="crayons-field">
+          <%= form.fields_for :data, event.data || {} do |data_form| %>
+            <%= data_form.label :auto_follow_tag_names, "Auto-Follow Tags on Signup (Challenges)", class: "crayons-field__label" do %>
+              Auto-Follow Tags on Signup (Challenges)
+              <p class="crayons-field__description">Comma-separated tags users auto-follow when joining a challenge.</p>
+            <% end %>
+            <input type="text" name="event[data][auto_follow_tag_names]" id="event_data_auto_follow_tag_names" class="crayons-textfield" value="<%= event.data&.dig('auto_follow_tag_names') %>" placeholder="devchallenge, writeathon">
+          <% end %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+        <div class="crayons-field crayons-field--checkbox">
+          <%= form.check_box :published, class: "crayons-checkbox" %>
+          <%= form.label :published, class: "crayons-field__label" do %>
+            Published
+            <p class="crayons-field__description">Makes the event publicly accessible (unchecked = admin-only draft).</p>
+          <% end %>
+        </div>
+
+        <div class="crayons-field crayons-field--checkbox">
+          <%= form.check_box :elevated, class: "crayons-checkbox" %>
+          <%= form.label :elevated, class: "crayons-field__label" do %>
+            Elevated
+            <p class="crayons-field__description">Highlights the event in the homepage sidebar.</p>
+          <% end %>
+        </div>
+
+        <div class="crayons-field crayons-field--checkbox">
+          <%= form.check_box :allow_articles, class: "crayons-checkbox" %>
+          <%= form.label :allow_articles, class: "crayons-field__label" do %>
+            <%= t("views.admin.events.form.allow_articles") %>
+            <p class="crayons-field__description"><%= t("views.admin.events.form.allow_articles_description") %></p>
+          <% end %>
+        </div>
+
+        <div class="crayons-field crayons-field--checkbox">
+          <%= form.check_box :manual_broadcast_end, class: "crayons-checkbox" %>
+          <%= form.label :manual_broadcast_end, class: "crayons-field__label" do %>
+            Manually End Broadcast
+            <p class="crayons-field__description">Hold broadcast billboards open past End Time until manually ended.</p>
+          <% end %>
+        </div>
+      </div>
+
+      <details class="admin-details" <%= "open" if event.delegate_to_page? || event.page_id.present? %>>
+        <summary class="py-2 font-bold fs-s cursor-pointer color-base-80">
+          <%= t("views.admin.events.form.advanced_delegation") %>
+        </summary>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 pb-2">
+          <div class="crayons-field">
+            <%= form.label :page_id, "Delegated Page", class: "crayons-field__label" do %>
+              Delegated Page
+              <p class="crayons-field__description">Optional legacy Page redirect target for this event.</p>
+            <% end %>
+            <%= form.select :page_id, Page.order(:title).pluck(:title, :id), { include_blank: "None (No page delegation)" }, class: "crayons-select" %>
+          </div>
+
+          <div class="crayons-field crayons-field--checkbox mt-6">
+            <%= form.check_box :delegate_to_page, class: "crayons-checkbox" %>
+            <%= form.label :delegate_to_page, class: "crayons-field__label" do %>
+              Delegate to Page
+              <p class="crayons-field__description">Redirect links for this event directly to the selected Page.</p>
             <% end %>
           </div>
         </div>
-        <script>
-          (function() {
-            const searchInput = document.getElementById("parent-event-search");
-            const list = document.getElementById("parent-event-picker-list");
-            if (!searchInput || !list) return;
-
-            searchInput.addEventListener("input", function() {
-              const q = searchInput.value.trim().toLowerCase();
-              list.querySelectorAll(".admin-event-parent-picker__item").forEach(function(item) {
-                const hay = item.dataset.parentSearchText || "";
-                item.style.display = !q || hay.includes(q) ? "" : "none";
-              });
-            });
-          })();
-        </script>
-      <% else %>
-        <p class="fs-s color-base-60 italic m-0"><%= t("views.admin.events.form.no_parent_events_available") %></p>
-      <% end %>
+      </details>
     </div>
+  </section>
 
-    <div class="crayons-field">
-      <%= form.label :tag_list, "Tags", class: "crayons-field__label" do %>
-        Tags
-        <p class="crayons-field__description">Comma separated tags. The first tag is used to fetch related articles.</p>
-      <% end %>
-      <%= form.text_field :tag_list, value: event.tag_list.join(", "), class: "crayons-textfield", placeholder: "aws, ai, streaming" %>
+  <!-- Sticky Save Bar -->
+  <div class="admin-event-form-footer">
+    <div class="flex items-center gap-2">
+      <%= link_to t("views.admin.events.form.cancel"), event.persisted? ? admin_event_path(event) : admin_events_path, class: "c-btn c-btn--secondary" %>
     </div>
-
-    <div class="crayons-field">
-      <%= form.label :bg_color_hex, "Background Hex Color", class: "crayons-field__label" do %>
-        Background Hex Color
-        <p class="crayons-field__description">Optional 6-digit hex color (e.g., '#3B49DF'). If left blank, automatically derived from the first supported tag or default palette fallback.</p>
-      <% end %>
-      <div class="flex items-center gap-2">
-        <%= form.text_field :bg_color_hex, class: "crayons-textfield", placeholder: "#3B49DF", style: "max-width: 240px;" %>
-        <% if event.bg_color_hex.present? %>
-          <span style="display:inline-block; width: 28px; height: 28px; border-radius: 4px; background: <%= event.bg_color_hex %>; border: 1px solid var(--card-border);"></span>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="crayons-field">
-        <%= form.label :start_time, class: "crayons-field__label" do %>
-          Start Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
-        <% end %>
-        <%= form.datetime_field :start_time, class: "crayons-textfield", required: true %>
-        <div id="start_time_info"></div>
-      </div>
-
-      <div class="crayons-field">
-        <%= form.label :end_time, class: "crayons-field__label" do %>
-          End Time <span style="color:var(--brand-primary);">(Expected in UTC)</span>
-        <% end %>
-        <%= form.datetime_field :end_time, class: "crayons-textfield", required: true %>
-        <div id="end_time_info"></div>
-      </div>
-    </div>
-
-    <script>
-      (function() {
-        const startInput = document.getElementById('event_start_time');
-        const endInput = document.getElementById('event_end_time');
-        
-        function updateTimeInfo(inputEl, displayElId) {
-          const displayEl = document.getElementById(displayElId);
-          if(!inputEl.value) {
-            displayEl.innerHTML = "";
-            return;
-          }
-          // The database expects UTC. Rails renders the UTC string into the datetime-local value.
-          // By appending "Z", we force JS to parse this input explicitly as a UTC timestamp.
-          const utcTime = new Date(inputEl.value + "Z");
-          
-          if(isNaN(utcTime)) return;
-          
-          const localString = utcTime.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
-          const utcString = utcTime.toUTCString();
-          
-          const diffMs = utcTime - new Date();
-          const diffHours = (diffMs / (1000 * 60 * 60)).toFixed(1);
-          const relativeInfo = diffHours >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
-          
-          displayEl.innerHTML = `
-            <div style="background-color: var(--card-bg); border: 2px solid var(--brand-primary); border-radius: 6px; padding: 12px; margin-top: 8px; font-size: var(--fs-xs);">
-              <div style="margin-bottom: 4px;"><strong>You are inputting:</strong> ${utcString}</div>
-              <div style="margin-bottom: 4px; color: var(--brand-primary);"><strong>Translates to your local time:</strong> ${localString}</div>
-              <div class="opacity-75"><em>${relativeInfo}</em></div>
-            </div>
-          `;
-        }
-
-        if (startInput) {
-          startInput.addEventListener('input', () => updateTimeInfo(startInput, 'start_time_info'));
-          updateTimeInfo(startInput, 'start_time_info');
-        }
-        if (endInput) {
-          endInput.addEventListener('input', () => updateTimeInfo(endInput, 'end_time_info'));
-          updateTimeInfo(endInput, 'end_time_info');
-        }
-      })();
-    </script>
-
-    <div class="crayons-field crayons-field--checkbox mt-4">
-      <%= form.check_box :manual_broadcast_end, class: "crayons-checkbox" %>
-      <%= form.label :manual_broadcast_end, class: "crayons-field__label" do %>
-        Manually End Broadcast (Overrides End Time)
-        <p class="crayons-field__description">If checked, the background worker will NOT tear down the billboards when End Time is reached. You must manually press "End Broadcast" on the details page.</p>
-      <% end %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= form.check_box :published, class: "crayons-checkbox" %>
-      <%= form.label :published, class: "crayons-field__label" do %>
-        Published
-        <p class="crayons-field__description">Determines if the event is publicly accessible.</p>
-      <% end %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= form.check_box :elevated, class: "crayons-checkbox" %>
-      <%= form.label :elevated, class: "crayons-field__label" do %>
-        Elevated
-        <p class="crayons-field__description">Determines if the event is elevated and displayed in the homepage sidebar.</p>
-      <% end %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= form.check_box :allow_articles, class: "crayons-checkbox" %>
-      <%= form.label :allow_articles, class: "crayons-field__label" do %>
-        <%= t("views.admin.events.form.allow_articles") %>
-        <p class="crayons-field__description"><%= t("views.admin.events.form.allow_articles_description") %></p>
-      <% end %>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="crayons-field">
-        <%= form.label :page_id, "Delegated Page", class: "crayons-field__label" do %>
-          Delegated Page
-          <p class="crayons-field__description">Select a Page if this event delegates to a page.</p>
-        <% end %>
-        <%= form.select :page_id, Page.order(:title).pluck(:title, :id), { include_blank: "None (No page delegation)" }, class: "crayons-select" %>
-      </div>
-
-      <div class="crayons-field crayons-field--checkbox mt-8">
-        <%= form.check_box :delegate_to_page, class: "crayons-checkbox" %>
-        <%= form.label :delegate_to_page, class: "crayons-field__label" do %>
-          Delegate to Page
-          <p class="crayons-field__description">If checked, links to this event will redirect or point directly to the delegated page.</p>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="mt-4">
+    <div class="flex items-center gap-2">
       <%= form.submit class: "c-btn c-btn--primary" %>
     </div>
   </div>
 <% end %>
+
+<script>
+  (function() {
+    // 1. Live URL slug preview
+    const nameSlugInput = document.getElementById("event_name_slug_input");
+    const varSlugInput = document.getElementById("event_variation_slug_input");
+    const urlPreview = document.getElementById("admin-event-url-preview-text");
+    function updateUrlPreview() {
+      if (!urlPreview) return;
+      const n = (nameSlugInput && nameSlugInput.value.trim()) || "name-slug";
+      const v = (varSlugInput && varSlugInput.value.trim()) || "variation";
+      urlPreview.textContent = "/events/" + n + "/" + v;
+    }
+    if (nameSlugInput) nameSlugInput.addEventListener("input", updateUrlPreview);
+    if (varSlugInput) varSlugInput.addEventListener("input", updateUrlPreview);
+
+    // 2. UTC -> local time helper
+    const startInput = document.getElementById("event_start_time");
+    const endInput = document.getElementById("event_end_time");
+    function updateTimeInfo(inputEl, displayElId) {
+      const displayEl = document.getElementById(displayElId);
+      if (!displayEl || !inputEl.value) {
+        if (displayEl) displayEl.replaceChildren();
+        return;
+      }
+      const utcTime = new Date(inputEl.value + "Z");
+      if (isNaN(utcTime)) return;
+
+      const localString = utcTime.toLocaleString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+      const utcString = utcTime.toUTCString();
+      const diffHours = ((utcTime - new Date()) / (1000 * 60 * 60)).toFixed(1);
+      const relativeInfo = Number(diffHours) >= 0 ? `in ${diffHours} hours` : `${Math.abs(diffHours)} hours ago`;
+
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "background-color: var(--base-5); border: 1px solid var(--base-20); border-left: 3px solid var(--accent-brand); border-radius: 6px; padding: 8px 10px; margin-top: 6px; font-size: var(--fs-xs);";
+
+      const utcRow = document.createElement("div");
+      const utcStrong = document.createElement("strong");
+      utcStrong.textContent = "UTC: ";
+      utcRow.append(utcStrong, document.createTextNode(utcString));
+
+      const localRow = document.createElement("div");
+      localRow.style.color = "var(--accent-brand)";
+      const localStrong = document.createElement("strong");
+      localStrong.textContent = "Your local time: ";
+      localRow.append(localStrong, document.createTextNode(`${localString} (${relativeInfo})`));
+
+      wrap.append(utcRow, localRow);
+      displayEl.replaceChildren(wrap);
+    }
+    if (startInput) {
+      startInput.addEventListener("input", () => updateTimeInfo(startInput, "start_time_info"));
+      updateTimeInfo(startInput, "start_time_info");
+    }
+    if (endInput) {
+      endInput.addEventListener("input", () => updateTimeInfo(endInput, "end_time_info"));
+      updateTimeInfo(endInput, "end_time_info");
+    }
+
+    // 3. Brand color picker + preset swatches sync
+    const colorPicker = document.getElementById("admin-event-color-picker");
+    const colorHex = document.getElementById("admin-event-color-hex");
+    if (colorPicker && colorHex) {
+      colorPicker.addEventListener("input", function() {
+        colorHex.value = colorPicker.value.toUpperCase();
+      });
+      colorHex.addEventListener("input", function() {
+        if (/^#[0-9a-fA-F]{6}$/.test(colorHex.value.trim())) {
+          colorPicker.value = colorHex.value.trim();
+        }
+      });
+      document.querySelectorAll(".js-event-color-preset").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          colorHex.value = btn.dataset.color;
+          colorPicker.value = btn.dataset.color;
+        });
+      });
+    }
+
+    // 4. Instant raster-image preview for Wide Banner & Social Image (FileReader, no SVG/HTML blobs)
+    const previewBoxes = {
+      banner: document.getElementById("banner-image-preview-box"),
+      social: document.getElementById("social-image-preview-box")
+    };
+    const allowedPreviewTypes = /^image\/(png|jpeg|gif|webp|avif)$/i;
+    const allowedDataUrlPrefix = /^data:image\/(png|jpeg|gif|webp|avif);base64,/i;
+
+    document.querySelectorAll('input[type="file"][data-preview-kind]').forEach(function(input) {
+      input.addEventListener("change", function() {
+        const box = previewBoxes[input.dataset.previewKind];
+        const file = input.files && input.files[0];
+        if (!box || !file || !allowedPreviewTypes.test(file.type)) return;
+
+        const reader = new FileReader();
+        reader.onload = function() {
+          const dataUrl = reader.result;
+          if (typeof dataUrl !== "string" || !allowedDataUrlPrefix.test(dataUrl)) return;
+          const img = document.createElement("img");
+          img.src = dataUrl;
+          img.alt = "Image preview";
+          box.replaceChildren(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // 5. Interactive Parent Events Picker (search + type filter + selected chips)
+    const picker = document.getElementById("admin-event-parent-picker");
+    if (picker) {
+      const searchInput = document.getElementById("parent-event-search");
+      const list = document.getElementById("parent-event-picker-list");
+      const emptyState = document.getElementById("parent-event-empty-state");
+      const chipsWrap = document.getElementById("parent-event-selected-chips");
+      const countEl = document.getElementById("parent-event-selected-count");
+      const noneEl = document.getElementById("parent-event-none-selected");
+      const typePills = document.getElementById("parent-event-type-pills");
+      let activeType = "";
+
+      function applyParentFilters() {
+        const q = (searchInput ? searchInput.value : "").trim().toLowerCase();
+        let visibleCount = 0;
+        list.querySelectorAll(".admin-event-parent-picker__item").forEach(function(item) {
+          const hay = item.dataset.parentSearchText || "";
+          const itemType = item.dataset.parentType || "";
+          const matchesQuery = !q || hay.includes(q);
+          const matchesType = !activeType || itemType === activeType;
+          const show = matchesQuery && matchesType;
+          item.hidden = !show;
+          if (show) visibleCount += 1;
+        });
+        if (emptyState) emptyState.style.display = visibleCount === 0 ? "" : "none";
+      }
+
+      function renderSelectedChips() {
+        chipsWrap.querySelectorAll(".admin-event-parent-picker__selected-chip").forEach(function(c) { c.remove(); });
+        const checked = list.querySelectorAll(".js-parent-event-checkbox:checked");
+        if (countEl) {
+          countEl.textContent = <%= t("views.admin.events.form.selected_parents_label").to_json.html_safe %> + " (" + checked.length + ")";
+        }
+        if (noneEl) noneEl.style.display = checked.length === 0 ? "" : "none";
+
+        checked.forEach(function(cb) {
+          const item = cb.closest(".admin-event-parent-picker__item");
+          if (!item) return;
+          const chip = document.createElement("span");
+          chip.className = "admin-event-parent-picker__selected-chip";
+          const label = document.createElement("span");
+          label.textContent = item.dataset.parentTitle || "";
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "admin-event-parent-picker__selected-remove";
+          removeBtn.setAttribute("aria-label", "Remove " + (item.dataset.parentTitle || ""));
+          removeBtn.textContent = "×";
+          removeBtn.addEventListener("click", function() {
+            cb.checked = false;
+            item.classList.remove("is-selected");
+            renderSelectedChips();
+          });
+          chip.appendChild(label);
+          chip.appendChild(removeBtn);
+          chipsWrap.appendChild(chip);
+        });
+      }
+
+      list.addEventListener("change", function(e) {
+        const cb = e.target.closest(".js-parent-event-checkbox");
+        if (!cb) return;
+        const item = cb.closest(".admin-event-parent-picker__item");
+        if (item) item.classList.toggle("is-selected", cb.checked);
+        renderSelectedChips();
+      });
+
+      if (searchInput) searchInput.addEventListener("input", applyParentFilters);
+
+      if (typePills) {
+        typePills.addEventListener("click", function(e) {
+          const pill = e.target.closest("[data-parent-type-filter]");
+          if (!pill) return;
+          activeType = pill.dataset.parentTypeFilter || "";
+          typePills.querySelectorAll("[data-parent-type-filter]").forEach(function(p) {
+            p.classList.toggle("is-active", p === pill);
+          });
+          applyParentFilters();
+        });
+      }
+
+      renderSelectedChips();
+    }
+  })();
+</script>
