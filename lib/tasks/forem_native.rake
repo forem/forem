@@ -101,6 +101,7 @@ namespace :forem_native do
     benchmark_comment_title
     benchmark_billboard_html
     benchmark_redcarpet_pipeline
+    benchmark_sitemap_xml
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -2910,6 +2911,70 @@ namespace :forem_native do
     ]
 
     cases.each do |label, legacy_fn, native_fn|
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark SitemapsController XML serialization (ForemNative vs legacy Ruby ERB/Addressable)"
+  task benchmark_sitemap_xml: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    base_url = "https://dev.to"
+    base_uri = Addressable::URI.parse(base_url)
+    now = Time.utc(2026, 11, 25, 12, 0, 0)
+    rows = Array.new(750) { |i| ["/author_#{i}/article-slug-#{i}", now - i.hours] }
+
+    legacy_urlset = lambda do
+      out = +"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
+             "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+      rows.each do |path, ts|
+        loc = ERB::Util.html_escape(base_uri.join(path).normalize.to_s)
+        lastmod = ERB::Util.html_escape(ts.strftime("%F"))
+        out << "    <url>\n        <loc>#{loc}</loc>\n        <lastmod>#{lastmod}</lastmod>\n    </url>\n"
+      end
+      out << "</urlset>\n"
+      out
+    end
+    native_urlset = -> { ForemNative.serialize_sitemap_urlset_xml(base_url, rows) }
+
+    legacy_index = lambda do
+      out = +"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
+             "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+      (0..250).each do |n|
+        loc = ERB::Util.html_escape(base_uri.join("sitemap-posts-#{n}.xml").normalize.to_s)
+        out << "      <sitemap>\n          <loc>#{loc}</loc>\n      </sitemap>\n"
+      end
+      %w[sitemap-users.xml sitemap-tags.xml].each do |name|
+        loc = ERB::Util.html_escape(base_uri.join(name).normalize.to_s)
+        out << "  <sitemap>\n      <loc>#{loc}</loc>\n  </sitemap>\n"
+      end
+      out << "</sitemapindex>\n"
+      out
+    end
+    native_index = -> { ForemNative.serialize_sitemap_index_xml(base_url, 187_500, 750) }
+
+    [
+      ["sitemap_urlset_xml (750 rows)", legacy_urlset, native_urlset],
+      ["sitemap_index_xml (251 pages)", legacy_index, native_index],
+    ].each do |label, legacy_fn, native_fn|
       raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
 
       ruby_mem = MemoryProfiler.report { legacy_fn.call }

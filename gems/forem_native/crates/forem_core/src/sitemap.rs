@@ -140,6 +140,17 @@ fn write_sitemap_loc(
     Some(())
 }
 
+/// Normalizes a root-origin `base_url` (e.g. `"https://dev.to"` or `"https://DEV.TO:443/"`)
+/// into `"https://dev.to"` (without trailing `/`), returning `None` if `base_url` contains a
+/// subpath, query string, or fragment so relative path joins cannot diverge from `Addressable::URI`.
+fn normalize_root_base_origin(base_url: &str) -> Option<String> {
+    let normalized = join_url(base_url, "")?;
+    if normalized != join_url(base_url, "/")? {
+        return None;
+    }
+    normalized.strip_suffix('/').map(str::to_owned)
+}
+
 /// Streams `app/views/sitemaps/index.xml.erb` into a single pre-allocated UTF-8 `String`.
 ///
 /// Returns `None` if `articles_count < 0`, `page_limit <= 0`, the resulting page count
@@ -155,8 +166,8 @@ pub fn serialize_sitemap_index_xml(
         return None;
     }
 
-    let normalized_base = join_url(base_url, "/")?;
-    let base_origin = normalized_base.strip_suffix('/')?;
+    let base_origin_owned = normalize_root_base_origin(base_url)?;
+    let base_origin = base_origin_owned.as_str();
 
     let multi_page = articles_count > page_limit;
     let last_page = if multi_page {
@@ -223,8 +234,8 @@ pub fn serialize_sitemap_urlset_xml_indexed(
     path_arena: &str,
     entries: &[(usize, usize, i64, i32)],
 ) -> Option<String> {
-    let normalized_base = join_url(base_url, "/")?;
-    let base_origin = normalized_base.strip_suffix('/')?;
+    let base_origin_owned = normalize_root_base_origin(base_url)?;
+    let base_origin = base_origin_owned.as_str();
 
     let per_row_overhead = 86 + base_origin.len() + path_prefix.len();
     let capacity = XML_DECL.len()
@@ -411,6 +422,20 @@ mod tests {
         let dot_rows = [("/a/../b", 1_700_000_000, 0)];
         assert_eq!(
             serialize_sitemap_urlset_xml("https://dev.to", "", &dot_rows),
+            None
+        );
+
+        let ok_rows = [("ben", 1_700_000_000, 0)];
+        assert_eq!(
+            serialize_sitemap_urlset_xml("https://dev.to/sub/", "", &ok_rows),
+            None
+        );
+        assert_eq!(
+            serialize_sitemap_index_xml("https://dev.to/sub/", 10, 750, true),
+            None
+        );
+        assert_eq!(
+            serialize_sitemap_index_xml("https://dev.to?x=1", 10, 750, true),
             None
         );
     }

@@ -20,6 +20,7 @@ on:
       - "app/controllers/notifications/counts_controller.rb"
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/search_controller.rb"
+      - "app/controllers/sitemaps_controller.rb"
       - "app/controllers/concerns/api/articles_controller.rb"
       - "app/controllers/concerns/api/comments_controller.rb"
       - "app/controllers/concerns/api/followers_controller.rb"
@@ -41,6 +42,7 @@ on:
       - "app/views/articles/feed.rss.builder"
       - "app/views/comments/delete_confirm.html.erb"
       - "app/views/comments/index.html.erb"
+      - "app/views/sitemaps/**"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
@@ -107,6 +109,7 @@ on:
       - "spec/requests/comments_spec.rb"
       - "spec/requests/reactions_spec.rb"
       - "spec/requests/search_spec.rb"
+      - "spec/requests/sitemaps_spec.rb"
       - "spec/serializers/homepage/article_serializer_spec.rb"
       - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
@@ -287,6 +290,9 @@ jobs:
             raise "Unexpected redcarpet_render_image!" unless ForemNative.redcarpet_render_image("https://example.com/a.png", "https://cdn.example.com/a.png", nil, "hi") == "<img src=\"https://cdn.example.com/a.png\" alt=\"hi\"/>"
             raise "Unexpected redcarpet_render_link!" unless ForemNative.redcarpet_render_link("https://example.com", "hi", "", "https://", "dev.to") == "<a href=\"https://example.com\">hi</a>"
             raise "Unexpected non-ASCII nested link!" unless ForemNative.redcarpet_render_link("https://example.com", "<a é=\"x\">nested</a>", "", "https://", "dev.to") == :nested_link
+            raise "Unexpected format_iso_date!" unless ForemNative.format_iso_date(0, -18_000) == "1969-12-31"
+            raise "Unexpected serialize_sitemap_index_xml!" unless ForemNative.serialize_sitemap_index_xml("https://dev.to", 5, 750).include?("<loc>https://dev.to/sitemap-posts.xml</loc>")
+            raise "Unexpected serialize_sitemap_urlset_xml!" unless ForemNative.serialize_sitemap_urlset_xml("https://dev.to", [["ruby", Time.utc(2024, 6, 15)]], path_prefix: "/t/").include?("<loc>https://dev.to/t/ruby</loc>")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

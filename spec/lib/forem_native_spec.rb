@@ -11836,20 +11836,21 @@ RSpec.describe ForemNative do
   describe ".serialize_sitemap_index_xml" do
     let(:legacy_sitemap_index_xml) do
       lambda do |base_url, articles_count, page_limit, include_users_and_tags|
+        base = Addressable::URI.parse(base_url)
         out = +"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
                "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
         if articles_count > page_limit
           (0..(articles_count / page_limit)).each do |n|
-            loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-posts-#{n}.xml"))
+            loc = ERB::Util.html_escape(base.join("sitemap-posts-#{n}.xml").normalize.to_s)
             out << "      <sitemap>\n          <loc>#{loc}</loc>\n      </sitemap>\n"
           end
         else
-          loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-posts.xml"))
+          loc = ERB::Util.html_escape(base.join("sitemap-posts.xml").normalize.to_s)
           out << "      <sitemap>\n        <loc>#{loc}</loc>\n    </sitemap>\n"
         end
         if include_users_and_tags
-          users_loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-users.xml"))
-          tags_loc = ERB::Util.html_escape(described_class.join_url(base_url, "sitemap-tags.xml"))
+          users_loc = ERB::Util.html_escape(base.join("sitemap-users.xml").normalize.to_s)
+          tags_loc = ERB::Util.html_escape(base.join("sitemap-tags.xml").normalize.to_s)
           out << "  <sitemap>\n      <loc>#{users_loc}</loc>\n  </sitemap>\n"
           out << "  <sitemap>\n      <loc>#{tags_loc}</loc>\n  </sitemap>\n"
         end
@@ -11862,6 +11863,8 @@ RSpec.describe ForemNative do
       expect(described_class.serialize_sitemap_index_xml("https://dev.to", -1, 750)).to be_nil
       expect(described_class.serialize_sitemap_index_xml("https://dev.to", 10, 0)).to be_nil
       expect(described_class.serialize_sitemap_index_xml("ftp://dev.to", 10, 750)).to be_nil
+      expect(described_class.serialize_sitemap_index_xml("https://dev.to/sub/", 10, 750)).to be_nil
+      expect(described_class.serialize_sitemap_index_xml("https://dev.to?x=1", 10, 750)).to be_nil
       expect(described_class.serialize_sitemap_index_xml(nil, 10, 750)).to be_nil
     end
 
@@ -11895,10 +11898,11 @@ RSpec.describe ForemNative do
   describe ".serialize_sitemap_urlset_xml" do
     let(:legacy_sitemap_urlset_xml) do
       lambda do |base_url, rows, path_prefix:|
+        base = Addressable::URI.parse(base_url)
         out = +"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" \
                "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
         rows.each do |raw_path, timestamp|
-          loc = ERB::Util.html_escape(described_class.join_url(base_url, "#{path_prefix}#{raw_path}"))
+          loc = ERB::Util.html_escape(base.join("#{path_prefix}#{raw_path}").normalize.to_s)
           lastmod = ERB::Util.html_escape(timestamp.strftime("%F"))
           out << "    <url>\n        <loc>#{loc}</loc>\n        <lastmod>#{lastmod}</lastmod>\n    </url>\n"
         end
@@ -11911,6 +11915,7 @@ RSpec.describe ForemNative do
       now = Time.utc(2024, 6, 15, 12, 0, 0)
       expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["café", now]])).to be_nil
       expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a/../b", now]])).to be_nil
+      expect(described_class.serialize_sitemap_urlset_xml("https://dev.to/sub/", [["ben", now]])).to be_nil
       expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a", nil]])).to be_nil
       expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [["/a", Date.new(2024, 6, 15)]])).to be_nil
       expect(described_class.serialize_sitemap_urlset_xml("https://dev.to", [[nil, now]])).to be_nil
