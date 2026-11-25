@@ -60,8 +60,8 @@ RSpec.describe Comments::Count do
   end
 
   it "includes soft-deleted parent comments with active replies" do
-    comment.update!(deleted: true)
     create(:comment, commentable: article, parent: comment, score: 10)
+    comment.update!(deleted: true)
     article.reload
     count = described_class.new(article).call
     expect(count).to eq(3) # comment, active reply, and comment2 are displayed
