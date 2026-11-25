@@ -8403,25 +8403,30 @@ fn serialize_sitemap_urlset_xml(
     Ok(xml.map(|s| ruby.str_new(&s)))
 }
 
-fn collect_rstrings(val: Value) -> Option<Vec<RString>> {
-    let arr = RArray::from_value(val)?;
-    let vals: Vec<Value> = unsafe { arr.as_slice() }.to_vec();
-    let mut out = Vec::with_capacity(vals.len());
-    for v in vals {
+/// Borrows UTF-8 `&str` slices directly from a Ruby `Array` of UTF-8-compatible `String`s.
+///
+/// # Safety
+/// - `val` (and every `RString` element inside it) must remain rooted on the Ruby stack for the
+///   entire lifetime `'a` of the returned slices (e.g. a direct FFI argument or an element of a
+///   rooted container argument).
+/// - The caller must hold the Ruby GVL and must not invoke any Ruby VM allocation, GC, or method
+///   call while any returned `&str` slice is alive, so GC compaction cannot move or mutate the
+///   backing buffers.
+unsafe fn borrow_rarray_utf8_slices<'a>(val: &'a Value) -> Option<Vec<&'a str>> {
+    let arr = RArray::from_value(*val)?;
+    let slice = arr.as_slice();
+    let mut out = Vec::with_capacity(slice.len());
+    for &v in slice {
         let s = RString::from_value(v)?;
         if !s.is_utf8_compatible_encoding() {
             return None;
         }
-        out.push(s);
-    }
-    Some(out)
-}
-
-unsafe fn borrow_rstring_slices(strs: &[RString]) -> Option<Vec<&str>> {
-    let mut out = Vec::with_capacity(strs.len());
-    for s in strs {
-        let slice = std::str::from_utf8(s.as_slice()).ok()?;
-        out.push(slice);
+        let raw = s.as_slice();
+        // SAFETY: `s` is rooted inside `*val` for `'a`; caller holds the GVL and makes no Ruby
+        // VM calls while the returned slices are alive.
+        let bytes: &'a [u8] = std::slice::from_raw_parts(raw.as_ptr(), raw.len());
+        let st = std::str::from_utf8(bytes).ok()?;
+        out.push(st);
     }
     Some(out)
 }
@@ -8471,16 +8476,15 @@ fn analytics_aggregate_totals(
     start_val: Value,
     end_val: Value,
 ) -> Option<RArray> {
-    let pv_rstrs = collect_rstrings(pv_val)?;
-    let rx_rstrs = collect_rstrings(rx_val)?;
-    let cm_rstrs = collect_rstrings(cm_val)?;
     let start_iso = extract_opt_utf8_string(start_val)?;
     let end_iso = extract_opt_utf8_string(end_val)?;
 
     let res = {
-        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
-        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
-        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        // SAFETY: `pv_val`, `rx_val`, and `cm_val` are rooted FFI arguments; we hold the GVL
+        // and perform no Ruby VM calls or allocations within this block.
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_val) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_val) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_val) }?;
         forem_core::analytics::analytics_aggregate_totals(
             &pv_slices,
             &rx_slices,
@@ -8513,7 +8517,6 @@ fn analytics_aggregate_referrers(
     end_val: Value,
     top_val: Value,
 ) -> Option<RArray> {
-    let ref_rstrs = collect_rstrings(ref_val)?;
     let start_iso = extract_opt_utf8_string(start_val)?;
     let end_iso = extract_opt_utf8_string(end_val)?;
     let top_i64 = Integer::from_value(top_val)?.to_i64().ok()?;
@@ -8523,7 +8526,9 @@ fn analytics_aggregate_referrers(
     let top = usize::try_from(top_i64).ok()?;
 
     let ranked = {
-        let ref_slices = unsafe { borrow_rstring_slices(&ref_rstrs) }?;
+        // SAFETY: `ref_val` is a rooted FFI argument; we hold the GVL and perform no Ruby VM
+        // calls or allocations within this block.
+        let ref_slices = unsafe { borrow_rarray_utf8_slices(&ref_val) }?;
         forem_core::analytics::analytics_aggregate_referrers(
             &ref_slices,
             start_iso.as_deref(),
@@ -8555,9 +8560,6 @@ fn analytics_aggregate_grouped_by_day(
     weekly_start_val: Value,
     cutoff_val: Value,
 ) -> Option<RHash> {
-    let pv_rstrs = collect_rstrings(pv_val)?;
-    let rx_rstrs = collect_rstrings(rx_val)?;
-    let cm_rstrs = collect_rstrings(cm_val)?;
     let follows_owned = collect_follows_map(ruby, follows_val)?;
     let start_iso = extract_opt_utf8_string(start_val)??;
     let end_iso = extract_opt_utf8_string(end_val)??;
@@ -8565,9 +8567,11 @@ fn analytics_aggregate_grouped_by_day(
     let cutoff_iso = extract_opt_utf8_string(cutoff_val)?;
 
     let buckets = {
-        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
-        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
-        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        // SAFETY: `pv_val`, `rx_val`, and `cm_val` are rooted FFI arguments; we hold the GVL
+        // and perform no Ruby VM calls or allocations within this block.
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_val) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_val) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_val) }?;
         let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
             .iter()
             .map(|(k, &v)| (k.as_str(), v))
@@ -8659,9 +8663,6 @@ fn analytics_grouped_by_day_json(
     weekly_start_val: Value,
     cutoff_val: Value,
 ) -> Option<RString> {
-    let pv_rstrs = collect_rstrings(pv_val)?;
-    let rx_rstrs = collect_rstrings(rx_val)?;
-    let cm_rstrs = collect_rstrings(cm_val)?;
     let follows_owned = collect_follows_map(ruby, follows_val)?;
     let start_iso = extract_opt_utf8_string(start_val)??;
     let end_iso = extract_opt_utf8_string(end_val)??;
@@ -8669,9 +8670,11 @@ fn analytics_grouped_by_day_json(
     let cutoff_iso = extract_opt_utf8_string(cutoff_val)?;
 
     let json = {
-        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
-        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
-        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
+        // SAFETY: `pv_val`, `rx_val`, and `cm_val` are rooted FFI arguments; we hold the GVL
+        // and perform no Ruby VM calls or allocations within this block.
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_val) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_val) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_val) }?;
         let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
             .iter()
             .map(|(k, &v)| (k.as_str(), v))
@@ -8705,28 +8708,22 @@ fn analytics_dashboard_json(
     start_date_floor_iso_val: Value,
 ) -> Option<RString> {
     let cols_arr = RArray::from_value(activity_columns_val)?;
-    let cols: Vec<Value> = unsafe { cols_arr.as_slice() }.to_vec();
-    if cols.len() != 4 {
+    if cols_arr.len() != 4 {
         return None;
     }
-    let pv_rstrs = collect_rstrings(cols[0])?;
-    let rx_rstrs = collect_rstrings(cols[1])?;
-    let cm_rstrs = collect_rstrings(cols[2])?;
-    let ref_rstrs = collect_rstrings(cols[3])?;
 
     let follows_owned = collect_follows_map(ruby, follows_val)?;
     let follows_total = Integer::from_value(follows_total_val)?.to_i64().ok()?;
 
     let win_arr = RArray::from_value(window_val)?;
-    let win: Vec<Value> = unsafe { win_arr.as_slice() }.to_vec();
-    if win.len() != 5 {
+    if win_arr.len() != 5 {
         return None;
     }
-    let start_iso = extract_opt_utf8_string(win[0])??;
-    let end_iso = extract_opt_utf8_string(win[1])??;
-    let weekly_bucketing = win[2].to_bool();
-    let weekly_start_iso = extract_opt_utf8_string(win[3])?;
-    let cutoff_iso = extract_opt_utf8_string(win[4])?;
+    let start_iso = extract_opt_utf8_string(win_arr.entry(0).ok()?)??;
+    let end_iso = extract_opt_utf8_string(win_arr.entry(1).ok()?)??;
+    let weekly_bucketing = win_arr.entry::<Value>(2).ok()?.to_bool();
+    let weekly_start_iso = extract_opt_utf8_string(win_arr.entry(3).ok()?)?;
+    let cutoff_iso = extract_opt_utf8_string(win_arr.entry(4).ok()?)?;
 
     let top_i64 = Integer::from_value(top_referrers_val)?.to_i64().ok()?;
     if top_i64 < 0 {
@@ -8739,10 +8736,16 @@ fn analytics_dashboard_json(
     let start_date_floor_iso = extract_opt_utf8_string(start_date_floor_iso_val)??;
 
     let json = {
-        let pv_slices = unsafe { borrow_rstring_slices(&pv_rstrs) }?;
-        let rx_slices = unsafe { borrow_rstring_slices(&rx_rstrs) }?;
-        let cm_slices = unsafe { borrow_rstring_slices(&cm_rstrs) }?;
-        let ref_slices = unsafe { borrow_rstring_slices(&ref_rstrs) }?;
+        // SAFETY: `activity_columns_val` and its nested column arrays/strings are rooted FFI
+        // arguments; we hold the GVL and perform no Ruby VM calls or allocations within this block.
+        let pv_col: Value = cols_arr.entry(0).ok()?;
+        let rx_col: Value = cols_arr.entry(1).ok()?;
+        let cm_col: Value = cols_arr.entry(2).ok()?;
+        let ref_col: Value = cols_arr.entry(3).ok()?;
+        let pv_slices = unsafe { borrow_rarray_utf8_slices(&pv_col) }?;
+        let rx_slices = unsafe { borrow_rarray_utf8_slices(&rx_col) }?;
+        let cm_slices = unsafe { borrow_rarray_utf8_slices(&cm_col) }?;
+        let ref_slices = unsafe { borrow_rarray_utf8_slices(&ref_col) }?;
         let follows_ref: std::collections::HashMap<&str, i64> = follows_owned
             .iter()
             .map(|(k, &v)| (k.as_str(), v))

@@ -21,6 +21,7 @@ on:
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/search_controller.rb"
       - "app/controllers/sitemaps_controller.rb"
+      - "app/controllers/concerns/api/analytics_controller.rb"
       - "app/controllers/concerns/api/articles_controller.rb"
       - "app/controllers/concerns/api/comments_controller.rb"
       - "app/controllers/concerns/api/followers_controller.rb"
@@ -57,6 +58,7 @@ on:
       - "app/serializers/homepage/article_serializer.rb"
       - "app/services/agent_session_parsers/redaction_metadata.rb"
       - "app/services/agent_session_renderers/markdown_renderer.rb"
+      - "app/services/analytics_service.rb"
       - "app/services/articles/detect_code_block_languages.rb"
       - "app/services/articles/feeds/custom.rb"
       - "app/services/billboards/shadow_dom_wrapper.rb"
@@ -82,6 +84,7 @@ on:
       - "spec/models/geolocation_spec.rb"
       - "spec/models/feed_config_spec.rb"
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
+      - "spec/requests/api/v0/analytics_spec.rb"
       - "spec/requests/api/v0/articles_spec.rb"
       - "spec/requests/api/v0/comments_spec.rb"
       - "spec/requests/api/v0/followers_spec.rb"
@@ -92,6 +95,7 @@ on:
       - "spec/requests/api/v0/tags_spec.rb"
       - "spec/requests/api/v0/users_spec.rb"
       - "spec/requests/api/v0/videos_spec.rb"
+      - "spec/requests/api/v1/analytics_spec.rb"
       - "spec/requests/api/v1/articles_spec.rb"
       - "spec/requests/api/v1/comments_spec.rb"
       - "spec/requests/api/v1/followers_spec.rb"
@@ -113,6 +117,7 @@ on:
       - "spec/serializers/homepage/article_serializer_spec.rb"
       - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
+      - "spec/services/analytics_service_spec.rb"
       - "spec/services/articles/detect_code_block_languages_spec.rb"
       - "spec/services/articles/feeds/custom_spec.rb"
       - "spec/services/billboards/shadow_dom_wrapper_spec.rb"
@@ -293,6 +298,18 @@ jobs:
             raise "Unexpected format_iso_date!" unless ForemNative.format_iso_date(0, -18_000) == "1969-12-31"
             raise "Unexpected serialize_sitemap_index_xml!" unless ForemNative.serialize_sitemap_index_xml("https://dev.to", 5, 750).include?("<loc>https://dev.to/sitemap-posts.xml</loc>")
             raise "Unexpected serialize_sitemap_urlset_xml!" unless ForemNative.serialize_sitemap_urlset_xml("https://dev.to", [["ruby", Time.utc(2024, 6, 15)]], path_prefix: "/t/").include?("<loc>https://dev.to/t/ruby</loc>")
+            an_pv = ["{\"2024-01-01\": {\"total\": 4, \"sum_read_seconds\": 60, \"logged_in_count\": 2}}"]
+            an_rx = ["{\"2024-01-01\": {\"total\": 2, \"like\": 2, \"reactor_ids\": [1, 2]}}"]
+            an_cm = ["{\"2024-01-01\": 3}"]
+            an_rf = ["{\"2024-01-01\": {\"a<b&c>.test\": 5, \"café.dev\": 2}}"]
+            raise "Unexpected analytics_aggregate_totals!" unless ForemNative.analytics_aggregate_totals(an_pv, an_rx, an_cm) == [3, 2, 2, 0, 0, 0, 0, 0, 2, 4, 30, 120]
+            raise "Unexpected analytics_aggregate_referrers!" unless ForemNative.analytics_aggregate_referrers(an_rf, top: 2) == [["a<b&c>.test", 5], ["café.dev", 2]]
+            an_grouped = ForemNative.analytics_aggregate_grouped_by_day(an_pv, an_rx, an_cm, { "2024-01-01" => 1 }, start_iso: "2024-01-01", end_iso: "2024-01-01")
+            raise "Unexpected analytics_aggregate_grouped_by_day!" unless an_grouped.is_a?(Hash) && an_grouped["2024-01-01"][:comments][:total] == 3
+            an_grouped_json = ForemNative.analytics_grouped_by_day_json(an_pv, an_rx, an_cm, { "2024-01-01" => 1 }, start_iso: "2024-01-01", end_iso: "2024-01-01")
+            raise "Unexpected analytics_grouped_by_day_json!" unless an_grouped_json.is_a?(String) && an_grouped_json.include?("\"2024-01-01\":{\"comments\":{\"total\":3}")
+            an_dash = ForemNative.analytics_dashboard_json([an_pv, an_rx, an_cm, an_rf], follows_by_iso: { "2024-01-01" => 1 }, follows_total: 1, window: ["2024-01-01", "2024-01-01", false, nil, nil], top_contributors_json: "[]", follower_engagement_json: "{\"total_followers\":1,\"engaged_followers\":0,\"ratio\":0.0}", start_date_floor_iso: "2024-01-01")
+            raise "Unexpected analytics_dashboard_json!" unless an_dash.is_a?(String) && an_dash.include?("a\\u003cb\\u0026c\\u003e.test") && an_dash.include?("café.dev")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

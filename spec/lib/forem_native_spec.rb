@@ -12155,6 +12155,23 @@ RSpec.describe ForemNative do
                              top_contributors_json: "[]", follower_engagement_json: "{}",
                              start_date_floor_iso: "2024-01-01"
              )).to be_nil
+      expect(described_class.analytics_dashboard_json(
+               [[], [], [], []], follows_by_iso: {}, follows_total: 0,
+                                 window: ["2024-01-01", "2024-01-01", false, nil, nil],
+                                 top_contributors_json: "", follower_engagement_json: "{}",
+                                 start_date_floor_iso: "2024-01-01"
+             )).to be_nil
+      # i64::MAX / 1 rounds in f64 to 2^63 (Bignum in Ruby) -> defer cleanly instead of saturating.
+      expect(described_class.analytics_aggregate_totals(
+               ['{"2024-01-01":{"total":1,"sum_read_seconds":9223372036854775807,"logged_in_count":1}}'],
+               [], []
+             )).to be_nil
+      # Postgres jsonb::text whitespace formatting (spaces after `:` and `,`).
+      expect(described_class.analytics_aggregate_totals(
+               ['{"2024-01-01": {"total": 4, "sum_read_seconds": 60, "logged_in_count": 2}}'],
+               ['{"2024-01-01": {"total": 2, "like": 2, "reactor_ids": [1, 2]}}'],
+               ['{"2024-01-01": 3}'],
+             )).to eq([3, 2, 2, 0, 0, 0, 0, 0, 2, 4, 30, 120])
     end
 
     it "matches the legacy Ruby analytics aggregation and JSON encoding across 1,000 randomized payloads" do

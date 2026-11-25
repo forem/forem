@@ -80,17 +80,22 @@ class AnalyticsService
   # raw article_activities JSONB columns, computing historical buckets, all-time
   # totals, and top referrers simultaneously.
   def dashboard_json(top_referrers: 20)
+    contributors = nil
+    engagement = nil
+
     if start_date && end_date && (columns = scoped_activity_json_columns)
       follows_stats = calculate_follows_stats_per_day(follow_data)
       follows_total = follow_data.size
+      contributors = top_contributors
+      engagement = follower_engagement
       native_json = ForemNative.analytics_dashboard_json(
         columns,
         follows_by_iso: follows_stats,
         follows_total: follows_total,
         window: bucket_window_payload,
         top_referrers: top_referrers,
-        top_contributors_json: encode_json_payload(top_contributors),
-        follower_engagement_json: encode_json_payload(follower_engagement),
+        top_contributors_json: encode_json_payload(contributors),
+        follower_engagement_json: encode_json_payload(engagement),
         start_date_floor_iso: start_date_floor.iso8601,
       )
       return native_json if native_json
@@ -100,8 +105,8 @@ class AnalyticsService
       historical: grouped_by_day,
       totals: totals(ignore_date_range: true),
       referrers: referrers(top: top_referrers),
-      top_contributors: top_contributors,
-      follower_engagement: follower_engagement,
+      top_contributors: contributors || top_contributors,
+      follower_engagement: engagement || follower_engagement,
       start_date_floor: start_date_floor.iso8601
     }
     encode_json_payload(data)

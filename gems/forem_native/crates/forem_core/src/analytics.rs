@@ -97,7 +97,9 @@ impl PageViewAcc {
                 return None;
             }
             let rounded = ratio.round();
-            if rounded < (i64::MIN as f64) || rounded > (i64::MAX as f64) {
+            // `i64::MAX as f64` rounds up to `2^63` (`9223372036854775808.0`), so reject
+            // `>= i64::MAX as f64` to avoid saturating `2^63` down to `i64::MAX` (Ruby returns Bignum).
+            if rounded < (i64::MIN as f64) || rounded >= (i64::MAX as f64) {
                 return None;
             }
             rounded as i64
@@ -586,6 +588,9 @@ impl<'a> JsonCursor<'a> {
                 if self.pos == start {
                     return None;
                 }
+                if self.pos - start > 1 && self.bytes[start] == b'0' {
+                    return None;
+                }
                 if self.peek() == Some(b'.') {
                     self.pos += 1;
                     let fstart = self.pos;
@@ -692,7 +697,10 @@ fn parse_reaction_day(
             "exploding_head" => counts.exploding_head = cur.read_i64_or_null()?,
             "raised_hands" => counts.raised_hands = cur.read_i64_or_null()?,
             "fire" => counts.fire = cur.read_i64_or_null()?,
-            "reactor_ids" => cur.read_i64_array_into_vec(reactor_buf)?,
+            "reactor_ids" => {
+                reactor_buf.clear();
+                cur.read_i64_array_into_vec(reactor_buf)?;
+            }
             _ => cur.skip_value(0)?,
         }
         cur.skip_ws();
@@ -1173,6 +1181,10 @@ pub fn analytics_dashboard_json(
     follower_engagement_json: &str,
     start_date_floor_iso: &str,
 ) -> Option<String> {
+    if top_contributors_json.is_empty() || follower_engagement_json.is_empty() {
+        return None;
+    }
+
     let mut plan = BucketPlan::build(
         start_iso,
         end_iso,
@@ -1382,6 +1394,34 @@ mod tests {
             &[],
             None,
             None
+        )
+        .is_none());
+        // i64::MAX / 1 rounds in f64 to 2^63 (Ruby Bignum), so defer to Ruby instead of saturating.
+        assert!(analytics_aggregate_totals(
+            &[r#"{"2024-01-01":{"total":1,"sum_read_seconds":9223372036854775807,"logged_in_count":1}}"#],
+            &[],
+            &[],
+            None,
+            None
+        )
+        .is_none());
+        // Empty pre-encoded JSON fragment defers cleanly.
+        assert!(analytics_dashboard_json(
+            &[],
+            &[],
+            &[],
+            &[],
+            &HashMap::new(),
+            0,
+            "2024-01-01",
+            "2024-01-01",
+            false,
+            None,
+            None,
+            20,
+            "",
+            "{}",
+            "2024-01-01",
         )
         .is_none());
     }

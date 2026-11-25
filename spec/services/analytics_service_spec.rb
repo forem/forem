@@ -625,12 +625,21 @@ RSpec.describe AnalyticsService, type: :service do
           }
         },
         daily_comments: { "2019-04-01" => 1 },
-        daily_referrers: { "2019-04-01" => { "dev.to" => 7, "google.com" => 3 } },
+        daily_referrers: {
+          "2019-04-01" => {
+            "dev.to" => 7,
+            "a<b&c>.test" => 5,
+            'quote"slash\\domain.io' => 4,
+            "café.dev" => 3,
+            "日本語.jp" => 2
+          }
+        },
       )
 
       service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-02")
       expected_grouped = service.grouped_by_day
-      expect(JSON.parse(service.grouped_by_day_json)).to eq(JSON.parse(expected_grouped.to_json))
+      native_grouped_json = service.grouped_by_day_json
+      expect(native_grouped_json).to eq(expected_grouped.to_json)
 
       expected_dashboard = {
         historical: expected_grouped,
@@ -640,7 +649,9 @@ RSpec.describe AnalyticsService, type: :service do
         follower_engagement: service.follower_engagement,
         start_date_floor: service.start_date_floor.iso8601
       }
-      expect(JSON.parse(service.dashboard_json)).to eq(JSON.parse(expected_dashboard.to_json))
+      native_dashboard_json = service.dashboard_json
+      expect(native_dashboard_json).to eq(expected_dashboard.to_json)
+      expect(native_dashboard_json).to include('a\u003cb\u0026c\u003e.test', "café.dev", "日本語.jp")
 
       allow(ForemNative).to receive_messages(
         analytics_aggregate_totals: nil,
@@ -653,7 +664,7 @@ RSpec.describe AnalyticsService, type: :service do
       expect(fallback_service.grouped_by_day).to eq(expected_grouped)
       expect(fallback_service.totals(ignore_date_range: true)).to eq(expected_dashboard[:totals])
       expect(fallback_service.referrers).to eq(expected_dashboard[:referrers])
-      expect(JSON.parse(fallback_service.dashboard_json)).to eq(JSON.parse(expected_dashboard.to_json))
+      expect(fallback_service.dashboard_json).to eq(native_dashboard_json)
     end
   end
 end
