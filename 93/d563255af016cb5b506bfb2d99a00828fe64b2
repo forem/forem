@@ -1,0 +1,66 @@
+app/assets/stylesheets/components/admin/events.scss
+  h_f968154a99632d 1-14,69,71,75,80-83,86-89,123,149-158,177,224-472,476-566,569,576,578-581,583-588,593-613,615-678
+app/controllers/admin/events_controller.rb
+  h_f968154a99632d 3-4,147,203-204
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 187-188
+app/helpers/events_helper.rb
+  h_f968154a99632d 98-109
+app/models/event.rb
+  h_f968154a99632d 103,148-159
+app/services/events/api_serializer.rb
+  h_f968154a99632d 46-47,185
+app/uploaders/event_banner_image_uploader.rb
+  h_f968154a99632d 1-26
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 1-22,24,34-38,41-46,48-51,54-61,63-68,70,72-76,80-82,84,87-94,96-106,108,110-114,117-121,123-133,136-154,156-176,179-186,188-198,200-201,203-236,238-278,282-284,286-303,306-325,327,330,334-361,366-371,375-384,387,389-391,393,396-407,409,411-415,418-426,428-437,439-446,448-456,459-490,492-514,516,518-523,528-695
+app/views/admin/events/_tree_node.html.erb
+  h_f968154a99632d 35-36,95-97,106-129
+app/views/admin/events/edit.html.erb
+  h_f968154a99632d 1-12,14
+app/views/admin/events/index.html.erb
+  h_f968154a99632d 1-8,11-22,24-42,45-57,60-78,80-88,91-94,96-105,152-154
+app/views/admin/events/new.html.erb
+  h_f968154a99632d 1-10
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 1-10,12-15,17-22,24,26,28-29,31-43,46-91,93-135,138-156,158-171,174-395,397-401,403-404,407-414,416,420-437,440-478,480-484,487-489,493,496-502,504-506,509,513-521,528-529,531-532,534-536,538-544,546-548,550-560,563,565-566,569-618
+app/views/events/_event_card.html.erb
+  h_f968154a99632d 7
+app/views/events/_stream_player.html.erb
+  h_f968154a99632d 9
+app/views/events/_sub_events_hero.html.erb
+  h_f968154a99632d 11
+app/views/events/challenge.html.erb
+  h_f968154a99632d 26
+config/locales/views/admin/en.yml
+  h_f968154a99632d 806-807,809-814,823-833,838-853,855-865,903
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 797-798,800-805,814-824,829-844,846-856,894
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 705-706,708-713,722-732,737-752,754-764,802
+db/migrate/20261125200000_add_banner_image_to_events.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,837
+spec/helpers/events_helper_spec.rb
+  h_f968154a99632d 242-274
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 11,15-16,38,42-43,175-186,254-267
+spec/requests/events_hierarchy_ui_spec.rb
+  h_f968154a99632d 125-144
+spec/swagger_helper.rb
+  h_f968154a99632d 955,1005,1063-1064
+swagger/v1/api_v1.json
+  h_f968154a99632d 10076-10079,10242-10245,10419-10428
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "93d563255af016cb5b506bfb2d99a00828fe64b2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
