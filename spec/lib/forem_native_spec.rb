@@ -12337,4 +12337,414 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".splice_stories_feed_item_json and .serialize_stories_feed_json" do
+    let(:reaction_categories) do
+      [
+        { slug: "like", name: "Like", icon: "heart", position: 1 },
+        { slug: "unicorn", name: "Unicorn", icon: "unicorn", position: 2 },
+        { slug: "exploding_head", name: "Exploding Head", icon: "head", position: 3 },
+        { slug: "raised_hands", name: "Raised Hands", icon: "hands", position: 4 },
+        { slug: "fire", name: "Fire", icon: "fire", position: 5 },
+      ]
+    end
+
+    let(:ai_labels) do
+      ["Assisted by AI", "Autonomous AI", "Human-written", "Not disclosed"]
+    end
+
+    let(:legacy_serialize_item_fragment) do
+      lambda do |item, comments, r_counts, categories, config|
+        current_year, optimizer_mode, cf_domain, cf_dir, escape_html,
+          lbl_some, lbl_auto, lbl_no, lbl_none = config
+
+        edited_str = if item[:edited_at_sec]
+                       Time.at(item[:edited_at_sec], item[:edited_at_millis] * 1000).utc.iso8601(3)
+                     end
+
+        user_hash = {
+          "name" => item[:user][:name],
+          "username" => item[:user][:username],
+          "slug" => item[:user][:slug],
+          "profile_image_90" => item[:user][:profile_image_90],
+          "profile_image_url" => item[:user][:profile_image_url],
+          "cached_base_subscriber?" => item[:user][:cached_base_subscriber],
+          "cached_community_leader?" => item[:user][:cached_community_leader],
+          "cached_base_subscriber" => item[:user][:cached_base_subscriber],
+          "cached_community_leader" => item[:user][:cached_community_leader]
+        }
+
+        h = {
+          "title" => item[:title],
+          "path" => item[:path],
+          "id" => item[:id],
+          "user_id" => item[:user_id],
+          "comments_count" => item[:comments_count],
+          "public_reactions_count" => item[:public_reactions_count],
+          "organization_id" => item[:organization_id],
+          "reading_time" => item[:reading_time],
+          "video_thumbnail_url" => item[:video_thumbnail_url],
+          "video" => item[:video],
+          "edited_at" => edited_str,
+          "experience_level_rating" => item[:experience_level_rating],
+          "experience_level_rating_distribution" => item[:experience_level_rating_distribution],
+          "main_image_height" => item[:main_image_height],
+          "type_of" => item[:type_of],
+          "subforem_id" => item[:subforem_id],
+          "favorited_by_user_id" => item[:favorited_by_user_id],
+          "ai_disclosure_level" => item[:ai_disclosure_level],
+          "user" => user_hash
+        }
+
+        if item[:organization]
+          org = item[:organization]
+          h["organization"] = {
+            "name" => org[:name],
+            "username" => org[:username],
+            "slug" => org[:slug],
+            "profile_image_90" => org[:profile_image_90],
+            "profile_image_url" => org[:profile_image_url],
+            "cached_base_subscriber?" => org[:cached_base_subscriber],
+            "cached_community_leader?" => org[:cached_community_leader]
+          }
+        end
+
+        h["pinned"] = item[:pinned]
+        h["main_image"] = item[:main_image]
+        h["tag_list"] = (item[:cached_tag_list] || "").split(", ")
+
+        if item[:type_of] == "status"
+          h["body_preview"] = item[:body_preview]
+          h["title_finalized_for_feed"] = item[:title_finalized_for_feed]
+          h["title_for_metadata"] = item[:title_for_metadata]
+        end
+
+        h["flare_tag"] = if item[:flare_tag]
+                           {
+                             "name" => item[:flare_tag][:name],
+                             "bg_color_hex" => item[:flare_tag][:bg_color_hex],
+                             "text_color_hex" => item[:flare_tag][:text_color_hex]
+                           }
+                         end
+        h["class_name"] = item[:class_name]
+
+        thumb = item[:video_thumbnail_url]
+        h["cloudinary_video_url"] = if thumb.nil? || thumb.strip.empty?
+                                      nil
+                                    elsif thumb.start_with?("/") || thumb.include?("/agent_sessions/")
+                                      thumb
+                                    elsif optimizer_mode == 1
+                                      is_animated = thumb.match?(/\.(gif|webp)(\?.*)?$/i)
+                                      opts = { width: 880, height: nil, fit: "scale-down", gravity: "auto" }
+                                      opts[:format] = "auto" unless is_animated
+                                      Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+                                        .expand(domain: cf_domain, directory: cf_dir, options: opts, src: thumb).to_s
+                                    else
+                                      thumb
+                                    end
+
+        h["published_at_int"] = item[:published_at_int]
+        h["published_timestamp"] = if item[:published] && item[:displayable_published_at_sec]
+                                     Time.at(item[:displayable_published_at_sec]).utc.iso8601
+                                   else
+                                     ""
+                                   end
+        h["main_image_background_hex_color"] = item[:main_image_background_hex_color]
+
+        cats_by_slug = categories.index_by { |c| c[:slug] }
+        top_cats = r_counts
+          .select { |slug, count| count.positive? && cats_by_slug.key?(slug) }
+          .sort_by { |slug, count| [-count, cats_by_slug[slug][:position]] }
+          .first(3)
+          .map { |slug, _| cats_by_slug[slug] }
+        h["public_reaction_categories"] = top_cats
+
+        h["readable_publish_date"] = if item[:readable_publish_date_override]
+                                       item[:readable_publish_date_override]
+                                     elsif item[:displayable_published_at_sec]
+                                       t = Time.at(item[:displayable_published_at_sec]).utc
+                                       t.year == current_year ? t.strftime("%b %-d") : t.strftime("%b %-d '%y")
+                                     end
+
+        dur_parts = ActiveSupport::Duration.build(item[:video_duration_in_seconds].to_i).parts
+          .reverse_merge(seconds: 0, minutes: 0, hours: 0)
+        mm_ss = format("%<minutes>02d:%<seconds>02d", dur_parts)
+        h["video_duration_in_minutes"] = dur_parts[:hours] < 1 ? mm_ss : format("%<hours>d:#{mm_ss}", dur_parts)
+        h["ai_disclosure_label"] = case item[:ai_disclosure_level]
+                                   when "some_ai" then lbl_some
+                                   when "fully_autonomous" then lbl_auto
+                                   when "no_ai" then lbl_no
+                                   else lbl_none
+                                   end
+
+        h["top_comments"] = comments.map do |cm|
+          {
+            "comment_id" => cm[:comment_id],
+            "user_id" => cm[:user_id],
+            "published_timestamp" => cm[:created_at_sec] ? Time.at(cm[:created_at_sec]).utc.iso8601 : "",
+            "published_at_int" => cm[:created_at_sec].to_i,
+            "safe_processed_html" => cm[:safe_processed_html],
+            "path" => cm[:path],
+            "username" => cm[:username],
+            "name" => cm[:name],
+            "profile_image_90" => cm[:profile_image_90]
+          }
+        end
+
+        h["subforem_logo"] = item[:subforem_logo]
+        h["context_note"] = item[:context_note]
+
+        ActiveSupport::JSON.encode(h, escape_html_entities: escape_html)
+      end
+    end
+
+    it "splices cached JSON fragments and rejects out-of-domain inputs", :aggregate_failures do
+      spliced = described_class.splice_stories_feed_item_json(
+        '{"id":42,"title":"Hi"}',
+        "https://dev.to/alice/hi?a=1&b=2",
+        true,
+        7,
+        escape_html_entities: true,
+      )
+      expect(spliced).to eq(
+        '{"id":42,"title":"Hi","url":"https://dev.to/alice/hi?a=1\u0026b=2","current_user_signed_in":true,"feed_config":7}',
+      )
+
+      expect(described_class.splice_stories_feed_item_json("{ }", "https://dev.to/a", false, nil)).to eq(
+        '{ "url":"https://dev.to/a","current_user_signed_in":false,"feed_config":null}',
+      )
+      expect(described_class.splice_stories_feed_item_json("bad", "https://dev.to/a", false, nil)).to be_nil
+      expect(described_class.splice_stories_feed_item_json("[]", "https://dev.to/a", false, nil)).to be_nil
+      expect(described_class.splice_stories_feed_item_json(nil, "https://dev.to/a", false, nil)).to be_nil
+      expect(described_class.splice_stories_feed_item_json('{"id":1}', "https://dev.to/a", false, "bad")).to be_nil
+    end
+
+    it "returns nil for out-of-domain floats or mismatched payload dimensions", :aggregate_failures do
+      config = [2026, 0, nil, "cdn-cgi", true, *ai_labels, false]
+      bad_item = Array.new(53)
+      bad_item[2] = 1
+      bad_item[12] = Float::NAN
+      bad_item[26] = false
+      bad_item[34] = false
+      bad_item[40] = false
+      bad_item[44] = "Article"
+      bad_item[45] = true
+      bad_item[46] = 0
+
+      expect(
+        described_class.serialize_stories_feed_json(
+          [nil, "https://dev.to/a", false, nil],
+          bad_item,
+          [],
+          [0],
+          [],
+          [0],
+          [],
+          config,
+        ),
+      ).to be_nil
+
+      # Mismatched entries stride
+      expect(
+        described_class.serialize_stories_feed_json(["bad"], [], [], [], [], [], [], config),
+      ).to be_nil
+    end
+
+    it "matches ActiveSupport::JSON bit-for-bit across 1,000 randomized mixed cached/uncached feeds" do
+      rng = Random.new(424_242)
+      titles = ["Hello <World> & Rust 🚀", "Simple Title", "Line1\nLine2 \"quoted\"", "日本語タイトル", nil]
+      tag_lists = ["", nil, "ruby, rails", "discuss, rust, webdev", "ai, python, go, zig"]
+      ai_levels = [nil, "some_ai", "fully_autonomous", "no_ai", "not_disclosed"]
+      ratings = [nil, 0.0, 0.1, 0.3, 0.0001, 5.0, 4.25, 3.3333333333333335, 9.75]
+      cats_flat = reaction_categories.flat_map { |c| [c[:slug], c[:name], c[:icon], c[:position]] }
+
+      1_000.times do |iter|
+        escape_html = rng.rand(2).zero?
+        optimizer_mode = rng.rand(2)
+        capture_fragments = rng.rand(2).zero?
+        config = [
+          2026,
+          optimizer_mode,
+          optimizer_mode == 1 ? "media2.dev.to" : nil,
+          "cdn-cgi",
+          escape_html,
+          *ai_labels,
+          capture_fragments,
+        ]
+
+        entries_flat = []
+        items_flat = []
+        comments_flat = []
+        comment_lens = []
+        r_counts_flat = []
+        r_counts_lens = []
+        expected_objects = []
+        expected_captured = []
+
+        story_count = rng.rand(0..5)
+        story_count.times do |s_idx|
+          url = "https://dev.to/u#{s_idx}/post-#{iter}-#{s_idx}?x=1&y=2"
+          signed_in = rng.rand(2).zero?
+          feed_config_id = rng.rand(2).zero? ? nil : rng.rand(1..500)
+
+          if rng.rand(3).zero?
+            cached_frag = ActiveSupport::JSON.encode("id" => s_idx + 1, "title" => "Cached #{iter}-#{s_idx}")
+            entries_flat.push(cached_frag, url, signed_in, feed_config_id)
+            tail = { "url" => url, "current_user_signed_in" => signed_in, "feed_config" => feed_config_id }
+            expected_objects << JSON.parse(cached_frag).merge(tail)
+            next
+          end
+
+          is_status = rng.rand(4).zero?
+          has_org = rng.rand(3).zero?
+          has_flare = rng.rand(3).zero?
+          has_edit = rng.rand(2).zero?
+          pub_sec = rng.rand(4).zero? ? nil : rng.rand(1_700_000_000..1_795_000_000)
+          edit_sec = has_edit ? rng.rand(1_700_000_000..1_795_000_000) : nil
+          edit_ms = has_edit ? rng.rand(0..999) : nil
+          video_thumb = rng.rand(3).zero? ? "https://example.com/thumb-#{s_idx}.jpg" : [nil, ""].sample(random: rng)
+          override_date = rng.rand(5).zero? ? "25 nov." : nil
+
+          user_data = {
+            name: ["Alice <Dev>", "Bob", nil].sample(random: rng),
+            username: "user#{s_idx}",
+            slug: "user#{s_idx}",
+            profile_image_90: "https://img.example/u#{s_idx}-90.png",
+            profile_image_url: "https://img.example/u#{s_idx}.png",
+            cached_base_subscriber: [true, false, nil].sample(random: rng),
+            cached_community_leader: [true, false, nil].sample(random: rng)
+          }
+          org_data = if has_org
+                       {
+                         name: "Org & Co",
+                         username: "org#{s_idx}",
+                         slug: "org#{s_idx}",
+                         profile_image_90: nil,
+                         profile_image_url: "https://img.example/org.png",
+                         cached_base_subscriber: [true, false, nil].sample(random: rng),
+                         cached_community_leader: [true, false, nil].sample(random: rng)
+                       }
+                     end
+          flare_data = if has_flare
+                         { name: "discuss", bg_color_hex: "#000000", text_color_hex: "#ffffff" }
+                       end
+
+          item = {
+            title: titles.sample(random: rng),
+            path: "/user#{s_idx}/post-#{s_idx}",
+            id: (iter * 10) + s_idx + 1,
+            user_id: s_idx + 100,
+            comments_count: rng.rand(0..5),
+            public_reactions_count: rng.rand(0..50),
+            organization_id: has_org ? 50 + s_idx : nil,
+            reading_time: rng.rand(1..15),
+            video_thumbnail_url: video_thumb,
+            video: rng.rand(4).zero? ? "https://video.example/v.m3u8" : nil,
+            edited_at_sec: edit_sec,
+            edited_at_millis: edit_ms,
+            experience_level_rating: ratings.sample(random: rng),
+            experience_level_rating_distribution: ratings.sample(random: rng),
+            main_image_height: 420,
+            type_of: is_status ? "status" : "full_post",
+            subforem_id: rng.rand(2).zero? ? 1 : nil,
+            favorited_by_user_id: rng.rand(3).zero? ? 99 : nil,
+            ai_disclosure_level: ai_levels.sample(random: rng),
+            user: user_data,
+            organization: org_data,
+            pinned: rng.rand(5).zero?,
+            main_image: rng.rand(2).zero? ? "https://img.example/cover.png" : nil,
+            cached_tag_list: tag_lists.sample(random: rng),
+            body_preview: is_status ? "<p>Status &amp; preview</p>" : nil,
+            title_finalized_for_feed: is_status ? "Finalized <span>title</span>" : nil,
+            title_for_metadata: is_status ? "Meta title" : nil,
+            flare_tag: flare_data,
+            class_name: "Article",
+            published: rng.rand(5) != 0,
+            published_at_int: pub_sec.to_i,
+            displayable_published_at_sec: pub_sec,
+            main_image_background_hex_color: "#dddddd",
+            readable_publish_date_override: override_date,
+            video_duration_in_seconds: rng.rand(0..7500),
+            subforem_logo: rng.rand(2).zero? ? "https://img.example/logo.png" : nil,
+            context_note: rng.rand(4).zero? ? "<p>Context note</p>" : nil
+          }
+
+          item_comments = Array.new(rng.rand(0..3)) do |c_idx|
+            {
+              comment_id: 1000 + c_idx,
+              user_id: 200 + c_idx,
+              created_at_sec: rng.rand(4).zero? ? nil : rng.rand(1_700_000_000..1_795_000_000),
+              safe_processed_html: "<p>Comment #{c_idx} & <tag></p>",
+              path: "/c#{c_idx}/comment/ab#{c_idx}",
+              username: "commenter#{c_idx}",
+              name: "Commenter #{c_idx}",
+              profile_image_90: "https://img.example/c#{c_idx}.png"
+            }
+          end
+
+          item_r_counts = reaction_categories.sample(rng.rand(0..5), random: rng).map do |cat|
+            [cat[:slug], rng.rand(0..20)]
+          end
+
+          entries_flat.push(nil, url, signed_in, feed_config_id)
+          items_flat.push(
+            item[:title], item[:path], item[:id], item[:user_id], item[:comments_count],
+            item[:public_reactions_count], item[:organization_id], item[:reading_time],
+            item[:video_thumbnail_url], item[:video], item[:edited_at_sec], item[:edited_at_millis],
+            item[:experience_level_rating], item[:experience_level_rating_distribution],
+            item[:main_image_height], item[:type_of], item[:subforem_id],
+            item[:favorited_by_user_id], item[:ai_disclosure_level],
+            user_data[:name], user_data[:username], user_data[:slug],
+            user_data[:profile_image_90], user_data[:profile_image_url],
+            user_data[:cached_base_subscriber], user_data[:cached_community_leader],
+            has_org,
+            org_data&.[](:name), org_data&.[](:username), org_data&.[](:slug),
+            org_data&.[](:profile_image_90), org_data&.[](:profile_image_url),
+            org_data&.[](:cached_base_subscriber), org_data&.[](:cached_community_leader),
+            item[:pinned], item[:main_image], item[:cached_tag_list],
+            item[:body_preview], item[:title_finalized_for_feed], item[:title_for_metadata],
+            has_flare, flare_data&.[](:name), flare_data&.[](:bg_color_hex), flare_data&.[](:text_color_hex),
+            item[:class_name], item[:published], item[:published_at_int],
+            item[:displayable_published_at_sec], item[:main_image_background_hex_color],
+            item[:readable_publish_date_override], item[:video_duration_in_seconds],
+            item[:subforem_logo], item[:context_note]
+          )
+
+          item_comments.each do |cm|
+            comments_flat.push(
+              cm[:comment_id], cm[:user_id], cm[:created_at_sec], cm[:safe_processed_html],
+              cm[:path], cm[:username], cm[:name], cm[:profile_image_90]
+            )
+          end
+          comment_lens << item_comments.size
+
+          item_r_counts.each { |slug, cnt| r_counts_flat.push(slug, cnt) }
+          r_counts_lens << item_r_counts.size
+
+          expected_frag = legacy_serialize_item_fragment.call(
+            item, item_comments, item_r_counts, reaction_categories, config
+          )
+          expected_captured << expected_frag if capture_fragments
+          tail = { "url" => url, "current_user_signed_in" => signed_in, "feed_config" => feed_config_id }
+          expected_objects << JSON.parse(expected_frag).merge(tail)
+        end
+
+        result = described_class.serialize_stories_feed_json(
+          entries_flat,
+          items_flat,
+          comments_flat,
+          comment_lens,
+          r_counts_flat,
+          r_counts_lens,
+          cats_flat,
+          config,
+        )
+        expect(result).not_to be_nil, "iter #{iter}: serialize_stories_feed_json returned nil"
+        actual_json, actual_captured = result
+
+        expect(JSON.parse(actual_json)).to eq(expected_objects), "iter #{iter}: JSON structure mismatch"
+        expect(actual_captured).to eq(expected_captured), "iter #{iter}: captured fragments bit-for-bit mismatch"
+      end
+    end
+  end
 end

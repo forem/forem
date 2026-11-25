@@ -37,6 +37,7 @@ pub mod sanitize;
 pub mod scrubber;
 pub mod sitemap;
 pub mod social_image;
+pub mod stories_feed;
 pub mod story_card;
 pub mod svg;
 pub mod syntax;

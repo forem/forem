@@ -103,6 +103,7 @@ namespace :forem_native do
     benchmark_redcarpet_pipeline
     benchmark_sitemap_xml
     benchmark_analytics_activity
+    benchmark_stories_feed
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -3204,6 +3205,145 @@ namespace :forem_native do
     [
       ["analytics_grouped_by_day_json (50 articles, 366d)", legacy_grouped_json, native_grouped_json],
       ["analytics_dashboard_json (50 articles, 366d)", legacy_dashboard_json, native_dashboard_json],
+    ].each do |label, legacy_fn, native_fn|
+      raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
+
+      ruby_mem = MemoryProfiler.report { legacy_fn.call }
+      rust_mem = MemoryProfiler.report { native_fn.call }
+      puts "\n=== #{label} ==="
+      puts "Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+           "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("Ruby (#{label})") { legacy_fn.call }
+        x.report("Rust Magnus (#{label})") { native_fn.call }
+        x.compare!
+      end
+    end
+  end
+
+  desc "Benchmark Stories::FeedsController streaming JSON & cached fragment splicing"
+  task benchmark_stories_feed: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    cats_flat = [
+      "like", "Like", "heart", 1,
+      "unicorn", "Unicorn", "unicorn", 2,
+      "fire", "Fire", "fire", 3
+    ]
+    ai_labels = ["Assisted by AI", "Autonomous AI", "Human-written", "Not disclosed"]
+    config = [2026, 0, nil, "cdn-cgi", true, *ai_labels, false]
+    pub_sec = 1_795_000_000
+
+    uncached_entries = []
+    items_flat = []
+    comments_flat = []
+    comment_lens = []
+    r_counts_flat = []
+    r_counts_lens = []
+    ruby_hashes = []
+
+    35.times do |i|
+      url = "https://dev.to/alice/post-#{i}"
+      uncached_entries.push(nil, url, true, 12)
+      items_flat.push(
+        "Hello Rust & Ruby #{i}", "/alice/post-#{i}", 1000 + i, 7, 2, 15, nil, 5, nil, nil,
+        pub_sec, 123, 5.0, 4.25, 420, "full_post", 1, nil, "no_ai",
+        "Alice <Dev>", "alice", "alice", "https://img.example/a90.png", "https://img.example/a.png", true, false,
+        false, nil, nil, nil, nil, nil, nil, nil,
+        i.zero?, "https://img.example/cover.png", "rust, ruby, discuss", nil, nil, nil,
+        true, "discuss", "#000000", "#ffffff",
+        "Article", true, pub_sec, pub_sec, "#dddddd", nil, 125, "https://img.example/logo.png", nil
+      )
+      2.times do |c|
+        comments_flat.push(
+          2000 + (i * 2) + c, 8 + c, pub_sec, "<p>Comment #{c}</p>",
+          "/bob/comment/#{i}_#{c}", "bob#{c}", "Bob #{c}", "https://img.example/b#{c}.png"
+        )
+      end
+      comment_lens << 2
+      r_counts_flat.push("like", 10, "unicorn", 3, "fire", 2)
+      r_counts_lens << 3
+
+      ruby_hashes << {
+        "title" => "Hello Rust & Ruby #{i}", "path" => "/alice/post-#{i}", "id" => 1000 + i,
+        "user_id" => 7, "comments_count" => 2, "public_reactions_count" => 15, "organization_id" => nil,
+        "reading_time" => 5, "video_thumbnail_url" => nil, "video" => nil,
+        "edited_at" => Time.at(pub_sec, 123_000).utc.iso8601(3),
+        "experience_level_rating" => 5.0, "experience_level_rating_distribution" => 4.25,
+        "main_image_height" => 420, "type_of" => "full_post", "subforem_id" => 1,
+        "favorited_by_user_id" => nil, "ai_disclosure_level" => "no_ai",
+        "user" => {
+          "name" => "Alice <Dev>", "username" => "alice", "slug" => "alice",
+          "profile_image_90" => "https://img.example/a90.png", "profile_image_url" => "https://img.example/a.png",
+          "cached_base_subscriber?" => true, "cached_community_leader?" => false,
+          "cached_base_subscriber" => true, "cached_community_leader" => false
+        },
+        "pinned" => i.zero?, "main_image" => "https://img.example/cover.png",
+        "tag_list" => %w[rust ruby discuss],
+        "flare_tag" => { "name" => "discuss", "bg_color_hex" => "#000000", "text_color_hex" => "#ffffff" },
+        "class_name" => "Article", "cloudinary_video_url" => nil, "published_at_int" => pub_sec,
+        "published_timestamp" => Time.at(pub_sec).utc.iso8601, "main_image_background_hex_color" => "#dddddd",
+        "public_reaction_categories" => [
+          { "slug" => "like", "name" => "Like", "icon" => "heart", "position" => 1 },
+          { "slug" => "unicorn", "name" => "Unicorn", "icon" => "unicorn", "position" => 2 },
+          { "slug" => "fire", "name" => "Fire", "icon" => "fire", "position" => 3 },
+        ],
+        "readable_publish_date" => Time.at(pub_sec).utc.strftime("%b %-d"),
+        "video_duration_in_minutes" => "02:05", "ai_disclosure_label" => "Human-written",
+        "top_comments" => Array.new(2) do |c|
+          {
+            "comment_id" => 2000 + (i * 2) + c, "user_id" => 8 + c,
+            "published_timestamp" => Time.at(pub_sec).utc.iso8601, "published_at_int" => pub_sec,
+            "safe_processed_html" => "<p>Comment #{c}</p>", "path" => "/bob/comment/#{i}_#{c}",
+            "username" => "bob#{c}", "name" => "Bob #{c}", "profile_image_90" => "https://img.example/b#{c}.png"
+          }
+        end,
+        "subforem_logo" => "https://img.example/logo.png", "context_note" => nil
+      }
+    end
+
+    cached_frags = ruby_hashes.map { |h| ActiveSupport::JSON.encode(h) }
+    cached_entries = []
+    cached_frags.each_with_index do |frag, i|
+      cached_entries.push(frag, "https://dev.to/alice/post-#{i}", true, 12)
+    end
+    marshaled_hashes = ruby_hashes.map { |h| Marshal.dump(h) }
+
+    legacy_cached = lambda do
+      arr = marshaled_hashes.each_with_index.map do |blob, i|
+        Marshal.load(blob).merge( # rubocop:disable Security/MarshalLoad
+          "url" => "https://dev.to/alice/post-#{i}", "current_user_signed_in" => true, "feed_config" => 12,
+        )
+      end
+      ActiveSupport::JSON.encode(arr)
+    end
+    native_cached = lambda do
+      ForemNative.serialize_stories_feed_json(cached_entries, [], [], [], [], [], [], config)[0]
+    end
+
+    legacy_uncached = lambda do
+      arr = ruby_hashes.each_with_index.map do |h, i|
+        h.merge("url" => "https://dev.to/alice/post-#{i}", "current_user_signed_in" => true, "feed_config" => 12)
+      end
+      ActiveSupport::JSON.encode(arr)
+    end
+    native_uncached = lambda do
+      ForemNative.serialize_stories_feed_json(
+        uncached_entries, items_flat, comments_flat, comment_lens,
+        r_counts_flat, r_counts_lens, cats_flat, config
+      )[0]
+    end
+
+    [
+      ["stories_feed cached splice (35 stories)", legacy_cached, native_cached],
+      ["stories_feed uncached stream (35 stories)", legacy_uncached, native_uncached],
     ].each do |label, legacy_fn, native_fn|
       raise "Parity mismatch for #{label}!" unless native_fn.call == legacy_fn.call
 

@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :analytics_dashboard_json
+  LATEST_NATIVE_SYMBOL = :serialize_stories_feed_json
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2509,6 +2509,48 @@ module ForemNative
       Native.analytics_dashboard_json(
         activity_columns, follows_by_iso, follows_total, window, top_referrers,
         top_contributors_json, follower_engagement_json, start_date_floor_iso
+      )
+    end
+
+    # Splices per-request tail fields (`url`, `current_user_signed_in`, `feed_config`)
+    # onto a pre-serialized cached story JSON object fragment (`{...}`) without parsing
+    # JSON or allocating intermediate Ruby hashes.
+    def splice_stories_feed_item_json(cached_fragment, url, current_user_signed_in,
+                                      feed_config_id = nil, escape_html_entities: true)
+      return unless Native.respond_to?(:splice_stories_feed_item_json)
+      return unless valid_utf8_string?(cached_fragment) && valid_utf8_string?(url)
+      return unless feed_config_id.nil? || valid_i64_integer?(feed_config_id)
+
+      Native.splice_stories_feed_item_json(
+        cached_fragment,
+        url,
+        current_user_signed_in ? true : false,
+        feed_config_id,
+        escape_html_entities ? true : false,
+      )
+    end
+
+    # Streams the complete `Stories::FeedsController#show` JSON array (`[{...}, ...]`)
+    # in a single pass across mixed cached fragments and uncached story payloads.
+    # Returns `[full_json_string, newly_serialized_fragments]` or `nil` on out-of-domain input.
+    def serialize_stories_feed_json(entries_flat, uncached_items_flat, comments_flat, comment_lens,
+                                    reaction_counts_flat, reaction_counts_lens,
+                                    reaction_categories_flat, config)
+      return unless Native.respond_to?(:serialize_stories_feed_json)
+      return unless entries_flat.is_a?(Array) && uncached_items_flat.is_a?(Array) &&
+        comments_flat.is_a?(Array) && comment_lens.is_a?(Array) &&
+        reaction_counts_flat.is_a?(Array) && reaction_counts_lens.is_a?(Array) &&
+        reaction_categories_flat.is_a?(Array) && config.is_a?(Array) && config.size == 10
+
+      Native.serialize_stories_feed_json(
+        entries_flat,
+        uncached_items_flat,
+        comments_flat,
+        comment_lens,
+        reaction_counts_flat,
+        reaction_counts_lens,
+        reaction_categories_flat,
+        config,
       )
     end
 
