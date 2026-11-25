@@ -28,6 +28,33 @@ class ArticleActivity < ApplicationRecord
       WHERE key BETWEEN :start AND :end) AS daily_comments
   SQL
 
+  KEY_COLUMNS = %w[id article_id].freeze
+
+  # Legacy Ruby rollup builders (used by the fallback path and as the
+  # differential-test oracle for ForemNative.article_activity_rollup_json).
+  def self.legacy_page_views_and_referrers(page_view_rows)
+    page_views = {}
+    referrers = {}
+    page_view_rows.each do |iso, domain, total, sum_read, logged|
+      day = page_views[iso] ||= { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 }
+      day["total"] += total.to_i
+      day["sum_read_seconds"] += sum_read.to_i
+      day["logged_in_count"] += logged.to_i
+      (referrers[iso] ||= {})[domain] = total.to_i
+    end
+    [page_views, referrers]
+  end
+
+  def self.legacy_reactions(reaction_rows)
+    reaction_rows.each_with_object({}) do |row, hash|
+      iso, total, *counts, reactor_ids = row
+      values = { "total" => total.to_i }
+      REACTION_CATEGORIES.zip(counts) { |category, count| values[category] = count.to_i }
+      values["reactor_ids"] = Array(reactor_ids).map(&:to_i)
+      hash[iso] = values
+    end
+  end
+
   scope :daily_counters_between, lambda { |start_date, end_date|
     select(sanitize_sql_array([DAILY_COUNTERS_SELECT, { start: start_date.iso8601, end: end_date.iso8601 }]))
   }
@@ -150,26 +177,29 @@ class ArticleActivity < ApplicationRecord
 
   # Rebuilds every JSONB column from raw rows. Used the first time we see an
   # article (lazy upsert) and as a manual repair tool.
+  #
+  # The three grouped aggregate queries are folded into the four jsonb
+  # documents by ForemNative and persisted with a single UPDATE, so the hot
+  # worker path never loads, deserializes, dirty-checks, or re-encodes the
+  # (potentially very large) existing jsonb columns. jsonb columns whose value
+  # did not change are left untouched, mirroring ActiveRecord partial writes.
   def recompute_all!
-    pv, rf = build_page_views_and_referrers_from_raw
-    rx = build_reactions_from_raw
-    cm = build_comments_from_raw
+    page_view_rows = page_view_rollup_rows
+    reaction_rows = reaction_rollup_rows
+    comment_rows = comment_rollup_rows
+    now = Time.current
 
-    assign_attributes(
-      daily_page_views: pv,
-      daily_reactions: rx,
-      daily_comments: cm,
-      daily_referrers: rf,
-      total_page_views: pv.values.sum { |v| v["total"].to_i },
-      total_reactions: rx.values.sum { |v| v["total"].to_i },
-      total_comments: cm.values.sum(&:to_i),
-      last_aggregated_at: Time.current,
+    sql = ForemNative.article_activity_recompute_sql(
+      id, page_view_rows, reaction_rows, comment_rows, now.to_i, now.usec
     )
-    # Skip validation: the only validator is the belongs_to :article presence
-    # check, which would load the full articles row (body, processed_html, ...)
-    # on every recompute. article_id is NOT NULL with a foreign key, so an
-    # existing activity row always points at a real article.
-    save!(validate: false)
+    return legacy_recompute_all!(page_view_rows, reaction_rows, comment_rows, now) unless sql
+
+    self.class.connection.update(sql, "ArticleActivity Recompute")
+    # The UPDATE bypasses attribute assignment; refresh any loaded rollup
+    # columns so the in-memory record matches what was persisted. Callers that
+    # only need the side effect (the worker) select just the key columns.
+    reload if (attribute_names - KEY_COLUMNS).any?
+    true
   end
 
   def derive_page_view_day(raw)
@@ -309,63 +339,75 @@ class ArticleActivity < ApplicationRecord
 
   # --- backfill builders ---
 
+  # Aggregate rows are plucked with the day already formatted as an ISO 8601
+  # string, so no Date objects are materialized per row.
+  ROLLUP_DAY_SQL = "to_char(DATE(created_at), 'YYYY-MM-DD')".freeze
+  private_constant :ROLLUP_DAY_SQL
+
   # Daily page views and daily referrers come from the same page_views rows,
   # so aggregate them in one (date, domain) grouped scan and roll the domain
-  # buckets up per day in Ruby instead of reading the article's rows twice.
-  def build_page_views_and_referrers_from_raw
-    page_views = {}
-    referrers = {}
+  # buckets up per day instead of reading the article's rows twice.
+  # Rows: [iso, domain, total, sum_read_seconds, logged_in_count]
+  def page_view_rollup_rows
     PageView.where(article_id: article_id)
       .group("DATE(created_at)", :domain)
       .pluck(
-        Arel.sql("DATE(created_at)"),
+        Arel.sql(ROLLUP_DAY_SQL),
         :domain,
         Arel.sql("COALESCE(SUM(counts_for_number_of_views), 0)"),
         Arel.sql("COALESCE(SUM(time_tracked_in_seconds) FILTER (WHERE user_id IS NOT NULL), 0)"),
         Arel.sql("COUNT(*) FILTER (WHERE user_id IS NOT NULL)"),
-      ).each do |date, domain, total, sum_read, logged|
-        iso = date.iso8601
-        day = page_views[iso] ||= { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 }
-        day["total"] += total.to_i
-        day["sum_read_seconds"] += sum_read.to_i
-        day["logged_in_count"] += logged.to_i
-        (referrers[iso] ||= {})[domain] = total.to_i
-      end
-    [page_views, referrers]
+      )
   end
 
-  def build_reactions_from_raw
-    # Aggregate per-day category counts AND distinct reactor ids in a single
-    # grouped query. Previously we plucked one Ruby row per reaction to build
-    # the reactor_ids array client-side, which got expensive on hot articles;
-    # array_agg(DISTINCT ...) keeps the materialization in Postgres.
+  # Aggregate per-day category counts AND distinct reactor ids in a single
+  # grouped query; array_agg(DISTINCT ...) keeps the materialization in Postgres.
+  # Rows: [iso, total, *REACTION_CATEGORIES counts, reactor_ids]
+  def reaction_rollup_rows
     Reaction.for_analytics
       .where(reactable_id: article_id, reactable_type: "Article")
       .group("DATE(created_at)")
       .pluck(
-        Arel.sql("DATE(created_at)"),
+        Arel.sql(ROLLUP_DAY_SQL),
         Arel.sql("COUNT(*)"),
-        Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
-        Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
-        Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')"),
-        Arel.sql("COUNT(*) FILTER (WHERE category = 'exploding_head')"),
-        Arel.sql("COUNT(*) FILTER (WHERE category = 'raised_hands')"),
-        Arel.sql("COUNT(*) FILTER (WHERE category = 'fire')"),
+        *REACTION_CATEGORIES.map { |category| Arel.sql("COUNT(*) FILTER (WHERE category = '#{category}')") },
         Arel.sql("COALESCE(array_agg(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL), '{}')"),
-      ).each_with_object({}) do |row, hash|
-        date, total, like, rl, uni, eh, rh, fire, reactor_ids = row
-        hash[date.iso8601] = {
-          "total" => total.to_i, "like" => like.to_i, "readinglist" => rl.to_i,
-          "unicorn" => uni.to_i, "exploding_head" => eh.to_i,
-          "raised_hands" => rh.to_i, "fire" => fire.to_i,
-          "reactor_ids" => Array(reactor_ids).map(&:to_i)
-        }
-      end
+      )
   end
 
-  def build_comments_from_raw
+  # Rows: [iso, count]
+  def comment_rollup_rows
     Comment.where(commentable_id: article_id, commentable_type: "Article")
       .where("score > 0")
-      .group("DATE(created_at)").count.transform_keys(&:iso8601)
+      .group("DATE(created_at)")
+      .pluck(Arel.sql(ROLLUP_DAY_SQL), Arel.sql("COUNT(*)"))
+  end
+
+  # Reference implementation (and fallback for inputs outside the native
+  # fast-path domain): builds the rollup hashes in Ruby and saves through
+  # ActiveRecord dirty tracking.
+  def legacy_recompute_all!(page_view_rows, reaction_rows, comment_rows, now)
+    # Workers may hold a record loaded with only its key columns.
+    reload if persisted? && (self.class.column_names - attribute_names).any?
+
+    pv, rf = self.class.legacy_page_views_and_referrers(page_view_rows)
+    rx = self.class.legacy_reactions(reaction_rows)
+    cm = comment_rows.to_h
+
+    assign_attributes(
+      daily_page_views: pv,
+      daily_reactions: rx,
+      daily_comments: cm,
+      daily_referrers: rf,
+      total_page_views: pv.values.sum { |v| v["total"].to_i },
+      total_reactions: rx.values.sum { |v| v["total"].to_i },
+      total_comments: cm.values.sum(&:to_i),
+      last_aggregated_at: now,
+    )
+    # Skip validation: the only validator is the belongs_to :article presence
+    # check, which would load the full articles row (body, processed_html, ...)
+    # on every recompute. article_id is NOT NULL with a foreign key, so an
+    # existing activity row always points at a real article.
+    save!(validate: false)
   end
 end

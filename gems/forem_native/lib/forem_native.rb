@@ -2676,6 +2676,25 @@ module ForemNative
       )
     end
 
+    # Tier 1: folds `ArticleActivity` aggregate rows into the encoded `daily_*` jsonb documents.
+    # Returns `[page_views_json, reactions_json, comments_json, referrers_json,
+    # total_page_views, total_reactions, total_comments]`, or nil outside the fast-path domain.
+    def article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows)
+      return unless Native.respond_to?(:article_activity_rollup_json)
+      return unless page_view_rows.is_a?(Array) && reaction_rows.is_a?(Array) && comment_rows.is_a?(Array)
+
+      Native.article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows)
+    end
+
+    # Tier 2: builds the single `UPDATE "article_activities"` statement for `ArticleActivity#recompute_all!`.
+    def article_activity_recompute_sql(id, page_view_rows, reaction_rows, comment_rows, now_sec, now_usec)
+      return unless Native.respond_to?(:article_activity_recompute_sql)
+      return unless valid_i64_integer?(id) && valid_i64_integer?(now_sec) && valid_i64_integer?(now_usec)
+      return unless page_view_rows.is_a?(Array) && reaction_rows.is_a?(Array) && comment_rows.is_a?(Array)
+
+      Native.article_activity_recompute_sql(id, page_view_rows, reaction_rows, comment_rows, now_sec, now_usec)
+    end
+
     private
 
     def utf8_compatible_string?(str)

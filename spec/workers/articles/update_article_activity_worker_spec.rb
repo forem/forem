@@ -35,6 +35,20 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
   context "when activity row already exists" do
     let!(:activity) { ArticleActivity.create!(article: article) }
 
+    it "loads only the activity key columns before recomputing" do
+      activity_selects = []
+      callback = lambda do |*, payload|
+        activity_selects << payload[:sql] if payload[:sql].match?(/\ASELECT .* FROM "article_activities"/)
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.new.perform(article.id)
+      end
+
+      expect(activity_selects).to all(include('"article_activities"."id", "article_activities"."article_id"'))
+      expect(activity_selects.join).not_to include("article_activities.*", "daily_page_views")
+      expect(activity.reload.last_aggregated_at).to be_present
+    end
+
     it "recomputes page views from database page_views table and ignores delta arguments" do
       ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
       create(:page_view, article: article, created_at: ts,

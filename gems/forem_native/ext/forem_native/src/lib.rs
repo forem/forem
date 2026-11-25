@@ -9441,6 +9441,139 @@ fn serialize_article_notification_json(
     Some(ruby.str_new(&json))
 }
 
+/// Borrows a Ruby `Array` row of exactly `len` elements in place.
+///
+/// # Safety
+/// The returned slice must not outlive any Ruby VM call or GC-triggering allocation.
+unsafe fn borrow_exact_row<'a>(val: Value, len: usize) -> Option<&'a [Value]> {
+    let arr = RArray::from_value(val)?;
+    let slice = arr.as_slice();
+    if slice.len() != len {
+        return None;
+    }
+    Some(std::mem::transmute::<&[Value], &'a [Value]>(slice))
+}
+
+#[inline]
+fn fixnum_i64(val: Value) -> Option<i64> {
+    Fixnum::from_value(val).map(|f| f.to_i64())
+}
+
+/// Folds the plucked `ArticleActivity` aggregate rows into the encoded rollup.
+///
+/// Rows: page views `[iso, domain|nil, total, sum_read_seconds, logged_in_count]`,
+/// reactions `[iso, total, like, readinglist, unicorn, exploding_head, raised_hands, fire,
+/// reactor_ids|nil]`, comments `[iso, count]`. Any non-`Fixnum` count, non-UTF-8 string,
+/// or malformed row returns `None` so Ruby falls back to the legacy builder.
+fn compute_article_activity_rollup(
+    page_views: RArray,
+    reactions: RArray,
+    comments: RArray,
+) -> Option<forem_core::article_activity::ArticleActivityRollup> {
+    use forem_core::article_activity::{
+        build_article_activity_rollup, CommentRollupRow, PageViewRollupRow, ReactionRollupRow,
+    };
+
+    // SAFETY: Every borrow below (outer/inner `RArray` slices and `RString` bytes) is used
+    // only by pure Rust code; nothing calls into the Ruby VM or allocates Ruby objects until
+    // the owned rollup is returned, so no borrow can be invalidated by GC or mutation.
+    unsafe {
+        let pv_slice = page_views.as_slice();
+        let mut pv_rows = Vec::with_capacity(pv_slice.len());
+        for &row in pv_slice {
+            let r = borrow_exact_row(row, 5)?;
+            pv_rows.push(PageViewRollupRow {
+                iso: borrow_utf8_rstr(r[0])?,
+                domain: borrow_opt_utf8_rstr(r[1])?,
+                total: fixnum_i64(r[2])?,
+                sum_read_seconds: fixnum_i64(r[3])?,
+                logged_in_count: fixnum_i64(r[4])?,
+            });
+        }
+
+        let rx_slice = reactions.as_slice();
+        let mut reactor_ids: Vec<i64> = Vec::new();
+        let mut rx_meta = Vec::with_capacity(rx_slice.len());
+        for &row in rx_slice {
+            let r = borrow_exact_row(row, 9)?;
+            let iso = borrow_utf8_rstr(r[0])?;
+            let total = fixnum_i64(r[1])?;
+            let mut categories = [0i64; 6];
+            for (slot, &val) in categories.iter_mut().zip(&r[2..8]) {
+                *slot = fixnum_i64(val)?;
+            }
+            let start = reactor_ids.len();
+            if !r[8].is_nil() {
+                for &id in RArray::from_value(r[8])?.as_slice() {
+                    reactor_ids.push(fixnum_i64(id)?);
+                }
+            }
+            rx_meta.push((iso, total, categories, start..reactor_ids.len()));
+        }
+        let rx_rows: Vec<ReactionRollupRow<'_>> = rx_meta
+            .into_iter()
+            .map(|(iso, total, categories, range)| ReactionRollupRow {
+                iso,
+                total,
+                categories,
+                reactor_ids: &reactor_ids[range],
+            })
+            .collect();
+
+        let cm_slice = comments.as_slice();
+        let mut cm_rows = Vec::with_capacity(cm_slice.len());
+        for &row in cm_slice {
+            let r = borrow_exact_row(row, 2)?;
+            cm_rows.push(CommentRollupRow {
+                iso: borrow_utf8_rstr(r[0])?,
+                count: fixnum_i64(r[1])?,
+            });
+        }
+
+        build_article_activity_rollup(&pv_rows, &rx_rows, &cm_rows)
+    }
+}
+
+fn article_activity_rollup_json(
+    ruby: &Ruby,
+    page_views: RArray,
+    reactions: RArray,
+    comments: RArray,
+) -> Option<RArray> {
+    let rollup = compute_article_activity_rollup(page_views, reactions, comments)?;
+    let out = ruby.ary_new_capa(7);
+    out.push(ruby.str_new(&rollup.daily_page_views)).ok()?;
+    out.push(ruby.str_new(&rollup.daily_reactions)).ok()?;
+    out.push(ruby.str_new(&rollup.daily_comments)).ok()?;
+    out.push(ruby.str_new(&rollup.daily_referrers)).ok()?;
+    out.push(rollup.total_page_views).ok()?;
+    out.push(rollup.total_reactions).ok()?;
+    out.push(rollup.total_comments).ok()?;
+    Some(out)
+}
+
+fn article_activity_recompute_sql(
+    ruby: &Ruby,
+    id: i64,
+    page_views: RArray,
+    reactions: RArray,
+    comments: RArray,
+    now_sec: i64,
+    now_usec: i64,
+) -> Option<RString> {
+    if !(0..1_000_000).contains(&now_usec) {
+        return None;
+    }
+    let rollup = compute_article_activity_rollup(page_views, reactions, comments)?;
+    let sql = forem_core::article_activity::article_activity_recompute_sql(
+        id,
+        &rollup,
+        now_sec,
+        now_usec as u32,
+    )?;
+    Some(ruby.str_new(&sql))
+}
+
 #[allow(clippy::too_many_arguments)]
 fn build_notification_bulk_upsert_sql(
     ruby: &Ruby,
@@ -10292,6 +10425,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "build_article_notification_bulk_upsert_sql",
         function!(build_article_notification_bulk_upsert_sql, 10),
+    )?;
+    native_mod.define_singleton_method(
+        "article_activity_rollup_json",
+        function!(article_activity_rollup_json, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "article_activity_recompute_sql",
+        function!(article_activity_recompute_sql, 6),
     )?;
     Ok(())
 }
