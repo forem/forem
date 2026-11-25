@@ -34,6 +34,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderate?
+    return false if user.spam_or_suspended?
     return true if user.trusted?
 
     moderator_create?
@@ -91,6 +92,8 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def user_author?
+    return false unless record.respond_to?(:user_id)
+
     record.user_id == user.id
   end
 

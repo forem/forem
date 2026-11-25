@@ -74,6 +74,72 @@ RSpec.describe "Moderations" do
         get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
       end.to raise_exception(ActiveRecord::RecordNotFound)
     end
+
+    it "returns not found for unpublished or scheduled articles", :aggregate_failures do
+      draft_article = create(:article, user: author, published: false, with_tags: false)
+      scheduled_article = create(:article, user: author, published: true, published_at: 2.days.from_now,
+                                           with_tags: false)
+
+      expect { get "#{draft_article.path}/mod" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "#{draft_article.path}/actions_panel" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "#{scheduled_article.path}/mod" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "#{scheduled_article.path}/actions_panel" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "returns not found for comments on unpublished content or deleted comments", :aggregate_failures do
+      draft_article = create(:article, user: author, published: true, with_tags: false)
+      draft_comment = create(:comment, commentable: draft_article, user: author)
+      draft_article.update_columns(published: false)
+      unpublished_podcast = create(:podcast, published: false)
+      unpublished_episode = create(:podcast_episode, podcast: unpublished_podcast)
+      episode_comment = create(:comment, commentable: unpublished_episode, user: author)
+      deleted_comment = create(:comment, commentable: article, user: author, deleted: true)
+
+      expect { get "#{draft_comment.path}/mod" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "#{episode_comment.path}/mod" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "#{deleted_comment.path}/mod" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "forbids suspended trusted users from moderating comments or viewing /mod", :aggregate_failures do
+      trusted_user.add_role(:suspended)
+
+      expect { get "#{comment.path}/mod" }.to raise_error(Pundit::NotAuthorizedError)
+
+      get "/mod"
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).not_to include("mod-center")
+    end
+
+    it "forbids spam trusted users from moderating comments or viewing /mod", :aggregate_failures do
+      trusted_user.add_role(:spam)
+
+      expect { get "#{comment.path}/mod" }.to raise_error(Pundit::NotAuthorizedError)
+
+      get "/mod"
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).not_to include("mod-center")
+    end
+  end
+
+  context "when user is a support admin" do
+    let(:support_admin) { create(:user, :support_admin, :without_profile, profile_image: nil) }
+    let(:deleted_comment) { create(:comment, commentable: article, user: author, deleted: true) }
+
+    before do
+      sign_in support_admin
+      allow(User).to receive(:staff_account).and_return(staff_account)
+    end
+
+    it "forbids support-only accounts from comment moderation" do
+      expect { get "#{deleted_comment.path}/mod" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "allows support admins who are also trusted to view deleted comments in moderation" do
+      support_admin.add_role(:trusted)
+
+      get "#{deleted_comment.path}/mod"
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   describe "actions_panel" do
@@ -118,6 +184,17 @@ RSpec.describe "Moderations" do
     it "shows the admin tag options", :aggregate_failures do
       expect(response.body).to include "admin-add-tag"
       expect(response.body).to include "circle centered-icon remove-icon"
+    end
+
+    it "allows moderating unpublished articles and deleted comments", :aggregate_failures do
+      draft_article = create(:article, user: author, published: false, with_tags: false)
+      deleted_comment = create(:comment, commentable: article, user: author, deleted: true)
+
+      get "#{draft_article.path}/mod"
+      expect(response).to have_http_status(:ok)
+
+      get "#{deleted_comment.path}/mod"
+      expect(response).to have_http_status(:ok)
     end
   end
 

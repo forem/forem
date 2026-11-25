@@ -13,6 +13,7 @@ class ModerationsController < ApplicationController
 
   def index
     skip_authorization
+    return respond_with_user_suspended if current_user&.spam_or_suspended?
     return unless current_user&.trusted?
 
     @feed = params[:state] == "latest" ? "latest" : "inbox"
@@ -23,7 +24,7 @@ class ModerationsController < ApplicationController
       user: current_user,
       feed: @feed,
       members: @members,
-      tag: params[:tag]
+      tag: params[:tag],
     ).call
 
     # Cache tag-related queries
@@ -46,6 +47,7 @@ class ModerationsController < ApplicationController
   def comment
     authorize(Comment, :moderate?)
     @moderatable = Comment.find(params[:id_code].to_i(26))
+    not_found unless comment_visible_to_moderator?(@moderatable)
 
     render template: "moderations/mod"
   end
@@ -65,11 +67,33 @@ class ModerationsController < ApplicationController
     authorize(Article, :moderate?)
 
     @tag_adjustment = TagAdjustment.new
-    @moderatable = Article.find_by(slug: params[:slug])
+    article_scope = elevated_moderator? ? Article : Article.published
+    @moderatable = article_scope.find_by(slug: params[:slug])
     not_found unless @moderatable
+
     @tag_moderator_tags = Tag.moderated_by(current_user)
     @allowed_to_adjust = @moderatable.instance_of?(Article) && (
       current_user.super_admin? || @tag_moderator_tags.any?)
     @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
+  end
+
+  def elevated_moderator?(include_support: false)
+    current_user.any_admin? ||
+      current_user.super_moderator? ||
+      (include_support && current_user.support_admin?)
+  end
+
+  def comment_visible_to_moderator?(comment)
+    return true if elevated_moderator?(include_support: true)
+    return false if comment.deleted?
+
+    case comment.commentable_type
+    when "Article"
+      Article.published.exists?(id: comment.commentable_id)
+    when "PodcastEpisode"
+      PodcastEpisode.available.exists?(id: comment.commentable_id)
+    else
+      false
+    end
   end
 end
