@@ -79,12 +79,17 @@ en:
         add_to_calendar: Add to Calendar
         stream_not_configured_eyebrow: Stream Coming Soon
         stream_coming_soon_placeholder: The broadcast player will appear here once the stream link is published. Express interest below to get reminded when we go live!
+        not_configured: Stream URL not configured.
         live_chat: Live Chat
         chat_pre_show: Pre-show chat
         share: Share
         link_copied: Copied!
         about_session: About This Session
         duration_label: Duration
+      draft_notice:
+        heading: "This event is not published!"
+        body: "Only admins can see this page."
+        edit: "Edit Event"
       hierarchy:
         part_of_aria: Parent events
         part_of: Part of

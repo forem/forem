@@ -79,12 +79,17 @@ fr:
         add_to_calendar: Ajouter au calendrier
         stream_not_configured_eyebrow: Diffusion bientôt disponible
         stream_coming_soon_placeholder: Le lecteur vidéo apparaîtra ici dès que le lien de diffusion sera publié. Indiquez votre intérêt ci-dessous pour recevoir un rappel !
+        not_configured: L'URL de diffusion n'est pas configurée.
         live_chat: Chat en direct
         chat_pre_show: Chat d'avant-diffusion
         share: Partager
         link_copied: Copié !
         about_session: À propos de cette session
         duration_label: Durée
+      draft_notice:
+        heading: "Cet événement n'est pas publié !"
+        body: "Seuls les administrateurs peuvent voir cette page."
+        edit: "Modifier l'événement"
       hierarchy:
         part_of_aria: Événements parents
         part_of: Fait partie de

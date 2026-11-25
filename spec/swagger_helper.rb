@@ -1015,7 +1015,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 type: :object,
                 properties: {
                   child_event_id: { type: :integer, format: :int64 },
-                  position: { type: :integer, default: 0 },
+                  position: {
+                    type: :integer,
+                    description: "Ordering index within the parent event. On POST, omitting position appends after existing sub-events; on PATCH, omitting position preserves the existing order."
+                  },
                   role: { type: :string, nullable: true, maxLength: 64 },
                   featured: { type: :boolean, default: false }
                 }

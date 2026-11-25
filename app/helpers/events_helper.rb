@@ -170,14 +170,25 @@ module EventsHelper
     zone = time_zone || event.time_zone
     start_in_zone = event.start_time.in_time_zone(zone)
     end_in_zone = event.end_time&.in_time_zone(zone)
-    tz_abbr = start_in_zone.strftime("%Z")
+    start_tz = start_in_zone.strftime("%Z")
 
-    return "#{start_in_zone.strftime('%-I:%M %p')} #{tz_abbr}" if end_in_zone.blank?
+    return "#{start_in_zone.strftime('%-I:%M %p')} #{start_tz}" if end_in_zone.blank?
+
+    end_tz = end_in_zone.strftime("%Z")
+    same_zone = start_tz == end_tz
 
     if start_in_zone.to_date == end_in_zone.to_date
-      "#{start_in_zone.strftime('%-I:%M %p')} – #{end_in_zone.strftime('%-I:%M %p')} #{tz_abbr}"
+      if same_zone
+        "#{start_in_zone.strftime('%-I:%M %p')} – #{end_in_zone.strftime('%-I:%M %p')} #{start_tz}"
+      else
+        "#{start_in_zone.strftime('%-I:%M %p')} #{start_tz} – #{end_in_zone.strftime('%-I:%M %p')} #{end_tz}"
+      end
+    elsif same_zone
+      "#{start_in_zone.strftime('%b %-d, %-I:%M %p')} – #{end_in_zone.strftime('%b %-d, %-I:%M %p')} #{start_tz}"
     else
-      "#{start_in_zone.strftime('%b %-d, %-I:%M %p')} – #{end_in_zone.strftime('%b %-d, %-I:%M %p')} #{tz_abbr}"
+      start_str = start_in_zone.strftime("%b %-d, %-I:%M %p")
+      end_str = end_in_zone.strftime("%b %-d, %-I:%M %p")
+      "#{start_str} #{start_tz} – #{end_str} #{end_tz}"
     end
   end
 
@@ -189,10 +200,10 @@ module EventsHelper
     params = Rack::Utils.parse_query(uri.query)
     host = uri.host.to_s.downcase
 
-    if host.include?("youtube.com") || host.include?("youtu.be")
+    if host_matches_domain?(host, "youtube.com", "youtu.be")
       params["autoplay"] = autoplay ? "1" : "0"
       params["mute"] = "1" if muted
-    elsif host.include?("twitch.tv")
+    elsif host_matches_domain?(host, "twitch.tv")
       params["autoplay"] = autoplay ? "true" : "false"
       params["muted"] = "true" if muted
     end
@@ -201,6 +212,10 @@ module EventsHelper
     uri.to_s
   rescue URI::InvalidURIError
     raw_url
+  end
+
+  def host_matches_domain?(host, *domains)
+    domains.any? { |domain| host == domain || host.end_with?(".#{domain}") }
   end
 
   # "10 Mar 09:00 – 11:00" for a same-day event; "10 Mar 09:00 – 18 Mar 17:00"

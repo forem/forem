@@ -663,6 +663,9 @@ pt:
       events:
         fork: "Duplicar"
         fork_event: "Duplicar Evento"
+        status:
+          published: "Publicado"
+          draft: "Rascunho"
         index:
           subtitle: "Gerencie conferências, transmissões ao vivo, desafios e subeventos aninhados."
           total_events: "eventos no total"
@@ -670,6 +673,9 @@ pt:
           top_level_events: "eventos principais"
           hierarchy_links: "vínculos pai–filho"
           search_placeholder: "Buscar título ou slug..."
+          search_label: "Buscar eventos por título ou slug"
+          filter_by_type: "Filtrar eventos por tipo"
+          filter_by_status: "Filtrar eventos por status"
           all_types: "Todos os tipos"
           all_statuses: "Todos os status"
           filter: "Filtrar"
@@ -684,6 +690,9 @@ pt:
           sub_events_count:
             one: "1 subevento"
             other: "%{count} subeventos"
+          nested_collapsed:
+            one: "+1 aninhado (ver evento)"
+            other: "+%{count} aninhados (ver evento)"
           featured: "Destaque"
           shared_parents:
             one: "Em 1 evento pai"
@@ -696,6 +705,12 @@ pt:
         form:
           allow_articles: "Permitir Artigos"
           allow_articles_description: "Permitir que artigos sejam marcados diretamente neste evento e exibidos na página do evento após o início."
+          time_zone: "Fuso Horário de Exibição"
+          time_zone_description: "Fuso IANA opcional (ex.: 'America/New_York', 'UTC')."
+          registration_url: "URL de Inscrição Externa"
+          registration_url_description: "Link opcional para inscrição na conferência ou meetup."
+          website_url: "URL do Site do Evento"
+          website_url_description: "Link externo opcional do site do evento."
           parent_events: "Eventos Pai (Opcional)"
           parent_events_description: "Associe este evento como subevento de um ou mais eventos pai (ex.: uma transmissão ao vivo pertencente a uma conferência)."
           search_parent_events: "Filtrar eventos pai disponíveis..."
@@ -722,6 +737,7 @@ pt:
         subtitle: "Vincule subeventos como transmissões ao vivo, workshops ou desafios. Subeventos ao vivo são destacados automaticamente no hero."
         create_sub_event: "+ Criar Novo Subevento"
         belongs_to_heading: "Pertence a (Eventos Pai)"
+        view_parent: "Ver Pai"
         sub_events_heading: "Subeventos Agendados"
         detach: "Desvincular"
         detach_confirm: "Desvincular este subevento do evento pai? Ambos os eventos permanecerão intactos."

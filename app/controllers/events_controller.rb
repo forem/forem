@@ -14,8 +14,9 @@ class EventsController < ApplicationController
                    :SIBLING_SESSIONS_LIMIT
 
   def index
+    now = Time.current
     @events = Event.published.includes(:page, :organization, :user)
-      .where("end_time >= ?", Time.current)
+      .where("end_time >= ?", now)
       .order(start_time: :asc)
 
     if params[:type_of].present? && Event.type_ofs.key?(params[:type_of])
@@ -23,8 +24,8 @@ class EventsController < ApplicationController
       @events = @events.where(type_of: @active_type_of).to_a
       preload_parent_context(@events)
     else
-      # Hide sub-events that belong to a published parent so the main directory stays hierarchical.
-      @events = @events.top_level_published.to_a
+      # Suppress sub-events only when a published parent is also still visible in this directory.
+      @events = @events.top_level_active_published(now).to_a
     end
 
     preload_sub_event_summaries(@events)

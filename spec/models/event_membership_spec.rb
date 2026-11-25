@@ -87,6 +87,14 @@ RSpec.describe EventMembership do
       long_role = build(:event_membership, parent_event: conference, child_event: livestream, role: "a" * 65)
       expect(long_role).not_to be_valid
     end
+
+    it "acquires the hierarchy advisory lock before cycle validation on save" do
+      allow(described_class).to receive(:acquire_hierarchy_write_lock!).and_call_original
+
+      create(:event_membership, parent_event: conference, child_event: livestream)
+
+      expect(described_class).to have_received(:acquire_hierarchy_write_lock!).at_least(:once)
+    end
   end
 
   describe "deletion safety and cache invalidation" do

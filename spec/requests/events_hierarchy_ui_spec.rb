@@ -166,5 +166,18 @@ RSpec.describe "Event Hierarchy Public UI and Livestream Experience" do
       expect(response).to have_http_status(:success)
       expect(response.body).to include("MegaConf Live Stream", "Part of MegaConf 2026")
     end
+
+    it "still lists an upcoming published sub-event on /events when its parent has already ended" do
+      ended_parent = create(:event, type_of: :conference, title: "Ended Conf", published: true,
+                                    start_time: 5.days.ago, end_time: 1.day.ago)
+      upcoming_child = create(:event, type_of: :live_stream, title: "Post-Conf Bonus Stream", published: true,
+                                      start_time: 2.hours.from_now, end_time: 4.hours.from_now)
+      create(:event_membership, parent_event: ended_parent, child_event: upcoming_child)
+
+      get events_path
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("Post-Conf Bonus Stream")
+      expect(response.body).not_to include("Ended Conf")
+    end
   end
 end

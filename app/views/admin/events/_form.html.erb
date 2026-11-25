@@ -145,9 +145,9 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="crayons-field">
         <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :time_zone, "Display Time Zone", class: "crayons-field__label" do %>
-            Display Time Zone
-            <p class="crayons-field__description">Optional IANA zone (e.g. 'America/New_York', 'UTC').</p>
+          <%= data_form.label :time_zone, t("views.admin.events.form.time_zone"), class: "crayons-field__label" do %>
+            <%= t("views.admin.events.form.time_zone") %>
+            <p class="crayons-field__description"><%= t("views.admin.events.form.time_zone_description") %></p>
           <% end %>
           <input type="text" name="event[data][time_zone]" id="event_data_time_zone" class="crayons-textfield" value="<%= event.data&.dig('time_zone') || event.data&.dig(:time_zone) %>" placeholder="America/New_York">
         <% end %>
@@ -155,9 +155,9 @@
 
       <div class="crayons-field">
         <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :registration_url, "External Registration URL", class: "crayons-field__label" do %>
-            External Registration URL
-            <p class="crayons-field__description">Optional link for conference/meetup registration.</p>
+          <%= data_form.label :registration_url, t("views.admin.events.form.registration_url"), class: "crayons-field__label" do %>
+            <%= t("views.admin.events.form.registration_url") %>
+            <p class="crayons-field__description"><%= t("views.admin.events.form.registration_url_description") %></p>
           <% end %>
           <input type="text" name="event[data][registration_url]" id="event_data_registration_url" class="crayons-textfield" value="<%= event.data&.dig('registration_url') || event.data&.dig(:registration_url) %>" placeholder="https://example.com/register">
         <% end %>
@@ -165,9 +165,9 @@
 
       <div class="crayons-field">
         <%= form.fields_for :data, event.data || {} do |data_form| %>
-          <%= data_form.label :website_url, "Event Website URL", class: "crayons-field__label" do %>
-            Event Website URL
-            <p class="crayons-field__description">Optional external website link.</p>
+          <%= data_form.label :website_url, t("views.admin.events.form.website_url"), class: "crayons-field__label" do %>
+            <%= t("views.admin.events.form.website_url") %>
+            <p class="crayons-field__description"><%= t("views.admin.events.form.website_url_description") %></p>
           <% end %>
           <input type="text" name="event[data][website_url]" id="event_data_website_url" class="crayons-textfield" value="<%= event.data&.dig('website_url') || event.data&.dig(:website_url) %>" placeholder="https://example.com">
         <% end %>
@@ -188,6 +188,7 @@
                  id="parent-event-search"
                  class="crayons-textfield"
                  placeholder="<%= t("views.admin.events.form.search_parent_events") %>"
+                 aria-label="<%= t("views.admin.events.form.search_parent_events") %>"
                  autocomplete="off" />
           <div class="admin-event-parent-picker__list" id="parent-event-picker-list">
             <% available_parents.each do |parent_option| %>
@@ -200,7 +201,7 @@
                 <span class="font-medium"><%= parent_option.title %></span>
                 <span class="c-indicator fs-xs"><%= parent_option.type_of.titleize %></span>
                 <% unless parent_option.published? %>
-                  <span class="c-indicator c-indicator--warning fs-xs">Draft</span>
+                  <span class="c-indicator c-indicator--warning fs-xs"><%= t("views.admin.events.status.draft") %></span>
                 <% end %>
                 <span class="fs-xs opacity-75 ml-auto"><%= parent_option.start_time.to_fs(:short) %></span>
               </label>

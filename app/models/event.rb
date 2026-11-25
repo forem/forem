@@ -67,6 +67,13 @@ class Event < ApplicationRecord
                          .select(:child_event_id),
     )
   }
+  scope :top_level_active_published, lambda { |at = Time.current|
+    where.not(
+      id: EventMembership.joins(:parent_event)
+                         .where(parent_event: { published: true, end_time: at.. })
+                         .select(:child_event_id),
+    )
+  }
 
   DEFAULT_HEX_COLORS = ["#3B49DF", "#0D9488", "#7C3AED", "#DB2777", "#D97706"].freeze
 

@@ -18,6 +18,7 @@
             datetime="<%= child.start_time.iso8601 %>"
             data-start-iso="<%= child.start_time.iso8601 %>"
             data-end-iso="<%= child.end_time.iso8601 %>"
+            data-grouped-date="<%= child.start_time.in_time_zone(parent_event.time_zone).to_date.iso8601 %>"
             data-format="time_only">
         <%= event_time_slot_label(child, time_zone: parent_event.time_zone) %>
       </time>

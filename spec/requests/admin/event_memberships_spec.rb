@@ -65,6 +65,32 @@ RSpec.describe "Admin::EventMemberships and Hierarchical Admin Index" do
       membership_queries = queries.grep(/FROM "event_memberships"/)
       expect(membership_queries.size).to be <= 6
     end
+
+    it "expands shared subtrees only once in the hierarchy tree to stay bounded on diamond DAGs" do
+      second_conf = create(:event, type_of: :conference, title: "Second Conf")
+      shared_track = create(:event, type_of: :other, title: "Shared Track")
+      nested_leaf = create(:event, type_of: :live_stream, title: "Deep Leaf Session")
+
+      create(:event_membership, parent_event: conference, child_event: shared_track)
+      create(:event_membership, parent_event: second_conf, child_event: shared_track)
+      create(:event_membership, parent_event: shared_track, child_event: nested_leaf)
+
+      tree = Events::HierarchyTree.new
+      all_nodes = []
+      collect = lambda do |node|
+        all_nodes << node
+        node.children.each { |child| collect.call(child) }
+      end
+      tree.roots.each { |root| collect.call(root) }
+
+      leaf_occurrences = all_nodes.select { |n| n.event.id == nested_leaf.id }
+      collapsed_shared = all_nodes.select do |n|
+        n.event.id == shared_track.id && n.collapsed_shared_children_count.positive?
+      end
+
+      expect(leaf_occurrences.size).to eq(1)
+      expect(collapsed_shared.size).to eq(1)
+    end
   end
 
   describe "managing memberships in admin" do

@@ -10269,7 +10269,7 @@
               },
               "position": {
                 "type": "integer",
-                "default": 0
+                "description": "Ordering index within the parent event. On POST, omitting position appends after existing sub-events; on PATCH, omitting position preserves the existing order."
               },
               "role": {
                 "type": "string",

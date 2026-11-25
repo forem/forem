@@ -1,17 +1,24 @@
 module Events
   class HierarchyTree
     DEFAULT_PER_PAGE = 25
+    MAX_EXPANDED_NODES = 500
 
-    Node = Data.define(:event, :membership, :children, :depth, :parent_count, :pages_count)
+    Node = Data.define(
+      :event, :membership, :children, :depth, :parent_count, :pages_count, :collapsed_shared_children_count
+    )
 
     attr_reader :roots, :paginated_scope, :total_events_count, :total_roots_count, :total_sub_links_count
 
-    def initialize(scope: Event.all, page: 1, per_page: DEFAULT_PER_PAGE, flat: false, filtered: false)
+    def initialize(scope: Event.all, page: 1, per_page: DEFAULT_PER_PAGE, flat: false, filtered: false,
+                   max_nodes: MAX_EXPANDED_NODES)
       @base_scope = scope
       @page = page
       @per_page = per_page
       @flat = flat
       @filtered = filtered
+      @max_nodes = max_nodes
+      @rendered_nodes = 0
+      @expanded_event_ids = Set.new
       @total_events_count = Event.count
       @total_sub_links_count = EventMembership.count
       build_tree
@@ -47,6 +54,7 @@ module Events
           depth: 0,
           parent_count: parent_counts[event.id] || 0,
           pages_count: pages_counts[event.id] || 0,
+          collapsed_shared_children_count: 0,
         )
       end
     end
@@ -86,8 +94,6 @@ module Events
       matching_ids = @base_scope.ids
       return Event.none if matching_ids.empty?
 
-      # Include matching events that are either top-level roots OR whose parents
-      # aren't already in the matching set so filtered sub-events are never hidden.
       matched_parents_of_matches = EventMembership
         .where(child_event_id: matching_ids, parent_event_id: matching_ids)
         .select(:child_event_id)
@@ -128,22 +134,42 @@ module Events
       [memberships_by_parent, events_by_id]
     end
 
+    # Expands each shared descendant's subtree at most once across the rendered tree
+    # and enforces a hard node budget so dense diamond DAGs stay O(V + E) in time/memory.
     def build_node(event, membership:, depth:, visited:, memberships_by_parent:, events_by_id:,
                    parent_counts:, pages_counts:)
-      child_nodes = (memberships_by_parent[event.id] || []).filter_map do |child_membership|
-        child_event = events_by_id[child_membership.child_event_id]
-        next if child_event.nil? || visited.include?(child_event.id) || depth >= EventMembership::MAX_DEPTH
+      @rendered_nodes += 1
+      raw_children = memberships_by_parent[event.id] || []
+      already_expanded = @expanded_event_ids.include?(event.id)
+      within_budget = @rendered_nodes < @max_nodes
 
-        build_node(
-          child_event,
-          membership: child_membership,
-          depth: depth + 1,
-          visited: visited | [child_event.id],
-          memberships_by_parent: memberships_by_parent,
-          events_by_id: events_by_id,
-          parent_counts: parent_counts,
-          pages_counts: pages_counts,
-        )
+      child_nodes = []
+      collapsed_count = 0
+
+      if raw_children.any? && (already_expanded || !within_budget || depth >= EventMembership::MAX_DEPTH)
+        collapsed_count = raw_children.size
+      elsif raw_children.any?
+        @expanded_event_ids.add(event.id)
+        raw_children.each do |child_membership|
+          child_event = events_by_id[child_membership.child_event_id]
+          next if child_event.nil? || visited.include?(child_event.id)
+
+          if @rendered_nodes >= @max_nodes
+            collapsed_count += 1
+            next
+          end
+
+          child_nodes << build_node(
+            child_event,
+            membership: child_membership,
+            depth: depth + 1,
+            visited: visited | [child_event.id],
+            memberships_by_parent: memberships_by_parent,
+            events_by_id: events_by_id,
+            parent_counts: parent_counts,
+            pages_counts: pages_counts,
+          )
+        end
       end
 
       Node.new(
@@ -153,6 +179,7 @@ module Events
         depth: depth,
         parent_count: parent_counts[event.id] || 0,
         pages_count: pages_counts[event.id] || 0,
+        collapsed_shared_children_count: collapsed_count,
       )
     end
 

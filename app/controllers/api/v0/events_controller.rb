@@ -95,8 +95,7 @@ module Api
             return scope.none
           end
 
-          scope = scope.joins(:parent_event_memberships)
-            .where(event_memberships: { parent_event_id: parent.id })
+          scope = scope.where(id: EventMembership.where(parent_event_id: parent.id).select(:child_event_id))
         end
 
         if params[:child_event_id].present?
@@ -106,8 +105,7 @@ module Api
             return scope.none
           end
 
-          scope = scope.joins(:child_event_memberships)
-            .where(event_memberships: { child_event_id: child.id })
+          scope = scope.where(id: EventMembership.where(child_event_id: child.id).select(:parent_event_id))
         end
 
         if params[:scope] == "top_level" || ActiveModel::Type::Boolean.new.cast(params[:top_level])
@@ -139,15 +137,9 @@ module Api
       def save_event_with_memberships(parent_ids:, child_entries:)
         success = false
         Event.transaction do
-          unless @event.save
-            raise ActiveRecord::Rollback
-          end
+          raise ActiveRecord::Rollback unless @event.save
 
-          if !parent_ids.nil? && !Events::SyncMemberships.sync_parents(@event, parent_ids)
-            raise ActiveRecord::Rollback
-          end
-
-          if !child_entries.nil? && !Events::SyncMemberships.sync_children(@event, child_entries)
+          unless Events::SyncMemberships.sync_both(@event, parent_ids: parent_ids, child_entries: child_entries)
             raise ActiveRecord::Rollback
           end
 

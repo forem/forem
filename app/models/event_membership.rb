@@ -1,6 +1,9 @@
 class EventMembership < ApplicationRecord
   MAX_DEPTH = 5
   MAX_ROLE_LENGTH = 64
+  # Fixed transaction-scoped advisory lock key to serialize DAG cycle/depth checks
+  # across concurrent writers so two simultaneous requests cannot introduce a cycle.
+  HIERARCHY_LOCK_KEY = 2_147_483_001
 
   belongs_to :parent_event, class_name: "Event", inverse_of: :child_event_memberships
   belongs_to :child_event, class_name: "Event", inverse_of: :parent_event_memberships
@@ -8,6 +11,8 @@ class EventMembership < ApplicationRecord
   scope :ordered, -> { order(:position, :id) }
 
   before_validation :normalize_role
+  before_validation :acquire_lock_if_in_transaction, if: :hierarchy_edge_changed?
+  before_save :ensure_locked_hierarchy_integrity, if: :hierarchy_edge_changed?
 
   validates :child_event_id,
             uniqueness: {
@@ -22,6 +27,10 @@ class EventMembership < ApplicationRecord
   validate :no_hierarchy_cycle_or_excessive_depth
 
   after_commit :purge_related_events_cache, on: %i[create update destroy]
+
+  def self.acquire_hierarchy_write_lock!
+    connection.execute(sanitize_sql_array(["SELECT pg_advisory_xact_lock(?)", HIERARCHY_LOCK_KEY]))
+  end
 
   def self.ancestor_depths_for(event_id, max_depth: MAX_DEPTH + 1)
     return {} if event_id.blank?
@@ -73,6 +82,29 @@ class EventMembership < ApplicationRecord
 
   private
 
+  def hierarchy_edge_changed?
+    new_record? || will_save_change_to_parent_event_id? || will_save_change_to_child_event_id?
+  end
+
+  def acquire_lock_if_in_transaction
+    return unless self.class.connection.transaction_open?
+
+    self.class.acquire_hierarchy_write_lock!
+    @hierarchy_lock_acquired_for_validation = true
+  end
+
+  def ensure_locked_hierarchy_integrity
+    if @hierarchy_lock_acquired_for_validation
+      @hierarchy_lock_acquired_for_validation = false
+      return
+    end
+
+    self.class.acquire_hierarchy_write_lock!
+    cannot_belong_to_self
+    no_hierarchy_cycle_or_excessive_depth
+    throw(:abort) if errors.any?
+  end
+
   def normalize_role
     cleaned = role.to_s.squish
     self.role = cleaned.presence
@@ -87,7 +119,7 @@ class EventMembership < ApplicationRecord
 
   def no_hierarchy_cycle_or_excessive_depth
     return if parent_event_id.blank? || child_event_id.blank? || parent_event_id == child_event_id
-    return unless new_record? || will_save_change_to_parent_event_id? || will_save_change_to_child_event_id?
+    return unless hierarchy_edge_changed?
 
     ancestor_depths = self.class.ancestor_depths_for(parent_event_id)
     if ancestor_depths.key?(child_event_id)

@@ -38,7 +38,7 @@
 
     <% if has_filters %>
       <div class="event-schedule__filters" role="tablist" aria-label="<%= t("views.events.hierarchy.filter_tracks") %>" data-schedule-filters="true">
-        <button type="button" class="event-schedule__filter-pill event-schedule__filter-pill--active" data-filter-role="all" aria-pressed="true">
+        <button type="button" class="event-schedule__filter-pill event-schedule__filter-pill--active" data-filter-all="true" data-filter-role="" aria-pressed="true">
           <%= t("views.events.hierarchy.all_tracks") %>
         </button>
         <% roles.each do |role_name| %>
@@ -116,6 +116,7 @@
         if (!pill) return;
 
         const targetRole = pill.dataset.filterRole;
+        const showAll = pill.hasAttribute("data-filter-all");
         filterBar.querySelectorAll("[data-filter-role]").forEach(function(btn) {
           const active = btn === pill;
           btn.classList.toggle("event-schedule__filter-pill--active", active);
@@ -127,7 +128,7 @@
 
         container.querySelectorAll("[data-session-row]").forEach(function(row) {
           const rowRole = row.dataset.sessionRole || "";
-          const show = targetRole === "all" || rowRole === targetRole;
+          const show = showAll || rowRole === targetRole;
           row.style.display = show ? "" : "none";
         });
 

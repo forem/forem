@@ -149,7 +149,7 @@
               <%= is_upcoming ? t("views.events.stream.coming_soon") : t("views.events.stream.stream_not_configured_eyebrow") %>
             </div>
             <p class="stream-coming-soon__desc m-0">
-              <%= is_upcoming ? t("views.events.stream.stream_coming_soon_placeholder") : "Stream URL not configured." %>
+              <%= is_upcoming ? t("views.events.stream.stream_coming_soon_placeholder") : t("views.events.stream.not_configured") %>
             </p>
             <% if is_upcoming %>
               <div class="stream-coming-soon__actions mt-4">
@@ -201,18 +201,25 @@
               (localStorage.getItem("config_body_class") || "").includes("dark-theme");
           }
 
+          function matchesAllowedHost(hostname, allowedDomains) {
+            const normalized = (hostname || "").toLowerCase();
+            return allowedDomains.some(function(domain) {
+              return normalized === domain || normalized.endsWith("." + domain);
+            });
+          }
+
           function applyThemeToChatUrl() {
             try {
               const url = new URL(chatFrame.src);
               const dark = isDark();
 
-              if (url.hostname.includes("youtube.com")) {
+              if (matchesAllowedHost(url.hostname, ["youtube.com"])) {
                 if (dark) {
                   url.searchParams.set("dark_theme", "1");
                 } else {
                   url.searchParams.delete("dark_theme");
                 }
-              } else if (url.hostname.includes("twitch.tv")) {
+              } else if (matchesAllowedHost(url.hostname, ["twitch.tv"])) {
                 if (dark) {
                   url.searchParams.set("darkpopout", "");
                 } else {
@@ -272,6 +279,13 @@
       const IS_FORCED_LIVE = <%= params[:state] == 'forced_live' %>;
       const EVENT_ID = "<%= event.id %>";
 
+      function matchesAllowedHost(hostname, allowedDomains) {
+        const normalized = (hostname || "").toLowerCase();
+        return allowedDomains.some(function(domain) {
+          return normalized === domain || normalized.endsWith("." + domain);
+        });
+      }
+
       function update() {
         const overlay = document.getElementById("overlay-post-" + EVENT_ID);
         const countdownEl = document.getElementById("countdown-post-" + EVENT_ID);
@@ -297,13 +311,24 @@
           if (overlay) overlay.classList.add("hidden");
 
           const isReplay = now > END_TIME && !IS_FORCED_LIVE;
-          if (!isReplay && stage) {
-            stage.classList.remove("stream-stage--upcoming");
-            stage.classList.add("stream-stage--live");
-          }
-          if (!isReplay && badge && !badge.classList.contains("event-status-badge--live")) {
-            badge.className = "event-status-badge event-status-badge--live";
-            badge.innerHTML = '<span class="event-status-badge__dot" aria-hidden="true"></span> ' + <%= t("views.events.stream.live_now").to_json.html_safe %>;
+          if (isReplay) {
+            if (stage) {
+              stage.classList.remove("stream-stage--upcoming", "stream-stage--live");
+              stage.classList.add("stream-stage--ended");
+            }
+            if (badge && !badge.classList.contains("event-status-badge--ended")) {
+              badge.className = "event-status-badge event-status-badge--ended";
+              badge.textContent = <%= t("views.events.stream.replay_badge").to_json.html_safe %>;
+            }
+          } else {
+            if (stage) {
+              stage.classList.remove("stream-stage--upcoming", "stream-stage--ended");
+              stage.classList.add("stream-stage--live");
+            }
+            if (badge && !badge.classList.contains("event-status-badge--live")) {
+              badge.className = "event-status-badge event-status-badge--live";
+              badge.innerHTML = '<span class="event-status-badge__dot" aria-hidden="true"></span> ' + <%= t("views.events.stream.live_now").to_json.html_safe %>;
+            }
           }
 
           if (!playerContainer.querySelector("iframe")) {
@@ -312,10 +337,10 @@
             let finalSrc = IFRAME_SRC;
             try {
               const url = new URL(finalSrc);
-              if (url.hostname.includes("youtube.com") || url.hostname.includes("youtu.be")) {
+              if (matchesAllowedHost(url.hostname, ["youtube.com", "youtu.be"])) {
                 url.searchParams.set("autoplay", isReplay ? "0" : "1");
                 if (!isReplay) url.searchParams.set("mute", "1");
-              } else if (url.hostname.includes("twitch.tv")) {
+              } else if (matchesAllowedHost(url.hostname, ["twitch.tv"])) {
                 url.searchParams.set("autoplay", isReplay ? "false" : "true");
                 if (!isReplay) url.searchParams.set("muted", "true");
               }

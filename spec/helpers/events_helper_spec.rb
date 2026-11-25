@@ -183,4 +183,42 @@ RSpec.describe EventsHelper do
       expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "other"))).to eq("Event")
     end
   end
+
+  describe "#event_time_slot_label" do
+    it "shows distinct zone abbreviations when an event spans a DST transition" do
+      zone = ActiveSupport::TimeZone["America/New_York"]
+      event = build_stubbed(
+        :event,
+        start_time: zone.local(2026, 11, 1, 0, 30),
+        end_time: zone.local(2026, 11, 1, 2, 30),
+        data: { "time_zone" => "America/New_York" },
+      )
+
+      expect(helper.event_time_slot_label(event)).to eq("12:30 AM EDT – 2:30 AM EST")
+    end
+
+    it "shows a single trailing zone abbreviation when start and end share the same zone" do
+      zone = ActiveSupport::TimeZone["America/New_York"]
+      event = build_stubbed(
+        :event,
+        start_time: zone.local(2026, 11, 10, 10, 0),
+        end_time: zone.local(2026, 11, 10, 11, 30),
+        data: { "time_zone" => "America/New_York" },
+      )
+
+      expect(helper.event_time_slot_label(event)).to eq("10:00 AM – 11:30 AM EST")
+    end
+  end
+
+  describe "#event_embed_stream_url" do
+    it "only injects autoplay params for exact allowed streaming domains" do
+      yt = build_stubbed(:event, primary_stream_url: "https://www.youtube.com/embed/abcdefghijk")
+      spoof = build_stubbed(:event, primary_stream_url: "https://evil-youtube.com/embed/abcdefghijk")
+
+      expect(helper.event_embed_stream_url(yt, autoplay: true, muted: true)).to include("autoplay=1", "mute=1")
+      expect(helper.event_embed_stream_url(spoof, autoplay: true, muted: true)).to eq(
+        "https://evil-youtube.com/embed/abcdefghijk",
+      )
+    end
+  end
 end

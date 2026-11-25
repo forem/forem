@@ -27,9 +27,19 @@
             timeZoneName: "short"
           });
         } else if (format === "time_only" && sameDay) {
+          const localDateKey =
+            start.getFullYear() + "-" +
+            String(start.getMonth() + 1).padStart(2, "0") + "-" +
+            String(start.getDate()).padStart(2, "0");
+          const groupedDate = el.dataset.groupedDate;
           const startStr = start.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
           const endStr = end.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
-          el.textContent = startStr + " – " + endStr;
+          if (groupedDate && groupedDate !== localDateKey) {
+            const localDayStr = start.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+            el.textContent = localDayStr + " · " + startStr + " – " + endStr;
+          } else {
+            el.textContent = startStr + " – " + endStr;
+          }
         } else if (sameDay) {
           const dayStr = start.toLocaleDateString(undefined, { month: "short", day: "numeric" });
           const startStr = start.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });

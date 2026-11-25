@@ -98,7 +98,7 @@ module Admin
         ordered.each_with_index do |item, pos|
           item.update_column(:position, pos) if item.position != pos
         end
-        @event.purge_hierarchy_edge_cache!
+        ActiveRecord.after_all_transactions_commit { @event.purge_hierarchy_edge_cache! }
         true
       end
     end

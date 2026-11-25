@@ -79,12 +79,17 @@ pt:
         add_to_calendar: Adicionar à Agenda
         stream_not_configured_eyebrow: Transmissão em Breve
         stream_coming_soon_placeholder: O player de transmissão aparecerá aqui assim que o link for publicado. Demonstre interesse abaixo para receber lembretes!
+        not_configured: URL de transmissão não configurada.
         live_chat: Chat ao Vivo
         chat_pre_show: Chat pré-evento
         share: Compartilhar
         link_copied: Copiado!
         about_session: Sobre Esta Sessão
         duration_label: Duração
+      draft_notice:
+        heading: "Este evento não está publicado!"
+        body: "Apenas administradores podem ver esta página."
+        edit: "Editar Evento"
       hierarchy:
         part_of_aria: Eventos pai
         part_of: Parte de

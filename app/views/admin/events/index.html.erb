@@ -23,12 +23,17 @@
   <div class="admin-events-toolbar">
     <%= form_with url: admin_events_path, method: :get, local: true, class: "admin-events-filters" do %>
       <%= hidden_field_tag :view, @view_mode %>
-      <%= text_field_tag :q, @query, placeholder: t("views.admin.events.index.search_placeholder"), class: "crayons-textfield", style: "max-width: 240px;" %>
+      <%= text_field_tag :q, @query,
+                         placeholder: t("views.admin.events.index.search_placeholder"),
+                         aria: { label: t("views.admin.events.index.search_label") },
+                         class: "crayons-textfield", style: "max-width: 240px;" %>
       <%= select_tag :type_of,
                      options_for_select([[t("views.admin.events.index.all_types"), ""]] + Event.type_ofs.keys.map { |k| [k.titleize, k] }, @type_filter),
+                     aria: { label: t("views.admin.events.index.filter_by_type") },
                      class: "crayons-select", style: "max-width: 170px;" %>
       <%= select_tag :status,
-                     options_for_select([[t("views.admin.events.index.all_statuses"), ""], ["Published", "published"], ["Draft", "draft"]], @status_filter),
+                     options_for_select([[t("views.admin.events.index.all_statuses"), ""], [t("views.admin.events.status.published"), "published"], [t("views.admin.events.status.draft"), "draft"]], @status_filter),
+                     aria: { label: t("views.admin.events.index.filter_by_status") },
                      class: "crayons-select", style: "max-width: 150px;" %>
       <%= submit_tag t("views.admin.events.index.filter"), class: "c-btn c-btn--secondary btn-sm" %>
       <% if @query.present? || @type_filter.present? || @status_filter.present? %>

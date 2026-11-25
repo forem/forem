@@ -31,8 +31,8 @@
   <div class="crayons-layout event-show-layout container grid-cols-1">
     <% if !@event.published? %>
       <div class="crayons-notice crayons-notice--warning mb-6 p-4 text-center">
-        <strong>This event is not published!</strong> Only admins can see this page.
-        <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2">Edit Event</a>
+        <strong><%= t("views.events.draft_notice.heading") %></strong> <%= t("views.events.draft_notice.body") %>
+        <a href="<%= edit_admin_event_path(@event) %>" class="c-link c-link--branded ml-2"><%= t("views.events.draft_notice.edit") %></a>
       </div>
     <% end %>
 

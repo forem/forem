@@ -162,6 +162,15 @@ RSpec.describe "Api::V0::EventMemberships and Event Hierarchy API" do
       expect(response.parsed_body.pluck("id")).to eq([conference.id])
     end
 
+    it "applies combined parent_event_id and child_event_id filters independently" do
+      leaf = create(:event, type_of: :live_stream, title: "Breakout Room", published: true)
+      create(:event_membership, parent_event: upcoming_stream, child_event: leaf)
+
+      get "/api/events", params: { parent_event_id: conference.id, child_event_id: leaf.id }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).to eq([upcoming_stream.id])
+    end
+
     it "expands hierarchy and schedule summaries when members=true" do
       get "/api/events", params: { scope: "top_level", members: "true" }
       expect(response).to have_http_status(:ok)
@@ -242,6 +251,20 @@ RSpec.describe "Api::V0::EventMemberships and Event Hierarchy API" do
             headers: admin_headers
       expect(response).to have_http_status(:unprocessable_entity)
       expect(upcoming_stream.reload.sub_events).to be_empty
+    end
+
+    it "allows reversing a parent-child relationship atomically in a single update" do
+      parent = create(:event, title: "Event E", published: true)
+      child = create(:event, title: "Event C", published: true)
+      create(:event_membership, parent_event: parent, child_event: child)
+
+      patch "/api/events/#{parent.id}",
+            params: { event: { parent_event_ids: [child.id], sub_event_ids: [] } }.to_json,
+            headers: admin_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(parent.reload.parent_events).to eq([child])
+      expect(parent.sub_events).to be_empty
     end
   end
 end

@@ -131,7 +131,7 @@
                 <%= link_to parent.title, admin_event_path(parent), class: "font-bold c-link" %>
                 <span class="c-indicator"><%= parent.type_of.titleize %></span>
                 <% unless parent.published? %>
-                  <span class="c-indicator c-indicator--warning">Draft</span>
+                  <span class="c-indicator c-indicator--warning"><%= t("views.admin.events.status.draft") %></span>
                 <% end %>
                 <% if pm.role.present? %>
                   <span class="admin-event-chip admin-event-chip--role"><%= pm.role %></span>
@@ -141,7 +141,7 @@
                 <% end %>
               </div>
               <div class="flex items-center gap-2">
-                <%= link_to "View Parent", admin_event_path(parent), class: "c-btn c-btn--secondary c-btn--sm" %>
+                <%= link_to t("views.admin.event_memberships.view_parent"), admin_event_path(parent), class: "c-btn c-btn--secondary c-btn--sm" %>
                 <%= button_to t("views.admin.event_memberships.detach"),
                               admin_event_membership_path(parent, pm, return_to_event_id: @event.id),
                               method: :delete,
@@ -208,7 +208,7 @@
                       <span class="c-indicator"><%= t("views.events.gathering.ended") %></span>
                     <% end %>
                     <% unless child.published? %>
-                      <span class="c-indicator c-indicator--warning">Draft</span>
+                      <span class="c-indicator c-indicator--warning"><%= t("views.admin.events.status.draft") %></span>
                     <% end %>
                   </div>
                 </td>
@@ -255,7 +255,7 @@
             <%= mf.label :child_event_id, t("views.admin.event_memberships.select_event"), class: "crayons-field__label" %>
             <%= mf.select :child_event_id,
                           @available_sub_events.map { |candidate|
-                            status_tag = candidate.published? ? "" : " [Draft]"
+                            status_tag = candidate.published? ? "" : " [#{t('views.admin.events.status.draft')}]"
                             ["#{candidate.title} (#{candidate.type_of.titleize} · #{candidate.start_time.to_fs(:short)})#{status_tag}", candidate.id]
                           },
                           { include_blank: t("views.admin.event_memberships.choose_event_prompt") },

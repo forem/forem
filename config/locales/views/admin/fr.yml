@@ -755,6 +755,9 @@ fr:
       events:
         fork: "Dupliquer"
         fork_event: "Dupliquer l'événement"
+        status:
+          published: "Publié"
+          draft: "Brouillon"
         index:
           subtitle: "Gérez les conférences, diffusions en direct, défis et sous-événements imbriqués."
           total_events: "événements au total"
@@ -762,6 +765,9 @@ fr:
           top_level_events: "événements principaux"
           hierarchy_links: "liens parent–enfant"
           search_placeholder: "Rechercher un titre ou slug..."
+          search_label: "Rechercher des événements par titre ou slug"
+          filter_by_type: "Filtrer les événements par type"
+          filter_by_status: "Filtrer les événements par statut"
           all_types: "Tous les types"
           all_statuses: "Tous les statuts"
           filter: "Filtrer"
@@ -776,6 +782,9 @@ fr:
           sub_events_count:
             one: "1 sous-événement"
             other: "%{count} sous-événements"
+          nested_collapsed:
+            one: "+1 imbriqué (voir l'événement)"
+            other: "+%{count} imbriqués (voir l'événement)"
           featured: "À la une"
           shared_parents:
             one: "Dans 1 parent"
@@ -788,6 +797,12 @@ fr:
         form:
           allow_articles: "Autoriser les articles"
           allow_articles_description: "Permettre d'associer directement des articles à cet événement et de les afficher sur la page de l'événement une fois celui-ci commencé."
+          time_zone: "Fuseau horaire d'affichage"
+          time_zone_description: "Fuseau IANA optionnel (ex. 'America/New_York', 'UTC')."
+          registration_url: "URL d'inscription externe"
+          registration_url_description: "Lien optionnel pour l'inscription à la conférence ou au meetup."
+          website_url: "URL du site de l'événement"
+          website_url_description: "Lien externe optionnel vers le site de l'événement."
           parent_events: "Événements parents (optionnel)"
           parent_events_description: "Associez cet événement comme sous-événement d'un ou plusieurs événements parents (ex. une diffusion en direct appartenant à une conférence)."
           search_parent_events: "Filtrer les événements parents disponibles..."
@@ -814,6 +829,7 @@ fr:
         subtitle: "Associez des sous-événements tels que des diffusions en direct, ateliers ou défis. Les sous-événements en direct sont mis en avant automatiquement."
         create_sub_event: "+ Créer un sous-événement"
         belongs_to_heading: "Appartient à (Événements parents)"
+        view_parent: "Voir le parent"
         sub_events_heading: "Sous-événements programmés"
         detach: "Détacher"
         detach_confirm: "Détacher ce sous-événement de son parent ? Les deux événements seront conservés."

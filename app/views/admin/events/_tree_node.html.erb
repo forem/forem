@@ -69,6 +69,12 @@
             </span>
           <% end %>
 
+          <% if node.collapsed_shared_children_count.positive? %>
+            <%= link_to t("views.admin.events.index.nested_collapsed", count: node.collapsed_shared_children_count),
+                        admin_event_path(event, anchor: "event-hierarchy"),
+                        class: "admin-event-chip admin-event-chip--pages" %>
+          <% end %>
+
           <% if node.pages_count.positive? %>
             <span class="admin-event-chip admin-event-chip--pages">
               <%= t("views.admin.events.index.pages_count", count: node.pages_count) %>
@@ -87,9 +93,9 @@
   <td class="whitespace-nowrap"><%= event.type_of.titleize %></td>
   <td class="whitespace-nowrap">
     <% if event.published? %>
-      <span class="c-indicator c-indicator--success">Published</span>
+      <span class="c-indicator c-indicator--success"><%= t("views.admin.events.status.published") %></span>
     <% else %>
-      <span class="c-indicator c-indicator--warning">Draft</span>
+      <span class="c-indicator c-indicator--warning"><%= t("views.admin.events.status.draft") %></span>
     <% end %>
   </td>
   <td>
