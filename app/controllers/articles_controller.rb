@@ -513,19 +513,32 @@ class ArticlesController < ApplicationController
   end
 
   def allowed_to_change_org_id?
-    potential_user = @article&.user || current_user
+    return true if current_user.any_admin?
+
+    potential_user_id = effective_author_id
     potential_org_id = requested_organization_id || @article&.organization_id
-    OrganizationMembership.member.exists?(user: potential_user, organization_id: potential_org_id) ||
-      current_user.any_admin?
+    return false unless OrganizationMembership.member.exists?(user_id: potential_user_id,
+                                                              organization_id: potential_org_id)
+
+    # Require admin membership in the target organization when editing or attributing to another author
+    potential_user_id == current_user.id || current_user.org_admin?(potential_org_id)
   end
 
   def org_admin_user_change_privilege
-    params[:article][:user_id] &&
-      # if current_user is an org admin of the article's org
-      current_user.org_admin?(@article.organization_id) &&
+    return false unless @article && params.dig(:article, :user_id).present?
+    return false if params["article"].key?("organization_id") && requested_organization_id.blank?
+
+    # if current_user is an org admin of the article's org
+    current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
       OrganizationMembership.member.exists?(user_id: params[:article][:user_id],
                                             organization_id: @article.organization_id)
+  end
+
+  def effective_author_id
+    return params[:article][:user_id].to_i if org_admin_user_change_privilege
+
+    @article&.user_id || current_user.id
   end
 
   def allowed_to_manage_org_co_authors?

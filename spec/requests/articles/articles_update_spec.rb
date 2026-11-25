@@ -120,6 +120,73 @@ RSpec.describe "ArticlesUpdate" do
     expect(article.reload.co_author_ids).to eq([user.id])
   end
 
+  it "does not move another author's article to an organization the editor does not administer",
+     :aggregate_failures do
+    admin_org = user_org
+    create(:organization_membership, user: user2, organization: admin_org)
+    create(:organization_membership, user: user2, organization: organization2)
+    other_article.update_columns(organization_id: admin_org.id)
+
+    put "/articles/#{other_article.id}", params: { article: { organization_id: organization2.id } }
+
+    expect(response).to have_http_status(:ok)
+    expect(other_article.reload.organization_id).to eq(admin_org.id)
+
+    # Even if the editor is a regular member of the target organization, only admins of that org may reassign into it
+    create(:organization_membership, user: user, organization: organization2, type_of_user: "member")
+    put "/articles/#{other_article.id}", params: { article: { organization_id: organization2.id } }
+
+    expect(response).to have_http_status(:ok)
+    expect(other_article.reload.organization_id).to eq(admin_org.id)
+  end
+
+  it "allows an org admin of both organizations to move a shared member's article between them" do
+    admin_org = user_org
+    create(:organization_membership, user: user2, organization: admin_org)
+    create(:organization_membership, user: user2, organization: organization2)
+    create(:organization_membership, user: user, organization: organization2, type_of_user: "admin")
+    other_article.update_columns(organization_id: admin_org.id)
+
+    put "/articles/#{other_article.id}", params: { article: { organization_id: organization2.id } }
+
+    expect(response).to have_http_status(:ok)
+    expect(other_article.reload.organization_id).to eq(organization2.id)
+  end
+
+  it "validates the final author and organization pair when user_id and organization_id are submitted together",
+     :aggregate_failures do
+    admin_org = user_org
+    create(:organization_membership, user: user2, organization: admin_org)
+    create(:organization_membership, user: user, organization: organization2, type_of_user: "member")
+    article.update_columns(organization_id: admin_org.id)
+
+    # Cannot simultaneously reassign author to user2 and move to organization2 where user2 is not a member
+    # (and editor is only a regular member)
+    put "/articles/#{article.id}", params: { article: { user_id: user2.id, organization_id: organization2.id } }
+
+    expect(response).to have_http_status(:ok)
+    expect(article.reload.organization_id).to eq(admin_org.id)
+    expect(article.user_id).to eq(user2.id)
+
+    # Reset back to editor and add user2 as a member of organization2, but editor is still only a member of org2
+    article.update_columns(user_id: user.id, organization_id: admin_org.id)
+    create(:organization_membership, user: user2, organization: organization2, type_of_user: "member")
+
+    put "/articles/#{article.id}", params: { article: { user_id: user2.id, organization_id: organization2.id } }
+
+    expect(response).to have_http_status(:ok)
+    expect(article.reload.organization_id).to eq(admin_org.id)
+    expect(article.user_id).to eq(user2.id)
+
+    # Cannot simultaneously detach an org article into a personal post while reassigning authorship to another user
+    article.update_columns(user_id: user.id, organization_id: admin_org.id)
+    put "/articles/#{article.id}", params: { article: { user_id: user2.id, organization_id: "" } }
+
+    expect(response).to have_http_status(:ok)
+    expect(article.reload.organization_id).to be_nil
+    expect(article.user_id).to eq(user.id)
+  end
+
   describe "co-author invitations" do
     let(:follower) { create(:user) }
 

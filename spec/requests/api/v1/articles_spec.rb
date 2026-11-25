@@ -1877,6 +1877,33 @@ RSpec.describe "Api::V1::Articles" do
         expect(article.reload.organization).to eq(organization)
       end
 
+      it "does not move the article to an organization the editor does not administer", :aggregate_failures do
+        other_organization = create(:organization)
+        create(:organization_membership, user: author, organization: other_organization)
+
+        put_article(body_markdown: new_body, organization_id: other_organization.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(organization)
+
+        create(:organization_membership, user: user, organization: other_organization, type_of_user: "member")
+        put_article(body_markdown: new_body, organization_id: other_organization.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(organization)
+      end
+
+      it "moves the article when the editor administers the target organization and the author belongs to it" do
+        other_organization = create(:organization)
+        create(:organization_membership, user: author, organization: other_organization)
+        create(:organization_membership, user: user, organization: other_organization, type_of_user: "admin")
+
+        put_article(body_markdown: new_body, organization_id: other_organization.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(other_organization)
+      end
+
       it "does not create an audit log when the update fails" do
         expect { put_article(title: nil, body_markdown: nil) }.not_to change(AuditLog, :count)
         expect(response).to have_http_status(:unprocessable_entity)

@@ -805,16 +805,17 @@ module Api
     end
 
     def allowed_to_change_org_id?
-      potential_user = @article&.user || @user
-      if @article.nil? || OrganizationMembership.member.exists?(user: potential_user,
-                                                                organization_id: params.dig("article",
-                                                                                            "organization_id"))
-        OrganizationMembership.member.exists?(user: potential_user,
-                                              organization_id: params.dig("article", "organization_id"))
-      elsif potential_user == @user
-        potential_user.org_admin?(params.dig("article", "organization_id")) ||
-          @user.any_admin?
-      end
+      requested_org_id = params.dig("article", "organization_id")
+      return OrganizationMembership.member.exists?(user: @user, organization_id: requested_org_id) if @article.nil?
+
+      potential_user = @article.user
+      return true if potential_user == @user && @user.any_admin?
+
+      return false unless OrganizationMembership.member.exists?(user: potential_user,
+                                                                organization_id: requested_org_id)
+
+      # Require admin membership in the target organization when editing another author's article
+      potential_user == @user || @user.org_admin?(requested_org_id) || @user.any_admin?
     end
 
     def validate_article_param_is_hash
