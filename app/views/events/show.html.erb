@@ -31,32 +31,34 @@
 
   <%= render "parent_context_bar" %>
 
-  <header class="event-stage-header crayons-card p-6 mb-5" style="--event-accent: <%= @event.background_hex_color %>;">
-    <nav aria-label="Breadcrumbs" class="event-breadcrumbs mb-3 fs-s color-base-60">
+  <header class="event-stage-header crayons-card p-5 m:p-6 mb-5" style="--event-accent: <%= @event.background_hex_color %>;">
+    <nav aria-label="Breadcrumbs" class="event-breadcrumbs mb-2 fs-xs color-base-60">
       <% event_breadcrumb_links(@event).each do |label, path| %>
-        <a href="<%= path %>" class="c-link c-link--branded font-bold"><%= label %></a>
+        <a href="<%= path %>" class="event-breadcrumbs__link"><%= label %></a>
         <span aria-hidden="true">/</span>
       <% end %>
       <% if @primary_parent_event.present? %>
-        <a href="<%= event_link_target(@primary_parent_event) %>" class="c-link c-link--branded font-bold"><%= @primary_parent_event.title %></a>
-        <span aria-hidden="true">/</span>
+        <a href="<%= event_link_target(@primary_parent_event) %>" class="event-breadcrumbs__link"><%= @primary_parent_event.title %></a>
       <% end %>
-      <span><%= @event.title %></span>
     </nav>
 
     <div class="event-header event-header--stage">
       <div class="event-header__main">
         <div class="flex items-center flex-wrap gap-2 mb-2">
-          <span class="event-pill <%= event_pill_class(@event) %>"><%= @event.format_pill_label %></span>
           <% if is_live %>
-            <span class="live-indicator">LIVE</span>
+            <span class="live-indicator event-status-badge event-status-badge--live event-status-badge--xs">
+              <span class="event-status-badge__dot" aria-hidden="true"></span>
+              <%= t("views.events.gathering.live") %>
+            </span>
           <% elsif is_upcoming %>
-            <span class="event-status-badge event-status-badge--upcoming-subtle"><%= t("views.events.stream.coming_soon") %></span>
+            <span class="event-status-badge event-status-badge--upcoming-subtle event-status-badge--xs"><%= t("views.events.stream.coming_soon") %></span>
           <% else %>
-            <span class="event-status-badge event-status-badge--ended"><%= t("views.events.gathering.ended") %></span>
+            <span class="event-status-badge event-status-badge--ended event-status-badge--xs"><%= t("views.events.gathering.ended") %></span>
           <% end %>
           <% if @parent_memberships&.first&.role.present? %>
-            <span class="event-role-chip"><%= @parent_memberships.first.role %></span>
+            <span class="event-role-chip event-role-chip--xs"><%= @parent_memberships.first.role %></span>
+          <% elsif !@event.live_stream? %>
+            <span class="event-pill <%= event_pill_class(@event) %>"><%= @event.format_pill_label %></span>
           <% end %>
         </div>
 
@@ -159,16 +161,16 @@
         </div>
 
         <% if @event.organization %>
-          <a href="<%= organization_path(@event.organization) %>" class="profile-card">
-            <img src="<%= @event.organization.profile_image_url %>" alt="<%= @event.organization.name %> Logo">
+          <a href="<%= @event.organization.path %>" class="profile-card">
+            <img src="<%= optimized_image_url(@event.organization.profile_image_url, width: 90, random_fallback: false) %>" alt="<%= @event.organization.name %> Logo" loading="lazy">
             <div>
               <strong><%= @event.organization.name %></strong>
               <span>@<%= @event.organization.slug %></span>
             </div>
           </a>
         <% elsif @event.user %>
-          <a href="<%= user_path(@event.user) %>" class="profile-card">
-            <img src="<%= @event.user.profile_image_90 %>" alt="<%= @event.user.name %> Silhouette">
+          <a href="<%= @event.user.path %>" class="profile-card">
+            <img src="<%= @event.user.profile_image_90 %>" alt="<%= @event.user.name %>" loading="lazy">
             <div>
               <strong><%= @event.user.name %></strong>
               <span>@<%= @event.user.username %></span>

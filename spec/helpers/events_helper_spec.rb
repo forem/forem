@@ -221,4 +221,34 @@ RSpec.describe EventsHelper do
       )
     end
   end
+
+  describe "#event_banner_image_url" do
+    it "routes external banner_image_url through optimized_image_url without random fallback" do
+      event = build_stubbed(:event, data: { "banner_image_url" => "https://images.unsplash.com/photo-123" })
+      allow(helper).to receive(:optimized_image_url)
+        .with("https://images.unsplash.com/photo-123", width: 1200, random_fallback: false)
+        .and_return("https://media.dev.to/cdn-cgi/image/width=1200/https://images.unsplash.com/photo-123")
+
+      expect(helper.event_banner_image_url(event, width: 1200)).to eq(
+        "https://media.dev.to/cdn-cgi/image/width=1200/https://images.unsplash.com/photo-123",
+      )
+    end
+
+    it "returns nil for unsafe banner URLs" do
+      event = build_stubbed(:event, data: { "banner_image_url" => "javascript:alert(1)" })
+
+      expect(helper.event_banner_image_url(event)).to be_nil
+    end
+  end
+
+  describe "#event_host_path" do
+    it "returns organization.path when organization is present and user.path otherwise" do
+      org = build_stubbed(:organization, slug: "devteam")
+      user = build_stubbed(:user, username: "ben")
+
+      expect(helper.event_host_path(build_stubbed(:event, organization: org, user: user))).to eq("/devteam")
+      expect(helper.event_host_path(build_stubbed(:event, organization: nil, user: user))).to eq("/ben")
+      expect(helper.event_host_path(build_stubbed(:event, organization: nil, user: nil))).to be_nil
+    end
+  end
 end

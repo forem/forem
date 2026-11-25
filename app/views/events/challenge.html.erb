@@ -23,7 +23,7 @@
   <%= render "parent_context_bar" %>
 
   <!-- Banner Image -->
-  <% banner_image = @event.cover_image.presence&.url || @event.data&.dig('banner_image_url') %>
+  <% banner_image = event_banner_image_url(@event, width: 1600) %>
   <% if banner_image.present? %>
     <div class="crayons-card mb-6 overflow-hidden">
       <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">

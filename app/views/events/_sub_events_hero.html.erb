@@ -8,7 +8,7 @@
     hero = hero_membership.child_event
     other_live = schedule.other_live_memberships
     hero_host = hero.organization || hero.user
-    hero_backdrop = safe_event_url(hero.cover_image.presence&.url || hero.data&.dig("banner_image_url"))
+    hero_backdrop = event_banner_image_url(hero, width: 1000)
   %>
   <section class="event-hero-stage event-hero-stage--live crayons-card mb-6" aria-label="<%= t("views.events.hierarchy.live_hero_aria") %>">
     <div class="event-hero-stage__topbar">
@@ -138,14 +138,16 @@
     <div class="event-hero-stage__upcoming-inner">
       <div class="event-hero-stage__upcoming-main">
         <div class="flex items-center flex-wrap gap-2 mb-2">
-          <span class="event-status-badge event-status-badge--upcoming-subtle">
+          <span class="event-status-badge event-status-badge--upcoming-subtle event-status-badge--xs">
             <span class="event-status-badge__dot" aria-hidden="true"></span>
             <%= t("views.events.hierarchy.up_next") %>
           </span>
           <% if next_membership.role.present? %>
-            <span class="event-role-chip"><%= next_membership.role %></span>
+            <span class="event-role-chip event-role-chip--xs"><%= next_membership.role %></span>
           <% end %>
-          <span class="event-pill <%= event_pill_class(next_event) %>"><%= next_event.format_pill_label %></span>
+          <% unless next_event.live_stream? %>
+            <span class="event-pill <%= event_pill_class(next_event) %>"><%= next_event.format_pill_label %></span>
+          <% end %>
           <% unless next_event.published? %>
             <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
           <% end %>

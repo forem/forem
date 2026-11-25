@@ -1,8 +1,30 @@
-// Top-pinned event navigation strip (rendered flush at top of #page-content for zero jump across tabs)
+// When an event renders its own top nav strip, let the site-wide #topbar scroll naturally
+// out of view so the sticky .event-top-nav cleanly replaces it as the user scrolls.
+body.default-header:has(#page-content .event-top-nav) {
+  padding-top: 0;
+
+  #topbar.crayons-header {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+  }
+
+  #main-content,
+  #event-schedule {
+    scroll-margin-top: 68px;
+  }
+}
+
+// Top-pinned sticky event navigation strip (rendered flush at top of #page-content for zero jump across tabs)
 .event-top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   width: 100%;
   background: var(--card-bg, var(--base-0));
   border-bottom: 1px solid var(--card-border, var(--base-20));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 
   &__inner {
     max-width: var(--site-width, 1280px);
@@ -229,13 +251,13 @@
 .event-brand-cover {
   width: 100%;
   aspect-ratio: 3 / 1;
-  max-height: 280px;
+  max-height: 210px;
   overflow: hidden;
   background: var(--base-10);
 
   @media (min-width: 768px) {
-    aspect-ratio: 6 / 1;
-    max-height: 280px;
+    aspect-ratio: 7 / 1;
+    max-height: 210px;
   }
 
   img {
@@ -289,15 +311,23 @@
       min-width: 0;
     }
 
+    &__title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--su-2) var(--su-3);
+    }
+
     &__title {
       margin: 0;
       font-size: var(--fs-2xl);
       font-weight: 800;
       line-height: 1.2;
+      letter-spacing: -0.02em;
       color: var(--base-100);
 
       @media (min-width: 768px) {
-        font-size: var(--fs-3xl);
+        font-size: 2rem;
       }
     }
 
@@ -306,11 +336,7 @@
       color: var(--base-70);
       font-size: var(--fs-base);
       line-height: 1.55;
-      max-width: 68ch;
-
-      @media (min-width: 768px) {
-        font-size: var(--fs-l);
-      }
+      max-width: 64ch;
     }
 
     &__actions {
@@ -324,6 +350,8 @@
 
   // Sub-page card (Speakers, Sponsors, Venue, FAQ, Showcase)
   .event-subpage-card {
+    max-width: 960px;
+    margin: 0 auto;
     overflow: hidden;
 
     &__header {
@@ -507,6 +535,17 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--su-1);
+
+    &__link {
+      color: var(--base-60);
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        color: var(--base-100);
+        text-decoration: underline;
+      }
+    }
   }
 
   .event-meta-chip {
@@ -519,6 +558,17 @@
     svg {
       flex-shrink: 0;
       color: var(--base-50);
+    }
+
+    &__link {
+      color: var(--base-80);
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        color: var(--link-branded-color, var(--accent-brand));
+        text-decoration: underline;
+      }
     }
   }
 
@@ -616,6 +666,9 @@
 
   // Flat, DEV-native live ribbon for sub-pages (no dark gradient)
   .event-live-ribbon {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -625,7 +678,7 @@
     border-radius: var(--radius);
     background: var(--card-bg, var(--base-0));
     border: 1px solid var(--card-border, var(--base-20));
-    border-left: 4px solid #dc2626;
+    border-left: 3px solid #dc2626;
     color: var(--base-100);
 
     &__content {
@@ -952,12 +1005,12 @@
       gap: 6px;
 
       .stream-countdown-tile {
-        min-width: 58px;
-        padding: 8px 10px;
+        min-width: 50px;
+        padding: 7px 9px;
       }
 
       .stream-countdown-tile__value {
-        font-size: 1.45rem;
+        font-size: 1.25rem;
       }
     }
 
@@ -986,14 +1039,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 68px;
-    padding: 10px 12px;
+    min-width: 64px;
+    padding: 9px 11px;
     border-radius: var(--radius);
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.14);
 
     &__value {
-      font-size: 1.85rem;
+      font-size: 1.65rem;
       font-weight: 800;
       line-height: 1.05;
       color: #fff;
@@ -1011,7 +1064,7 @@
   }
 
   .stream-countdown-sep {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.45);
     margin-bottom: 14px;
@@ -1025,11 +1078,11 @@
     color: var(--base-100);
 
     &--live {
-      border-top: 3px solid #dc2626;
+      border-top: 2px solid #dc2626;
     }
 
     &--upcoming {
-      border-top: 3px solid var(--event-accent, var(--accent-brand));
+      border-top: 2px solid var(--event-accent, var(--accent-brand));
     }
 
     &--archive {
@@ -1042,7 +1095,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: var(--su-2);
-      padding: var(--su-3) var(--su-5);
+      padding: var(--su-2) var(--su-5);
       background: var(--base-5);
       border-bottom: 1px solid var(--card-border, var(--base-20));
     }
@@ -1066,7 +1119,7 @@
 
       &--with-video {
         @media screen and (min-width: 960px) {
-          grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+          grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
           align-items: center;
         }
       }
@@ -1097,7 +1150,7 @@
 
       img {
         width: 100%;
-        max-height: 280px;
+        max-height: 260px;
         object-fit: cover;
         display: block;
       }
@@ -1106,7 +1159,7 @@
     &__details {
       display: flex;
       flex-direction: column;
-      gap: var(--su-3);
+      gap: var(--su-2);
       min-width: 0;
     }
 
@@ -1115,7 +1168,8 @@
       align-items: center;
       flex-wrap: wrap;
       gap: var(--su-2);
-      font-size: var(--fs-s);
+      font-size: var(--fs-xs);
+      font-weight: 600;
       color: var(--base-60);
     }
 
@@ -1124,10 +1178,11 @@
       font-size: var(--fs-xl);
       font-weight: 800;
       line-height: 1.25;
+      letter-spacing: -0.015em;
       color: var(--base-100);
 
       @media (min-width: 768px) {
-        font-size: var(--fs-2xl);
+        font-size: 1.4rem;
       }
 
       a {
@@ -1143,7 +1198,7 @@
 
     &__desc {
       margin: 0;
-      font-size: var(--fs-base);
+      font-size: var(--fs-s);
       line-height: 1.55;
       color: var(--base-70);
     }
@@ -1288,7 +1343,7 @@
     }
   }
 
-  // Schedule & Session Rows
+  // Schedule & Session Rows (calm hairline-divided conference agenda)
   .event-schedule {
     &__header {
       display: flex;
@@ -1297,6 +1352,13 @@
       justify-content: space-between;
       gap: var(--su-3);
       margin-bottom: var(--su-4);
+    }
+
+    &__title {
+      font-size: var(--fs-xl);
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--base-100);
     }
 
     &__count-pill {
@@ -1333,11 +1395,11 @@
     }
 
     &__filter-pill {
-      padding: 6px 12px;
+      padding: 5px 11px;
       border-radius: var(--radius);
-      border: 1px solid var(--base-20);
-      background: var(--card-bg, var(--base-0));
-      color: var(--base-70);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--base-60);
       font-size: var(--fs-s);
       font-weight: 600;
       cursor: pointer;
@@ -1349,13 +1411,13 @@
       }
 
       &--active {
-        background: var(--accent-brand);
-        border-color: var(--accent-brand);
-        color: #fff;
+        background: var(--base-10);
+        border-color: var(--base-20);
+        color: var(--base-100);
 
         &:hover {
-          background: var(--accent-brand);
-          color: #fff;
+          background: var(--base-10);
+          color: var(--base-100);
         }
       }
     }
@@ -1372,12 +1434,12 @@
       display: flex;
       align-items: center;
       gap: var(--su-2);
-      font-size: var(--fs-s);
-      font-weight: 800;
+      font-size: var(--fs-xs);
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--base-70);
-      margin: 0 0 var(--su-3);
+      letter-spacing: 0.06em;
+      color: var(--base-60);
+      margin: 0 0 var(--su-2);
 
       &--live {
         color: var(--error, #dc2626);
@@ -1385,7 +1447,7 @@
     }
 
     &__day-block {
-      margin-bottom: var(--su-5);
+      margin-bottom: var(--su-4);
 
       &:last-child {
         margin-bottom: 0;
@@ -1396,29 +1458,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: var(--su-2) var(--su-3);
-      border-radius: var(--radius);
-      background: var(--base-5);
-      border: 1px solid var(--base-10);
-      margin-bottom: var(--su-3);
+      padding: var(--su-2) 0;
+      margin-bottom: var(--su-2);
     }
 
     &__day-label {
       font-weight: 700;
-      font-size: var(--fs-base);
-      color: var(--base-100);
+      font-size: var(--fs-s);
+      color: var(--base-90);
     }
 
     &__day-count {
       font-size: var(--fs-xs);
       color: var(--base-60);
-      font-weight: 600;
+      font-weight: 500;
     }
 
     &__list {
       display: flex;
       flex-direction: column;
-      gap: var(--su-3);
+      border: 1px solid var(--base-10);
+      border-radius: var(--radius);
+      overflow: hidden;
     }
 
     &__past-summary {
@@ -1448,29 +1509,31 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--su-3);
-    padding: var(--su-4) var(--su-4) var(--su-4) calc(var(--su-4) + 6px);
-    border-radius: var(--radius);
-    border: 1px solid var(--card-border, var(--base-20));
+    padding: var(--su-4);
+    border-bottom: 1px solid var(--base-10);
     background: var(--card-bg, var(--base-0));
-    overflow: hidden;
-    transition: border-color 0.15s ease;
+    transition: background-color 0.15s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     @media screen and (min-width: 768px) {
-      grid-template-columns: 165px minmax(0, 1fr) auto;
+      grid-template-columns: 155px minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--su-4);
     }
 
     &:hover {
-      border-color: var(--base-30);
+      background: var(--base-5);
     }
 
     &--live {
-      border-color: rgba(220, 38, 38, 0.45);
+      padding-left: calc(var(--su-4) + 3px);
     }
 
     &--past {
-      opacity: 0.88;
+      opacity: 0.85;
     }
 
     &__accent {
@@ -1478,7 +1541,11 @@
       left: 0;
       top: 0;
       bottom: 0;
-      width: 4px;
+      width: 3px;
+
+      &--live {
+        background: #dc2626;
+      }
     }
 
     &__time-col {
@@ -1487,7 +1554,7 @@
 
     &__clock {
       font-size: var(--fs-s);
-      font-weight: 700;
+      font-weight: 600;
       color: var(--base-90);
       line-height: 1.35;
     }
@@ -1502,19 +1569,42 @@
       min-width: 0;
     }
 
-    &__badges {
+    &__meta-line {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 6px;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: var(--fs-xs);
+      color: var(--base-60);
+    }
+
+    &__track {
+      font-weight: 700;
+      color: var(--base-70);
+    }
+
+    &__type {
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--base-10);
+      color: var(--base-70);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      font-size: var(--fs-2xs);
+    }
+
+    &__featured {
+      font-weight: 600;
+      color: #b45309;
     }
 
     &__title {
       margin: 0;
-      font-size: var(--fs-l);
+      font-size: var(--fs-base);
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.35;
 
       a {
         color: var(--base-100);
@@ -1528,30 +1618,23 @@
     }
 
     &__desc {
-      margin: 6px 0 0;
+      margin: 4px 0 0;
       font-size: var(--fs-s);
-      color: var(--base-70);
-      line-height: 1.5;
+      color: var(--base-60);
+      line-height: 1.45;
     }
 
     &__host {
-      margin-top: 6px;
+      margin-top: 4px;
       font-size: var(--fs-xs);
-      font-weight: 600;
+      font-weight: 500;
       color: var(--base-60);
     }
 
     &__actions {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: var(--su-2);
-
-      @media screen and (min-width: 768px) {
-        flex-direction: column;
-        align-items: stretch;
-        min-width: 140px;
-      }
+      flex-shrink: 0;
     }
 
     &__cta {
@@ -1560,6 +1643,14 @@
       font-size: var(--fs-s);
       padding: 6px 12px;
       white-space: nowrap;
+    }
+  }
+
+  .event-sidebar-block {
+    &--divided {
+      margin-top: var(--su-4);
+      padding-top: var(--su-4);
+      border-top: 1px solid var(--base-10);
     }
   }
 
@@ -2338,6 +2429,10 @@ body.dark-theme {
   .event-featured-chip {
     background: rgba(245, 158, 11, 0.22);
     color: #fde68a;
+  }
+
+  .event-show-layout .event-session-card__featured {
+    color: #fbbf24;
   }
 }
 

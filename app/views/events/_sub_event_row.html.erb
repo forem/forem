@@ -10,7 +10,9 @@
 <article class="<%= row_classes.join(' ') %>"
          data-session-row="true"
          data-session-role="<%= membership.role.to_s.downcase %>">
-  <div class="event-session-card__accent" style="background: <%= child.background_hex_color %>;" aria-hidden="true"></div>
+  <% if state == :live %>
+    <div class="event-session-card__accent event-session-card__accent--live" aria-hidden="true"></div>
+  <% end %>
 
   <div class="event-session-card__time-col">
     <div class="event-session-card__clock">
@@ -26,44 +28,45 @@
     <% if duration.present? %>
       <div class="event-session-card__duration"><%= duration %></div>
     <% end %>
-    <div class="mt-2">
-      <% if state == :live %>
+    <% if state == :live %>
+      <div class="mt-2">
         <span class="event-status-badge event-status-badge--live event-status-badge--xs">
           <span class="event-status-badge__dot" aria-hidden="true"></span>
           <%= t("views.events.gathering.live") %>
         </span>
-      <% elsif state == :upcoming %>
-        <span class="event-status-badge event-status-badge--upcoming-subtle event-status-badge--xs">
-          <%= t("views.events.gathering.upcoming") %>
-        </span>
-      <% else %>
-        <span class="event-status-badge event-status-badge--ended event-status-badge--xs">
-          <%= child.primary_stream_url.present? ? t("views.events.stream.replay_short") : t("views.events.gathering.ended") %>
-        </span>
-      <% end %>
-    </div>
+      </div>
+    <% elsif state == :past && child.primary_stream_url.present? %>
+      <div class="mt-1">
+        <span class="fs-xs color-base-60 fw-medium"><%= t("views.events.stream.replay_short") %></span>
+      </div>
+    <% end %>
   </div>
 
   <div class="event-session-card__body">
-    <div class="event-session-card__badges">
-      <span class="event-pill <%= event_pill_class(child) %>"><%= child.format_pill_label %></span>
-      <% if membership.role.present? %>
-        <span class="event-role-chip"><%= membership.role %></span>
-      <% end %>
-      <% if membership.featured? %>
-        <span class="event-featured-chip">★ <%= t("views.events.hierarchy.featured") %></span>
-      <% end %>
-      <% unless child.published? %>
-        <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
-      <% end %>
-    </div>
+    <% has_meta_line = membership.role.present? || !child.live_stream? || membership.featured? || !child.published? %>
+    <% if has_meta_line %>
+      <div class="event-session-card__meta-line">
+        <% if membership.role.present? %>
+          <span class="event-session-card__track"><%= membership.role %></span>
+        <% end %>
+        <% unless child.live_stream? %>
+          <span class="event-session-card__type"><%= child.format_pill_label %></span>
+        <% end %>
+        <% if membership.featured? %>
+          <span class="event-session-card__featured">★ <%= t("views.events.hierarchy.featured") %></span>
+        <% end %>
+        <% unless child.published? %>
+          <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
+        <% end %>
+      </div>
+    <% end %>
 
     <h4 class="event-session-card__title">
       <a href="<%= event_link_target(child) %>"><%= child.title %></a>
     </h4>
 
     <% if child.description.present? %>
-      <p class="event-session-card__desc"><%= truncate(child.description, length: 180) %></p>
+      <p class="event-session-card__desc"><%= truncate(child.description, length: 160) %></p>
     <% end %>
 
     <% if host.present? %>
@@ -81,12 +84,11 @@
     <% elsif state == :upcoming %>
       <%= render "signup_button",
                  event: child,
+                 signed_up_class: "crayons-btn--outlined",
+                 unsigned_up_class: "crayons-btn--secondary",
                  extra_classes: "event-session-card__cta" %>
-      <a href="<%= event_link_target(child) %>" class="crayons-btn crayons-btn--secondary event-session-card__cta">
-        <%= t("views.events.hierarchy.details") %>
-      </a>
     <% else %>
-      <a href="<%= event_link_target(child) %>" class="crayons-btn crayons-btn--outlined event-session-card__cta">
+      <a href="<%= event_link_target(child) %>" class="crayons-btn crayons-btn--secondary event-session-card__cta">
         <%= child.primary_stream_url.present? ? t("views.events.hierarchy.watch_replay") : t("views.events.hierarchy.recap") %>
       </a>
     <% end %>

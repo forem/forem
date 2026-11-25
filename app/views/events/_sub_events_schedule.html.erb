@@ -5,14 +5,14 @@
 <% has_filters = roles.size > 1 || (roles.any? && schedule.memberships.any? { |m| m.role.blank? }) %>
 
 <section id="event-schedule" class="event-schedule-section mb-6" aria-labelledby="event-schedule-heading">
-  <div class="crayons-card p-6">
+  <div class="crayons-card p-5 m:p-6">
     <div class="event-schedule__header">
       <div>
         <div class="flex items-center flex-wrap gap-2">
-          <h2 id="event-schedule-heading" class="crayons-title m-0">
+          <h2 id="event-schedule-heading" class="event-schedule__title m-0">
             <%= t("views.events.hierarchy.schedule_heading") %>
           </h2>
-          <span class="event-schedule__count-pill">
+          <span class="fs-s color-base-60">
             <%= t("views.events.hierarchy.sessions_count", count: schedule.total_count) %>
           </span>
         </div>
@@ -21,19 +21,14 @@
         </p>
       </div>
 
-      <div class="event-schedule__stats">
-        <% if schedule.live_count.positive? %>
-          <span class="event-status-badge event-status-badge--live">
+      <% if schedule.live_count.positive? %>
+        <div class="event-schedule__stats">
+          <span class="event-status-badge event-status-badge--live event-status-badge--xs">
             <span class="event-status-badge__dot" aria-hidden="true"></span>
             <%= t("views.events.hierarchy.live_count", count: schedule.live_count) %>
           </span>
-        <% end %>
-        <% if schedule.upcoming_count.positive? %>
-          <span class="event-status-badge event-status-badge--upcoming-subtle">
-            <%= t("views.events.hierarchy.upcoming_count", count: schedule.upcoming_count) %>
-          </span>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
 
     <% if has_filters %>

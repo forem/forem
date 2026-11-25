@@ -50,7 +50,12 @@
                   <%= @event.title %>
                 </a>
                 <span aria-hidden="true">&middot;</span>
-                <span><%= event_datetime_range(@event) %></span>
+                <time class="js-event-local-time"
+                      datetime="<%= @event.start_time.iso8601 %>"
+                      data-start-iso="<%= @event.start_time.iso8601 %>"
+                      data-end-iso="<%= @event.end_time.iso8601 %>">
+                  <%= event_datetime_range(@event) %>
+                </time>
               </div>
               <h1 class="event-subpage-card__title"><%= @event_page.title %></h1>
               <% if @event_page.description.present? %>
