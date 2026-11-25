@@ -33,6 +33,7 @@ within our community. ❤️
 - [Table of Contents](#table-of-contents)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
+  - [Local Development with Flox](#local-development-with-flox)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
 - [Deployment with Kamal 2](#deployment-with-kamal-2)
@@ -78,6 +79,16 @@ A more complete overview of our stack is available in [our docs](https://develop
 - **GitHub Codespaces:** From your fork, choose **Code → Codespaces → Create codespace**. The repository's devcontainer (`.devcontainer/`) starts PostgreSQL and Redis for you; run `bin/setup` once it opens, then `bin/startup`.
 - **Dev Containers (local):** Open the repository in VS Code with the Dev Containers extension and run `bin/setup`, then `bin/startup`, in its terminal. Without VS Code, run `npx @devcontainers/cli up --workspace-folder .` (it returns to your host shell), then `npx @devcontainers/cli exec --workspace-folder . bin/setup` and `npx @devcontainers/cli exec --workspace-folder . bin/startup`. The devcontainer uses host networking; on Docker Desktop (4.34 or newer) turn on **Settings → Resources → Network → Enable host networking**, or the app will not be reachable at `localhost:3000`. On Linux, PostgreSQL and Redis bind host ports 5432 and 6379, so stop any host PostgreSQL or Redis service on those ports first.
 
+
+### Local Development with Flox
+
+With [Flox](https://flox.dev) installed, one command takes a fresh clone to a running, seeded Forem on macOS or Linux, with no Ruby, Node, PostgreSQL or Redis installed on your machine:
+
+```bash
+git clone https://github.com/forem/forem.git && cd forem && flox activate -s
+```
+
+See [docs/flox.md](docs/flox.md) for prerequisites and day-to-day commands.
 
 ### Installation Documentation
 

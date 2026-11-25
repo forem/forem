@@ -1,0 +1,61 @@
+# Fresh clone to a running, seeded app on a clean machine with only Flox
+# installed (the runner's Nix store starts empty, so package downloads count).
+# GitHub Actions on pull requests from forks wait for approval by a maintainer.
+name: Flox cold start
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".flox/**"
+      - ".ruby-version"
+      - ".nvmrc"
+      - ".github/workflows/flox-cold-start.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".flox/**"
+      - ".ruby-version"
+      - ".nvmrc"
+      - ".github/workflows/flox-cold-start.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  cold-start:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: flox/install-flox-action@5bb9eaaffbeaa699a8251a1ae21ecf4c8e0e37d4 # v2.7.0
+
+      - name: Setup finishes, the app answers, a spec passes
+        # `-s` starts the services; they stop when this step's shell exits.
+        shell: flox activate -s -- bash --noprofile --norc -e -o pipefail {0}
+        run: |
+          until curl -fs -o /dev/null "http://localhost:$PORT/"; do
+            if flox services status --json | jq -e 'any(.[]; .name == "setup" and .status == "Completed" and .exit_code != 0)' > /dev/null; then
+              echo "setup failed; last lines of its log:"; flox services logs setup -n 80; exit 1
+            fi
+            sleep 3
+          done
+          flox services status --json | jq -e 'any(.[]; .name == "setup" and .status == "Completed" and .exit_code == 0)'
+          bin/rspec spec/models/tag_spec.rb
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: flox-cold-start-logs
+          path: |
+            .flox/log/
+            .flox/cache/gems/extensions/**/mkmf.log
+            .flox/cache/gems/extensions/**/gem_make.out
+          if-no-files-found: ignore

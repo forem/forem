@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Run the Yarn release that .yarnrc.yml pins with this environment's Node; the
+# catalog's yarn package would bring a second, newer Node.
+exec node "$FLOX_ENV_PROJECT/$(sed -n 's/^yarnPath: *//p' "$FLOX_ENV_PROJECT/.yarnrc.yml")" "$@"
