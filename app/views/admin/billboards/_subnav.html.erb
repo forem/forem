@@ -1,0 +1,25 @@
+<%# locals: (active:, primary_action: nil) %>
+<nav class="admin-bb-subnav" aria-label="<%= t("views.admin.billboards.subnav.aria_label") %>">
+  <div class="admin-bb-subnav__tabs">
+    <%= link_to admin_billboards_path,
+                class: "admin-bb-subnav__tab #{'admin-bb-subnav__tab--active' if active == :billboards}",
+                aria: { current: (active == :billboards ? "page" : nil) } do %>
+      <%= t("views.admin.billboards.subnav.billboards") %>
+    <% end %>
+    <%= link_to admin_billboard_campaigns_path,
+                class: "admin-bb-subnav__tab #{'admin-bb-subnav__tab--active' if active == :campaigns}",
+                aria: { current: (active == :campaigns ? "page" : nil) } do %>
+      <%= t("views.admin.billboard_campaigns.title") %>
+    <% end %>
+    <%= link_to admin_billboard_placement_area_configs_path,
+                class: "admin-bb-subnav__tab #{'admin-bb-subnav__tab--active' if active == :placements}",
+                aria: { current: (active == :placements ? "page" : nil) } do %>
+      <%= t("views.admin.billboards.subnav.placement_configs") %>
+    <% end %>
+  </div>
+  <% if primary_action.present? %>
+    <div class="admin-bb-header__actions">
+      <%= primary_action %>
+    </div>
+  <% end %>
+</nav>

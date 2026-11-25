@@ -198,7 +198,7 @@ namespace :admin do
       end
     end
     resources :billboards
-    resources :billboard_campaigns, only: %i[index new create edit update]
+    resources :billboard_campaigns, only: %i[index show new create edit update]
     resources :billboard_placement_area_configs, only: %i[index edit update]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]

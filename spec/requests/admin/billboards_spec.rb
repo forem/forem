@@ -75,6 +75,80 @@ RSpec.describe "/admin/customization/billboards" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include('rel="prev"')
       end
+
+      it "filters by campaign, status, placement area, tag, render mode, and sorts by impressions",
+         :aggregate_failures do
+        campaign = BillboardCampaign.create!(name: "Spring Promo")
+        other_campaign = BillboardCampaign.create!(name: "Other Promo")
+
+        matching = create(:billboard, name: "Matched Live", placement_area: "post_sidebar",
+                                      type_of: :external, display_to: :logged_in, priority: true,
+                                      render_mode: :raw, isolate_content: true, tag_list: "ruby",
+                                      approved: true, published: true, billboard_campaign: campaign,
+                                      organization: org)
+        matching.update_columns(impressions_count: 900, clicks_count: 45)
+
+        unmatched = create(:billboard, name: "Other Draft", placement_area: "feed_first",
+                                       approved: false, published: false, billboard_campaign: other_campaign,
+                                       organization: nil)
+        unmatched.update_columns(impressions_count: 1_500)
+
+        get admin_billboards_path, params: {
+          billboard_campaign_id: campaign.id,
+          status: "live",
+          placement_area: "post_sidebar",
+          type_of: "external",
+          display_to: "logged_in",
+          priority: "true",
+          render_mode: "isolated",
+          tag: "ruby",
+          organization_id: org.id,
+          sort: "impressions"
+        }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Matched Live", "Spring Promo")
+        expect(response.body).not_to include("Other Draft")
+
+        get admin_billboards_path, params: { billboard_campaign_id: "none" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("Matched Live")
+      end
+
+      it "supports searching by numeric billboard ID", :aggregate_failures do
+        target = create(:billboard, name: "Numeric Target", organization: nil)
+        create(:billboard, name: "Unrelated Unit", organization: nil)
+
+        get admin_billboards_path, params: { search: "##{target.id}" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Numeric Target")
+        expect(response.body).not_to include("Unrelated Unit")
+      end
+
+      it "preserves an older selected campaign in the filter dropdown and active chip", :aggregate_failures do
+        older_campaign = BillboardCampaign.create!(name: "Legacy Campaign")
+        BillboardCampaign.create!(name: "Newest Campaign")
+        stub_const("Admin::BillboardsController::CAMPAIGN_FILTER_LIMIT", 1)
+
+        get admin_billboards_path, params: { billboard_campaign_id: older_campaign.id }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Legacy Campaign (##{older_campaign.id})")
+        expect(response.body).to include("selected=\"selected\" value=\"#{older_campaign.id}\"")
+      end
+    end
+
+    describe "GET /admin/customization/billboards/new" do
+      it "pre-selects billboard_campaign_id when passed in query params", :aggregate_failures do
+        campaign = BillboardCampaign.create!(name: "Preselected Campaign")
+
+        get new_admin_billboard_path(billboard_campaign_id: campaign.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Preselected Campaign (##{campaign.id})")
+        expect(response.body).to include("selected=\"selected\" value=\"#{campaign.id}\"")
+      end
     end
 
     describe "GET /admin/customization/billboards/:id/edit" do

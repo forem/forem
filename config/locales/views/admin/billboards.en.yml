@@ -1,0 +1,154 @@
+en:
+  views:
+    admin:
+      billboards:
+        title: Billboards
+        subtitle: Manage promotional units, targeting rules, delivery caps, and live placement performance.
+        new: New billboard
+        confirm_destroy: Confirm changes
+        empty_title: No billboards match these filters
+        empty_description: Try adjusting or clearing your filters, or create a new billboard.
+        yes_label: "Yes"
+        no_label: "No"
+        subnav:
+          aria_label: Billboard admin sections
+          billboards: Billboards
+          placement_configs: Placement Areas
+        kpis:
+          aria_label: Billboard overview metrics
+          live: Live billboards
+          prioritized_count: "%{count} prioritized"
+          expiring_soon: "%{count} expiring <48h"
+          inactive: Draft / paused
+          expired_count: "%{count} expired"
+          capped_count: "%{count} capped"
+          active_campaigns: Active campaigns
+          manage_campaigns: Manage campaigns →
+          live_delivery: Live impressions
+          clicks_short: "%{count} clicks"
+          ctr_short: "%{ctr} CTR"
+          all_time_short: "%{count} all-time"
+          overview_timeout: Overview metrics timed out on the read replica. The billboard list below remains available.
+          unavailable: Temporarily unavailable
+        status:
+          live: Live
+          draft: Draft
+          unapproved: Unapproved
+          draft_or_paused: Draft / Paused
+          expired: Expired
+          capped: Capped
+        badges:
+          priority: Priority
+          raw: Raw HTML
+          isolated_raw: Isolated Raw
+        caps:
+          impressions_short: Imp. cap
+          clicks_short: Click cap
+          uncapped: Uncapped
+          uncapped_imp: imp (uncapped)
+          of_cap: "of %{cap} cap"
+          reached: Cap reached
+          remaining: "%{count} remaining"
+        schedule:
+          ends_in: "Ends in %{time}"
+          expired_ago: "Expired %{time} ago"
+          no_end_date: No end date
+        filters:
+          aria_label: Filter and search billboards
+          search: Search
+          search_placeholder: "Name, #ID, tag, placement, or HTML..."
+          status: Status
+          all_statuses: All statuses
+          campaign: Campaign
+          all_campaigns: All campaigns
+          standalone: Standalone (no campaign)
+          placement: Placement area
+          all_placements: All placements
+          sort: Sort by
+          apply: Filter
+          reset: Clear
+          more_filters: More filters (type, audience, priority, render mode, tag, org)
+          any: Any
+          type: Type
+          audience: Audience
+          priority: Priority
+          prioritized_only: Prioritized only
+          non_prioritized: Non-prioritized
+          render_mode: Render mode
+          tag: Tag
+          org_id: Organization ID
+          remove_chip: "Remove filter %{filter}"
+          types:
+            in_house: In-House
+            community: Community
+            external: External
+          audiences:
+            all: All users
+            logged_in: Logged in
+            logged_out: Logged out
+          render_modes:
+            forem_markdown: Forem Markdown
+            raw: Raw HTML
+            isolated: Isolated Raw (Shadow DOM)
+        sort:
+          newest: Newest (ID ↓)
+          impressions: Most impressions
+          clicks: Most clicks
+          success_rate: Highest success rate
+          weight: Highest weight
+          expiring_soon: Expiring soonest
+          updated: Recently updated
+        table:
+          billboard: Billboard
+          status_campaign: Status & campaign
+          placement_audience: Placement & audience
+          delivery: Delivery
+          performance: Performance
+          actions: Actions
+          imp_abbr: imp
+          clicks_abbr: clicks
+          score_short: "Score %{score}"
+          visible_short: "Avg %{time} visible"
+          weight_short: "Weight %{weight}"
+        actions:
+          details: Details
+          edit: Edit
+          preview: Preview
+          destroy: Destroy
+        form:
+          weight: "Weight (0–10,000):"
+          weight_help: Relative selection weight inside the new_and_priority strategy (also steered automatically by campaign pacing).
+          dismissal_sku: "Dismissal SKU:"
+        show:
+          created_by: "Created by %{name}"
+          metrics_aria: Billboard performance metrics
+          impressions: Impressions
+          clicks_ctr: Clicks & CTR
+          success_rate: Success rate
+          visibility: Avg. visibility
+          total_seconds: "%{count} total seconds"
+          delivery_limits_heading: Delivery caps & schedule
+          open_campaign: Open campaign →
+          expires_at: Expires at
+          config_heading: Configuration & targeting
+          published: Published
+          approved: Approved
+          display_to: Display to
+          placement_area: Placement area
+          render_mode: Render mode
+          template: Template
+          organization: Organization
+          custom_display_label: Custom display label
+          tags: Targeted tags
+          all_tags: All tags
+          dismissal_sku: Dismissal SKU
+          target_geolocations: Target geolocations
+          target_roles: Target roles
+          exclude_roles: Exclude roles
+          recent_events_heading: Recent engagements (last 30 days)
+          event_category: Event
+          event_user: Member
+          event_time: Timestamp
+          no_recent_events: No signed-in click or conversion events in the last 30 days.
+          preview_heading: Rendered preview
+          view_source: View raw markdown / HTML source

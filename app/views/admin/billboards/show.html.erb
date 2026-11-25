@@ -1,160 +1,246 @@
 <%= stylesheet_link_tag "minimal", media: "all" %>
+<% content_for :h1, @billboard.name %>
+<% status = admin_bb_status(@billboard, now: @now) %>
+<% schedule = admin_bb_schedule_summary(@billboard.expires_at, created_at: @billboard.created_at, now: @now) %>
+<% imp_progress = admin_bb_cap_progress(@billboard.impressions_count, @billboard.max_impressions_count) %>
+<% click_progress = admin_bb_cap_progress(@billboard.clicks_count, @billboard.max_clicks_count) %>
 
-<h1 class="crayons-title mb-6 flex justify-between">
-  Details and Data: <%= @billboard.name %>
-  <%= link_to "Edit", edit_admin_billboard_path(@billboard), class: "crayons-btn crayons-btn--secondary ml-2" %>
-</h1>
+<div class="admin-bb">
+  <div>
+    <%= link_to admin_billboards_path, class: "crayons-link fs-s" do %>
+      &larr; <%= t("views.admin.billboard_campaigns.back_to_billboards") %>
+    <% end %>
+    <% if @campaign.present? %>
+      <span class="color-base-40 mx-1">/</span>
+      <%= link_to @campaign.name, admin_billboard_campaign_path(@campaign), class: "crayons-link fs-s" %>
+    <% end %>
+  </div>
 
-<div class="crayons-card p-6">
-  <%# Main content %>
-  
-  <!-- Billboard Overview -->
-  <div class="grid l:grid-cols-2 gap-6 mb-4">
-    <div class="flex flex-col gap-4">
-      <% if @billboard.creator.present? %>
-        <div class="crayons-field">
-          <strong>Created by:</strong>
-          <p><%= @billboard.creator.name %></p>
-        </div>
-      <% end %>
-
-      <div class="crayons-field">
-        <strong>Name:</strong>
-        <p><%= @billboard.name %></p>
+  <header class="admin-bb-header">
+    <div class="admin-bb-header__title-group">
+      <div class="admin-bb-header__title-row">
+        <h1 class="crayons-title admin-bb-header__title"><%= @billboard.name %></h1>
+        <span class="admin-bb-pill admin-bb-pill--<%= status[:tone] %>">
+          <span class="admin-bb-pill__dot" aria-hidden="true"></span>
+          <%= status[:label] %>
+        </span>
+        <% if @billboard.priority? %>
+          <span class="admin-bb-meta-tag admin-bb-meta-tag--priority"><%= t("views.admin.billboards.badges.priority") %></span>
+        <% end %>
       </div>
+      <p class="admin-bb-header__subtitle">
+        #<%= @billboard.id %> &middot; <%= @billboard.human_readable_placement_area %> &middot; <%= @billboard.type_of.titleize %>
+        <% if @billboard.creator.present? %>
+          &middot; <%= t("views.admin.billboards.show.created_by", name: @billboard.creator.name) %>
+        <% end %>
+      </p>
+    </div>
+    <div class="admin-bb-header__actions">
+      <%= link_to t("views.admin.billboards.actions.preview"), admin_billboard_live_preview_path(@billboard),
+                  class: "crayons-btn crayons-btn--secondary", target: "_blank", rel: "noopener" %>
+      <%= link_to t("views.admin.billboards.actions.edit"), edit_admin_billboard_path(@billboard), class: "crayons-btn" %>
+    </div>
+  </header>
 
-      <div class="crayons-field">
-        <strong>Organization ID:</strong>
-        <p><%= @billboard.organization_id.present? ? @billboard.organization_id : "N/A" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Custom Author Display Name:</strong>
-        <p><%= @billboard.custom_display_label.present? ? @billboard.custom_display_label : "N/A" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Body Content:</strong>
-        <pre><%= @billboard.body_markdown %></pre>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Render Mode:</strong>
-        <p><%= @billboard.render_mode == "forem_markdown" ? "Forem Markdown" : "Raw" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Isolate Content (Shadow DOM):</strong>
-        <p><%= @billboard.isolate_content? ? "Yes" : "No" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Template:</strong>
-        <p><%= @billboard.template == "authorship_box" ? "Authorship Box" : "Plain" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Border Color:</strong>
-        <p><%= @billboard.color.present? ? @billboard.color : "#000000" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Placement Area:</strong>
-        <p><%= @billboard.placement_area %></p>
-      </div>
-
-      <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
-        <div class="crayons-field">
-          <strong>Target Geolocations:</strong>
-          <p><%= @billboard.target_geolocations.present? ? @billboard.target_geolocations.map(&:to_iso3166).join(", ") : "N/A" %></p>
-        </div>
-      <% end %>
-
-      <div class="crayons-field">
-        <strong>Display to:</strong>
-        <p>
-          <% if @billboard.display_to_all? %>
-            All users
-          <% elsif @billboard.display_to_logged_in? %>
-            Logged in users
-          <% else %>
-            Logged out users
-          <% end %>
-        </p>
-      </div>
-
-      <% if @billboard.display_to_logged_in? %>
-        <div class="crayons-field">
-          <strong>Target Role Names:</strong>
-          <p><%= @billboard.target_role_names.join(", ") %></p>
-        </div>
-
-        <div class="crayons-field">
-          <strong>Exclude Role Names:</strong>
-          <p><%= @billboard.exclude_role_names.join(", ") %></p>
-        </div>
-      <% end %>
-
-      <div class="crayons-field">
-        <strong>Published:</strong>
-        <p><%= @billboard.published ? "Yes" : "No" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Approved:</strong>
-        <p><%= @billboard.approved ? "Yes" : "No" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Prioritized:</strong>
-        <p><%= @billboard.priority ? "Yes" : "No" %></p>
-      </div>
-
-      <div class="crayons-field">
-        <strong>Type:</strong>
-        <p>
-          <% if @billboard.in_house? %>
-            In-House Ad
-          <% elsif @billboard.community? %>
-            Community
-          <% else %>
-            External
-          <% end %>
-        </p>
-      </div>
+  <section class="admin-bb-kpis" aria-label="<%= t("views.admin.billboards.show.metrics_aria") %>">
+    <div class="admin-bb-kpi admin-bb-kpi--brand">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.impressions") %></span>
+      <span class="admin-bb-kpi__value"><%= number_with_delimiter(@billboard.impressions_count.to_i) %></span>
+      <span class="admin-bb-kpi__meta">
+        <%= @billboard.max_impressions_count.to_i.positive? ? t("views.admin.billboards.caps.of_cap", cap: number_with_delimiter(@billboard.max_impressions_count)) : t("views.admin.billboards.caps.uncapped") %>
+      </span>
     </div>
 
-    <div>
-      <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard" style="<%= @billboard.style_string %>">
-        <% if @billboard.persisted? %>
-          <%= billboard_body_html(@billboard, @billboard.processed_html, allow_embed_passthrough: false) %>
+    <div class="admin-bb-kpi">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.clicks_ctr") %></span>
+      <span class="admin-bb-kpi__value"><%= number_with_delimiter(@billboard.clicks_count.to_i) %></span>
+      <span class="admin-bb-kpi__meta">
+        <span><%= t("views.admin.billboards.kpis.ctr_short", ctr: admin_bb_ctr_percentage(@billboard.clicks_count, @billboard.impressions_count)) %></span>
+        <% if @billboard.max_clicks_count.to_i.positive? %>
+          <span>&middot; <%= t("views.admin.billboards.caps.of_cap", cap: number_with_delimiter(@billboard.max_clicks_count)) %></span>
         <% end %>
-      </div>
-      <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard mt-4" style="<%= @billboard.style_string %>">
-        <div class="crayons-field">
-          <strong>Impressions Count:</strong>
-          <p><%= @billboard.impressions_count %></p>
-        </div>
-        <div class="crayons-field">
-          <strong>Clicks Count:</strong>
-          <p><%= @billboard.clicks_count %></p>
-        </div>
-        <div class="crayons-field">
-          <strong>Success Rate:</strong>
-          <p><%= @billboard.success_rate %></p>
-        </div>
-        <div class="crayons-field">
-          <strong>Seconds Visible:</strong>
-          <p><%= @billboard.seconds_visible %></p>
-        </div>
-        <% @events.each do |event| %>
-          <% next unless event.user %>
-          <div class="crayonds-card fs-xs">
-            <strong><%= event.category %></strong> by @<%= event.user&.username %> at <%= event.created_at %>
+      </span>
+    </div>
+
+    <div class="admin-bb-kpi">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.success_rate") %></span>
+      <span class="admin-bb-kpi__value"><%= format("%.4f", @billboard.success_rate.to_f) %></span>
+      <span class="admin-bb-kpi__meta">
+        <span><%= t("views.admin.billboards.table.weight_short", weight: format("%.2f", @billboard.weight.to_f)) %></span>
+      </span>
+    </div>
+
+    <div class="admin-bb-kpi">
+      <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.show.visibility") %></span>
+      <span class="admin-bb-kpi__value"><%= admin_bb_avg_seconds(@billboard.seconds_visible, @billboard.impressions_count) %></span>
+      <span class="admin-bb-kpi__meta">
+        <%= t("views.admin.billboards.show.total_seconds", count: number_with_delimiter(@billboard.seconds_visible.to_i)) %>
+      </span>
+    </div>
+  </section>
+
+  <div class="admin-bb-grid-main">
+    <div class="flex flex-col gap-4">
+      <% if imp_progress || click_progress || schedule || @campaign.present? %>
+        <section class="admin-bb-panel">
+          <div class="admin-bb-panel__header">
+            <h2 class="admin-bb-panel__title"><%= t("views.admin.billboards.show.delivery_limits_heading") %></h2>
+            <% if @campaign.present? %>
+              <%= link_to t("views.admin.billboards.show.open_campaign"), admin_billboard_campaign_path(@campaign), class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+            <% end %>
           </div>
+
+          <% if @campaign.present? && @campaign_rollup.present? %>
+            <% campaign_status = admin_campaign_status(@campaign, rollup: @campaign_rollup, now: @now) %>
+            <div class="crayons-card crayons-card--secondary p-4 flex flex-col gap-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span class="fs-xs color-base-60 uppercase fw-bold"><%= t("views.admin.billboards.filters.campaign") %></span>
+                  <div class="fw-bold">
+                    <%= link_to @campaign.name, admin_billboard_campaign_path(@campaign), class: "c-link" %>
+                    <span class="fs-xs color-base-60">#<%= @campaign.id %></span>
+                  </div>
+                </div>
+                <span class="admin-bb-pill admin-bb-pill--<%= campaign_status[:tone] %>">
+                  <span class="admin-bb-pill__dot" aria-hidden="true"></span>
+                  <%= campaign_status[:label] %>
+                </span>
+              </div>
+              <% if (c_imp = admin_bb_cap_progress(@campaign_rollup.impressions_count, @campaign.max_impressions_count)) %>
+                <%= render "admin/billboards/progress_bar", label: t("views.admin.billboard_campaigns.max_impressions_count"), progress: c_imp, show_remaining: true %>
+              <% end %>
+              <% if (c_click = admin_bb_cap_progress(@campaign_rollup.clicks_count, @campaign.max_clicks_count)) %>
+                <%= render "admin/billboards/progress_bar", label: t("views.admin.billboard_campaigns.max_clicks_count"), progress: c_click, show_remaining: true %>
+              <% end %>
+            </div>
+          <% end %>
+
+          <% if imp_progress %>
+            <%= render "admin/billboards/progress_bar", label: t("views.admin.billboard_campaigns.max_impressions_count"), progress: imp_progress, large: true, show_remaining: true %>
+          <% end %>
+          <% if click_progress %>
+            <%= render "admin/billboards/progress_bar", label: t("views.admin.billboard_campaigns.max_clicks_count"), progress: click_progress, large: true, show_remaining: true %>
+          <% end %>
+          <% if schedule %>
+            <div class="fs-s">
+              <strong><%= t("views.admin.billboards.show.expires_at") %>:</strong>
+              <%= l(@billboard.expires_at, format: :short) %>
+              <span class="admin-bb-pill admin-bb-pill--<%= schedule[:tone] %> ml-2"><%= schedule[:label] %></span>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+
+      <section class="admin-bb-panel">
+        <h2 class="admin-bb-panel__title"><%= t("views.admin.billboards.show.config_heading") %></h2>
+        <dl class="admin-bb-dl">
+          <div>
+            <dt><%= t("views.admin.billboards.show.published") %></dt>
+            <dd><%= @billboard.published? ? t("views.admin.billboards.yes_label") : t("views.admin.billboards.no_label") %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.approved") %></dt>
+            <dd><%= @billboard.approved? ? t("views.admin.billboards.yes_label") : t("views.admin.billboards.no_label") %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.display_to") %></dt>
+            <dd><%= @billboard.display_to.humanize %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.placement_area") %></dt>
+            <dd><%= @billboard.human_readable_placement_area %> (<code><%= @billboard.placement_area %></code>)</dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.render_mode") %></dt>
+            <dd>
+              <%= @billboard.forem_markdown? ? "Forem Markdown" : "Raw" %>
+              <% if @billboard.raw? %>
+                &middot; Shadow DOM: <%= @billboard.isolate_content? ? t("views.admin.billboards.yes_label") : t("views.admin.billboards.no_label") %>
+              <% end %>
+            </dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.template") %></dt>
+            <dd><%= @billboard.authorship_box? ? "Authorship Box" : "Plain" %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.organization") %></dt>
+            <dd><%= @billboard.organization_id.present? ? "##{@billboard.organization_id}" : "N/A" %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.custom_display_label") %></dt>
+            <dd><%= @billboard.custom_display_label.presence || "N/A" %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.tags") %></dt>
+            <dd><%= @billboard.cached_tag_list.presence || t("views.admin.billboards.show.all_tags") %></dd>
+          </div>
+          <div>
+            <dt><%= t("views.admin.billboards.show.dismissal_sku") %></dt>
+            <dd><%= @billboard.dismissal_sku.presence || "N/A" %></dd>
+          </div>
+          <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+            <div>
+              <dt><%= t("views.admin.billboards.show.target_geolocations") %></dt>
+              <dd><%= @billboard.target_geolocations.present? ? @billboard.target_geolocations.map(&:to_iso3166).join(", ") : "All" %></dd>
+            </div>
+          <% end %>
+          <% if @billboard.display_to_logged_in? %>
+            <div>
+              <dt><%= t("views.admin.billboards.show.target_roles") %></dt>
+              <dd><%= @billboard.target_role_names.presence&.join(", ") || "All" %></dd>
+            </div>
+            <div>
+              <dt><%= t("views.admin.billboards.show.exclude_roles") %></dt>
+              <dd><%= @billboard.exclude_role_names.presence&.join(", ") || "None" %></dd>
+            </div>
+          <% end %>
+        </dl>
+      </section>
+
+      <section class="admin-bb-panel">
+        <h2 class="admin-bb-panel__title"><%= t("views.admin.billboards.show.recent_events_heading") %></h2>
+        <% if @events.any? %>
+          <div class="admin-bb-table-wrap">
+            <table class="admin-bb-table">
+              <thead>
+                <tr>
+                  <th scope="col"><%= t("views.admin.billboards.show.event_category") %></th>
+                  <th scope="col"><%= t("views.admin.billboards.show.event_user") %></th>
+                  <th scope="col" class="admin-bb-table__num"><%= t("views.admin.billboards.show.event_time") %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @events.each do |event| %>
+                  <% next unless event.user %>
+                  <tr>
+                    <td><span class="admin-bb-meta-tag"><%= event.category %></span></td>
+                    <td>@<%= event.user.username %></td>
+                    <td class="admin-bb-table__num fs-xs color-base-60"><%= l(event.created_at, format: :short) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="fs-s color-base-60 m-0"><%= t("views.admin.billboards.show.no_recent_events") %></p>
         <% end %>
-      </div>
+      </section>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <section class="admin-bb-panel">
+        <h2 class="admin-bb-panel__title"><%= t("views.admin.billboards.show.preview_heading") %></h2>
+        <div class="crayons-card crayons-card--secondary crayons-bb text-styles text-styles--billboard" style="<%= @billboard.style_string %>">
+          <% if @billboard.persisted? %>
+            <%= billboard_body_html(@billboard, @billboard.processed_html, allow_embed_passthrough: false) %>
+          <% end %>
+        </div>
+        <details>
+          <summary class="fs-xs fw-bold color-base-60 cursor-pointer"><%= t("views.admin.billboards.show.view_source") %></summary>
+          <pre class="mt-2 p-3 fs-xs overflow-x-auto" style="background: var(--card-secondary-bg); border-radius: var(--radius);"><%= @billboard.body_markdown %></pre>
+        </details>
+      </section>
     </div>
   </div>
 </div>
-

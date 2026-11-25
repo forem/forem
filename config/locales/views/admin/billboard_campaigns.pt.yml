@@ -3,12 +3,17 @@ pt:
     admin:
       billboard_campaigns:
         title: Campanhas de anúncios
+        subtitle: Agrupe anúncios com datas de término, limites de impressões/cliques e ritmo diário automatizado compartilhados.
         new: Nova campanha
         edit: "Editar campanha: %{name}"
         back_to_billboards: Voltar aos anúncios
-        empty: Ainda não há campanhas de anúncios.
+        empty: Nenhuma campanha de anúncios encontrada.
+        empty_description: Crie uma campanha para gerenciar limites, datas de expiração e ritmo compartilhados entre vários anúncios.
         id: ID da campanha
+        campaign: Campanha
         name: Nome da campanha
+        organization_id: ID da organização (opcional)
+        organization_id_placeholder: "ex. 1234"
         expires_at: Data de término da campanha
         max_impressions_count: Limite de impressões
         max_clicks_count: Limite de cliques
@@ -16,6 +21,77 @@ pt:
         campaign_limits: Os limites se aplicam ao total de todos os anúncios da campanha. Use 0 para remover um limite ou desativar a meta diária. Salvar uma data de término já passada ou um limite já atingido desativa imediatamente os anúncios da campanha; limites em andamento e expirações são verificados a cada 5 minutos em segundo plano.
         billboard_limits: Estes limites se aplicam apenas a este anúncio. Use 0 para não definir um limite.
         delivery_controls: Configurações de veiculação
-        membership_help_html: Deixe em branco se este anúncio não pertencer a uma campanha. Consulte os IDs em %{campaigns}.
+        membership_help_html: Deixe em branco se este anúncio não pertencer a uma campanha. Gerencie campanhas em %{campaigns}.
         save: Salvar campanha
         saved: Campanha salva.
+        status:
+          active: Ativa
+          throttled: Regulada
+          idle: Inativa
+          expired: Expirada
+          capped: No limite
+        kpis:
+          aria_label: Métricas gerais das campanhas
+          active: Campanhas ativas
+          live_billboards: "%{count} anúncios ativos"
+          paced: Campanhas com ritmo diário
+          throttled_count: "%{count} reguladas"
+          none_throttled: Nenhuma regulada no momento
+          ended: Encerradas / no limite
+          total_delivery: Impressões das campanhas
+        filters:
+          aria_label: Filtrar campanhas
+          search_placeholder: "Pesquisar por nome ou #ID..."
+          paced: Com ritmo diário
+        sort:
+          daily_target: Maior meta diária
+          name: Nome (A–Z)
+        table:
+          campaign: Campanha
+          status_schedule: Status e agenda
+          cap_progress: Progresso dos limites
+          pacing: Ritmo diário
+          performance: Desempenho
+          live_of_total: "%{live} / %{total} ativos"
+          day: dia
+          pass_through: "%{pct}% de passagem"
+          full_rate: 100% de passagem
+          pacing_off: Ritmo desativado
+        actions:
+          dashboard: Painel
+          edit_campaign: Editar campanha
+          add_billboard: "+ Adicionar anúncio"
+        show:
+          back_to_campaigns: Voltar às campanhas
+          created_at: "Criada em %{date}"
+          filter_in_billboards: Filtrar nos anúncios
+          kpis_aria: Métricas da campanha
+          past_24h_pacing: Veiculação nas últimas 24h
+          past_24h_unavailable: Temporariamente indisponível
+          target_daily: "Meta %{target}/dia"
+          creatives: Anúncios ativos
+          weight_range: "Peso %{min}–%{max}"
+          progress_heading: Limites de veiculação e agenda
+          progress_subtitle: Limites compartilhados somados entre todos os anúncios desta campanha.
+          pacing_heading: Ritmo diário ideal
+          pacing_subtitle: Ajuste automático a cada 10 minutos de pesos, prioridade e taxa de passagem.
+          past_24h_vs_target: Últimas 24h vs. meta diária
+          pacing_24h_timeout: A contagem de impressões nas últimas 24h atingiu o tempo limite na réplica de leitura; a taxa de passagem abaixo permanece ativa.
+          throttle_gate: Taxa de passagem de veiculação
+          throttle_help: Abaixo de 100% indica que o controle de admissão está regulando o excesso de veiculação.
+          pacing_disabled_help: O ritmo diário está desativado (meta diária igual a 0). Defina uma meta positiva para ativar o ajuste automático.
+          configure_pacing: Configurar ritmo
+          daily_chart_heading: Veiculação diária (últimos 14 dias, UTC)
+          daily_chart_summary: "%{impressions} impressões · %{clicks} cliques · %{conversions} conversões"
+          daily_chart_tooltip: "%{date}: %{impressions} imp, %{clicks} cliques (%{ctr})"
+          daily_chart_timeout: O detalhamento diário de eventos atingiu o tempo limite na réplica de leitura. Os totais acima permanecem atualizados.
+          daily_chart_empty: Nenhum evento registrado nos últimos 14 dias.
+          target_short: "Meta %{target}"
+          placements_heading: Distribuição por posicionamento
+          placements_subtitle: Participação de impressões e CTR por área de posicionamento.
+          members_heading: "Anúncios da campanha (%{count})"
+          members_subtitle: Anúncios ativos aparecem primeiro, ordenados por impressões.
+          no_billboards: Nenhum anúncio associado a esta campanha ainda.
+          no_billboards_help: Adicione um anúncio para começar a veicular sob os limites compartilhados desta campanha.
+          weight_share: Peso e participação
+          share_abbr: part.

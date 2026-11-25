@@ -885,6 +885,7 @@ en:
         reordered: Event page order updated.
       billboard_placement_area_configs:
         index:
+          subtitle: Configure delivery rates, caching, visibility, and selection strategy weights per placement slot.
           visibility: Visibility
           hidden_by_default: Hidden by default
           visible: Visible

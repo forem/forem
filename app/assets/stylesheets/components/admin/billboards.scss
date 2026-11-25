@@ -1,0 +1,615 @@
+// High-fidelity Billboard & Campaign Admin Workspace
+.admin-bb {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-5);
+  max-width: 1400px;
+}
+
+// ---------------------------------------------------------------------------
+// Header & Unified Sub-Navigation
+// ---------------------------------------------------------------------------
+.admin-bb-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--su-3);
+
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--su-1);
+    min-width: 0;
+  }
+
+  &__title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-2);
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__subtitle {
+    margin: 0;
+    color: var(--base-60);
+    font-size: var(--fs-s);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--su-2);
+  }
+}
+
+.admin-bb-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--su-3);
+  border-bottom: 1px solid var(--base-20);
+  padding-bottom: var(--su-2);
+
+  &__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--su-1);
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--su-2);
+    padding: var(--su-2) var(--su-3);
+    border-radius: var(--radius);
+    font-size: var(--fs-s);
+    font-weight: var(--fw-medium);
+    color: var(--base-70);
+    text-decoration: none;
+    transition: background-color 0.12s ease, color 0.12s ease;
+
+    &:hover {
+      background: var(--base-10);
+      color: var(--base-100);
+      text-decoration: none;
+    }
+
+    &--active {
+      background: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.12);
+      color: var(--accent-brand);
+      font-weight: var(--fw-bold);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// KPI Summary Strip
+// ---------------------------------------------------------------------------
+.admin-bb-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--su-3);
+}
+
+.admin-bb-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-1);
+  padding: var(--su-4);
+  background: var(--card-bg);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius-card);
+  min-width: 0;
+
+  &__label {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--base-60);
+  }
+
+  &__value {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-heavy);
+    line-height: 1.15;
+    color: var(--base-100);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__meta {
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--su-2);
+    align-items: center;
+  }
+
+  &--success {
+    border-left: 3px solid var(--accent-success);
+  }
+
+  &--brand {
+    border-left: 3px solid var(--accent-brand);
+  }
+
+  &--warning {
+    border-left: 3px solid var(--accent-warning);
+  }
+
+  &--danger {
+    border-left: 3px solid var(--accent-danger);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Filter & Search Toolbar
+// ---------------------------------------------------------------------------
+.admin-bb-filters {
+  padding: var(--su-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-3);
+
+  &__primary {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.5fr) repeat(4, minmax(140px, 1fr)) auto;
+    gap: var(--su-3);
+    align-items: end;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, minmax(160px, 1fr));
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__secondary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--su-3);
+    padding-top: var(--su-3);
+    border-top: 1px solid var(--base-10);
+    align-items: end;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--su-1);
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    color: var(--base-70);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--su-2);
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  &__details {
+    summary {
+      cursor: pointer;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--base-60);
+      user-select: none;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--su-1);
+
+      &:hover {
+        color: var(--base-90);
+      }
+    }
+  }
+}
+
+.admin-bb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--su-2);
+}
+
+.admin-bb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--su-1);
+  padding: 2px var(--su-2);
+  border-radius: 999px;
+  background: var(--base-10);
+  border: 1px solid var(--base-20);
+  font-size: var(--fs-xs);
+  color: var(--base-80);
+
+  &__remove {
+    color: var(--base-60);
+    text-decoration: none;
+    font-weight: var(--fw-bold);
+    padding: 0 2px;
+
+    &:hover {
+      color: var(--accent-danger);
+      text-decoration: none;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Semantic Pills & Badges
+// ---------------------------------------------------------------------------
+.admin-bb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  line-height: 1.4;
+  white-space: nowrap;
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &--success {
+    background: rgba(5, 150, 105, 0.14);
+    color: var(--accent-success-darker, #047857);
+  }
+
+  &--danger {
+    background: rgba(220, 38, 38, 0.14);
+    color: var(--accent-danger-darker, #b91c1c);
+  }
+
+  &--warning {
+    background: rgba(217, 119, 6, 0.16);
+    color: var(--accent-warning-darker, #b45309);
+  }
+
+  &--info {
+    background: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.14);
+    color: var(--accent-brand);
+  }
+
+  &--neutral {
+    background: var(--base-10);
+    color: var(--base-70);
+  }
+}
+
+.admin-bb-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--base-10);
+  color: var(--base-70);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  text-decoration: none;
+
+  &--campaign {
+    background: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.1);
+    color: var(--accent-brand);
+
+    &:hover {
+      background: rgba(var(--accent-brand-rgb, 59, 73, 223), 0.18);
+      text-decoration: none;
+    }
+  }
+
+  &--priority {
+    background: rgba(217, 119, 6, 0.15);
+    color: var(--accent-warning-darker, #b45309);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Progress Bars & Pacing Gauges
+// ---------------------------------------------------------------------------
+.admin-bb-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--su-2);
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__label {
+    color: var(--base-70);
+    font-weight: var(--fw-medium);
+  }
+
+  &__value {
+    color: var(--base-90);
+    font-weight: var(--fw-bold);
+  }
+
+  &__track {
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--base-10);
+    overflow: hidden;
+
+    &--lg {
+      height: 10px;
+    }
+  }
+
+  &__fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.2s ease;
+
+    &--brand {
+      background: var(--accent-brand);
+    }
+
+    &--success {
+      background: var(--accent-success);
+    }
+
+    &--warning {
+      background: var(--accent-warning);
+    }
+
+    &--danger {
+      background: var(--accent-danger);
+    }
+
+    &--neutral {
+      background: var(--base-50);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Data Tables
+// ---------------------------------------------------------------------------
+.admin-bb-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--base-20);
+  background: var(--card-bg);
+}
+
+.admin-bb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-s);
+
+  thead th {
+    text-align: left;
+    padding: var(--su-3) var(--su-4);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--base-60);
+    background: var(--card-secondary-bg);
+    border-bottom: 1px solid var(--base-20);
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--base-10);
+    transition: background-color 0.1s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--card-secondary-bg);
+    }
+  }
+
+  tbody td {
+    padding: var(--su-3) var(--su-4);
+    vertical-align: top;
+    color: var(--base-90);
+  }
+
+  &__num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  &__title {
+    font-weight: var(--fw-bold);
+    color: var(--base-100);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent-brand);
+    }
+  }
+
+  &__sub {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--su-1);
+    white-space: nowrap;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Campaign Dashboard Layout & Daily Delivery Chart
+// ---------------------------------------------------------------------------
+.admin-bb-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--su-4);
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-bb-grid-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--su-4);
+  align-items: start;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-bb-panel {
+  padding: var(--su-5);
+  background: var(--card-bg);
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-4);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--su-2);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+    color: var(--base-100);
+  }
+
+  &__subtitle {
+    margin: 2px 0 0;
+    font-size: var(--fs-xs);
+    color: var(--base-60);
+  }
+}
+
+.admin-bb-chart {
+  width: 100%;
+  overflow-x: auto;
+
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  &__gridline {
+    stroke: var(--base-20);
+    stroke-width: 1;
+  }
+
+  &__target-line {
+    stroke: var(--accent-warning);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+
+  &__bar {
+    fill: var(--accent-brand);
+    opacity: 0.85;
+    transition: opacity 0.12s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__label {
+    fill: var(--base-60);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__target-label {
+    fill: var(--accent-warning-darker, #b45309);
+    font-size: 11px;
+    font-weight: 700;
+  }
+}
+
+.admin-bb-dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--su-3);
+  margin: 0;
+
+  dt {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--base-60);
+    margin-bottom: 2px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--fs-s);
+    color: var(--base-90);
+    word-break: break-word;
+  }
+}
+
+.admin-bb-empty {
+  padding: var(--su-7) var(--su-5);
+  text-align: center;
+  background: var(--card-bg);
+  border: 1px dashed var(--base-30);
+  border-radius: var(--radius-card);
+  color: var(--base-60);
+
+  &__title {
+    margin: 0 0 var(--su-2);
+    font-size: var(--fs-l);
+    color: var(--base-90);
+  }
+}

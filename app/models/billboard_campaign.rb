@@ -8,6 +8,7 @@ class BillboardCampaign < ApplicationRecord
   has_many :billboards, dependent: :nullify
 
   validates :name, presence: true
+  validates :organization, presence: true, if: -> { organization_id.present? }
   validates :max_impressions_count, :max_clicks_count, :ideal_daily_impressions,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: MAX_CAP }
   validates :delivery_throttle_rate,

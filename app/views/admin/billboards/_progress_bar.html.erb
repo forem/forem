@@ -1,0 +1,28 @@
+<%# locals: (label:, progress:, large: false, show_remaining: false) %>
+<div class="admin-bb-progress">
+  <div class="admin-bb-progress__header">
+    <span class="admin-bb-progress__label"><%= label %></span>
+    <span class="admin-bb-progress__value" title="<%= "#{number_with_delimiter(progress[:current])} / #{number_with_delimiter(progress[:cap])}" %>">
+      <%= admin_bb_compact_number(progress[:current]) %> / <%= admin_bb_compact_number(progress[:cap]) %>
+      (<%= format("%.0f%%", progress[:percent]) %>)
+    </span>
+  </div>
+  <div class="admin-bb-progress__track <%= 'admin-bb-progress__track--lg' if large %>"
+       role="progressbar"
+       aria-valuenow="<%= progress[:percent].round(1) %>"
+       aria-valuemin="0"
+       aria-valuemax="100"
+       aria-label="<%= label %>">
+    <div class="admin-bb-progress__fill admin-bb-progress__fill--<%= progress[:tone] %>"
+         style="width: <%= format('%.1f%%', progress[:percent]) %>"></div>
+  </div>
+  <% if show_remaining %>
+    <div class="fs-xs color-base-60">
+      <% if progress[:reached] %>
+        <%= t("views.admin.billboards.caps.reached") %>
+      <% else %>
+        <%= t("views.admin.billboards.caps.remaining", count: number_with_delimiter(progress[:remaining])) %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
