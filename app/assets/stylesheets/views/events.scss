@@ -1,6 +1,7 @@
 // When an event renders its own top nav strip, let the site-wide #topbar scroll naturally
 // out of view so the sticky .event-top-nav cleanly replaces it as the user scrolls.
 body.default-header:has(#page-content .event-top-nav) {
+  --event-sidebar-sticky-top: 68px;
   padding-top: 0;
 
   #topbar.crayons-header {
@@ -1661,12 +1662,52 @@ body.default-header:has(#page-content .event-top-nav) {
 
     @media screen and (min-width: 960px) {
       grid-template-columns: minmax(0, 1fr) 320px;
-      align-items: start;
+      align-items: stretch;
     }
 
     &__main,
     &__aside {
       min-width: 0;
+    }
+
+    &__main {
+      .event-articles-section,
+      .community-header {
+        margin-top: var(--su-6);
+      }
+
+      .community-header {
+        margin-bottom: var(--su-3);
+
+        h2 {
+          font-size: var(--fs-xl);
+          font-weight: 800;
+          margin: 0;
+        }
+      }
+
+      .event-articles-feed {
+        max-width: none;
+        width: 100%;
+      }
+
+      .feed-grid {
+        grid-template-columns: 1fr;
+
+        @media screen and (min-width: 640px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    }
+
+    &__aside {
+      @media screen and (min-width: 960px) {
+        > :last-child {
+          position: sticky;
+          top: var(--event-sidebar-sticky-top, calc(var(--header-height, 56px) + var(--su-4)));
+          margin-bottom: 0;
+        }
+      }
     }
   }
 
