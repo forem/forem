@@ -258,6 +258,34 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(result).to eq([article1.id, article2.id])
       end
 
+      it "breaks ties between equally ranked articles by id", :aggregate_failures do
+        published_at = 1.day.ago
+        articles = create_list(:article, 3)
+        articles.each do |article|
+          article.update_columns(published_at: published_at, public_reactions_count: 5, hotness_score: 100)
+        end
+
+        %i[published_at public_reactions_count hotness_score].each do |sort_by|
+          result = described_class.call(sort_by: sort_by, sort_direction: :desc).ids
+          expect(result).to eq(articles.map(&:id).sort.reverse)
+
+          result = described_class.call(sort_by: sort_by, sort_direction: :asc).ids
+          expect(result).to eq(articles.map(&:id).sort)
+        end
+      end
+
+      it "returns every article exactly once across pages when sort values are tied" do
+        published_at = 1.day.ago
+        articles = create_list(:article, 5)
+        articles.each { |article| article.update_columns(published_at: published_at) }
+
+        paged_ids = (0..2).flat_map do |page|
+          described_class.call(sort_by: :published_at, sort_direction: :desc, page: page, per_page: 2).ids
+        end
+
+        expect(paged_ids).to eq(articles.map(&:id).sort.reverse)
+      end
+
       it "does not sort by unknown parameters" do
         allow(Article).to receive(:order)
 

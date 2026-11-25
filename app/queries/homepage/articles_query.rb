@@ -86,7 +86,10 @@ module Homepage
     def sort
       return relation unless SORT_PARAMS.include?(sort_by&.to_sym)
 
-      relation.order(sort_by => sort_direction)
+      # Articles often share the same value (public_reactions_count, or
+      # published_at for bulk imports), so add id as a tiebreaker. Without it
+      # offset pagination can repeat or skip rows between pages.
+      relation.order(sort_by => sort_direction).order(id: sort_direction)
     end
 
     def paginate
