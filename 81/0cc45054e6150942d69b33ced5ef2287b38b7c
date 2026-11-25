@@ -1,0 +1,70 @@
+app/assets/stylesheets/admin.scss
+  h_f968154a99632d 8
+app/assets/stylesheets/components/admin/billboards.scss
+  h_f968154a99632d 1-615
+app/controllers/admin/billboard_campaigns_controller.rb
+  h_f968154a99632d 5-16,18-51,85-163,179-180
+app/controllers/admin/billboard_placement_area_configs_controller.rb
+  h_f968154a99632d 23
+app/controllers/admin/billboards_controller.rb
+  h_f968154a99632d 6-10,14-24,27-36,40,42-46,62-65,70,82-85,91,107-110,116,144-276,280-281
+app/helpers/admin/billboards_helper.rb
+  h_f968154a99632d 1-179
+app/services/billboards/admin_analytics.rb
+  h_f968154a99632d 1-452
+app/views/admin/billboard_campaigns/_form.html.erb
+  h_f968154a99632d 3-12,32-34
+app/views/admin/billboard_campaigns/edit.html.erb
+  h_f968154a99632d 1-14
+app/views/admin/billboard_campaigns/index.html.erb
+  h_f968154a99632d 1-2,4-103,105-122,124-256
+app/views/admin/billboard_campaigns/new.html.erb
+  h_f968154a99632d 1-11
+app/views/admin/billboard_campaigns/show.html.erb
+  h_f968154a99632d 1-447
+app/views/admin/billboard_placement_area_configs/index.html.erb
+  h_f968154a99632d 1,3-11,13-22,24-30,32-71,73-93
+app/views/admin/billboards/_form.html.erb
+  h_f968154a99632d 185-191,209-219
+app/views/admin/billboards/_progress_bar.html.erb
+  h_f968154a99632d 1-28
+app/views/admin/billboards/_subnav.html.erb
+  h_f968154a99632d 1-25
+app/views/admin/billboards/index.html.erb
+  h_f968154a99632d 1-3,5,9,11-15,17-21,23-205,208-230,232-370,372-373,375-377,379-381
+app/views/admin/billboards/show.html.erb
+  h_f968154a99632d 2-17,19-29,31-52,54-63,65-71,73-80,82-91,93-115,118-131,134-186,188-228,231-237,239-243
+config/locales/views/admin/billboard_campaigns.en.yml
+  h_f968154a99632d 6,10-11,13,15-16,24,27-94
+config/locales/views/admin/billboard_campaigns.fr.yml
+  h_f968154a99632d 6,10-11,13,15-16,24,27-94
+config/locales/views/admin/billboard_campaigns.pt.yml
+  h_f968154a99632d 6,10-11,13,15-16,24,27-94
+config/locales/views/admin/billboards.en.yml
+  h_f968154a99632d 1-140
+config/locales/views/admin/billboards.fr.yml
+  h_f968154a99632d 1-140
+config/locales/views/admin/billboards.pt.yml
+  h_f968154a99632d 1-140
+config/routes/admin.rb
+  h_f968154a99632d 196
+docs/billboards.md
+  h_f968154a99632d 157-160
+spec/requests/admin/billboard_campaigns_spec.rb
+  h_f968154a99632d 19-20,32-80,92,95-96,101-102
+spec/requests/admin/billboards_spec.rb
+  h_f968154a99632d 78-139
+spec/services/billboards/admin_analytics_spec.rb
+  h_f968154a99632d 1-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "810cc45054e6150942d69b33ced5ef2287b38b7c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
