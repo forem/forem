@@ -8772,6 +8772,294 @@ fn analytics_dashboard_json(
     Some(ruby.str_new(&json))
 }
 
+fn splice_stories_feed_item_json(
+    ruby: &Ruby,
+    cached_fragment: RString,
+    url: RString,
+    current_user_signed_in: bool,
+    feed_config_id: Option<i64>,
+    escape_html_entities: bool,
+) -> Option<RString> {
+    if !cached_fragment.is_utf8_compatible_encoding() || !url.is_utf8_compatible_encoding() {
+        return None;
+    }
+
+    let out = {
+        // SAFETY: No Ruby VM calls or allocations occur while these borrowed slices are live.
+        unsafe {
+            let frag_str = cached_fragment.test_as_str()?;
+            let url_str = url.test_as_str()?;
+            forem_core::stories_feed::splice_stories_feed_item_json(
+                frag_str,
+                url_str,
+                current_user_signed_in,
+                feed_config_id,
+                escape_html_entities,
+            )?
+        }
+    };
+
+    Some(ruby.str_new(&out))
+}
+
+#[inline]
+fn extract_opt_i64(val: Value) -> Option<Option<i64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    Some(Some(Integer::from_value(val)?.to_i64().ok()?))
+}
+
+#[inline]
+fn extract_opt_f64(val: Value) -> Option<Option<f64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let f = magnus::Float::from_value(val)?;
+    Some(Some(f.to_f64()))
+}
+
+#[inline]
+fn extract_opt_bool(ruby: &Ruby, val: Value) -> Option<Option<bool>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let raw = val.as_raw();
+    if raw == ruby.qtrue().as_raw() {
+        Some(Some(true))
+    } else if raw == ruby.qfalse().as_raw() {
+        Some(Some(false))
+    } else {
+        None
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn serialize_stories_feed_json(
+    ruby: &Ruby,
+    entries_flat: RArray,
+    uncached_items_flat: RArray,
+    comments_flat: RArray,
+    comment_lens_arr: RArray,
+    reaction_counts_flat: RArray,
+    reaction_counts_lens_arr: RArray,
+    reaction_categories_flat: RArray,
+    config_arr: RArray,
+) -> Option<RArray> {
+    use forem_core::api_articles::ImageOptimizerMode;
+    use forem_core::homepage_articles::PublicReactionCategory;
+    use forem_core::stories_feed::{
+        StoriesFeedCachedEntity, StoriesFeedComment, StoriesFeedConfig, StoriesFeedEntry,
+        StoriesFeedFlareTag, StoriesFeedItem,
+    };
+
+    let (json, fragments) = {
+        // SAFETY: No Ruby VM calls or allocations happen inside this block while
+        // borrowed `RArray` / `RString` slices are live.
+        unsafe {
+            let entries_slice = entries_flat.as_slice();
+            let items_slice = uncached_items_flat.as_slice();
+            let comments_slice = comments_flat.as_slice();
+            let comment_lens_slice = comment_lens_arr.as_slice();
+            let reaction_counts_slice = reaction_counts_flat.as_slice();
+            let reaction_lens_slice = reaction_counts_lens_arr.as_slice();
+            let reaction_cats_slice = reaction_categories_flat.as_slice();
+            let config_slice = config_arr.as_slice();
+
+            if entries_slice.len() % 4 != 0
+                || items_slice.len() % 53 != 0
+                || comments_slice.len() % 8 != 0
+                || reaction_counts_slice.len() % 2 != 0
+                || reaction_cats_slice.len() % 4 != 0
+                || config_slice.len() != 10
+            {
+                return None;
+            }
+
+            let current_year = Integer::from_value(config_slice[0])?.to_i64().ok()?;
+            let optimizer_mode = match Integer::from_value(config_slice[1])?.to_i64().ok()? {
+                0 => ImageOptimizerMode::Passthrough,
+                1 => ImageOptimizerMode::Cloudflare,
+                _ => return None,
+            };
+            let config = StoriesFeedConfig {
+                current_year,
+                optimizer_mode,
+                cloudflare_domain: borrow_opt_utf8_str(config_slice[2])?,
+                cloudflare_directory: borrow_req_utf8_str(config_slice[3])?,
+                escape_html_entities: config_slice[4].to_bool(),
+                ai_disclosure_labels: [
+                    borrow_req_utf8_str(config_slice[5])?,
+                    borrow_req_utf8_str(config_slice[6])?,
+                    borrow_req_utf8_str(config_slice[7])?,
+                    borrow_req_utf8_str(config_slice[8])?,
+                ],
+                capture_fragments: config_slice[9].to_bool(),
+            };
+
+            let mut entries = Vec::with_capacity(entries_slice.len() / 4);
+            for chunk in entries_slice.chunks_exact(4) {
+                entries.push(StoriesFeedEntry {
+                    cached_fragment: borrow_opt_utf8_str(chunk[0])?,
+                    url: borrow_req_utf8_str(chunk[1])?,
+                    current_user_signed_in: chunk[2].to_bool(),
+                    feed_config_id: extract_opt_i64(chunk[3])?,
+                });
+            }
+
+            let mut items = Vec::with_capacity(items_slice.len() / 53);
+            for c in items_slice.chunks_exact(53) {
+                let edited_at_utc = match extract_opt_i64(c[10])? {
+                    Some(secs) => {
+                        let millis_i64 = Integer::from_value(c[11])?.to_i64().ok()?;
+                        let millis = u32::try_from(millis_i64).ok()?;
+                        Some((secs, millis))
+                    }
+                    None => None,
+                };
+
+                let user = StoriesFeedCachedEntity {
+                    name: borrow_opt_utf8_str(c[19])?,
+                    username: borrow_opt_utf8_str(c[20])?,
+                    slug: borrow_opt_utf8_str(c[21])?,
+                    profile_image_90: borrow_opt_utf8_str(c[22])?,
+                    profile_image_url: borrow_opt_utf8_str(c[23])?,
+                    cached_base_subscriber: extract_opt_bool(ruby, c[24])?,
+                    cached_community_leader: extract_opt_bool(ruby, c[25])?,
+                };
+
+                let organization = if c[26].to_bool() {
+                    Some(StoriesFeedCachedEntity {
+                        name: borrow_opt_utf8_str(c[27])?,
+                        username: borrow_opt_utf8_str(c[28])?,
+                        slug: borrow_opt_utf8_str(c[29])?,
+                        profile_image_90: borrow_opt_utf8_str(c[30])?,
+                        profile_image_url: borrow_opt_utf8_str(c[31])?,
+                        cached_base_subscriber: extract_opt_bool(ruby, c[32])?,
+                        cached_community_leader: extract_opt_bool(ruby, c[33])?,
+                    })
+                } else {
+                    None
+                };
+
+                let flare_tag = if c[40].to_bool() {
+                    Some(StoriesFeedFlareTag {
+                        name: borrow_opt_utf8_str(c[41])?,
+                        bg_color_hex: borrow_opt_utf8_str(c[42])?,
+                        text_color_hex: borrow_opt_utf8_str(c[43])?,
+                    })
+                } else {
+                    None
+                };
+
+                items.push(StoriesFeedItem {
+                    title: borrow_opt_utf8_str(c[0])?,
+                    path: borrow_opt_utf8_str(c[1])?,
+                    id: Integer::from_value(c[2])?.to_i64().ok()?,
+                    user_id: extract_opt_i64(c[3])?,
+                    comments_count: extract_opt_i64(c[4])?,
+                    public_reactions_count: extract_opt_i64(c[5])?,
+                    organization_id: extract_opt_i64(c[6])?,
+                    reading_time: extract_opt_i64(c[7])?,
+                    video_thumbnail_url: borrow_opt_utf8_str(c[8])?,
+                    video: borrow_opt_utf8_str(c[9])?,
+                    edited_at_utc,
+                    experience_level_rating: extract_opt_f64(c[12])?,
+                    experience_level_rating_distribution: extract_opt_f64(c[13])?,
+                    main_image_height: extract_opt_i64(c[14])?,
+                    type_of: borrow_opt_utf8_str(c[15])?,
+                    subforem_id: extract_opt_i64(c[16])?,
+                    favorited_by_user_id: extract_opt_i64(c[17])?,
+                    ai_disclosure_level: borrow_opt_utf8_str(c[18])?,
+                    user,
+                    organization,
+                    pinned: c[34].to_bool(),
+                    main_image: borrow_opt_utf8_str(c[35])?,
+                    cached_tag_list: borrow_opt_utf8_str(c[36])?,
+                    body_preview: borrow_opt_utf8_str(c[37])?,
+                    title_finalized_for_feed: borrow_opt_utf8_str(c[38])?,
+                    title_for_metadata: borrow_opt_utf8_str(c[39])?,
+                    flare_tag,
+                    class_name: borrow_req_utf8_str(c[44])?,
+                    published: c[45].to_bool(),
+                    published_at_int: Integer::from_value(c[46])?.to_i64().ok()?,
+                    displayable_published_at_sec: extract_opt_i64(c[47])?,
+                    main_image_background_hex_color: borrow_opt_utf8_str(c[48])?,
+                    readable_publish_date_override: borrow_opt_utf8_str(c[49])?,
+                    video_duration_in_seconds: extract_opt_i64(c[50])?,
+                    subforem_logo: borrow_opt_utf8_str(c[51])?,
+                    context_note: borrow_opt_utf8_str(c[52])?,
+                });
+            }
+
+            let mut comments = Vec::with_capacity(comments_slice.len() / 8);
+            for c in comments_slice.chunks_exact(8) {
+                comments.push(StoriesFeedComment {
+                    comment_id: Integer::from_value(c[0])?.to_i64().ok()?,
+                    user_id: extract_opt_i64(c[1])?,
+                    created_at_sec: extract_opt_i64(c[2])?,
+                    safe_processed_html: borrow_opt_utf8_str(c[3])?,
+                    path: borrow_opt_utf8_str(c[4])?,
+                    username: borrow_opt_utf8_str(c[5])?,
+                    name: borrow_opt_utf8_str(c[6])?,
+                    profile_image_90: borrow_opt_utf8_str(c[7])?,
+                });
+            }
+
+            let mut comment_lens = Vec::with_capacity(comment_lens_slice.len());
+            for &val in comment_lens_slice {
+                let len = usize::try_from(Integer::from_value(val)?.to_i64().ok()?).ok()?;
+                comment_lens.push(len);
+            }
+
+            let mut reaction_counts = Vec::with_capacity(reaction_counts_slice.len() / 2);
+            for c in reaction_counts_slice.chunks_exact(2) {
+                reaction_counts.push((
+                    borrow_req_utf8_str(c[0])?,
+                    Integer::from_value(c[1])?.to_i64().ok()?,
+                ));
+            }
+
+            let mut reaction_lens = Vec::with_capacity(reaction_lens_slice.len());
+            for &val in reaction_lens_slice {
+                let len = usize::try_from(Integer::from_value(val)?.to_i64().ok()?).ok()?;
+                reaction_lens.push(len);
+            }
+
+            let mut reaction_categories = Vec::with_capacity(reaction_cats_slice.len() / 4);
+            for c in reaction_cats_slice.chunks_exact(4) {
+                reaction_categories.push(PublicReactionCategory {
+                    slug: borrow_req_utf8_str(c[0])?,
+                    name: borrow_opt_utf8_str(c[1])?,
+                    icon: borrow_opt_utf8_str(c[2])?,
+                    position: Integer::from_value(c[3])?.to_i64().ok()?,
+                });
+            }
+
+            forem_core::stories_feed::serialize_stories_feed_json(
+                &entries,
+                &items,
+                &comments,
+                &comment_lens,
+                &reaction_counts,
+                &reaction_lens,
+                &reaction_categories,
+                &config,
+            )?
+        }
+    };
+
+    let frag_arr = ruby.ary_new_capa(fragments.len());
+    for frag in fragments {
+        frag_arr.push(ruby.str_new(&frag)).ok()?;
+    }
+
+    let out = ruby.ary_new_capa(2);
+    out.push(ruby.str_new(&json)).ok()?;
+    out.push(frag_arr).ok()?;
+    Some(out)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -9477,6 +9765,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "analytics_dashboard_json",
         function!(analytics_dashboard_json, 8),
+    )?;
+    native_mod.define_singleton_method(
+        "splice_stories_feed_item_json",
+        function!(splice_stories_feed_item_json, 5),
+    )?;
+    native_mod.define_singleton_method(
+        "serialize_stories_feed_json",
+        function!(serialize_stories_feed_json, 8),
     )?;
     Ok(())
 }

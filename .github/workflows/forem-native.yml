@@ -21,6 +21,7 @@ on:
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/search_controller.rb"
       - "app/controllers/sitemaps_controller.rb"
+      - "app/controllers/stories/feeds_controller.rb"
       - "app/controllers/concerns/api/analytics_controller.rb"
       - "app/controllers/concerns/api/articles_controller.rb"
       - "app/controllers/concerns/api/comments_controller.rb"
@@ -44,6 +45,7 @@ on:
       - "app/views/comments/delete_confirm.html.erb"
       - "app/views/comments/index.html.erb"
       - "app/views/sitemaps/**"
+      - "app/views/stories/feeds/show.json.jbuilder"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
@@ -67,6 +69,7 @@ on:
       - "app/services/html/parser.rb"
       - "app/services/markdown_processor/parser.rb"
       - "app/services/search/article.rb"
+      - "app/services/stories/feed_serializer.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
       - "app/services/images/**"
@@ -114,6 +117,7 @@ on:
       - "spec/requests/reactions_spec.rb"
       - "spec/requests/search_spec.rb"
       - "spec/requests/sitemaps_spec.rb"
+      - "spec/requests/stories/feeds_spec.rb"
       - "spec/serializers/homepage/article_serializer_spec.rb"
       - "spec/services/agent_session_parsers/redaction_metadata_spec.rb"
       - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
@@ -124,6 +128,7 @@ on:
       - "spec/services/html/parser_spec.rb"
       - "spec/services/markdown_processor/parser_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
+      - "spec/services/stories/feed_serializer_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
       - "spec/services/images/**"
       - "spec/support/carrierwave_matchers.rb"
@@ -310,6 +315,10 @@ jobs:
             raise "Unexpected analytics_grouped_by_day_json!" unless an_grouped_json.is_a?(String) && an_grouped_json.include?("\"2024-01-01\":{\"comments\":{\"total\":3}")
             an_dash = ForemNative.analytics_dashboard_json([an_pv, an_rx, an_cm, an_rf], follows_by_iso: { "2024-01-01" => 1 }, follows_total: 1, window: ["2024-01-01", "2024-01-01", false, nil, nil], top_contributors_json: "[]", follower_engagement_json: "{\"total_followers\":1,\"engaged_followers\":0,\"ratio\":0.0}", start_date_floor_iso: "2024-01-01")
             raise "Unexpected analytics_dashboard_json!" unless an_dash.is_a?(String) && an_dash.include?("a\\u003cb\\u0026c\\u003e.test") && an_dash.include?("café.dev")
+            spliced_story = ForemNative.splice_stories_feed_item_json("{\"id\":42}", "https://dev.to/a?x=1&y=2", true, 7)
+            raise "Unexpected splice_stories_feed_item_json!" unless spliced_story == "{\"id\":42,\"url\":\"https://dev.to/a?x=1\\u0026y=2\",\"current_user_signed_in\":true,\"feed_config\":7}"
+            sf_res = ForemNative.serialize_stories_feed_json(["{\"id\":42}", "https://dev.to/a", false, nil], [], [], [], [], [], [], [2026, 0, nil, "cdn-cgi", true, "Some AI", "Auto AI", "No AI", "Not disclosed", false])
+            raise "Unexpected serialize_stories_feed_json!" unless sf_res.is_a?(Array) && sf_res[0].start_with?("[{\"id\":42,\"url\":\"https://dev.to/a\"") && sf_res[1] == []
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

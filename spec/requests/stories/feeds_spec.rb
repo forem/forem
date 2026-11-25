@@ -1070,6 +1070,40 @@ RSpec.describe "Stories::Feeds" do
         expect(Rails.cache).to have_received(:read_multi).once
         expect(Rails.cache).not_to have_received(:read).with(a_string_starting_with("jbuilder/"), anything)
       end
+
+      it "serves per-request fields when a fragment warmed signed in is read signed out", :aggregate_failures do
+        sign_in leader
+        get timeframe_stories_feed_path(:latest)
+        signed_in_article = response_article
+        expect(response.headers["Cache-Control"]).to eq("private, no-store")
+        expect(signed_in_article).to include("current_user_signed_in" => true, "feed_config" => nil)
+        expect(Rails.cache.exist?(Stories::FeedSerializer.cache_key_for(article.reload))).to be(true)
+
+        sign_out leader
+        get timeframe_stories_feed_path(:latest)
+        signed_out_article = response_article
+        expect(response.headers["Cache-Control"]).not_to include("private")
+        expect(signed_out_article).to include(
+          "url" => URL.article(article), "current_user_signed_in" => false, "feed_config" => nil,
+        )
+        expect(signed_out_article.except("current_user_signed_in"))
+          .to eq(signed_in_article.except("current_user_signed_in"))
+      end
+
+      it "restores batched Jbuilder read_multi when native serialization declines", :aggregate_failures do
+        allow(Stories::FeedSerializer).to receive(:call).and_return(nil)
+
+        get stories_feed_path
+        first_payload = response_article
+
+        allow(Rails.cache).to receive(:read_multi).and_call_original
+        allow(Rails.cache).to receive(:read).and_call_original
+
+        get stories_feed_path
+        expect(response_article).to eq(first_payload)
+        expect(Rails.cache).to have_received(:read_multi).at_least(:twice)
+        expect(Rails.cache).not_to have_received(:read).with(a_string_starting_with("jbuilder/"), anything)
+      end
     end
   end
 

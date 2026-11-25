@@ -33,11 +33,17 @@ module Stories
       # Add edge cache headers for signed out users only
       if user_signed_in?
         response.headers["Cache-Control"] = "private, no-store"
+      else
+        set_surrogate_key_header(*feed_surrogate_keys)
+        set_cache_control_headers(60) # 1 minute expiration
+      end
+
+      if (native_json = serialize_feed_stories_natively)
+        render json: native_json
         return
       end
 
-      set_surrogate_key_header(*feed_surrogate_keys)
-      set_cache_control_headers(60) # 1 minute expiration
+      prepare_jbuilder_fallback if @use_native_feed_serializer
     end
 
     private
@@ -229,16 +235,14 @@ module Stories
     # for uncached feed story records to avoid per-story N+1 queries.
     def preload_feed_associations
       records = @stories.map(&:object)
+      @use_native_feed_serializer = Stories::FeedSerializer.native_supported?
       if @page <= 2 && perform_caching && records.any?
-        vc = view_context
-        digest_path = vc.digest_path_from_template(lookup_context.find("stories/feeds/show", [], false, [], formats: [:json]))
-        @story_cache_keys = {}
-        keys = records.index_by { |r| @story_cache_keys[r.id] = story_cache_key(r, vc, digest_path) }
-        @cached_story_fragments = Rails.cache.read_multi(*keys.keys)
-        records = keys.except(*@cached_story_fragments.keys).values
+        records = preload_cached_story_fragments(records)
       end
-      return if records.empty?
+      preload_story_associations(records) if records.any?
+    end
 
+    def preload_story_associations(records)
       notes_missing = records.reject { |r| r.association(:context_notes).loaded? }
       if notes_missing.any?
         ActiveRecord::Associations::Preloader.new(
@@ -269,9 +273,61 @@ module Stories
     #
     # @param records [Array<Article>]
     def preload_reaction_counts(records)
-      with_reactions, without_reactions = records.partition { |r| r.public_reactions_count.positive? }
+      missing = records.reject { |r| r.instance_variable_defined?(:@preloaded_reaction_counts_for_reactable) }
+      return if missing.empty?
+
+      with_reactions, without_reactions = missing.partition { |r| r.public_reactions_count.positive? }
       without_reactions.each { |r| r.instance_variable_set(:@preloaded_reaction_counts_for_reactable, []) }
       Article.preload_reaction_counts_for_reactable(with_reactions)
+    end
+
+    def preload_cached_story_fragments(records)
+      if @use_native_feed_serializer
+        @native_story_cache_keys = {}
+        keys = records.index_by { |r| @native_story_cache_keys[r.id] = Stories::FeedSerializer.cache_key_for(r) }
+        @native_cached_story_fragments = Rails.cache.read_multi(*keys.keys)
+        return keys.except(*@native_cached_story_fragments.keys).values
+      end
+
+      preload_jbuilder_story_fragments(records)
+    end
+
+    def preload_jbuilder_story_fragments(records)
+      vc = view_context
+      template = lookup_context.find("stories/feeds/show", [], false, [], formats: [:json])
+      digest_path = vc.digest_path_from_template(template)
+      @story_cache_keys = {}
+      keys = records.index_by { |r| @story_cache_keys[r.id] = story_cache_key(r, vc, digest_path) }
+      @cached_story_fragments = Rails.cache.read_multi(*keys.keys)
+      keys.except(*@cached_story_fragments.keys).values
+    end
+
+    # When the native serializer declines an out-of-domain story, restore batched
+    # Jbuilder fragment reads and preload associations for any stories skipped as
+    # native cache hits so the Jbuilder fallback avoids per-story cache/SQL N+1s.
+    def prepare_jbuilder_fallback
+      records = @stories.map(&:object)
+      if @page <= 2 && perform_caching && records.any?
+        records = preload_jbuilder_story_fragments(records)
+      end
+      preload_story_associations(records) if records.any?
+    end
+
+    def serialize_feed_stories_natively
+      return unless @use_native_feed_serializer
+
+      Stories::FeedSerializer.call(
+        stories: @stories,
+        comments_variant: @comments_variant,
+        user_signed_in: user_signed_in?,
+        feed_config_id: @feed_config&.id,
+        view_context: view_context,
+        cached_story_fragments: @native_cached_story_fragments,
+        story_cache_keys: @native_story_cache_keys,
+        cache_writes_enabled: @page <= 2 && perform_caching,
+        cached_subforem_logo: @cached_subforem_logo,
+        cached_subforem_logos: @cached_subforem_logos,
+      )
     end
 
     def story_cache_key(rec, vc, digest_path)
