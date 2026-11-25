@@ -93,6 +93,108 @@ function insertNext(params, buildCallback) {
   };
 }
 
+function escapeScrollHTML(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function decodeBasicHTMLEntities(value) {
+  return String(value == null ? '' : value).replace(
+    /&(amp|lt|gt|quot|#39|#x27|apos);/gi,
+    function replaceEntity(match, entity) {
+      switch (entity.toLowerCase()) {
+        case 'amp':
+          return '&';
+        case 'lt':
+          return '<';
+        case 'gt':
+          return '>';
+        case 'quot':
+          return '"';
+        case '#39':
+        case '#x27':
+        case 'apos':
+          return "'";
+        default:
+          return match;
+      }
+    },
+  );
+}
+
+function getScrollBaseOrigin() {
+  if (
+    typeof window !== 'undefined' &&
+    window.location &&
+    window.location.origin &&
+    window.location.origin !== 'null'
+  ) {
+    return window.location.origin;
+  }
+
+  return 'https://forem.invalid';
+}
+
+function safeScrollPath(value, fallback = '#') {
+  if (typeof value !== 'string') {
+    return fallback;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed || (!trimmed.startsWith('/') && !/^https?:\/\//i.test(trimmed))) {
+    return fallback;
+  }
+
+  try {
+    const baseOrigin = getScrollBaseOrigin();
+    const parsed = new URL(trimmed, baseOrigin);
+    if (
+      (parsed.protocol === 'https:' || parsed.protocol === 'http:') &&
+      parsed.origin === baseOrigin
+    ) {
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    }
+  } catch (e) {
+    return fallback;
+  }
+
+  return fallback;
+}
+
+function safeScrollUrl(value, fallback = '') {
+  if (typeof value !== 'string') {
+    return fallback;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed || (!trimmed.startsWith('/') && !/^https?:\/\//i.test(trimmed))) {
+    return fallback;
+  }
+
+  try {
+    const baseOrigin = getScrollBaseOrigin();
+    const parsed = new URL(trimmed, baseOrigin);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return fallback;
+    }
+
+    if (trimmed.startsWith('/')) {
+      if (parsed.origin !== baseOrigin) {
+        return fallback;
+      }
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    }
+
+    return parsed.href;
+  } catch (e) {
+    return fallback;
+  }
+}
+
 /**
  * Constructs the HTML for a follows entry using the data from the follows entries object.
  *
@@ -100,33 +202,41 @@ function insertNext(params, buildCallback) {
  * @returns an HTML block for the follows.
  */
 function buildFollowsHTML(follows) {
+  const safeId = escapeScrollHTML(follows.id);
+  const safePath = escapeScrollHTML(safeScrollPath(follows.path));
+  const safeUsername = escapeScrollHTML(follows.username);
+  const safeProfileImage = escapeScrollHTML(
+    safeScrollUrl(follows.profile_image, ''),
+  );
+  const safeName = escapeScrollHTML(follows.name);
+
   return (
     '<div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-' +
-    follows.id +
+    safeId +
     '">' +
     '<a href="' +
-    follows.path +
+    safePath +
     '" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">' +
     '<img alt="@' +
-    follows.username +
+    safeUsername +
     ' profile image" class="crayons-avatar__image" src="' +
-    follows.profile_image +
+    safeProfileImage +
     '" />' +
     '</a>' +
     '<div class="pl-4 s:pl-0 self-center">' +
     '<h3 class="s:mb-1 p-0">' +
     '<a href="' +
-    follows.path +
+    safePath +
     '">' +
-    follows.name +
+    safeName +
     '</a>' +
     '</h3>' +
     '<p class="s:mb-4">' +
     '<a href="' +
-    follows.path +
+    safePath +
     '" class="crayons-link crayons-link--secondary">' +
     '@' +
-    follows.username +
+    safeUsername +
     '</a>' +
     '</p>' +
     '</div>' +
@@ -140,6 +250,10 @@ function buildFollowsHTML(follows) {
  * @returns an HTML block for a tag follow.
  */
 function buildTagsHTML(tag) {
+  const safeId = escapeScrollHTML(tag.id);
+  const safeTagId = escapeScrollHTML(tag.tag_id);
+  const safeName = escapeScrollHTML(tag.name);
+  const safeTagPath = encodeURIComponent(tag.name == null ? '' : String(tag.name));
   let followingButtonContainer = '';
   let unhideButtonContainer = '';
 
@@ -152,16 +266,16 @@ function buildTagsHTML(tag) {
   if (tag.explicit_points >= 0) {
     followingButtonContainer = `<div class="flex justify-between">
       <div>
-        <button class="crayons-btn crayons-btn--outlined follow-button" aria-label="Following tag:${tag.name}">Following</button>
+        <button class="crayons-btn crayons-btn--outlined follow-button" aria-label="Following tag:${safeName}">Following</button>
       </div>
       <div class="dropdown-trigger-container relative">
-        <button type="button" aria-label="Unhide tag: ${tag.name}" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-${tag.tag_id}" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+        <button type="button" aria-label="Unhide tag: ${safeName}" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-${safeTagId}" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="crayons-icon" role="img" aria-labelledby="arimcllskwkmbfpxyu52b8vzin20raon"><title id="arimcllskwkmbfpxyu52b8vzin20raon">Options</title><path fill-rule="evenodd" clip-rule="evenodd" d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"></path></svg>
         </button>
-        <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-${tag.tag_id}">
+        <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-${safeTagId}">
           <ul class="p-0">
             <li>
-              <button type="button" class="hide-button c-btn w-100 align-left flex items-center" aria-label="Hide tag: ${tag.name}">
+              <button type="button" class="hide-button c-btn w-100 align-left flex items-center" aria-label="Hide tag: ${safeName}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="crayons-icon" role="img" aria-labelledby="avelns726vzvmu4rpqxq8olxhll9obh"><title id="avelns726vzvmu4rpqxq8olxhll9obh">Hide tag</title>
                   <path d="M17.882 19.297A10.95 10.95 0 0 1 12 21c-5.392 0-9.878-3.88-10.82-9a10.982 10.982 0 0 1 3.34-6.066L1.393 2.808l1.415-1.415 19.799 19.8-1.415 1.414-3.31-3.31zM5.935 7.35A8.965 8.965 0 0 0 3.223 12a9.006 9.006 0 0 0 13.2 5.838l-2.027-2.028A4.5 4.5 0 0 1 8.19 9.604L5.935 7.35zm6.979 6.978-3.242-3.242a2.5 2.5 0 0 0 3.24 3.241l.002.001zm7.893 2.264-1.431-1.43a8.936 8.936 0 0 0 1.4-3.162A9.006 9.006 0 0 0 9.553 5.338L7.974 3.76A10.99 10.99 0 0 1 12 3c5.392 0 9.878 3.88 10.819 9a10.949 10.949 0 0 1-2.012 4.592zm-9.084-9.084a4.5 4.5 0 0 1 4.769 4.77l-4.77-4.77z"></path>
                 </svg>
@@ -176,21 +290,23 @@ function buildTagsHTML(tag) {
 
   let short_summary = '';
   if (tag.short_summary) {
-    short_summary = `<p class="mb-6 fs-s color-base-70 truncate-at-3">${tag.short_summary}</p>`;
+    short_summary = `<p class="mb-6 fs-s color-base-70 truncate-at-3">${escapeScrollHTML(decodeBasicHTMLEntities(tag.short_summary))}</p>`;
   }
+
+  const safeTaggingsCount = escapeScrollHTML(
+    tag.taggings_count != null ? tag.taggings_count.toLocaleString() : '',
+  );
 
   // TODO: remove the data-follow-id and the data-tag-id in the child components
   return `
-  <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-${
-    tag.id
-  }" data-follow-id="${tag.id}" data-tag-id="${tag.tag_id}">
+  <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-${safeId}" data-follow-id="${safeId}" data-tag-id="${safeTagId}">
     <div class="mb-1 flex items-center justify-between">
       <h4 class="-ml-2">
-      <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
-        <span class="crayons-tag__prefix">#</span>${tag.name}
+      <a href="/t/${safeTagPath}" class="crayons-tag crayons-tag--l">
+        <span class="crayons-tag__prefix">#</span>${safeName}
       </a>
       </h4>
-      <div class="fs-xs color-base-60">${tag.taggings_count.toLocaleString()} posts</div>
+      <div class="fs-xs color-base-60">${safeTaggingsCount} posts</div>
     </div>
     ${short_summary}
 
@@ -253,41 +369,61 @@ function fetchNextFollowersPage(el) {
 }
 
 function buildVideoArticleHTML(videoArticle) {
-  const allowedHostnames = ["youtube.com", "www.youtube.com"];
+  const allowedHostnames = ['youtube.com', 'www.youtube.com'];
+  const allowedProtocols = ['https:', 'http:'];
   let videoUrl;
   try {
     videoUrl = new URL(videoArticle.video);
   } catch (e) {
     videoUrl = null;
   }
-  if (videoUrl && allowedHostnames.includes(videoUrl.hostname)) {
-    return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
+
+  const safeId = escapeScrollHTML(videoArticle.id);
+  const safePath = escapeScrollHTML(safeScrollPath(videoArticle.path));
+  const safeTitle = escapeScrollHTML(videoArticle.title);
+  const safeUserName = escapeScrollHTML(
+    videoArticle.user && videoArticle.user.name,
+  );
+
+  if (
+    videoUrl &&
+    allowedProtocols.includes(videoUrl.protocol) &&
+    allowedHostnames.includes(videoUrl.hostname)
+  ) {
+    const safeVideoSrc = escapeScrollHTML(videoUrl.href);
+    return `<a href="${safePath}" id="video-article-${safeId}" class="crayons-card media-card">
       <div class="crayons-article__cover" style="width:100%; aspect-ratio:16/9; position:relative;">
         <iframe
-          src="${videoArticle.video}"
+          src="${safeVideoSrc}"
           style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
-          title="${videoArticle.title}"
+          title="${safeTitle}"
         ></iframe>
       </div>
       <div class="media-card__content">
-        <h2 class="fs-base mb-2 fw-medium">${videoArticle.title}</h2>
+        <h2 class="fs-base mb-2 fw-medium">${safeTitle}</h2>
         <small class="fs-s">
-          ${videoArticle.user.name}
+          ${safeUserName}
         </small>
       </div>
     </a>`;
   } else {
-    return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
+    const safeThumbnailUrl = escapeScrollHTML(
+      safeScrollUrl(videoArticle.video_thumbnail_url, ''),
+    );
+    const safeDuration = escapeScrollHTML(
+      videoArticle.video_duration_in_minutes,
+    );
+    return `<a href="${safePath}" id="video-article-${safeId}" class="crayons-card media-card">
       <div class="media-card__artwork">
-        <img src="${videoArticle.video_thumbnail_url}" class="w-100 object-cover block aspect-16-9 h-auto" width="320" height="180" alt="${videoArticle.title}" loading="lazy">
-        <span class="media-card__artwork__badge">${videoArticle.video_duration_in_minutes}</span>
+        <img src="${safeThumbnailUrl}" class="w-100 object-cover block aspect-16-9 h-auto" width="320" height="180" alt="${safeTitle}" loading="lazy">
+        <span class="media-card__artwork__badge">${safeDuration}</span>
       </div>
       <div class="media-card__content">
-        <h2 class="fs-base mb-2 fw-medium">${videoArticle.title}</h2>
+        <h2 class="fs-base mb-2 fw-medium">${safeTitle}</h2>
         <small class="fs-s">
-          ${videoArticle.user.name}
+          ${safeUserName}
         </small>
       </div>
     </a>`;

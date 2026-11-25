@@ -26,6 +26,22 @@ RSpec.describe "Infinite scroll on dashboard", :js do
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
+
+    it "escapes HTML characters in follower names loaded via infinite scroll", :aggregate_failures do
+      users.first.update!(name: '<b class="formatted-name">Ada & Co</b>')
+      older_follow = Follow.find_by!(follower: users.first, followable: user)
+      older_follow.update!(created_at: 1.day.ago)
+
+      visit "/dashboard/user_followers?per_page=#{default_per_page}"
+      expect(page).to have_no_css("#follows-#{older_follow.id}")
+
+      page.execute_script("window.scrollTo(0, 100000)")
+      page.assert_selector('div[id^="follows"]', count: total_records)
+      within("#follows-#{older_follow.id}") do
+        expect(page).to have_text('<b class="formatted-name">Ada & Co</b>')
+        expect(page).to have_no_css("b.formatted-name")
+      end
+    end
   end
 
   context "when /dashboard/following_tags is visited" do
@@ -40,6 +56,25 @@ RSpec.describe "Infinite scroll on dashboard", :js do
 
     it "scrolls through all tags" do
       page.assert_selector('div[id^="follows"]', count: total_records)
+    end
+
+    it "renders tag summaries loaded via infinite scroll without double-escaping or executing HTML",
+       :aggregate_failures do
+      # Simulate both entity-encoded text from strip_tags and raw HTML that sanitize would permit
+      tags.first.update_columns(short_summary: 'HTML &amp; CSS <b class="injected-tag">tips</b>')
+      older_tag_follow = Follow.find_by!(follower: user, followable: tags.first)
+      older_tag_follow.update!(created_at: 1.day.ago)
+
+      visit dashboard_following_tags_path(per_page: default_per_page)
+      expect(page).to have_no_css("#follows-#{older_tag_follow.id}")
+
+      page.execute_script("window.scrollTo(0, 100000)")
+      page.assert_selector('div[id^="follows"]', count: total_records)
+      within("#follows-#{older_tag_follow.id}") do
+        expect(page).to have_text('HTML & CSS <b class="injected-tag">tips</b>')
+        expect(page).to have_no_text("HTML &amp; CSS")
+        expect(page).to have_no_css("b.injected-tag")
+      end
     end
   end
 
