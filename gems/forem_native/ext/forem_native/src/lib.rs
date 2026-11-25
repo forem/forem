@@ -8152,6 +8152,152 @@ fn serialize_api_readinglist_json(
     Some(ruby.str_new(&json))
 }
 
+fn normalize_overly_nested_lists(ruby: &Ruby, content: RString) -> Option<RString> {
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the borrow
+    // ends before we allocate any Ruby String.
+    let owned = {
+        let text = unsafe { content.test_as_str() }?;
+        match forem_core::redcarpet::normalize_overly_nested_lists(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(s) => Some(s),
+        }
+    };
+    Some(match owned {
+        None => RString::new_shared(content),
+        Some(s) => ruby.str_new(&s),
+    })
+}
+
+fn redcarpet_slugify_header(ruby: &Ruby, title: RString) -> Option<RString> {
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let slug = {
+        let text = unsafe { title.test_as_str() }?;
+        forem_core::redcarpet::slugify_header(text)?
+    };
+    Some(ruby.str_new(&slug))
+}
+
+fn redcarpet_render_header(ruby: &Ruby, title: RString, header_number: i64) -> Option<RString> {
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let html = {
+        let text = unsafe { title.test_as_str() }?;
+        forem_core::redcarpet::render_header(text, header_number)?
+    };
+    Some(ruby.str_new(&html))
+}
+
+fn redcarpet_extract_img_attrs(ruby: &Ruby, content: RString) -> Option<RArray> {
+    // SAFETY: Zero-copy `RString` borrow; slices are copied to owned Strings before Ruby allocation.
+    let (src, alt, title) = {
+        let text = unsafe { content.test_as_str() }?;
+        let (s, a, t) = forem_core::redcarpet::extract_img_attrs(text)?;
+        (
+            s.map(str::to_owned),
+            a.map(str::to_owned),
+            t.map(str::to_owned),
+        )
+    };
+    let ary = ruby.ary_new_capa(3);
+    ary.push(match src {
+        Some(s) => ruby.str_new(&s).as_value(),
+        None => ruby.qnil().as_value(),
+    })
+    .ok()?;
+    ary.push(match alt {
+        Some(s) => ruby.str_new(&s).as_value(),
+        None => ruby.qnil().as_value(),
+    })
+    .ok()?;
+    ary.push(match title {
+        Some(s) => ruby.str_new(&s).as_value(),
+        None => ruby.qnil().as_value(),
+    })
+    .ok()?;
+    Some(ary)
+}
+
+fn redcarpet_render_image(
+    ruby: &Ruby,
+    link: Option<RString>,
+    resolved_url: Option<RString>,
+    title: Option<RString>,
+    alt_text: Option<RString>,
+) -> Option<RString> {
+    // SAFETY: Zero-copy `RString` borrows; `forem_core` never calls into Ruby.
+    let html = {
+        let link_str = match link.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        let resolved_str = match resolved_url.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        let title_str = match title.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        let alt_str = match alt_text.as_ref() {
+            Some(s) => Some(unsafe { s.test_as_str() }?),
+            None => None,
+        };
+        forem_core::redcarpet::render_image(link_str, resolved_str, title_str, alt_str)?
+    };
+    Some(ruby.str_new(&html))
+}
+
+fn redcarpet_render_link(
+    ruby: &Ruby,
+    link: Option<RString>,
+    content: Option<RString>,
+    link_attrs_html: RString,
+    app_protocol: RString,
+    app_domain: RString,
+    raw_href: bool,
+) -> Value {
+    // SAFETY: Zero-copy `RString` borrows; `forem_core` never calls into Ruby.
+    let result = {
+        let link_str = match link.as_ref() {
+            Some(s) => match unsafe { s.test_as_str() } {
+                Some(t) => Some(t),
+                None => return ruby.qnil().as_value(),
+            },
+            None => None,
+        };
+        let content_str = match content.as_ref() {
+            Some(s) => match unsafe { s.test_as_str() } {
+                Some(t) => Some(t),
+                None => return ruby.qnil().as_value(),
+            },
+            None => None,
+        };
+        let Some(attrs_str) = (unsafe { link_attrs_html.test_as_str() }) else {
+            return ruby.qnil().as_value();
+        };
+        let Some(proto_str) = (unsafe { app_protocol.test_as_str() }) else {
+            return ruby.qnil().as_value();
+        };
+        let Some(domain_str) = (unsafe { app_domain.test_as_str() }) else {
+            return ruby.qnil().as_value();
+        };
+        forem_core::redcarpet::render_link(
+            link_str,
+            content_str,
+            attrs_str,
+            proto_str,
+            domain_str,
+            raw_href,
+        )
+    };
+    match result {
+        None => ruby.qnil().as_value(),
+        Some(forem_core::redcarpet::RenderLinkResult::NestedLink) => {
+            ruby.to_symbol("nested_link").as_value()
+        }
+        Some(forem_core::redcarpet::RenderLinkResult::Html(s)) => ruby.str_new(&s).as_value(),
+    }
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -8807,5 +8953,27 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "billboard_extract_internal_article_paths",
         function!(billboard_extract_internal_article_paths, 2),
     )?;
+    native_mod.define_singleton_method(
+        "normalize_overly_nested_lists",
+        function!(normalize_overly_nested_lists, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "redcarpet_slugify_header",
+        function!(redcarpet_slugify_header, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "redcarpet_render_header",
+        function!(redcarpet_render_header, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "redcarpet_extract_img_attrs",
+        function!(redcarpet_extract_img_attrs, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "redcarpet_render_image",
+        function!(redcarpet_render_image, 4),
+    )?;
+    native_mod
+        .define_singleton_method("redcarpet_render_link", function!(redcarpet_render_link, 6))?;
     Ok(())
 }

@@ -280,6 +280,13 @@ jobs:
             raise "Unexpected billboard_wrap_shadow_dom!" unless ForemNative.billboard_wrap_shadow_dom("<p>Hi</p>", "42", "plain", "BASE", "BOOT", "application/x-forem-billboard-script").include?("data-billboard-id=\"42\"")
             raise "Unexpected billboard_append_bb_param!" unless ForemNative.billboard_append_bb_param("<p><a href=\"https://example.com\">x</a></p>", "42") == "<p><a href=\"https://example.com?bb=42\">x</a></p>"
             raise "Unexpected billboard_extract_internal_article_paths!" unless ForemNative.billboard_extract_internal_article_paths("<p><a href=\"https://www.dev.to/Ada/Post/\">x</a></p>", ["dev.to"]) == ["/ada/post"]
+            raise "Unexpected normalize_overly_nested_lists!" unless ForemNative.normalize_overly_nested_lists("#{" " * 20}- deep\n") == "#{" " * 16}- deep\n"
+            raise "Unexpected redcarpet_slugify_header!" unless ForemNative.redcarpet_slugify_header("🚀 Hello, World!") == "hello-world"
+            raise "Unexpected redcarpet_render_header!" unless ForemNative.redcarpet_render_header("Hello", 2).include?("name=\"hello\"")
+            raise "Unexpected redcarpet_extract_img_attrs!" unless ForemNative.redcarpet_extract_img_attrs("<img src=\"https://example.com/a.png\" alt=\"hi\"/>") == ["https://example.com/a.png", "hi", nil]
+            raise "Unexpected redcarpet_render_image!" unless ForemNative.redcarpet_render_image("https://example.com/a.png", "https://cdn.example.com/a.png", nil, "hi") == "<img src=\"https://cdn.example.com/a.png\" alt=\"hi\"/>"
+            raise "Unexpected redcarpet_render_link!" unless ForemNative.redcarpet_render_link("https://example.com", "hi", "", "https://", "dev.to") == "<a href=\"https://example.com\">hi</a>"
+            raise "Unexpected non-ASCII nested link!" unless ForemNative.redcarpet_render_link("https://example.com", "<a é=\"x\">nested</a>", "", "https://", "dev.to") == :nested_link
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
 

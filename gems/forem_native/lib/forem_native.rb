@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :billboard_extract_internal_article_paths
+  LATEST_NATIVE_SYMBOL = :redcarpet_render_link
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2358,6 +2358,55 @@ module ForemNative
       return unless utf8_compatible_string?(html) && internal_hosts.is_a?(Array)
 
       Native.billboard_extract_internal_article_paths(html, internal_hosts)
+    end
+
+    def normalize_overly_nested_lists(content)
+      return unless Native.respond_to?(:normalize_overly_nested_lists)
+      return unless valid_utf8_string?(content)
+
+      Native.normalize_overly_nested_lists(content)
+    end
+
+    def redcarpet_slugify_header(title)
+      return unless Native.respond_to?(:redcarpet_slugify_header)
+      return unless valid_utf8_string?(title)
+
+      Native.redcarpet_slugify_header(title)
+    end
+
+    def redcarpet_render_header(title, header_number)
+      return unless Native.respond_to?(:redcarpet_render_header)
+      return unless valid_utf8_string?(title) && valid_i64_integer?(header_number)
+
+      Native.redcarpet_render_header(title, header_number)
+    end
+
+    def redcarpet_extract_img_attrs(content)
+      return unless Native.respond_to?(:redcarpet_extract_img_attrs)
+      return unless valid_utf8_string?(content)
+
+      Native.redcarpet_extract_img_attrs(content)
+    end
+
+    def redcarpet_render_image(link, resolved_url, title, alt_text)
+      return unless Native.respond_to?(:redcarpet_render_image)
+      return unless (link.nil? || valid_utf8_string?(link)) &&
+        (resolved_url.nil? || valid_utf8_string?(resolved_url)) &&
+        (title.nil? || valid_utf8_string?(title)) &&
+        (alt_text.nil? || valid_utf8_string?(alt_text))
+
+      Native.redcarpet_render_image(link, resolved_url, title, alt_text)
+    end
+
+    def redcarpet_render_link(link, content, link_attrs_html, app_protocol, app_domain, raw_href: false)
+      return unless Native.respond_to?(:redcarpet_render_link)
+      return unless (link.nil? || valid_utf8_string?(link)) &&
+        (content.nil? || valid_utf8_string?(content)) &&
+        valid_utf8_string?(link_attrs_html) &&
+        valid_utf8_string?(app_protocol) &&
+        valid_utf8_string?(app_domain)
+
+      Native.redcarpet_render_link(link, content, link_attrs_html, app_protocol, app_domain, raw_href ? true : false)
     end
 
     private

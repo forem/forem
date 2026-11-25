@@ -160,4 +160,35 @@ RSpec.describe Redcarpet::Render::HTMLRouge do
       expect(html_output).to include('<span class="na">class</span>')
     end
   end
+
+  describe "native link, image, and header rendering" do
+    it "renders linked images without invoking Nokogiri::HTML on clean img tags" do
+      allow(MediaStore).to receive(:find_by).and_return(nil)
+      allow(Nokogiri).to receive(:HTML).and_call_original
+
+      output = markdown.render("[![badge](https://example.com/badge.png \"v1\")](https://example.com)")
+
+      expected_html =
+        '<a href="https://example.com"><img src="https://example.com/badge.png" title="v1" alt="badge"/></a>'
+      expect(output).to include(expected_html)
+      expect(Nokogiri).not_to have_received(:HTML)
+    end
+
+    it "memoizes MediaStore lookups per renderer instance for repeated image URLs" do
+      url = "https://example.com/repeated.png"
+      allow(MediaStore).to receive(:find_by).with(original_url: url).and_return(nil)
+
+      markdown.render("![one](#{url})\n\n![two](#{url})")
+
+      expect(MediaStore).to have_received(:find_by).with(original_url: url).once
+    end
+
+    it "renders ASCII, emoji, and non-ASCII headings identically to the legacy path", :aggregate_failures do
+      ascii_output = markdown.render("## 🚀 Hello, World!")
+      expect(ascii_output).to include('<a name="hello-world" href="#hello-world" class="anchor">')
+
+      unicode_output = markdown.render("## 日本語の見出し")
+      expect(unicode_output).to include('<a name="日本語の見出し" href="#日本語の見出し" class="anchor">')
+    end
+  end
 end
