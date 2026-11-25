@@ -98,6 +98,7 @@ namespace :forem_native do
     benchmark_image_ops
     benchmark_html_postprocess
     benchmark_html_finalize
+    benchmark_comment_title
     benchmark_redaction_metadata
   ] do
     require "benchmark/ips"
@@ -2761,6 +2762,41 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby/Nokogiri (prefix + alerts + figures)") { legacy.call }
       x.report("Rust Magnus (postprocess_rendered_html_full)") { native.call }
+      x.compare!
+    end
+  end
+
+  desc "Benchmark Comment#title (ForemNative.comment_title vs legacy Loofah + Nokogiri)"
+  task benchmark_comment_title: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    unless ForemNative.available?
+      puts "Compiling forem_native first..."
+      Rake::Task["forem_native:compile"].invoke
+    end
+
+    sample_html = <<~HTML
+      <p>Thanks <a class="mentioned-user" href="https://dev.to/ben">@ben</a>! Rust &amp; Ruby &lt;3 &mdash;
+      "quoted" it's caf&eacute; 😀 東京&nbsp;tower is awesome and super fast for comment rendering.</p>
+      <div class="highlight js-code-highlight"><pre class="highlight ruby"><code>a &lt; b &amp;&amp; c</code></pre></div>
+    HTML
+    comment = Comment.new(processed_html: sample_html)
+
+    legacy = -> { comment.__send__(:legacy_title, 80) }
+    native = -> { ForemNative.comment_title(sample_html, 80) }
+    raise "Parity mismatch!" unless native.call == legacy.call
+
+    puts "\n=== Comment#title Benchmark (#{sample_html.bytesize} bytes) ==="
+    ruby_mem = MemoryProfiler.report { legacy.call }
+    rust_mem = MemoryProfiler.report { native.call }
+    puts "Comment#title(80) — Ruby: #{ruby_mem.total_allocated} objs (#{ruby_mem.total_allocated_memsize} B) " \
+         "vs Rust: #{rust_mem.total_allocated} objs (#{rust_mem.total_allocated_memsize} B)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby/Loofah+Nokogiri (legacy_title)") { legacy.call }
+      x.report("Rust Magnus (comment_title)") { native.call }
       x.compare!
     end
   end

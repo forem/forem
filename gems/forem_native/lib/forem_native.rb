@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :postprocess_rendered_html_full
+  LATEST_NATIVE_SYMBOL = :comment_title
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -453,6 +453,21 @@ module ForemNative
       return unless length.between?(3, 100_000)
 
       Native.sanitized_text_preview(html, length)
+    end
+
+    # Computes `Comment#title`'s visible text (`strip_tags(processed_html).strip`, truncated to
+    # `length` characters with `"..."`, with HTML character references decoded) in a single pass,
+    # without Loofah's HTML5 DOM or the follow-up `Nokogiri::HTML.fragment(...).text` parse.
+    # Returns nil for non-Strings, lengths outside 3..100_000, blank text (where the image-only
+    # label may apply), truncations that cut through a character reference, characters libxml2
+    # drops or rewrites (C0 controls other than tab and newline, U+FEFF, U+FFFE, U+FFFF), and the
+    # HTML5 edge cases `full_sanitize` declines, so `Comment` can fall back to `legacy_title`.
+    def comment_title(html, length)
+      return unless Native.respond_to?(:comment_title)
+      return unless html.instance_of?(String) && length.instance_of?(Integer)
+      return unless length.between?(3, 100_000)
+
+      Native.comment_title(html, length)
     end
 
     # Strips `<[^>]*>` tags, unescapes basic and numeric HTML entities, strips ASCII whitespace,

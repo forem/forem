@@ -196,11 +196,9 @@ class Comment < ApplicationRecord
     return self.class.title_deleted if deleted
     return self.class.title_hidden if hidden_by_commentable_user
 
-    text = ActionController::Base.helpers.strip_tags(processed_html).strip
-    return self.class.title_image_only if only_contains_image?(text)
-
-    truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
-    Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
+    # Single-pass Rust kernel; nil (blank text, references cut by the truncation, ...) defers to
+    # the Loofah + Nokogiri pipeline below.
+    ForemNative.comment_title(processed_html, length) || legacy_title(length)
   end
 
   def video
@@ -521,8 +519,7 @@ class Comment < ApplicationRecord
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
-    # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
-    mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
+    mentions_count = mentioned_user_link_count
     if mentions_count > Settings::RateLimit.mention_creation
       errors.add(:base,
                  I18n.t("models.comment.mention_too_many",
@@ -633,6 +630,33 @@ class Comment < ApplicationRecord
 
   def parent_exists?
     parent_id && Comment.exists?(id: parent_id)
+  end
+
+  def legacy_title(length)
+    text = ActionController::Base.helpers.strip_tags(processed_html).strip
+    return self.class.title_image_only if only_contains_image?(text)
+
+    truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+    Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
+  end
+
+  # Matches any numeric character reference other than `&#39;` (the apostrophe escape emitted in
+  # inline code spans), since a numeric entity could spell `mentioned-user` inside a class attribute.
+  NON_APOSTROPHE_NUMERIC_ENTITY_REGEX = /&#(?!39;)/
+  private_constant :NON_APOSTROPHE_NUMERIC_ENTITY_REGEX
+
+  # Counts `.mentioned-user` links (added by Html::Parser#user_link_if_exists). Most comments
+  # mention nobody, so skip building a full libxml2 document unless the class name (or a numeric
+  # character reference other than `&#39;` that could spell it inside an attribute) appears in the
+  # HTML at all.
+  def mentioned_user_link_count
+    html = processed_html.to_s
+    unless html.include?("mentioned-user") ||
+        (html.include?("&#") && html.match?(NON_APOSTROPHE_NUMERIC_ENTITY_REGEX))
+      return 0
+    end
+
+    Nokogiri::HTML(html).css(".mentioned-user").size
   end
 
   def only_contains_image?(stripped_text)
