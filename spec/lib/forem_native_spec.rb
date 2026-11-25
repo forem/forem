@@ -921,12 +921,17 @@ RSpec.describe ForemNative do
     it "declines non-UTF-8, String subclasses, and invalid byte sequences so the parser keeps Ruby semantics" do
       input = "a `{% raw %}` b"
       expected = "a {% raw %}`{----% raw %----}`{% endraw %} b"
+      # A stray backtick before a blank line must not pair with a later one on the Ruby fallback either.
+      stray = "a ` b\n\n`{% raw %}` c"
+      stray_expected = "a ` b\n\n{% raw %}`{----% raw %----}`{% endraw %} c"
 
-      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
-        expect(described_class.escape_liquid_tags_in_codeblock(other)).to be_nil
-        result = parser.escape_liquid_tags_in_codeblock(other)
-        expect(result).to eq(expected)
-        expect(result.encoding).to eq(other.encoding)
+      { input => expected, stray => stray_expected }.each do |sample, sample_expected|
+        [sample.b, sample.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(sample)].each do |other|
+          expect(described_class.escape_liquid_tags_in_codeblock(other)).to be_nil
+          result = parser.escape_liquid_tags_in_codeblock(other)
+          expect(result).to eq(sample_expected)
+          expect(result.encoding).to eq(other.encoding)
+        end
       end
 
       expect(ForemNative::Native.escape_liquid_tags_in_codeblock("#{input}\xFF")).to be_nil
