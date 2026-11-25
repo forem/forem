@@ -51,6 +51,103 @@ pt:
         register_description: Avise os organizadores que você tem interesse e receba lembretes do evento.
         visit_website: Visitar o site do evento
         register_external: Inscrever-se no evento
+        about_heading: Sobre Este Evento
+        explore_pages: Páginas do Evento
+      duration:
+        days:
+          one: "1 dia"
+          other: "%{count} dias"
+        hours:
+          one: "1 hora"
+          other: "%{count} horas"
+        hours_minutes: "%{hours}h %{minutes}m"
+        minutes:
+          one: "1 min"
+          other: "%{count} min"
+      stream:
+        live_now: AO VIVO AGORA
+        coming_soon: EM BREVE
+        replay_badge: TRANSMISSÃO ENCERRADA · REPLAY
+        replay_short: REPLAY
+        theater_mode: Modo Teatro
+        starts_in_label: A transmissão começa em
+        units:
+          days: Dias
+          hours: Horas
+          minutes: Min
+          seconds: Seg
+        add_to_calendar: Adicionar à Agenda
+        stream_not_configured_eyebrow: Transmissão em Breve
+        stream_coming_soon_placeholder: O player de transmissão aparecerá aqui assim que o link for publicado. Demonstre interesse abaixo para receber lembretes!
+        not_configured: URL de transmissão não configurada.
+        live_chat: Chat ao Vivo
+        chat_pre_show: Chat pré-evento
+        share: Compartilhar
+        link_copied: Copiado!
+        about_session: Sobre Esta Sessão
+        duration_label: Duração
+      draft_notice:
+        heading: "Este evento não está publicado!"
+        body: "Apenas administradores podem ver esta página."
+        edit: "Editar Evento"
+      hierarchy:
+        part_of_aria: Eventos pai
+        part_of: Parte de
+        part_of_inline: "Parte de %{title}"
+        draft: Rascunho
+        view_full_schedule: Ver programação completa
+        happening_now: ACONTECENDO AGORA
+        more_live_count:
+          one: "+1 outra sessão ao vivo"
+          other: "+%{count} outras sessões ao vivo"
+        watch_live: Assistir ao Vivo
+        join_session: Entrar na Sessão
+        live_hero_aria: Sessão ao vivo no momento
+        open_full_stream_chat: Abrir transmissão completa e chat
+        open_session: Abrir página da sessão
+        hosted_by: "Apresentado por %{name}"
+        watch_with_chat: Assistir com Chat ao Vivo
+        full_schedule_cta:
+          one: "Programação Completa (1 sessão)"
+          other: "Programação Completa (%{count} sessões)"
+        also_live_now: Também ao Vivo Agora
+        upcoming_hero_aria: Próxima sessão agendada
+        up_next: A SEGUIR
+        view_session: Ver Sessão
+        browse_upcoming:
+          one: "Ver 1 próxima sessão"
+          other: "Ver todas as %{count} próximas sessões"
+        starts_in: Começa em
+        archive_badge: EVENTO ENCERRADO
+        archive_heading: Assistir às Sessões Sob Demanda
+        archive_subtitle:
+          one: "1 sessão deste evento está disponível no arquivo abaixo."
+          other: "Todas as %{count} sessões deste evento estão disponíveis no arquivo abaixo."
+        browse_replays: Ver Replays
+        schedule_heading: Programação e Sessões
+        sessions_count:
+          one: "1 sessão"
+          other: "%{count} sessões"
+        schedule_subtitle: Os horários são ajustados automaticamente para o seu fuso horário local.
+        live_count:
+          one: "1 ao Vivo Agora"
+          other: "%{count} ao Vivo Agora"
+        upcoming_count:
+          one: "1 em Breve"
+          other: "%{count} em Breve"
+        filter_tracks: Filtrar sessões por trilha
+        all_tracks: Todas as Trilhas
+        live_now_section: Ao Vivo Agora
+        upcoming_section: Próximas Sessões
+        past_section:
+          one: "Encerradas e Replays (1)"
+          other: "Encerradas e Replays (%{count})"
+        featured: Destaque
+        details: Detalhes
+        watch_replay: Assistir Replay
+        recap: Ver Resumo
+        more_from_parent: "Mais de %{title}"
+        live_now_inline: AO VIVO AGORA
       pages:
         breadcrumbs:
           challenges: Desafios

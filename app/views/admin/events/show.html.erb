@@ -108,6 +108,177 @@
 
   <hr class="my-8" />
 
+  <section id="event-hierarchy" class="mb-8">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+      <div>
+        <h2 class="text-2xl font-bold m-0"><%= t("views.admin.event_memberships.heading") %></h2>
+        <p class="fs-s color-base-60 mt-1 mb-0"><%= t("views.admin.event_memberships.subtitle") %></p>
+      </div>
+      <%= link_to t("views.admin.event_memberships.create_sub_event"),
+                  new_admin_event_path(parent_event_id: @event.id),
+                  class: "c-btn c-btn--primary c-btn--sm" %>
+    </div>
+
+    <% if @parent_memberships.any? %>
+      <div class="mb-6">
+        <h3 class="text-lg font-bold mb-2"><%= t("views.admin.event_memberships.belongs_to_heading") %></h3>
+        <ul class="space-y-2">
+          <% @parent_memberships.each do |pm| %>
+            <% parent = pm.parent_event %>
+            <% next unless parent %>
+            <li class="flex items-center justify-between flex-wrap gap-2 p-3 border rounded">
+              <div class="flex items-center gap-2 flex-wrap">
+                <%= link_to parent.title, admin_event_path(parent), class: "font-bold c-link" %>
+                <span class="c-indicator"><%= parent.type_of.titleize %></span>
+                <% unless parent.published? %>
+                  <span class="c-indicator c-indicator--warning"><%= t("views.admin.events.status.draft") %></span>
+                <% end %>
+                <% if pm.role.present? %>
+                  <span class="admin-event-chip admin-event-chip--role"><%= pm.role %></span>
+                <% end %>
+                <% if pm.featured? %>
+                  <span class="admin-event-chip admin-event-chip--featured">★ <%= t("views.admin.events.index.featured") %></span>
+                <% end %>
+              </div>
+              <div class="flex items-center gap-2">
+                <%= link_to t("views.admin.event_memberships.view_parent"), admin_event_path(parent), class: "c-btn c-btn--secondary c-btn--sm" %>
+                <%= button_to t("views.admin.event_memberships.detach"),
+                              admin_event_membership_path(parent, pm, return_to_event_id: @event.id),
+                              method: :delete,
+                              form: { data: { turbo: false } },
+                              data: { confirm: t("views.admin.event_memberships.detach_confirm") },
+                              class: "c-btn c-btn--destructive c-btn--sm" %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <h3 class="text-lg font-bold mb-3">
+      <%= t("views.admin.event_memberships.sub_events_heading") %>
+      <span class="fs-s opacity-75">(<%= @child_memberships.size %>)</span>
+    </h3>
+
+    <% if @child_memberships.any? %>
+      <div style="overflow-x: auto;" class="mb-4">
+        <table class="crayons-table admin-events-table">
+          <thead>
+            <tr>
+              <th><%= t("views.admin.event_memberships.headers.order") %></th>
+              <th><%= t("views.admin.event_memberships.headers.sub_event") %></th>
+              <th><%= t("views.admin.event_memberships.headers.schedule") %></th>
+              <th><%= t("views.admin.event_memberships.headers.membership_settings") %></th>
+              <th><%= t("views.admin.event_memberships.headers.actions") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% now = Time.current %>
+            <% @child_memberships.each_with_index do |membership, idx| %>
+              <% child = membership.child_event %>
+              <% next unless child %>
+              <tr>
+                <td class="whitespace-nowrap">
+                  <div class="flex items-center gap-1">
+                    <%= button_to "↑",
+                                  reorder_admin_event_membership_path(@event, membership, direction: "up"),
+                                  method: :patch,
+                                  disabled: idx.zero?,
+                                  class: "c-btn c-btn--secondary c-btn--sm",
+                                  title: t("views.admin.event_memberships.move_up") %>
+                    <%= button_to "↓",
+                                  reorder_admin_event_membership_path(@event, membership, direction: "down"),
+                                  method: :patch,
+                                  disabled: idx == @child_memberships.size - 1,
+                                  class: "c-btn c-btn--secondary c-btn--sm",
+                                  title: t("views.admin.event_memberships.move_down") %>
+                  </div>
+                </td>
+                <td>
+                  <div class="font-bold">
+                    <%= link_to child.title, admin_event_path(child), class: "c-link" %>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-1 mt-1">
+                    <span class="c-indicator"><%= child.type_of.titleize %></span>
+                    <% if child.live?(now) %>
+                      <span class="admin-event-chip admin-event-chip--live"><%= t("views.events.gathering.live") %></span>
+                    <% elsif child.upcoming?(now) %>
+                      <span class="c-indicator"><%= t("views.events.gathering.upcoming") %></span>
+                    <% else %>
+                      <span class="c-indicator"><%= t("views.events.gathering.ended") %></span>
+                    <% end %>
+                    <% unless child.published? %>
+                      <span class="c-indicator c-indicator--warning"><%= t("views.admin.events.status.draft") %></span>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap fs-s">
+                  <div><%= child.start_time.to_fs(:short) %></div>
+                  <div class="opacity-75">→ <%= child.end_time.to_fs(:short) %></div>
+                </td>
+                <td>
+                  <%= form_with model: [:admin, @event, membership], url: admin_event_membership_path(@event, membership), method: :patch, local: true, class: "flex items-center flex-wrap gap-2" do |mf| %>
+                    <%= mf.text_field :role, value: membership.role, placeholder: t("views.admin.event_memberships.role_placeholder"), class: "crayons-textfield", style: "max-width: 150px;" %>
+                    <label class="flex items-center gap-1 fs-xs whitespace-nowrap">
+                      <%= mf.check_box :featured, checked: membership.featured?, class: "crayons-checkbox" %>
+                      <span><%= t("views.admin.events.index.featured") %></span>
+                    </label>
+                    <%= mf.submit t("views.admin.event_memberships.save"), class: "c-btn c-btn--secondary c-btn--sm" %>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="flex flex-wrap gap-2">
+                    <%= link_to "Edit", edit_admin_event_path(child), class: "c-btn c-btn--secondary c-btn--sm" %>
+                    <%= link_to "Public", event_path(child.event_name_slug, child.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary c-btn--sm" %>
+                    <%= button_to t("views.admin.event_memberships.detach"),
+                                  admin_event_membership_path(@event, membership),
+                                  method: :delete,
+                                  form: { data: { turbo: false } },
+                                  data: { confirm: t("views.admin.event_memberships.detach_confirm") },
+                                  class: "c-btn c-btn--destructive c-btn--sm" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="color-base-60 italic mb-4"><%= t("views.admin.event_memberships.no_sub_events") %></p>
+    <% end %>
+
+    <% if @available_sub_events.any? %>
+      <div class="admin-hierarchy-card">
+        <h4 class="font-bold mb-3"><%= t("views.admin.event_memberships.attach_existing") %></h4>
+        <%= form_with url: admin_event_memberships_path(@event), scope: :event_membership, method: :post, local: true, class: "flex items-end flex-wrap gap-3" do |mf| %>
+          <div class="crayons-field flex-1" style="min-width: 240px;">
+            <%= mf.label :child_event_id, t("views.admin.event_memberships.select_event"), class: "crayons-field__label" %>
+            <%= mf.select :child_event_id,
+                          @available_sub_events.map { |candidate|
+                            status_tag = candidate.published? ? "" : " [#{t('views.admin.events.status.draft')}]"
+                            ["#{candidate.title} (#{candidate.type_of.titleize} · #{candidate.start_time.to_fs(:short)})#{status_tag}", candidate.id]
+                          },
+                          { include_blank: t("views.admin.event_memberships.choose_event_prompt") },
+                          class: "crayons-select", required: true %>
+          </div>
+          <div class="crayons-field" style="min-width: 170px;">
+            <%= mf.label :role, t("views.admin.event_memberships.role_label"), class: "crayons-field__label" %>
+            <%= mf.text_field :role, placeholder: t("views.admin.event_memberships.role_placeholder"), class: "crayons-textfield" %>
+          </div>
+          <div class="crayons-field crayons-field--checkbox pb-2">
+            <%= mf.check_box :featured, class: "crayons-checkbox" %>
+            <%= mf.label :featured, t("views.admin.events.index.featured"), class: "crayons-field__label" %>
+          </div>
+          <div class="pb-1">
+            <%= mf.submit t("views.admin.event_memberships.attach_button"), class: "c-btn c-btn--primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+
+  <hr class="my-8" />
+
   <% event_markdown_pages = @event.ordered_pages.to_a %>
   <% event_embed_pages = @event.ordered_embed_pages.to_a %>
   <div class="flex items-center justify-between flex-wrap gap-3 mb-4">

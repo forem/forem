@@ -1,44 +1,143 @@
 <div class="crayons-card p-6">
-  <div class="flex items-center justify-between mb-4">
-    <h1 class="crayons-title">Events</h1>
+  <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="crayons-title m-0">Events</h1>
+      <p class="fs-s color-base-60 mt-1 mb-0"><%= t("views.admin.events.index.subtitle") %></p>
+    </div>
     <%= link_to "New Event", new_admin_event_path, class: "c-btn c-btn--primary" %>
   </div>
 
-  <table class="crayons-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Start Time</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @events.each do |event| %>
-        <tr>
-          <td><%= event.title %></td>
-          <td><%= event.start_time&.to_fs(:short) %></td>
-          <td><%= event.type_of.titleize %></td>
-          <td>
-            <% if event.published? %>
-              <span class="c-indicator c-indicator--success">Published</span>
-            <% else %>
-              <span class="c-indicator c-indicator--warning">Draft</span>
-            <% end %>
-          </td>
-          <td>
-            <div class="flex gap-2">
-              <%= link_to "Show", admin_event_path(event), class: "c-btn c-btn--primary btn-sm" %>
-              <%= link_to "Edit", edit_admin_event_path(event), class: "c-btn c-btn--secondary btn-sm" %>
-              <%= link_to t("views.admin.event_pages.pages_button"), admin_event_pages_path(event), class: "c-btn c-btn--secondary btn-sm" %>
-              <%= link_to t("views.admin.events.fork"), new_admin_event_path(fork_from_id: event.id), class: "c-btn c-btn--secondary btn-sm" %>
-              <%= link_to "Public", event_path(event.event_name_slug, event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary btn-sm" %>
-              <%= link_to "Delete", admin_event_path(event), method: :delete, data: { confirm: "Are you sure?" }, class: "c-btn c-btn--destructive btn-sm" %>
-            </div>
-          </td>
-        </tr>
+  <div class="admin-events-stats">
+    <span class="admin-events-stats__pill">
+      <strong><%= @hierarchy_tree.total_events_count %></strong> <%= t("views.admin.events.index.total_events") %>
+    </span>
+    <span class="admin-events-stats__pill">
+      <strong><%= @hierarchy_tree.total_roots_count %></strong>
+      <%= @view_mode == "flat" ? t("views.admin.events.index.matching_events") : t("views.admin.events.index.top_level_events") %>
+    </span>
+    <span class="admin-events-stats__pill">
+      <strong><%= @hierarchy_tree.total_sub_links_count %></strong> <%= t("views.admin.events.index.hierarchy_links") %>
+    </span>
+  </div>
+
+  <div class="admin-events-toolbar">
+    <%= form_with url: admin_events_path, method: :get, local: true, class: "admin-events-filters" do %>
+      <%= hidden_field_tag :view, @view_mode %>
+      <%= text_field_tag :q, @query,
+                         placeholder: t("views.admin.events.index.search_placeholder"),
+                         aria: { label: t("views.admin.events.index.search_label") },
+                         class: "crayons-textfield", style: "max-width: 240px;" %>
+      <%= select_tag :type_of,
+                     options_for_select([[t("views.admin.events.index.all_types"), ""]] + Event.type_ofs.keys.map { |k| [k.titleize, k] }, @type_filter),
+                     aria: { label: t("views.admin.events.index.filter_by_type") },
+                     class: "crayons-select", style: "max-width: 170px;" %>
+      <%= select_tag :status,
+                     options_for_select([[t("views.admin.events.index.all_statuses"), ""], [t("views.admin.events.status.published"), "published"], [t("views.admin.events.status.draft"), "draft"]], @status_filter),
+                     aria: { label: t("views.admin.events.index.filter_by_status") },
+                     class: "crayons-select", style: "max-width: 150px;" %>
+      <%= submit_tag t("views.admin.events.index.filter"), class: "c-btn c-btn--secondary btn-sm" %>
+      <% if @query.present? || @type_filter.present? || @status_filter.present? %>
+        <%= link_to t("views.admin.events.index.reset"), admin_events_path(view: @view_mode), class: "c-btn c-btn--secondary btn-sm" %>
       <% end %>
-    </tbody>
-  </table>
+    <% end %>
+
+    <div class="flex items-center gap-2">
+      <% if @view_mode == "hierarchy" %>
+        <button type="button" id="admin-events-toggle-all" class="c-btn c-btn--secondary btn-sm" data-expanded="true">
+          <%= t("views.admin.events.index.collapse_all") %>
+        </button>
+      <% end %>
+      <%= link_to t("views.admin.events.index.hierarchy_view"),
+                  admin_events_path(request.query_parameters.merge(view: "hierarchy", page: nil)),
+                  class: "c-btn btn-sm #{@view_mode == 'hierarchy' ? 'c-btn--primary' : 'c-btn--secondary'}" %>
+      <%= link_to t("views.admin.events.index.flat_view"),
+                  admin_events_path(request.query_parameters.merge(view: "flat", page: nil)),
+                  class: "c-btn btn-sm #{@view_mode == 'flat' ? 'c-btn--primary' : 'c-btn--secondary'}" %>
+    </div>
+  </div>
+
+  <% if @hierarchy_tree.roots.any? %>
+    <div style="overflow-x: auto;">
+      <table class="crayons-table admin-events-table" id="admin-events-tree-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Start Time</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @hierarchy_tree.roots.each do |root_node| %>
+            <%= render "tree_node", node: root_node, parent_branch_id: "root", flat_mode: @hierarchy_tree.flat? %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4">
+      <%= paginate @hierarchy_tree.paginated_scope %>
+    </div>
+  <% else %>
+    <div class="p-6 text-center color-base-60">
+      <%= t("views.admin.events.index.no_matching_events") %>
+    </div>
+  <% end %>
 </div>
+
+<% if @view_mode == "hierarchy" %>
+  <script>
+    (function() {
+      const table = document.getElementById("admin-events-tree-table");
+      if (!table) return;
+
+      function setBranchVisibility(branchId, expanded) {
+        const rows = table.querySelectorAll('tr[data-tree-row="true"]');
+        const prefix = branchId + "-";
+        rows.forEach(function(row) {
+          const rowBranch = row.dataset.branchId || "";
+          if (rowBranch.startsWith(prefix)) {
+            if (expanded) {
+              row.classList.remove("admin-event-row--hidden");
+              const nestedToggle = row.querySelector(".js-event-tree-toggle");
+              if (nestedToggle) nestedToggle.setAttribute("aria-expanded", "true");
+            } else {
+              row.classList.add("admin-event-row--hidden");
+            }
+          }
+        });
+      }
+
+      table.addEventListener("click", function(e) {
+        const btn = e.target.closest(".js-event-tree-toggle");
+        if (!btn) return;
+
+        const branchId = btn.dataset.toggleBranch;
+        const nextExpanded = btn.getAttribute("aria-expanded") !== "true";
+        btn.setAttribute("aria-expanded", nextExpanded ? "true" : "false");
+        setBranchVisibility(branchId, nextExpanded);
+      });
+
+      const toggleAllBtn = document.getElementById("admin-events-toggle-all");
+      if (toggleAllBtn) {
+        toggleAllBtn.addEventListener("click", function() {
+          const nextExpanded = toggleAllBtn.dataset.expanded !== "true";
+          toggleAllBtn.dataset.expanded = nextExpanded ? "true" : "false";
+          toggleAllBtn.textContent = nextExpanded
+            ? <%= t("views.admin.events.index.collapse_all").to_json.html_safe %>
+            : <%= t("views.admin.events.index.expand_all").to_json.html_safe %>;
+
+          table.querySelectorAll(".js-event-tree-toggle").forEach(function(btn) {
+            btn.setAttribute("aria-expanded", nextExpanded ? "true" : "false");
+          });
+          table.querySelectorAll('tr[data-tree-row="true"]').forEach(function(row) {
+            if (Number(row.dataset.depth) > 0) {
+              row.classList.toggle("admin-event-row--hidden", !nextExpanded);
+            }
+          });
+        });
+      }
+    })();
+  </script>
+<% end %>

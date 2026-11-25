@@ -87,6 +87,14 @@ pt:
         other: Você pode convidar até %{count} coautores.
     event:
       owned_page_slug_taken: Conflita com um slug de página existente
+    event_membership:
+      already_member: já é um subevento deste evento pai
+      cannot_belong_to_self: não pode pertencer a si mesmo
+      would_create_cycle: criaria uma hierarquia circular de eventos
+      max_depth_exceeded: "A hierarquia de eventos não pode exceder %{max} níveis de profundidade"
+      parent_not_found: "Evento pai não encontrado (IDs: %{ids})"
+      child_not_found: "Subevento não encontrado (IDs: %{ids})"
+      invalid_event_id: "ID de evento inválido: %{value}"
     feedback_message:
       reported: '(você) reportou esta URL anteriormente.'
     github_issue:

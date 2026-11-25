@@ -1,0 +1,283 @@
+<% schedule = local_assigns[:schedule] || @sub_event_schedule %>
+<% return unless schedule&.any? %>
+<% parent_event = local_assigns[:event] || @event %>
+
+<% if schedule.live? %>
+  <%
+    hero_membership = schedule.hero_membership
+    hero = hero_membership.child_event
+    other_live = schedule.other_live_memberships
+    hero_host = hero.organization || hero.user
+    hero_backdrop = safe_event_url(hero.cover_image.presence&.url || hero.data&.dig("banner_image_url"))
+  %>
+  <section class="event-hero-stage event-hero-stage--live mb-6" aria-label="<%= t("views.events.hierarchy.live_hero_aria") %>">
+    <div class="event-hero-stage__topbar">
+      <div class="flex items-center flex-wrap gap-2">
+        <span class="event-status-badge event-status-badge--live">
+          <span class="event-status-badge__dot" aria-hidden="true"></span>
+          <%= t("views.events.hierarchy.happening_now") %>
+        </span>
+        <% if hero_membership.role.present? %>
+          <span class="event-role-chip event-role-chip--on-dark"><%= hero_membership.role %></span>
+        <% end %>
+        <% unless hero.published? %>
+          <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
+        <% end %>
+      </div>
+      <a href="<%= event_link_target(hero) %>" class="event-hero-stage__open-link">
+        <%= hero.primary_stream_url.present? ? t("views.events.hierarchy.open_full_stream_chat") : t("views.events.hierarchy.open_session") %>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="event-hero-stage__body <%= hero.primary_stream_url.present? ? 'event-hero-stage__body--with-video' : '' %>">
+      <% if hero.primary_stream_url.present? %>
+        <div class="event-hero-stage__player">
+          <div class="event-hero-stage__video-box">
+            <iframe src="<%= event_embed_stream_url(hero, autoplay: true, muted: true) %>"
+                    title="<%= hero.title %>"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowfullscreen
+                    frameborder="0"
+                    scrolling="no"></iframe>
+          </div>
+        </div>
+      <% else %>
+        <div class="event-hero-stage__visual"
+             style="<%= hero_backdrop ? "background-image: linear-gradient(180deg, rgba(10,12,20,0.2), rgba(10,12,20,0.75)), url('#{ERB::Util.html_escape(hero_backdrop)}');" : "background: #{hero.gradient_background_css};" %>">
+          <span class="event-pill <%= event_pill_class(hero) %>"><%= hero.format_pill_label %></span>
+        </div>
+      <% end %>
+
+      <div class="event-hero-stage__details">
+        <div class="event-hero-stage__eyebrow">
+          <time class="js-event-local-time"
+                datetime="<%= hero.start_time.iso8601 %>"
+                data-start-iso="<%= hero.start_time.iso8601 %>"
+                data-end-iso="<%= hero.end_time.iso8601 %>">
+            <%= event_time_slot_label(hero, time_zone: parent_event.time_zone) %>
+          </time>
+          <% duration = event_duration_label(hero) %>
+          <% if duration.present? %>
+            <span aria-hidden="true">&middot;</span>
+            <span><%= duration %></span>
+          <% end %>
+        </div>
+
+        <h2 class="event-hero-stage__title">
+          <a href="<%= event_link_target(hero) %>"><%= hero.title %></a>
+        </h2>
+
+        <% if hero.description.present? %>
+          <p class="event-hero-stage__desc"><%= hero.description %></p>
+        <% end %>
+
+        <% if hero_host.present? %>
+          <div class="event-hero-stage__host">
+            <span><%= t("views.events.hierarchy.hosted_by", name: hero_host.name) %></span>
+          </div>
+        <% end %>
+
+        <div class="event-hero-stage__actions">
+          <a href="<%= event_link_target(hero) %>" class="crayons-btn crayons-btn--primary">
+            <%= hero.primary_stream_url.present? ? t("views.events.hierarchy.watch_with_chat") : t("views.events.hierarchy.join_session") %>
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="#event-schedule" class="event-hero-stage__ghost-btn">
+            <%= t("views.events.hierarchy.full_schedule_cta", count: schedule.total_count) %>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <% if other_live.any? %>
+      <div class="event-hero-stage__switcher">
+        <div class="event-hero-stage__switcher-label">
+          <span class="event-status-badge__dot event-status-badge__dot--red" aria-hidden="true"></span>
+          <%= t("views.events.hierarchy.also_live_now") %>
+        </div>
+        <div class="event-hero-stage__switcher-grid">
+          <% other_live.each do |live_membership| %>
+            <% live_item = live_membership.child_event %>
+            <a href="<%= event_link_target(live_item) %>" class="event-live-track-card">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="event-live-track-card__dot" aria-hidden="true"></span>
+                <% if live_membership.role.present? %>
+                  <span class="event-live-track-card__role"><%= live_membership.role %></span>
+                <% else %>
+                  <span class="event-live-track-card__role"><%= live_item.format_pill_label %></span>
+                <% end %>
+                <% unless live_item.published? %>
+                  <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
+                <% end %>
+              </div>
+              <div class="event-live-track-card__title"><%= live_item.title %></div>
+              <div class="event-live-track-card__time">
+                <time class="js-event-local-time"
+                      datetime="<%= live_item.start_time.iso8601 %>"
+                      data-start-iso="<%= live_item.start_time.iso8601 %>"
+                      data-end-iso="<%= live_item.end_time.iso8601 %>">
+                  <%= event_time_slot_label(live_item, time_zone: parent_event.time_zone) %>
+                </time>
+              </div>
+            </a>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+<% elsif schedule.upcoming_only? %>
+  <%
+    next_membership = schedule.hero_membership
+    next_event = next_membership.child_event
+    next_host = next_event.organization || next_event.user
+    next_backdrop = safe_event_url(next_event.cover_image.presence&.url || next_event.data&.dig("banner_image_url"))
+  %>
+  <section class="event-hero-stage event-hero-stage--upcoming mb-6"
+           style="<%= next_backdrop ? "--hero-backdrop-image: url('#{ERB::Util.html_escape(next_backdrop)}');" : "--hero-backdrop-gradient: #{next_event.gradient_background_css};" %>"
+           aria-label="<%= t("views.events.hierarchy.upcoming_hero_aria") %>">
+    <div class="event-hero-stage__backdrop" aria-hidden="true"></div>
+    <div class="event-hero-stage__upcoming-inner">
+      <div class="event-hero-stage__upcoming-main">
+        <div class="flex items-center flex-wrap gap-2 mb-3">
+          <span class="event-status-badge event-status-badge--upcoming">
+            <span class="event-status-badge__dot" aria-hidden="true"></span>
+            <%= t("views.events.hierarchy.up_next") %>
+          </span>
+          <% if next_membership.role.present? %>
+            <span class="event-role-chip event-role-chip--on-dark"><%= next_membership.role %></span>
+          <% end %>
+          <span class="event-pill <%= event_pill_class(next_event) %>"><%= next_event.format_pill_label %></span>
+          <% unless next_event.published? %>
+            <span class="event-draft-chip"><%= t("views.events.hierarchy.draft") %></span>
+          <% end %>
+        </div>
+
+        <h2 class="event-hero-stage__title">
+          <a href="<%= event_link_target(next_event) %>"><%= next_event.title %></a>
+        </h2>
+
+        <% if next_event.description.present? %>
+          <p class="event-hero-stage__desc"><%= next_event.description %></p>
+        <% end %>
+
+        <div class="event-hero-stage__meta">
+          <span>
+            <time class="js-event-local-time"
+                  datetime="<%= next_event.start_time.iso8601 %>"
+                  data-start-iso="<%= next_event.start_time.iso8601 %>"
+                  data-end-iso="<%= next_event.end_time.iso8601 %>"
+                  data-format="full">
+              <%= next_event.start_time.in_time_zone(parent_event.time_zone).strftime("%a, %b %-d · %-I:%M %p %Z") %>
+            </time>
+          </span>
+          <% if next_host.present? %>
+            <span aria-hidden="true">&middot;</span>
+            <span><%= t("views.events.hierarchy.hosted_by", name: next_host.name) %></span>
+          <% end %>
+        </div>
+
+        <div class="event-hero-stage__actions">
+          <a href="<%= event_link_target(next_event) %>" class="crayons-btn crayons-btn--primary">
+            <%= t("views.events.hierarchy.view_session") %>
+            <span aria-hidden="true">→</span>
+          </a>
+          <%= render "signup_button",
+                     event: next_event,
+                     extra_classes: "stream-coming-soon__rsvp-btn",
+                     signed_up_class: "stream-coming-soon__rsvp-btn--signed",
+                     unsigned_up_class: "event-hero-stage__ghost-btn" %>
+          <a href="#event-schedule" class="event-hero-stage__ghost-btn">
+            <%= t("views.events.hierarchy.browse_upcoming", count: schedule.upcoming_count) %>
+          </a>
+        </div>
+      </div>
+
+      <div class="event-hero-stage__countdown-box"
+           data-hero-countdown="<%= next_event.start_time.iso8601 %>"
+           id="hero-countdown-<%= next_event.id %>">
+        <div class="event-hero-stage__countdown-label"><%= t("views.events.hierarchy.starts_in") %></div>
+        <div class="stream-countdown-tiles stream-countdown-tiles--compact">
+          <div class="stream-countdown-tile" data-unit="days" style="display: none;">
+            <span class="stream-countdown-tile__value tabular-nums" data-countdown-days>00</span>
+            <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.days") %></span>
+          </div>
+          <div class="stream-countdown-tile">
+            <span class="stream-countdown-tile__value tabular-nums" data-countdown-hours>00</span>
+            <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.hours") %></span>
+          </div>
+          <span class="stream-countdown-sep">:</span>
+          <div class="stream-countdown-tile">
+            <span class="stream-countdown-tile__value tabular-nums" data-countdown-minutes>00</span>
+            <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.minutes") %></span>
+          </div>
+          <span class="stream-countdown-sep">:</span>
+          <div class="stream-countdown-tile">
+            <span class="stream-countdown-tile__value tabular-nums" data-countdown-seconds>00</span>
+            <span class="stream-countdown-tile__label"><%= t("views.events.stream.units.seconds") %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      const box = document.getElementById("hero-countdown-<%= next_event.id %>");
+      if (!box) return;
+      const targetMs = new Date(box.dataset.heroCountdown).getTime();
+      if (isNaN(targetMs)) return;
+
+      const key = "hero-<%= next_event.id %>";
+      window.liveStreamIntervals = window.liveStreamIntervals || {};
+      if (window.liveStreamIntervals[key]) clearInterval(window.liveStreamIntervals[key]);
+
+      function tick() {
+        const el = document.getElementById("hero-countdown-<%= next_event.id %>");
+        if (!el) {
+          clearInterval(window.liveStreamIntervals[key]);
+          delete window.liveStreamIntervals[key];
+          return;
+        }
+        const diff = Math.max(0, Math.floor((targetMs - Date.now()) / 1000));
+        const days = Math.floor(diff / 86400);
+        const hours = days > 0 ? Math.floor((diff % 86400) / 3600) : Math.floor(diff / 3600);
+        const mins = Math.floor((diff % 3600) / 60);
+        const secs = diff % 60;
+
+        const dTile = el.querySelector('[data-unit="days"]');
+        const dEl = el.querySelector("[data-countdown-days]");
+        if (dTile && dEl) {
+          dTile.style.display = days > 0 ? "" : "none";
+          dEl.textContent = String(days).padStart(2, "0");
+        }
+        const hEl = el.querySelector("[data-countdown-hours]");
+        const mEl = el.querySelector("[data-countdown-minutes]");
+        const sEl = el.querySelector("[data-countdown-seconds]");
+        if (hEl) hEl.textContent = String(hours).padStart(2, "0");
+        if (mEl) mEl.textContent = String(mins).padStart(2, "0");
+        if (sEl) sEl.textContent = String(secs).padStart(2, "0");
+      }
+
+      window.liveStreamIntervals[key] = setInterval(tick, 1000);
+      tick();
+    })();
+  </script>
+
+<% elsif schedule.all_ended? %>
+  <section class="event-hero-stage event-hero-stage--archive mb-6">
+    <div class="event-hero-stage__archive-inner">
+      <div>
+        <span class="event-status-badge event-status-badge--ended mb-2"><%= t("views.events.hierarchy.archive_badge") %></span>
+        <h2 class="event-hero-stage__title m-0"><%= t("views.events.hierarchy.archive_heading") %></h2>
+        <p class="event-hero-stage__desc mt-2 mb-0">
+          <%= t("views.events.hierarchy.archive_subtitle", count: schedule.past_count) %>
+        </p>
+      </div>
+      <a href="#event-schedule" class="crayons-btn crayons-btn--outlined">
+        <%= t("views.events.hierarchy.browse_replays") %>
+      </a>
+    </div>
+  </section>
+<% end %>

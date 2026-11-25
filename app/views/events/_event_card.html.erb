@@ -1,13 +1,31 @@
-<% host = event.organization || event.user %>
+<%
+  host = event.organization || event.user
+  sub_summary = defined?(@sub_event_summaries) ? @sub_event_summaries&.[](event.id) : nil
+  parent_list = defined?(@parent_events_by_child_id) ? Array(@parent_events_by_child_id&.[](event.id)) : []
+  is_live = event.live?
+  has_live_sub = sub_summary && sub_summary[:live_count].to_i.positive?
+%>
 <a href="<%= event_link_target(event) %>" class="event-card">
   <div class="event-card-banner" <% unless event.cover_image.present? %>style="background: <%= event.gradient_background_css %>;"<% end %>>
     <% if event.cover_image.present? %>
       <img src="<%= event.cover_image.url %>" alt="<%= event.title %> Cover" loading="lazy" />
     <% end %>
+    <% if is_live || has_live_sub %>
+      <span class="event-card-live-badge">
+        <span class="event-status-badge__dot" aria-hidden="true"></span>
+        <%= t("views.events.gathering.live") %>
+      </span>
+    <% end %>
   </div>
 
   <div class="event-card-body">
     <div>
+      <% if parent_list.any? %>
+        <div class="event-card-parent-chip mb-2">
+          <%= t("views.events.hierarchy.part_of_inline", title: parent_list.first.title) %>
+        </div>
+      <% end %>
+
       <h2 class="event-card-title mb-3">
         <%= event.title %>
       </h2>
@@ -43,11 +61,25 @@
           </div>
         <% end %>
       </div>
+
+      <% if has_live_sub && sub_summary[:live_title].present? %>
+        <div class="event-card-live-session mt-3">
+          <span class="event-card-live-session__label"><%= t("views.events.hierarchy.live_now_inline") %>:</span>
+          <span class="event-card-live-session__title"><%= truncate(sub_summary[:live_title], length: 48) %></span>
+        </div>
+      <% end %>
     </div>
 
-    <div class="event-card-footer flex items-center justify-between gap-2">
-      <span class="event-pill <%= event_pill_class(event) %>"><%= event.format_pill_label %></span>
-      <% if event.live? %>
+    <div class="event-card-footer flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center flex-wrap gap-1">
+        <span class="event-pill <%= event_pill_class(event) %>"><%= event.format_pill_label %></span>
+        <% if sub_summary && sub_summary[:total_count].to_i.positive? %>
+          <span class="event-card-sessions-pill">
+            <%= t("views.events.hierarchy.sessions_count", count: sub_summary[:total_count]) %>
+          </span>
+        <% end %>
+      </div>
+      <% if is_live %>
         <span class="c-indicator c-indicator--danger fw-bold fs-xs"><%= t("views.events.gathering.live") %></span>
       <% end %>
     </div>

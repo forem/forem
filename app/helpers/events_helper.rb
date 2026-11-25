@@ -128,6 +128,96 @@ module EventsHelper
     page.slug.to_s.split("/").last
   end
 
+  def event_google_calendar_url(event)
+    start_utc = event.start_time.utc.strftime("%Y%m%dT%H%M%SZ")
+    end_utc = event.end_time.utc.strftime("%Y%m%dT%H%M%SZ")
+    details = [event.description, app_url(event.path)].compact_blank.join("\n\n")
+    query = {
+      action: "TEMPLATE",
+      text: event.title,
+      dates: "#{start_utc}/#{end_utc}",
+      details: details,
+      location: event.location_display
+    }.to_query
+    "https://calendar.google.com/calendar/render?#{query}"
+  end
+
+  def event_duration_label(event)
+    return "" if event.start_time.blank? || event.end_time.blank?
+
+    total_minutes = ((event.end_time - event.start_time) / 60).round
+    return "" unless total_minutes.positive?
+
+    if total_minutes >= 24 * 60
+      days = (total_minutes / (24.0 * 60)).ceil
+      t("views.events.duration.days", count: days)
+    elsif total_minutes >= 60
+      hours = total_minutes / 60
+      mins = total_minutes % 60
+      if mins.positive?
+        t("views.events.duration.hours_minutes", hours: hours, minutes: mins)
+      else
+        t("views.events.duration.hours", count: hours)
+      end
+    else
+      t("views.events.duration.minutes", count: total_minutes)
+    end
+  end
+
+  def event_time_slot_label(event, time_zone: nil)
+    return "" if event.start_time.blank?
+
+    zone = time_zone || event.time_zone
+    start_in_zone = event.start_time.in_time_zone(zone)
+    end_in_zone = event.end_time&.in_time_zone(zone)
+    start_tz = start_in_zone.strftime("%Z")
+
+    return "#{start_in_zone.strftime('%-I:%M %p')} #{start_tz}" if end_in_zone.blank?
+
+    end_tz = end_in_zone.strftime("%Z")
+    same_zone = start_tz == end_tz
+
+    if start_in_zone.to_date == end_in_zone.to_date
+      if same_zone
+        "#{start_in_zone.strftime('%-I:%M %p')} – #{end_in_zone.strftime('%-I:%M %p')} #{start_tz}"
+      else
+        "#{start_in_zone.strftime('%-I:%M %p')} #{start_tz} – #{end_in_zone.strftime('%-I:%M %p')} #{end_tz}"
+      end
+    elsif same_zone
+      "#{start_in_zone.strftime('%b %-d, %-I:%M %p')} – #{end_in_zone.strftime('%b %-d, %-I:%M %p')} #{start_tz}"
+    else
+      start_str = start_in_zone.strftime("%b %-d, %-I:%M %p")
+      end_str = end_in_zone.strftime("%b %-d, %-I:%M %p")
+      "#{start_str} #{start_tz} – #{end_str} #{end_tz}"
+    end
+  end
+
+  def event_embed_stream_url(event, autoplay: true, muted: true)
+    raw_url = event.primary_stream_url.to_s
+    return "" if raw_url.blank?
+
+    uri = URI.parse(raw_url)
+    params = Rack::Utils.parse_query(uri.query)
+    host = uri.host.to_s.downcase
+
+    if host_matches_domain?(host, "youtube.com", "youtu.be")
+      params["autoplay"] = autoplay ? "1" : "0"
+      params["mute"] = "1" if muted
+    elsif host_matches_domain?(host, "twitch.tv")
+      params["autoplay"] = autoplay ? "true" : "false"
+      params["muted"] = "true" if muted
+    end
+
+    uri.query = params.to_query.presence
+    uri.to_s
+  rescue URI::InvalidURIError
+    raw_url
+  end
+
+  def host_matches_domain?(host, *domains)
+    domains.any? { |domain| host == domain || host.end_with?(".#{domain}") }
+  end
+
   # "10 Mar 09:00 – 11:00" for a same-day event; "10 Mar 09:00 – 18 Mar 17:00"
   # for a multi-day event, so the card shows both the start and end.
   def event_datetime_range(event)

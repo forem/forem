@@ -87,6 +87,14 @@ fr:
         other: Vous pouvez inviter jusqu'à %{count} co-auteurs.
     event:
       owned_page_slug_taken: Entre en conflit avec un slug de page existant
+    event_membership:
+      already_member: est déjà un sous-événement de cet événement parent
+      cannot_belong_to_self: ne peut pas appartenir à lui-même
+      would_create_cycle: créerait une hiérarchie d'événements circulaire
+      max_depth_exceeded: "La hiérarchie d'événements ne peut pas dépasser %{max} niveaux de profondeur"
+      parent_not_found: "Événement parent introuvable (IDs : %{ids})"
+      child_not_found: "Sous-événement introuvable (IDs : %{ids})"
+      invalid_event_id: "ID d'événement invalide : %{value}"
     feedback_message:
       reported: "(vous) avez déjà signalé cette URL."
     github_issue:

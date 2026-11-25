@@ -25,9 +25,11 @@ class CalendarController < ApplicationController
       @events = agenda.order(start_time: :asc).page(params[:page]).per(EVENTS_PER_PAGE)
       @events_by_day = @events.group_by { |event| event.start_time.to_date }
       preload_delegated_pages
+      preload_parent_events
     else
       @events = Event.none.page(params[:page]).per(EVENTS_PER_PAGE)
       @events_by_day = {}
+      @parent_events_by_child_id = {}
     end
     @user_signup_event_ids = signed_up_event_ids
   end
@@ -44,6 +46,23 @@ class CalendarController < ApplicationController
     ActiveRecord::Associations::Preloader.new(
       records: @events.to_a.select(&:delegate_to_page?), associations: :page, scope: Page.select(PAGE_LINK_COLUMNS),
     ).call
+  end
+
+  def preload_parent_events
+    @parent_events_by_child_id = Hash.new { |h, k| h[k] = [] }
+    event_ids = @events.map(&:id)
+    return if event_ids.empty?
+
+    EventMembership.where(child_event_id: event_ids)
+      .ordered
+      .includes(:parent_event)
+      .to_a
+      .each do |membership|
+        parent = membership.parent_event
+        next unless parent&.published?
+
+        @parent_events_by_child_id[membership.child_event_id] << parent
+      end
   end
 
   def range_has_events?

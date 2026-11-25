@@ -88,6 +88,14 @@ en:
         other: You can invite up to %{count} co-authors.
     event:
       owned_page_slug_taken: Conflicts with an existing page slug
+    event_membership:
+      already_member: is already a sub-event of this parent event
+      cannot_belong_to_self: cannot belong to itself
+      would_create_cycle: would create a circular event hierarchy
+      max_depth_exceeded: "Event hierarchy cannot exceed %{max} levels deep"
+      parent_not_found: "Parent event not found (IDs: %{ids})"
+      child_not_found: "Sub-event not found (IDs: %{ids})"
+      invalid_event_id: "Invalid event ID: %{value}"
     feedback_message:
       reported: '(you) previously reported this URL.'
     github_issue:

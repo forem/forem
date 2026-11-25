@@ -172,6 +172,11 @@ namespace :admin do
         patch :end_broadcast
         get :fork
       end
+      resources :memberships, controller: "event_memberships", only: %i[create update destroy] do
+        member do
+          patch :reorder
+        end
+      end
       resources :pages, controller: "event_pages", except: [:show] do
         member do
           patch :reorder
