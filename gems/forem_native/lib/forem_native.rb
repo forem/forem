@@ -10,7 +10,7 @@ require_relative "forem_native/builder"
 # (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux,aarch64-linux}/forem_native.{so,bundle}`),
 # and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
-  LATEST_NATIVE_SYMBOL = :build_article_notification_bulk_upsert_sql
+  LATEST_NATIVE_SYMBOL = :article_activity_recompute_sql
   PROFILE_AVATAR_PALETTE_KEYS = %i[bg halo sparkle shadow body shirt trim accent cheek].freeze
   PROFILE_AVATAR_STYLE_KEYS = %i[
     backdrop outfit arm head topper eyes accessory cheeks mouth
@@ -2674,6 +2674,25 @@ module ForemNative
         user_ids, notifiable_type, subforem_id, action, user_fields, article_fields, org_fields,
         now_sec, now_usec, returning_id ? true : false
       )
+    end
+
+    # Tier 1: folds `ArticleActivity` aggregate rows into the encoded `daily_*` jsonb documents.
+    # Returns `[page_views_json, reactions_json, comments_json, referrers_json,
+    # total_page_views, total_reactions, total_comments]`, or nil outside the fast-path domain.
+    def article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows)
+      return unless Native.respond_to?(:article_activity_rollup_json)
+      return unless page_view_rows.is_a?(Array) && reaction_rows.is_a?(Array) && comment_rows.is_a?(Array)
+
+      Native.article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows)
+    end
+
+    # Tier 2: builds the single `UPDATE "article_activities"` statement for `ArticleActivity#recompute_all!`.
+    def article_activity_recompute_sql(id, page_view_rows, reaction_rows, comment_rows, now_sec, now_usec)
+      return unless Native.respond_to?(:article_activity_recompute_sql)
+      return unless valid_i64_integer?(id) && valid_i64_integer?(now_sec) && valid_i64_integer?(now_usec)
+      return unless page_view_rows.is_a?(Array) && reaction_rows.is_a?(Array) && comment_rows.is_a?(Array)
+
+      Native.article_activity_recompute_sql(id, page_view_rows, reaction_rows, comment_rows, now_sec, now_usec)
     end
 
     private

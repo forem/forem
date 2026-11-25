@@ -184,6 +184,98 @@ RSpec.describe ArticleActivity do
       expect(fresh_activity.reload.total_page_views).to eq(1)
       expect(fresh_activity.last_aggregated_at).to be_present
     end
+
+    context "with the ForemNative single-UPDATE fast path" do
+      let(:ts) { Time.utc(day.year, day.month, day.day, 12, 0, 0) }
+      let(:columns) do
+        %w[daily_page_views daily_reactions daily_comments daily_referrers
+           total_page_views total_reactions total_comments]
+      end
+
+      before do
+        user = create(:user)
+        create(:page_view, article: article, user: user, created_at: ts,
+                           counts_for_number_of_views: 3, time_tracked_in_seconds: 20)
+          .update_column(:domain, "o'neil.example")
+        create(:page_view, article: article, user: nil, created_at: ts, counts_for_number_of_views: 2)
+          .update_column(:domain, nil)
+        create(:reaction, reactable: article, user: user, category: "like", created_at: ts)
+        create(:reaction, reactable: article, user: create(:user), category: "fire", created_at: ts)
+        create(:comment, commentable: article, user: user, score: 5, created_at: ts)
+      end
+
+      it "persists exactly what the legacy ActiveRecord save path persists", :aggregate_failures do
+        generated_sql = []
+        allow(ForemNative).to receive(:article_activity_recompute_sql).and_wrap_original do |original, *args|
+          sql = original.call(*args)
+          generated_sql << sql
+          sql
+        end
+
+        activity.recompute_all!
+        expect(generated_sql).to contain_exactly(a_kind_of(String))
+        native_values = activity.reload.attributes.slice(*columns)
+
+        allow(ForemNative).to receive(:article_activity_recompute_sql).and_return(nil)
+        described_class.where(id: activity.id).update_all(
+          daily_page_views: {}, daily_reactions: {}, daily_comments: {}, daily_referrers: {},
+          total_page_views: 0, total_reactions: 0, total_comments: 0
+        )
+        activity.reload.recompute_all!
+
+        expect(activity.reload.attributes.slice(*columns)).to eq(native_values)
+        expect(native_values["daily_referrers"][iso]).to eq("o'neil.example" => 3, "" => 2)
+        expect(native_values["daily_reactions"][iso]).to include("total" => 2, "like" => 1, "fire" => 1)
+        expect(native_values["daily_reactions"][iso]["reactor_ids"].size).to eq(2)
+        expect(native_values).to include("total_page_views" => 5, "total_reactions" => 2, "total_comments" => 1)
+      end
+
+      it "writes the rollup with a single UPDATE and refreshes a fully loaded record" do
+        activity # create the row before subscribing
+        writes = []
+        callback = lambda do |*, payload|
+          writes << payload[:sql] if payload[:sql].match?(/\A\s*(UPDATE|INSERT)/i)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.recompute_all! }
+
+        expect(writes.size).to eq(1)
+        expect(activity.daily_page_views[iso]).to eq("total" => 5, "sum_read_seconds" => 20, "logged_in_count" => 1)
+        expect(activity.total_comments).to eq(1)
+        expect(activity.last_aggregated_at).to be_present
+      end
+
+      it "recomputes a record loaded with only its key columns without loading the jsonb rollups" do
+        keyed = described_class.select(*described_class::KEY_COLUMNS).find(activity.id)
+
+        expect(keyed.recompute_all!).to be(true)
+        expect(keyed.has_attribute?(:daily_page_views)).to be(false)
+        expect(activity.reload.total_page_views).to eq(5)
+        expect(activity.daily_comments[iso]).to eq(1)
+      end
+
+      it "reloads a key-only record before falling back to the legacy save path" do
+        allow(ForemNative).to receive(:article_activity_recompute_sql).and_return(nil)
+        keyed = described_class.select(*described_class::KEY_COLUMNS).find(activity.id)
+
+        expect { keyed.recompute_all! }.not_to raise_error
+        expect(activity.reload.total_page_views).to eq(5)
+        expect(activity.daily_referrers[iso]).to eq("o'neil.example" => 3, "" => 2)
+      end
+
+      it "matches the legacy Ruby rollup builders for the plucked rows" do
+        page_view_rows = activity.__send__(:page_view_rollup_rows)
+        reaction_rows = activity.__send__(:reaction_rollup_rows)
+        comment_rows = activity.__send__(:comment_rollup_rows)
+        pv, rf = described_class.legacy_page_views_and_referrers(page_view_rows)
+        rx = described_class.legacy_reactions(reaction_rows)
+
+        native = ForemNative.article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows)
+
+        expect(native.first(4).map { |json| JSON.parse(json) })
+          .to eq([pv, rx, comment_rows.to_h, rf].map { |h| JSON.parse(ActiveSupport::JSON.encode(h)) })
+        expect(page_view_rows.map(&:first).uniq).to eq([iso])
+      end
+    end
   end
 
   describe ".bulk_backfill!" do

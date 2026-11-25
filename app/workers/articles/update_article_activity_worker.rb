@@ -83,7 +83,10 @@ module Articles
     def perform(article_id, _event_type = nil, _action = "create", _payload = {})
       return if article_id.nil?
 
-      activity = ArticleActivity.find_by(article_id: article_id)
+      # Only the key columns are needed: recompute_all! rebuilds every rollup
+      # column from raw rows, so loading the (potentially multi-hundred-KB)
+      # existing jsonb documents would be pure waste.
+      activity = ArticleActivity.select(*ArticleActivity::KEY_COLUMNS).find_by(article_id: article_id)
 
       if activity.nil?
         return unless Article.exists?(id: article_id)

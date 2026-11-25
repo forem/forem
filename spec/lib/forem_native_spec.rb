@@ -13414,4 +13414,175 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "ArticleActivity recompute rollup (.article_activity_rollup_json / .article_activity_recompute_sql)" do
+    categories = %w[like readinglist unicorn exploding_head raised_hands fire].freeze
+
+    # Mirrors ArticleActivity.legacy_page_views_and_referrers / .legacy_reactions /
+    # comment_rows.to_h (the pre-native recompute_all! hash builders).
+    def legacy_activity_rollup(page_view_rows, reaction_rows, comment_rows, categories)
+      page_views = {}
+      referrers = {}
+      page_view_rows.each do |iso, domain, total, sum_read, logged|
+        day = page_views[iso] ||= { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 }
+        day["total"] += total.to_i
+        day["sum_read_seconds"] += sum_read.to_i
+        day["logged_in_count"] += logged.to_i
+        (referrers[iso] ||= {})[domain] = total.to_i
+      end
+      reactions = reaction_rows.each_with_object({}) do |row, hash|
+        iso, total, *counts, reactor_ids = row
+        values = { "total" => total.to_i }
+        categories.zip(counts) { |category, count| values[category] = count.to_i }
+        values["reactor_ids"] = Array(reactor_ids).map(&:to_i)
+        hash[iso] = values
+      end
+      comments = comment_rows.to_h
+      [page_views, reactions, comments, referrers,
+       page_views.values.sum { |v| v["total"].to_i },
+       reactions.values.sum { |v| v["total"].to_i },
+       comments.values.sum(&:to_i)]
+    end
+
+    # jsonb-equivalent canonical form: ActiveSupport stringifies keys (nil -> ""), and the
+    # re-generated JSON preserves key order so ordering differences are also caught.
+    def canonical_json(value)
+      JSON.generate(JSON.parse(value.is_a?(String) ? value : ActiveSupport::JSON.encode(value)))
+    end
+
+    def expect_rollup_parity(page_view_rows, reaction_rows, comment_rows, categories, label = nil)
+      expected = legacy_activity_rollup(page_view_rows, reaction_rows, comment_rows, categories)
+      actual = described_class.article_activity_rollup_json(page_view_rows, reaction_rows, comment_rows)
+      expect(actual).not_to be_nil, "nil rollup #{label}"
+      4.times do |i|
+        expect(canonical_json(actual[i])).to eq(canonical_json(expected[i])), "doc #{i} #{label}"
+      end
+      expect(actual[4..]).to eq(expected[4..]), "totals #{label}"
+      actual
+    end
+
+    def quoted_sql_timestamp(now)
+      base = now.utc.strftime("%Y-%m-%d %H:%M:%S")
+      now.usec.positive? ? format("'%<base>s.%<usec>06d'", base: base, usec: now.usec) : "'#{base}'"
+    end
+
+    def expected_recompute_sql(id, docs, totals, now)
+      ts = quoted_sql_timestamp(now)
+      sets = [%w[daily_page_views pv], %w[daily_reactions rx], %w[daily_comments cm], %w[daily_referrers rf]]
+      set_sql = sets.map do |column, as|
+        "\"#{column}\" = CASE WHEN \"article_activities\".\"#{column}\" = v.#{as} " \
+          "THEN \"article_activities\".\"#{column}\" ELSE v.#{as} END"
+      end.join(", ")
+      literals = sets.each_with_index.map { |(_, as), i| "'#{docs[i].gsub("'", "''")}'::jsonb AS #{as}" }.join(", ")
+      "UPDATE \"article_activities\" SET #{set_sql}, \"total_page_views\" = #{totals[0]}, " \
+        "\"total_reactions\" = #{totals[1]}, \"total_comments\" = #{totals[2]}, " \
+        "\"last_aggregated_at\" = #{ts}, \"updated_at\" = #{ts} FROM (SELECT #{literals}) AS v " \
+        "WHERE \"article_activities\".\"id\" = #{id}"
+    end
+
+    it "encodes empty inputs as empty objects with zero totals" do
+      expect(described_class.article_activity_rollup_json([], [], [])).to eq(["{}", "{}", "{}", "{}", 0, 0, 0])
+    end
+
+    it "matches the legacy builders for nil/empty domains, duplicates, quotes, HTML, and Unicode" do
+      page_view_rows = [
+        ["2026-03-01", "a.com", 3, 20, 1],
+        ["2026-03-01", "b.com", 2, 50, 0],
+        ["2026-03-01", nil, 1, 0, 0],
+        ["2026-03-01", "", 4, 0, 0],
+        ["2026-03-02", "o'neil.\"com\" <script>&", 1, 15, 1],
+        ["2026-03-02", "日本語.例え.jp 😀 \\ \n\t ", 6, 0, 0],
+        ["2026-03-03", "a.com", 0, 0, 0],
+      ]
+      reaction_rows = [
+        ["2026-03-01", 3, 1, 1, 1, 0, 0, 0, [9, 7, 5]],
+        ["2026-03-02", 1, 0, 0, 0, 0, 0, 1, nil],
+        ["2026-03-01", 5, 5, 0, 0, 0, 0, 0, []],
+      ]
+      comment_rows = [["2026-03-01", 2], ["2026-03-04", 1], ["2026-03-01", 6]]
+
+      actual = expect_rollup_parity(page_view_rows, reaction_rows, comment_rows, categories)
+      expect(JSON.parse(actual[3])["2026-03-01"]).to eq("a.com" => 3, "b.com" => 2, "" => 4)
+      expect(JSON.parse(actual[1]).keys).to eq(%w[2026-03-01 2026-03-02])
+      expect(actual[4..]).to eq([17, 6, 7])
+    end
+
+    it "returns nil outside the fast-path domain" do
+      ok_pv = [["2026-03-01", "a.com", 1, 0, 0]]
+      [
+        [[["2026-03-01", "a.com", 2**64, 0, 0]], [], []],
+        [[["2026-03-01", "a.com", 1.5, 0, 0]], [], []],
+        [[["2026-03-01", "a.com", nil, 0, 0]], [], []],
+        [[["2026-03-01", "a\0.com", 1, 0, 0]], [], []],
+        [[["2026-03-01", "a.com", 1, 0]], [], []],
+        [[["2026-03-01", "\xFF".b, 1, 0, 0]], [], []],
+        [[[:"2026-03-01", "a.com", 1, 0, 0]], [], []],
+        [["not a row"], [], []],
+        [[["d", nil, 2**62, 0, 0], ["d", nil, 2**62, 0, 0]], [], []],
+        [ok_pv, [["2026-03-01", 1, 1, 0, 0, 0, 0, 0, ["7"]]], []],
+        [ok_pv, [["2026-03-01", 1, 1, 0, 0, 0, 0, 0]], []],
+        [ok_pv, [], [["2026-03-01", 2**70]]],
+      ].each_with_index do |(pv, rx, cm), i|
+        expect(described_class.article_activity_rollup_json(pv, rx, cm)).to be_nil, "case #{i}"
+      end
+      expect(described_class.article_activity_rollup_json(nil, [], [])).to be_nil
+
+      now = Time.utc(2026, 3, 1, 12)
+      expect(described_class.article_activity_recompute_sql(0, ok_pv, [], [], now.to_i, 0)).to be_nil
+      expect(described_class.article_activity_recompute_sql(nil, ok_pv, [], [], now.to_i, 0)).to be_nil
+      expect(described_class.article_activity_recompute_sql(1, ok_pv, [], [], now.to_i, 1_000_000)).to be_nil
+      too_big = [["2026-03-01", "a.com", 2**31, 0, 0]]
+      expect(described_class.article_activity_rollup_json(too_big, [], [])).not_to be_nil
+      expect(described_class.article_activity_recompute_sql(1, too_big, [], [], now.to_i, 0)).to be_nil
+    end
+
+    it "builds the recompute UPDATE with quoted jsonb literals and a microsecond timestamp" do
+      now = Time.utc(2026, 3, 1, 12, 0, 0, 123)
+      pv = [["2026-03-01", "o'neil.com", 4, 30, 1]]
+      sql = described_class.article_activity_recompute_sql(42, pv, [], [], now.to_i, now.usec)
+      docs = described_class.article_activity_rollup_json(pv, [], [])
+      expect(sql).to eq(expected_recompute_sql(42, docs, [4, 0, 0], now))
+      expect(sql).to include(%q('{"2026-03-01":{"o''neil.com":4}}'::jsonb AS rf))
+      expect(sql).to include("\"last_aggregated_at\" = '2026-03-01 12:00:00.000123'")
+    end
+
+    it "matches the legacy recompute builders across 1,000 seeded randomized inputs" do
+      rng = Random.new(424_242)
+      isos = Array.new(12) { |i| (Date.new(2024, 1, 1) + (i * 37)).iso8601 }
+      domains = [nil, "", "dev.to", "google.com", "t.co", "o'neil.io", "<b>&amp;</b>", "\"q\"", "a\\b",
+                 "日本.jp", "emoji😀.app", "line\nbreak", "tab\tx", "ünïcödé.de", " sep "]
+      int = lambda do
+        case rng.rand(10)
+        when 0 then 0
+        when 1 then -rng.rand(1..50)
+        when 2 then rng.rand(1..(2**40))
+        else rng.rand(1..500)
+        end
+      end
+
+      1_000.times do |iter|
+        page_view_rows = Array.new(rng.rand(0..40)) do
+          [isos.sample(random: rng), domains.sample(random: rng), int.call, int.call, int.call]
+        end
+        reaction_rows = Array.new(rng.rand(0..10)) do
+          ids = rng.rand < 0.15 ? nil : Array.new(rng.rand(0..8)) { rng.rand(1..(2**31)) }
+          [isos.sample(random: rng), int.call, *Array.new(6) { int.call }, ids]
+        end
+        comment_rows = Array.new(rng.rand(0..8)) { [isos.sample(random: rng), int.call] }
+
+        docs = expect_rollup_parity(page_view_rows, reaction_rows, comment_rows, categories, "iter #{iter}")
+
+        id = rng.rand(1..(2**40))
+        now = Time.at(rng.rand(1_600_000_000..1_900_000_000), rng.rand(0..999_999), :usec).utc
+        sql = described_class.article_activity_recompute_sql(
+          id, page_view_rows, reaction_rows, comment_rows, now.to_i, now.usec
+        )
+        if docs[4..].all? { |n| n.between?(-(2**31), (2**31) - 1) }
+          expect(sql).to eq(expected_recompute_sql(id, docs, docs[4..], now)), "sql iter #{iter}"
+        else
+          expect(sql).to be_nil, "sql range iter #{iter}"
+        end
+      end
+    end
+  end
 end

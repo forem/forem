@@ -39,6 +39,12 @@ if honeycomb_api_key
           fields.delete("sql.active_record.binds")
           fields.delete("sql.active_record.datadog_span")
         end
+
+        if fields["sql.active_record.name"] == "ArticleActivity Recompute" &&
+            fields["sql.active_record.sql"].is_a?(String) &&
+            fields["sql.active_record.sql"].length > 1_000
+          fields["sql.active_record.sql"] = "#{fields['sql.active_record.sql'].slice(0, 1_000)}... [truncated]"
+        end
       end
       # Sample away highly redundant events
       config.sample_hook do |fields|
