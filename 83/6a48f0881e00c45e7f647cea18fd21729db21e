@@ -1,0 +1,18 @@
+app/controllers/response_templates_controller.rb
+  h_f968154a99632d 33-34,37-38,40,42,44-45,48-49,53,104,108
+spec/requests/response_templates_spec.rb
+  h_f968154a99632d 168-226
+spec/requests/user/user_settings_spec.rb
+  h_f968154a99632d 144-178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "836a48f0881e00c45e7f647cea18fd21729db21e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
