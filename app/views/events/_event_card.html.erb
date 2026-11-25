@@ -4,11 +4,12 @@
   parent_list = defined?(@parent_events_by_child_id) ? Array(@parent_events_by_child_id&.[](event.id)) : []
   is_live = event.live?
   has_live_sub = sub_summary && sub_summary[:live_count].to_i.positive?
+  card_image_url = event_banner_image_url(event, width: 640)
 %>
 <a href="<%= event_link_target(event) %>" class="event-card">
-  <div class="event-card-banner" <% unless event.cover_image.present? %>style="background: <%= event.gradient_background_css %>;"<% end %>>
-    <% if event.cover_image.present? %>
-      <img src="<%= event.cover_image.url %>" alt="<%= event.title %> Cover" loading="lazy" />
+  <div class="event-card-banner" <% unless card_image_url.present? %>style="background: <%= event.gradient_background_css %>;"<% end %>>
+    <% if card_image_url.present? %>
+      <img src="<%= card_image_url %>" alt="<%= event.title %> Cover" loading="lazy" />
     <% end %>
     <% if is_live || has_live_sub %>
       <span class="event-card-live-badge">

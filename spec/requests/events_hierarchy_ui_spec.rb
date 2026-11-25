@@ -152,6 +152,28 @@ RSpec.describe "Event Hierarchy Public UI and Livestream Experience" do
         "stream-coming-soon",
       )
     end
+
+    it "links host profile cards to /<username> and /<org_slug> instead of /users/:id or /organizations/:id" do
+      host_user = create(:user, username: "hostben", name: "Host Ben")
+      host_org = create(:organization, slug: "hostorg", name: "Host Org")
+
+      user_stream = create(:event, type_of: :live_stream, title: "User Hosted Stream", published: true,
+                                   user: host_user, organization: nil,
+                                   start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      org_conf = create(:event, type_of: :conference, title: "Org Hosted Conf", published: true,
+                                user: host_user, organization: host_org,
+                                start_time: 1.hour.from_now, end_time: 2.days.from_now)
+
+      get event_path(user_stream.event_name_slug, user_stream.event_variation_slug)
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include('href="/hostben"')
+      expect(response.body).not_to include("/users/#{host_user.id}")
+
+      get event_path(org_conf.event_name_slug, org_conf.event_variation_slug)
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include('href="/hostorg"')
+      expect(response.body).not_to include("/organizations/#{host_org.id}")
+    end
   end
 
   describe "public /events index and /calendar hierarchy display" do

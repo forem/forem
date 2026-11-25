@@ -95,6 +95,21 @@ module EventsHelper
     nil
   end
 
+  def event_banner_image_url(event, width: 1600)
+    raw_url = safe_event_url(event.cover_image.presence&.url || event.data&.dig("banner_image_url"))
+    return if raw_url.blank?
+
+    optimized_image_url(raw_url, width: width, random_fallback: false)
+  end
+
+  def event_host_path(event)
+    if event.organization.present?
+      event.organization.path
+    elsif event.user.present?
+      event.user.path
+    end
+  end
+
   def event_has_tabs?(showcase_page, nav_pages)
     showcase_page.present? || nav_pages.present?
   end
