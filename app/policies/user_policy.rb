@@ -78,6 +78,10 @@ class UserPolicy < ApplicationPolicy
 
   alias request_destroy? edit?
 
+  def admin_update_profile_image?
+    user_super_admin?
+  end
+
   def admin_delete?
     return false unless user_any_admin? && not_self?
     return true if user_super_admin?
