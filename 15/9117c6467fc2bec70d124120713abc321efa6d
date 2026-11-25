@@ -1,0 +1,27 @@
+app/assets/stylesheets/views/events.scss
+  s_06f75d9121673f::t_a029fd6a3e4a76 4,1665,1672-1711
+app/views/events/challenge.html.erb
+  s_06f75d9121673f::t_9716a5c264fee7 35,37,158-159,163
+app/views/events/gathering.html.erb
+  s_06f75d9121673f::t_e2967ab908d70c 160-163
+app/views/events/show.html.erb
+  s_06f75d9121673f::t_68957119528df9 181-185
+spec/requests/events_hierarchy_ui_spec.rb
+  s_06f75d9121673f::t_20bb5352bc1129 109-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "159117c6467fc2bec70d124120713abc321efa6d",
+  "prompts": {},
+  "sessions": {
+    "s_06f75d9121673f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a213f2-e941-7483-84d4-06bc3b1747a2",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
