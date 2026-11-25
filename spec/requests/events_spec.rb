@@ -468,7 +468,7 @@ RSpec.describe "Events" do
         [
           [stream_event, "Live Stream", "player-container-post-#{stream_event.id}"],
           [challenge_event, "Challenge Details", "Challenge Status:"],
-          [conf_event, "Event Details", I18n.t("views.events.gathering.register_heading")],
+          [conf_event, "Event Details", "Conference summary"],
         ].each do |evt, expected_native_tab, expected_native_marker|
           create(:page, event: evt, slug: evt.page_slug_for("readme"), title: "Event Showcase",
                         body_markdown: "## Welcome Showcase for #{evt.title}", position: 0)

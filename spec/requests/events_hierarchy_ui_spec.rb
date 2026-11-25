@@ -107,6 +107,27 @@ RSpec.describe "Event Hierarchy Public UI and Livestream Experience" do
       expect(response.body.index("event-top-nav")).to be < response.body.index("event-show-layout")
     end
 
+    it "renders sub-pages with the same wide banner image and sticky sidebar as the main template" do
+      banner_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/800x600.png"), "image/png")
+      conference.update!(banner_image: banner_file)
+      create(:page, event: conference, slug: conference.page_slug_for("speakers"),
+                    title: "Speakers", body_markdown: "## Featured Speakers", position: 1)
+
+      get event_custom_page_path(conference.event_name_slug, conference.event_variation_slug, "speakers")
+      expect(response).to have_http_status(:success)
+
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.at_css(".event-brand-shell .event-brand-cover img")["src"]).to include("banner_image")
+      expect(doc.at_css(".event-detail-columns__main .event-subpage-card").text).to include("Featured Speakers")
+      aside = doc.at_css(".event-detail-columns__aside")
+      expect(aside).to be_present
+      expect(aside.text).to include(
+        I18n.t("views.events.gathering.register_heading"),
+        I18n.t("views.events.gathering.details"),
+        "San Francisco, CA",
+      )
+    end
+
     it "renders community and event articles inside the main column alongside the sticky sidebar" do
       conference.update!(tag_list: "aieconf", allow_articles: true)
       author = create(:user)

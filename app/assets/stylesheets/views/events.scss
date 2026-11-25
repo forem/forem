@@ -351,8 +351,7 @@ body.default-header:has(#page-content .event-top-nav) {
 
   // Sub-page card (Speakers, Sponsors, Venue, FAQ, Showcase)
   .event-subpage-card {
-    max-width: 960px;
-    margin: 0 auto;
+    width: 100%;
     overflow: hidden;
 
     &__header {
