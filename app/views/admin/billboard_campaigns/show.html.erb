@@ -4,7 +4,7 @@
 <% imp_progress = admin_bb_cap_progress(@rollup.impressions_count, @campaign.max_impressions_count) %>
 <% click_progress = admin_bb_cap_progress(@rollup.clicks_count, @campaign.max_clicks_count) %>
 <% pacing_target = @campaign.ideal_daily_impressions.to_i %>
-<% pacing_progress = admin_bb_cap_progress(@daily_stats.past_24h_impressions, pacing_target) if pacing_target.positive? %>
+<% pacing_progress = admin_bb_cap_progress(@daily_stats.past_24h_impressions, pacing_target) if pacing_target.positive? && !@daily_stats.timed_out %>
 <% throttle_pct = (@campaign.delivery_throttle_rate.to_f * 100.0).clamp(0.0, 100.0) %>
 
 <div class="admin-bb">
@@ -75,14 +75,22 @@
 
     <div class="admin-bb-kpi <%= pacing_target.positive? ? 'admin-bb-kpi--success' : '' %>">
       <span class="admin-bb-kpi__label"><%= t("views.admin.billboard_campaigns.show.past_24h_pacing") %></span>
-      <span class="admin-bb-kpi__value" title="<%= number_with_delimiter(@daily_stats.past_24h_impressions) %>">
-        <%= admin_bb_compact_number(@daily_stats.past_24h_impressions) %>
-      </span>
+      <% if @daily_stats.timed_out %>
+        <span class="admin-bb-kpi__value" title="<%= t("views.admin.billboard_campaigns.show.past_24h_unavailable") %>">—</span>
+      <% else %>
+        <span class="admin-bb-kpi__value" title="<%= number_with_delimiter(@daily_stats.past_24h_impressions) %>">
+          <%= admin_bb_compact_number(@daily_stats.past_24h_impressions) %>
+        </span>
+      <% end %>
       <span class="admin-bb-kpi__meta">
+        <% if @daily_stats.timed_out %>
+          <span><%= t("views.admin.billboard_campaigns.show.past_24h_unavailable") %></span>
+        <% end %>
         <% if pacing_target.positive? %>
+          <% if @daily_stats.timed_out %><span>&middot;</span><% end %>
           <span><%= t("views.admin.billboard_campaigns.show.target_daily", target: admin_bb_compact_number(pacing_target)) %></span>
           <span>&middot; <%= t("views.admin.billboard_campaigns.table.pass_through", pct: throttle_pct.round(0)) %></span>
-        <% else %>
+        <% elsif !@daily_stats.timed_out %>
           <span><%= t("views.admin.billboard_campaigns.table.pacing_off") %></span>
         <% end %>
       </span>
@@ -177,10 +185,16 @@
         </div>
       </div>
 
-      <% if pacing_target.positive? && pacing_progress %>
-        <%= render "admin/billboards/progress_bar",
-                   label: t("views.admin.billboard_campaigns.show.past_24h_vs_target"),
-                   progress: pacing_progress, large: true %>
+      <% if pacing_target.positive? %>
+        <% if @daily_stats.timed_out %>
+          <div class="crayons-notice crayons-notice--warning fs-s">
+            <%= t("views.admin.billboard_campaigns.show.pacing_24h_timeout") %>
+          </div>
+        <% elsif pacing_progress %>
+          <%= render "admin/billboards/progress_bar",
+                     label: t("views.admin.billboard_campaigns.show.past_24h_vs_target"),
+                     progress: pacing_progress, large: true %>
+        <% end %>
 
         <div class="admin-bb-progress">
           <div class="admin-bb-progress__header">
@@ -219,10 +233,14 @@
         <div>
           <h2 class="admin-bb-panel__title"><%= t("views.admin.billboard_campaigns.show.daily_chart_heading") %></h2>
           <p class="admin-bb-panel__subtitle">
-            <%= t("views.admin.billboard_campaigns.show.daily_chart_summary",
-                  impressions: number_with_delimiter(@daily_stats.total_impressions),
-                  clicks: number_with_delimiter(@daily_stats.total_clicks),
-                  conversions: number_with_delimiter(@daily_stats.total_conversions)) %>
+            <% if @daily_stats.timed_out %>
+              <%= t("views.admin.billboard_campaigns.show.past_24h_unavailable") %>
+            <% else %>
+              <%= t("views.admin.billboard_campaigns.show.daily_chart_summary",
+                    impressions: number_with_delimiter(@daily_stats.total_impressions),
+                    clicks: number_with_delimiter(@daily_stats.total_clicks),
+                    conversions: number_with_delimiter(@daily_stats.total_conversions)) %>
+            <% end %>
           </p>
         </div>
       </div>
@@ -267,7 +285,11 @@
                     height="<%= format('%.1f', [bar_h, point.impressions.positive? ? 2.0 : 0.0].max) %>"
                     rx="3"
                     class="admin-bb-chart__bar">
-                <title><%= "#{point.date.strftime('%b %-d')}: #{number_with_delimiter(point.impressions)} imp, #{number_with_delimiter(point.clicks)} clicks (#{admin_bb_ctr_percentage(point.clicks, point.impressions)})" %></title>
+                <title><%= t("views.admin.billboard_campaigns.show.daily_chart_tooltip",
+                             date: l(point.date, format: :short),
+                             impressions: number_with_delimiter(point.impressions),
+                             clicks: number_with_delimiter(point.clicks),
+                             ctr: admin_bb_ctr_percentage(point.clicks, point.impressions)) %></title>
               </rect>
               <% if idx.even? || idx == @daily_stats.points.size - 1 %>
                 <text x="<%= format('%.1f', x + bar_w / 2.0) %>"

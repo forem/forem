@@ -167,9 +167,15 @@ module Admin
 
     def admin_bb_simple_chip_label(key, value)
       case key
-      when :type_of then "#{t('views.admin.billboards.filters.type')}: #{value.humanize}"
-      when :display_to then "#{t('views.admin.billboards.filters.audience')}: #{value.humanize}"
-      when :render_mode then "#{t('views.admin.billboards.filters.render_mode')}: #{value.humanize}"
+      when :type_of
+        label = t("views.admin.billboards.filters.types.#{value}", default: value.humanize)
+        "#{t('views.admin.billboards.filters.type')}: #{label}"
+      when :display_to
+        label = t("views.admin.billboards.filters.audiences.#{value}", default: value.humanize)
+        "#{t('views.admin.billboards.filters.audience')}: #{label}"
+      when :render_mode
+        label = t("views.admin.billboards.filters.render_modes.#{value}", default: value.humanize)
+        "#{t('views.admin.billboards.filters.render_mode')}: #{label}"
       when :tag then "#{t('views.admin.billboards.filters.tag')}: ##{value}"
       when :organization_id then "#{t('views.admin.billboards.filters.org_id')}: ##{value}"
       else value

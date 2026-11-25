@@ -1,7 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Billboards::AdminAnalytics do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:now) { Time.zone.local(2026, 11, 25, 14, 0, 0) }
+
+  before { travel_to(now) }
 
   describe ".overview_summary" do
     it "aggregates live, inactive, expired, capped, expiring-soon, and campaign metrics", :aggregate_failures do
@@ -23,6 +27,7 @@ RSpec.describe Billboards::AdminAnalytics do
 
       summary = described_class.overview_summary(now: now)
 
+      expect(summary.timed_out).to be(false)
       expect(summary.total_count).to eq(4)
       expect(summary.live_count).to eq(1)
       expect(summary.prioritized_live_count).to eq(1)
@@ -36,6 +41,28 @@ RSpec.describe Billboards::AdminAnalytics do
       expect(summary.total_clicks).to eq(37)
       expect(summary.active_campaigns_count).to eq(1)
       expect(summary.total_campaigns_count).to eq(2)
+    end
+
+    it "caches the overview summary and avoids caching timed-out responses", :aggregate_failures do
+      memory_store = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      allow(Rails.logger).to receive(:warn)
+
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_raise(ActiveRecord::QueryCanceled, "timeout")
+      timed_out = described_class.overview_summary(now: now)
+      expect(timed_out.timed_out).to be(true)
+      expect(memory_store.read(described_class::OVERVIEW_CACHE_KEY)).to be_nil
+
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_call_original
+      create(:billboard, approved: true, published: true)
+
+      first = described_class.overview_summary(now: now)
+      expect(first.timed_out).to be(false)
+      expect(first.live_count).to eq(1)
+
+      second = described_class.overview_summary(now: now)
+      expect(second.live_count).to eq(1)
+      expect(ReadOnlyDatabaseService).to have_received(:with_connection).twice
     end
   end
 
@@ -120,6 +147,21 @@ RSpec.describe Billboards::AdminAnalytics do
       expect(series.points.size).to eq(7)
       expect(series.total_impressions).to eq(0)
       expect(Rails.logger).to have_received(:warn).with(/timed out/)
+    end
+
+    it "uses UTC midnight for the first bucket regardless of active Rails time zone", :aggregate_failures do
+      first_utc_day = now.utc.to_date - 6
+      early_utc_event_time = Time.utc(first_utc_day.year, first_utc_day.month, first_utc_day.day, 1, 0, 0)
+      create(:billboard_event, billboard: billboard, category: "impression", counts_for: 42,
+                               created_at: early_utc_event_time)
+
+      series = Time.use_zone("America/Los_Angeles") do
+        described_class.campaign_daily_series([billboard.id], days: 7, now: now)
+      end
+
+      expect(series.points.first.date).to eq(first_utc_day)
+      expect(series.points.first.impressions).to eq(42)
+      expect(series.total_impressions).to eq(42)
     end
   end
 

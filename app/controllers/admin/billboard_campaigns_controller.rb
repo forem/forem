@@ -133,6 +133,7 @@ module Admin
         scope.where("billboard_campaigns.ideal_daily_impressions > 0")
           .where("billboard_campaigns.delivery_throttle_rate < 1.0")
           .where("billboard_campaigns.expires_at IS NULL OR billboard_campaigns.expires_at > ?", now)
+          .where("NOT (#{capped_sql})")
       when "idle"
         scope.where("billboard_campaigns.expires_at IS NULL OR billboard_campaigns.expires_at > ?", now)
           .where("NOT (#{capped_sql})")

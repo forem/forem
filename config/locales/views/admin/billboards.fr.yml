@@ -28,6 +28,8 @@ fr:
           clicks_short: "%{count} clics"
           ctr_short: "%{ctr} CTR"
           all_time_short: "%{count} au total"
+          overview_timeout: Les indicateurs généraux ont expiré sur le réplica de lecture. La liste des encarts ci-dessous reste disponible.
+          unavailable: Temporairement indisponible
         status:
           live: Actif
           draft: Brouillon
@@ -54,7 +56,7 @@ fr:
         filters:
           aria_label: Filtrer et rechercher les encarts
           search: Rechercher
-          search_placeholder: Nom, #ID, tag, emplacement ou HTML...
+          search_placeholder: "Nom, #ID, tag, emplacement ou HTML..."
           status: Statut
           all_statuses: Tous les statuts
           campaign: Campagne
@@ -76,6 +78,18 @@ fr:
           tag: Tag
           org_id: ID d’organisation
           remove_chip: "Retirer le filtre %{filter}"
+          types:
+            in_house: Interne
+            community: Communauté
+            external: Externe
+          audiences:
+            all: Tous les utilisateurs
+            logged_in: Connectés
+            logged_out: Déconnectés
+          render_modes:
+            forem_markdown: Forem Markdown
+            raw: HTML brut
+            isolated: Brut isolé (Shadow DOM)
         sort:
           newest: Plus récents (ID ↓)
           impressions: Plus d’impressions

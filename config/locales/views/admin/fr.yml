@@ -876,6 +876,7 @@ fr:
         reordered: Ordre des pages mis à jour.
       billboard_placement_area_configs:
         index:
+          subtitle: Configurez les taux de diffusion, la mise en cache, la visibilité et les poids des stratégies de sélection par emplacement.
           visibility: Visibilité
           hidden_by_default: Masqué par défaut
           visible: Visible

@@ -28,6 +28,8 @@ en:
           clicks_short: "%{count} clicks"
           ctr_short: "%{ctr} CTR"
           all_time_short: "%{count} all-time"
+          overview_timeout: Overview metrics timed out on the read replica. The billboard list below remains available.
+          unavailable: Temporarily unavailable
         status:
           live: Live
           draft: Draft
@@ -54,7 +56,7 @@ en:
         filters:
           aria_label: Filter and search billboards
           search: Search
-          search_placeholder: Name, #ID, tag, placement, or HTML...
+          search_placeholder: "Name, #ID, tag, placement, or HTML..."
           status: Status
           all_statuses: All statuses
           campaign: Campaign
@@ -76,6 +78,18 @@ en:
           tag: Tag
           org_id: Organization ID
           remove_chip: "Remove filter %{filter}"
+          types:
+            in_house: In-House
+            community: Community
+            external: External
+          audiences:
+            all: All users
+            logged_in: Logged in
+            logged_out: Logged out
+          render_modes:
+            forem_markdown: Forem Markdown
+            raw: Raw HTML
+            isolated: Isolated Raw (Shadow DOM)
         sort:
           newest: Newest (ID ↓)
           impressions: Most impressions

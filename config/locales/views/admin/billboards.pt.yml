@@ -28,6 +28,8 @@ pt:
           clicks_short: "%{count} cliques"
           ctr_short: "%{ctr} CTR"
           all_time_short: "%{count} no total"
+          overview_timeout: As métricas gerais atingiram o tempo limite na réplica de leitura. A lista de anúncios abaixo continua disponível.
+          unavailable: Temporariamente indisponível
         status:
           live: Ativo
           draft: Rascunho
@@ -54,7 +56,7 @@ pt:
         filters:
           aria_label: Filtrar e pesquisar anúncios
           search: Pesquisar
-          search_placeholder: Nome, #ID, tag, posicionamento ou HTML...
+          search_placeholder: "Nome, #ID, tag, posicionamento ou HTML..."
           status: Status
           all_statuses: Todos os status
           campaign: Campanha
@@ -76,6 +78,18 @@ pt:
           tag: Tag
           org_id: ID da organização
           remove_chip: "Remover filtro %{filter}"
+          types:
+            in_house: Interno
+            community: Comunidade
+            external: Externo
+          audiences:
+            all: Todos os usuários
+            logged_in: Conectados
+            logged_out: Desconectados
+          render_modes:
+            forem_markdown: Forem Markdown
+            raw: HTML puro
+            isolated: Puro isolado (Shadow DOM)
         sort:
           newest: Mais recentes (ID ↓)
           impressions: Mais impressões

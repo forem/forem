@@ -11,6 +11,23 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
     let(:request) { get admin_billboard_campaigns_path }
   end
 
+  it_behaves_like "an InternalPolicy dependant request", Billboard do
+    let(:request) { get admin_billboard_campaign_path(campaign) }
+  end
+
+  context "when accessing the campaign dashboard without Billboard admin permissions" do
+    it "blocks a signed-out visitor" do
+      expect { get admin_billboard_campaign_path(campaign) }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "blocks a single-resource admin for an unrelated resource" do
+      article_admin = create(:user, :single_resource_admin, :without_profile, profile_image: nil, resource: Article)
+      sign_in article_admin
+
+      expect { get admin_billboard_campaign_path(campaign) }.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
   context "when signed in as a super admin" do
     let(:admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
@@ -51,6 +68,30 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
       expect(response.body).not_to include("Alpha Paced")
     end
 
+    it "excludes capped campaigns from the throttled filter", :aggregate_failures do
+      active_throttled = BillboardCampaign.create!(
+        name: "Active Throttled",
+        ideal_daily_impressions: 5_000,
+        delivery_throttle_rate: 0.5,
+        max_impressions_count: 10_000,
+      )
+      capped_throttled = BillboardCampaign.create!(
+        name: "Capped Throttled",
+        ideal_daily_impressions: 5_000,
+        delivery_throttle_rate: 0.5,
+        max_impressions_count: 1_000,
+      )
+      capped_bb = create(:billboard, billboard_campaign: capped_throttled, approved: false, published: true,
+                                     organization: nil)
+      capped_bb.update_columns(impressions_count: 1_000)
+
+      get admin_billboard_campaigns_path, params: { status: "throttled" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(active_throttled.name)
+      expect(response.body).not_to include(capped_throttled.name)
+    end
+
     it "renders the campaign dashboard with progress bars, pacing, daily chart, and member billboards",
        :aggregate_failures do
       paced_campaign = BillboardCampaign.create!(
@@ -79,6 +120,28 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
         "Sidebar Right (Individual Post)",
         "<svg",
       )
+    end
+
+    it "shows unavailable state instead of zero delivery when daily event stats time out", :aggregate_failures do
+      paced_campaign = BillboardCampaign.create!(
+        name: "Timeout Campaign",
+        ideal_daily_impressions: 2_000,
+        delivery_throttle_rate: 0.75,
+      )
+      create(:billboard, billboard_campaign: paced_campaign, approved: true, published: true, organization: nil)
+      allow(ReadOnlyDatabaseService).to receive(:with_connection).and_raise(ActiveRecord::QueryCanceled, "timeout")
+      allow(Rails.logger).to receive(:warn)
+
+      get admin_billboard_campaign_path(paced_campaign)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(
+        I18n.t("views.admin.billboard_campaigns.show.past_24h_unavailable"),
+        I18n.t("views.admin.billboard_campaigns.show.pacing_24h_timeout"),
+        I18n.t("views.admin.billboard_campaigns.show.daily_chart_timeout"),
+        "75.0%",
+      )
+      expect(response.body).not_to include("0 / 2,000")
     end
 
     it "opens a new campaign form" do
@@ -133,6 +196,22 @@ RSpec.describe "/admin/customization/billboard_campaigns" do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.body).to include('name="billboard_campaign[max_clicks_count]"')
       expect(campaign.reload.max_clicks_count).to eq(0)
+    end
+
+    it "returns 422 when creating or updating a campaign with a nonexistent organization_id", :aggregate_failures do
+      expect do
+        post admin_billboard_campaigns_path, params: {
+          billboard_campaign: { name: "Bad Org Campaign", organization_id: 999_999_999 }
+        }
+      end.not_to change(BillboardCampaign, :count)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("Organization")
+
+      patch admin_billboard_campaign_path(campaign), params: {
+        billboard_campaign: { organization_id: 999_999_999 }
+      }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(campaign.reload.organization_id).to be_nil
     end
   end
 

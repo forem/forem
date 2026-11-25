@@ -125,6 +125,18 @@ RSpec.describe "/admin/customization/billboards" do
         expect(response.body).to include("Numeric Target")
         expect(response.body).not_to include("Unrelated Unit")
       end
+
+      it "preserves an older selected campaign in the filter dropdown and active chip", :aggregate_failures do
+        older_campaign = BillboardCampaign.create!(name: "Legacy Campaign")
+        BillboardCampaign.create!(name: "Newest Campaign")
+        stub_const("Admin::BillboardsController::CAMPAIGN_FILTER_LIMIT", 1)
+
+        get admin_billboards_path, params: { billboard_campaign_id: older_campaign.id }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Legacy Campaign (##{older_campaign.id})")
+        expect(response.body).to include("selected=\"selected\" value=\"#{older_campaign.id}\"")
+      end
     end
 
     describe "GET /admin/customization/billboards/new" do

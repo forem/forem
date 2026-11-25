@@ -9,6 +9,8 @@ module Billboards
   #   time window, billboard ID list, and `SET LOCAL statement_timeout`, degrading gracefully on timeout.
   class AdminAnalytics
     STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BILLBOARD_ADMIN_ANALYTICS", 8_000).to_i
+    OVERVIEW_CACHE_KEY = "billboards/admin_analytics/overview_summary/v1".freeze
+    OVERVIEW_CACHE_TTL = 60.seconds
     EXPIRING_SOON_WINDOW = 48.hours
     DEFAULT_SERIES_DAYS = 14
 
@@ -27,7 +29,25 @@ module Billboards
       :live_seconds_visible,
       :total_campaigns_count,
       :active_campaigns_count,
+      :timed_out,
     )
+
+    EMPTY_OVERVIEW_ATTRS = {
+      total_count: 0,
+      live_count: 0,
+      draft_or_paused_count: 0,
+      expired_count: 0,
+      capped_count: 0,
+      prioritized_live_count: 0,
+      expiring_soon_count: 0,
+      total_impressions: 0,
+      total_clicks: 0,
+      live_impressions: 0,
+      live_clicks: 0,
+      live_seconds_visible: 0,
+      total_campaigns_count: 0,
+      active_campaigns_count: 0
+    }.freeze
 
     CampaignsOverview = Data.define(
       :total_campaigns,
@@ -118,73 +138,18 @@ module Billboards
     end
 
     class << self
-      def overview_summary(now: Time.current)
-        conn = ActiveRecord::Base.connection
-        q_now = conn.quote(now)
-        q_soon = conn.quote(now + EXPIRING_SOON_WINDOW)
+      def overview_summary(now: Time.current, use_cache: true)
+        if use_cache
+          cached = Rails.cache.read(OVERVIEW_CACHE_KEY)
+          return OverviewSummary.new(**cached, timed_out: false) if cached.is_a?(Hash)
+        end
 
-        live_cond = <<~SQL.squish
-          d.approved = TRUE AND d.published = TRUE
-          AND (d.expires_at IS NULL OR d.expires_at > #{q_now})
-          AND (c.id IS NULL OR c.expires_at IS NULL OR c.expires_at > #{q_now})
-        SQL
-
-        expired_cond = <<~SQL.squish
-          (d.expires_at IS NOT NULL AND d.expires_at <= #{q_now})
-          OR (c.id IS NOT NULL AND c.expires_at IS NOT NULL AND c.expires_at <= #{q_now})
-        SQL
-
-        capped_cond = <<~SQL.squish
-          (d.max_impressions_count > 0 AND COALESCE(d.impressions_count, 0) >= d.max_impressions_count)
-          OR (d.max_clicks_count > 0 AND COALESCE(d.clicks_count, 0) >= d.max_clicks_count)
-        SQL
-
-        expiring_soon_cond = <<~SQL.squish
-          (#{live_cond})
-          AND (
-            (d.expires_at IS NOT NULL AND d.expires_at <= #{q_soon})
-            OR (c.id IS NOT NULL AND c.expires_at IS NOT NULL AND c.expires_at <= #{q_soon})
-          )
-        SQL
-
-        sql = <<~SQL.squish
-          SELECT
-            COALESCE(SUM(1), 0)::bigint AS total_count,
-            COALESCE(SUM(CASE WHEN #{live_cond} THEN 1 ELSE 0 END), 0)::bigint AS live_count,
-            COALESCE(SUM(CASE WHEN NOT (#{live_cond}) AND NOT (#{expired_cond}) AND NOT (#{capped_cond}) THEN 1 ELSE 0 END), 0)::bigint AS draft_or_paused_count,
-            COALESCE(SUM(CASE WHEN #{expired_cond} THEN 1 ELSE 0 END), 0)::bigint AS expired_count,
-            COALESCE(SUM(CASE WHEN #{capped_cond} THEN 1 ELSE 0 END), 0)::bigint AS capped_count,
-            COALESCE(SUM(CASE WHEN (#{live_cond}) AND d.priority = TRUE THEN 1 ELSE 0 END), 0)::bigint AS prioritized_live_count,
-            COALESCE(SUM(CASE WHEN #{expiring_soon_cond} THEN 1 ELSE 0 END), 0)::bigint AS expiring_soon_count,
-            COALESCE(SUM(COALESCE(d.impressions_count, 0)), 0)::bigint AS total_impressions,
-            COALESCE(SUM(COALESCE(d.clicks_count, 0)), 0)::bigint AS total_clicks,
-            COALESCE(SUM(CASE WHEN #{live_cond} THEN COALESCE(d.impressions_count, 0) ELSE 0 END), 0)::bigint AS live_impressions,
-            COALESCE(SUM(CASE WHEN #{live_cond} THEN COALESCE(d.clicks_count, 0) ELSE 0 END), 0)::bigint AS live_clicks,
-            COALESCE(SUM(CASE WHEN #{live_cond} THEN COALESCE(d.seconds_visible, 0) ELSE 0 END), 0)::bigint AS live_seconds_visible,
-            COUNT(DISTINCT CASE WHEN #{live_cond} THEN d.billboard_campaign_id END)::bigint AS active_campaigns_count
-          FROM display_ads d
-          LEFT JOIN billboard_campaigns c ON c.id = d.billboard_campaign_id
-        SQL
-
-        row = conn.select_one(sql) || {}
-        total_campaigns = BillboardCampaign.count
-
-        OverviewSummary.new(
-          total_count: row["total_count"].to_i,
-          live_count: row["live_count"].to_i,
-          draft_or_paused_count: row["draft_or_paused_count"].to_i,
-          expired_count: row["expired_count"].to_i,
-          capped_count: row["capped_count"].to_i,
-          prioritized_live_count: row["prioritized_live_count"].to_i,
-          expiring_soon_count: row["expiring_soon_count"].to_i,
-          total_impressions: row["total_impressions"].to_i,
-          total_clicks: row["total_clicks"].to_i,
-          live_impressions: row["live_impressions"].to_i,
-          live_clicks: row["live_clicks"].to_i,
-          live_seconds_visible: row["live_seconds_visible"].to_i,
-          total_campaigns_count: total_campaigns,
-          active_campaigns_count: row["active_campaigns_count"].to_i,
-        )
+        attrs = fetch_overview_attrs(now: now)
+        Rails.cache.write(OVERVIEW_CACHE_KEY, attrs, expires_in: OVERVIEW_CACHE_TTL) if use_cache
+        OverviewSummary.new(**attrs, timed_out: false)
+      rescue ActiveRecord::QueryCanceled => e
+        Rails.logger.warn("Billboards::AdminAnalytics.overview_summary timed out: #{e.message}")
+        OverviewSummary.new(**EMPTY_OVERVIEW_ATTRS, timed_out: true)
       end
 
       def campaigns_overview_summary(now: Time.current)
@@ -337,7 +302,7 @@ module Billboards
           )
         end
 
-        start_ts = start_date.beginning_of_day.utc
+        start_ts = Time.utc(start_date.year, start_date.month, start_date.day)
         last_24h_ts = (now - 24.hours).utc
         by_date, past_24h_impressions, past_24h_clicks = query_daily_events(ids, start_ts, last_24h_ts)
 
@@ -372,6 +337,78 @@ module Billboards
       end
 
       private
+
+      def fetch_overview_attrs(now:)
+        row = nil
+        ReadOnlyDatabaseService.with_connection do |conn|
+          conn.transaction do
+            conn.execute("SET LOCAL statement_timeout TO #{STATEMENT_TIMEOUT}")
+            row = conn.select_one(overview_summary_sql(conn, now: now)) || {}
+          end
+        end
+        row ||= {}
+
+        {
+          total_count: row["total_count"].to_i,
+          live_count: row["live_count"].to_i,
+          draft_or_paused_count: row["draft_or_paused_count"].to_i,
+          expired_count: row["expired_count"].to_i,
+          capped_count: row["capped_count"].to_i,
+          prioritized_live_count: row["prioritized_live_count"].to_i,
+          expiring_soon_count: row["expiring_soon_count"].to_i,
+          total_impressions: row["total_impressions"].to_i,
+          total_clicks: row["total_clicks"].to_i,
+          live_impressions: row["live_impressions"].to_i,
+          live_clicks: row["live_clicks"].to_i,
+          live_seconds_visible: row["live_seconds_visible"].to_i,
+          total_campaigns_count: row["total_campaigns_count"].to_i,
+          active_campaigns_count: row["active_campaigns_count"].to_i
+        }
+      end
+
+      def overview_summary_sql(conn, now:)
+        q_now = conn.quote(now)
+        q_soon = conn.quote(now + EXPIRING_SOON_WINDOW)
+
+        live_cond = <<~SQL.squish
+          d.approved = TRUE AND d.published = TRUE
+          AND (d.expires_at IS NULL OR d.expires_at > #{q_now})
+          AND (c.id IS NULL OR c.expires_at IS NULL OR c.expires_at > #{q_now})
+        SQL
+        expired_cond = <<~SQL.squish
+          (d.expires_at IS NOT NULL AND d.expires_at <= #{q_now})
+          OR (c.id IS NOT NULL AND c.expires_at IS NOT NULL AND c.expires_at <= #{q_now})
+        SQL
+        capped_cond = <<~SQL.squish
+          (d.max_impressions_count > 0 AND COALESCE(d.impressions_count, 0) >= d.max_impressions_count)
+          OR (d.max_clicks_count > 0 AND COALESCE(d.clicks_count, 0) >= d.max_clicks_count)
+        SQL
+        expiring_soon_cond = <<~SQL.squish
+          (#{live_cond})
+          AND ((d.expires_at IS NOT NULL AND d.expires_at <= #{q_soon})
+            OR (c.id IS NOT NULL AND c.expires_at IS NOT NULL AND c.expires_at <= #{q_soon}))
+        SQL
+
+        <<~SQL.squish
+          SELECT
+            COALESCE(SUM(1), 0)::bigint AS total_count,
+            COALESCE(SUM(CASE WHEN #{live_cond} THEN 1 ELSE 0 END), 0)::bigint AS live_count,
+            COALESCE(SUM(CASE WHEN NOT (#{live_cond}) AND NOT (#{expired_cond}) AND NOT (#{capped_cond}) THEN 1 ELSE 0 END), 0)::bigint AS draft_or_paused_count,
+            COALESCE(SUM(CASE WHEN #{expired_cond} THEN 1 ELSE 0 END), 0)::bigint AS expired_count,
+            COALESCE(SUM(CASE WHEN #{capped_cond} THEN 1 ELSE 0 END), 0)::bigint AS capped_count,
+            COALESCE(SUM(CASE WHEN (#{live_cond}) AND d.priority = TRUE THEN 1 ELSE 0 END), 0)::bigint AS prioritized_live_count,
+            COALESCE(SUM(CASE WHEN #{expiring_soon_cond} THEN 1 ELSE 0 END), 0)::bigint AS expiring_soon_count,
+            COALESCE(SUM(COALESCE(d.impressions_count, 0)), 0)::bigint AS total_impressions,
+            COALESCE(SUM(COALESCE(d.clicks_count, 0)), 0)::bigint AS total_clicks,
+            COALESCE(SUM(CASE WHEN #{live_cond} THEN COALESCE(d.impressions_count, 0) ELSE 0 END), 0)::bigint AS live_impressions,
+            COALESCE(SUM(CASE WHEN #{live_cond} THEN COALESCE(d.clicks_count, 0) ELSE 0 END), 0)::bigint AS live_clicks,
+            COALESCE(SUM(CASE WHEN #{live_cond} THEN COALESCE(d.seconds_visible, 0) ELSE 0 END), 0)::bigint AS live_seconds_visible,
+            COUNT(DISTINCT CASE WHEN #{live_cond} THEN d.billboard_campaign_id END)::bigint AS active_campaigns_count,
+            (SELECT COUNT(*)::bigint FROM billboard_campaigns) AS total_campaigns_count
+          FROM display_ads d
+          LEFT JOIN billboard_campaigns c ON c.id = d.billboard_campaign_id
+        SQL
+      end
 
       def query_daily_events(ids, start_ts, last_24h_ts)
         by_date = {}

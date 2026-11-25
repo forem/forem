@@ -22,37 +22,55 @@
 
   <%= render "admin/billboards/subnav", active: :billboards %>
 
+  <% if @overview.timed_out %>
+    <div class="crayons-notice crayons-notice--warning fs-s">
+      <%= t("views.admin.billboards.kpis.overview_timeout") %>
+    </div>
+  <% end %>
+
   <section class="admin-bb-kpis" aria-label="<%= t("views.admin.billboards.kpis.aria_label") %>">
     <div class="admin-bb-kpi admin-bb-kpi--success">
       <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.kpis.live") %></span>
-      <span class="admin-bb-kpi__value"><%= number_with_delimiter(@overview.live_count) %></span>
+      <span class="admin-bb-kpi__value"><%= @overview.timed_out ? "—" : number_with_delimiter(@overview.live_count) %></span>
       <span class="admin-bb-kpi__meta">
-        <span><%= t("views.admin.billboards.kpis.prioritized_count", count: @overview.prioritized_live_count) %></span>
-        <% if @overview.expiring_soon_count.positive? %>
-          <span class="admin-bb-pill admin-bb-pill--warning">
-            <%= t("views.admin.billboards.kpis.expiring_soon", count: @overview.expiring_soon_count) %>
-          </span>
+        <% if @overview.timed_out %>
+          <span><%= t("views.admin.billboards.kpis.unavailable") %></span>
+        <% else %>
+          <span><%= t("views.admin.billboards.kpis.prioritized_count", count: @overview.prioritized_live_count) %></span>
+          <% if @overview.expiring_soon_count.positive? %>
+            <span class="admin-bb-pill admin-bb-pill--warning">
+              <%= t("views.admin.billboards.kpis.expiring_soon", count: @overview.expiring_soon_count) %>
+            </span>
+          <% end %>
         <% end %>
       </span>
     </div>
 
     <div class="admin-bb-kpi">
       <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.kpis.inactive") %></span>
-      <span class="admin-bb-kpi__value"><%= number_with_delimiter(@overview.draft_or_paused_count) %></span>
+      <span class="admin-bb-kpi__value"><%= @overview.timed_out ? "—" : number_with_delimiter(@overview.draft_or_paused_count) %></span>
       <span class="admin-bb-kpi__meta">
-        <%= link_to t("views.admin.billboards.kpis.expired_count", count: @overview.expired_count),
-                    admin_billboards_path(status: "expired"), class: "c-link" %>
-        <span>&middot;</span>
-        <%= link_to t("views.admin.billboards.kpis.capped_count", count: @overview.capped_count),
-                    admin_billboards_path(status: "capped"), class: "c-link" %>
+        <% if @overview.timed_out %>
+          <span><%= t("views.admin.billboards.kpis.unavailable") %></span>
+        <% else %>
+          <%= link_to t("views.admin.billboards.kpis.expired_count", count: @overview.expired_count),
+                      admin_billboards_path(status: "expired"), class: "c-link" %>
+          <span>&middot;</span>
+          <%= link_to t("views.admin.billboards.kpis.capped_count", count: @overview.capped_count),
+                      admin_billboards_path(status: "capped"), class: "c-link" %>
+        <% end %>
       </span>
     </div>
 
     <div class="admin-bb-kpi admin-bb-kpi--brand">
       <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.kpis.active_campaigns") %></span>
       <span class="admin-bb-kpi__value">
-        <%= number_with_delimiter(@overview.active_campaigns_count) %>
-        <span class="fs-base fw-normal color-base-60">/ <%= number_with_delimiter(@overview.total_campaigns_count) %></span>
+        <% if @overview.timed_out %>
+          —
+        <% else %>
+          <%= number_with_delimiter(@overview.active_campaigns_count) %>
+          <span class="fs-base fw-normal color-base-60">/ <%= number_with_delimiter(@overview.total_campaigns_count) %></span>
+        <% end %>
       </span>
       <span class="admin-bb-kpi__meta">
         <%= link_to t("views.admin.billboards.kpis.manage_campaigns"), admin_billboard_campaigns_path, class: "c-link" %>
@@ -61,16 +79,23 @@
 
     <div class="admin-bb-kpi">
       <span class="admin-bb-kpi__label"><%= t("views.admin.billboards.kpis.live_delivery") %></span>
-      <span class="admin-bb-kpi__value" title="<%= number_with_delimiter(@overview.live_impressions) %>">
-        <%= admin_bb_compact_number(@overview.live_impressions) %>
-      </span>
-      <span class="admin-bb-kpi__meta">
-        <span><%= t("views.admin.billboards.kpis.clicks_short", count: admin_bb_compact_number(@overview.live_clicks)) %></span>
-        <span>&middot;</span>
-        <span><%= t("views.admin.billboards.kpis.ctr_short", ctr: admin_bb_ctr_percentage(@overview.live_clicks, @overview.live_impressions)) %></span>
-        <span>&middot;</span>
-        <span><%= t("views.admin.billboards.kpis.all_time_short", count: admin_bb_compact_number(@overview.total_impressions)) %></span>
-      </span>
+      <% if @overview.timed_out %>
+        <span class="admin-bb-kpi__value">—</span>
+        <span class="admin-bb-kpi__meta">
+          <span><%= t("views.admin.billboards.kpis.unavailable") %></span>
+        </span>
+      <% else %>
+        <span class="admin-bb-kpi__value" title="<%= number_with_delimiter(@overview.live_impressions) %>">
+          <%= admin_bb_compact_number(@overview.live_impressions) %>
+        </span>
+        <span class="admin-bb-kpi__meta">
+          <span><%= t("views.admin.billboards.kpis.clicks_short", count: admin_bb_compact_number(@overview.live_clicks)) %></span>
+          <span>&middot;</span>
+          <span><%= t("views.admin.billboards.kpis.ctr_short", ctr: admin_bb_ctr_percentage(@overview.live_clicks, @overview.live_impressions)) %></span>
+          <span>&middot;</span>
+          <span><%= t("views.admin.billboards.kpis.all_time_short", count: admin_bb_compact_number(@overview.total_impressions)) %></span>
+        </span>
+      <% end %>
     </div>
   </section>
 
@@ -150,9 +175,9 @@
             <%= select_tag :type_of,
                            options_for_select([
                              [t("views.admin.billboards.filters.any"), ""],
-                             ["In-House", "in_house"],
-                             ["Community", "community"],
-                             ["External", "external"],
+                             [t("views.admin.billboards.filters.types.in_house"), "in_house"],
+                             [t("views.admin.billboards.filters.types.community"), "community"],
+                             [t("views.admin.billboards.filters.types.external"), "external"],
                            ], selected: params[:type_of]),
                            class: "crayons-select" %>
           </div>
@@ -162,9 +187,9 @@
             <%= select_tag :display_to,
                            options_for_select([
                              [t("views.admin.billboards.filters.any"), ""],
-                             ["All users", "all"],
-                             ["Logged in", "logged_in"],
-                             ["Logged out", "logged_out"],
+                             [t("views.admin.billboards.filters.audiences.all"), "all"],
+                             [t("views.admin.billboards.filters.audiences.logged_in"), "logged_in"],
+                             [t("views.admin.billboards.filters.audiences.logged_out"), "logged_out"],
                            ], selected: params[:display_to]),
                            class: "crayons-select" %>
           </div>
@@ -185,9 +210,9 @@
             <%= select_tag :render_mode,
                            options_for_select([
                              [t("views.admin.billboards.filters.any"), ""],
-                             ["Forem Markdown", "forem_markdown"],
-                             ["Raw HTML", "raw"],
-                             ["Isolated Raw (Shadow DOM)", "isolated"],
+                             [t("views.admin.billboards.filters.render_modes.forem_markdown"), "forem_markdown"],
+                             [t("views.admin.billboards.filters.render_modes.raw"), "raw"],
+                             [t("views.admin.billboards.filters.render_modes.isolated"), "isolated"],
                            ], selected: params[:render_mode]),
                            class: "crayons-select" %>
           </div>

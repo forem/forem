@@ -26,7 +26,7 @@ module Admin
     def index
       @now = Time.current
       @overview = Billboards::AdminAnalytics.overview_summary(now: @now)
-      @campaigns_for_filter = BillboardCampaign.select(:id, :name).order(id: :desc).limit(CAMPAIGN_FILTER_LIMIT).to_a
+      @campaigns_for_filter = load_campaigns_list(selected_id: params[:billboard_campaign_id])
       @campaigns_by_id = @campaigns_for_filter.index_by(&:id)
 
       billboards = apply_filters(Billboard.select(*INDEX_COLUMNS), now: @now)
@@ -266,12 +266,20 @@ module Admin
     end
 
     def load_campaigns_for_select
-      @campaigns_for_select = BillboardCampaign.select(:id, :name).order(id: :desc).limit(CAMPAIGN_FILTER_LIMIT).to_a
-      current_id = @billboard&.billboard_campaign_id
-      return if current_id.blank? || @campaigns_for_select.any? { |c| c.id == current_id }
+      @campaigns_for_select = load_campaigns_list(selected_id: @billboard&.billboard_campaign_id)
+    end
 
-      existing = BillboardCampaign.select(:id, :name).find_by(id: current_id)
-      @campaigns_for_select.unshift(existing) if existing
+    def load_campaigns_list(selected_id: nil)
+      campaigns = BillboardCampaign.select(:id, :name).order(id: :desc).limit(CAMPAIGN_FILTER_LIMIT).to_a
+      requested_id = selected_id.to_s.strip
+      return campaigns unless requested_id.match?(/\A[1-9]\d*\z/)
+
+      campaign_id = requested_id.to_i
+      return campaigns if campaigns.any? { |c| c.id == campaign_id }
+
+      existing = BillboardCampaign.select(:id, :name).find_by(id: campaign_id)
+      campaigns.unshift(existing) if existing
+      campaigns
     end
 
     def billboard_params

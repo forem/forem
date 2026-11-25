@@ -41,7 +41,7 @@ en:
           total_delivery: Campaign impressions
         filters:
           aria_label: Filter campaigns
-          search_placeholder: Search by campaign name or #ID...
+          search_placeholder: "Search by campaign name or #ID..."
           paced: Daily-paced
         sort:
           daily_target: Highest daily target
@@ -67,6 +67,7 @@ en:
           filter_in_billboards: Filter in billboards
           kpis_aria: Campaign metrics
           past_24h_pacing: Past 24h delivery
+          past_24h_unavailable: Temporarily unavailable
           target_daily: "Target %{target}/day"
           creatives: Live creatives
           weight_range: "Weight %{min}–%{max}"
@@ -75,12 +76,14 @@ en:
           pacing_heading: Ideal daily pacing
           pacing_subtitle: Automated 10-minute titration of weights, priority, and pass-through gate.
           past_24h_vs_target: Trailing 24h vs. daily target
+          pacing_24h_timeout: Trailing 24h impression count timed out on the read replica; current pass-through gate below remains live.
           throttle_gate: Delivery pass-through rate
           throttle_help: Below 100% indicates the admission gate is throttling excess delivery.
           pacing_disabled_help: Daily pacing is turned off (ideal daily impressions is 0). Set a positive target to enable automated 10-minute titration.
           configure_pacing: Configure pacing
           daily_chart_heading: Daily delivery (last 14 days, UTC)
           daily_chart_summary: "%{impressions} impressions · %{clicks} clicks · %{conversions} conversions"
+          daily_chart_tooltip: "%{date}: %{impressions} imp, %{clicks} clicks (%{ctr})"
           daily_chart_timeout: Daily event breakdown timed out on the read replica. Lifetime campaign totals above remain up to date.
           daily_chart_empty: No billboard events recorded in the last 14 days.
           target_short: "Target %{target}"

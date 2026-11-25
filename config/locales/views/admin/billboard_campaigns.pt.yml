@@ -41,7 +41,7 @@ pt:
           total_delivery: Impressões das campanhas
         filters:
           aria_label: Filtrar campanhas
-          search_placeholder: Pesquisar por nome ou #ID...
+          search_placeholder: "Pesquisar por nome ou #ID..."
           paced: Com ritmo diário
         sort:
           daily_target: Maior meta diária
@@ -67,6 +67,7 @@ pt:
           filter_in_billboards: Filtrar nos anúncios
           kpis_aria: Métricas da campanha
           past_24h_pacing: Veiculação nas últimas 24h
+          past_24h_unavailable: Temporariamente indisponível
           target_daily: "Meta %{target}/dia"
           creatives: Anúncios ativos
           weight_range: "Peso %{min}–%{max}"
@@ -75,12 +76,14 @@ pt:
           pacing_heading: Ritmo diário ideal
           pacing_subtitle: Ajuste automático a cada 10 minutos de pesos, prioridade e taxa de passagem.
           past_24h_vs_target: Últimas 24h vs. meta diária
+          pacing_24h_timeout: A contagem de impressões nas últimas 24h atingiu o tempo limite na réplica de leitura; a taxa de passagem abaixo permanece ativa.
           throttle_gate: Taxa de passagem de veiculação
           throttle_help: Abaixo de 100% indica que o controle de admissão está regulando o excesso de veiculação.
           pacing_disabled_help: O ritmo diário está desativado (meta diária igual a 0). Defina uma meta positiva para ativar o ajuste automático.
           configure_pacing: Configurar ritmo
           daily_chart_heading: Veiculação diária (últimos 14 dias, UTC)
           daily_chart_summary: "%{impressions} impressões · %{clicks} cliques · %{conversions} conversões"
+          daily_chart_tooltip: "%{date}: %{impressions} imp, %{clicks} cliques (%{ctr})"
           daily_chart_timeout: O detalhamento diário de eventos atingiu o tempo limite na réplica de leitura. Os totais acima permanecem atualizados.
           daily_chart_empty: Nenhum evento registrado nos últimos 14 dias.
           target_short: "Meta %{target}"

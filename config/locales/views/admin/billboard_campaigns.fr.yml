@@ -41,7 +41,7 @@ fr:
           total_delivery: Impressions des campagnes
         filters:
           aria_label: Filtrer les campagnes
-          search_placeholder: Rechercher par nom ou #ID...
+          search_placeholder: "Rechercher par nom ou #ID..."
           paced: Lissage quotidien
         sort:
           daily_target: Objectif quotidien le plus élevé
@@ -67,6 +67,7 @@ fr:
           filter_in_billboards: Filtrer dans les encarts
           kpis_aria: Indicateurs de la campagne
           past_24h_pacing: Diffusion sur 24 h
+          past_24h_unavailable: Temporairement indisponible
           target_daily: "Objectif %{target}/jour"
           creatives: Encarts actifs
           weight_range: "Poids %{min}–%{max}"
@@ -75,12 +76,14 @@ fr:
           pacing_heading: Lissage quotidien idéal
           pacing_subtitle: Ajustement automatique toutes les 10 minutes des poids, de la priorité et du taux de passage.
           past_24h_vs_target: 24 dernières heures vs objectif quotidien
+          pacing_24h_timeout: Le comptage des impressions sur 24 h a expiré sur le réplica de lecture ; le taux de passage ci-dessous reste actif.
           throttle_gate: Taux de passage de diffusion
           throttle_help: Un taux inférieur à 100 % indique que la porte d’admission régule l’excédent de diffusion.
           pacing_disabled_help: Le lissage quotidien est désactivé (objectif quotidien à 0). Définissez un objectif positif pour activer le lissage automatique.
           configure_pacing: Configurer le lissage
           daily_chart_heading: Diffusion quotidienne (14 derniers jours, UTC)
           daily_chart_summary: "%{impressions} impressions · %{clicks} clics · %{conversions} conversions"
+          daily_chart_tooltip: "%{date} : %{impressions} imp., %{clicks} clics (%{ctr})"
           daily_chart_timeout: Le détail quotidien des événements a expiré sur le réplica de lecture. Les totaux ci-dessus restent à jour.
           daily_chart_empty: Aucun événement enregistré au cours des 14 derniers jours.
           target_short: "Objectif %{target}"
