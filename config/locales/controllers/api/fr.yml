@@ -34,3 +34,6 @@ fr:
         end_before_start: Le paramètre de date 'end' ne doit pas être antérieur à 'start'
         range_too_long: La plage de dates ne doit pas dépasser %{max} jours
         start_and_end_required: Les paramètres de date 'start' et 'end' doivent être fournis ensemble
+      organization_article_reactions_controller:
+        invalid_article_id: "'article_id' doit être un entier positif"
+        invalid_since: "'since' doit être un horodatage RFC 3339 avec un décalage UTC"
