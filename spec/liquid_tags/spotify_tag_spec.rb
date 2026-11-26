@@ -49,6 +49,43 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
       expect(result).to include('height="380px"')
     end
 
+    context "with a web url" do
+      let(:track_id) { "64csu9GsP563GpjaSvU17w" }
+
+      it "embeds a plain track url" do
+        result = generate_tag("https://open.spotify.com/track/#{track_id}?si=eaac508fe9394a93").render
+        expect(result).to include(generate_iframe("track", track_id, 80))
+      end
+
+      it "embeds a url with a locale prefix", :aggregate_failures do
+        %w[intl-de intl-pt intl-pt-br].each do |locale|
+          result = generate_tag("https://open.spotify.com/#{locale}/track/#{track_id}?si=eaac508fe9394a93").render
+          expect(result).to include(generate_iframe("track", track_id, 80))
+        end
+      end
+
+      it "keeps the content height for a locale prefixed playlist" do
+        result = generate_tag("https://open.spotify.com/intl-fr/playlist/37i9dQZF1E36t2Deh8frhL").render
+        expect(result).to include(generate_iframe("playlist", "37i9dQZF1E36t2Deh8frhL", 380))
+      end
+
+      it "embeds a url copied from an embed code" do
+        result = generate_tag("https://open.spotify.com/embed/episode/3fLyjTYjIdHxC0kdKMpbGj?utm_source=generator").render
+        expect(result).to include(generate_iframe("episode", "3fLyjTYjIdHxC0kdKMpbGj", 232))
+      end
+
+      it "embeds a legacy user playlist url" do
+        result = generate_tag("https://open.spotify.com/user/spotify/playlist/37i9dQZF1E36t2Deh8frhL").render
+        expect(result).to include(generate_iframe("playlist", "37i9dQZF1E36t2Deh8frhL", 380))
+      end
+
+      it "still rejects a url from another host" do
+        expect do
+          generate_tag("https://example.com/intl-de/track/#{track_id}")
+        end.to raise_error(StandardError, "Invalid Spotify URI or URL.")
+      end
+    end
+
     it "raises an error if the uri is invalid" do
       message = "Invalid Spotify URI or URL."
       expect do
