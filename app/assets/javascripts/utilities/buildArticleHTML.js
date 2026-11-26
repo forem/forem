@@ -186,7 +186,7 @@ function buildArticleHTML(article, currentUserId = null) {
       if (commentsCount > 0) {
         commentsDisplay +=
           commentsCount +
-          '<span class="hidden s:inline">&nbsp;comments</span></a>';
+          `<span class="hidden s:inline">&nbsp;${commentsCount > 1 ? 'comments' : 'comment'}</span></a>`;
       } else {
         commentsDisplay +=
           '<span class="hidden s:inline">Add&nbsp;Comment</span></a>';
