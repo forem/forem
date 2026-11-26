@@ -592,10 +592,15 @@ fr:
         créer sur une période de 5 minutes ?
       published:
         title: Limiter le nombre de postes créés
-        description: Combien de messages peut-on créer sur une période de 30 secondes
-          ?
+        description: "Combien de messages peut-on créer pendant la fenêtre de création de messages ?"
       antispam:
         title: Limiter le nombre de postes créés par un nouveau membre
+      published_window:
+        title: "Fenêtre de création de messages (secondes)"
+        description: "Durée de la fenêtre, en secondes, sur laquelle la limite de création de messages est comptée (30 par défaut)."
+      antispam_window:
+        title: "Fenêtre de création de messages d'un nouveau membre (secondes)"
+        description: "Durée de la fenêtre, en secondes, sur laquelle la limite des nouveaux membres pour les messages est comptée (300 par défaut)."
       update:
         title: Limiter le nombre de mises à jour d'un article
         description: Combien de mises à jour peut-on faire sur une période de 30 secondes
@@ -653,10 +658,15 @@ fr:
           sur une période de 5 minutes ?
       comment:
         title: Limiter le nombre de commentaires créés
-        description: Combien de commentaires une personne peut-elle créer dans une
-          période de 30 secondes ?
+        description: "Combien de commentaires une personne peut-elle créer pendant la fenêtre de création de commentaires ?"
       comment_antispam:
         title: Limiter le nombre de commentaires créés par un nouveau utilisateur
+      comment_window:
+        title: "Fenêtre de création de commentaires (secondes)"
+        description: "Durée de la fenêtre, en secondes, sur laquelle la limite de création de commentaires est comptée (30 par défaut)."
+      comment_antispam_window:
+        title: "Fenêtre de création de commentaires d'un nouveau membre (secondes)"
+        description: "Durée de la fenêtre, en secondes, sur laquelle la limite des nouveaux membres pour les commentaires est comptée (300 par défaut)."
       mention:
         title: Limiter le nombre de @-mentions dans un message ou un commentaire
         description: Combien de fois une personne peut-elle @-mentionner d'autres

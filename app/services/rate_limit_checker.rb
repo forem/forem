@@ -11,8 +11,8 @@ class RateLimitChecker
     api_ai_image_generation: { retry_after_setting: :api_ai_image_generation_window_seconds },
     api_image_upload: { retry_after_setting: :api_image_upload_window_seconds },
     article_update: { retry_after: 30 },
-    comment_antispam_creation: { retry_after: 300 },
-    comment_creation: { retry_after: 30 },
+    comment_antispam_creation: { retry_after_setting: :comment_antispam_creation_window_seconds },
+    comment_creation: { retry_after_setting: :comment_creation_window_seconds },
     embed_page_creation: { retry_after: 60 },
     embed_page_update: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
@@ -22,8 +22,8 @@ class RateLimitChecker
     mention_antispam_creation: { retry_after: 3600 },
     mention_creation: { retry_after: 3600 },
     organization_creation: { retry_after: 300 },
-    published_article_creation: { retry_after: 30 },
-    published_article_antispam_creation: { retry_after: 300 },
+    published_article_creation: { retry_after_setting: :published_article_creation_window_seconds },
+    published_article_antispam_creation: { retry_after_setting: :published_article_antispam_creation_window_seconds },
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
     user_subscription_creation: { retry_after: 30 },
@@ -341,30 +341,34 @@ class RateLimitChecker
     "#{unique_key_component}_#{action}"
   end
 
+  # The start of the rolling window the action's limit is counted over.
+  def rate_limit_window(action)
+    retry_after_for(action).seconds.ago
+  end
+
   def action_rate_limit(action)
     Settings::RateLimit.public_send(action)
   end
 
   def check_comment_creation_limit
-    user.comments.where("created_at > ?", 30.seconds.ago).size >
+    user.comments.where("created_at > ?", rate_limit_window(:comment_creation)).size >
       Settings::RateLimit.comment_creation
   end
 
   def check_published_article_creation_limit
-    # TODO: We should make this time frame configurable.
-    user.articles.published.from_subforem.where("created_at > ?", 30.seconds.ago).size >
+    user.articles.published.from_subforem
+      .where("created_at > ?", rate_limit_window(:published_article_creation)).size >
       Settings::RateLimit.published_article_creation
   end
 
   def check_published_article_antispam_creation_limit
-    # TODO: We should make this time frame configurable.
-    user.articles.published.from_subforem.where("created_at > ?", 5.minutes.ago).size >
+    user.articles.published.from_subforem
+      .where("created_at > ?", rate_limit_window(:published_article_antispam_creation)).size >
       Settings::RateLimit.published_article_antispam_creation
   end
 
   def check_comment_antispam_creation_limit
-    # TODO: We should make this time frame configurable.
-    user.comments.where(created_at: 5.minutes.ago...).size >
+    user.comments.where(created_at: rate_limit_window(:comment_antispam_creation)...).size >
       Settings::RateLimit.comment_antispam_creation
   end
 

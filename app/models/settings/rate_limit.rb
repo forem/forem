@@ -26,6 +26,21 @@ module Settings
             validates: { numericality: { only_integer: true, greater_than: 0 } }
     setting :article_update, type: :integer, default: 30
     setting :comment_antispam_creation, type: :integer, default: 1
+    # The comment and published article limits count what a user created in the
+    # last N seconds. These windows were hard coded (30 seconds for the standard
+    # limits, 5 minutes for the new member ones) before they became settings.
+    setting :comment_creation_window_seconds,
+            type: :integer, default: 30,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
+    setting :comment_antispam_creation_window_seconds,
+            type: :integer, default: 300,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
+    setting :published_article_creation_window_seconds,
+            type: :integer, default: 30,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
+    setting :published_article_antispam_creation_window_seconds,
+            type: :integer, default: 300,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
     setting :mention_creation, type: :integer, default: 7
     setting :mention_antispam_creation, type: :integer, default: 2

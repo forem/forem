@@ -180,6 +180,117 @@ RSpec.describe RateLimitChecker, type: :service do
     end
   end
 
+  describe "configurable creation windows" do
+    let(:two_minutes_ago) { 2.minutes.ago }
+
+    it "defaults to the previous hard coded windows" do
+      expect(
+        {
+          comment_creation: Settings::RateLimit.comment_creation_window_seconds,
+          comment_antispam_creation: Settings::RateLimit.comment_antispam_creation_window_seconds,
+          published_article_creation: Settings::RateLimit.published_article_creation_window_seconds,
+          published_article_antispam_creation: Settings::RateLimit.published_article_antispam_creation_window_seconds
+        },
+      ).to eq(
+        comment_creation: 30,
+        comment_antispam_creation: 300,
+        published_article_creation: 30,
+        published_article_antispam_creation: 300,
+      )
+    end
+
+    describe "comment_creation" do
+      before do
+        allow(Settings::RateLimit).to receive(:comment_creation).and_return(1)
+        create_list(:comment, 2, user_id: user.id, commentable: article, created_at: two_minutes_ago)
+      end
+
+      it "ignores comments older than the default window" do
+        expect(rate_limit_checker.limit_by_action(:comment_creation)).to be(false)
+      end
+
+      it "counts comments inside a longer window" do
+        allow(Settings::RateLimit).to receive(:comment_creation_window_seconds).and_return(600)
+
+        expect(rate_limit_checker.limit_by_action(:comment_creation)).to be(true)
+      end
+
+      it "reports the configured window as the retry time" do
+        allow(Settings::RateLimit).to receive(:comment_creation_window_seconds).and_return(600)
+        allow(rate_limit_checker).to receive(:limit_by_action).with(:comment_creation).and_return(true)
+
+        expect { rate_limit_checker.check_limit!(:comment_creation) }
+          .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(600) }
+      end
+    end
+
+    describe "comment_antispam_creation" do
+      before do
+        allow(Settings::RateLimit).to receive(:comment_antispam_creation).and_return(1)
+        create_list(:comment, 2, user_id: user.id, commentable: article, created_at: 2.minutes.ago)
+      end
+
+      it "counts comments inside the default window" do
+        expect(rate_limit_checker.limit_by_action(:comment_antispam_creation)).to be(true)
+      end
+
+      it "ignores comments older than a shorter window" do
+        allow(Settings::RateLimit).to receive(:comment_antispam_creation_window_seconds).and_return(60)
+
+        expect(rate_limit_checker.limit_by_action(:comment_antispam_creation)).to be(false)
+      end
+    end
+
+    describe "published_article_creation" do
+      before do
+        allow(Settings::RateLimit).to receive(:published_article_creation).and_return(1)
+        create_list(:article, 2, user_id: user.id, published: true, created_at: two_minutes_ago)
+      end
+
+      it "ignores articles older than the default window" do
+        expect(rate_limit_checker.limit_by_action(:published_article_creation)).to be(false)
+      end
+
+      it "counts articles inside a longer window" do
+        allow(Settings::RateLimit).to receive(:published_article_creation_window_seconds).and_return(600)
+
+        expect(rate_limit_checker.limit_by_action(:published_article_creation)).to be(true)
+      end
+    end
+
+    describe "published_article_antispam_creation" do
+      before do
+        allow(Settings::RateLimit).to receive(:published_article_antispam_creation).and_return(1)
+        create_list(:article, 2, user_id: user.id, published: true, created_at: two_minutes_ago)
+      end
+
+      it "counts articles inside the default window" do
+        expect(rate_limit_checker.limit_by_action(:published_article_antispam_creation)).to be(true)
+      end
+
+      it "ignores articles older than a shorter window" do
+        allow(Settings::RateLimit).to receive(:published_article_antispam_creation_window_seconds).and_return(60)
+
+        expect(rate_limit_checker.limit_by_action(:published_article_antispam_creation)).to be(false)
+      end
+
+      it "reports the configured window as the retry time" do
+        allow(Settings::RateLimit).to receive(:published_article_antispam_creation_window_seconds).and_return(900)
+        allow(rate_limit_checker).to receive(:limit_by_action)
+          .with(:published_article_antispam_creation).and_return(true)
+
+        expect { rate_limit_checker.check_limit!(:published_article_antispam_creation) }
+          .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(900) }
+      end
+    end
+
+    it "rejects a window of zero seconds" do
+      setting = Settings::RateLimit.new(var: "comment_creation_window_seconds", value: 0)
+
+      expect(setting).not_to be_valid
+    end
+  end
+
   describe "#track_limit_by_action" do
     it "increments cache for action with retry as expiration" do
       allow(Rails.cache).to receive(:increment)

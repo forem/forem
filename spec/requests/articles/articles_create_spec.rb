@@ -180,7 +180,7 @@ RSpec.describe "ArticlesCreate" do
       post articles_path, params: { article: { body_markdown: "123" } }
 
       expect(response).to have_http_status(:too_many_requests)
-      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_antispam_creation, :retry_after)
+      expected_retry_after = Settings::RateLimit.published_article_antispam_creation_window_seconds
       expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
 
@@ -196,7 +196,7 @@ RSpec.describe "ArticlesCreate" do
       post articles_path, params: { article: { body_markdown: "123 i love to spam" } }
 
       expect(response).to have_http_status(:too_many_requests)
-      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+      expected_retry_after = Settings::RateLimit.published_article_creation_window_seconds
       expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
   end

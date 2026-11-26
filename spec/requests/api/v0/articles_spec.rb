@@ -1024,7 +1024,7 @@ RSpec.describe "Api::V0::Articles" do
 
       it "returns a 429 status code if the rate limit is reached" do
         rate_limit_checker = instance_double(RateLimitChecker)
-        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+        retry_after_val = Settings::RateLimit.published_article_creation_window_seconds
         rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
         allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
         allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
