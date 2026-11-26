@@ -31,13 +31,24 @@ RSpec.describe Mention do
       end
     end
 
-    context "when mentionable is invalid" do
+    context "when mentionable is not persisted" do
       let(:comment) { build(:comment, commentable: nil) }
 
       it "is invalid" do
         mention = build(:mention, mentionable: comment)
 
         expect(mention).not_to be_valid
+      end
+    end
+
+    context "when a persisted mentionable fails an unrelated validation" do
+      let(:article) { create(:article) }
+
+      before { article.update_column(:cached_tag_list, "a" * 127) }
+
+      it "is still valid (regression for forem/forem#24064)", :aggregate_failures do
+        expect(article.reload).not_to be_valid
+        expect(build(:mention, mentionable: article)).to be_valid
       end
     end
   end

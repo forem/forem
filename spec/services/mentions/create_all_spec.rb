@@ -127,11 +127,16 @@ RSpec.shared_examples "valid notifiable with embedded mentions" do
   end
 end
 
-RSpec.shared_examples "invalid notifiable and has mentions" do
-  it "does not create a mention without valid mentionable" do
-    notifiable.update_column(:body_markdown, "")
-    described_class.call(notifiable)
-    expect(Mention.all.size).to eq(0)
+RSpec.shared_examples "notifiable failing unrelated validations and has mentions" do
+  # Regression for forem/forem#24064: Mention#permission used to run the mentionable's full validation
+  # suite, so a persisted notifiable failing any unrelated validation silently produced no Mention.
+  it "still creates the mention and its notification", :aggregate_failures do
+    invalidate_notifiable.call(notifiable)
+    expect(notifiable.reload).not_to be_valid
+
+    expect { sidekiq_perform_enqueued_jobs { described_class.call(notifiable) } }
+      .to change(Mention, :count).by(1)
+      .and change { user.notifications.where(notifiable_type: "Mention").count }.by(1)
   end
 end
 
@@ -162,8 +167,9 @@ RSpec.describe Mentions::CreateAll, type: :service do
     let(:notifiable) { create(:comment, body_markdown: markdown, user_id: user2.id, commentable: article) }
   end
 
-  it_behaves_like "invalid notifiable and has mentions" do
+  it_behaves_like "notifiable failing unrelated validations and has mentions" do
     let(:notifiable) { create(:comment, body_markdown: mention_markdown, user_id: user2.id, commentable: article) }
+    let(:invalidate_notifiable) { ->(record) { record.update_column(:body_markdown, "") } }
   end
 
   it_behaves_like "valid notifiable and no mentions" do
@@ -179,8 +185,34 @@ RSpec.describe Mentions::CreateAll, type: :service do
     let(:notifiable) { create(:article, user_id: user2.id) }
   end
 
-  it_behaves_like "invalid notifiable and has mentions" do
+  it_behaves_like "notifiable failing unrelated validations and has mentions" do
     let(:notifiable) { create(:article, user_id: user2.id) }
+    let(:invalidate_notifiable) { ->(record) { record.update_column(:cached_tag_list, "a" * 127) } }
+
+    before { notifiable.update!(body_markdown: mention_markdown) }
+  end
+
+  context "when re-running on a published article" do
+    let(:notifiable) { create(:article, user_id: user2.id) }
+
+    before { notifiable.update!(body_markdown: mention_markdown) }
+
+    it "does not re-notify an already-mentioned user", :aggregate_failures do
+      described_class.call(notifiable)
+
+      expect { described_class.call(notifiable) }
+        .not_to(change { [Mention.count, Notification.count] })
+
+      expect(user.notifications.where(notifiable_type: "Mention").count).to eq(1)
+    end
+
+    it "does not create a notification when the mention fails to save", :aggregate_failures do
+      allow(Mention).to receive(:create).and_return(Mention.new)
+      allow(Rails.logger).to receive(:warn)
+
+      expect { described_class.call(notifiable) }.not_to change(Notification, :count)
+      expect(Rails.logger).to have_received(:warn).with(/could not create mention for user #{user.id}/)
+    end
   end
 
   context "when author is spam or notifiable is flagged as spam" do
