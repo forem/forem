@@ -86,6 +86,10 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://open.spotify.com/album/3YA5DdB3wSz4pdfEXoMyRd?si=LQ6ft_T9QfiNA_KHbn6CkA",
       "https://open.spotify.com/episode/3fLyjTYjIdHxC0kdKMpbGj?si=5f45e5032cd5450a",
       "https://open.spotify.com/show/3sRrtlRiByFrOC49vPwP8L?si=c3c6c1180afe4094",
+      "https://open.spotify.com/intl-de/track/64csu9GsP563GpjaSvU17w?si=eaac508fe9394a93",
+      "https://open.spotify.com/intl-pt-br/album/3YA5DdB3wSz4pdfEXoMyRd",
+      "https://open.spotify.com/embed/episode/3fLyjTYjIdHxC0kdKMpbGj?utm_source=generator",
+      "https://open.spotify.com/user/spotify/playlist/37i9dQZF1E36t2Deh8frhL",
     ]
 
     valid_stackblitz_url_formats = [
