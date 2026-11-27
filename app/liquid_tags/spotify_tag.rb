@@ -1,7 +1,9 @@
 class SpotifyTag < LiquidTagBase
   PARTIAL = "liquids/spotify".freeze
+  # Spotify share links can carry a locale segment (/intl-de/, /intl-pt-br/),
+  # embed codes use /embed/, and older playlist links use /user/<name>/.
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:open\.spotify\.com/)(?<type>track|artist|playlist|album|episode|show)/(?<id>\w{,22})(?:\?si=[\w-]+)?}
+  REGISTRY_REGEXP = %r{https?://(?:open\.spotify\.com/)(?:intl-[a-z]{2,3}(?:-[a-z]{2,4})?/)?(?:embed/)?(?:user/[\w.-]+/)?(?<type>track|artist|playlist|album|episode|show)/(?<id>\w{,22})(?:\?si=[\w-]+)?}
   # rubocop:enable Layout/LineLength
   URI_REGEXP = /\A(?:spotify):(?<type>track|artist|playlist|album|episode|show):(?<id>\w{22})\Z/
   # legacy support: spotify:user:<username>:playlist:<id>
