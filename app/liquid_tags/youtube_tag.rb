@@ -46,14 +46,14 @@ class YoutubeTag < LiquidTagBase
 
   def find_video_id(str)
     match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
-      str.match(%r{youtube\.com/(?:shorts|live)/([a-zA-Z0-9_-]{11})}) ||
+      str.match(%r{youtube(?:-nocookie)?\.com/(?:shorts|live|embed|v)/(?!videoseries)([a-zA-Z0-9_-]{11})}) ||
       str.match(/[?&]v=([a-zA-Z0-9_-]{11})/) ||
       str.match(/\A([a-zA-Z0-9_-]{11})\z/)
     match[1] if match
   end
 
   def find_time_parameter(str)
-    match = str.match(/[?&](?:t|start)=([0-9hms]+)/i)
+    match = str.match(/[?&#](?:t|start)=([0-9hms]+)/i)
     match[1] if match
   end
 
@@ -68,5 +68,5 @@ end
 
 Liquid::Template.register_tag("youtube", YoutubeTag)
 
-YOUTUBE_REGEX = %r{(?:youtu\.be/|youtube\.com/(?:watch|embed|shorts|live))}i
+YOUTUBE_REGEX = %r{(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch|embed|shorts|live|v/))}i
 UnifiedEmbed.register(YoutubeTag, regexp: YOUTUBE_REGEX, skip_validation: true)
