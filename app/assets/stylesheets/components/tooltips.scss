@@ -62,7 +62,8 @@
     width: max-content;
   }
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     &:after {
       display: block;
       opacity: 1;

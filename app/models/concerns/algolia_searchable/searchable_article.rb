@@ -18,7 +18,7 @@ module AlgoliaSearchable
 
         attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,
                   :positive_reactions_count, :path, :main_image, :user_id, :public_reactions_count,
-                  :public_reaction_categories, :subforem_id
+                  :public_reaction_categories, :subforem_id, :ai_disclosure_level, :type_of
 
         add_attribute(:published_at) { published_at.to_i }
         add_attribute(:readable_publish_date) { readable_publish_date }
