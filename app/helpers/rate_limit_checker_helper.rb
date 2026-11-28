@@ -18,6 +18,7 @@ module RateLimitCheckerHelper
       published_article_creation_window_seconds: {
         enabled: true,
         min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
         placeholder: 30,
         title: I18n.t("helpers.rate_limit_checker_helper.published_window.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.published_window.description")
@@ -32,6 +33,7 @@ module RateLimitCheckerHelper
       published_article_antispam_creation_window_seconds: {
         enabled: true,
         min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
         placeholder: 300,
         title: I18n.t("helpers.rate_limit_checker_helper.antispam_window.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.antispam_window.description")
@@ -137,6 +139,7 @@ module RateLimitCheckerHelper
       comment_creation_window_seconds: {
         enabled: true,
         min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
         placeholder: 30,
         title: I18n.t("helpers.rate_limit_checker_helper.comment_window.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.comment_window.description")
@@ -151,6 +154,7 @@ module RateLimitCheckerHelper
       comment_antispam_creation_window_seconds: {
         enabled: true,
         min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
         placeholder: 300,
         title: I18n.t("helpers.rate_limit_checker_helper.comment_antispam_window.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.comment_antispam_window.description")

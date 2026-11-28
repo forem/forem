@@ -2,6 +2,15 @@ module Settings
   class RateLimit < Base
     self.table_name = :settings_rate_limits
 
+    # Upper bound for the creation windows, so a typo cannot make the count
+    # query scan a huge range or send clients an absurd Retry-After.
+    MAX_CREATION_WINDOW_SECONDS = 86_400
+    CREATION_WINDOW_NUMERICALITY = {
+      only_integer: true,
+      greater_than: 0,
+      less_than_or_equal_to: MAX_CREATION_WINDOW_SECONDS
+    }.freeze
+
     setting :agent_session_creation, type: :integer, default: 5
     # Presigned agent session upload URLs are limited to N per configurable
     # window (fixed window starting at the first request). 0 disables presign.
@@ -31,16 +40,16 @@ module Settings
     # limits, 5 minutes for the new member ones) before they became settings.
     setting :comment_creation_window_seconds,
             type: :integer, default: 30,
-            validates: { numericality: { only_integer: true, greater_than: 0 } }
+            validates: { numericality: CREATION_WINDOW_NUMERICALITY }
     setting :comment_antispam_creation_window_seconds,
             type: :integer, default: 300,
-            validates: { numericality: { only_integer: true, greater_than: 0 } }
+            validates: { numericality: CREATION_WINDOW_NUMERICALITY }
     setting :published_article_creation_window_seconds,
             type: :integer, default: 30,
-            validates: { numericality: { only_integer: true, greater_than: 0 } }
+            validates: { numericality: CREATION_WINDOW_NUMERICALITY }
     setting :published_article_antispam_creation_window_seconds,
             type: :integer, default: 300,
-            validates: { numericality: { only_integer: true, greater_than: 0 } }
+            validates: { numericality: CREATION_WINDOW_NUMERICALITY }
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
     setting :mention_creation, type: :integer, default: 7
     setting :mention_antispam_creation, type: :integer, default: 2

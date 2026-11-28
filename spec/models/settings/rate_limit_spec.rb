@@ -1,6 +1,30 @@
 require "rails_helper"
 
 RSpec.describe Settings::RateLimit do
+  describe "creation window settings" do
+    %i[
+      comment_creation_window_seconds
+      comment_antispam_creation_window_seconds
+      published_article_creation_window_seconds
+      published_article_antispam_creation_window_seconds
+    ].each do |name|
+      it "accepts #{name} up to the documented maximum" do
+        record = described_class.new(var: name, value: described_class::MAX_CREATION_WINDOW_SECONDS)
+        expect(record).to be_valid
+      end
+
+      it "rejects #{name} above the documented maximum" do
+        record = described_class.new(var: name, value: described_class::MAX_CREATION_WINDOW_SECONDS + 1)
+        expect(record).not_to be_valid
+        expect(record.errors[name]).to be_present
+      end
+
+      it "rejects a zero #{name}" do
+        expect(described_class.new(var: name, value: 0)).not_to be_valid
+      end
+    end
+  end
+
   describe ".user_considered_new?" do
     subject(:function_call) { described_class.user_considered_new?(user: user) }
 
