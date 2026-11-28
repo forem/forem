@@ -558,9 +558,15 @@ pt:
         any 5 minute period?
       published:
         title: Limit number of posts created
-        description: How many posts can someone create within any 30 second period?
+        description: "How many posts can someone create within the post creation window?"
       antispam:
         title: Limit number of posts created by a new member
+      published_window:
+        title: "Post creation window (seconds)"
+        description: "Length of the window, in seconds, that the post creation limit is counted over (30 by default). Maximum 86400 (24 hours)."
+      antispam_window:
+        title: "New member post creation window (seconds)"
+        description: "Length of the window, in seconds, that the new member post limit is counted over (300 by default). Maximum 86400 (24 hours)."
       update:
         title: Limit number of updates to a post
         description: How many updates can someone make within any 30 second period?
@@ -614,9 +620,15 @@ pt:
         description: Quantos recursos de moderação alguém pode enviar em qualquer período de 5 minutos?
       comment:
         title: Limit number of comments created
-        description: How many comments can someone create within any 30 second period?
+        description: "How many comments can someone create within the comment creation window?"
       comment_antispam:
         title: Limit number of comments created by a new member
+      comment_window:
+        title: "Comment creation window (seconds)"
+        description: "Length of the window, in seconds, that the comment creation limit is counted over (30 by default). Maximum 86400 (24 hours)."
+      comment_antispam_window:
+        title: "New member comment creation window (seconds)"
+        description: "Length of the window, in seconds, that the new member comment limit is counted over (300 by default). Maximum 86400 (24 hours)."
       mention:
         title: Limit number of @-mentions in a post or comment
         description: How many times can someone @-mention other users in a post or

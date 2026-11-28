@@ -25,6 +25,7 @@
                                class: "crayons-textfield",
                                value: Settings::RateLimit.public_send(key),
                                min: field_hash[:min],
+                               max: field_hash[:max],
                                placeholder: field_hash[:placeholder] %>
           </div>
         <% end %>

@@ -6,7 +6,9 @@ describe RateLimitCheckerHelper do
       settings_keys = Settings::RateLimit.keys.map(&:to_sym)
       helper.configurable_rate_limits.each do |key, value_hash|
         expect(settings_keys).to include(key)
-        expect(value_hash.keys).to match_array(%i[title min placeholder description enabled])
+        expected = %i[title min placeholder description enabled]
+        expected << :max if key.to_s.end_with?("_creation_window_seconds")
+        expect(value_hash.keys).to match_array(expected)
       end
       expect(helper.configurable_rate_limits).to have_key(:flag_appeal_creation)
     end

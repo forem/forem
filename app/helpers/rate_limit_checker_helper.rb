@@ -15,12 +15,28 @@ module RateLimitCheckerHelper
         title: I18n.t("helpers.rate_limit_checker_helper.published.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.published.description")
       },
+      published_article_creation_window_seconds: {
+        enabled: true,
+        min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
+        placeholder: 30,
+        title: I18n.t("helpers.rate_limit_checker_helper.published_window.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.published_window.description")
+      },
       published_article_antispam_creation: {
         enabled: true,
         min: 0,
         placeholder: 1,
         title: I18n.t("helpers.rate_limit_checker_helper.antispam.title"),
         description: RateLimitCheckerHelper.new_user_message(I18n.t("helpers.rate_limit_checker_helper.thing.posts"))
+      },
+      published_article_antispam_creation_window_seconds: {
+        enabled: true,
+        min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
+        placeholder: 300,
+        title: I18n.t("helpers.rate_limit_checker_helper.antispam_window.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.antispam_window.description")
       },
       article_update: {
         enabled: true,
@@ -120,12 +136,28 @@ module RateLimitCheckerHelper
         title: I18n.t("helpers.rate_limit_checker_helper.comment.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.comment.description")
       },
+      comment_creation_window_seconds: {
+        enabled: true,
+        min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
+        placeholder: 30,
+        title: I18n.t("helpers.rate_limit_checker_helper.comment_window.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.comment_window.description")
+      },
       comment_antispam_creation: {
         enabled: true,
         min: 0,
         placeholder: 1,
         title: I18n.t("helpers.rate_limit_checker_helper.comment_antispam.title"),
         description: RateLimitCheckerHelper.new_user_message(I18n.t("helpers.rate_limit_checker_helper.thing.comments"))
+      },
+      comment_antispam_creation_window_seconds: {
+        enabled: true,
+        min: 1,
+        max: Settings::RateLimit::MAX_CREATION_WINDOW_SECONDS,
+        placeholder: 300,
+        title: I18n.t("helpers.rate_limit_checker_helper.comment_antispam_window.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.comment_antispam_window.description")
       },
       mention_creation: {
         enabled: true,
