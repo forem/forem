@@ -83,6 +83,30 @@ RSpec.describe Deliverable do
       end
     end
 
+    describe "a confirmed user with no mlh identity confirming a new address" do
+      let(:changer) { create(:user) }
+      let(:new_email) { "changed-#{SecureRandom.hex(4)}@example.com" }
+
+      before do
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[changer])
+        changer.update!(email: new_email)
+      end
+
+      it "is sent now, keyed by the new address, rather than held" do
+        message = DeviseMailer.confirmation_instructions(changer, "faketoken", to: new_email).message
+
+        expect(message.perform_deliveries).to be(true)
+        expect(message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+        expect(message.delivery_method.settings[:identifiers]).to eq(email: new_email)
+      end
+
+      it "is held when the mail goes to some other address" do
+        message = DeviseMailer.confirmation_instructions(changer, "faketoken", to: "other@example.com").message
+
+        expect(message.perform_deliveries).to be(false)
+      end
+    end
+
     it "passes customerio_delivery_options through to the delivery method" do
       FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
 
