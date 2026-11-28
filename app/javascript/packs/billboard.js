@@ -2,6 +2,7 @@ import { setupBillboardInteractivity, ensurePersistentMinimizedBillboardContaine
 import {
   observeBillboards,
   executeBBScripts,
+  initializeBillboardVisibility,
   implementSpecialBehavior,
 } from './billboardAfterRenderActions';
 import { syncAnonymousVisitor } from '../utilities/anonymousVisitor';
@@ -131,6 +132,7 @@ async function generateBillboard(element) {
             cleanupBillboardShadowHostsIn(sidebarContainer);
             sidebarContainer.innerHTML = template.innerHTML;
             sidebarContainer.classList.remove('hidden');
+            initializeBillboardVisibility(sidebarContainer);
             executeBBScripts(sidebarContainer);
             sidebarContainer.querySelectorAll('.js-billboard').forEach(observeThisBillboard);
             observeBillboards();
@@ -183,6 +185,7 @@ async function generateBillboard(element) {
               cleanupBillboardShadowHostsIn(sidebarContainer);
               sidebarContainer.innerHTML = template.innerHTML;
               sidebarContainer.classList.remove('hidden');
+              initializeBillboardVisibility(sidebarContainer);
               executeBBScripts(sidebarContainer);
             }
           }
@@ -192,6 +195,9 @@ async function generateBillboard(element) {
         }
       }
 
+      // Billboards arrive after the page-level visibility pass has already run,
+      // so apply the member's "display sponsors" setting to this one as well.
+      initializeBillboardVisibility(element);
       executeBBScripts(element);
       implementSpecialBehavior(element);
       setupBillboardInteractivity();

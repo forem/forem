@@ -7,18 +7,27 @@ import {
 } from '../utilities/billboardShadowDom';
 
 const billboardClickHandlers = new WeakMap();
-// This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
-export function initializeBillboardVisibility() {
-  const billboards = document.querySelectorAll('[data-display-unit]');
+// Billboards whose data-type-of value is rendered as "partner" (the external
+// type) are the ones the "display sponsors" setting controls.
+const SPONSORED_TYPES = ['external', 'partner'];
 
-  if (billboards && billboards.length == 0) {
+// This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
+// Pass a root element to limit the work to billboards that were just inserted.
+export function initializeBillboardVisibility(root = document) {
+  const billboards = root.querySelectorAll('[data-display-unit]');
+
+  if (billboards.length === 0) {
     return;
   }
 
   const user = userData();
 
   billboards.forEach((ad) => {
-    if (user && !user.display_sponsors && ad.dataset['typeOf'] == 'external') {
+    if (
+      user &&
+      !user.display_sponsors &&
+      SPONSORED_TYPES.includes(ad.dataset['typeOf'])
+    ) {
       ad.classList.add('hidden');
     } else {
       ad.classList.remove('hidden');
