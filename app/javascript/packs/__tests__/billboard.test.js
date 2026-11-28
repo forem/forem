@@ -3,6 +3,7 @@ import { setupBillboardInteractivity, ensurePersistentMinimizedBillboardContaine
 import {
   observeBillboards,
   executeBBScripts,
+  initializeBillboardVisibility,
 } from '../billboardAfterRenderActions';
 
 jest.mock('../../utilities/billboardInteractivity', () => ({
@@ -13,6 +14,7 @@ jest.mock('../../utilities/billboardInteractivity', () => ({
 jest.mock('../billboardAfterRenderActions', () => ({
   observeBillboards: jest.fn(),
   executeBBScripts: jest.fn(),
+  initializeBillboardVisibility: jest.fn(),
   implementSpecialBehavior: jest.fn(),
 }));
 
@@ -66,6 +68,24 @@ describe('billboard.js - internal navigation behavior', () => {
     expect(element.innerHTML).toContain('Normal Billboard Content');
     expect(element.style.display).not.toBe('none');
     expect(setupBillboardInteractivity).toHaveBeenCalled();
+  });
+
+  it('applies the sponsor visibility setting to a billboard loaded after page init', async () => {
+    document.body.innerHTML = `
+      <div id="page-content-inner" data-internal-nav="false"></div>
+      <div class="js-billboard-container" data-async-url="/billboards/post_sidebar"></div>
+    `;
+
+    mockFetch.mockResolvedValue({
+      text: () => Promise.resolve(`
+        <div class="js-billboard" data-display-unit data-type-of="partner">Sponsored</div>
+      `),
+    });
+
+    const element = document.querySelector('.js-billboard-container');
+    await getBillboard();
+
+    expect(initializeBillboardVisibility).toHaveBeenCalledWith(element);
   });
 
   it('shows minimized version and hides main container when isInternalNav is true and billboard is persistent', async () => {
