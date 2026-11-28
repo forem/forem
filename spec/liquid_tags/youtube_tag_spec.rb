@@ -72,6 +72,55 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
       expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
     end
 
+    it "accepts an embed URL as copied from an iframe" do
+      result = generate_tag("https://www.youtube.com/embed/#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+    end
+
+    it "keeps the start time of an embed URL" do
+      result = generate_tag("https://www.youtube.com/embed/#{valid_id}?start=70")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}?start=70")
+    end
+
+    it "accepts a privacy-enhanced embed URL" do
+      result = generate_tag("https://www.youtube-nocookie.com/embed/#{valid_id}")
+      expect(result).to include("https://www.youtube-nocookie.com/embed/#{valid_id}")
+      expect(result).not_to include("https://www.youtube.com/embed/")
+    end
+
+    it "keeps the nocookie origin for a start time" do
+      result = generate_tag("https://www.youtube-nocookie.com/embed/#{valid_id}?start=70")
+      expect(result).to include("https://www.youtube-nocookie.com/embed/#{valid_id}?start=70")
+    end
+
+    it "renders a regular youtube.com URL with the standard origin" do
+      result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+      expect(result).not_to include("youtube-nocookie.com")
+    end
+
+    it "does not pick the nocookie origin from query text" do
+      result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}&x=youtube-nocookie.com")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+      expect(result).not_to include("youtube-nocookie.com")
+    end
+
+    it "accepts a legacy /v/ URL" do
+      result = generate_tag("https://www.youtube.com/v/#{valid_id}")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
+    end
+
+    it "reads a start time given in the URL fragment" do
+      result = generate_tag("https://www.youtube.com/watch?v=#{valid_id}#t=1m10s")
+      expect(result).to include("https://www.youtube.com/embed/#{valid_id}?start=70")
+    end
+
+    it "does not treat an embedded playlist as a video id" do
+      expect do
+        generate_tag("https://www.youtube.com/embed/videoseries?list=PLabc")
+      end.to raise_error(StandardError, "Invalid YouTube URL")
+    end
+
     it "accepts an ID only" do
       result = Liquid::Template.parse("{% youtube #{valid_id} %}").render
       expect(result).to include("https://www.youtube.com/embed/#{valid_id}")
