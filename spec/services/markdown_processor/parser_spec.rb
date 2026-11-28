@@ -179,6 +179,35 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_span)).to include random_word
   end
 
+  it "does not let a stray backtick swallow the fenced code block after it" do
+    markdown = <<~MARKDOWN
+      - `v` is `"ZZZ". It is **the value** of the cursor.
+
+      Some text in between.
+
+      ```go
+      func main() {
+        fmt.Println("{{ hello }}")
+      }
+      ```
+    MARKDOWN
+
+    html = generate_and_parse_markdown(markdown)
+
+    expect(html).to include("<code>v</code>")
+    expect(html).to include("<strong>the value</strong>")
+    expect(html.scan("<pre").size).to eq(1)
+    expect(html).to include("fmt")
+    expect(html).to include("{{ hello }}")
+    expect(html).not_to include("```")
+  end
+
+  it "still renders an inline code span that wraps onto the next line" do
+    html = generate_and_parse_markdown("a `b\nc` d")
+
+    expect(html).to match(%r{<code>b<br>\nc</code>})
+  end
+
   it "wraps figcaptions with figures" do
     code_span = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
     test = generate_and_parse_markdown("<p>case: </p>#{code_span}")
