@@ -121,6 +121,7 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://player.vimeo.com/video/652446985?h=a68f6ed1f5",
       "https://vimeo.com/ondemand/withchude/647355334",
       "https://vimeo.com/636725488",
+      "https://vimeo.com/287256752/fef4791276",
     ]
 
     valid_youtube_url_formats = [
