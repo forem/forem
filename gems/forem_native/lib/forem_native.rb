@@ -2695,6 +2695,38 @@ module ForemNative
       Native.article_activity_recompute_sql(id, page_view_rows, reaction_rows, comment_rows, now_sec, now_usec)
     end
 
+    # Tier 2: the single aggregate `SELECT` behind `Article#update_score`. Returns nil
+    # for non-Integer ids or category slugs outside `[a-z0-9_]+`.
+    def article_score_aggregates_sql(article_id, user_id, organization_id, privileged_categories)
+      return unless Native.respond_to?(:article_score_aggregates_sql)
+      return unless valid_i64_integer?(article_id) && valid_i64_integer?(user_id)
+      return unless organization_id.nil? || valid_i64_integer?(organization_id)
+      return unless privileged_categories.is_a?(Array) && privileged_categories.all? { |c| c.instance_of?(String) }
+
+      Native.article_score_aggregates_sql(article_id, user_id, organization_id, privileged_categories)
+    end
+
+    # Tier 2: `[score, comment_score]` for `Article#update_score` from its 16 flat
+    # inputs. Returns nil outside the exact-arithmetic domain (non-finite floats,
+    # magnitudes over 2**40, nil max scores, negative badge sums, ...).
+    def article_update_score(inputs)
+      return unless Native.respond_to?(:article_update_score)
+      return unless inputs.is_a?(Array) && inputs.size == 16
+
+      Native.article_update_score(inputs)
+    end
+
+    # Tier 1: `BlackBox.article_hotness_score` for a published article. Times are
+    # integer nanoseconds since the epoch; `now_ns` must come from a UTC zone.
+    def article_hotness_score(published_at_ns, crossposted_at_ns, now_ns, our_epoch, score, comment_score, featured,
+                              favorited, cached_tag_list)
+      return unless Native.respond_to?(:article_hotness_score)
+      return unless cached_tag_list.nil? || cached_tag_list.instance_of?(String)
+
+      Native.article_hotness_score(published_at_ns, crossposted_at_ns, now_ns, our_epoch, score, comment_score,
+                                   featured, favorited, cached_tag_list)
+    end
+
     private
 
     def utf8_compatible_string?(str)

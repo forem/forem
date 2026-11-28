@@ -20,7 +20,9 @@ RSpec.describe Articles::ScoreCalcWorker, type: :worker do
 
       it "updates article scores", :aggregate_failures do
         allow(Article).to receive(:find_by).and_return(article)
-        allow(article.reactions).to receive(:sum).and_return(7)
+        allow(article).to receive(:score_aggregates).and_wrap_original do |original|
+          original.call.merge(reaction_points: 7)
+        end
 
         worker.perform(article.id)
         article.reload

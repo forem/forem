@@ -9574,6 +9574,138 @@ fn article_activity_recompute_sql(
     Some(ruby.str_new(&sql))
 }
 
+// --- Article#update_score / BlackBox.article_hotness_score ---------------------
+
+fn extract_strict_bool(val: Value) -> Option<bool> {
+    if Qtrue::from_value(val).is_some() {
+        Some(true)
+    } else if Qfalse::from_value(val).is_some() {
+        Some(false)
+    } else {
+        None
+    }
+}
+
+fn extract_score_num(val: Value) -> Option<forem_core::article_score::ScoreNum> {
+    use forem_core::article_score::ScoreNum;
+    if let Some(int) = Integer::from_value(val) {
+        return Some(ScoreNum::Int(int.to_i64().ok()?));
+    }
+    // Only exact `Float` instances; anything else (BigDecimal, Rational, nil) defers.
+    let float = magnus::Float::from_value(val)?;
+    Some(ScoreNum::Float(float.to_f64()))
+}
+
+fn extract_score_int(val: Value) -> Option<i64> {
+    Integer::from_value(val)?.to_i64().ok()
+}
+
+fn article_update_score(ruby: &Ruby, inputs: RArray) -> Option<RArray> {
+    use forem_core::article_score::ArticleScoreInputs;
+    if inputs.len() != 16 {
+        return None;
+    }
+    // Copy the handles out first so no `as_slice` borrow is held across Ruby calls.
+    let mut v = [ruby.qnil().as_value(); 16];
+    {
+        // SAFETY: Short-lived borrow, copied into a stack array before any VM call.
+        let slice = unsafe { inputs.as_slice() };
+        v.copy_from_slice(slice);
+    }
+    let parsed = ArticleScoreInputs {
+        reaction_points: extract_score_num(v[0])?,
+        spam_adjustment: extract_score_num(v[1])?,
+        user_reaction_points: extract_score_num(v[2])?,
+        base_subscriber_adjustment: extract_score_num(v[3])?,
+        featured_count: extract_score_int(v[4])?,
+        negative_count: extract_score_int(v[5])?,
+        context_note_count: extract_score_num(v[6])?,
+        automod_adjustment: extract_score_num(v[7])?,
+        badge_bonus_weight_sum: extract_score_int(v[8])?,
+        organization_baseline_score: extract_score_num(v[9])?,
+        established_user_adjustment: extract_score_num(v[10])?,
+        favorited: extract_strict_bool(v[11])?,
+        max_score: extract_score_int(v[12])?,
+        user_max_score: extract_score_int(v[13])?,
+        baseline_score: extract_score_int(v[14])?,
+        comment_score_sum: extract_score_int(v[15])?,
+    };
+    let (score, comment_score) = forem_core::article_score::article_update_score(&parsed)?;
+    let out = ruby.ary_new_capa(2);
+    out.push(score).ok()?;
+    out.push(comment_score).ok()?;
+    Some(out)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn article_hotness_score(
+    ruby: &Ruby,
+    published_at_ns: Value,
+    crossposted_at_ns: Value,
+    now_ns: Value,
+    our_epoch: Value,
+    score: Value,
+    comment_score: Value,
+    featured: Value,
+    favorited: Value,
+    cached_tag_list: Value,
+) -> Option<i64> {
+    use forem_core::article_score::{article_hotness_score, tag_list_includes, HotnessInputs};
+    let watercooler = if cached_tag_list.is_nil() {
+        false
+    } else {
+        let list = RString::from_value(cached_tag_list)?;
+        let enc = list.enc_get();
+        if enc != ruby.utf8_encindex() && enc != ruby.usascii_encindex() {
+            return None;
+        }
+        // SAFETY: Zero-copy borrow; the scan never calls into Ruby.
+        let bytes = unsafe { list.as_slice() };
+        if std::str::from_utf8(bytes).is_err() {
+            return None;
+        }
+        tag_list_includes(bytes, b"watercooler")
+    };
+    let inputs = HotnessInputs {
+        published_at_ns: extract_score_int(published_at_ns)?,
+        crossposted_at_ns: extract_opt_i64(crossposted_at_ns)?,
+        now_ns: extract_score_int(now_ns)?,
+        our_epoch: extract_score_int(our_epoch)?,
+        score: extract_score_int(score)?,
+        comment_score: extract_score_int(comment_score)?,
+        featured: extract_strict_bool(featured)?,
+        favorited: extract_strict_bool(favorited)?,
+        watercooler,
+    };
+    article_hotness_score(&inputs)
+}
+
+fn article_score_aggregates_sql(
+    ruby: &Ruby,
+    article_id: Value,
+    user_id: Value,
+    organization_id: Value,
+    privileged_categories: RArray,
+) -> Option<RString> {
+    let article_id = extract_score_int(article_id)?;
+    let user_id = extract_score_int(user_id)?;
+    let organization_id = extract_opt_i64(organization_id)?;
+    let handles: Vec<Value> = privileged_categories.into_iter().collect();
+    let mut owned = Vec::with_capacity(handles.len());
+    for handle in handles {
+        let rstr = RString::from_value(handle)?;
+        owned.push(rstr.to_string().ok()?);
+    }
+    let categories: Vec<&str> = owned.iter().map(String::as_str).collect();
+    let sql = forem_core::article_score::article_score_aggregates_sql(
+        article_id,
+        user_id,
+        organization_id,
+        &categories,
+    )?;
+    Some(ruby.str_new(&sql))
+}
+
 #[allow(clippy::too_many_arguments)]
 fn build_notification_bulk_upsert_sql(
     ruby: &Ruby,
@@ -10433,6 +10565,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "article_activity_recompute_sql",
         function!(article_activity_recompute_sql, 6),
+    )?;
+    native_mod
+        .define_singleton_method("article_update_score", function!(article_update_score, 1))?;
+    native_mod
+        .define_singleton_method("article_hotness_score", function!(article_hotness_score, 9))?;
+    native_mod.define_singleton_method(
+        "article_score_aggregates_sql",
+        function!(article_score_aggregates_sql, 4),
     )?;
     Ok(())
 }

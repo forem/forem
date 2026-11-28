@@ -13585,4 +13585,151 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".article_update_score / .article_hotness_score / .article_score_aggregates_sql" do
+    # Legacy oracle: the `Article#update_score` arithmetic, including the
+    # ActiveModel::Type::Integer cast (`to_i rescue nil`) on every `self.score =`.
+    def legacy_article_update_score(inputs)
+      reaction_points, spam, user_reactions, base_subscriber, featured_count, negative_count, context_notes,
+        automod, badge_sum, org_baseline, established, favorited, max_score, user_max_score, baseline_score,
+        comment_sum = inputs
+      cast = ->(value) { value.to_i rescue nil } # rubocop:disable Style/RescueModifier
+
+      featured_adjustment = ([featured_count, 10].min + Math.log(featured_count + 1)).to_i
+      negative_adjustment = 0
+      negative_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i if negative_count.positive?
+      badge_bonus = Math.sqrt(badge_sum).to_i
+
+      score = cast.call(reaction_points + spam + user_reactions + base_subscriber + featured_adjustment +
+                        negative_adjustment + context_notes + automod + badge_bonus + org_baseline + established)
+      score = cast.call((score * 1.1).to_i + 10) if favorited
+      accepted_max = [max_score, user_max_score].min
+      accepted_max = [max_score, user_max_score].max if accepted_max.zero?
+      score = baseline_score if baseline_score.positive? && score < baseline_score
+      score = accepted_max if accepted_max.positive? && score > accepted_max
+      comment_score = accepted_max.positive? && accepted_max < comment_sum ? accepted_max : comment_sum
+      [score, comment_score]
+    end
+
+    # Legacy oracle: `BlackBox.article_hotness_score` with one `now` in UTC.
+    def legacy_article_hotness_score(published_at, crossposted_at, now, our_epoch, score, comment_score, featured,
+                                     favorited, cached_tag_list)
+      hour = 3600
+      usable_date = crossposted_at || published_at
+      reaction_points = score
+      bonuses = [[1, 28], [8, 81], [12, 280], [26, 795], [48, 830], [96, 930]].sum do |hours, bonus|
+        usable_date > now - (hours * hour) ? bonus : 0
+      end
+      curation_bonus = (featured ? 200 : 0) + (favorited ? 200 : 0)
+      reaction_points /= 2 if usable_date < now - (96 * hour)
+      reaction_points /= 4 if usable_date < now - (168 * hour)
+      reaction_points = (reaction_points * 0.8).to_i if (cached_tag_list || "").split(", ").include?("watercooler")
+      article_hotness = ((published_at.to_i - our_epoch) / 1000) + ([score, 650].min * 2) +
+        ([comment_score, 650].min * 2)
+      article_hotness + reaction_points + bonuses + curation_bonus
+    end
+
+    def epoch_ns(time)
+      (time.to_i * 1_000_000_000) + time.nsec
+    end
+
+    let(:base_inputs) { [10, 0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0, 0, 0, 3] }
+    let(:our_epoch) { Time.utc(2010, 1, 1, 0, 0, 1).to_i }
+
+    it "matches the legacy score formula on the documented spec cases" do
+      cases = {
+        base_inputs => [10, 3],
+        base_inputs.dup.tap { |i| i[1] = -500 } => [-490, 3],
+        base_inputs.dup.tap { |i| i[11] = true } => [21, 3],
+        base_inputs.dup.tap { |i| i[4] = 52 } => [23, 3],
+        base_inputs.dup.tap { |i| i[5] = 52 } => [4, 3],
+        base_inputs.dup.tap { |i| i[8] = 16 } => [14, 3],
+        base_inputs.dup.tap { |i| i[12] = 12; i[14] = 15 } => [12, 3], # rubocop:disable Style/Semicolon
+        base_inputs.dup.tap { |i| i[12] = 30; i[13] = 20; i[15] = 25 } => [10, 20] # rubocop:disable Style/Semicolon
+      }
+      cases.each do |inputs, expected|
+        expect(described_class.article_update_score(inputs)).to eq(expected)
+        expect(legacy_article_update_score(inputs)).to eq(expected)
+      end
+    end
+
+    it "returns nil for out-of-domain score inputs so the legacy path keeps its errors" do
+      [
+        base_inputs.dup.tap { |i| i[12] = nil },           # [nil, 0].min raises ArgumentError
+        base_inputs.dup.tap { |i| i[8] = -4 },             # Math.sqrt(-4) raises Math::DomainError
+        base_inputs.dup.tap { |i| i[0] = Float::NAN },     # cast to nil
+        base_inputs.dup.tap { |i| i[0] = Float::INFINITY },
+        base_inputs.dup.tap { |i| i[0] = 2**60 },
+        base_inputs.dup.tap { |i| i[0] = BigDecimal("1.5") },
+        base_inputs.dup.tap { |i| i[11] = nil },
+        base_inputs.first(15),
+        nil,
+      ].each do |inputs|
+        expect(described_class.article_update_score(inputs)).to be_nil
+      end
+    end
+
+    it "matches the legacy score formula across 2,000 seeded random inputs" do
+      rng = Random.new(424_242)
+      2_000.times do
+        float_or_int = lambda do |range|
+          rng.rand < 0.5 ? rng.rand(range) : (rng.rand(range) + rng.rand).round(rng.rand(0..14))
+        end
+        inputs = [
+          float_or_int.call(-600..3000), [0, -500].sample(random: rng), float_or_int.call(-400..50),
+          [0, 0, 12, 25].sample(random: rng), rng.rand(0..120), rng.rand(0..120), rng.rand(0..6),
+          [0, -10, -5, -2, 3, 15, 20, 5].sample(random: rng), rng.rand(0..500), [0, 0, 5, 40, -3].sample(random: rng),
+          [0, 0, 12].sample(random: rng), rng.rand < 0.2, [0, 0, 0, 2, 25, 300].sample(random: rng),
+          [0, 0, 5, 1000].sample(random: rng), [0, 0, 0, 15, 200].sample(random: rng), rng.rand(-30..6000)
+        ]
+        expect(described_class.article_update_score(inputs)).to eq(legacy_article_update_score(inputs)),
+                                                                -> { "inputs: #{inputs.inspect}" }
+      end
+    end
+
+    it "matches the legacy hotness score across 2,000 seeded random articles" do
+      rng = Random.new(424_242)
+      now = Time.at(1_795_000_000, rng.rand(0..999_999_999), :nsec).utc
+      tag_lists = [nil, "", "watercooler", "ruby, watercooler", "watercoolers", "watercooler,ruby",
+                   "日本語, watercooler", "a, , watercooler, ", " watercooler"]
+      2_000.times do
+        published_at = now - rng.rand(0..(3600 * 24 * 12)) - Rational(rng.rand(0..999_999), 1_000_000)
+        # Probe the exact 1h/96h/168h boundaries too.
+        published_at = now - ([1, 8, 12, 26, 48, 96, 168].sample(random: rng) * 3600) if rng.rand < 0.1
+        crossposted_at = rng.rand < 0.2 ? published_at + rng.rand(0..(3600 * 72)) : nil
+        args = [published_at, crossposted_at, now, our_epoch, rng.rand(-2000..5000), rng.rand(-100..5000),
+                rng.rand < 0.3, rng.rand < 0.3, tag_lists.sample(random: rng)]
+        native = described_class.article_hotness_score(
+          epoch_ns(args[0]), args[1] && epoch_ns(args[1]), epoch_ns(args[2]), *args[3..]
+        )
+        expect(native).to eq(legacy_article_hotness_score(*args)), -> { "args: #{args.inspect}" }
+      end
+    end
+
+    it "returns nil from article_hotness_score for out-of-domain inputs" do
+      ns = epoch_ns(Time.now.utc)
+      expect(described_class.article_hotness_score(ns, nil, ns, our_epoch, nil, 0, false, false, nil)).to be_nil
+      expect(described_class.article_hotness_score(ns, nil, ns, our_epoch, 1, 0, nil, false, nil)).to be_nil
+      expect(described_class.article_hotness_score(2**70, nil, ns, our_epoch, 1, 0, false, false, nil)).to be_nil
+      expect(described_class.article_hotness_score(ns, nil, ns, our_epoch, 1, 0, false, false, :ruby)).to be_nil
+      binary = "watercooler".b
+      expect(described_class.article_hotness_score(ns, nil, ns, our_epoch, 1, 0, false, false, binary)).to be_nil
+      invalid = (+"\xFF, watercooler").force_encoding(Encoding::UTF_8)
+      expect(described_class.article_hotness_score(ns, nil, ns, our_epoch, 1, 0, false, false, invalid)).to be_nil
+    end
+
+    it "builds the fused aggregate SQL and rejects unsafe category slugs", :aggregate_failures do
+      sql = described_class.article_score_aggregates_sql(42, 7, nil, %w[thumbsup thumbsdown vomit])
+      expect(sql).to start_with("SELECT (SELECT COALESCE(SUM(\"reactions\".\"points\"), 0)")
+      expect(sql).to include("\"category\" IN ('thumbsup', 'thumbsdown', 'vomit')")
+      expect(sql).to include("NULL::integer AS organization_baseline_score")
+      with_org = described_class.article_score_aggregates_sql(42, 7, 3, [])
+      expect(with_org).to include("\"organizations\".\"id\" = 3")
+      expect(with_org).to include("0.0::float8 AS privileged_reaction_points")
+      expect(described_class.article_score_aggregates_sql(42, 7, nil, ["vomit'; --"])).to be_nil
+      expect(described_class.article_score_aggregates_sql("42", 7, nil, [])).to be_nil
+      expect(described_class.article_score_aggregates_sql(42, nil, nil, [])).to be_nil
+      expect(described_class.article_score_aggregates_sql(42, 7, nil, [:vomit])).to be_nil
+    end
+  end
 end

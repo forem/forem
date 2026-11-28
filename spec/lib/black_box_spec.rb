@@ -47,6 +47,39 @@ RSpec.describe BlackBox, type: :lib do
     end
   end
 
+  describe "native hotness parity" do
+    it "matches the legacy calculation across ages, scores, tags, and curation flags" do
+      now = Time.current
+      rng = Random.new(424_242)
+      tag_lists = [nil, "", "watercooler", "ruby, watercooler", "watercoolers", "discuss, ruby"]
+
+      200.times do
+        published_at = now - rng.rand(0..(24 * 12)).hours - rng.rand(0..3599).seconds
+        article = build_stubbed(
+          :article,
+          score: rng.rand(-800..1500),
+          comment_score: rng.rand(-50..1500),
+          published_at: published_at,
+          crossposted_at: rng.rand < 0.2 ? published_at + rng.rand(0..72).hours : nil,
+          featured: rng.rand < 0.3,
+          favorited_by_user_id: rng.rand < 0.3 ? 1 : nil,
+          cached_tag_list: tag_lists.sample(random: rng),
+        )
+
+        native = described_class.__send__(:native_article_hotness_score, article, now)
+        expect(native).to eq(described_class.__send__(:legacy_article_hotness_score, article, now))
+      end
+    end
+
+    it "falls back to the legacy calculation outside a UTC zone" do
+      article = build_stubbed(:article, score: 10, published_at: 5.days.ago)
+      Time.use_zone("America/New_York") do
+        expect(described_class.__send__(:native_article_hotness_score, article, Time.current)).to be_nil
+        expect(described_class.article_hotness_score(article)).to be_a(Integer)
+      end
+    end
+  end
+
   describe "#comment_quality_score" do
     it "returns the correct score" do
       comment = build_stubbed(:comment, body_markdown: "```#{'hello, world! ' * 20}```")

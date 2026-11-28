@@ -1168,53 +1168,16 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    base_subscriber_adjustment = user.base_subscriber? ? Settings::UserExperience.index_minimum_score : 0
-    spam_adjustment = user.spam? ? -500 : 0
-    negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
-
-    user_featured_count_adjustment = 0
-    featured_count = user.articles.featured.count
-    user_featured_count_adjustment = ([featured_count, 10].min + Math.log(featured_count + 1)).to_i
-    user_negative_count_adjustment = 0
-    negative_count = user.articles.where("score < -10").count
-    if negative_count.positive?
-      user_negative_count_adjustment = -([negative_count,
-                                          3].min + Math.log(negative_count + 1)).to_i
-    end
-    # Context notes are currently only a positive indicator. In the future, they could be negative and this should be changed.
-    context_note_adjustment = context_notes.size
-
-    # Content moderation label adjustments
-    automod_label_adjustment = AUTOMOD_SCORE_ADJUSTMENTS[automod_label.to_sym] || 0
-
-    badge_bonus_weight_sum = user.badges.sum(:bonus_weight)
-    badge_reputation_bonus = Math.sqrt(badge_bonus_weight_sum).to_i
-
-    organization_baseline_score = organization&.baseline_score || 0
-
-    established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
-
-    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
-    self.score = (score * 1.1).to_i + 10 if favorited?
-    accepted_max = [max_score, user&.max_score.to_i].min
-    accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
-    self.score = baseline_score if baseline_score.positive? && score < baseline_score
-    self.score = accepted_max if accepted_max.positive? && score > accepted_max
-
-    # Calculate comment_score and apply max_score limits
-    # Each comment can contribute a minimum of -1 to the total score
-    calculated_comment_score = comments.pluck(:score).sum { |value| [value, -1].max }
-    comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
-                      accepted_max
-                    else
-                      calculated_comment_score
-                    end
+    aggregates = score_aggregates
+    inputs = update_score_inputs(aggregates)
+    new_score, comment_score = ForemNative.article_update_score(inputs) || legacy_update_score_values(inputs)
+    self.score = new_score
 
     article_score_changed = score_changed?
     score_changed_flag = article_score_changed || self.comment_score != comment_score
 
     update_columns(score: score,
-                   privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
+                   privileged_users_reaction_points_sum: aggregates[:privileged_reaction_points],
                    comment_score: comment_score,
                    hotness_score: BlackBox.article_hotness_score(self))
 
@@ -1230,6 +1193,135 @@ class Article < ApplicationRecord
       cached_tag_list: cached_tag_list,
     )
   end
+
+  # Gathers every aggregate `#update_score` needs in a single round-trip (it used to
+  # take ten separate queries plus a pluck of every comment score).
+  def score_aggregates
+    privileged_categories = ReactionCategory.privileged.map(&:to_s)
+    sql = ForemNative.article_score_aggregates_sql(id, user_id, organization_id, privileged_categories) ||
+      legacy_score_aggregates_sql(privileged_categories)
+    row = self.class.connection.select_rows(sql, "Article Score Aggregates").first
+
+    comment_score_sum = if Integer(row[9]).zero? && !association(:comments).loaded?
+                          Integer(row[8])
+                        else
+                          # Loaded comments pluck from memory, and a NULL score makes the Ruby sum
+                          # raise; both keep the legacy behavior.
+                          comments.pluck(:score).sum { |value| [value, -1].max }
+                        end
+
+    {
+      reaction_points: Float(row[0]),
+      privileged_reaction_points: Float(row[1]),
+      user_reaction_points: Float(row[2]),
+      featured_count: Integer(row[3]),
+      negative_count: Integer(row[4]),
+      context_note_count: score_context_note_count(Integer(row[5])),
+      badge_bonus_weight_sum: Integer(row[6]),
+      organization_baseline_score: score_organization_baseline(row[7]),
+      comment_score_sum: comment_score_sum
+    }
+  end
+  private :score_aggregates
+
+  # In-memory (loaded or unsaved) associations win over the database values, as
+  # `context_notes.size` and `organization&.baseline_score` did.
+  def score_context_note_count(database_count)
+    association = association(:context_notes)
+    association.loaded? || association.target.any? ? context_notes.size : database_count
+  end
+  private :score_context_note_count
+
+  def score_organization_baseline(database_value)
+    return organization&.baseline_score || 0 if association(:organization).loaded?
+
+    database_value.nil? ? 0 : Integer(database_value)
+  end
+  private :score_organization_baseline
+
+  # The flat inputs of the score formula, in the order `ForemNative.article_update_score`
+  # and `#legacy_update_score_values` expect them.
+  def update_score_inputs(aggregates)
+    index_minimum_score = Settings::UserExperience.index_minimum_score
+    base_subscriber_adjustment = user.base_subscriber? ? index_minimum_score : 0
+    spam_adjustment = user.spam? ? -500 : 0
+    automod_label_adjustment = AUTOMOD_SCORE_ADJUSTMENTS[automod_label.to_sym] || 0
+    established_user = user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?
+    established_user_adjustment = established_user ? index_minimum_score.to_i : 0
+
+    [
+      aggregates[:reaction_points], spam_adjustment, aggregates[:user_reaction_points], base_subscriber_adjustment,
+      aggregates[:featured_count], aggregates[:negative_count], aggregates[:context_note_count],
+      automod_label_adjustment, aggregates[:badge_bonus_weight_sum], aggregates[:organization_baseline_score],
+      established_user_adjustment, favorited?, max_score, user&.max_score.to_i, baseline_score,
+      aggregates[:comment_score_sum]
+    ]
+  end
+  private :update_score_inputs
+
+  # Reference implementation of the score formula; used when an input falls outside
+  # the native fast-path domain (and as the differential oracle in specs).
+  def legacy_update_score_values(inputs)
+    reaction_points, spam_adjustment, negative_reaction_adjustment, base_subscriber_adjustment,
+      featured_count, negative_count, context_note_adjustment, automod_label_adjustment,
+      badge_bonus_weight_sum, organization_baseline_score, established_user_adjustment,
+      favorited, article_max_score, user_max_score, article_baseline_score, calculated_comment_score = inputs
+
+    user_featured_count_adjustment = ([featured_count, 10].min + Math.log(featured_count + 1)).to_i
+    user_negative_count_adjustment = 0
+    if negative_count.positive?
+      user_negative_count_adjustment = -([negative_count, 3].min + Math.log(negative_count + 1)).to_i
+    end
+    badge_reputation_bonus = Math.sqrt(badge_bonus_weight_sum).to_i
+
+    self.score = reaction_points + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment +
+      user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment +
+      automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
+    self.score = (score * 1.1).to_i + 10 if favorited
+    accepted_max = [article_max_score, user_max_score].min
+    accepted_max = [article_max_score, user_max_score].max if accepted_max.zero?
+    self.score = article_baseline_score if article_baseline_score.positive? && score < article_baseline_score
+    self.score = accepted_max if accepted_max.positive? && score > accepted_max
+
+    # Each comment contributes at least -1 (applied per comment in `calculated_comment_score`).
+    comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
+                      accepted_max
+                    else
+                      calculated_comment_score
+                    end
+    [score, comment_score]
+  end
+  private :legacy_update_score_values
+
+  def legacy_score_aggregates_sql(privileged)
+    privileged_sql = if privileged.empty?
+                       "0.0::float8"
+                     else
+                       Reaction.where(reactable_id: id, reactable_type: "Article", category: privileged)
+                         .select("COALESCE(SUM(reactions.points), 0)").to_sql.then { |q| "(#{q})" }
+                     end
+    organization_sql = if organization_id
+                         Organization.where(id: organization_id).select(:baseline_score).to_sql.then { |q| "(#{q})" }
+                       else
+                         "NULL::integer"
+                       end
+    <<~SQL.squish
+      SELECT
+        (#{Reaction.where(reactable_id: id, reactable_type: 'Article').select('COALESCE(SUM(reactions.points), 0)').to_sql}),
+        #{privileged_sql},
+        (#{Reaction.where(reactable_id: user_id, reactable_type: 'User').select('COALESCE(SUM(reactions.points), 0)').to_sql}),
+        (#{Article.where(user_id: user_id, featured: true).select('COUNT(*)').to_sql}),
+        (#{Article.where(user_id: user_id).where('score < -10').select('COUNT(*)').to_sql}),
+        (#{ContextNote.where(article_id: id).select('COUNT(*)').to_sql}),
+        (#{Badge.joins(:badge_achievements).where(badge_achievements: { user_id: user_id }).select('COALESCE(SUM(badges.bonus_weight), 0)').to_sql}),
+        #{organization_sql},
+        comment_totals.comment_score_sum, comment_totals.null_comment_scores
+      FROM (
+        #{Comment.where(commentable_id: id, commentable_type: 'Article').select('COALESCE(SUM(GREATEST(comments.score, -1)), 0) AS comment_score_sum', 'COUNT(*) FILTER (WHERE comments.score IS NULL) AS null_comment_scores').to_sql}
+      ) AS comment_totals
+    SQL
+  end
+  private :legacy_score_aggregates_sql
 
   def eligible_for_semantic_embedding?
     respond_to?(:semantic_embedding) &&
